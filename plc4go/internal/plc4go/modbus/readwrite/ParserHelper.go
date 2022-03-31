@@ -34,16 +34,19 @@ func (m ModbusParserHelper) Parse(typeName string, arguments []string, io utils.
 	switch typeName {
 	case "ModbusPDUWriteFileRecordRequestItem":
 		return model.ModbusPDUWriteFileRecordRequestItemParse(io)
-	case "ModbusPDUReadFileRecordResponseItem":
-		return model.ModbusPDUReadFileRecordResponseItemParse(io)
-	case "ModbusConstants":
-		return model.ModbusConstantsParse(io)
-	case "ModbusTcpADU":
-		response, err := utils.StrToBool(arguments[0])
+	case "DataItem":
+		dataType := model.ModbusDataTypeByName(arguments[0])
+		numberOfValues, err := utils.StrToUint16(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.ModbusTcpADUParse(io, response)
+		return model.DataItemParse(io, dataType, numberOfValues)
+	case "ModbusPDUReadFileRecordResponseItem":
+		return model.ModbusPDUReadFileRecordResponseItemParse(io)
+	case "ModbusDeviceInformationObject":
+		return model.ModbusDeviceInformationObjectParse(io)
+	case "ModbusConstants":
+		return model.ModbusConstantsParse(io)
 	case "ModbusPDUWriteFileRecordResponseItem":
 		return model.ModbusPDUWriteFileRecordResponseItemParse(io)
 	case "ModbusPDU":
@@ -54,12 +57,13 @@ func (m ModbusParserHelper) Parse(typeName string, arguments []string, io utils.
 		return model.ModbusPDUParse(io, response)
 	case "ModbusPDUReadFileRecordRequestItem":
 		return model.ModbusPDUReadFileRecordRequestItemParse(io)
-	case "ModbusSerialADU":
-		response, err := utils.StrToBool(arguments[0])
+	case "ModbusADU":
+		driverType := model.DriverTypeByName(arguments[0])
+		response, err := utils.StrToBool(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.ModbusSerialADUParse(io, response)
+		return model.ModbusADUParse(io, driverType, response)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

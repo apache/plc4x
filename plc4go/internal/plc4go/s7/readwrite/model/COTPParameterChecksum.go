@@ -30,62 +30,92 @@ import (
 type COTPParameterChecksum struct {
 	*COTPParameter
 	Crc uint8
+
+	// Arguments.
+	Rest uint8
 }
 
 // The corresponding interface
 type ICOTPParameterChecksum interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICOTPParameter
+	// GetCrc returns Crc (property field)
+	GetCrc() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *COTPParameterChecksum) ParameterType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *COTPParameterChecksum) GetParameterType() uint8 {
 	return 0xC3
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *COTPParameterChecksum) InitializeParent(parent *COTPParameter) {}
 
-func NewCOTPParameterChecksum(crc uint8) *COTPParameter {
-	child := &COTPParameterChecksum{
+func (m *COTPParameterChecksum) GetParent() *COTPParameter {
+	return m.COTPParameter
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *COTPParameterChecksum) GetCrc() uint8 {
+	return m.Crc
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewCOTPParameterChecksum factory function for COTPParameterChecksum
+func NewCOTPParameterChecksum(crc uint8, rest uint8) *COTPParameterChecksum {
+	_result := &COTPParameterChecksum{
 		Crc:           crc,
-		COTPParameter: NewCOTPParameter(),
+		COTPParameter: NewCOTPParameter(rest),
 	}
-	child.Child = child
-	return child.COTPParameter
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPParameterChecksum(structType interface{}) *COTPParameterChecksum {
-	castFunc := func(typ interface{}) *COTPParameterChecksum {
-		if casted, ok := typ.(COTPParameterChecksum); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPParameterChecksum); ok {
-			return casted
-		}
-		if casted, ok := typ.(COTPParameter); ok {
-			return CastCOTPParameterChecksum(casted.Child)
-		}
-		if casted, ok := typ.(*COTPParameter); ok {
-			return CastCOTPParameterChecksum(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(COTPParameterChecksum); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPParameterChecksum); ok {
+		return casted
+	}
+	if casted, ok := structType.(COTPParameter); ok {
+		return CastCOTPParameterChecksum(casted.Child)
+	}
+	if casted, ok := structType.(*COTPParameter); ok {
+		return CastCOTPParameterChecksum(casted.Child)
+	}
+	return nil
 }
 
 func (m *COTPParameterChecksum) GetTypeName() string {
 	return "COTPParameterChecksum"
 }
 
-func (m *COTPParameterChecksum) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPParameterChecksum) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPParameterChecksum) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *COTPParameterChecksum) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (crc)
 	lengthInBits += 8
@@ -93,14 +123,16 @@ func (m *COTPParameterChecksum) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *COTPParameterChecksum) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPParameterChecksum) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameterChecksum, error) {
 	if pullErr := readBuffer.PullContext("COTPParameterChecksum"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (crc)
 	_crc, _crcErr := readBuffer.ReadUint8("crc", 8)
@@ -119,7 +151,7 @@ func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPP
 		COTPParameter: &COTPParameter{},
 	}
 	_child.COTPParameter.Child = _child
-	return _child.COTPParameter, nil
+	return _child, nil
 }
 
 func (m *COTPParameterChecksum) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,6 +180,8 @@ func (m *COTPParameterChecksum) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -33,37 +33,53 @@ type Dummy struct {
 
 // The corresponding interface
 type IDummy interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetDummy returns Dummy (property field)
+	GetDummy() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *Dummy) GetDummy() uint16 {
+	return m.Dummy
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewDummy factory function for Dummy
 func NewDummy(dummy uint16) *Dummy {
 	return &Dummy{Dummy: dummy}
 }
 
 func CastDummy(structType interface{}) *Dummy {
-	castFunc := func(typ interface{}) *Dummy {
-		if casted, ok := typ.(Dummy); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*Dummy); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(Dummy); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*Dummy); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *Dummy) GetTypeName() string {
 	return "Dummy"
 }
 
-func (m *Dummy) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *Dummy) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *Dummy) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *Dummy) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (dummy)
@@ -72,14 +88,16 @@ func (m *Dummy) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *Dummy) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *Dummy) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DummyParse(readBuffer utils.ReadBuffer) (*Dummy, error) {
 	if pullErr := readBuffer.PullContext("Dummy"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (dummy)
 	_dummy, _dummyErr := readBuffer.ReadUint16("dummy", 16)
@@ -119,6 +137,8 @@ func (m *Dummy) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -31,66 +31,102 @@ type COTPPacketDisconnectResponse struct {
 	*COTPPacket
 	DestinationReference uint16
 	SourceReference      uint16
+
+	// Arguments.
+	CotpLen uint16
 }
 
 // The corresponding interface
 type ICOTPPacketDisconnectResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICOTPPacket
+	// GetDestinationReference returns DestinationReference (property field)
+	GetDestinationReference() uint16
+	// GetSourceReference returns SourceReference (property field)
+	GetSourceReference() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *COTPPacketDisconnectResponse) TpduCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *COTPPacketDisconnectResponse) GetTpduCode() uint8 {
 	return 0xC0
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *COTPPacketDisconnectResponse) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
 	m.COTPPacket.Parameters = parameters
 	m.COTPPacket.Payload = payload
 }
 
-func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReference uint16, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
-	child := &COTPPacketDisconnectResponse{
+func (m *COTPPacketDisconnectResponse) GetParent() *COTPPacket {
+	return m.COTPPacket
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *COTPPacketDisconnectResponse) GetDestinationReference() uint16 {
+	return m.DestinationReference
+}
+
+func (m *COTPPacketDisconnectResponse) GetSourceReference() uint16 {
+	return m.SourceReference
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewCOTPPacketDisconnectResponse factory function for COTPPacketDisconnectResponse
+func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReference uint16, parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacketDisconnectResponse {
+	_result := &COTPPacketDisconnectResponse{
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
-		COTPPacket:           NewCOTPPacket(parameters, payload),
+		COTPPacket:           NewCOTPPacket(parameters, payload, cotpLen),
 	}
-	child.Child = child
-	return child.COTPPacket
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPPacketDisconnectResponse(structType interface{}) *COTPPacketDisconnectResponse {
-	castFunc := func(typ interface{}) *COTPPacketDisconnectResponse {
-		if casted, ok := typ.(COTPPacketDisconnectResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPPacketDisconnectResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(COTPPacket); ok {
-			return CastCOTPPacketDisconnectResponse(casted.Child)
-		}
-		if casted, ok := typ.(*COTPPacket); ok {
-			return CastCOTPPacketDisconnectResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(COTPPacketDisconnectResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPPacketDisconnectResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(COTPPacket); ok {
+		return CastCOTPPacketDisconnectResponse(casted.Child)
+	}
+	if casted, ok := structType.(*COTPPacket); ok {
+		return CastCOTPPacketDisconnectResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *COTPPacketDisconnectResponse) GetTypeName() string {
 	return "COTPPacketDisconnectResponse"
 }
 
-func (m *COTPPacketDisconnectResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPPacketDisconnectResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPPacketDisconnectResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *COTPPacketDisconnectResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -101,14 +137,16 @@ func (m *COTPPacketDisconnectResponse) LengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *COTPPacketDisconnectResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPPacketDisconnectResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func COTPPacketDisconnectResponseParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
+func COTPPacketDisconnectResponseParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacketDisconnectResponse, error) {
 	if pullErr := readBuffer.PullContext("COTPPacketDisconnectResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationReference)
 	_destinationReference, _destinationReferenceErr := readBuffer.ReadUint16("destinationReference", 16)
@@ -135,7 +173,7 @@ func COTPPacketDisconnectResponseParse(readBuffer utils.ReadBuffer, cotpLen uint
 		COTPPacket:           &COTPPacket{},
 	}
 	_child.COTPPacket.Child = _child
-	return _child.COTPPacket, nil
+	return _child, nil
 }
 
 func (m *COTPPacketDisconnectResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -171,6 +209,8 @@ func (m *COTPPacketDisconnectResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

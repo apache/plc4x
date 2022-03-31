@@ -32,69 +32,83 @@ type DF1SymbolMessageFrameNAK struct {
 
 // The corresponding interface
 type IDF1SymbolMessageFrameNAK interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IDF1Symbol
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DF1SymbolMessageFrameNAK) SymbolType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *DF1SymbolMessageFrameNAK) GetSymbolType() uint8 {
 	return 0x15
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *DF1SymbolMessageFrameNAK) InitializeParent(parent *DF1Symbol) {}
 
-func NewDF1SymbolMessageFrameNAK() *DF1Symbol {
-	child := &DF1SymbolMessageFrameNAK{
+func (m *DF1SymbolMessageFrameNAK) GetParent() *DF1Symbol {
+	return m.DF1Symbol
+}
+
+// NewDF1SymbolMessageFrameNAK factory function for DF1SymbolMessageFrameNAK
+func NewDF1SymbolMessageFrameNAK() *DF1SymbolMessageFrameNAK {
+	_result := &DF1SymbolMessageFrameNAK{
 		DF1Symbol: NewDF1Symbol(),
 	}
-	child.Child = child
-	return child.DF1Symbol
+	_result.Child = _result
+	return _result
 }
 
 func CastDF1SymbolMessageFrameNAK(structType interface{}) *DF1SymbolMessageFrameNAK {
-	castFunc := func(typ interface{}) *DF1SymbolMessageFrameNAK {
-		if casted, ok := typ.(DF1SymbolMessageFrameNAK); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1SymbolMessageFrameNAK); ok {
-			return casted
-		}
-		if casted, ok := typ.(DF1Symbol); ok {
-			return CastDF1SymbolMessageFrameNAK(casted.Child)
-		}
-		if casted, ok := typ.(*DF1Symbol); ok {
-			return CastDF1SymbolMessageFrameNAK(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DF1SymbolMessageFrameNAK); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1SymbolMessageFrameNAK); ok {
+		return casted
+	}
+	if casted, ok := structType.(DF1Symbol); ok {
+		return CastDF1SymbolMessageFrameNAK(casted.Child)
+	}
+	if casted, ok := structType.(*DF1Symbol); ok {
+		return CastDF1SymbolMessageFrameNAK(casted.Child)
+	}
+	return nil
 }
 
 func (m *DF1SymbolMessageFrameNAK) GetTypeName() string {
 	return "DF1SymbolMessageFrameNAK"
 }
 
-func (m *DF1SymbolMessageFrameNAK) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1SymbolMessageFrameNAK) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1SymbolMessageFrameNAK) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DF1SymbolMessageFrameNAK) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *DF1SymbolMessageFrameNAK) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1SymbolMessageFrameNAK) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func DF1SymbolMessageFrameNAKParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error) {
+func DF1SymbolMessageFrameNAKParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessageFrameNAK, error) {
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrameNAK"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("DF1SymbolMessageFrameNAK"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func DF1SymbolMessageFrameNAKParse(readBuffer utils.ReadBuffer) (*DF1Symbol, err
 		DF1Symbol: &DF1Symbol{},
 	}
 	_child.DF1Symbol.Child = _child
-	return _child.DF1Symbol, nil
+	return _child, nil
 }
 
 func (m *DF1SymbolMessageFrameNAK) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *DF1SymbolMessageFrameNAK) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

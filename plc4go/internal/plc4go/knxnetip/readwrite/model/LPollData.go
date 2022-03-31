@@ -37,21 +37,37 @@ type LPollData struct {
 
 // The corresponding interface
 type ILPollData interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ILDataFrame
+	// GetSourceAddress returns SourceAddress (property field)
+	GetSourceAddress() *KnxAddress
+	// GetTargetAddress returns TargetAddress (property field)
+	GetTargetAddress() []byte
+	// GetNumberExpectedPollData returns NumberExpectedPollData (property field)
+	GetNumberExpectedPollData() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LPollData) NotAckFrame() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *LPollData) GetNotAckFrame() bool {
 	return bool(true)
 }
 
-func (m *LPollData) Polling() bool {
+func (m *LPollData) GetPolling() bool {
 	return bool(true)
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *LPollData) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
 	m.LDataFrame.FrameType = frameType
@@ -61,49 +77,72 @@ func (m *LPollData) InitializeParent(parent *LDataFrame, frameType bool, notRepe
 	m.LDataFrame.ErrorFlag = errorFlag
 }
 
-func NewLPollData(sourceAddress *KnxAddress, targetAddress []byte, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
-	child := &LPollData{
+func (m *LPollData) GetParent() *LDataFrame {
+	return m.LDataFrame
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *LPollData) GetSourceAddress() *KnxAddress {
+	return m.SourceAddress
+}
+
+func (m *LPollData) GetTargetAddress() []byte {
+	return m.TargetAddress
+}
+
+func (m *LPollData) GetNumberExpectedPollData() uint8 {
+	return m.NumberExpectedPollData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewLPollData factory function for LPollData
+func NewLPollData(sourceAddress *KnxAddress, targetAddress []byte, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LPollData {
+	_result := &LPollData{
 		SourceAddress:          sourceAddress,
 		TargetAddress:          targetAddress,
 		NumberExpectedPollData: numberExpectedPollData,
 		LDataFrame:             NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 	}
-	child.Child = child
-	return child.LDataFrame
+	_result.Child = _result
+	return _result
 }
 
 func CastLPollData(structType interface{}) *LPollData {
-	castFunc := func(typ interface{}) *LPollData {
-		if casted, ok := typ.(LPollData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LPollData); ok {
-			return casted
-		}
-		if casted, ok := typ.(LDataFrame); ok {
-			return CastLPollData(casted.Child)
-		}
-		if casted, ok := typ.(*LDataFrame); ok {
-			return CastLPollData(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LPollData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LPollData); ok {
+		return casted
+	}
+	if casted, ok := structType.(LDataFrame); ok {
+		return CastLPollData(casted.Child)
+	}
+	if casted, ok := structType.(*LDataFrame); ok {
+		return CastLPollData(casted.Child)
+	}
+	return nil
 }
 
 func (m *LPollData) GetTypeName() string {
 	return "LPollData"
 }
 
-func (m *LPollData) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LPollData) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LPollData) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LPollData) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (sourceAddress)
-	lengthInBits += m.SourceAddress.LengthInBits()
+	lengthInBits += m.SourceAddress.GetLengthInBits()
 
 	// Array field
 	if len(m.TargetAddress) > 0 {
@@ -119,14 +158,16 @@ func (m *LPollData) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *LPollData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LPollData) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func LPollDataParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
+func LPollDataParse(readBuffer utils.ReadBuffer) (*LPollData, error) {
 	if pullErr := readBuffer.PullContext("LPollData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (sourceAddress)
 	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {
@@ -180,7 +221,7 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		LDataFrame:             &LDataFrame{},
 	}
 	_child.LDataFrame.Child = _child
-	return _child.LDataFrame, nil
+	return _child, nil
 }
 
 func (m *LPollData) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -238,6 +279,8 @@ func (m *LPollData) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

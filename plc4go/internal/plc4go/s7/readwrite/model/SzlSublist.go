@@ -188,12 +188,12 @@ func CastSzlSublist(structType interface{}) SzlSublist {
 	return castFunc(structType)
 }
 
-func (m SzlSublist) LengthInBits() uint16 {
+func (m SzlSublist) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m SzlSublist) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m SzlSublist) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SzlSublistParse(readBuffer utils.ReadBuffer) (SzlSublist, error) {

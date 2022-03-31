@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"github.com/viney-shih/go-lock"
 	"time"
 )
@@ -83,6 +84,7 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 			if t.tracer != nil {
 				t.tracer.AddTrace("get-connection", "create new cached connection")
 			}
+			log.Debug().Str("connectionString", connectionString).Msg("Create new cached connection")
 			// Create a new connection container.
 			cc := &connectionContainer{
 				driverManager:    t.driverManager,
@@ -118,6 +120,7 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 		select {
 		// Wait till we get a lease.
 		case connectionResponse := <-leaseChan:
+			log.Debug().Str("connectionString", connectionString).Msg("Successfully got lease to connection")
 			select {
 			case ch <- connectionResponse:
 				if t.tracer != nil {
@@ -129,8 +132,11 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 					t.tracer.AddTransactionalTrace(txId, "get-connection", "client given up")
 				}
 				close(ch)
+				log.Debug().Str("connectionString", connectionString).Msg("Client not available returning connection to cache.")
 				// Return the connection to give another connection the chance to use it.
-				connectionResponse.GetConnection().Close()
+				if connectionResponse.GetConnection() != nil {
+					connectionResponse.GetConnection().Close()
+				}
 			}
 
 		// Timeout after the maximum waiting time.
@@ -138,6 +144,7 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 			if t.tracer != nil {
 				t.tracer.AddTransactionalTrace(txId, "get-connection", "timeout")
 			}
+			log.Debug().Str("connectionString", connectionString).Msg("Timeout while waiting for connection.")
 			ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.New("timeout while waiting for connection"))
 		}
 	}()
@@ -146,6 +153,7 @@ func (t *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 }
 
 func (t *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
+	log.Debug().Msg("Closing connection cache started.")
 	ch := make(chan PlcConnectionCacheCloseResult)
 
 	go func() {
@@ -164,10 +172,12 @@ func (t *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 				// We also really don't care if it worked, or not ... it's just an attempt of being
 				// nice.
 				case _ = <-leaseResults:
+					log.Debug().Str("connectionString", container.connectionString).Msg("Gracefully closing connection ...")
 					// Give back the connection.
 					container.connection.Close()
 				// If we're timing out brutally kill the connection.
 				case <-time.After(t.maxWaitTime):
+					log.Debug().Str("connectionString", container.connectionString).Msg("Forcefully closing connection ...")
 					// Forcefully close this connection.
 					container.connection.Close()
 				}
@@ -176,6 +186,7 @@ func (t *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 				case ch <- newDefaultPlcConnectionCacheCloseResult(t, nil):
 				case <-time.After(time.Millisecond * 10):
 				}
+				log.Debug().Msg("Closing connection cache finished.")
 			}(cc)
 		}
 	}()
@@ -191,6 +202,8 @@ func (t *plcConnectionCache) onConnectionEvent(event connectionEvent) {
 		if t.tracer != nil {
 			t.tracer.AddTrace("destroy-connection", errorEvent.getError().Error())
 		}
+		log.Debug().Str("connectionString", event.getConnectionContainer().connectionString).
+			Msg("Got connection-error event ...")
 		delete(t.connections, connectionContainer.connectionString)
 	}
 }
@@ -216,6 +229,7 @@ type connectionContainer struct {
 }
 
 func (t *connectionContainer) connect() {
+	log.Debug().Str("connectionString", t.connectionString).Msg("Connecting new cached connection ...")
 	// Initialize the new connection.
 	connectionResultChan := t.driverManager.GetConnection(t.connectionString)
 
@@ -231,7 +245,11 @@ func (t *connectionContainer) connect() {
 	// If the connection was successful, pass the active connection into the container.
 	// If something went wrong, we have to remove the connection from the cache and return the error.
 	if connectionResult.GetErr() == nil {
+		log.Debug().Str("connectionString", t.connectionString).Msg("Successfully connected new cached connection.")
 		// Inject the real connection into the container.
+		if _, ok := connectionResult.GetConnection().(spi.PlcConnection); !ok {
+			panic("Return connection doesn't implement the spi.PlcConnection interface")
+		}
 		t.connection = connectionResult.GetConnection().(spi.PlcConnection)
 		t.tracerEnabled = t.connection.IsTraceEnabled()
 		// Mark the connection as idle for now.
@@ -251,6 +269,9 @@ func (t *connectionContainer) connect() {
 			queueHead <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
 		}
 	} else {
+		log.Debug().Str("connectionString", t.connectionString).
+			Err(connectionResult.GetErr()).
+			Msg("Error connecting new cached connection.")
 		// Tell the connection cache that the connection is no longer available.
 		if t.listeners != nil {
 			event := connectionErrorEvent{
@@ -288,9 +309,12 @@ func (t *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
 	if t.state == StateIdle {
 		t.leaseCounter++
 		connection := newPlcConnectionLease(t, t.leaseCounter, t.connection)
+		t.state = StateInUse
 		// In this case we don't need to check for blocks
 		// as the getConnection function of the connection cache
 		// is definitely eagerly waiting for input.
+		log.Debug().Str("connectionString", t.connectionString).
+			Msg("Got lease instantly as connection was idle.")
 		go func() {
 			ch <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
 		}()
@@ -298,6 +322,9 @@ func (t *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
 		// If the connection is currently busy or not finished initializing,
 		// add the new channel to the queue for this connection.
 		t.queue = append(t.queue, ch)
+		log.Debug().Str("connectionString", t.connectionString).
+			Int("waiting-queue-size", len(t.queue)).
+			Msg("Added lease-request to queue.")
 	}
 	return ch
 }
@@ -309,7 +336,12 @@ func (t *connectionContainer) returnConnection(state cachedPlcConnectionState) e
 	// If the connection is marked as "invalid", destroy it and remove it from the cache.
 	if state == StateInvalid {
 		// TODO: Perhaps do a maximum number of retries and then call failConnection()
+		log.Debug().Str("connectionString", t.connectionString).
+			Msg("Client returned invalid connection, reconnecting.")
 		t.connect()
+	} else {
+		log.Debug().Str("connectionString", t.connectionString).
+			Msg("Client returned valid connection.")
 	}
 
 	// Check how many others are waiting for this connection.
@@ -327,9 +359,14 @@ func (t *connectionContainer) returnConnection(state cachedPlcConnectionState) e
 			// as the getConnection function of the connection cache
 			// is definitely eagerly waiting for input.
 			next <- _default.NewDefaultPlcConnectionConnectResult(connection, nil)
+			log.Debug().Str("connectionString", t.connectionString).
+				Int("waiting-queue-size", len(t.queue)).
+				Msg("Returned connection to the next client waiting.")
 		}()
 	} else {
 		// Otherwise, just mark the connection as idle.
+		log.Debug().Str("connectionString", t.connectionString).
+			Msg("Connection set to 'idle'.")
 		t.state = StateIdle
 	}
 	return nil
@@ -439,7 +476,10 @@ func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
 		err := t.connectionContainer.returnConnection(newState)
 
 		// Finish closing the connection.
-		result <- _default.NewDefaultPlcConnectionCloseResultWithTraces(t, err, traces)
+		select {
+		case result <- _default.NewDefaultPlcConnectionCloseResultWithTraces(t, err, traces):
+		case <-time.After(time.Millisecond * 10):
+		}
 
 		// Detach the connection from this lease, so it can no longer be used by the client.
 		t.connection = nil

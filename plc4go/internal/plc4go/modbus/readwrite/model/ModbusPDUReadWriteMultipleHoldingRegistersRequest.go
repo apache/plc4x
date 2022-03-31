@@ -38,30 +38,84 @@ type ModbusPDUReadWriteMultipleHoldingRegistersRequest struct {
 
 // The corresponding interface
 type IModbusPDUReadWriteMultipleHoldingRegistersRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IModbusPDU
+	// GetReadStartingAddress returns ReadStartingAddress (property field)
+	GetReadStartingAddress() uint16
+	// GetReadQuantity returns ReadQuantity (property field)
+	GetReadQuantity() uint16
+	// GetWriteStartingAddress returns WriteStartingAddress (property field)
+	GetWriteStartingAddress() uint16
+	// GetWriteQuantity returns WriteQuantity (property field)
+	GetWriteQuantity() uint16
+	// GetValue returns Value (property field)
+	GetValue() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) ErrorFlag() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetFunctionFlag() uint8 {
 	return 0x17
 }
 
-func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Response() bool {
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) InitializeParent(parent *ModbusPDU) {}
 
-func NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress uint16, readQuantity uint16, writeStartingAddress uint16, writeQuantity uint16, value []byte) *ModbusPDU {
-	child := &ModbusPDUReadWriteMultipleHoldingRegistersRequest{
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetReadStartingAddress() uint16 {
+	return m.ReadStartingAddress
+}
+
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetReadQuantity() uint16 {
+	return m.ReadQuantity
+}
+
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetWriteStartingAddress() uint16 {
+	return m.WriteStartingAddress
+}
+
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetWriteQuantity() uint16 {
+	return m.WriteQuantity
+}
+
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetValue() []byte {
+	return m.Value
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusPDUReadWriteMultipleHoldingRegistersRequest factory function for ModbusPDUReadWriteMultipleHoldingRegistersRequest
+func NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress uint16, readQuantity uint16, writeStartingAddress uint16, writeQuantity uint16, value []byte) *ModbusPDUReadWriteMultipleHoldingRegistersRequest {
+	_result := &ModbusPDUReadWriteMultipleHoldingRegistersRequest{
 		ReadStartingAddress:  readStartingAddress,
 		ReadQuantity:         readQuantity,
 		WriteStartingAddress: writeStartingAddress,
@@ -69,39 +123,36 @@ func NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress ui
 		Value:                value,
 		ModbusPDU:            NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReadWriteMultipleHoldingRegistersRequest(structType interface{}) *ModbusPDUReadWriteMultipleHoldingRegistersRequest {
-	castFunc := func(typ interface{}) *ModbusPDUReadWriteMultipleHoldingRegistersRequest {
-		if casted, ok := typ.(ModbusPDUReadWriteMultipleHoldingRegistersRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReadWriteMultipleHoldingRegistersRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUReadWriteMultipleHoldingRegistersRequest(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUReadWriteMultipleHoldingRegistersRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReadWriteMultipleHoldingRegistersRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReadWriteMultipleHoldingRegistersRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUReadWriteMultipleHoldingRegistersRequest(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUReadWriteMultipleHoldingRegistersRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetTypeName() string {
 	return "ModbusPDUReadWriteMultipleHoldingRegistersRequest"
 }
 
-func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (readStartingAddress)
 	lengthInBits += 16
@@ -126,14 +177,16 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBitsConditio
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUReadWriteMultipleHoldingRegistersRequest, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (readStartingAddress)
 	_readStartingAddress, _readStartingAddressErr := readBuffer.ReadUint16("readStartingAddress", 16)
@@ -163,7 +216,7 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(readBuffer utils.Rea
 	}
 	writeQuantity := _writeQuantity
 
-	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
@@ -190,7 +243,7 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(readBuffer utils.Rea
 		ModbusPDU:            &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -228,7 +281,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(writeBuffe
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint8(uint8(len(m.Value)))
+		byteCount := uint8(uint8(len(m.GetValue())))
 		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
@@ -256,6 +309,8 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

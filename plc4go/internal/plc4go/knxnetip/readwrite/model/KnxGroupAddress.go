@@ -33,9 +33,13 @@ type KnxGroupAddress struct {
 
 // The corresponding interface
 type IKnxGroupAddress interface {
-	NumLevels() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetNumLevels returns NumLevels (discriminator field)
+	GetNumLevels() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,64 +51,73 @@ type IKnxGroupAddressParent interface {
 type IKnxGroupAddressChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *KnxGroupAddress)
+	GetParent() *KnxGroupAddress
+
 	GetTypeName() string
 	IKnxGroupAddress
 }
 
+// NewKnxGroupAddress factory function for KnxGroupAddress
 func NewKnxGroupAddress() *KnxGroupAddress {
 	return &KnxGroupAddress{}
 }
 
 func CastKnxGroupAddress(structType interface{}) *KnxGroupAddress {
-	castFunc := func(typ interface{}) *KnxGroupAddress {
-		if casted, ok := typ.(KnxGroupAddress); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxGroupAddress); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(KnxGroupAddress); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxGroupAddress); ok {
+		return casted
+	}
+	if casted, ok := structType.(IKnxGroupAddressChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *KnxGroupAddress) GetTypeName() string {
 	return "KnxGroupAddress"
 }
 
-func (m *KnxGroupAddress) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxGroupAddress) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxGroupAddress) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *KnxGroupAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *KnxGroupAddress) ParentLengthInBits() uint16 {
+func (m *KnxGroupAddress) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *KnxGroupAddress) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxGroupAddress) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
 	if pullErr := readBuffer.PullContext("KnxGroupAddress"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *KnxGroupAddress
+	type KnxGroupAddressChild interface {
+		InitializeParent(*KnxGroupAddress)
+		GetParent() *KnxGroupAddress
+	}
+	var _child KnxGroupAddressChild
 	var typeSwitchError error
 	switch {
 	case numLevels == uint8(1): // KnxGroupAddressFreeLevel
-		_parent, typeSwitchError = KnxGroupAddressFreeLevelParse(readBuffer, numLevels)
+		_child, typeSwitchError = KnxGroupAddressFreeLevelParse(readBuffer, numLevels)
 	case numLevels == uint8(2): // KnxGroupAddress2Level
-		_parent, typeSwitchError = KnxGroupAddress2LevelParse(readBuffer, numLevels)
+		_child, typeSwitchError = KnxGroupAddress2LevelParse(readBuffer, numLevels)
 	case numLevels == uint8(3): // KnxGroupAddress3Level
-		_parent, typeSwitchError = KnxGroupAddress3LevelParse(readBuffer, numLevels)
+		_child, typeSwitchError = KnxGroupAddress3LevelParse(readBuffer, numLevels)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -118,8 +131,8 @@ func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGro
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *KnxGroupAddress) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -147,6 +160,8 @@ func (m *KnxGroupAddress) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

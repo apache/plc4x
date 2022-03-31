@@ -148,11 +148,33 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
         try {
             MessageInput<?> messageInput = MessageResolver.getMessageIOStaticLinked(
                 testSuite.getOptions(),
-                testcase.getXml().elements().get(0).getName()
+                testcase.getRootType()
             );
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Parse the raw bytes into a message
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
             LOGGER.trace("Parsing message");
             Message parsedOutput = (Message) messageInput.parse(readBuffer, testcase.getParserArguments().toArray());
             LOGGER.trace("Validating and migrating");
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Compare the parsed message with the reference XML
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // In this case no reference xml has been provided
+            // (This is usually during development)
+            if(testcase.getXml().elements().size() == 0) {
+                WriteBufferXmlBased writeBufferXmlBased = new WriteBufferXmlBased();
+                parsedOutput.serialize(writeBufferXmlBased);
+                String xmlString = writeBufferXmlBased.getXmlString();
+                throw new ParserSerializerTestsuiteException("Missing reference xml element. Parsed: \n" + xmlString);
+            }
+            // If more than one root element is provided, the testcase is corrupt.
+            else if (testcase.getXml().elements().size() > 1) {
+                throw new ParserSerializerTestsuiteException("Too many element roots in testcase");
+            }
             boolean migrated = MessageValidatorAndMigrator.validateOutboundMessageAndMigrate(
                 testcase.getName(),
                 messageInput,
@@ -169,6 +191,10 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             LOGGER.debug("Parsed message {}", parsedOutput);
             LOGGER.info("Parsing passed for testcase {}", testcase);
 
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Serialize the parsed message to a byte array
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
             LOGGER.trace("Writing message back again");
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(parsedOutput.getLengthInBytes(), testSuite.getByteOrder());
             parsedOutput.serialize(writeBuffer);
@@ -177,6 +203,11 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             if (testcaseRaw.length != data.length) {
                 LOGGER.info("Expected a byte array with a length of {} but got one with {}", testcaseRaw.length, data.length);
             }
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Compare the serialized bytes to the initial raw array
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
             if (!Arrays.equals(testcaseRaw, data)) {
                 int numBytes = Math.min(data.length, testcaseRaw.length);
                 int brokenAt = -1;

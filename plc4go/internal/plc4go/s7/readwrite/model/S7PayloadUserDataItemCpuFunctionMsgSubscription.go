@@ -38,72 +38,117 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscription struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionMsgSubscription interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7PayloadUserDataItem
+	// GetSubscription returns Subscription (property field)
+	GetSubscription() uint8
+	// GetMagicKey returns MagicKey (property field)
+	GetMagicKey() string
+	// GetAlarmtype returns Alarmtype (property field)
+	GetAlarmtype() *AlarmStateType
+	// GetReserve returns Reserve (property field)
+	GetReserve() *uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) CpuFunctionType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetCpuFunctionType() uint8 {
 	return 0x04
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) CpuSubfunction() uint8 {
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetCpuSubfunction() uint8 {
 	return 0x02
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) DataLength() uint16 {
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetDataLength() uint16 {
 	return 0
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
 	m.S7PayloadUserDataItem.ReturnCode = returnCode
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
 
-func NewS7PayloadUserDataItemCpuFunctionMsgSubscription(Subscription uint8, magicKey string, Alarmtype *AlarmStateType, Reserve *uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
-	child := &S7PayloadUserDataItemCpuFunctionMsgSubscription{
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetParent() *S7PayloadUserDataItem {
+	return m.S7PayloadUserDataItem
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetSubscription() uint8 {
+	return m.Subscription
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetMagicKey() string {
+	return m.MagicKey
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetAlarmtype() *AlarmStateType {
+	return m.Alarmtype
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetReserve() *uint8 {
+	return m.Reserve
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscription factory function for S7PayloadUserDataItemCpuFunctionMsgSubscription
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscription(Subscription uint8, magicKey string, Alarmtype *AlarmStateType, Reserve *uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItemCpuFunctionMsgSubscription {
+	_result := &S7PayloadUserDataItemCpuFunctionMsgSubscription{
 		Subscription:          Subscription,
 		MagicKey:              magicKey,
 		Alarmtype:             Alarmtype,
 		Reserve:               Reserve,
 		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Child = child
-	return child.S7PayloadUserDataItem
+	_result.Child = _result
+	return _result
 }
 
 func CastS7PayloadUserDataItemCpuFunctionMsgSubscription(structType interface{}) *S7PayloadUserDataItemCpuFunctionMsgSubscription {
-	castFunc := func(typ interface{}) *S7PayloadUserDataItemCpuFunctionMsgSubscription {
-		if casted, ok := typ.(S7PayloadUserDataItemCpuFunctionMsgSubscription); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItemCpuFunctionMsgSubscription); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7PayloadUserDataItem); ok {
-			return CastS7PayloadUserDataItemCpuFunctionMsgSubscription(casted.Child)
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItem); ok {
-			return CastS7PayloadUserDataItemCpuFunctionMsgSubscription(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionMsgSubscription); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7PayloadUserDataItemCpuFunctionMsgSubscription); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7PayloadUserDataItem); ok {
+		return CastS7PayloadUserDataItemCpuFunctionMsgSubscription(casted.Child)
+	}
+	if casted, ok := structType.(*S7PayloadUserDataItem); ok {
+		return CastS7PayloadUserDataItemCpuFunctionMsgSubscription(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionMsgSubscription"
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (Subscription)
 	lengthInBits += 8
@@ -127,14 +172,16 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) LengthInBitsConditiona
 	return lengthInBits
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItemCpuFunctionMsgSubscription, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscription"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (Subscription)
 	_Subscription, _SubscriptionErr := readBuffer.ReadUint8("Subscription", 8)
@@ -203,7 +250,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
 	_child.S7PayloadUserDataItem.Child = _child
-	return _child.S7PayloadUserDataItem, nil
+	return _child, nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -273,6 +320,8 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

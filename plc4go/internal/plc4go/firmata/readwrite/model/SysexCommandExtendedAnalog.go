@@ -32,73 +32,87 @@ type SysexCommandExtendedAnalog struct {
 
 // The corresponding interface
 type ISysexCommandExtendedAnalog interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ISysexCommand
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandExtendedAnalog) CommandType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *SysexCommandExtendedAnalog) GetCommandType() uint8 {
 	return 0x6F
 }
 
-func (m *SysexCommandExtendedAnalog) Response() bool {
+func (m *SysexCommandExtendedAnalog) GetResponse() bool {
 	return false
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *SysexCommandExtendedAnalog) InitializeParent(parent *SysexCommand) {}
 
-func NewSysexCommandExtendedAnalog() *SysexCommand {
-	child := &SysexCommandExtendedAnalog{
+func (m *SysexCommandExtendedAnalog) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
+// NewSysexCommandExtendedAnalog factory function for SysexCommandExtendedAnalog
+func NewSysexCommandExtendedAnalog() *SysexCommandExtendedAnalog {
+	_result := &SysexCommandExtendedAnalog{
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandExtendedAnalog(structType interface{}) *SysexCommandExtendedAnalog {
-	castFunc := func(typ interface{}) *SysexCommandExtendedAnalog {
-		if casted, ok := typ.(SysexCommandExtendedAnalog); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandExtendedAnalog); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandExtendedAnalog(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandExtendedAnalog(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandExtendedAnalog); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandExtendedAnalog); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandExtendedAnalog(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandExtendedAnalog(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandExtendedAnalog) GetTypeName() string {
 	return "SysexCommandExtendedAnalog"
 }
 
-func (m *SysexCommandExtendedAnalog) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandExtendedAnalog) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandExtendedAnalog) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandExtendedAnalog) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *SysexCommandExtendedAnalog) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandExtendedAnalog) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandExtendedAnalogParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
+func SysexCommandExtendedAnalogParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandExtendedAnalog, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandExtendedAnalog"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandExtendedAnalog"); closeErr != nil {
 		return nil, closeErr
@@ -109,7 +123,7 @@ func SysexCommandExtendedAnalogParse(readBuffer utils.ReadBuffer, response bool)
 		SysexCommand: &SysexCommand{},
 	}
 	_child.SysexCommand.Child = _child
-	return _child.SysexCommand, nil
+	return _child, nil
 }
 
 func (m *SysexCommandExtendedAnalog) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -131,6 +145,8 @@ func (m *SysexCommandExtendedAnalog) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -43,7 +43,7 @@ struct plc4c_s7_read_write_cotp_packet_discriminator {
 };
 typedef struct plc4c_s7_read_write_cotp_packet_discriminator plc4c_s7_read_write_cotp_packet_discriminator;
 
-// Enum assigning each sub-type an individual id.
+// Enum assigning each subtype an individual id.
 enum plc4c_s7_read_write_cotp_packet_type {
   plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data = 0,
   plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_connection_request = 1,

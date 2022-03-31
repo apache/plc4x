@@ -36,12 +36,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-10
- */
 class SerialPollingSelector extends AbstractSelector {
 
     private static final Logger logger = LoggerFactory.getLogger(SerialPollingSelector.class);

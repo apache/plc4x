@@ -32,63 +32,99 @@ type APDUError struct {
 	*APDU
 	OriginalInvokeId uint8
 	Error            *BACnetError
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
 type IAPDUError interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAPDU
+	// GetOriginalInvokeId returns OriginalInvokeId (property field)
+	GetOriginalInvokeId() uint8
+	// GetError returns Error (property field)
+	GetError() *BACnetError
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *APDUError) ApduType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *APDUError) GetApduType() uint8 {
 	return 0x5
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *APDUError) InitializeParent(parent *APDU) {}
 
-func NewAPDUError(originalInvokeId uint8, error *BACnetError) *APDU {
-	child := &APDUError{
+func (m *APDUError) GetParent() *APDU {
+	return m.APDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *APDUError) GetOriginalInvokeId() uint8 {
+	return m.OriginalInvokeId
+}
+
+func (m *APDUError) GetError() *BACnetError {
+	return m.Error
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAPDUError factory function for APDUError
+func NewAPDUError(originalInvokeId uint8, error *BACnetError, apduLength uint16) *APDUError {
+	_result := &APDUError{
 		OriginalInvokeId: originalInvokeId,
 		Error:            error,
-		APDU:             NewAPDU(),
+		APDU:             NewAPDU(apduLength),
 	}
-	child.Child = child
-	return child.APDU
+	_result.Child = _result
+	return _result
 }
 
 func CastAPDUError(structType interface{}) *APDUError {
-	castFunc := func(typ interface{}) *APDUError {
-		if casted, ok := typ.(APDUError); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*APDUError); ok {
-			return casted
-		}
-		if casted, ok := typ.(APDU); ok {
-			return CastAPDUError(casted.Child)
-		}
-		if casted, ok := typ.(*APDU); ok {
-			return CastAPDUError(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(APDUError); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*APDUError); ok {
+		return casted
+	}
+	if casted, ok := structType.(APDU); ok {
+		return CastAPDUError(casted.Child)
+	}
+	if casted, ok := structType.(*APDU); ok {
+		return CastAPDUError(casted.Child)
+	}
+	return nil
 }
 
 func (m *APDUError) GetTypeName() string {
 	return "APDUError"
 }
 
-func (m *APDUError) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDUError) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDUError) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *APDUError) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -97,19 +133,21 @@ func (m *APDUError) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (error)
-	lengthInBits += m.Error.LengthInBits()
+	lengthInBits += m.Error.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *APDUError) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDUError) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUError, error) {
 	if pullErr := readBuffer.PullContext("APDUError"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -156,7 +194,7 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, erro
 		APDU:             &APDU{},
 	}
 	_child.APDU.Child = _child
-	return _child.APDU, nil
+	return _child, nil
 }
 
 func (m *APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -205,6 +243,8 @@ func (m *APDUError) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

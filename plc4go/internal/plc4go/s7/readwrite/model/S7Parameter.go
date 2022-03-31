@@ -33,10 +33,15 @@ type S7Parameter struct {
 
 // The corresponding interface
 type IS7Parameter interface {
-	MessageType() uint8
-	ParameterType() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetMessageType returns MessageType (discriminator field)
+	GetMessageType() uint8
+	// GetParameterType returns ParameterType (discriminator field)
+	GetParameterType() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,40 +53,43 @@ type IS7ParameterParent interface {
 type IS7ParameterChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *S7Parameter)
+	GetParent() *S7Parameter
+
 	GetTypeName() string
 	IS7Parameter
 }
 
+// NewS7Parameter factory function for S7Parameter
 func NewS7Parameter() *S7Parameter {
 	return &S7Parameter{}
 }
 
 func CastS7Parameter(structType interface{}) *S7Parameter {
-	castFunc := func(typ interface{}) *S7Parameter {
-		if casted, ok := typ.(S7Parameter); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7Parameter); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(S7Parameter); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7Parameter); ok {
+		return casted
+	}
+	if casted, ok := structType.(IS7ParameterChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *S7Parameter) GetTypeName() string {
 	return "S7Parameter"
 }
 
-func (m *S7Parameter) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7Parameter) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7Parameter) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *S7Parameter) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *S7Parameter) ParentLengthInBits() uint16 {
+func (m *S7Parameter) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
@@ -89,14 +97,16 @@ func (m *S7Parameter) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *S7Parameter) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7Parameter) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
 	if pullErr := readBuffer.PullContext("S7Parameter"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType, _parameterTypeErr := readBuffer.ReadUint8("parameterType", 8)
@@ -105,23 +115,27 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parame
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *S7Parameter
+	type S7ParameterChild interface {
+		InitializeParent(*S7Parameter)
+		GetParent() *S7Parameter
+	}
+	var _child S7ParameterChild
 	var typeSwitchError error
 	switch {
 	case parameterType == 0xF0: // S7ParameterSetupCommunication
-		_parent, typeSwitchError = S7ParameterSetupCommunicationParse(readBuffer, messageType)
+		_child, typeSwitchError = S7ParameterSetupCommunicationParse(readBuffer, messageType)
 	case parameterType == 0x04 && messageType == 0x01: // S7ParameterReadVarRequest
-		_parent, typeSwitchError = S7ParameterReadVarRequestParse(readBuffer, messageType)
+		_child, typeSwitchError = S7ParameterReadVarRequestParse(readBuffer, messageType)
 	case parameterType == 0x04 && messageType == 0x03: // S7ParameterReadVarResponse
-		_parent, typeSwitchError = S7ParameterReadVarResponseParse(readBuffer, messageType)
+		_child, typeSwitchError = S7ParameterReadVarResponseParse(readBuffer, messageType)
 	case parameterType == 0x05 && messageType == 0x01: // S7ParameterWriteVarRequest
-		_parent, typeSwitchError = S7ParameterWriteVarRequestParse(readBuffer, messageType)
+		_child, typeSwitchError = S7ParameterWriteVarRequestParse(readBuffer, messageType)
 	case parameterType == 0x05 && messageType == 0x03: // S7ParameterWriteVarResponse
-		_parent, typeSwitchError = S7ParameterWriteVarResponseParse(readBuffer, messageType)
+		_child, typeSwitchError = S7ParameterWriteVarResponseParse(readBuffer, messageType)
 	case parameterType == 0x00 && messageType == 0x07: // S7ParameterUserData
-		_parent, typeSwitchError = S7ParameterUserDataParse(readBuffer, messageType)
+		_child, typeSwitchError = S7ParameterUserDataParse(readBuffer, messageType)
 	case parameterType == 0x01 && messageType == 0x07: // S7ParameterModeTransition
-		_parent, typeSwitchError = S7ParameterModeTransitionParse(readBuffer, messageType)
+		_child, typeSwitchError = S7ParameterModeTransitionParse(readBuffer, messageType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -135,8 +149,8 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parame
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *S7Parameter) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -149,7 +163,7 @@ func (m *S7Parameter) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Pa
 	}
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
-	parameterType := uint8(child.ParameterType())
+	parameterType := uint8(child.GetParameterType())
 	_parameterTypeErr := writeBuffer.WriteUint8("parameterType", 8, (parameterType))
 
 	if _parameterTypeErr != nil {
@@ -172,6 +186,8 @@ func (m *S7Parameter) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

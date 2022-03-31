@@ -31,89 +31,116 @@ import (
 type BACnetPropertyStatesAction struct {
 	*BACnetPropertyStates
 	Action *BACnetAction
+
+	// Arguments.
+	TagNumber uint8
 }
 
 // The corresponding interface
 type IBACnetPropertyStatesAction interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetPropertyStates
+	// GetAction returns Action (property field)
+	GetAction() *BACnetAction
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetPropertyStatesAction) PeekedTagNumber() uint8 {
-	return uint8(16)
-}
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
-func (m *BACnetPropertyStatesAction) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
+func (m *BACnetPropertyStatesAction) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetPropertyStates.OpeningTag = openingTag
 	m.BACnetPropertyStates.PeekedTagHeader = peekedTagHeader
 	m.BACnetPropertyStates.ClosingTag = closingTag
-	m.BACnetPropertyStates.PeekedTagNumber = peekedTagNumber
 }
 
-func NewBACnetPropertyStatesAction(action *BACnetAction, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetPropertyStates {
-	child := &BACnetPropertyStatesAction{
+func (m *BACnetPropertyStatesAction) GetParent() *BACnetPropertyStates {
+	return m.BACnetPropertyStates
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetPropertyStatesAction) GetAction() *BACnetAction {
+	return m.Action
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetPropertyStatesAction factory function for BACnetPropertyStatesAction
+func NewBACnetPropertyStatesAction(action *BACnetAction, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStatesAction {
+	_result := &BACnetPropertyStatesAction{
 		Action:               action,
-		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
+		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
-	child.Child = child
-	return child.BACnetPropertyStates
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetPropertyStatesAction(structType interface{}) *BACnetPropertyStatesAction {
-	castFunc := func(typ interface{}) *BACnetPropertyStatesAction {
-		if casted, ok := typ.(BACnetPropertyStatesAction); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetPropertyStatesAction); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetPropertyStates); ok {
-			return CastBACnetPropertyStatesAction(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetPropertyStates); ok {
-			return CastBACnetPropertyStatesAction(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetPropertyStatesAction); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetPropertyStatesAction); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetPropertyStates); ok {
+		return CastBACnetPropertyStatesAction(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetPropertyStates); ok {
+		return CastBACnetPropertyStatesAction(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetPropertyStatesAction) GetTypeName() string {
 	return "BACnetPropertyStatesAction"
 }
 
-func (m *BACnetPropertyStatesAction) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetPropertyStatesAction) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetPropertyStatesAction) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetPropertyStatesAction) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Optional Field (action)
 	if m.Action != nil {
-		lengthInBits += (*m.Action).LengthInBits()
+		lengthInBits += (*m.Action).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetPropertyStatesAction) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetPropertyStatesAction) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetPropertyStates, error) {
+func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetPropertyStatesAction, error) {
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAction"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (action) (Can be skipped, if a given expression evaluates to false)
 	var action *BACnetAction = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("action"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -141,7 +168,7 @@ func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, tagNumber uint
 		BACnetPropertyStates: &BACnetPropertyStates{},
 	}
 	_child.BACnetPropertyStates.Child = _child
-	return _child.BACnetPropertyStates, nil
+	return _child, nil
 }
 
 func (m *BACnetPropertyStatesAction) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -179,6 +206,8 @@ func (m *BACnetPropertyStatesAction) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

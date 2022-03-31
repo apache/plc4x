@@ -16,4 +16,4 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-org.apache.plc4x.protocol.s7.S7Protocol
+org.apache.plc4x.protocol.plc4x.v0.Plc4xProtocol

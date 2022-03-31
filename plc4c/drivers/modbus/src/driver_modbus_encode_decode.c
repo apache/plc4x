@@ -21,7 +21,7 @@
 #include <plc4c/driver_modbus.h>
 #include <string.h>
 
-#include "plc4c/driver_s7_encode_decode.h"
+#include "plc4c/driver_modbus_encode_decode.h"
 
 plc4c_return_code plc4c_driver_modbus_encode_address(char* address,
                                                      void** item) {

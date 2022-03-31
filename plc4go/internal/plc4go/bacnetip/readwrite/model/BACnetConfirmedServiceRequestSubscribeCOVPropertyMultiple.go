@@ -28,74 +28,91 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple struct {
 	*BACnetConfirmedServiceRequest
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetConfirmedServiceRequest
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetServiceChoice() uint8 {
 	return 0x1E
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple() *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
+// NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple factory function for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
+func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(len uint16) *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
+	_result := &BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(structType interface{}) *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"
 }
 
-func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"); closeErr != nil {
 		return nil, closeErr
@@ -106,7 +123,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -128,6 +145,8 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) String() str
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

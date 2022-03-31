@@ -38,37 +38,65 @@ type TPKTPacket struct {
 
 // The corresponding interface
 type ITPKTPacket interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetPayload returns Payload (property field)
+	GetPayload() *COTPPacket
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *TPKTPacket) GetPayload() *COTPPacket {
+	return m.Payload
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for const fields.
+///////////////////////
+func (m *TPKTPacket) GetProtocolId() uint8 {
+	return TPKTPacket_PROTOCOLID
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewTPKTPacket factory function for TPKTPacket
 func NewTPKTPacket(payload *COTPPacket) *TPKTPacket {
 	return &TPKTPacket{Payload: payload}
 }
 
 func CastTPKTPacket(structType interface{}) *TPKTPacket {
-	castFunc := func(typ interface{}) *TPKTPacket {
-		if casted, ok := typ.(TPKTPacket); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*TPKTPacket); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(TPKTPacket); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*TPKTPacket); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *TPKTPacket) GetTypeName() string {
 	return "TPKTPacket"
 }
 
-func (m *TPKTPacket) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *TPKTPacket) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *TPKTPacket) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *TPKTPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (protocolId)
@@ -81,19 +109,21 @@ func (m *TPKTPacket) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 16
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.LengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *TPKTPacket) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *TPKTPacket) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
 	if pullErr := readBuffer.PullContext("TPKTPacket"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (protocolId)
 	protocolId, _protocolIdErr := readBuffer.ReadUint8("protocolId", 8)
@@ -118,7 +148,7 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
 		}
 	}
 
-	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	len, _lenErr := readBuffer.ReadUint16("len", 16)
 	_ = len
 	if _lenErr != nil {
@@ -129,7 +159,7 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, pullErr
 	}
-	_payload, _payloadErr := COTPPacketParse(readBuffer, uint16(len)-uint16(uint16(4)))
+	_payload, _payloadErr := COTPPacketParse(readBuffer, uint16(uint16(len)-uint16(uint16(4))))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
 	}
@@ -166,7 +196,7 @@ func (m *TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	len := uint16(uint16(m.Payload.LengthInBytes()) + uint16(uint16(4)))
+	len := uint16(uint16(m.GetPayload().GetLengthInBytes()) + uint16(uint16(4)))
 	_lenErr := writeBuffer.WriteUint16("len", 16, (len))
 	if _lenErr != nil {
 		return errors.Wrap(_lenErr, "Error serializing 'len' field")
@@ -195,6 +225,8 @@ func (m *TPKTPacket) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

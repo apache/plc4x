@@ -20,6 +20,7 @@ package org.apache.plc4x.protocol.test;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
+import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
@@ -34,12 +35,16 @@ public class TestProtocol implements Protocol {
     }
 
     @Override
-    public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
+    public TypeContext getTypeContext() throws GenerationException {
         InputStream schemaInputStream = TestProtocol.class.getResourceAsStream("/protocols/test/test.mspec");
-        if(schemaInputStream == null) {
+        if (schemaInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }
-        return new MessageFormatParser().parse(schemaInputStream);
+        TypeContext typeContext = new MessageFormatParser().parse(schemaInputStream);
+        if (typeContext.getUnresolvedTypeReferences().size() > 0) {
+            throw new GenerationException("Unresolved types left: " + typeContext.getUnresolvedTypeReferences());
+        }
+        return typeContext;
     }
 
 }

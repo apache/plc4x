@@ -146,7 +146,7 @@ func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.
 	default:
 		readLength = uint32(adsField.Datatype.NumBytes())
 	}
-	userdata.Data = readWriteModel.NewAdsReadRequest(adsField.IndexGroup, adsField.IndexOffset, readLength)
+	userdata.Data = readWriteModel.NewAdsReadRequest(adsField.IndexGroup, adsField.IndexOffset, readLength).GetParent()
 
 	m.sendOverTheWire(userdata, readRequest, result)
 }
@@ -236,9 +236,9 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 			return
 		}
 		// With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
-		items[i] = readWriteModel.NewAdsMultiRequestItemRead(adsField.IndexGroup, adsField.IndexOffset, uint32(adsField.GetDatatype().NumBytes())*adsField.NumberOfElements)
+		items[i] = readWriteModel.NewAdsMultiRequestItemRead(adsField.IndexGroup, adsField.IndexOffset, uint32(adsField.GetDatatype().NumBytes())*adsField.NumberOfElements).GetParent()
 	}
-	userdata.Data = readWriteModel.NewAdsReadWriteRequest(uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ), uint32(len(readRequest.GetFieldNames())), expectedResponseDataSize, items, nil)
+	userdata.Data = readWriteModel.NewAdsReadWriteRequest(uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ), uint32(len(readRequest.GetFieldNames())), expectedResponseDataSize, items, nil).GetParent()
 
 	m.sendOverTheWire(userdata, readRequest, result)
 }
@@ -332,7 +332,7 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 		4,
 		nil,
 		[]byte(symbolicField.SymbolicAddress+"\000"),
-	)
+	).GetParent()
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
 		dummyRequest := plc4goModel.NewDefaultPlcReadRequest(map[string]model.PlcField{"dummy": DirectPlcField{PlcField: PlcField{Datatype: readWriteModel.AdsDataType_UINT32}}}, []string{"dummy"}, nil, nil)

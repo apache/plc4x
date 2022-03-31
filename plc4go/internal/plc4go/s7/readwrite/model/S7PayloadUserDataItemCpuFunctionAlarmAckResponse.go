@@ -35,70 +35,103 @@ type S7PayloadUserDataItemCpuFunctionAlarmAckResponse struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionAlarmAckResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7PayloadUserDataItem
+	// GetFunctionId returns FunctionId (property field)
+	GetFunctionId() uint8
+	// GetMessageObjects returns MessageObjects (property field)
+	GetMessageObjects() []uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) CpuFunctionType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetCpuFunctionType() uint8 {
 	return 0x08
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) CpuSubfunction() uint8 {
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetCpuSubfunction() uint8 {
 	return 0x0b
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) DataLength() uint16 {
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetDataLength() uint16 {
 	return 0
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
 	m.S7PayloadUserDataItem.ReturnCode = returnCode
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
 
-func NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse(functionId uint8, messageObjects []uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
-	child := &S7PayloadUserDataItemCpuFunctionAlarmAckResponse{
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetParent() *S7PayloadUserDataItem {
+	return m.S7PayloadUserDataItem
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetFunctionId() uint8 {
+	return m.FunctionId
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetMessageObjects() []uint8 {
+	return m.MessageObjects
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse factory function for S7PayloadUserDataItemCpuFunctionAlarmAckResponse
+func NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse(functionId uint8, messageObjects []uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
+	_result := &S7PayloadUserDataItemCpuFunctionAlarmAckResponse{
 		FunctionId:            functionId,
 		MessageObjects:        messageObjects,
 		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Child = child
-	return child.S7PayloadUserDataItem
+	_result.Child = _result
+	return _result
 }
 
 func CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(structType interface{}) *S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
-	castFunc := func(typ interface{}) *S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
-		if casted, ok := typ.(S7PayloadUserDataItemCpuFunctionAlarmAckResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItemCpuFunctionAlarmAckResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7PayloadUserDataItem); ok {
-			return CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(casted.Child)
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItem); ok {
-			return CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionAlarmAckResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7PayloadUserDataItemCpuFunctionAlarmAckResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7PayloadUserDataItem); ok {
+		return CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(casted.Child)
+	}
+	if casted, ok := structType.(*S7PayloadUserDataItem); ok {
+		return CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionAlarmAckResponse"
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (functionId)
 	lengthInBits += 8
@@ -114,14 +147,16 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) LengthInBitsCondition
 	return lengthInBits
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (functionId)
 	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
@@ -130,7 +165,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.Read
 	}
 	functionId := _functionId
 
-	// Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
 	_ = numberOfObjects
 	if _numberOfObjectsErr != nil {
@@ -167,7 +202,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.Read
 		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
 	_child.S7PayloadUserDataItem.Child = _child
-	return _child.S7PayloadUserDataItem, nil
+	return _child, nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -184,7 +219,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) Serialize(writeBuffer
 		}
 
 		// Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		numberOfObjects := uint8(uint8(len(m.MessageObjects)))
+		numberOfObjects := uint8(uint8(len(m.GetMessageObjects())))
 		_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, (numberOfObjects))
 		if _numberOfObjectsErr != nil {
 			return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
@@ -219,6 +254,8 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

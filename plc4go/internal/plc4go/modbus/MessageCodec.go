@@ -88,7 +88,7 @@ func (m *MessageCodec) Receive() (interface{}, error) {
 			return nil, nil
 		}
 		rb := utils.NewReadBufferByteBased(data)
-		tcpAdu, err := model.ModbusTcpADUParse(rb, true)
+		tcpAdu, err := model.ModbusTcpADUParse(rb, model.DriverType_MODBUS_TCP, true)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

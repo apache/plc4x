@@ -36,37 +36,71 @@ type AssociatedValueType struct {
 
 // The corresponding interface
 type IAssociatedValueType interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetReturnCode returns ReturnCode (property field)
+	GetReturnCode() DataTransportErrorCode
+	// GetTransportSize returns TransportSize (property field)
+	GetTransportSize() DataTransportSize
+	// GetValueLength returns ValueLength (property field)
+	GetValueLength() uint16
+	// GetData returns Data (property field)
+	GetData() []uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AssociatedValueType) GetReturnCode() DataTransportErrorCode {
+	return m.ReturnCode
+}
+
+func (m *AssociatedValueType) GetTransportSize() DataTransportSize {
+	return m.TransportSize
+}
+
+func (m *AssociatedValueType) GetValueLength() uint16 {
+	return m.ValueLength
+}
+
+func (m *AssociatedValueType) GetData() []uint8 {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAssociatedValueType factory function for AssociatedValueType
 func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *AssociatedValueType {
 	return &AssociatedValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
 }
 
 func CastAssociatedValueType(structType interface{}) *AssociatedValueType {
-	castFunc := func(typ interface{}) *AssociatedValueType {
-		if casted, ok := typ.(AssociatedValueType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AssociatedValueType); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AssociatedValueType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AssociatedValueType); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AssociatedValueType) GetTypeName() string {
 	return "AssociatedValueType"
 }
 
-func (m *AssociatedValueType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AssociatedValueType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AssociatedValueType) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AssociatedValueType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (returnCode)
@@ -86,14 +120,16 @@ func (m *AssociatedValueType) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AssociatedValueType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AssociatedValueType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType, error) {
 	if pullErr := readBuffer.PullContext("AssociatedValueType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
@@ -184,7 +220,7 @@ func (m *AssociatedValueType) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Manual Field (valueLength)
-	_valueLengthErr := LeftShift3(writeBuffer, m.ValueLength)
+	_valueLengthErr := LeftShift3(writeBuffer, m.GetValueLength())
 	if _valueLengthErr != nil {
 		return errors.Wrap(_valueLengthErr, "Error serializing 'valueLength' field")
 	}
@@ -216,6 +252,8 @@ func (m *AssociatedValueType) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

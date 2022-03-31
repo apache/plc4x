@@ -34,62 +34,89 @@ type SysexCommandAnalogMappingQueryResponse struct {
 
 // The corresponding interface
 type ISysexCommandAnalogMappingQueryResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ISysexCommand
+	// GetPin returns Pin (property field)
+	GetPin() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandAnalogMappingQueryResponse) CommandType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *SysexCommandAnalogMappingQueryResponse) GetCommandType() uint8 {
 	return 0x69
 }
 
-func (m *SysexCommandAnalogMappingQueryResponse) Response() bool {
+func (m *SysexCommandAnalogMappingQueryResponse) GetResponse() bool {
 	return bool(true)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *SysexCommandAnalogMappingQueryResponse) InitializeParent(parent *SysexCommand) {}
 
-func NewSysexCommandAnalogMappingQueryResponse(pin uint8) *SysexCommand {
-	child := &SysexCommandAnalogMappingQueryResponse{
+func (m *SysexCommandAnalogMappingQueryResponse) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *SysexCommandAnalogMappingQueryResponse) GetPin() uint8 {
+	return m.Pin
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewSysexCommandAnalogMappingQueryResponse factory function for SysexCommandAnalogMappingQueryResponse
+func NewSysexCommandAnalogMappingQueryResponse(pin uint8) *SysexCommandAnalogMappingQueryResponse {
+	_result := &SysexCommandAnalogMappingQueryResponse{
 		Pin:          pin,
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandAnalogMappingQueryResponse(structType interface{}) *SysexCommandAnalogMappingQueryResponse {
-	castFunc := func(typ interface{}) *SysexCommandAnalogMappingQueryResponse {
-		if casted, ok := typ.(SysexCommandAnalogMappingQueryResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandAnalogMappingQueryResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandAnalogMappingQueryResponse(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandAnalogMappingQueryResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandAnalogMappingQueryResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandAnalogMappingQueryResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandAnalogMappingQueryResponse(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandAnalogMappingQueryResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandAnalogMappingQueryResponse) GetTypeName() string {
 	return "SysexCommandAnalogMappingQueryResponse"
 }
 
-func (m *SysexCommandAnalogMappingQueryResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandAnalogMappingQueryResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandAnalogMappingQueryResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandAnalogMappingQueryResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -97,14 +124,16 @@ func (m *SysexCommandAnalogMappingQueryResponse) LengthInBitsConditional(lastIte
 	return lengthInBits
 }
 
-func (m *SysexCommandAnalogMappingQueryResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandAnalogMappingQueryResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandAnalogMappingQueryResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
+func SysexCommandAnalogMappingQueryResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandAnalogMappingQueryResponse, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandAnalogMappingQueryResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (pin)
 	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
@@ -123,7 +152,7 @@ func SysexCommandAnalogMappingQueryResponseParse(readBuffer utils.ReadBuffer, re
 		SysexCommand: &SysexCommand{},
 	}
 	_child.SysexCommand.Child = _child
-	return _child.SysexCommand, nil
+	return _child, nil
 }
 
 func (m *SysexCommandAnalogMappingQueryResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -152,6 +181,8 @@ func (m *SysexCommandAnalogMappingQueryResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

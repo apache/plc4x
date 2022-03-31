@@ -24,10 +24,7 @@ import org.apache.plc4x.java.spi.utils.hex.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class AsciiBoxWriter {
@@ -99,6 +96,9 @@ public class AsciiBoxWriter {
      * @return boxed data
      */
     public AsciiBox boxString(String name, String data, int charWidth) {
+        Objects.requireNonNull(data);
+        // Convert dos2unix as that messes with box rendering
+        data = data.replaceAll("\r\n", "\n");
         AsciiBox rawBox = new AsciiBox(data);
         int longestLine = rawBox.width();
         if (charWidth < longestLine) {

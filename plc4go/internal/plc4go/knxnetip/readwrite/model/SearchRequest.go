@@ -34,73 +34,102 @@ type SearchRequest struct {
 
 // The corresponding interface
 type ISearchRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IKnxNetIpMessage
+	// GetHpaiIDiscoveryEndpoint returns HpaiIDiscoveryEndpoint (property field)
+	GetHpaiIDiscoveryEndpoint() *HPAIDiscoveryEndpoint
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SearchRequest) MsgType() uint16 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *SearchRequest) GetMsgType() uint16 {
 	return 0x0201
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *SearchRequest) InitializeParent(parent *KnxNetIpMessage) {}
 
-func NewSearchRequest(hpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint) *KnxNetIpMessage {
-	child := &SearchRequest{
+func (m *SearchRequest) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *SearchRequest) GetHpaiIDiscoveryEndpoint() *HPAIDiscoveryEndpoint {
+	return m.HpaiIDiscoveryEndpoint
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewSearchRequest factory function for SearchRequest
+func NewSearchRequest(hpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint) *SearchRequest {
+	_result := &SearchRequest{
 		HpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint,
 		KnxNetIpMessage:        NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastSearchRequest(structType interface{}) *SearchRequest {
-	castFunc := func(typ interface{}) *SearchRequest {
-		if casted, ok := typ.(SearchRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SearchRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastSearchRequest(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastSearchRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SearchRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SearchRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastSearchRequest(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastSearchRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *SearchRequest) GetTypeName() string {
 	return "SearchRequest"
 }
 
-func (m *SearchRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SearchRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SearchRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SearchRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (hpaiIDiscoveryEndpoint)
-	lengthInBits += m.HpaiIDiscoveryEndpoint.LengthInBits()
+	lengthInBits += m.HpaiIDiscoveryEndpoint.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *SearchRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SearchRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func SearchRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func SearchRequestParse(readBuffer utils.ReadBuffer) (*SearchRequest, error) {
 	if pullErr := readBuffer.PullContext("SearchRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (hpaiIDiscoveryEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiIDiscoveryEndpoint"); pullErr != nil {
@@ -125,7 +154,7 @@ func SearchRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
 		KnxNetIpMessage:        &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *SearchRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -159,6 +188,8 @@ func (m *SearchRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

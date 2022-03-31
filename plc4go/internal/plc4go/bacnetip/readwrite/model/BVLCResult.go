@@ -34,60 +34,85 @@ type BVLCResult struct {
 
 // The corresponding interface
 type IBVLCResult interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBVLC
+	// GetCode returns Code (property field)
+	GetCode() BVLCResultCode
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCResult) BvlcFunction() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BVLCResult) GetBvlcFunction() uint8 {
 	return 0x00
 }
 
-func (m *BVLCResult) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+func (m *BVLCResult) InitializeParent(parent *BVLC) {}
+
+func (m *BVLCResult) GetParent() *BVLC {
+	return m.BVLC
 }
 
-func NewBVLCResult(code BVLCResultCode, bvlcPayloadLength uint16) *BVLC {
-	child := &BVLCResult{
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BVLCResult) GetCode() BVLCResultCode {
+	return m.Code
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBVLCResult factory function for BVLCResult
+func NewBVLCResult(code BVLCResultCode) *BVLCResult {
+	_result := &BVLCResult{
 		Code: code,
-		BVLC: NewBVLC(bvlcPayloadLength),
+		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCResult(structType interface{}) *BVLCResult {
-	castFunc := func(typ interface{}) *BVLCResult {
-		if casted, ok := typ.(BVLCResult); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCResult); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCResult(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCResult(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCResult); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCResult); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCResult(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCResult(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCResult) GetTypeName() string {
 	return "BVLCResult"
 }
 
-func (m *BVLCResult) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCResult) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCResult) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCResult) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (code)
 	lengthInBits += 16
@@ -95,14 +120,16 @@ func (m *BVLCResult) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *BVLCResult) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCResult) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BVLCResultParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
+func BVLCResultParse(readBuffer utils.ReadBuffer) (*BVLCResult, error) {
 	if pullErr := readBuffer.PullContext("BVLCResult"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (code)
 	if pullErr := readBuffer.PullContext("code"); pullErr != nil {
@@ -127,7 +154,7 @@ func BVLCResultParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 		BVLC: &BVLC{},
 	}
 	_child.BVLC.Child = _child
-	return _child.BVLC, nil
+	return _child, nil
 }
 
 func (m *BVLCResult) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -161,6 +188,8 @@ func (m *BVLCResult) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

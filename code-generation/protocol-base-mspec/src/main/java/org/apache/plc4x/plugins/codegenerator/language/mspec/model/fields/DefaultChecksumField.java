@@ -19,35 +19,48 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.ChecksumField;
-import org.apache.plc4x.plugins.codegenerator.types.fields.NamedField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
 
-public class DefaultChecksumField extends DefaultField implements ChecksumField {
+public class DefaultChecksumField extends DefaultTypedNamedField implements ChecksumField {
 
-    private final TypeReference type;
-    private final String name;
     private final Term checksumExpression;
 
-    public DefaultChecksumField(Map<String, Term> attributes, TypeReference type, String name, Term checksumExpression) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+    public DefaultChecksumField(Map<String, Term> attributes, SimpleTypeReference type, String name, Term checksumExpression) {
+        super(attributes, name);
         this.checksumExpression = Objects.requireNonNull(checksumExpression);
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
+        this.type = type;
     }
 
     public Term getChecksumExpression() {
         return checksumExpression;
     }
 
+    @Override
+    public SimpleTypeReference getType() {
+        return (SimpleTypeReference) super.getType();
+    }
+
+    @Override
+    public String toString() {
+        return "DefaultChecksumField{" +
+            "checksumExpression=" + checksumExpression +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultChecksumField that = (DefaultChecksumField) o;
+        return Objects.equals(checksumExpression, that.checksumExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), checksumExpression);
+    }
 }

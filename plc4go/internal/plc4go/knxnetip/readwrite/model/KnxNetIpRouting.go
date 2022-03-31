@@ -34,58 +34,85 @@ type KnxNetIpRouting struct {
 
 // The corresponding interface
 type IKnxNetIpRouting interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IServiceId
+	// GetVersion returns Version (property field)
+	GetVersion() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxNetIpRouting) ServiceType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *KnxNetIpRouting) GetServiceType() uint8 {
 	return 0x05
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *KnxNetIpRouting) InitializeParent(parent *ServiceId) {}
 
-func NewKnxNetIpRouting(version uint8) *ServiceId {
-	child := &KnxNetIpRouting{
+func (m *KnxNetIpRouting) GetParent() *ServiceId {
+	return m.ServiceId
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *KnxNetIpRouting) GetVersion() uint8 {
+	return m.Version
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewKnxNetIpRouting factory function for KnxNetIpRouting
+func NewKnxNetIpRouting(version uint8) *KnxNetIpRouting {
+	_result := &KnxNetIpRouting{
 		Version:   version,
 		ServiceId: NewServiceId(),
 	}
-	child.Child = child
-	return child.ServiceId
+	_result.Child = _result
+	return _result
 }
 
 func CastKnxNetIpRouting(structType interface{}) *KnxNetIpRouting {
-	castFunc := func(typ interface{}) *KnxNetIpRouting {
-		if casted, ok := typ.(KnxNetIpRouting); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxNetIpRouting); ok {
-			return casted
-		}
-		if casted, ok := typ.(ServiceId); ok {
-			return CastKnxNetIpRouting(casted.Child)
-		}
-		if casted, ok := typ.(*ServiceId); ok {
-			return CastKnxNetIpRouting(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(KnxNetIpRouting); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxNetIpRouting); ok {
+		return casted
+	}
+	if casted, ok := structType.(ServiceId); ok {
+		return CastKnxNetIpRouting(casted.Child)
+	}
+	if casted, ok := structType.(*ServiceId); ok {
+		return CastKnxNetIpRouting(casted.Child)
+	}
+	return nil
 }
 
 func (m *KnxNetIpRouting) GetTypeName() string {
 	return "KnxNetIpRouting"
 }
 
-func (m *KnxNetIpRouting) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxNetIpRouting) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxNetIpRouting) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *KnxNetIpRouting) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -93,14 +120,16 @@ func (m *KnxNetIpRouting) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *KnxNetIpRouting) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxNetIpRouting) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func KnxNetIpRoutingParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetIpRoutingParse(readBuffer utils.ReadBuffer) (*KnxNetIpRouting, error) {
 	if pullErr := readBuffer.PullContext("KnxNetIpRouting"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadUint8("version", 8)
@@ -119,7 +148,7 @@ func KnxNetIpRoutingParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 		ServiceId: &ServiceId{},
 	}
 	_child.ServiceId.Child = _child
-	return _child.ServiceId, nil
+	return _child, nil
 }
 
 func (m *KnxNetIpRouting) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,6 +177,8 @@ func (m *KnxNetIpRouting) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -32,69 +32,83 @@ type ApduControlNack struct {
 
 // The corresponding interface
 type IApduControlNack interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduControl
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduControlNack) ControlType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduControlNack) GetControlType() uint8 {
 	return 0x3
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduControlNack) InitializeParent(parent *ApduControl) {}
 
-func NewApduControlNack() *ApduControl {
-	child := &ApduControlNack{
+func (m *ApduControlNack) GetParent() *ApduControl {
+	return m.ApduControl
+}
+
+// NewApduControlNack factory function for ApduControlNack
+func NewApduControlNack() *ApduControlNack {
+	_result := &ApduControlNack{
 		ApduControl: NewApduControl(),
 	}
-	child.Child = child
-	return child.ApduControl
+	_result.Child = _result
+	return _result
 }
 
 func CastApduControlNack(structType interface{}) *ApduControlNack {
-	castFunc := func(typ interface{}) *ApduControlNack {
-		if casted, ok := typ.(ApduControlNack); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduControlNack); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduControl); ok {
-			return CastApduControlNack(casted.Child)
-		}
-		if casted, ok := typ.(*ApduControl); ok {
-			return CastApduControlNack(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduControlNack); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduControlNack); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduControl); ok {
+		return CastApduControlNack(casted.Child)
+	}
+	if casted, ok := structType.(*ApduControl); ok {
+		return CastApduControlNack(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduControlNack) GetTypeName() string {
 	return "ApduControlNack"
 }
 
-func (m *ApduControlNack) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduControlNack) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduControlNack) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduControlNack) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduControlNack) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduControlNack) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduControlNackParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
+func ApduControlNackParse(readBuffer utils.ReadBuffer) (*ApduControlNack, error) {
 	if pullErr := readBuffer.PullContext("ApduControlNack"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduControlNack"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func ApduControlNackParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
 		ApduControl: &ApduControl{},
 	}
 	_child.ApduControl.Child = _child
-	return _child.ApduControl, nil
+	return _child, nil
 }
 
 func (m *ApduControlNack) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *ApduControlNack) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

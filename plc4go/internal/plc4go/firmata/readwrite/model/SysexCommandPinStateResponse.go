@@ -36,64 +36,103 @@ type SysexCommandPinStateResponse struct {
 
 // The corresponding interface
 type ISysexCommandPinStateResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ISysexCommand
+	// GetPin returns Pin (property field)
+	GetPin() uint8
+	// GetPinMode returns PinMode (property field)
+	GetPinMode() uint8
+	// GetPinState returns PinState (property field)
+	GetPinState() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandPinStateResponse) CommandType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *SysexCommandPinStateResponse) GetCommandType() uint8 {
 	return 0x6E
 }
 
-func (m *SysexCommandPinStateResponse) Response() bool {
+func (m *SysexCommandPinStateResponse) GetResponse() bool {
 	return false
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *SysexCommandPinStateResponse) InitializeParent(parent *SysexCommand) {}
 
-func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *SysexCommand {
-	child := &SysexCommandPinStateResponse{
+func (m *SysexCommandPinStateResponse) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *SysexCommandPinStateResponse) GetPin() uint8 {
+	return m.Pin
+}
+
+func (m *SysexCommandPinStateResponse) GetPinMode() uint8 {
+	return m.PinMode
+}
+
+func (m *SysexCommandPinStateResponse) GetPinState() uint8 {
+	return m.PinState
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewSysexCommandPinStateResponse factory function for SysexCommandPinStateResponse
+func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *SysexCommandPinStateResponse {
+	_result := &SysexCommandPinStateResponse{
 		Pin:          pin,
 		PinMode:      pinMode,
 		PinState:     pinState,
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandPinStateResponse(structType interface{}) *SysexCommandPinStateResponse {
-	castFunc := func(typ interface{}) *SysexCommandPinStateResponse {
-		if casted, ok := typ.(SysexCommandPinStateResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandPinStateResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandPinStateResponse(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandPinStateResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandPinStateResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandPinStateResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandPinStateResponse(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandPinStateResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandPinStateResponse) GetTypeName() string {
 	return "SysexCommandPinStateResponse"
 }
 
-func (m *SysexCommandPinStateResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandPinStateResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandPinStateResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandPinStateResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -107,14 +146,16 @@ func (m *SysexCommandPinStateResponse) LengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *SysexCommandPinStateResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandPinStateResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
+func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandPinStateResponse, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandPinStateResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (pin)
 	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
@@ -149,7 +190,7 @@ func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer, response boo
 		SysexCommand: &SysexCommand{},
 	}
 	_child.SysexCommand.Child = _child
-	return _child.SysexCommand, nil
+	return _child, nil
 }
 
 func (m *SysexCommandPinStateResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -192,6 +233,8 @@ func (m *SysexCommandPinStateResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

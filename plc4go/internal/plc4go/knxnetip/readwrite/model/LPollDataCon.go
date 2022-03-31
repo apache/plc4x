@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type LPollDataCon struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type ILPollDataCon interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICEMI
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LPollDataCon) MessageCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *LPollDataCon) GetMessageCode() uint8 {
 	return 0x25
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *LPollDataCon) InitializeParent(parent *CEMI) {}
 
-func NewLPollDataCon() *CEMI {
-	child := &LPollDataCon{
-		CEMI: NewCEMI(),
+func (m *LPollDataCon) GetParent() *CEMI {
+	return m.CEMI
+}
+
+// NewLPollDataCon factory function for LPollDataCon
+func NewLPollDataCon(size uint16) *LPollDataCon {
+	_result := &LPollDataCon{
+		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastLPollDataCon(structType interface{}) *LPollDataCon {
-	castFunc := func(typ interface{}) *LPollDataCon {
-		if casted, ok := typ.(LPollDataCon); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LPollDataCon); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastLPollDataCon(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastLPollDataCon(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LPollDataCon); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LPollDataCon); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastLPollDataCon(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastLPollDataCon(casted.Child)
+	}
+	return nil
 }
 
 func (m *LPollDataCon) GetTypeName() string {
 	return "LPollDataCon"
 }
 
-func (m *LPollDataCon) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LPollDataCon) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LPollDataCon) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LPollDataCon) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *LPollDataCon) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LPollDataCon) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func LPollDataConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func LPollDataConParse(readBuffer utils.ReadBuffer, size uint16) (*LPollDataCon, error) {
 	if pullErr := readBuffer.PullContext("LPollDataCon"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("LPollDataCon"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func LPollDataConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) 
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *LPollDataCon) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *LPollDataCon) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

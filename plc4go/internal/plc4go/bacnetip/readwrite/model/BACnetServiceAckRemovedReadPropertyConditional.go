@@ -32,69 +32,83 @@ type BACnetServiceAckRemovedReadPropertyConditional struct {
 
 // The corresponding interface
 type IBACnetServiceAckRemovedReadPropertyConditional interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetServiceAck
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckRemovedReadPropertyConditional) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetServiceAckRemovedReadPropertyConditional) GetServiceChoice() uint8 {
 	return 0x0D
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *BACnetServiceAckRemovedReadPropertyConditional) InitializeParent(parent *BACnetServiceAck) {}
 
-func NewBACnetServiceAckRemovedReadPropertyConditional() *BACnetServiceAck {
-	child := &BACnetServiceAckRemovedReadPropertyConditional{
+func (m *BACnetServiceAckRemovedReadPropertyConditional) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
+// NewBACnetServiceAckRemovedReadPropertyConditional factory function for BACnetServiceAckRemovedReadPropertyConditional
+func NewBACnetServiceAckRemovedReadPropertyConditional() *BACnetServiceAckRemovedReadPropertyConditional {
+	_result := &BACnetServiceAckRemovedReadPropertyConditional{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckRemovedReadPropertyConditional(structType interface{}) *BACnetServiceAckRemovedReadPropertyConditional {
-	castFunc := func(typ interface{}) *BACnetServiceAckRemovedReadPropertyConditional {
-		if casted, ok := typ.(BACnetServiceAckRemovedReadPropertyConditional); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckRemovedReadPropertyConditional); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckRemovedReadPropertyConditional(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckRemovedReadPropertyConditional(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckRemovedReadPropertyConditional); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckRemovedReadPropertyConditional); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckRemovedReadPropertyConditional(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckRemovedReadPropertyConditional(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckRemovedReadPropertyConditional) GetTypeName() string {
 	return "BACnetServiceAckRemovedReadPropertyConditional"
 }
 
-func (m *BACnetServiceAckRemovedReadPropertyConditional) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckRemovedReadPropertyConditional) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckRemovedReadPropertyConditional) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckRemovedReadPropertyConditional) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckRemovedReadPropertyConditional) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckRemovedReadPropertyConditional) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckRemovedReadPropertyConditionalParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckRemovedReadPropertyConditionalParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckRemovedReadPropertyConditional, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRemovedReadPropertyConditional"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckRemovedReadPropertyConditional"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func BACnetServiceAckRemovedReadPropertyConditionalParse(readBuffer utils.ReadBu
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckRemovedReadPropertyConditional) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *BACnetServiceAckRemovedReadPropertyConditional) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

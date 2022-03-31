@@ -30,14 +30,25 @@ import (
 type Apdu struct {
 	Numbered bool
 	Counter  uint8
-	Child    IApduChild
+
+	// Arguments.
+	DataLength uint8
+	Child      IApduChild
 }
 
 // The corresponding interface
 type IApdu interface {
-	Control() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetControl returns Control (discriminator field)
+	GetControl() uint8
+	// GetNumbered returns Numbered (property field)
+	GetNumbered() bool
+	// GetCounter returns Counter (property field)
+	GetCounter() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,40 +60,60 @@ type IApduParent interface {
 type IApduChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *Apdu, numbered bool, counter uint8)
+	GetParent() *Apdu
+
 	GetTypeName() string
 	IApdu
 }
 
-func NewApdu(numbered bool, counter uint8) *Apdu {
-	return &Apdu{Numbered: numbered, Counter: counter}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *Apdu) GetNumbered() bool {
+	return m.Numbered
+}
+
+func (m *Apdu) GetCounter() uint8 {
+	return m.Counter
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewApdu factory function for Apdu
+func NewApdu(numbered bool, counter uint8, dataLength uint8) *Apdu {
+	return &Apdu{Numbered: numbered, Counter: counter, DataLength: dataLength}
 }
 
 func CastApdu(structType interface{}) *Apdu {
-	castFunc := func(typ interface{}) *Apdu {
-		if casted, ok := typ.(Apdu); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*Apdu); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(Apdu); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*Apdu); ok {
+		return casted
+	}
+	if casted, ok := structType.(IApduChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *Apdu) GetTypeName() string {
 	return "Apdu"
 }
 
-func (m *Apdu) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *Apdu) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *Apdu) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *Apdu) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *Apdu) ParentLengthInBits() uint16 {
+func (m *Apdu) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (control)
 	lengthInBits += 1
@@ -96,14 +127,16 @@ func (m *Apdu) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *Apdu) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *Apdu) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 	if pullErr := readBuffer.PullContext("Apdu"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (control) (Used as input to a switch field)
 	control, _controlErr := readBuffer.ReadUint8("control", 1)
@@ -126,13 +159,17 @@ func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 	counter := _counter
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *Apdu
+	type ApduChild interface {
+		InitializeParent(*Apdu, bool, uint8)
+		GetParent() *Apdu
+	}
+	var _child ApduChild
 	var typeSwitchError error
 	switch {
 	case control == uint8(1): // ApduControlContainer
-		_parent, typeSwitchError = ApduControlContainerParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduControlContainerParse(readBuffer, dataLength)
 	case control == uint8(0): // ApduDataContainer
-		_parent, typeSwitchError = ApduDataContainerParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataContainerParse(readBuffer, dataLength)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -146,8 +183,8 @@ func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, numbered, counter)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), numbered, counter)
+	return _child.GetParent(), nil
 }
 
 func (m *Apdu) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -160,7 +197,7 @@ func (m *Apdu) SerializeParent(writeBuffer utils.WriteBuffer, child IApdu, seria
 	}
 
 	// Discriminator Field (control) (Used as input to a switch field)
-	control := uint8(child.Control())
+	control := uint8(child.GetControl())
 	_controlErr := writeBuffer.WriteUint8("control", 1, (control))
 
 	if _controlErr != nil {
@@ -197,6 +234,8 @@ func (m *Apdu) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

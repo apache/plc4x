@@ -37,9 +37,21 @@ type EipPacket struct {
 
 // The corresponding interface
 type IEipPacket interface {
-	Command() uint16
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetCommand returns Command (discriminator field)
+	GetCommand() uint16
+	// GetSessionHandle returns SessionHandle (property field)
+	GetSessionHandle() uint32
+	// GetStatus returns Status (property field)
+	GetStatus() uint32
+	// GetSenderContext returns SenderContext (property field)
+	GetSenderContext() []uint8
+	// GetOptions returns Options (property field)
+	GetOptions() uint32
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,40 +63,68 @@ type IEipPacketParent interface {
 type IEipPacketChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32)
+	GetParent() *EipPacket
+
 	GetTypeName() string
 	IEipPacket
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *EipPacket) GetSessionHandle() uint32 {
+	return m.SessionHandle
+}
+
+func (m *EipPacket) GetStatus() uint32 {
+	return m.Status
+}
+
+func (m *EipPacket) GetSenderContext() []uint8 {
+	return m.SenderContext
+}
+
+func (m *EipPacket) GetOptions() uint32 {
+	return m.Options
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewEipPacket factory function for EipPacket
 func NewEipPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {
 	return &EipPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
 }
 
 func CastEipPacket(structType interface{}) *EipPacket {
-	castFunc := func(typ interface{}) *EipPacket {
-		if casted, ok := typ.(EipPacket); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*EipPacket); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(EipPacket); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*EipPacket); ok {
+		return casted
+	}
+	if casted, ok := structType.(IEipPacketChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *EipPacket) GetTypeName() string {
 	return "EipPacket"
 }
 
-func (m *EipPacket) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *EipPacket) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *EipPacket) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *EipPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *EipPacket) ParentLengthInBits() uint16 {
+func (m *EipPacket) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (command)
 	lengthInBits += 16
@@ -109,14 +149,16 @@ func (m *EipPacket) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *EipPacket) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *EipPacket) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func EipPacketParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
 	if pullErr := readBuffer.PullContext("EipPacket"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (command) (Used as input to a switch field)
 	command, _commandErr := readBuffer.ReadUint16("command", 16)
@@ -124,7 +166,7 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
 	}
 
-	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	len, _lenErr := readBuffer.ReadUint16("len", 16)
 	_ = len
 	if _lenErr != nil {
@@ -172,15 +214,19 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
 	options := _options
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *EipPacket
+	type EipPacketChild interface {
+		InitializeParent(*EipPacket, uint32, uint32, []uint8, uint32)
+		GetParent() *EipPacket
+	}
+	var _child EipPacketChild
 	var typeSwitchError error
 	switch {
 	case command == 0x0065: // EipConnectionRequest
-		_parent, typeSwitchError = EipConnectionRequestParse(readBuffer)
+		_child, typeSwitchError = EipConnectionRequestParse(readBuffer)
 	case command == 0x0066: // EipDisconnectRequest
-		_parent, typeSwitchError = EipDisconnectRequestParse(readBuffer)
+		_child, typeSwitchError = EipDisconnectRequestParse(readBuffer)
 	case command == 0x006F: // CipRRData
-		_parent, typeSwitchError = CipRRDataParse(readBuffer, len)
+		_child, typeSwitchError = CipRRDataParse(readBuffer, len)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -194,8 +240,8 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, sessionHandle, status, senderContext, options)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), sessionHandle, status, senderContext, options)
+	return _child.GetParent(), nil
 }
 
 func (m *EipPacket) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -208,7 +254,7 @@ func (m *EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child IEipPac
 	}
 
 	// Discriminator Field (command) (Used as input to a switch field)
-	command := uint16(child.Command())
+	command := uint16(child.GetCommand())
 	_commandErr := writeBuffer.WriteUint16("command", 16, (command))
 
 	if _commandErr != nil {
@@ -216,7 +262,7 @@ func (m *EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child IEipPac
 	}
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	len := uint16(uint16(uint16(m.LengthInBytes())) - uint16(uint16(24)))
+	len := uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(24)))
 	_lenErr := writeBuffer.WriteUint16("len", 16, (len))
 	if _lenErr != nil {
 		return errors.Wrap(_lenErr, "Error serializing 'len' field")
@@ -275,6 +321,8 @@ func (m *EipPacket) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

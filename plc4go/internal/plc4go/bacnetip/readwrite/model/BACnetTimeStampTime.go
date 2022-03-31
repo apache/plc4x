@@ -30,88 +30,115 @@ import (
 type BACnetTimeStampTime struct {
 	*BACnetTimeStamp
 	TimeValue *BACnetContextTagTime
+
+	// Arguments.
+	TagNumber uint8
 }
 
 // The corresponding interface
 type IBACnetTimeStampTime interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetTimeStamp
+	// GetTimeValue returns TimeValue (property field)
+	GetTimeValue() *BACnetContextTagTime
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetTimeStampTime) PeekedTagNumber() uint8 {
-	return uint8(0)
-}
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
-func (m *BACnetTimeStampTime) InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
+func (m *BACnetTimeStampTime) InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetTimeStamp.OpeningTag = openingTag
 	m.BACnetTimeStamp.PeekedTagHeader = peekedTagHeader
 	m.BACnetTimeStamp.ClosingTag = closingTag
-	m.BACnetTimeStamp.PeekedTagNumber = peekedTagNumber
 }
 
-func NewBACnetTimeStampTime(timeValue *BACnetContextTagTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetTimeStamp {
-	child := &BACnetTimeStampTime{
+func (m *BACnetTimeStampTime) GetParent() *BACnetTimeStamp {
+	return m.BACnetTimeStamp
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetTimeStampTime) GetTimeValue() *BACnetContextTagTime {
+	return m.TimeValue
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetTimeStampTime factory function for BACnetTimeStampTime
+func NewBACnetTimeStampTime(timeValue *BACnetContextTagTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetTimeStampTime {
+	_result := &BACnetTimeStampTime{
 		TimeValue:       timeValue,
-		BACnetTimeStamp: NewBACnetTimeStamp(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
+		BACnetTimeStamp: NewBACnetTimeStamp(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
-	child.Child = child
-	return child.BACnetTimeStamp
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetTimeStampTime(structType interface{}) *BACnetTimeStampTime {
-	castFunc := func(typ interface{}) *BACnetTimeStampTime {
-		if casted, ok := typ.(BACnetTimeStampTime); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTimeStampTime); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetTimeStamp); ok {
-			return CastBACnetTimeStampTime(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetTimeStamp); ok {
-			return CastBACnetTimeStampTime(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetTimeStampTime); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTimeStampTime); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetTimeStamp); ok {
+		return CastBACnetTimeStampTime(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetTimeStamp); ok {
+		return CastBACnetTimeStampTime(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetTimeStampTime) GetTypeName() string {
 	return "BACnetTimeStampTime"
 }
 
-func (m *BACnetTimeStampTime) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetTimeStampTime) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetTimeStampTime) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetTimeStampTime) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (timeValue)
-	lengthInBits += m.TimeValue.LengthInBits()
+	lengthInBits += m.TimeValue.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetTimeStampTime) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetTimeStampTime) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimeStampTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetTimeStamp, error) {
+func BACnetTimeStampTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetTimeStampTime, error) {
 	if pullErr := readBuffer.PullContext("BACnetTimeStampTime"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (timeValue)
 	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_timeValue, _timeValueErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_TIME)
+	_timeValue, _timeValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_TIME))
 	if _timeValueErr != nil {
 		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field")
 	}
@@ -130,7 +157,7 @@ func BACnetTimeStampTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BA
 		BACnetTimeStamp: &BACnetTimeStamp{},
 	}
 	_child.BACnetTimeStamp.Child = _child
-	return _child.BACnetTimeStamp, nil
+	return _child, nil
 }
 
 func (m *BACnetTimeStampTime) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -164,6 +191,8 @@ func (m *BACnetTimeStampTime) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

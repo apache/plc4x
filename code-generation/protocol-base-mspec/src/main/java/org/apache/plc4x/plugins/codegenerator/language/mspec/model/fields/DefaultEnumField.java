@@ -19,35 +19,44 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.EnumField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.EnumTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
 import java.util.Objects;
 
-public class DefaultEnumField extends DefaultField implements EnumField {
+public class DefaultEnumField extends DefaultTypedNamedField implements EnumField {
 
-    private final TypeReference type;
-    private final String name;
     private final String fieldName;
 
-    public DefaultEnumField(Map<String, Term> attributes, TypeReference type, String name, String fieldName) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+    public DefaultEnumField(Map<String, Term> attributes, EnumTypeReference type, String name, String fieldName) {
+        super(attributes, name);
         this.fieldName = Objects.requireNonNull(fieldName);
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
+        this.type = type;
     }
 
     public String getFieldName() {
         return fieldName;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultEnumField{" +
+            "fieldName='" + fieldName + '\'' +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultEnumField that = (DefaultEnumField) o;
+        return Objects.equals(fieldName, that.fieldName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), fieldName);
+    }
 }

@@ -38,37 +38,83 @@ type AmsSerialResetFrame struct {
 
 // The corresponding interface
 type IAmsSerialResetFrame interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetMagicCookie returns MagicCookie (property field)
+	GetMagicCookie() uint16
+	// GetTransmitterAddress returns TransmitterAddress (property field)
+	GetTransmitterAddress() int8
+	// GetReceiverAddress returns ReceiverAddress (property field)
+	GetReceiverAddress() int8
+	// GetFragmentNumber returns FragmentNumber (property field)
+	GetFragmentNumber() int8
+	// GetLength returns Length (property field)
+	GetLength() int8
+	// GetCrc returns Crc (property field)
+	GetCrc() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AmsSerialResetFrame) GetMagicCookie() uint16 {
+	return m.MagicCookie
+}
+
+func (m *AmsSerialResetFrame) GetTransmitterAddress() int8 {
+	return m.TransmitterAddress
+}
+
+func (m *AmsSerialResetFrame) GetReceiverAddress() int8 {
+	return m.ReceiverAddress
+}
+
+func (m *AmsSerialResetFrame) GetFragmentNumber() int8 {
+	return m.FragmentNumber
+}
+
+func (m *AmsSerialResetFrame) GetLength() int8 {
+	return m.Length
+}
+
+func (m *AmsSerialResetFrame) GetCrc() uint16 {
+	return m.Crc
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAmsSerialResetFrame factory function for AmsSerialResetFrame
 func NewAmsSerialResetFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *AmsSerialResetFrame {
 	return &AmsSerialResetFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
 }
 
 func CastAmsSerialResetFrame(structType interface{}) *AmsSerialResetFrame {
-	castFunc := func(typ interface{}) *AmsSerialResetFrame {
-		if casted, ok := typ.(AmsSerialResetFrame); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AmsSerialResetFrame); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AmsSerialResetFrame); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AmsSerialResetFrame); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AmsSerialResetFrame) GetTypeName() string {
 	return "AmsSerialResetFrame"
 }
 
-func (m *AmsSerialResetFrame) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AmsSerialResetFrame) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AmsSerialResetFrame) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AmsSerialResetFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (magicCookie)
@@ -92,14 +138,16 @@ func (m *AmsSerialResetFrame) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AmsSerialResetFrame) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AmsSerialResetFrame) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AmsSerialResetFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialResetFrame, error) {
 	if pullErr := readBuffer.PullContext("AmsSerialResetFrame"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (magicCookie)
 	_magicCookie, _magicCookieErr := readBuffer.ReadUint16("magicCookie", 16)
@@ -209,6 +257,8 @@ func (m *AmsSerialResetFrame) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

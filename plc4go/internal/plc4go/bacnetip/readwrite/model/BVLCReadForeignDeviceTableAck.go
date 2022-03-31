@@ -32,71 +32,83 @@ type BVLCReadForeignDeviceTableAck struct {
 
 // The corresponding interface
 type IBVLCReadForeignDeviceTableAck interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBVLC
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCReadForeignDeviceTableAck) BvlcFunction() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BVLCReadForeignDeviceTableAck) GetBvlcFunction() uint8 {
 	return 0x07
 }
 
-func (m *BVLCReadForeignDeviceTableAck) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+func (m *BVLCReadForeignDeviceTableAck) InitializeParent(parent *BVLC) {}
+
+func (m *BVLCReadForeignDeviceTableAck) GetParent() *BVLC {
+	return m.BVLC
 }
 
-func NewBVLCReadForeignDeviceTableAck(bvlcPayloadLength uint16) *BVLC {
-	child := &BVLCReadForeignDeviceTableAck{
-		BVLC: NewBVLC(bvlcPayloadLength),
+// NewBVLCReadForeignDeviceTableAck factory function for BVLCReadForeignDeviceTableAck
+func NewBVLCReadForeignDeviceTableAck() *BVLCReadForeignDeviceTableAck {
+	_result := &BVLCReadForeignDeviceTableAck{
+		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCReadForeignDeviceTableAck(structType interface{}) *BVLCReadForeignDeviceTableAck {
-	castFunc := func(typ interface{}) *BVLCReadForeignDeviceTableAck {
-		if casted, ok := typ.(BVLCReadForeignDeviceTableAck); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCReadForeignDeviceTableAck); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCReadForeignDeviceTableAck(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCReadForeignDeviceTableAck(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCReadForeignDeviceTableAck); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCReadForeignDeviceTableAck); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCReadForeignDeviceTableAck(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCReadForeignDeviceTableAck(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCReadForeignDeviceTableAck) GetTypeName() string {
 	return "BVLCReadForeignDeviceTableAck"
 }
 
-func (m *BVLCReadForeignDeviceTableAck) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCReadForeignDeviceTableAck) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCReadForeignDeviceTableAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCReadForeignDeviceTableAck) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BVLCReadForeignDeviceTableAck) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCReadForeignDeviceTableAck) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
+func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer) (*BVLCReadForeignDeviceTableAck, error) {
 	if pullErr := readBuffer.PullContext("BVLCReadForeignDeviceTableAck"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BVLCReadForeignDeviceTableAck"); closeErr != nil {
 		return nil, closeErr
@@ -107,7 +119,7 @@ func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer) (*BVLC, err
 		BVLC: &BVLC{},
 	}
 	_child.BVLC.Child = _child
-	return _child.BVLC, nil
+	return _child, nil
 }
 
 func (m *BVLCReadForeignDeviceTableAck) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -129,6 +141,8 @@ func (m *BVLCReadForeignDeviceTableAck) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -5,8 +5,16 @@
 New Features
 ------------
 
+- The Modbus driver is now also available in the variants:
+  "modbus-rtu" and "modbus-ascii" (Both using Serial
+  communication, which however can be tunneled through a
+  "tcp" and "udp" transport)
+
 Incompatible changes
 --------------------
+
+- The name of the Modbus TCP driver was changed from "modbus"
+  to "modbus-tcp".
 
 Bug Fixes
 ---------
@@ -167,7 +175,7 @@ New Features
 - The new S7 Driver supports writing multiple entries in one
   request (The API allowed this from the beginning now not
   every item is wrapped in a single request. It should bring
-  significant performance gains when writing multiple vlaues)
+  significant performance gains when writing multiple values)
 - S7 Driver now supports String datatypes.
 - OSGi : Implementation of Drivers/Transports as OSGi services
   to be able to use them in an OSGi container.
@@ -440,4 +448,4 @@ Bug Fixes
 PLC4X-20	Jacoco doesn't seem to be working at all
 PLC4X-21	Code coverage doesn't seem to work
 PLC4X-47	S7 driver silently ignores surplus ReadRequestItems
-PLC4X-48	S7 driver failes to parse response with multiple items
+PLC4X-48	S7 driver fails to parse response with multiple items

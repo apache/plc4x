@@ -2822,12 +2822,12 @@ func CastBACnetPropertyIdentifier(structType interface{}) BACnetPropertyIdentifi
 	return castFunc(structType)
 }
 
-func (m BACnetPropertyIdentifier) LengthInBits() uint16 {
+func (m BACnetPropertyIdentifier) GetLengthInBits() uint16 {
 	return 32
 }
 
-func (m BACnetPropertyIdentifier) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m BACnetPropertyIdentifier) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetPropertyIdentifierParse(readBuffer utils.ReadBuffer) (BACnetPropertyIdentifier, error) {

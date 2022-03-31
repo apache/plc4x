@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type TDataIndividualReq struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type ITDataIndividualReq interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICEMI
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *TDataIndividualReq) MessageCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *TDataIndividualReq) GetMessageCode() uint8 {
 	return 0x4A
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *TDataIndividualReq) InitializeParent(parent *CEMI) {}
 
-func NewTDataIndividualReq() *CEMI {
-	child := &TDataIndividualReq{
-		CEMI: NewCEMI(),
+func (m *TDataIndividualReq) GetParent() *CEMI {
+	return m.CEMI
+}
+
+// NewTDataIndividualReq factory function for TDataIndividualReq
+func NewTDataIndividualReq(size uint16) *TDataIndividualReq {
+	_result := &TDataIndividualReq{
+		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastTDataIndividualReq(structType interface{}) *TDataIndividualReq {
-	castFunc := func(typ interface{}) *TDataIndividualReq {
-		if casted, ok := typ.(TDataIndividualReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*TDataIndividualReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastTDataIndividualReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastTDataIndividualReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(TDataIndividualReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*TDataIndividualReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastTDataIndividualReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastTDataIndividualReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *TDataIndividualReq) GetTypeName() string {
 	return "TDataIndividualReq"
 }
 
-func (m *TDataIndividualReq) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *TDataIndividualReq) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *TDataIndividualReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *TDataIndividualReq) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *TDataIndividualReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *TDataIndividualReq) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func TDataIndividualReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func TDataIndividualReqParse(readBuffer utils.ReadBuffer, size uint16) (*TDataIndividualReq, error) {
 	if pullErr := readBuffer.PullContext("TDataIndividualReq"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("TDataIndividualReq"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func TDataIndividualReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, e
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *TDataIndividualReq) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *TDataIndividualReq) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

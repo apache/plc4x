@@ -35,8 +35,6 @@ import org.apache.plc4x.java.s7.events.S7UserEvent;
  * and alarms ("ALM").
  * Each consumer shows the fields and associated values of the "map" containing
  * the event parameters.
- *
- * @author cgarcia
  */
 public class EventSubscription {
 

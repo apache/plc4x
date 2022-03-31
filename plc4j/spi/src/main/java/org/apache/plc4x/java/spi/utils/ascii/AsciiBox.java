@@ -35,6 +35,7 @@ public class AsciiBox {
     private final String data;
 
     protected AsciiBox(String data) {
+        Objects.requireNonNull(data);
         asciiBoxWriter = AsciiBoxWriter.DEFAULT;
         this.data = data;
     }

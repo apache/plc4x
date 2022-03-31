@@ -35,108 +35,166 @@ type BACnetNotificationParametersOutOfRange struct {
 	Deadband        *BACnetContextTagReal
 	ExceededLimit   *BACnetContextTagReal
 	InnerClosingTag *BACnetClosingTag
+
+	// Arguments.
+	TagNumber  uint8
+	ObjectType BACnetObjectType
 }
 
 // The corresponding interface
 type IBACnetNotificationParametersOutOfRange interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetNotificationParameters
+	// GetInnerOpeningTag returns InnerOpeningTag (property field)
+	GetInnerOpeningTag() *BACnetOpeningTag
+	// GetExceedingValue returns ExceedingValue (property field)
+	GetExceedingValue() *BACnetContextTagReal
+	// GetStatusFlags returns StatusFlags (property field)
+	GetStatusFlags() *BACnetStatusFlags
+	// GetDeadband returns Deadband (property field)
+	GetDeadband() *BACnetContextTagReal
+	// GetExceededLimit returns ExceededLimit (property field)
+	GetExceededLimit() *BACnetContextTagReal
+	// GetInnerClosingTag returns InnerClosingTag (property field)
+	GetInnerClosingTag() *BACnetClosingTag
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetNotificationParametersOutOfRange) PeekedTagNumber() uint8 {
-	return uint8(5)
-}
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
-func (m *BACnetNotificationParametersOutOfRange) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
+func (m *BACnetNotificationParametersOutOfRange) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetNotificationParameters.OpeningTag = openingTag
 	m.BACnetNotificationParameters.PeekedTagHeader = peekedTagHeader
 	m.BACnetNotificationParameters.ClosingTag = closingTag
-	m.BACnetNotificationParameters.PeekedTagNumber = peekedTagNumber
 }
 
-func NewBACnetNotificationParametersOutOfRange(innerOpeningTag *BACnetOpeningTag, exceedingValue *BACnetContextTagReal, statusFlags *BACnetStatusFlags, deadband *BACnetContextTagReal, exceededLimit *BACnetContextTagReal, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {
-	child := &BACnetNotificationParametersOutOfRange{
+func (m *BACnetNotificationParametersOutOfRange) GetParent() *BACnetNotificationParameters {
+	return m.BACnetNotificationParameters
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetNotificationParametersOutOfRange) GetInnerOpeningTag() *BACnetOpeningTag {
+	return m.InnerOpeningTag
+}
+
+func (m *BACnetNotificationParametersOutOfRange) GetExceedingValue() *BACnetContextTagReal {
+	return m.ExceedingValue
+}
+
+func (m *BACnetNotificationParametersOutOfRange) GetStatusFlags() *BACnetStatusFlags {
+	return m.StatusFlags
+}
+
+func (m *BACnetNotificationParametersOutOfRange) GetDeadband() *BACnetContextTagReal {
+	return m.Deadband
+}
+
+func (m *BACnetNotificationParametersOutOfRange) GetExceededLimit() *BACnetContextTagReal {
+	return m.ExceededLimit
+}
+
+func (m *BACnetNotificationParametersOutOfRange) GetInnerClosingTag() *BACnetClosingTag {
+	return m.InnerClosingTag
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetNotificationParametersOutOfRange factory function for BACnetNotificationParametersOutOfRange
+func NewBACnetNotificationParametersOutOfRange(innerOpeningTag *BACnetOpeningTag, exceedingValue *BACnetContextTagReal, statusFlags *BACnetStatusFlags, deadband *BACnetContextTagReal, exceededLimit *BACnetContextTagReal, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersOutOfRange {
+	_result := &BACnetNotificationParametersOutOfRange{
 		InnerOpeningTag:              innerOpeningTag,
 		ExceedingValue:               exceedingValue,
 		StatusFlags:                  statusFlags,
 		Deadband:                     deadband,
 		ExceededLimit:                exceededLimit,
 		InnerClosingTag:              innerClosingTag,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectType),
 	}
-	child.Child = child
-	return child.BACnetNotificationParameters
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetNotificationParametersOutOfRange(structType interface{}) *BACnetNotificationParametersOutOfRange {
-	castFunc := func(typ interface{}) *BACnetNotificationParametersOutOfRange {
-		if casted, ok := typ.(BACnetNotificationParametersOutOfRange); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetNotificationParametersOutOfRange); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersOutOfRange(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersOutOfRange(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetNotificationParametersOutOfRange); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetNotificationParametersOutOfRange); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersOutOfRange(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersOutOfRange(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetNotificationParametersOutOfRange) GetTypeName() string {
 	return "BACnetNotificationParametersOutOfRange"
 }
 
-func (m *BACnetNotificationParametersOutOfRange) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetNotificationParametersOutOfRange) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetNotificationParametersOutOfRange) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetNotificationParametersOutOfRange) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.LengthInBits()
+	lengthInBits += m.InnerOpeningTag.GetLengthInBits()
 
 	// Simple field (exceedingValue)
-	lengthInBits += m.ExceedingValue.LengthInBits()
+	lengthInBits += m.ExceedingValue.GetLengthInBits()
 
 	// Simple field (statusFlags)
-	lengthInBits += m.StatusFlags.LengthInBits()
+	lengthInBits += m.StatusFlags.GetLengthInBits()
 
 	// Simple field (deadband)
-	lengthInBits += m.Deadband.LengthInBits()
+	lengthInBits += m.Deadband.GetLengthInBits()
 
 	// Simple field (exceededLimit)
-	lengthInBits += m.ExceededLimit.LengthInBits()
+	lengthInBits += m.ExceededLimit.GetLengthInBits()
 
 	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.LengthInBits()
+	lengthInBits += m.InnerClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetNotificationParametersOutOfRange) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetNotificationParametersOutOfRange) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParameters, error) {
+func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersOutOfRange, error) {
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersOutOfRange"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_OPENING_TAG)
+	_innerOpeningTag, _innerOpeningTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_OPENING_TAG))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
 	}
@@ -149,7 +207,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("exceedingValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_exceedingValue, _exceedingValueErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_REAL)
+	_exceedingValue, _exceedingValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
 	if _exceedingValueErr != nil {
 		return nil, errors.Wrap(_exceedingValueErr, "Error parsing 'exceedingValue' field")
 	}
@@ -162,7 +220,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(1))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
@@ -175,7 +233,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("deadband"); pullErr != nil {
 		return nil, pullErr
 	}
-	_deadband, _deadbandErr := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_REAL)
+	_deadband, _deadbandErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _deadbandErr != nil {
 		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field")
 	}
@@ -188,7 +246,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("exceededLimit"); pullErr != nil {
 		return nil, pullErr
 	}
-	_exceededLimit, _exceededLimitErr := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_REAL)
+	_exceededLimit, _exceededLimitErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_REAL))
 	if _exceededLimitErr != nil {
 		return nil, errors.Wrap(_exceededLimitErr, "Error parsing 'exceededLimit' field")
 	}
@@ -201,7 +259,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_CLOSING_TAG)
+	_innerClosingTag, _innerClosingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_CLOSING_TAG))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
 	}
@@ -225,7 +283,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 		BACnetNotificationParameters: &BACnetNotificationParameters{},
 	}
 	_child.BACnetNotificationParameters.Child = _child
-	return _child.BACnetNotificationParameters, nil
+	return _child, nil
 }
 
 func (m *BACnetNotificationParametersOutOfRange) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -319,6 +377,8 @@ func (m *BACnetNotificationParametersOutOfRange) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

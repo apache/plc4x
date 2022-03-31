@@ -37,7 +37,7 @@ public class RequirePcapCondition implements ExecutionCondition {
     public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext extensionContext) {
         try {
             String libVersion = Pcaps.libVersion();
-            Pattern pattern = Pattern.compile("^libpcap version (?<version>\\d+\\.\\d+(?:\\.\\d+)?)[^\\d]?.*$");
+            Pattern pattern = Pattern.compile("^.*libpcap version (?<version>\\d+\\.\\d+(?:\\.\\d+)?)[^\\d]?.*$");
             Matcher matcher = pattern.matcher(libVersion);
             if (matcher.matches()) {
                 String versionString = matcher.group("version");
@@ -47,7 +47,7 @@ public class RequirePcapCondition implements ExecutionCondition {
             logger.info("Error detecting libpcap version.", e);
         }
         if (SystemUtils.IS_OS_WINDOWS) {
-            return ConditionEvaluationResult.disabled("Test disabled due to missing or invalid WinPcap version. Please install from here: https://sourceforge.net/projects/winpcap413-176/ as this version supports all needed features.");
+            return ConditionEvaluationResult.disabled("Test disabled due to missing or invalid Npcap version. Please install from here: https://npcap.com/ as this version supports all needed features.");
         } else {
             return ConditionEvaluationResult.disabled("Test disabled due to missing or invalid libpcap version. Please install at least version 1.1.0 to support all features.");
         }

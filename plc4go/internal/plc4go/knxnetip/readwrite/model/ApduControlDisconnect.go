@@ -32,69 +32,83 @@ type ApduControlDisconnect struct {
 
 // The corresponding interface
 type IApduControlDisconnect interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduControl
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduControlDisconnect) ControlType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduControlDisconnect) GetControlType() uint8 {
 	return 0x1
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduControlDisconnect) InitializeParent(parent *ApduControl) {}
 
-func NewApduControlDisconnect() *ApduControl {
-	child := &ApduControlDisconnect{
+func (m *ApduControlDisconnect) GetParent() *ApduControl {
+	return m.ApduControl
+}
+
+// NewApduControlDisconnect factory function for ApduControlDisconnect
+func NewApduControlDisconnect() *ApduControlDisconnect {
+	_result := &ApduControlDisconnect{
 		ApduControl: NewApduControl(),
 	}
-	child.Child = child
-	return child.ApduControl
+	_result.Child = _result
+	return _result
 }
 
 func CastApduControlDisconnect(structType interface{}) *ApduControlDisconnect {
-	castFunc := func(typ interface{}) *ApduControlDisconnect {
-		if casted, ok := typ.(ApduControlDisconnect); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduControlDisconnect); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduControl); ok {
-			return CastApduControlDisconnect(casted.Child)
-		}
-		if casted, ok := typ.(*ApduControl); ok {
-			return CastApduControlDisconnect(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduControlDisconnect); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduControlDisconnect); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduControl); ok {
+		return CastApduControlDisconnect(casted.Child)
+	}
+	if casted, ok := structType.(*ApduControl); ok {
+		return CastApduControlDisconnect(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduControlDisconnect) GetTypeName() string {
 	return "ApduControlDisconnect"
 }
 
-func (m *ApduControlDisconnect) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduControlDisconnect) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduControlDisconnect) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduControlDisconnect) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduControlDisconnect) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduControlDisconnect) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduControlDisconnectParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
+func ApduControlDisconnectParse(readBuffer utils.ReadBuffer) (*ApduControlDisconnect, error) {
 	if pullErr := readBuffer.PullContext("ApduControlDisconnect"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduControlDisconnect"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func ApduControlDisconnectParse(readBuffer utils.ReadBuffer) (*ApduControl, erro
 		ApduControl: &ApduControl{},
 	}
 	_child.ApduControl.Child = _child
-	return _child.ApduControl, nil
+	return _child, nil
 }
 
 func (m *ApduControlDisconnect) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *ApduControlDisconnect) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

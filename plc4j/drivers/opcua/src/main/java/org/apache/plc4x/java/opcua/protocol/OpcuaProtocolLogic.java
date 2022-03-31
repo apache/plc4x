@@ -68,7 +68,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     protected static final ExtensionObject NULL_EXTENSION_OBJECT = new ExtensionObject(
         NULL_EXPANDED_NODEID,
         new ExtensionObjectEncodingMask(false, false, false),
-        new NullExtension());               // Body
+        new NullExtension(),
+        false);               // Body
 
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
     private OpcuaConfiguration configuration;
@@ -162,7 +163,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         ExtensionObject extObject = new ExtensionObject(
             expandedNodeId,
             null,
-            opcuaReadRequest);
+            opcuaReadRequest,
+            false);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
@@ -435,6 +437,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         }
         int length = valueObject.getLength();
         switch (dataType) {
+            // Simple boolean values
             case "BOOL":
             case "BIT":
                 byte[] tmpBOOL = new byte[length];
@@ -447,14 +450,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null,
                     length == 1 ? null : length,
                     tmpBOOL);
+
+            // 8-Bit Bit-Strings (Groups of Boolean Values)
             case "BYTE":
-            case "BITARR8":
-            case "USINT":
-            case "UINT8":
             case "BIT8":
+            case "BITARR8":
                 List<Short> tmpBYTE = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tmpBYTE.add((short) valueObject.getIndex(i).getByte());
+                    tmpBYTE.add(valueObject.getIndex(i).getShort());
                 }
                 return new VariantByte(length != 1,
                     false,
@@ -462,6 +465,67 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null,
                     length == 1 ? null : length,
                     tmpBYTE);
+
+            // 16-Bit Bit-Strings (Groups of Boolean Values)
+            case "WORD":
+            case "BIT16":
+            case "BITARR16":
+                List<Integer> tmpWORD = new ArrayList<>(length);
+                for (int i = 0; i < length; i++) {
+                    tmpWORD.add(valueObject.getIndex(i).getInteger());
+                }
+                return new VariantUInt16(length != 1,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpWORD);
+
+            // 32-Bit Bit-Strings (Groups of Boolean Values)
+            case "DWORD":
+            case "BIT32":
+            case "BITARR32":
+                List<Long> tmpDWORD = new ArrayList<>(length);
+                for (int i = 0; i < length; i++) {
+                    tmpDWORD.add(valueObject.getIndex(i).getLong());
+                }
+                return new VariantUInt32(length != 1,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpDWORD);
+
+            // 64-Bit Bit-Strings (Groups of Boolean Values)
+            case "LWORD":
+            case "BIT64":
+            case "BITARR64":
+                List<BigInteger> tmpLWORD = new ArrayList<>(length);
+                for (int i = 0; i < length; i++) {
+                    tmpLWORD.add(valueObject.getIndex(i).getBigInteger());
+                }
+                return new VariantUInt64(length != 1,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpLWORD);
+
+            // 8-Bit Unsigned Integers
+            case "USINT":
+            case "UINT8":
+                List<Short> tmpUSINT = new ArrayList<>(length);
+                for (int i = 0; i < length; i++) {
+                    tmpUSINT.add(valueObject.getIndex(i).getShort());
+                }
+                return new VariantByte(length != 1,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpUSINT);
+
+            // 8-Bit Signed Integers
             case "SINT":
             case "INT8":
                 byte[] tmpSINT = new byte[length];
@@ -474,6 +538,22 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null,
                     length == 1 ? null : length,
                     tmpSINT);
+
+            // 16-Bit Unsigned Integers
+            case "UINT":
+            case "UINT16":
+                List<Integer> tmpUINT = new ArrayList<>(length);
+                for (int i = 0; i < length; i++) {
+                    tmpUINT.add(valueObject.getIndex(i).getInt());
+                }
+                return new VariantUInt16(length != 1,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpUINT);
+
+            // 16-Bit Signed Integers
             case "INT":
             case "INT16":
                 List<Short> tmpINT16 = new ArrayList<>(length);
@@ -486,20 +566,22 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null,
                     length == 1 ? null : length,
                     tmpINT16);
-            case "UINT":
-            case "UINT16":
-            case "WORD":
-            case "BITARR16":
-                List<Integer> tmpUINT = new ArrayList<>(length);
+
+            // 32-Bit Unsigned Integers
+            case "UDINT":
+            case "UINT32":
+                List<Long> tmpUDINT = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tmpUINT.add(valueObject.getIndex(i).getInt());
+                    tmpUDINT.add(valueObject.getIndex(i).getLong());
                 }
-                return new VariantUInt16(length != 1,
+                return new VariantUInt32(length != 1,
                     false,
                     null,
                     null,
                     length == 1 ? null : length,
-                    tmpUINT);
+                    tmpUDINT);
+
+            // 32-Bit Signed Integers
             case "DINT":
             case "INT32":
                 List<Integer> tmpDINT = new ArrayList<>(length);
@@ -512,20 +594,22 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null,
                     length == 1 ? null : length,
                     tmpDINT);
-            case "UDINT":
-            case "UINT32":
-            case "DWORD":
-            case "BITARR32":
-                List<Long> tmpUDINT = new ArrayList<>(length);
+
+            // 64-Bit Unsigned Integers
+            case "ULINT":
+            case "UINT64":
+                List<BigInteger> tmpULINT = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tmpUDINT.add(valueObject.getIndex(i).getLong());
+                    tmpULINT.add(valueObject.getIndex(i).getBigInteger());
                 }
-                return new VariantUInt32(length != 1,
+                return new VariantUInt64(length != 1,
                     false,
                     null,
                     null,
                     length == 1 ? null : length,
-                    tmpUDINT);
+                    tmpULINT);
+
+            // 64-Bit Signed Integers
             case "LINT":
             case "INT64":
                 List<Long> tmpLINT = new ArrayList<>(length);
@@ -538,20 +622,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null,
                     length == 1 ? null : length,
                     tmpLINT);
-            case "ULINT":
-            case "UINT64":
-            case "LWORD":
-            case "BITARR64":
-                List<BigInteger> tmpULINT = new ArrayList<>(length);
-                for (int i = 0; i < length; i++) {
-                    tmpULINT.add(valueObject.getIndex(i).getBigInteger());
-                }
-                return new VariantUInt64(length != 1,
-                    false,
-                    null,
-                    null,
-                    length == 1 ? null : length,
-                    tmpULINT);
+
+            // 32-Bit Floating Point Values
             case "REAL":
             case "FLOAT":
                 List<Float> tmpREAL = new ArrayList<>(length);
@@ -564,6 +636,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null,
                     length == 1 ? null : length,
                     tmpREAL);
+
+            // 64-Bit Floating Point Values
             case "LREAL":
             case "DOUBLE":
                 List<Double> tmpLREAL = new ArrayList<>(length);
@@ -576,9 +650,13 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null,
                     length == 1 ? null : length,
                     tmpLREAL);
+
+            // UTF-8 Characters and Strings
             case "CHAR":
-            case "WCHAR":
             case "STRING":
+
+            // UTF-16 Characters and Strings
+            case "WCHAR":
             case "WSTRING":
             case "STRING16":
                 List<PascalString> tmpString = new ArrayList<>(length);
@@ -592,6 +670,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null,
                     length == 1 ? null : length,
                     tmpString);
+
             case "DATE_AND_TIME":
                 List<Long> tmpDateTime = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
@@ -660,7 +739,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         ExtensionObject extObject = new ExtensionObject(
             expandedNodeId,
             null,
-            opcuaWriteRequest);
+            opcuaWriteRequest,
+            false);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
@@ -781,7 +861,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         ExtensionObject extObject = new ExtensionObject(
             expandedNodeId,
             null,
-            createSubscriptionRequest);
+            createSubscriptionRequest,
+            false);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);

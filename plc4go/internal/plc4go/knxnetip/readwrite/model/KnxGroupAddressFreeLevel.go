@@ -34,58 +34,85 @@ type KnxGroupAddressFreeLevel struct {
 
 // The corresponding interface
 type IKnxGroupAddressFreeLevel interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IKnxGroupAddress
+	// GetSubGroup returns SubGroup (property field)
+	GetSubGroup() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxGroupAddressFreeLevel) NumLevels() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *KnxGroupAddressFreeLevel) GetNumLevels() uint8 {
 	return uint8(1)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *KnxGroupAddressFreeLevel) InitializeParent(parent *KnxGroupAddress) {}
 
-func NewKnxGroupAddressFreeLevel(subGroup uint16) *KnxGroupAddress {
-	child := &KnxGroupAddressFreeLevel{
+func (m *KnxGroupAddressFreeLevel) GetParent() *KnxGroupAddress {
+	return m.KnxGroupAddress
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *KnxGroupAddressFreeLevel) GetSubGroup() uint16 {
+	return m.SubGroup
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewKnxGroupAddressFreeLevel factory function for KnxGroupAddressFreeLevel
+func NewKnxGroupAddressFreeLevel(subGroup uint16) *KnxGroupAddressFreeLevel {
+	_result := &KnxGroupAddressFreeLevel{
 		SubGroup:        subGroup,
 		KnxGroupAddress: NewKnxGroupAddress(),
 	}
-	child.Child = child
-	return child.KnxGroupAddress
+	_result.Child = _result
+	return _result
 }
 
 func CastKnxGroupAddressFreeLevel(structType interface{}) *KnxGroupAddressFreeLevel {
-	castFunc := func(typ interface{}) *KnxGroupAddressFreeLevel {
-		if casted, ok := typ.(KnxGroupAddressFreeLevel); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxGroupAddressFreeLevel); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxGroupAddress); ok {
-			return CastKnxGroupAddressFreeLevel(casted.Child)
-		}
-		if casted, ok := typ.(*KnxGroupAddress); ok {
-			return CastKnxGroupAddressFreeLevel(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(KnxGroupAddressFreeLevel); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxGroupAddressFreeLevel); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxGroupAddress); ok {
+		return CastKnxGroupAddressFreeLevel(casted.Child)
+	}
+	if casted, ok := structType.(*KnxGroupAddress); ok {
+		return CastKnxGroupAddressFreeLevel(casted.Child)
+	}
+	return nil
 }
 
 func (m *KnxGroupAddressFreeLevel) GetTypeName() string {
 	return "KnxGroupAddressFreeLevel"
 }
 
-func (m *KnxGroupAddressFreeLevel) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxGroupAddressFreeLevel) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxGroupAddressFreeLevel) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *KnxGroupAddressFreeLevel) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (subGroup)
 	lengthInBits += 16
@@ -93,14 +120,16 @@ func (m *KnxGroupAddressFreeLevel) LengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *KnxGroupAddressFreeLevel) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxGroupAddressFreeLevel) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
+func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGroupAddressFreeLevel, error) {
 	if pullErr := readBuffer.PullContext("KnxGroupAddressFreeLevel"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (subGroup)
 	_subGroup, _subGroupErr := readBuffer.ReadUint16("subGroup", 16)
@@ -119,7 +148,7 @@ func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8)
 		KnxGroupAddress: &KnxGroupAddress{},
 	}
 	_child.KnxGroupAddress.Child = _child
-	return _child.KnxGroupAddress, nil
+	return _child, nil
 }
 
 func (m *KnxGroupAddressFreeLevel) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,6 +177,8 @@ func (m *KnxGroupAddressFreeLevel) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

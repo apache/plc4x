@@ -34,78 +34,107 @@ type S7VarRequestParameterItemAddress struct {
 
 // The corresponding interface
 type IS7VarRequestParameterItemAddress interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7VarRequestParameterItem
+	// GetAddress returns Address (property field)
+	GetAddress() *S7Address
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7VarRequestParameterItemAddress) ItemType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7VarRequestParameterItemAddress) GetItemType() uint8 {
 	return 0x12
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *S7VarRequestParameterItemAddress) InitializeParent(parent *S7VarRequestParameterItem) {}
 
-func NewS7VarRequestParameterItemAddress(address *S7Address) *S7VarRequestParameterItem {
-	child := &S7VarRequestParameterItemAddress{
+func (m *S7VarRequestParameterItemAddress) GetParent() *S7VarRequestParameterItem {
+	return m.S7VarRequestParameterItem
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7VarRequestParameterItemAddress) GetAddress() *S7Address {
+	return m.Address
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7VarRequestParameterItemAddress factory function for S7VarRequestParameterItemAddress
+func NewS7VarRequestParameterItemAddress(address *S7Address) *S7VarRequestParameterItemAddress {
+	_result := &S7VarRequestParameterItemAddress{
 		Address:                   address,
 		S7VarRequestParameterItem: NewS7VarRequestParameterItem(),
 	}
-	child.Child = child
-	return child.S7VarRequestParameterItem
+	_result.Child = _result
+	return _result
 }
 
 func CastS7VarRequestParameterItemAddress(structType interface{}) *S7VarRequestParameterItemAddress {
-	castFunc := func(typ interface{}) *S7VarRequestParameterItemAddress {
-		if casted, ok := typ.(S7VarRequestParameterItemAddress); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7VarRequestParameterItemAddress); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7VarRequestParameterItem); ok {
-			return CastS7VarRequestParameterItemAddress(casted.Child)
-		}
-		if casted, ok := typ.(*S7VarRequestParameterItem); ok {
-			return CastS7VarRequestParameterItemAddress(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7VarRequestParameterItemAddress); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7VarRequestParameterItemAddress); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7VarRequestParameterItem); ok {
+		return CastS7VarRequestParameterItemAddress(casted.Child)
+	}
+	if casted, ok := structType.(*S7VarRequestParameterItem); ok {
+		return CastS7VarRequestParameterItemAddress(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7VarRequestParameterItemAddress) GetTypeName() string {
 	return "S7VarRequestParameterItemAddress"
 }
 
-func (m *S7VarRequestParameterItemAddress) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7VarRequestParameterItemAddress) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7VarRequestParameterItemAddress) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7VarRequestParameterItemAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8
 
 	// Simple field (address)
-	lengthInBits += m.Address.LengthInBits()
+	lengthInBits += m.Address.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *S7VarRequestParameterItemAddress) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7VarRequestParameterItemAddress) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
+func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (*S7VarRequestParameterItemAddress, error) {
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItemAddress"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	itemLength, _itemLengthErr := readBuffer.ReadUint8("itemLength", 8)
 	_ = itemLength
 	if _itemLengthErr != nil {
@@ -135,7 +164,7 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (*S7VarR
 		S7VarRequestParameterItem: &S7VarRequestParameterItem{},
 	}
 	_child.S7VarRequestParameterItem.Child = _child
-	return _child.S7VarRequestParameterItem, nil
+	return _child, nil
 }
 
 func (m *S7VarRequestParameterItemAddress) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -145,7 +174,7 @@ func (m *S7VarRequestParameterItemAddress) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		itemLength := uint8(m.Address.LengthInBytes())
+		itemLength := uint8(m.GetAddress().GetLengthInBytes())
 		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, (itemLength))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
@@ -176,6 +205,8 @@ func (m *S7VarRequestParameterItemAddress) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

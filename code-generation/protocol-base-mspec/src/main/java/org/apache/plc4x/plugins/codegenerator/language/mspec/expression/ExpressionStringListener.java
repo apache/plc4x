@@ -18,16 +18,41 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.expression;
 
+import org.apache.plc4x.plugins.codegenerator.language.mspec.LazyTypeDefinitionConsumer;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultTypedField;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.*;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.BuiltIns;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.fields.NamedField;
+import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class ExpressionStringListener extends ExpressionBaseListener {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExpressionStringListener.class);
+
+    private final LazyTypeDefinitionConsumer lazyTypeDefinitionConsumer;
+
+    private final String rootTypeName;
+
     private Stack<List<Term>> parserContexts;
 
+    private Stack<CompletableFuture<TypeReference>> futureStack;
+
     private Term root;
+
+    public ExpressionStringListener(LazyTypeDefinitionConsumer lazyTypeDefinitionConsumer, String rootTypeName) {
+        this.lazyTypeDefinitionConsumer = lazyTypeDefinitionConsumer;
+        this.rootTypeName = rootTypeName;
+    }
 
     public Term getRoot() {
         return root;
@@ -88,7 +113,92 @@ public class ExpressionStringListener extends ExpressionBaseListener {
 
     @Override
     public void enterIdentifierSegment(ExpressionParser.IdentifierSegmentContext ctx) {
+        String propertyName = ctx.name.getText();
+
+        CompletableFuture<TypeReference> typeReferenceFuture = new CompletableFuture<>();
+        // If this is the root of a variable expression, the stack is "null".
+        if (futureStack == null) {
+            schedulePropertyResolution(propertyName, typeReferenceFuture, rootTypeName);
+            futureStack = new Stack<>();
+        }
+        // If the stack is not null, we're in one of the children levels. We need to wait
+        // till the parent is resolved first. So we delay the resolution till that's done.
+        else {
+            futureStack.peek().whenComplete((typeReference, throwable) -> {
+                if (throwable != null) {
+                    LOGGER.debug("Error processing variables", throwable);
+                    return;
+                }
+                String typeName = typeReference.asNonSimpleTypeReference().orElseThrow().getName();
+                schedulePropertyResolution(propertyName, typeReferenceFuture, typeName);
+            });
+        }
+        futureStack.push(typeReferenceFuture);
         parserContexts.push(new LinkedList<>());
+    }
+
+    private void schedulePropertyResolution(String propertyName, CompletableFuture<TypeReference> typeReferenceFuture, String typeName) {
+        // As soon as the type with the given name is resolved ...
+        lazyTypeDefinitionConsumer.setOrScheduleTypeDefinitionConsumer(typeName, (TypeDefinition typeDefinition) -> {
+            if (!typeDefinition.isComplexTypeDefinition()) {
+                typeReferenceFuture.completeExceptionally(new RuntimeException("is not a complex type"));
+                return;
+            }
+            // Get the definition of the field with the given property name.
+            final ComplexTypeDefinition complexTypeDefinition = typeDefinition
+                .asComplexTypeDefinition()
+                .orElseThrow();
+            // Check for property fields context
+            Optional<DefaultTypedField> propertyFieldByName = complexTypeDefinition
+                .getPropertyFieldByName(propertyName)
+                .map(DefaultTypedField.class::cast);
+            // Check for other fields
+            if (propertyFieldByName.isEmpty()) {
+                propertyFieldByName = complexTypeDefinition.getAllFields().stream()
+                    .filter(NamedField.class::isInstance)
+                    .map(NamedField.class::cast)
+                    .filter(namedField -> propertyName.equals(namedField.getName()))
+                    .map(DefaultTypedField.class::cast)
+                    .findAny();
+            }
+            // Check for arguments context
+            if (propertyFieldByName.isEmpty() && complexTypeDefinition.getAllParserArguments().isPresent()) {
+                Optional<DefaultArgument> defaultArgument = complexTypeDefinition.getAllParserArguments().orElseThrow().stream()
+                    .filter(argument -> propertyName.equals(argument.getName()))
+                    .map(DefaultArgument.class::cast)
+                    .findAny();
+                if (defaultArgument.isPresent()) {
+                    defaultArgument.get().getTypeReferenceCompletionStage().whenComplete((typeReference, throwable) -> {
+                        if (throwable != null) {
+                            typeReferenceFuture.completeExceptionally(throwable);
+                        } else {
+                            typeReferenceFuture.complete(typeReference);
+                        }
+                    });
+                    return;
+                }
+            }
+            // Handle Builtins
+            if (propertyFieldByName.isEmpty()) {
+                TypeReference typeReference = BuiltIns.builtInFields.get(propertyName);
+                if (typeReference != null) {
+                    typeReferenceFuture.complete(typeReference);
+                    return;
+                }
+            }
+            if (propertyFieldByName.isEmpty()) {
+                typeReferenceFuture.completeExceptionally(new RuntimeException("Field with name " + propertyName + " not found on " + typeName));
+                return;
+            }
+            DefaultTypedField propertyField = propertyFieldByName.orElseThrow();
+            propertyField.getTypeReferenceCompletionStage().whenComplete((propertyTypeReference, throwable) -> {
+                if (throwable != null) {
+                    typeReferenceFuture.completeExceptionally(throwable);
+                    return;
+                }
+                typeReferenceFuture.complete(propertyTypeReference);
+            });
+        });
     }
 
     @Override
@@ -108,16 +218,33 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         }
 
         String name = ctx.name.getText();
+        // TODO: Based on the current context type-definition, get the type of the property with name ctx.name.getText()
 
         int index = VariableLiteral.NO_INDEX;
         if (indexContext != null) {
+            // TODO: Add a check, that the field providing the property is an "array" or "manualArray" field.
             index = indexContext.getFirst().getNumber().intValue();
         }
         VariableLiteral rest = null;
         if (restContext != null) {
+            // TODO: Add a check, that the field providing the property references a complex type (or uses one of the built-ins)
             rest = restContext.getFirst();
         }
-        parserContexts.peek().add(new DefaultVariableLiteral(name, argsContext, index, rest));
+
+        final DefaultVariableLiteral variableLiteral = new DefaultVariableLiteral(name, argsContext, index, rest);
+        futureStack.pop().whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type", throwable);
+                return;
+            }
+            variableLiteral.setTypeReference(typeReference);
+        });
+        if (futureStack.empty()) {
+            futureStack = null;
+        }
+
+        parserContexts.peek().add(variableLiteral);
     }
 
     @Override

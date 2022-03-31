@@ -39,26 +39,80 @@ type S7ParameterModeTransition struct {
 
 // The corresponding interface
 type IS7ParameterModeTransition interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7Parameter
+	// GetMethod returns Method (property field)
+	GetMethod() uint8
+	// GetCpuFunctionType returns CpuFunctionType (property field)
+	GetCpuFunctionType() uint8
+	// GetCpuFunctionGroup returns CpuFunctionGroup (property field)
+	GetCpuFunctionGroup() uint8
+	// GetCurrentMode returns CurrentMode (property field)
+	GetCurrentMode() uint8
+	// GetSequenceNumber returns SequenceNumber (property field)
+	GetSequenceNumber() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7ParameterModeTransition) ParameterType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7ParameterModeTransition) GetParameterType() uint8 {
 	return 0x01
 }
 
-func (m *S7ParameterModeTransition) MessageType() uint8 {
+func (m *S7ParameterModeTransition) GetMessageType() uint8 {
 	return 0x07
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *S7ParameterModeTransition) InitializeParent(parent *S7Parameter) {}
 
-func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) *S7Parameter {
-	child := &S7ParameterModeTransition{
+func (m *S7ParameterModeTransition) GetParent() *S7Parameter {
+	return m.S7Parameter
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7ParameterModeTransition) GetMethod() uint8 {
+	return m.Method
+}
+
+func (m *S7ParameterModeTransition) GetCpuFunctionType() uint8 {
+	return m.CpuFunctionType
+}
+
+func (m *S7ParameterModeTransition) GetCpuFunctionGroup() uint8 {
+	return m.CpuFunctionGroup
+}
+
+func (m *S7ParameterModeTransition) GetCurrentMode() uint8 {
+	return m.CurrentMode
+}
+
+func (m *S7ParameterModeTransition) GetSequenceNumber() uint8 {
+	return m.SequenceNumber
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7ParameterModeTransition factory function for S7ParameterModeTransition
+func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) *S7ParameterModeTransition {
+	_result := &S7ParameterModeTransition{
 		Method:           method,
 		CpuFunctionType:  cpuFunctionType,
 		CpuFunctionGroup: cpuFunctionGroup,
@@ -66,39 +120,36 @@ func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFuncti
 		SequenceNumber:   sequenceNumber,
 		S7Parameter:      NewS7Parameter(),
 	}
-	child.Child = child
-	return child.S7Parameter
+	_result.Child = _result
+	return _result
 }
 
 func CastS7ParameterModeTransition(structType interface{}) *S7ParameterModeTransition {
-	castFunc := func(typ interface{}) *S7ParameterModeTransition {
-		if casted, ok := typ.(S7ParameterModeTransition); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7ParameterModeTransition); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7Parameter); ok {
-			return CastS7ParameterModeTransition(casted.Child)
-		}
-		if casted, ok := typ.(*S7Parameter); ok {
-			return CastS7ParameterModeTransition(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7ParameterModeTransition); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7ParameterModeTransition); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7Parameter); ok {
+		return CastS7ParameterModeTransition(casted.Child)
+	}
+	if casted, ok := structType.(*S7Parameter); ok {
+		return CastS7ParameterModeTransition(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7ParameterModeTransition) GetTypeName() string {
 	return "S7ParameterModeTransition"
 }
 
-func (m *S7ParameterModeTransition) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7ParameterModeTransition) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7ParameterModeTransition) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7ParameterModeTransition) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 16
@@ -124,14 +175,16 @@ func (m *S7ParameterModeTransition) LengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *S7ParameterModeTransition) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7ParameterModeTransition) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
+func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7ParameterModeTransition, error) {
 	if pullErr := readBuffer.PullContext("S7ParameterModeTransition"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -147,7 +200,7 @@ func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uin
 		}
 	}
 
-	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	itemLength, _itemLengthErr := readBuffer.ReadUint8("itemLength", 8)
 	_ = itemLength
 	if _itemLengthErr != nil {
@@ -203,7 +256,7 @@ func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uin
 		S7Parameter:      &S7Parameter{},
 	}
 	_child.S7Parameter.Child = _child
-	return _child.S7Parameter, nil
+	return _child, nil
 }
 
 func (m *S7ParameterModeTransition) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -221,7 +274,7 @@ func (m *S7ParameterModeTransition) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
+		itemLength := uint8(uint8(uint8(m.GetLengthInBytes())) - uint8(uint8(2)))
 		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, (itemLength))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
@@ -275,6 +328,8 @@ func (m *S7ParameterModeTransition) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

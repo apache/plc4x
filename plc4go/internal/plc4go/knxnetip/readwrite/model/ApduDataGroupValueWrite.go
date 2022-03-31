@@ -31,63 +31,99 @@ type ApduDataGroupValueWrite struct {
 	*ApduData
 	DataFirstByte int8
 	Data          []byte
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataGroupValueWrite interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduData
+	// GetDataFirstByte returns DataFirstByte (property field)
+	GetDataFirstByte() int8
+	// GetData returns Data (property field)
+	GetData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataGroupValueWrite) ApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataGroupValueWrite) GetApciType() uint8 {
 	return 0x2
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataGroupValueWrite) InitializeParent(parent *ApduData) {}
 
-func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte) *ApduData {
-	child := &ApduDataGroupValueWrite{
+func (m *ApduDataGroupValueWrite) GetParent() *ApduData {
+	return m.ApduData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ApduDataGroupValueWrite) GetDataFirstByte() int8 {
+	return m.DataFirstByte
+}
+
+func (m *ApduDataGroupValueWrite) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewApduDataGroupValueWrite factory function for ApduDataGroupValueWrite
+func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint8) *ApduDataGroupValueWrite {
+	_result := &ApduDataGroupValueWrite{
 		DataFirstByte: dataFirstByte,
 		Data:          data,
-		ApduData:      NewApduData(),
+		ApduData:      NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataGroupValueWrite(structType interface{}) *ApduDataGroupValueWrite {
-	castFunc := func(typ interface{}) *ApduDataGroupValueWrite {
-		if casted, ok := typ.(ApduDataGroupValueWrite); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataGroupValueWrite); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataGroupValueWrite(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataGroupValueWrite(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataGroupValueWrite); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataGroupValueWrite); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataGroupValueWrite(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataGroupValueWrite(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataGroupValueWrite) GetTypeName() string {
 	return "ApduDataGroupValueWrite"
 }
 
-func (m *ApduDataGroupValueWrite) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataGroupValueWrite) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataGroupValueWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataGroupValueWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (dataFirstByte)
 	lengthInBits += 6
@@ -100,14 +136,16 @@ func (m *ApduDataGroupValueWrite) LengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *ApduDataGroupValueWrite) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataGroupValueWrite) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataGroupValueWriteParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataGroupValueWriteParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataGroupValueWrite, error) {
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueWrite"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (dataFirstByte)
 	_dataFirstByte, _dataFirstByteErr := readBuffer.ReadInt8("dataFirstByte", 6)
@@ -133,7 +171,7 @@ func ApduDataGroupValueWriteParse(readBuffer utils.ReadBuffer, dataLength uint8)
 		ApduData:      &ApduData{},
 	}
 	_child.ApduData.Child = _child
-	return _child.ApduData, nil
+	return _child, nil
 }
 
 func (m *ApduDataGroupValueWrite) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -171,6 +209,8 @@ func (m *ApduDataGroupValueWrite) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

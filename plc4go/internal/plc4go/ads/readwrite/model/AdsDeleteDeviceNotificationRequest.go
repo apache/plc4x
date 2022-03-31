@@ -34,62 +34,89 @@ type AdsDeleteDeviceNotificationRequest struct {
 
 // The corresponding interface
 type IAdsDeleteDeviceNotificationRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAdsData
+	// GetNotificationHandle returns NotificationHandle (property field)
+	GetNotificationHandle() uint32
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsDeleteDeviceNotificationRequest) CommandId() CommandId {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *AdsDeleteDeviceNotificationRequest) GetCommandId() CommandId {
 	return CommandId_ADS_DELETE_DEVICE_NOTIFICATION
 }
 
-func (m *AdsDeleteDeviceNotificationRequest) Response() bool {
+func (m *AdsDeleteDeviceNotificationRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *AdsDeleteDeviceNotificationRequest) InitializeParent(parent *AdsData) {}
 
-func NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32) *AdsData {
-	child := &AdsDeleteDeviceNotificationRequest{
+func (m *AdsDeleteDeviceNotificationRequest) GetParent() *AdsData {
+	return m.AdsData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AdsDeleteDeviceNotificationRequest) GetNotificationHandle() uint32 {
+	return m.NotificationHandle
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAdsDeleteDeviceNotificationRequest factory function for AdsDeleteDeviceNotificationRequest
+func NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32) *AdsDeleteDeviceNotificationRequest {
+	_result := &AdsDeleteDeviceNotificationRequest{
 		NotificationHandle: notificationHandle,
 		AdsData:            NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsDeleteDeviceNotificationRequest(structType interface{}) *AdsDeleteDeviceNotificationRequest {
-	castFunc := func(typ interface{}) *AdsDeleteDeviceNotificationRequest {
-		if casted, ok := typ.(AdsDeleteDeviceNotificationRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsDeleteDeviceNotificationRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsDeleteDeviceNotificationRequest(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsDeleteDeviceNotificationRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsDeleteDeviceNotificationRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsDeleteDeviceNotificationRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsDeleteDeviceNotificationRequest(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsDeleteDeviceNotificationRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) GetTypeName() string {
 	return "AdsDeleteDeviceNotificationRequest"
 }
 
-func (m *AdsDeleteDeviceNotificationRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsDeleteDeviceNotificationRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsDeleteDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsDeleteDeviceNotificationRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (notificationHandle)
 	lengthInBits += 32
@@ -97,14 +124,16 @@ func (m *AdsDeleteDeviceNotificationRequest) LengthInBitsConditional(lastItem bo
 	return lengthInBits
 }
 
-func (m *AdsDeleteDeviceNotificationRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsDeleteDeviceNotificationRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func AdsDeleteDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsDeleteDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsDeleteDeviceNotificationRequest, error) {
 	if pullErr := readBuffer.PullContext("AdsDeleteDeviceNotificationRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (notificationHandle)
 	_notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
@@ -123,7 +152,7 @@ func AdsDeleteDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, comman
 		AdsData:            &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -152,6 +181,8 @@ func (m *AdsDeleteDeviceNotificationRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -34,66 +34,93 @@ type ModbusPDUReportServerIdResponse struct {
 
 // The corresponding interface
 type IModbusPDUReportServerIdResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IModbusPDU
+	// GetValue returns Value (property field)
+	GetValue() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUReportServerIdResponse) ErrorFlag() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ModbusPDUReportServerIdResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReportServerIdResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUReportServerIdResponse) GetFunctionFlag() uint8 {
 	return 0x11
 }
 
-func (m *ModbusPDUReportServerIdResponse) Response() bool {
+func (m *ModbusPDUReportServerIdResponse) GetResponse() bool {
 	return bool(true)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ModbusPDUReportServerIdResponse) InitializeParent(parent *ModbusPDU) {}
 
-func NewModbusPDUReportServerIdResponse(value []byte) *ModbusPDU {
-	child := &ModbusPDUReportServerIdResponse{
+func (m *ModbusPDUReportServerIdResponse) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ModbusPDUReportServerIdResponse) GetValue() []byte {
+	return m.Value
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusPDUReportServerIdResponse factory function for ModbusPDUReportServerIdResponse
+func NewModbusPDUReportServerIdResponse(value []byte) *ModbusPDUReportServerIdResponse {
+	_result := &ModbusPDUReportServerIdResponse{
 		Value:     value,
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReportServerIdResponse(structType interface{}) *ModbusPDUReportServerIdResponse {
-	castFunc := func(typ interface{}) *ModbusPDUReportServerIdResponse {
-		if casted, ok := typ.(ModbusPDUReportServerIdResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReportServerIdResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUReportServerIdResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUReportServerIdResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReportServerIdResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReportServerIdResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUReportServerIdResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUReportServerIdResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUReportServerIdResponse) GetTypeName() string {
 	return "ModbusPDUReportServerIdResponse"
 }
 
-func (m *ModbusPDUReportServerIdResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReportServerIdResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReportServerIdResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReportServerIdResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -106,16 +133,18 @@ func (m *ModbusPDUReportServerIdResponse) LengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *ModbusPDUReportServerIdResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReportServerIdResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReportServerIdResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUReportServerIdResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUReportServerIdResponse, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReportServerIdResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
@@ -138,7 +167,7 @@ func ModbusPDUReportServerIdResponseParse(readBuffer utils.ReadBuffer, response 
 		ModbusPDU: &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUReportServerIdResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,7 +177,7 @@ func (m *ModbusPDUReportServerIdResponse) Serialize(writeBuffer utils.WriteBuffe
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint8(uint8(len(m.Value)))
+		byteCount := uint8(uint8(len(m.GetValue())))
 		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
@@ -176,6 +205,8 @@ func (m *ModbusPDUReportServerIdResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

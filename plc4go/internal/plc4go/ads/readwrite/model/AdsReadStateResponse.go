@@ -36,64 +36,103 @@ type AdsReadStateResponse struct {
 
 // The corresponding interface
 type IAdsReadStateResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAdsData
+	// GetResult returns Result (property field)
+	GetResult() ReturnCode
+	// GetAdsState returns AdsState (property field)
+	GetAdsState() uint16
+	// GetDeviceState returns DeviceState (property field)
+	GetDeviceState() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsReadStateResponse) CommandId() CommandId {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *AdsReadStateResponse) GetCommandId() CommandId {
 	return CommandId_ADS_READ_STATE
 }
 
-func (m *AdsReadStateResponse) Response() bool {
+func (m *AdsReadStateResponse) GetResponse() bool {
 	return bool(true)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *AdsReadStateResponse) InitializeParent(parent *AdsData) {}
 
-func NewAdsReadStateResponse(result ReturnCode, adsState uint16, deviceState uint16) *AdsData {
-	child := &AdsReadStateResponse{
+func (m *AdsReadStateResponse) GetParent() *AdsData {
+	return m.AdsData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AdsReadStateResponse) GetResult() ReturnCode {
+	return m.Result
+}
+
+func (m *AdsReadStateResponse) GetAdsState() uint16 {
+	return m.AdsState
+}
+
+func (m *AdsReadStateResponse) GetDeviceState() uint16 {
+	return m.DeviceState
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAdsReadStateResponse factory function for AdsReadStateResponse
+func NewAdsReadStateResponse(result ReturnCode, adsState uint16, deviceState uint16) *AdsReadStateResponse {
+	_result := &AdsReadStateResponse{
 		Result:      result,
 		AdsState:    adsState,
 		DeviceState: deviceState,
 		AdsData:     NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsReadStateResponse(structType interface{}) *AdsReadStateResponse {
-	castFunc := func(typ interface{}) *AdsReadStateResponse {
-		if casted, ok := typ.(AdsReadStateResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsReadStateResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsReadStateResponse(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsReadStateResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsReadStateResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsReadStateResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsReadStateResponse(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsReadStateResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsReadStateResponse) GetTypeName() string {
 	return "AdsReadStateResponse"
 }
 
-func (m *AdsReadStateResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsReadStateResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsReadStateResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsReadStateResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -107,14 +146,16 @@ func (m *AdsReadStateResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AdsReadStateResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsReadStateResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func AdsReadStateResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsReadStateResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsReadStateResponse, error) {
 	if pullErr := readBuffer.PullContext("AdsReadStateResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
@@ -155,7 +196,7 @@ func AdsReadStateResponseParse(readBuffer utils.ReadBuffer, commandId CommandId,
 		AdsData:     &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsReadStateResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -203,6 +244,8 @@ func (m *AdsReadStateResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

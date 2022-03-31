@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type ApduDataUserMessage struct {
 	*ApduData
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataUserMessage interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduData
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataUserMessage) ApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataUserMessage) GetApciType() uint8 {
 	return 0xB
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataUserMessage) InitializeParent(parent *ApduData) {}
 
-func NewApduDataUserMessage() *ApduData {
-	child := &ApduDataUserMessage{
-		ApduData: NewApduData(),
+func (m *ApduDataUserMessage) GetParent() *ApduData {
+	return m.ApduData
+}
+
+// NewApduDataUserMessage factory function for ApduDataUserMessage
+func NewApduDataUserMessage(dataLength uint8) *ApduDataUserMessage {
+	_result := &ApduDataUserMessage{
+		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataUserMessage(structType interface{}) *ApduDataUserMessage {
-	castFunc := func(typ interface{}) *ApduDataUserMessage {
-		if casted, ok := typ.(ApduDataUserMessage); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataUserMessage); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataUserMessage(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataUserMessage(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataUserMessage); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataUserMessage); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataUserMessage(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataUserMessage(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataUserMessage) GetTypeName() string {
 	return "ApduDataUserMessage"
 }
 
-func (m *ApduDataUserMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataUserMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataUserMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataUserMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataUserMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataUserMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataUserMessageParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataUserMessageParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataUserMessage, error) {
 	if pullErr := readBuffer.PullContext("ApduDataUserMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataUserMessage"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func ApduDataUserMessageParse(readBuffer utils.ReadBuffer, dataLength uint8) (*A
 		ApduData: &ApduData{},
 	}
 	_child.ApduData.Child = _child
-	return _child.ApduData, nil
+	return _child, nil
 }
 
 func (m *ApduDataUserMessage) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *ApduDataUserMessage) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

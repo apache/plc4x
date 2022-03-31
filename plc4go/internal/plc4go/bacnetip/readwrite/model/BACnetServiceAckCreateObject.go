@@ -32,69 +32,83 @@ type BACnetServiceAckCreateObject struct {
 
 // The corresponding interface
 type IBACnetServiceAckCreateObject interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetServiceAck
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckCreateObject) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetServiceAckCreateObject) GetServiceChoice() uint8 {
 	return 0x0A
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *BACnetServiceAckCreateObject) InitializeParent(parent *BACnetServiceAck) {}
 
-func NewBACnetServiceAckCreateObject() *BACnetServiceAck {
-	child := &BACnetServiceAckCreateObject{
+func (m *BACnetServiceAckCreateObject) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
+// NewBACnetServiceAckCreateObject factory function for BACnetServiceAckCreateObject
+func NewBACnetServiceAckCreateObject() *BACnetServiceAckCreateObject {
+	_result := &BACnetServiceAckCreateObject{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckCreateObject(structType interface{}) *BACnetServiceAckCreateObject {
-	castFunc := func(typ interface{}) *BACnetServiceAckCreateObject {
-		if casted, ok := typ.(BACnetServiceAckCreateObject); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckCreateObject); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckCreateObject(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckCreateObject(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckCreateObject); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckCreateObject); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckCreateObject(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckCreateObject(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckCreateObject) GetTypeName() string {
 	return "BACnetServiceAckCreateObject"
 }
 
-func (m *BACnetServiceAckCreateObject) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckCreateObject) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckCreateObject) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckCreateObject) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckCreateObject) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckCreateObject) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckCreateObject, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckCreateObject"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckCreateObject"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckCreateObject) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *BACnetServiceAckCreateObject) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

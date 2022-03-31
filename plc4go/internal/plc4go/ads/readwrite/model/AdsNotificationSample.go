@@ -35,37 +35,65 @@ type AdsNotificationSample struct {
 
 // The corresponding interface
 type IAdsNotificationSample interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetNotificationHandle returns NotificationHandle (property field)
+	GetNotificationHandle() uint32
+	// GetSampleSize returns SampleSize (property field)
+	GetSampleSize() uint32
+	// GetData returns Data (property field)
+	GetData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AdsNotificationSample) GetNotificationHandle() uint32 {
+	return m.NotificationHandle
+}
+
+func (m *AdsNotificationSample) GetSampleSize() uint32 {
+	return m.SampleSize
+}
+
+func (m *AdsNotificationSample) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAdsNotificationSample factory function for AdsNotificationSample
 func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []byte) *AdsNotificationSample {
 	return &AdsNotificationSample{NotificationHandle: notificationHandle, SampleSize: sampleSize, Data: data}
 }
 
 func CastAdsNotificationSample(structType interface{}) *AdsNotificationSample {
-	castFunc := func(typ interface{}) *AdsNotificationSample {
-		if casted, ok := typ.(AdsNotificationSample); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsNotificationSample); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AdsNotificationSample); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsNotificationSample); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AdsNotificationSample) GetTypeName() string {
 	return "AdsNotificationSample"
 }
 
-func (m *AdsNotificationSample) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsNotificationSample) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsNotificationSample) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AdsNotificationSample) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (notificationHandle)
@@ -82,14 +110,16 @@ func (m *AdsNotificationSample) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AdsNotificationSample) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsNotificationSample) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsNotificationSampleParse(readBuffer utils.ReadBuffer) (*AdsNotificationSample, error) {
 	if pullErr := readBuffer.PullContext("AdsNotificationSample"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (notificationHandle)
 	_notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
@@ -158,6 +188,8 @@ func (m *AdsNotificationSample) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

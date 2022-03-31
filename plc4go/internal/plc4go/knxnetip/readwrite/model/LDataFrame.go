@@ -38,10 +38,25 @@ type LDataFrame struct {
 
 // The corresponding interface
 type ILDataFrame interface {
-	NotAckFrame() bool
-	Polling() bool
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetNotAckFrame returns NotAckFrame (discriminator field)
+	GetNotAckFrame() bool
+	// GetPolling returns Polling (discriminator field)
+	GetPolling() bool
+	// GetFrameType returns FrameType (property field)
+	GetFrameType() bool
+	// GetNotRepeated returns NotRepeated (property field)
+	GetNotRepeated() bool
+	// GetPriority returns Priority (property field)
+	GetPriority() CEMIPriority
+	// GetAcknowledgeRequested returns AcknowledgeRequested (property field)
+	GetAcknowledgeRequested() bool
+	// GetErrorFlag returns ErrorFlag (property field)
+	GetErrorFlag() bool
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -53,40 +68,72 @@ type ILDataFrameParent interface {
 type ILDataFrameChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool)
+	GetParent() *LDataFrame
+
 	GetTypeName() string
 	ILDataFrame
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *LDataFrame) GetFrameType() bool {
+	return m.FrameType
+}
+
+func (m *LDataFrame) GetNotRepeated() bool {
+	return m.NotRepeated
+}
+
+func (m *LDataFrame) GetPriority() CEMIPriority {
+	return m.Priority
+}
+
+func (m *LDataFrame) GetAcknowledgeRequested() bool {
+	return m.AcknowledgeRequested
+}
+
+func (m *LDataFrame) GetErrorFlag() bool {
+	return m.ErrorFlag
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewLDataFrame factory function for LDataFrame
 func NewLDataFrame(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
 	return &LDataFrame{FrameType: frameType, NotRepeated: notRepeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
 }
 
 func CastLDataFrame(structType interface{}) *LDataFrame {
-	castFunc := func(typ interface{}) *LDataFrame {
-		if casted, ok := typ.(LDataFrame); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LDataFrame); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(LDataFrame); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LDataFrame); ok {
+		return casted
+	}
+	if casted, ok := structType.(ILDataFrameChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *LDataFrame) GetTypeName() string {
 	return "LDataFrame"
 }
 
-func (m *LDataFrame) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LDataFrame) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LDataFrame) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *LDataFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *LDataFrame) ParentLengthInBits() uint16 {
+func (m *LDataFrame) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (frameType)
@@ -111,14 +158,16 @@ func (m *LDataFrame) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *LDataFrame) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LDataFrame) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	if pullErr := readBuffer.PullContext("LDataFrame"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (frameType)
 	_frameType, _frameTypeErr := readBuffer.ReadBit("frameType")
@@ -174,15 +223,19 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	errorFlag := _errorFlag
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *LDataFrame
+	type LDataFrameChild interface {
+		InitializeParent(*LDataFrame, bool, bool, CEMIPriority, bool, bool)
+		GetParent() *LDataFrame
+	}
+	var _child LDataFrameChild
 	var typeSwitchError error
 	switch {
 	case notAckFrame == bool(true) && polling == bool(false): // LDataExtended
-		_parent, typeSwitchError = LDataExtendedParse(readBuffer)
+		_child, typeSwitchError = LDataExtendedParse(readBuffer)
 	case notAckFrame == bool(true) && polling == bool(true): // LPollData
-		_parent, typeSwitchError = LPollDataParse(readBuffer)
+		_child, typeSwitchError = LPollDataParse(readBuffer)
 	case notAckFrame == bool(false): // LDataFrameACK
-		_parent, typeSwitchError = LDataFrameACKParse(readBuffer)
+		_child, typeSwitchError = LDataFrameACKParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -196,8 +249,8 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, frameType, notRepeated, priority, acknowledgeRequested, errorFlag)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), frameType, notRepeated, priority, acknowledgeRequested, errorFlag)
+	return _child.GetParent(), nil
 }
 
 func (m *LDataFrame) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -217,7 +270,7 @@ func (m *LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child ILData
 	}
 
 	// Discriminator Field (polling) (Used as input to a switch field)
-	polling := bool(child.Polling())
+	polling := bool(child.GetPolling())
 	_pollingErr := writeBuffer.WriteBit("polling", (polling))
 
 	if _pollingErr != nil {
@@ -232,7 +285,7 @@ func (m *LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child ILData
 	}
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
-	notAckFrame := bool(child.NotAckFrame())
+	notAckFrame := bool(child.GetNotAckFrame())
 	_notAckFrameErr := writeBuffer.WriteBit("notAckFrame", (notAckFrame))
 
 	if _notAckFrameErr != nil {
@@ -281,6 +334,8 @@ func (m *LDataFrame) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

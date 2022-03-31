@@ -17,12 +17,10 @@
  * under the License.
  */
 
-#include <plc4c/plc4c.h>
 #include <plc4c/spi/types_private.h>
 #include <stdlib.h>
-#include <string.h>
 #include "plc4c/driver_modbus_packets.h"
-#include "modbus_tcp_adu.h"
+#include "modbus_adu.h"
 
 enum plc4c_driver_modbus_write_states {
   PLC4C_DRIVER_MODBUS_WRITE_INIT,
@@ -46,7 +44,7 @@ plc4c_return_code plc4c_driver_modbus_write_machine_function(
 
   switch (task->state_id) {
     case PLC4C_DRIVER_MODBUS_WRITE_INIT: {
-      plc4c_modbus_read_write_modbus_tcp_adu* modbus_write_request_packet;
+      plc4c_modbus_read_write_modbus_adu* modbus_write_request_packet;
       plc4c_return_code return_code =
           plc4c_driver_modbus_create_modbus_write_request(
               write_request, &modbus_write_request_packet);
@@ -66,7 +64,7 @@ plc4c_return_code plc4c_driver_modbus_write_machine_function(
     }
     case PLC4C_DRIVER_MODBUS_WRITE_FINISHED: {
       // Read a response packet.
-      plc4c_modbus_read_write_modbus_tcp_adu* modbus_write_response_packet;
+      plc4c_modbus_read_write_modbus_adu* modbus_write_response_packet;
       plc4c_return_code return_code =
           plc4c_driver_modbus_receive_packet(
               connection, &modbus_write_response_packet);

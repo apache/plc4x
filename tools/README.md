@@ -28,7 +28,7 @@ If you're building a source-distribution and haven't installed git yet, be sure 
          
 # MAC
 
-Make sure `Homebrew` ist installed in order to update `Bison` to a newer version (the version 2.3 installed per default is too old)
+Make sure `Homebrew` is installed in order to update `Bison` to a newer version (the version 2.3 installed per default is too old)
     
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 

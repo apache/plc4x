@@ -32,64 +32,106 @@ type LDataReq struct {
 	AdditionalInformationLength uint8
 	AdditionalInformation       []*CEMIAdditionalInformation
 	DataFrame                   *LDataFrame
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type ILDataReq interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICEMI
+	// GetAdditionalInformationLength returns AdditionalInformationLength (property field)
+	GetAdditionalInformationLength() uint8
+	// GetAdditionalInformation returns AdditionalInformation (property field)
+	GetAdditionalInformation() []*CEMIAdditionalInformation
+	// GetDataFrame returns DataFrame (property field)
+	GetDataFrame() *LDataFrame
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LDataReq) MessageCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *LDataReq) GetMessageCode() uint8 {
 	return 0x11
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *LDataReq) InitializeParent(parent *CEMI) {}
 
-func NewLDataReq(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame) *CEMI {
-	child := &LDataReq{
+func (m *LDataReq) GetParent() *CEMI {
+	return m.CEMI
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *LDataReq) GetAdditionalInformationLength() uint8 {
+	return m.AdditionalInformationLength
+}
+
+func (m *LDataReq) GetAdditionalInformation() []*CEMIAdditionalInformation {
+	return m.AdditionalInformation
+}
+
+func (m *LDataReq) GetDataFrame() *LDataFrame {
+	return m.DataFrame
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewLDataReq factory function for LDataReq
+func NewLDataReq(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, size uint16) *LDataReq {
+	_result := &LDataReq{
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
-		CEMI:                        NewCEMI(),
+		CEMI:                        NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastLDataReq(structType interface{}) *LDataReq {
-	castFunc := func(typ interface{}) *LDataReq {
-		if casted, ok := typ.(LDataReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LDataReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastLDataReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastLDataReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LDataReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LDataReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastLDataReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastLDataReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *LDataReq) GetTypeName() string {
 	return "LDataReq"
 }
 
-func (m *LDataReq) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LDataReq) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LDataReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LDataReq) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8
@@ -97,24 +139,26 @@ func (m *LDataReq) LengthInBitsConditional(lastItem bool) uint16 {
 	// Array field
 	if len(m.AdditionalInformation) > 0 {
 		for _, element := range m.AdditionalInformation {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
 	// Simple field (dataFrame)
-	lengthInBits += m.DataFrame.LengthInBits()
+	lengthInBits += m.DataFrame.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *LDataReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LDataReq) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*LDataReq, error) {
 	if pullErr := readBuffer.PullContext("LDataReq"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (additionalInformationLength)
 	_additionalInformationLength, _additionalInformationLengthErr := readBuffer.ReadUint8("additionalInformationLength", 8)
@@ -169,7 +213,7 @@ func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 		CEMI:                        &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *LDataReq) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -226,6 +270,8 @@ func (m *LDataReq) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

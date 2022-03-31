@@ -41,37 +41,101 @@ type DIBDeviceInfo struct {
 
 // The corresponding interface
 type IDIBDeviceInfo interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetDescriptionType returns DescriptionType (property field)
+	GetDescriptionType() uint8
+	// GetKnxMedium returns KnxMedium (property field)
+	GetKnxMedium() KnxMedium
+	// GetDeviceStatus returns DeviceStatus (property field)
+	GetDeviceStatus() *DeviceStatus
+	// GetKnxAddress returns KnxAddress (property field)
+	GetKnxAddress() *KnxAddress
+	// GetProjectInstallationIdentifier returns ProjectInstallationIdentifier (property field)
+	GetProjectInstallationIdentifier() *ProjectInstallationIdentifier
+	// GetKnxNetIpDeviceSerialNumber returns KnxNetIpDeviceSerialNumber (property field)
+	GetKnxNetIpDeviceSerialNumber() []byte
+	// GetKnxNetIpDeviceMulticastAddress returns KnxNetIpDeviceMulticastAddress (property field)
+	GetKnxNetIpDeviceMulticastAddress() *IPAddress
+	// GetKnxNetIpDeviceMacAddress returns KnxNetIpDeviceMacAddress (property field)
+	GetKnxNetIpDeviceMacAddress() *MACAddress
+	// GetDeviceFriendlyName returns DeviceFriendlyName (property field)
+	GetDeviceFriendlyName() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *DIBDeviceInfo) GetDescriptionType() uint8 {
+	return m.DescriptionType
+}
+
+func (m *DIBDeviceInfo) GetKnxMedium() KnxMedium {
+	return m.KnxMedium
+}
+
+func (m *DIBDeviceInfo) GetDeviceStatus() *DeviceStatus {
+	return m.DeviceStatus
+}
+
+func (m *DIBDeviceInfo) GetKnxAddress() *KnxAddress {
+	return m.KnxAddress
+}
+
+func (m *DIBDeviceInfo) GetProjectInstallationIdentifier() *ProjectInstallationIdentifier {
+	return m.ProjectInstallationIdentifier
+}
+
+func (m *DIBDeviceInfo) GetKnxNetIpDeviceSerialNumber() []byte {
+	return m.KnxNetIpDeviceSerialNumber
+}
+
+func (m *DIBDeviceInfo) GetKnxNetIpDeviceMulticastAddress() *IPAddress {
+	return m.KnxNetIpDeviceMulticastAddress
+}
+
+func (m *DIBDeviceInfo) GetKnxNetIpDeviceMacAddress() *MACAddress {
+	return m.KnxNetIpDeviceMacAddress
+}
+
+func (m *DIBDeviceInfo) GetDeviceFriendlyName() []byte {
+	return m.DeviceFriendlyName
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewDIBDeviceInfo factory function for DIBDeviceInfo
 func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus *DeviceStatus, knxAddress *KnxAddress, projectInstallationIdentifier *ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []byte, knxNetIpDeviceMulticastAddress *IPAddress, knxNetIpDeviceMacAddress *MACAddress, deviceFriendlyName []byte) *DIBDeviceInfo {
 	return &DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
 }
 
 func CastDIBDeviceInfo(structType interface{}) *DIBDeviceInfo {
-	castFunc := func(typ interface{}) *DIBDeviceInfo {
-		if casted, ok := typ.(DIBDeviceInfo); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DIBDeviceInfo); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DIBDeviceInfo); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DIBDeviceInfo); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *DIBDeviceInfo) GetTypeName() string {
 	return "DIBDeviceInfo"
 }
 
-func (m *DIBDeviceInfo) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DIBDeviceInfo) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DIBDeviceInfo) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *DIBDeviceInfo) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -84,13 +148,13 @@ func (m *DIBDeviceInfo) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (deviceStatus)
-	lengthInBits += m.DeviceStatus.LengthInBits()
+	lengthInBits += m.DeviceStatus.GetLengthInBits()
 
 	// Simple field (knxAddress)
-	lengthInBits += m.KnxAddress.LengthInBits()
+	lengthInBits += m.KnxAddress.GetLengthInBits()
 
 	// Simple field (projectInstallationIdentifier)
-	lengthInBits += m.ProjectInstallationIdentifier.LengthInBits()
+	lengthInBits += m.ProjectInstallationIdentifier.GetLengthInBits()
 
 	// Array field
 	if len(m.KnxNetIpDeviceSerialNumber) > 0 {
@@ -98,10 +162,10 @@ func (m *DIBDeviceInfo) LengthInBitsConditional(lastItem bool) uint16 {
 	}
 
 	// Simple field (knxNetIpDeviceMulticastAddress)
-	lengthInBits += m.KnxNetIpDeviceMulticastAddress.LengthInBits()
+	lengthInBits += m.KnxNetIpDeviceMulticastAddress.GetLengthInBits()
 
 	// Simple field (knxNetIpDeviceMacAddress)
-	lengthInBits += m.KnxNetIpDeviceMacAddress.LengthInBits()
+	lengthInBits += m.KnxNetIpDeviceMacAddress.GetLengthInBits()
 
 	// Array field
 	if len(m.DeviceFriendlyName) > 0 {
@@ -111,16 +175,18 @@ func (m *DIBDeviceInfo) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *DIBDeviceInfo) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DIBDeviceInfo) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	if pullErr := readBuffer.PullContext("DIBDeviceInfo"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
@@ -238,7 +304,7 @@ func (m *DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.LengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes()))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
@@ -352,6 +418,8 @@ func (m *DIBDeviceInfo) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

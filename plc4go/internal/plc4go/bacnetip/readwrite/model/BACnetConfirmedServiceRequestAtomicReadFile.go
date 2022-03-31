@@ -31,82 +31,120 @@ type BACnetConfirmedServiceRequestAtomicReadFile struct {
 	*BACnetConfirmedServiceRequest
 	FileIdentifier *BACnetApplicationTagObjectIdentifier
 	AccessMethod   *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicReadFile interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetConfirmedServiceRequest
+	// GetFileIdentifier returns FileIdentifier (property field)
+	GetFileIdentifier() *BACnetApplicationTagObjectIdentifier
+	// GetAccessMethod returns AccessMethod (property field)
+	GetAccessMethod() *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestAtomicReadFile) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetServiceChoice() uint8 {
 	return 0x06
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetConfirmedServiceRequestAtomicReadFile) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestAtomicReadFile(fileIdentifier *BACnetApplicationTagObjectIdentifier, accessMethod *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestAtomicReadFile{
+func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetFileIdentifier() *BACnetApplicationTagObjectIdentifier {
+	return m.FileIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetAccessMethod() *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
+	return m.AccessMethod
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetConfirmedServiceRequestAtomicReadFile factory function for BACnetConfirmedServiceRequestAtomicReadFile
+func NewBACnetConfirmedServiceRequestAtomicReadFile(fileIdentifier *BACnetApplicationTagObjectIdentifier, accessMethod *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, len uint16) *BACnetConfirmedServiceRequestAtomicReadFile {
+	_result := &BACnetConfirmedServiceRequestAtomicReadFile{
 		FileIdentifier:                fileIdentifier,
 		AccessMethod:                  accessMethod,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestAtomicReadFile(structType interface{}) *BACnetConfirmedServiceRequestAtomicReadFile {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestAtomicReadFile {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestAtomicReadFile); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestAtomicReadFile); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestAtomicReadFile(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestAtomicReadFile(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestAtomicReadFile); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestAtomicReadFile); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestAtomicReadFile(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestAtomicReadFile(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestAtomicReadFile"
 }
 
-func (m *BACnetConfirmedServiceRequestAtomicReadFile) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestAtomicReadFile) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (fileIdentifier)
-	lengthInBits += m.FileIdentifier.LengthInBits()
+	lengthInBits += m.FileIdentifier.GetLengthInBits()
 
 	// Simple field (accessMethod)
-	lengthInBits += m.AccessMethod.LengthInBits()
+	lengthInBits += m.AccessMethod.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestAtomicReadFile) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestAtomicReadFile, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFile"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (fileIdentifier)
 	if pullErr := readBuffer.PullContext("fileIdentifier"); pullErr != nil {
@@ -145,7 +183,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffe
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestAtomicReadFile) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -191,6 +229,8 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFile) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

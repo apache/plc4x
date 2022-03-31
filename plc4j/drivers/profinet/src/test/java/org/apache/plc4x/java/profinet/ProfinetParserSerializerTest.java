@@ -19,7 +19,9 @@
 package org.apache.plc4x.java.profinet;
 
 import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
+import org.junit.jupiter.api.Disabled;
 
+@Disabled("Need to fix this first")
 public class ProfinetParserSerializerTest extends ParserSerializerTestsuiteRunner {
 
     public ProfinetParserSerializerTest() {

@@ -36,37 +36,71 @@ type NLMInitalizeRoutingTablePortMapping struct {
 
 // The corresponding interface
 type INLMInitalizeRoutingTablePortMapping interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
+	GetDestinationNetworkAddress() uint16
+	// GetPortId returns PortId (property field)
+	GetPortId() uint8
+	// GetPortInfoLength returns PortInfoLength (property field)
+	GetPortInfoLength() uint8
+	// GetPortInfo returns PortInfo (property field)
+	GetPortInfo() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *NLMInitalizeRoutingTablePortMapping) GetDestinationNetworkAddress() uint16 {
+	return m.DestinationNetworkAddress
+}
+
+func (m *NLMInitalizeRoutingTablePortMapping) GetPortId() uint8 {
+	return m.PortId
+}
+
+func (m *NLMInitalizeRoutingTablePortMapping) GetPortInfoLength() uint8 {
+	return m.PortInfoLength
+}
+
+func (m *NLMInitalizeRoutingTablePortMapping) GetPortInfo() []byte {
+	return m.PortInfo
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewNLMInitalizeRoutingTablePortMapping factory function for NLMInitalizeRoutingTablePortMapping
 func NewNLMInitalizeRoutingTablePortMapping(destinationNetworkAddress uint16, portId uint8, portInfoLength uint8, portInfo []byte) *NLMInitalizeRoutingTablePortMapping {
 	return &NLMInitalizeRoutingTablePortMapping{DestinationNetworkAddress: destinationNetworkAddress, PortId: portId, PortInfoLength: portInfoLength, PortInfo: portInfo}
 }
 
 func CastNLMInitalizeRoutingTablePortMapping(structType interface{}) *NLMInitalizeRoutingTablePortMapping {
-	castFunc := func(typ interface{}) *NLMInitalizeRoutingTablePortMapping {
-		if casted, ok := typ.(NLMInitalizeRoutingTablePortMapping); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NLMInitalizeRoutingTablePortMapping); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(NLMInitalizeRoutingTablePortMapping); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NLMInitalizeRoutingTablePortMapping); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *NLMInitalizeRoutingTablePortMapping) GetTypeName() string {
 	return "NLMInitalizeRoutingTablePortMapping"
 }
 
-func (m *NLMInitalizeRoutingTablePortMapping) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NLMInitalizeRoutingTablePortMapping) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NLMInitalizeRoutingTablePortMapping) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *NLMInitalizeRoutingTablePortMapping) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (destinationNetworkAddress)
@@ -86,14 +120,16 @@ func (m *NLMInitalizeRoutingTablePortMapping) LengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *NLMInitalizeRoutingTablePortMapping) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NLMInitalizeRoutingTablePortMapping) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NLMInitalizeRoutingTablePortMappingParse(readBuffer utils.ReadBuffer) (*NLMInitalizeRoutingTablePortMapping, error) {
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTablePortMapping"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationNetworkAddress)
 	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
@@ -176,6 +212,8 @@ func (m *NLMInitalizeRoutingTablePortMapping) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

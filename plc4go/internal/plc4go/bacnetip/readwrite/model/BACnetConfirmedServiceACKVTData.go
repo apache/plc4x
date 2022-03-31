@@ -32,69 +32,83 @@ type BACnetConfirmedServiceACKVTData struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKVTData interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetConfirmedServiceACK
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceACKVTData) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetConfirmedServiceACKVTData) GetServiceChoice() uint8 {
 	return 0x17
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *BACnetConfirmedServiceACKVTData) InitializeParent(parent *BACnetConfirmedServiceACK) {}
 
-func NewBACnetConfirmedServiceACKVTData() *BACnetConfirmedServiceACK {
-	child := &BACnetConfirmedServiceACKVTData{
+func (m *BACnetConfirmedServiceACKVTData) GetParent() *BACnetConfirmedServiceACK {
+	return m.BACnetConfirmedServiceACK
+}
+
+// NewBACnetConfirmedServiceACKVTData factory function for BACnetConfirmedServiceACKVTData
+func NewBACnetConfirmedServiceACKVTData() *BACnetConfirmedServiceACKVTData {
+	_result := &BACnetConfirmedServiceACKVTData{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceACK
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceACKVTData(structType interface{}) *BACnetConfirmedServiceACKVTData {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceACKVTData {
-		if casted, ok := typ.(BACnetConfirmedServiceACKVTData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACKVTData); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKVTData(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKVTData(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceACKVTData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceACKVTData); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKVTData(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKVTData(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceACKVTData) GetTypeName() string {
 	return "BACnetConfirmedServiceACKVTData"
 }
 
-func (m *BACnetConfirmedServiceACKVTData) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceACKVTData) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceACKVTData) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceACKVTData) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceACKVTData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceACKVTData) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKVTDataParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKVTDataParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACKVTData, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKVTData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceACKVTData"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func BACnetConfirmedServiceACKVTDataParse(readBuffer utils.ReadBuffer) (*BACnetC
 		BACnetConfirmedServiceACK: &BACnetConfirmedServiceACK{},
 	}
 	_child.BACnetConfirmedServiceACK.Child = _child
-	return _child.BACnetConfirmedServiceACK, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceACKVTData) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *BACnetConfirmedServiceACKVTData) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

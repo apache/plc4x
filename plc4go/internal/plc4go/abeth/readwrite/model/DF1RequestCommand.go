@@ -33,9 +33,13 @@ type DF1RequestCommand struct {
 
 // The corresponding interface
 type IDF1RequestCommand interface {
-	FunctionCode() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetFunctionCode returns FunctionCode (discriminator field)
+	GetFunctionCode() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,40 +51,43 @@ type IDF1RequestCommandParent interface {
 type IDF1RequestCommandChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *DF1RequestCommand)
+	GetParent() *DF1RequestCommand
+
 	GetTypeName() string
 	IDF1RequestCommand
 }
 
+// NewDF1RequestCommand factory function for DF1RequestCommand
 func NewDF1RequestCommand() *DF1RequestCommand {
 	return &DF1RequestCommand{}
 }
 
 func CastDF1RequestCommand(structType interface{}) *DF1RequestCommand {
-	castFunc := func(typ interface{}) *DF1RequestCommand {
-		if casted, ok := typ.(DF1RequestCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1RequestCommand); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DF1RequestCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1RequestCommand); ok {
+		return casted
+	}
+	if casted, ok := structType.(IDF1RequestCommandChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *DF1RequestCommand) GetTypeName() string {
 	return "DF1RequestCommand"
 }
 
-func (m *DF1RequestCommand) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1RequestCommand) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1RequestCommand) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *DF1RequestCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *DF1RequestCommand) ParentLengthInBits() uint16 {
+func (m *DF1RequestCommand) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (functionCode)
 	lengthInBits += 8
@@ -88,14 +95,16 @@ func (m *DF1RequestCommand) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *DF1RequestCommand) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1RequestCommand) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DF1RequestCommandParse(readBuffer utils.ReadBuffer) (*DF1RequestCommand, error) {
 	if pullErr := readBuffer.PullContext("DF1RequestCommand"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (functionCode) (Used as input to a switch field)
 	functionCode, _functionCodeErr := readBuffer.ReadUint8("functionCode", 8)
@@ -104,11 +113,15 @@ func DF1RequestCommandParse(readBuffer utils.ReadBuffer) (*DF1RequestCommand, er
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *DF1RequestCommand
+	type DF1RequestCommandChild interface {
+		InitializeParent(*DF1RequestCommand)
+		GetParent() *DF1RequestCommand
+	}
+	var _child DF1RequestCommandChild
 	var typeSwitchError error
 	switch {
 	case functionCode == 0xA2: // DF1RequestProtectedTypedLogicalRead
-		_parent, typeSwitchError = DF1RequestProtectedTypedLogicalReadParse(readBuffer)
+		_child, typeSwitchError = DF1RequestProtectedTypedLogicalReadParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -122,8 +135,8 @@ func DF1RequestCommandParse(readBuffer utils.ReadBuffer) (*DF1RequestCommand, er
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *DF1RequestCommand) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -136,7 +149,7 @@ func (m *DF1RequestCommand) SerializeParent(writeBuffer utils.WriteBuffer, child
 	}
 
 	// Discriminator Field (functionCode) (Used as input to a switch field)
-	functionCode := uint8(child.FunctionCode())
+	functionCode := uint8(child.GetFunctionCode())
 	_functionCodeErr := writeBuffer.WriteUint8("functionCode", 8, (functionCode))
 
 	if _functionCodeErr != nil {
@@ -159,6 +172,8 @@ func (m *DF1RequestCommand) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -28,74 +28,91 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestConfirmedTextMessage struct {
 	*BACnetConfirmedServiceRequest
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedTextMessage interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetConfirmedServiceRequest
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) GetServiceChoice() uint8 {
 	return 0x13
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestConfirmedTextMessage() *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestConfirmedTextMessage{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
+// NewBACnetConfirmedServiceRequestConfirmedTextMessage factory function for BACnetConfirmedServiceRequestConfirmedTextMessage
+func NewBACnetConfirmedServiceRequestConfirmedTextMessage(len uint16) *BACnetConfirmedServiceRequestConfirmedTextMessage {
+	_result := &BACnetConfirmedServiceRequestConfirmedTextMessage{
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestConfirmedTextMessage(structType interface{}) *BACnetConfirmedServiceRequestConfirmedTextMessage {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestConfirmedTextMessage {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestConfirmedTextMessage); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestConfirmedTextMessage); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestConfirmedTextMessage(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestConfirmedTextMessage(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedTextMessage); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestConfirmedTextMessage); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestConfirmedTextMessage(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestConfirmedTextMessage(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestConfirmedTextMessage"
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestConfirmedTextMessageParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestConfirmedTextMessage, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); closeErr != nil {
 		return nil, closeErr
@@ -106,7 +123,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageParse(readBuffer utils.Rea
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -128,6 +145,8 @@ func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

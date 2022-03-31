@@ -32,73 +32,87 @@ type AdsDeviceNotificationResponse struct {
 
 // The corresponding interface
 type IAdsDeviceNotificationResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAdsData
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsDeviceNotificationResponse) CommandId() CommandId {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *AdsDeviceNotificationResponse) GetCommandId() CommandId {
 	return CommandId_ADS_DEVICE_NOTIFICATION
 }
 
-func (m *AdsDeviceNotificationResponse) Response() bool {
+func (m *AdsDeviceNotificationResponse) GetResponse() bool {
 	return bool(true)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *AdsDeviceNotificationResponse) InitializeParent(parent *AdsData) {}
 
-func NewAdsDeviceNotificationResponse() *AdsData {
-	child := &AdsDeviceNotificationResponse{
+func (m *AdsDeviceNotificationResponse) GetParent() *AdsData {
+	return m.AdsData
+}
+
+// NewAdsDeviceNotificationResponse factory function for AdsDeviceNotificationResponse
+func NewAdsDeviceNotificationResponse() *AdsDeviceNotificationResponse {
+	_result := &AdsDeviceNotificationResponse{
 		AdsData: NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsDeviceNotificationResponse(structType interface{}) *AdsDeviceNotificationResponse {
-	castFunc := func(typ interface{}) *AdsDeviceNotificationResponse {
-		if casted, ok := typ.(AdsDeviceNotificationResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsDeviceNotificationResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsDeviceNotificationResponse(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsDeviceNotificationResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsDeviceNotificationResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsDeviceNotificationResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsDeviceNotificationResponse(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsDeviceNotificationResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsDeviceNotificationResponse) GetTypeName() string {
 	return "AdsDeviceNotificationResponse"
 }
 
-func (m *AdsDeviceNotificationResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsDeviceNotificationResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsDeviceNotificationResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsDeviceNotificationResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *AdsDeviceNotificationResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsDeviceNotificationResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func AdsDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsDeviceNotificationResponse, error) {
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("AdsDeviceNotificationResponse"); closeErr != nil {
 		return nil, closeErr
@@ -109,7 +123,7 @@ func AdsDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandId C
 		AdsData: &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsDeviceNotificationResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -131,6 +145,8 @@ func (m *AdsDeviceNotificationResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

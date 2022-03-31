@@ -34,73 +34,102 @@ type TunnelingResponse struct {
 
 // The corresponding interface
 type ITunnelingResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IKnxNetIpMessage
+	// GetTunnelingResponseDataBlock returns TunnelingResponseDataBlock (property field)
+	GetTunnelingResponseDataBlock() *TunnelingResponseDataBlock
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *TunnelingResponse) MsgType() uint16 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *TunnelingResponse) GetMsgType() uint16 {
 	return 0x0421
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *TunnelingResponse) InitializeParent(parent *KnxNetIpMessage) {}
 
-func NewTunnelingResponse(tunnelingResponseDataBlock *TunnelingResponseDataBlock) *KnxNetIpMessage {
-	child := &TunnelingResponse{
+func (m *TunnelingResponse) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *TunnelingResponse) GetTunnelingResponseDataBlock() *TunnelingResponseDataBlock {
+	return m.TunnelingResponseDataBlock
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewTunnelingResponse factory function for TunnelingResponse
+func NewTunnelingResponse(tunnelingResponseDataBlock *TunnelingResponseDataBlock) *TunnelingResponse {
+	_result := &TunnelingResponse{
 		TunnelingResponseDataBlock: tunnelingResponseDataBlock,
 		KnxNetIpMessage:            NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastTunnelingResponse(structType interface{}) *TunnelingResponse {
-	castFunc := func(typ interface{}) *TunnelingResponse {
-		if casted, ok := typ.(TunnelingResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*TunnelingResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastTunnelingResponse(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastTunnelingResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(TunnelingResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*TunnelingResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastTunnelingResponse(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastTunnelingResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *TunnelingResponse) GetTypeName() string {
 	return "TunnelingResponse"
 }
 
-func (m *TunnelingResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *TunnelingResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *TunnelingResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *TunnelingResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (tunnelingResponseDataBlock)
-	lengthInBits += m.TunnelingResponseDataBlock.LengthInBits()
+	lengthInBits += m.TunnelingResponseDataBlock.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *TunnelingResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *TunnelingResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func TunnelingResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func TunnelingResponseParse(readBuffer utils.ReadBuffer) (*TunnelingResponse, error) {
 	if pullErr := readBuffer.PullContext("TunnelingResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (tunnelingResponseDataBlock)
 	if pullErr := readBuffer.PullContext("tunnelingResponseDataBlock"); pullErr != nil {
@@ -125,7 +154,7 @@ func TunnelingResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 		KnxNetIpMessage:            &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *TunnelingResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -159,6 +188,8 @@ func (m *TunnelingResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

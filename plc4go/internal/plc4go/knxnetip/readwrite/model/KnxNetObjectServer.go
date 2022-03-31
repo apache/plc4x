@@ -34,58 +34,85 @@ type KnxNetObjectServer struct {
 
 // The corresponding interface
 type IKnxNetObjectServer interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IServiceId
+	// GetVersion returns Version (property field)
+	GetVersion() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxNetObjectServer) ServiceType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *KnxNetObjectServer) GetServiceType() uint8 {
 	return 0x08
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *KnxNetObjectServer) InitializeParent(parent *ServiceId) {}
 
-func NewKnxNetObjectServer(version uint8) *ServiceId {
-	child := &KnxNetObjectServer{
+func (m *KnxNetObjectServer) GetParent() *ServiceId {
+	return m.ServiceId
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *KnxNetObjectServer) GetVersion() uint8 {
+	return m.Version
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewKnxNetObjectServer factory function for KnxNetObjectServer
+func NewKnxNetObjectServer(version uint8) *KnxNetObjectServer {
+	_result := &KnxNetObjectServer{
 		Version:   version,
 		ServiceId: NewServiceId(),
 	}
-	child.Child = child
-	return child.ServiceId
+	_result.Child = _result
+	return _result
 }
 
 func CastKnxNetObjectServer(structType interface{}) *KnxNetObjectServer {
-	castFunc := func(typ interface{}) *KnxNetObjectServer {
-		if casted, ok := typ.(KnxNetObjectServer); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxNetObjectServer); ok {
-			return casted
-		}
-		if casted, ok := typ.(ServiceId); ok {
-			return CastKnxNetObjectServer(casted.Child)
-		}
-		if casted, ok := typ.(*ServiceId); ok {
-			return CastKnxNetObjectServer(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(KnxNetObjectServer); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxNetObjectServer); ok {
+		return casted
+	}
+	if casted, ok := structType.(ServiceId); ok {
+		return CastKnxNetObjectServer(casted.Child)
+	}
+	if casted, ok := structType.(*ServiceId); ok {
+		return CastKnxNetObjectServer(casted.Child)
+	}
+	return nil
 }
 
 func (m *KnxNetObjectServer) GetTypeName() string {
 	return "KnxNetObjectServer"
 }
 
-func (m *KnxNetObjectServer) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxNetObjectServer) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxNetObjectServer) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *KnxNetObjectServer) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -93,14 +120,16 @@ func (m *KnxNetObjectServer) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *KnxNetObjectServer) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxNetObjectServer) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (*KnxNetObjectServer, error) {
 	if pullErr := readBuffer.PullContext("KnxNetObjectServer"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadUint8("version", 8)
@@ -119,7 +148,7 @@ func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 		ServiceId: &ServiceId{},
 	}
 	_child.ServiceId.Child = _child
-	return _child.ServiceId, nil
+	return _child, nil
 }
 
 func (m *KnxNetObjectServer) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,6 +177,8 @@ func (m *KnxNetObjectServer) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

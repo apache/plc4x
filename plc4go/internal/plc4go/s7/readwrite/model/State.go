@@ -40,37 +40,95 @@ type State struct {
 
 // The corresponding interface
 type IState interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetSIG_8 returns SIG_8 (property field)
+	GetSIG_8() bool
+	// GetSIG_7 returns SIG_7 (property field)
+	GetSIG_7() bool
+	// GetSIG_6 returns SIG_6 (property field)
+	GetSIG_6() bool
+	// GetSIG_5 returns SIG_5 (property field)
+	GetSIG_5() bool
+	// GetSIG_4 returns SIG_4 (property field)
+	GetSIG_4() bool
+	// GetSIG_3 returns SIG_3 (property field)
+	GetSIG_3() bool
+	// GetSIG_2 returns SIG_2 (property field)
+	GetSIG_2() bool
+	// GetSIG_1 returns SIG_1 (property field)
+	GetSIG_1() bool
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *State) GetSIG_8() bool {
+	return m.SIG_8
+}
+
+func (m *State) GetSIG_7() bool {
+	return m.SIG_7
+}
+
+func (m *State) GetSIG_6() bool {
+	return m.SIG_6
+}
+
+func (m *State) GetSIG_5() bool {
+	return m.SIG_5
+}
+
+func (m *State) GetSIG_4() bool {
+	return m.SIG_4
+}
+
+func (m *State) GetSIG_3() bool {
+	return m.SIG_3
+}
+
+func (m *State) GetSIG_2() bool {
+	return m.SIG_2
+}
+
+func (m *State) GetSIG_1() bool {
+	return m.SIG_1
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewState factory function for State
 func NewState(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 bool, SIG_2 bool, SIG_1 bool) *State {
 	return &State{SIG_8: SIG_8, SIG_7: SIG_7, SIG_6: SIG_6, SIG_5: SIG_5, SIG_4: SIG_4, SIG_3: SIG_3, SIG_2: SIG_2, SIG_1: SIG_1}
 }
 
 func CastState(structType interface{}) *State {
-	castFunc := func(typ interface{}) *State {
-		if casted, ok := typ.(State); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*State); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(State); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*State); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *State) GetTypeName() string {
 	return "State"
 }
 
-func (m *State) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *State) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *State) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *State) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (SIG_8)
@@ -100,14 +158,16 @@ func (m *State) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *State) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *State) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func StateParse(readBuffer utils.ReadBuffer) (*State, error) {
 	if pullErr := readBuffer.PullContext("State"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (SIG_8)
 	_SIG_8, _SIG_8Err := readBuffer.ReadBit("SIG_8")
@@ -245,6 +305,8 @@ func (m *State) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

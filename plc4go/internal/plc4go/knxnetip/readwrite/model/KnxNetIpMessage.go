@@ -37,9 +37,13 @@ type KnxNetIpMessage struct {
 
 // The corresponding interface
 type IKnxNetIpMessage interface {
-	MsgType() uint16
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetMsgType returns MsgType (discriminator field)
+	GetMsgType() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,40 +55,56 @@ type IKnxNetIpMessageParent interface {
 type IKnxNetIpMessageChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *KnxNetIpMessage)
+	GetParent() *KnxNetIpMessage
+
 	GetTypeName() string
 	IKnxNetIpMessage
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for const fields.
+///////////////////////
+func (m *KnxNetIpMessage) GetProtocolVersion() uint8 {
+	return KnxNetIpMessage_PROTOCOLVERSION
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewKnxNetIpMessage factory function for KnxNetIpMessage
 func NewKnxNetIpMessage() *KnxNetIpMessage {
 	return &KnxNetIpMessage{}
 }
 
 func CastKnxNetIpMessage(structType interface{}) *KnxNetIpMessage {
-	castFunc := func(typ interface{}) *KnxNetIpMessage {
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return casted
+	}
+	if casted, ok := structType.(IKnxNetIpMessageChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *KnxNetIpMessage) GetTypeName() string {
 	return "KnxNetIpMessage"
 }
 
-func (m *KnxNetIpMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxNetIpMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxNetIpMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *KnxNetIpMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *KnxNetIpMessage) ParentLengthInBits() uint16 {
+func (m *KnxNetIpMessage) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)
@@ -101,16 +121,18 @@ func (m *KnxNetIpMessage) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *KnxNetIpMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxNetIpMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	if pullErr := readBuffer.PullContext("KnxNetIpMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	headerLength, _headerLengthErr := readBuffer.ReadUint8("headerLength", 8)
 	_ = headerLength
 	if _headerLengthErr != nil {
@@ -132,7 +154,7 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error)
 		return nil, errors.Wrap(_msgTypeErr, "Error parsing 'msgType' field")
 	}
 
-	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	totalLength, _totalLengthErr := readBuffer.ReadUint16("totalLength", 16)
 	_ = totalLength
 	if _totalLengthErr != nil {
@@ -140,41 +162,45 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error)
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *KnxNetIpMessage
+	type KnxNetIpMessageChild interface {
+		InitializeParent(*KnxNetIpMessage)
+		GetParent() *KnxNetIpMessage
+	}
+	var _child KnxNetIpMessageChild
 	var typeSwitchError error
 	switch {
 	case msgType == 0x0201: // SearchRequest
-		_parent, typeSwitchError = SearchRequestParse(readBuffer)
+		_child, typeSwitchError = SearchRequestParse(readBuffer)
 	case msgType == 0x0202: // SearchResponse
-		_parent, typeSwitchError = SearchResponseParse(readBuffer)
+		_child, typeSwitchError = SearchResponseParse(readBuffer)
 	case msgType == 0x0203: // DescriptionRequest
-		_parent, typeSwitchError = DescriptionRequestParse(readBuffer)
+		_child, typeSwitchError = DescriptionRequestParse(readBuffer)
 	case msgType == 0x0204: // DescriptionResponse
-		_parent, typeSwitchError = DescriptionResponseParse(readBuffer)
+		_child, typeSwitchError = DescriptionResponseParse(readBuffer)
 	case msgType == 0x0205: // ConnectionRequest
-		_parent, typeSwitchError = ConnectionRequestParse(readBuffer)
+		_child, typeSwitchError = ConnectionRequestParse(readBuffer)
 	case msgType == 0x0206: // ConnectionResponse
-		_parent, typeSwitchError = ConnectionResponseParse(readBuffer)
+		_child, typeSwitchError = ConnectionResponseParse(readBuffer)
 	case msgType == 0x0207: // ConnectionStateRequest
-		_parent, typeSwitchError = ConnectionStateRequestParse(readBuffer)
+		_child, typeSwitchError = ConnectionStateRequestParse(readBuffer)
 	case msgType == 0x0208: // ConnectionStateResponse
-		_parent, typeSwitchError = ConnectionStateResponseParse(readBuffer)
+		_child, typeSwitchError = ConnectionStateResponseParse(readBuffer)
 	case msgType == 0x0209: // DisconnectRequest
-		_parent, typeSwitchError = DisconnectRequestParse(readBuffer)
+		_child, typeSwitchError = DisconnectRequestParse(readBuffer)
 	case msgType == 0x020A: // DisconnectResponse
-		_parent, typeSwitchError = DisconnectResponseParse(readBuffer)
+		_child, typeSwitchError = DisconnectResponseParse(readBuffer)
 	case msgType == 0x020B: // UnknownMessage
-		_parent, typeSwitchError = UnknownMessageParse(readBuffer, totalLength)
+		_child, typeSwitchError = UnknownMessageParse(readBuffer, totalLength)
 	case msgType == 0x0310: // DeviceConfigurationRequest
-		_parent, typeSwitchError = DeviceConfigurationRequestParse(readBuffer, totalLength)
+		_child, typeSwitchError = DeviceConfigurationRequestParse(readBuffer, totalLength)
 	case msgType == 0x0311: // DeviceConfigurationAck
-		_parent, typeSwitchError = DeviceConfigurationAckParse(readBuffer)
+		_child, typeSwitchError = DeviceConfigurationAckParse(readBuffer)
 	case msgType == 0x0420: // TunnelingRequest
-		_parent, typeSwitchError = TunnelingRequestParse(readBuffer, totalLength)
+		_child, typeSwitchError = TunnelingRequestParse(readBuffer, totalLength)
 	case msgType == 0x0421: // TunnelingResponse
-		_parent, typeSwitchError = TunnelingResponseParse(readBuffer)
+		_child, typeSwitchError = TunnelingResponseParse(readBuffer)
 	case msgType == 0x0530: // RoutingIndication
-		_parent, typeSwitchError = RoutingIndicationParse(readBuffer)
+		_child, typeSwitchError = RoutingIndicationParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -188,8 +214,8 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error)
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *KnxNetIpMessage) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -215,7 +241,7 @@ func (m *KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	}
 
 	// Discriminator Field (msgType) (Used as input to a switch field)
-	msgType := uint16(child.MsgType())
+	msgType := uint16(child.GetMsgType())
 	_msgTypeErr := writeBuffer.WriteUint16("msgType", 16, (msgType))
 
 	if _msgTypeErr != nil {
@@ -223,7 +249,7 @@ func (m *KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	totalLength := uint16(uint16(m.LengthInBytes()))
+	totalLength := uint16(uint16(m.GetLengthInBytes()))
 	_totalLengthErr := writeBuffer.WriteUint16("totalLength", 16, (totalLength))
 	if _totalLengthErr != nil {
 		return errors.Wrap(_totalLengthErr, "Error serializing 'totalLength' field")
@@ -245,6 +271,8 @@ func (m *KnxNetIpMessage) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -94,12 +94,12 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			pdu = readWriteModel.NewModbusPDUWriteMultipleCoilsRequest(
 				modbusField.Address,
 				modbusField.Quantity,
-				data)
+				data).GetParent()
 		case HoldingRegister:
 			pdu = readWriteModel.NewModbusPDUWriteMultipleHoldingRegistersRequest(
 				modbusField.Address,
 				numWords,
-				data)
+				data).GetParent()
 		case ExtendedRegister:
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,

@@ -405,12 +405,12 @@ func CastSupportedPhysicalMedia(structType interface{}) SupportedPhysicalMedia {
 	return castFunc(structType)
 }
 
-func (m SupportedPhysicalMedia) LengthInBits() uint16 {
+func (m SupportedPhysicalMedia) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m SupportedPhysicalMedia) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m SupportedPhysicalMedia) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SupportedPhysicalMediaParse(readBuffer utils.ReadBuffer) (SupportedPhysicalMedia, error) {

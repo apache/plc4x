@@ -29,14 +29,23 @@ import (
 // The data-structure of this message
 type NLM struct {
 	VendorId *uint16
-	Child    INLMChild
+
+	// Arguments.
+	ApduLength uint16
+	Child      INLMChild
 }
 
 // The corresponding interface
 type INLM interface {
-	MessageType() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetMessageType returns MessageType (discriminator field)
+	GetMessageType() uint8
+	// GetVendorId returns VendorId (property field)
+	GetVendorId() *uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,40 +57,56 @@ type INLMParent interface {
 type INLMChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *NLM, vendorId *uint16)
+	GetParent() *NLM
+
 	GetTypeName() string
 	INLM
 }
 
-func NewNLM(vendorId *uint16) *NLM {
-	return &NLM{VendorId: vendorId}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *NLM) GetVendorId() *uint16 {
+	return m.VendorId
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewNLM factory function for NLM
+func NewNLM(vendorId *uint16, apduLength uint16) *NLM {
+	return &NLM{VendorId: vendorId, ApduLength: apduLength}
 }
 
 func CastNLM(structType interface{}) *NLM {
-	castFunc := func(typ interface{}) *NLM {
-		if casted, ok := typ.(NLM); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NLM); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(NLM); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NLM); ok {
+		return casted
+	}
+	if casted, ok := structType.(INLMChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *NLM) GetTypeName() string {
 	return "NLM"
 }
 
-func (m *NLM) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NLM) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NLM) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *NLM) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *NLM) ParentLengthInBits() uint16 {
+func (m *NLM) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 8
@@ -94,14 +119,16 @@ func (m *NLM) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *NLM) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NLM) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	if pullErr := readBuffer.PullContext("NLM"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType, _messageTypeErr := readBuffer.ReadUint8("messageType", 8)
@@ -120,29 +147,33 @@ func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *NLM
+	type NLMChild interface {
+		InitializeParent(*NLM, *uint16)
+		GetParent() *NLM
+	}
+	var _child NLMChild
 	var typeSwitchError error
 	switch {
 	case messageType == 0x00: // NLMWhoIsRouterToNetwork
-		_parent, typeSwitchError = NLMWhoIsRouterToNetworkParse(readBuffer, apduLength, messageType)
+		_child, typeSwitchError = NLMWhoIsRouterToNetworkParse(readBuffer, apduLength, messageType)
 	case messageType == 0x01: // NLMIAmRouterToNetwork
-		_parent, typeSwitchError = NLMIAmRouterToNetworkParse(readBuffer, apduLength, messageType)
+		_child, typeSwitchError = NLMIAmRouterToNetworkParse(readBuffer, apduLength, messageType)
 	case messageType == 0x02: // NLMICouldBeRouterToNetwork
-		_parent, typeSwitchError = NLMICouldBeRouterToNetworkParse(readBuffer, apduLength, messageType)
+		_child, typeSwitchError = NLMICouldBeRouterToNetworkParse(readBuffer, apduLength, messageType)
 	case messageType == 0x03: // NLMRejectRouterToNetwork
-		_parent, typeSwitchError = NLMRejectRouterToNetworkParse(readBuffer, apduLength, messageType)
+		_child, typeSwitchError = NLMRejectRouterToNetworkParse(readBuffer, apduLength, messageType)
 	case messageType == 0x04: // NLMRouterBusyToNetwork
-		_parent, typeSwitchError = NLMRouterBusyToNetworkParse(readBuffer, apduLength, messageType)
+		_child, typeSwitchError = NLMRouterBusyToNetworkParse(readBuffer, apduLength, messageType)
 	case messageType == 0x05: // NLMRouterAvailableToNetwork
-		_parent, typeSwitchError = NLMRouterAvailableToNetworkParse(readBuffer, apduLength, messageType)
+		_child, typeSwitchError = NLMRouterAvailableToNetworkParse(readBuffer, apduLength, messageType)
 	case messageType == 0x06: // NLMInitalizeRoutingTable
-		_parent, typeSwitchError = NLMInitalizeRoutingTableParse(readBuffer, apduLength, messageType)
+		_child, typeSwitchError = NLMInitalizeRoutingTableParse(readBuffer, apduLength, messageType)
 	case messageType == 0x07: // NLMInitalizeRoutingTableAck
-		_parent, typeSwitchError = NLMInitalizeRoutingTableAckParse(readBuffer, apduLength, messageType)
+		_child, typeSwitchError = NLMInitalizeRoutingTableAckParse(readBuffer, apduLength, messageType)
 	case messageType == 0x08: // NLMEstablishConnectionToNetwork
-		_parent, typeSwitchError = NLMEstablishConnectionToNetworkParse(readBuffer, apduLength, messageType)
+		_child, typeSwitchError = NLMEstablishConnectionToNetworkParse(readBuffer, apduLength, messageType)
 	case messageType == 0x09: // NLMDisconnectConnectionToNetwork
-		_parent, typeSwitchError = NLMDisconnectConnectionToNetworkParse(readBuffer, apduLength, messageType)
+		_child, typeSwitchError = NLMDisconnectConnectionToNetworkParse(readBuffer, apduLength, messageType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -156,8 +187,8 @@ func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, vendorId)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), vendorId)
+	return _child.GetParent(), nil
 }
 
 func (m *NLM) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -170,7 +201,7 @@ func (m *NLM) SerializeParent(writeBuffer utils.WriteBuffer, child INLM, seriali
 	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType := uint8(child.MessageType())
+	messageType := uint8(child.GetMessageType())
 	_messageTypeErr := writeBuffer.WriteUint8("messageType", 8, (messageType))
 
 	if _messageTypeErr != nil {
@@ -203,6 +234,8 @@ func (m *NLM) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -162,12 +162,12 @@ func CastDataTransportSize(structType interface{}) DataTransportSize {
 	return castFunc(structType)
 }
 
-func (m DataTransportSize) LengthInBits() uint16 {
+func (m DataTransportSize) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m DataTransportSize) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m DataTransportSize) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DataTransportSizeParse(readBuffer utils.ReadBuffer) (DataTransportSize, error) {

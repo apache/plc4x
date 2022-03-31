@@ -32,69 +32,83 @@ type BACnetServiceAckRemovedAuthenticate struct {
 
 // The corresponding interface
 type IBACnetServiceAckRemovedAuthenticate interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetServiceAck
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckRemovedAuthenticate) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetServiceAckRemovedAuthenticate) GetServiceChoice() uint8 {
 	return 0x18
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *BACnetServiceAckRemovedAuthenticate) InitializeParent(parent *BACnetServiceAck) {}
 
-func NewBACnetServiceAckRemovedAuthenticate() *BACnetServiceAck {
-	child := &BACnetServiceAckRemovedAuthenticate{
+func (m *BACnetServiceAckRemovedAuthenticate) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
+// NewBACnetServiceAckRemovedAuthenticate factory function for BACnetServiceAckRemovedAuthenticate
+func NewBACnetServiceAckRemovedAuthenticate() *BACnetServiceAckRemovedAuthenticate {
+	_result := &BACnetServiceAckRemovedAuthenticate{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckRemovedAuthenticate(structType interface{}) *BACnetServiceAckRemovedAuthenticate {
-	castFunc := func(typ interface{}) *BACnetServiceAckRemovedAuthenticate {
-		if casted, ok := typ.(BACnetServiceAckRemovedAuthenticate); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckRemovedAuthenticate); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckRemovedAuthenticate(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckRemovedAuthenticate(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckRemovedAuthenticate); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckRemovedAuthenticate); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckRemovedAuthenticate(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckRemovedAuthenticate(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckRemovedAuthenticate) GetTypeName() string {
 	return "BACnetServiceAckRemovedAuthenticate"
 }
 
-func (m *BACnetServiceAckRemovedAuthenticate) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckRemovedAuthenticate) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckRemovedAuthenticate) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckRemovedAuthenticate) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckRemovedAuthenticate) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckRemovedAuthenticate) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckRemovedAuthenticateParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckRemovedAuthenticateParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckRemovedAuthenticate, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRemovedAuthenticate"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckRemovedAuthenticate"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func BACnetServiceAckRemovedAuthenticateParse(readBuffer utils.ReadBuffer) (*BAC
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckRemovedAuthenticate) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *BACnetServiceAckRemovedAuthenticate) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

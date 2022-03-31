@@ -31,82 +31,120 @@ type BACnetUnconfirmedServiceRequestTimeSynchronization struct {
 	*BACnetUnconfirmedServiceRequest
 	SynchronizedDate *BACnetApplicationTagDate
 	SynchronizedTime *BACnetApplicationTagTime
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestTimeSynchronization interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetUnconfirmedServiceRequest
+	// GetSynchronizedDate returns SynchronizedDate (property field)
+	GetSynchronizedDate() *BACnetApplicationTagDate
+	// GetSynchronizedTime returns SynchronizedTime (property field)
+	GetSynchronizedTime() *BACnetApplicationTagTime
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) GetServiceChoice() uint8 {
 	return 0x06
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate *BACnetApplicationTagDate, synchronizedTime *BACnetApplicationTagTime) *BACnetUnconfirmedServiceRequest {
-	child := &BACnetUnconfirmedServiceRequestTimeSynchronization{
+func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) GetParent() *BACnetUnconfirmedServiceRequest {
+	return m.BACnetUnconfirmedServiceRequest
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) GetSynchronizedDate() *BACnetApplicationTagDate {
+	return m.SynchronizedDate
+}
+
+func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) GetSynchronizedTime() *BACnetApplicationTagTime {
+	return m.SynchronizedTime
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetUnconfirmedServiceRequestTimeSynchronization factory function for BACnetUnconfirmedServiceRequestTimeSynchronization
+func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate *BACnetApplicationTagDate, synchronizedTime *BACnetApplicationTagTime, len uint16) *BACnetUnconfirmedServiceRequestTimeSynchronization {
+	_result := &BACnetUnconfirmedServiceRequestTimeSynchronization{
 		SynchronizedDate:                synchronizedDate,
 		SynchronizedTime:                synchronizedTime,
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetUnconfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetUnconfirmedServiceRequestTimeSynchronization(structType interface{}) *BACnetUnconfirmedServiceRequestTimeSynchronization {
-	castFunc := func(typ interface{}) *BACnetUnconfirmedServiceRequestTimeSynchronization {
-		if casted, ok := typ.(BACnetUnconfirmedServiceRequestTimeSynchronization); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetUnconfirmedServiceRequestTimeSynchronization); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
-			return CastBACnetUnconfirmedServiceRequestTimeSynchronization(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
-			return CastBACnetUnconfirmedServiceRequestTimeSynchronization(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetUnconfirmedServiceRequestTimeSynchronization); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetUnconfirmedServiceRequestTimeSynchronization); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetUnconfirmedServiceRequest); ok {
+		return CastBACnetUnconfirmedServiceRequestTimeSynchronization(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetUnconfirmedServiceRequest); ok {
+		return CastBACnetUnconfirmedServiceRequestTimeSynchronization(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) GetTypeName() string {
 	return "BACnetUnconfirmedServiceRequestTimeSynchronization"
 }
 
-func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (synchronizedDate)
-	lengthInBits += m.SynchronizedDate.LengthInBits()
+	lengthInBits += m.SynchronizedDate.GetLengthInBits()
 
 	// Simple field (synchronizedTime)
-	lengthInBits += m.SynchronizedTime.LengthInBits()
+	lengthInBits += m.SynchronizedTime.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestTimeSynchronization, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestTimeSynchronization"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (synchronizedDate)
 	if pullErr := readBuffer.PullContext("synchronizedDate"); pullErr != nil {
@@ -145,7 +183,7 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
 	_child.BACnetUnconfirmedServiceRequest.Child = _child
-	return _child.BACnetUnconfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -191,6 +229,8 @@ func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -78,13 +78,13 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 		var pdu *readWriteModel.ModbusPDU = nil
 		switch modbusField.FieldType {
 		case Coil:
-			pdu = readWriteModel.NewModbusPDUReadCoilsRequest(modbusField.Address, modbusField.Quantity)
+			pdu = readWriteModel.NewModbusPDUReadCoilsRequest(modbusField.Address, modbusField.Quantity).GetParent()
 		case DiscreteInput:
-			pdu = readWriteModel.NewModbusPDUReadDiscreteInputsRequest(modbusField.Address, modbusField.Quantity)
+			pdu = readWriteModel.NewModbusPDUReadDiscreteInputsRequest(modbusField.Address, modbusField.Quantity).GetParent()
 		case InputRegister:
-			pdu = readWriteModel.NewModbusPDUReadInputRegistersRequest(modbusField.Address, numWords)
+			pdu = readWriteModel.NewModbusPDUReadInputRegistersRequest(modbusField.Address, numWords).GetParent()
 		case HoldingRegister:
-			pdu = readWriteModel.NewModbusPDUReadHoldingRegistersRequest(modbusField.Address, numWords)
+			pdu = readWriteModel.NewModbusPDUReadHoldingRegistersRequest(modbusField.Address, numWords).GetParent()
 		case ExtendedRegister:
 			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,

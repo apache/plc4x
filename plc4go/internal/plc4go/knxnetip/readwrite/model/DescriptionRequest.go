@@ -34,73 +34,102 @@ type DescriptionRequest struct {
 
 // The corresponding interface
 type IDescriptionRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IKnxNetIpMessage
+	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
+	GetHpaiControlEndpoint() *HPAIControlEndpoint
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DescriptionRequest) MsgType() uint16 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *DescriptionRequest) GetMsgType() uint16 {
 	return 0x0203
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *DescriptionRequest) InitializeParent(parent *KnxNetIpMessage) {}
 
-func NewDescriptionRequest(hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
-	child := &DescriptionRequest{
+func (m *DescriptionRequest) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *DescriptionRequest) GetHpaiControlEndpoint() *HPAIControlEndpoint {
+	return m.HpaiControlEndpoint
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewDescriptionRequest factory function for DescriptionRequest
+func NewDescriptionRequest(hpaiControlEndpoint *HPAIControlEndpoint) *DescriptionRequest {
+	_result := &DescriptionRequest{
 		HpaiControlEndpoint: hpaiControlEndpoint,
 		KnxNetIpMessage:     NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastDescriptionRequest(structType interface{}) *DescriptionRequest {
-	castFunc := func(typ interface{}) *DescriptionRequest {
-		if casted, ok := typ.(DescriptionRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DescriptionRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastDescriptionRequest(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastDescriptionRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DescriptionRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DescriptionRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastDescriptionRequest(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastDescriptionRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *DescriptionRequest) GetTypeName() string {
 	return "DescriptionRequest"
 }
 
-func (m *DescriptionRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DescriptionRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DescriptionRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DescriptionRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
+	lengthInBits += m.HpaiControlEndpoint.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *DescriptionRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DescriptionRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*DescriptionRequest, error) {
 	if pullErr := readBuffer.PullContext("DescriptionRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (hpaiControlEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
@@ -125,7 +154,7 @@ func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 		KnxNetIpMessage:     &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *DescriptionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -159,6 +188,8 @@ func (m *DescriptionRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

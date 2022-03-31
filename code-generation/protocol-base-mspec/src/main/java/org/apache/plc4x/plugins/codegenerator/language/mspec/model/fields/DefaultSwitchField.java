@@ -54,4 +54,24 @@ public class DefaultSwitchField implements SwitchField {
         return Optional.empty();
     }
 
+    @Override
+    public String toString() {
+        return "DefaultSwitchField{" +
+            "variableLiterals=" + variableLiterals +
+            /*", cases=" + cases +*/
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DefaultSwitchField that = (DefaultSwitchField) o;
+        return Objects.equals(variableLiterals, that.variableLiterals) /*&& Objects.equals(cases, that.cases)*/;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(variableLiterals/*, cases*/);
+    }
 }

@@ -34,58 +34,85 @@ type KnxNetRemoteConfigurationAndDiagnosis struct {
 
 // The corresponding interface
 type IKnxNetRemoteConfigurationAndDiagnosis interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IServiceId
+	// GetVersion returns Version (property field)
+	GetVersion() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxNetRemoteConfigurationAndDiagnosis) ServiceType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *KnxNetRemoteConfigurationAndDiagnosis) GetServiceType() uint8 {
 	return 0x07
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *KnxNetRemoteConfigurationAndDiagnosis) InitializeParent(parent *ServiceId) {}
 
-func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) *ServiceId {
-	child := &KnxNetRemoteConfigurationAndDiagnosis{
+func (m *KnxNetRemoteConfigurationAndDiagnosis) GetParent() *ServiceId {
+	return m.ServiceId
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *KnxNetRemoteConfigurationAndDiagnosis) GetVersion() uint8 {
+	return m.Version
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewKnxNetRemoteConfigurationAndDiagnosis factory function for KnxNetRemoteConfigurationAndDiagnosis
+func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) *KnxNetRemoteConfigurationAndDiagnosis {
+	_result := &KnxNetRemoteConfigurationAndDiagnosis{
 		Version:   version,
 		ServiceId: NewServiceId(),
 	}
-	child.Child = child
-	return child.ServiceId
+	_result.Child = _result
+	return _result
 }
 
 func CastKnxNetRemoteConfigurationAndDiagnosis(structType interface{}) *KnxNetRemoteConfigurationAndDiagnosis {
-	castFunc := func(typ interface{}) *KnxNetRemoteConfigurationAndDiagnosis {
-		if casted, ok := typ.(KnxNetRemoteConfigurationAndDiagnosis); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxNetRemoteConfigurationAndDiagnosis); ok {
-			return casted
-		}
-		if casted, ok := typ.(ServiceId); ok {
-			return CastKnxNetRemoteConfigurationAndDiagnosis(casted.Child)
-		}
-		if casted, ok := typ.(*ServiceId); ok {
-			return CastKnxNetRemoteConfigurationAndDiagnosis(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(KnxNetRemoteConfigurationAndDiagnosis); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxNetRemoteConfigurationAndDiagnosis); ok {
+		return casted
+	}
+	if casted, ok := structType.(ServiceId); ok {
+		return CastKnxNetRemoteConfigurationAndDiagnosis(casted.Child)
+	}
+	if casted, ok := structType.(*ServiceId); ok {
+		return CastKnxNetRemoteConfigurationAndDiagnosis(casted.Child)
+	}
+	return nil
 }
 
 func (m *KnxNetRemoteConfigurationAndDiagnosis) GetTypeName() string {
 	return "KnxNetRemoteConfigurationAndDiagnosis"
 }
 
-func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxNetRemoteConfigurationAndDiagnosis) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *KnxNetRemoteConfigurationAndDiagnosis) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -93,14 +120,16 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBitsConditional(lastItem
 	return lengthInBits
 }
 
-func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxNetRemoteConfigurationAndDiagnosis) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer utils.ReadBuffer) (*KnxNetRemoteConfigurationAndDiagnosis, error) {
 	if pullErr := readBuffer.PullContext("KnxNetRemoteConfigurationAndDiagnosis"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadUint8("version", 8)
@@ -119,7 +148,7 @@ func KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer utils.ReadBuffer) (*S
 		ServiceId: &ServiceId{},
 	}
 	_child.ServiceId.Child = _child
-	return _child.ServiceId, nil
+	return _child, nil
 }
 
 func (m *KnxNetRemoteConfigurationAndDiagnosis) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,6 +177,8 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

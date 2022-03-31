@@ -28,14 +28,21 @@ import (
 
 // The data-structure of this message
 type APDU struct {
-	Child IAPDUChild
+
+	// Arguments.
+	ApduLength uint16
+	Child      IAPDUChild
 }
 
 // The corresponding interface
 type IAPDU interface {
-	ApduType() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetApduType returns ApduType (discriminator field)
+	GetApduType() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,40 +54,43 @@ type IAPDUParent interface {
 type IAPDUChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *APDU)
+	GetParent() *APDU
+
 	GetTypeName() string
 	IAPDU
 }
 
-func NewAPDU() *APDU {
-	return &APDU{}
+// NewAPDU factory function for APDU
+func NewAPDU(apduLength uint16) *APDU {
+	return &APDU{ApduLength: apduLength}
 }
 
 func CastAPDU(structType interface{}) *APDU {
-	castFunc := func(typ interface{}) *APDU {
-		if casted, ok := typ.(APDU); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*APDU); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(APDU); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*APDU); ok {
+		return casted
+	}
+	if casted, ok := structType.(IAPDUChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *APDU) GetTypeName() string {
 	return "APDU"
 }
 
-func (m *APDU) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDU) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDU) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *APDU) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *APDU) ParentLengthInBits() uint16 {
+func (m *APDU) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (apduType)
 	lengthInBits += 4
@@ -88,14 +98,16 @@ func (m *APDU) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *APDU) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDU) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	if pullErr := readBuffer.PullContext("APDU"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
 	apduType, _apduTypeErr := readBuffer.ReadUint8("apduType", 4)
@@ -104,27 +116,31 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *APDU
+	type APDUChild interface {
+		InitializeParent(*APDU)
+		GetParent() *APDU
+	}
+	var _child APDUChild
 	var typeSwitchError error
 	switch {
 	case apduType == 0x0: // APDUConfirmedRequest
-		_parent, typeSwitchError = APDUConfirmedRequestParse(readBuffer, apduLength)
+		_child, typeSwitchError = APDUConfirmedRequestParse(readBuffer, apduLength)
 	case apduType == 0x1: // APDUUnconfirmedRequest
-		_parent, typeSwitchError = APDUUnconfirmedRequestParse(readBuffer, apduLength)
+		_child, typeSwitchError = APDUUnconfirmedRequestParse(readBuffer, apduLength)
 	case apduType == 0x2: // APDUSimpleAck
-		_parent, typeSwitchError = APDUSimpleAckParse(readBuffer, apduLength)
+		_child, typeSwitchError = APDUSimpleAckParse(readBuffer, apduLength)
 	case apduType == 0x3: // APDUComplexAck
-		_parent, typeSwitchError = APDUComplexAckParse(readBuffer, apduLength)
+		_child, typeSwitchError = APDUComplexAckParse(readBuffer, apduLength)
 	case apduType == 0x4: // APDUSegmentAck
-		_parent, typeSwitchError = APDUSegmentAckParse(readBuffer, apduLength)
+		_child, typeSwitchError = APDUSegmentAckParse(readBuffer, apduLength)
 	case apduType == 0x5: // APDUError
-		_parent, typeSwitchError = APDUErrorParse(readBuffer, apduLength)
+		_child, typeSwitchError = APDUErrorParse(readBuffer, apduLength)
 	case apduType == 0x6: // APDUReject
-		_parent, typeSwitchError = APDURejectParse(readBuffer, apduLength)
+		_child, typeSwitchError = APDURejectParse(readBuffer, apduLength)
 	case apduType == 0x7: // APDUAbort
-		_parent, typeSwitchError = APDUAbortParse(readBuffer, apduLength)
+		_child, typeSwitchError = APDUAbortParse(readBuffer, apduLength)
 	case true: // APDUUnknown
-		_parent, typeSwitchError = APDUUnknownParse(readBuffer, apduLength)
+		_child, typeSwitchError = APDUUnknownParse(readBuffer, apduLength)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -138,8 +154,8 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *APDU) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -152,7 +168,7 @@ func (m *APDU) SerializeParent(writeBuffer utils.WriteBuffer, child IAPDU, seria
 	}
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
-	apduType := uint8(child.ApduType())
+	apduType := uint8(child.GetApduType())
 	_apduTypeErr := writeBuffer.WriteUint8("apduType", 4, (apduType))
 
 	if _apduTypeErr != nil {
@@ -175,6 +191,8 @@ func (m *APDU) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

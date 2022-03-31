@@ -45,37 +45,107 @@ type AlarmMessageObjectQueryType struct {
 
 // The corresponding interface
 type IAlarmMessageObjectQueryType interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetLengthDataset returns LengthDataset (property field)
+	GetLengthDataset() uint8
+	// GetEventState returns EventState (property field)
+	GetEventState() *State
+	// GetAckStateGoing returns AckStateGoing (property field)
+	GetAckStateGoing() *State
+	// GetAckStateComing returns AckStateComing (property field)
+	GetAckStateComing() *State
+	// GetTimeComing returns TimeComing (property field)
+	GetTimeComing() *DateAndTime
+	// GetValueComing returns ValueComing (property field)
+	GetValueComing() *AssociatedValueType
+	// GetTimeGoing returns TimeGoing (property field)
+	GetTimeGoing() *DateAndTime
+	// GetValueGoing returns ValueGoing (property field)
+	GetValueGoing() *AssociatedValueType
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AlarmMessageObjectQueryType) GetLengthDataset() uint8 {
+	return m.LengthDataset
+}
+
+func (m *AlarmMessageObjectQueryType) GetEventState() *State {
+	return m.EventState
+}
+
+func (m *AlarmMessageObjectQueryType) GetAckStateGoing() *State {
+	return m.AckStateGoing
+}
+
+func (m *AlarmMessageObjectQueryType) GetAckStateComing() *State {
+	return m.AckStateComing
+}
+
+func (m *AlarmMessageObjectQueryType) GetTimeComing() *DateAndTime {
+	return m.TimeComing
+}
+
+func (m *AlarmMessageObjectQueryType) GetValueComing() *AssociatedValueType {
+	return m.ValueComing
+}
+
+func (m *AlarmMessageObjectQueryType) GetTimeGoing() *DateAndTime {
+	return m.TimeGoing
+}
+
+func (m *AlarmMessageObjectQueryType) GetValueGoing() *AssociatedValueType {
+	return m.ValueGoing
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for const fields.
+///////////////////////
+func (m *AlarmMessageObjectQueryType) GetVariableSpec() uint8 {
+	return AlarmMessageObjectQueryType_VARIABLESPEC
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAlarmMessageObjectQueryType factory function for AlarmMessageObjectQueryType
 func NewAlarmMessageObjectQueryType(lengthDataset uint8, eventState *State, ackStateGoing *State, ackStateComing *State, timeComing *DateAndTime, valueComing *AssociatedValueType, timeGoing *DateAndTime, valueGoing *AssociatedValueType) *AlarmMessageObjectQueryType {
 	return &AlarmMessageObjectQueryType{LengthDataset: lengthDataset, EventState: eventState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, TimeComing: timeComing, ValueComing: valueComing, TimeGoing: timeGoing, ValueGoing: valueGoing}
 }
 
 func CastAlarmMessageObjectQueryType(structType interface{}) *AlarmMessageObjectQueryType {
-	castFunc := func(typ interface{}) *AlarmMessageObjectQueryType {
-		if casted, ok := typ.(AlarmMessageObjectQueryType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AlarmMessageObjectQueryType); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AlarmMessageObjectQueryType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AlarmMessageObjectQueryType); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AlarmMessageObjectQueryType) GetTypeName() string {
 	return "AlarmMessageObjectQueryType"
 }
 
-func (m *AlarmMessageObjectQueryType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AlarmMessageObjectQueryType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageObjectQueryType) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AlarmMessageObjectQueryType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (lengthDataset)
@@ -88,37 +158,39 @@ func (m *AlarmMessageObjectQueryType) LengthInBitsConditional(lastItem bool) uin
 	lengthInBits += 8
 
 	// Simple field (eventState)
-	lengthInBits += m.EventState.LengthInBits()
+	lengthInBits += m.EventState.GetLengthInBits()
 
 	// Simple field (ackStateGoing)
-	lengthInBits += m.AckStateGoing.LengthInBits()
+	lengthInBits += m.AckStateGoing.GetLengthInBits()
 
 	// Simple field (ackStateComing)
-	lengthInBits += m.AckStateComing.LengthInBits()
+	lengthInBits += m.AckStateComing.GetLengthInBits()
 
 	// Simple field (timeComing)
-	lengthInBits += m.TimeComing.LengthInBits()
+	lengthInBits += m.TimeComing.GetLengthInBits()
 
 	// Simple field (valueComing)
-	lengthInBits += m.ValueComing.LengthInBits()
+	lengthInBits += m.ValueComing.GetLengthInBits()
 
 	// Simple field (timeGoing)
-	lengthInBits += m.TimeGoing.LengthInBits()
+	lengthInBits += m.TimeGoing.GetLengthInBits()
 
 	// Simple field (valueGoing)
-	lengthInBits += m.ValueGoing.LengthInBits()
+	lengthInBits += m.ValueGoing.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *AlarmMessageObjectQueryType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AlarmMessageObjectQueryType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageObjectQueryType, error) {
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectQueryType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (lengthDataset)
 	_lengthDataset, _lengthDatasetErr := readBuffer.ReadUint8("lengthDataset", 8)
@@ -370,6 +442,8 @@ func (m *AlarmMessageObjectQueryType) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

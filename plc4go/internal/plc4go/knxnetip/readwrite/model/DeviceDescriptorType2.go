@@ -42,37 +42,107 @@ type DeviceDescriptorType2 struct {
 
 // The corresponding interface
 type IDeviceDescriptorType2 interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetManufacturerId returns ManufacturerId (property field)
+	GetManufacturerId() uint16
+	// GetDeviceType returns DeviceType (property field)
+	GetDeviceType() uint16
+	// GetVersion returns Version (property field)
+	GetVersion() uint8
+	// GetReadSupported returns ReadSupported (property field)
+	GetReadSupported() bool
+	// GetWriteSupported returns WriteSupported (property field)
+	GetWriteSupported() bool
+	// GetLogicalTagBase returns LogicalTagBase (property field)
+	GetLogicalTagBase() uint8
+	// GetChannelInfo1 returns ChannelInfo1 (property field)
+	GetChannelInfo1() *ChannelInformation
+	// GetChannelInfo2 returns ChannelInfo2 (property field)
+	GetChannelInfo2() *ChannelInformation
+	// GetChannelInfo3 returns ChannelInfo3 (property field)
+	GetChannelInfo3() *ChannelInformation
+	// GetChannelInfo4 returns ChannelInfo4 (property field)
+	GetChannelInfo4() *ChannelInformation
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *DeviceDescriptorType2) GetManufacturerId() uint16 {
+	return m.ManufacturerId
+}
+
+func (m *DeviceDescriptorType2) GetDeviceType() uint16 {
+	return m.DeviceType
+}
+
+func (m *DeviceDescriptorType2) GetVersion() uint8 {
+	return m.Version
+}
+
+func (m *DeviceDescriptorType2) GetReadSupported() bool {
+	return m.ReadSupported
+}
+
+func (m *DeviceDescriptorType2) GetWriteSupported() bool {
+	return m.WriteSupported
+}
+
+func (m *DeviceDescriptorType2) GetLogicalTagBase() uint8 {
+	return m.LogicalTagBase
+}
+
+func (m *DeviceDescriptorType2) GetChannelInfo1() *ChannelInformation {
+	return m.ChannelInfo1
+}
+
+func (m *DeviceDescriptorType2) GetChannelInfo2() *ChannelInformation {
+	return m.ChannelInfo2
+}
+
+func (m *DeviceDescriptorType2) GetChannelInfo3() *ChannelInformation {
+	return m.ChannelInfo3
+}
+
+func (m *DeviceDescriptorType2) GetChannelInfo4() *ChannelInformation {
+	return m.ChannelInfo4
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewDeviceDescriptorType2 factory function for DeviceDescriptorType2
 func NewDeviceDescriptorType2(manufacturerId uint16, deviceType uint16, version uint8, readSupported bool, writeSupported bool, logicalTagBase uint8, channelInfo1 *ChannelInformation, channelInfo2 *ChannelInformation, channelInfo3 *ChannelInformation, channelInfo4 *ChannelInformation) *DeviceDescriptorType2 {
 	return &DeviceDescriptorType2{ManufacturerId: manufacturerId, DeviceType: deviceType, Version: version, ReadSupported: readSupported, WriteSupported: writeSupported, LogicalTagBase: logicalTagBase, ChannelInfo1: channelInfo1, ChannelInfo2: channelInfo2, ChannelInfo3: channelInfo3, ChannelInfo4: channelInfo4}
 }
 
 func CastDeviceDescriptorType2(structType interface{}) *DeviceDescriptorType2 {
-	castFunc := func(typ interface{}) *DeviceDescriptorType2 {
-		if casted, ok := typ.(DeviceDescriptorType2); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DeviceDescriptorType2); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DeviceDescriptorType2); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DeviceDescriptorType2); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *DeviceDescriptorType2) GetTypeName() string {
 	return "DeviceDescriptorType2"
 }
 
-func (m *DeviceDescriptorType2) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DeviceDescriptorType2) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DeviceDescriptorType2) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *DeviceDescriptorType2) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (manufacturerId)
@@ -94,28 +164,30 @@ func (m *DeviceDescriptorType2) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 6
 
 	// Simple field (channelInfo1)
-	lengthInBits += m.ChannelInfo1.LengthInBits()
+	lengthInBits += m.ChannelInfo1.GetLengthInBits()
 
 	// Simple field (channelInfo2)
-	lengthInBits += m.ChannelInfo2.LengthInBits()
+	lengthInBits += m.ChannelInfo2.GetLengthInBits()
 
 	// Simple field (channelInfo3)
-	lengthInBits += m.ChannelInfo3.LengthInBits()
+	lengthInBits += m.ChannelInfo3.GetLengthInBits()
 
 	// Simple field (channelInfo4)
-	lengthInBits += m.ChannelInfo4.LengthInBits()
+	lengthInBits += m.ChannelInfo4.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *DeviceDescriptorType2) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DeviceDescriptorType2) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorType2, error) {
 	if pullErr := readBuffer.PullContext("DeviceDescriptorType2"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (manufacturerId)
 	_manufacturerId, _manufacturerIdErr := readBuffer.ReadUint16("manufacturerId", 16)
@@ -325,6 +397,8 @@ func (m *DeviceDescriptorType2) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

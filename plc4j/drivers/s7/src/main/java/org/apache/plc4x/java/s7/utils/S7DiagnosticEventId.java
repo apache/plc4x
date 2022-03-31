@@ -47,8 +47,6 @@ import java.util.Map;
  *      9   1:Entry in diagnostic buffer
  *     10   1:Internal error
  *     11   1:External error
- * 
- * @author cgarcia
  */
 public enum S7DiagnosticEventId {
 

@@ -31,65 +31,101 @@ type NLMEstablishConnectionToNetwork struct {
 	*NLM
 	DestinationNetworkAddress uint16
 	TerminationTime           uint8
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
 type INLMEstablishConnectionToNetwork interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	INLM
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
+	GetDestinationNetworkAddress() uint16
+	// GetTerminationTime returns TerminationTime (property field)
+	GetTerminationTime() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NLMEstablishConnectionToNetwork) MessageType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *NLMEstablishConnectionToNetwork) GetMessageType() uint8 {
 	return 0x08
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *NLMEstablishConnectionToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
 	m.NLM.VendorId = vendorId
 }
 
-func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, vendorId *uint16) *NLM {
-	child := &NLMEstablishConnectionToNetwork{
+func (m *NLMEstablishConnectionToNetwork) GetParent() *NLM {
+	return m.NLM
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *NLMEstablishConnectionToNetwork) GetDestinationNetworkAddress() uint16 {
+	return m.DestinationNetworkAddress
+}
+
+func (m *NLMEstablishConnectionToNetwork) GetTerminationTime() uint8 {
+	return m.TerminationTime
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewNLMEstablishConnectionToNetwork factory function for NLMEstablishConnectionToNetwork
+func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, vendorId *uint16, apduLength uint16) *NLMEstablishConnectionToNetwork {
+	_result := &NLMEstablishConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		TerminationTime:           terminationTime,
-		NLM:                       NewNLM(vendorId),
+		NLM:                       NewNLM(vendorId, apduLength),
 	}
-	child.Child = child
-	return child.NLM
+	_result.Child = _result
+	return _result
 }
 
 func CastNLMEstablishConnectionToNetwork(structType interface{}) *NLMEstablishConnectionToNetwork {
-	castFunc := func(typ interface{}) *NLMEstablishConnectionToNetwork {
-		if casted, ok := typ.(NLMEstablishConnectionToNetwork); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NLMEstablishConnectionToNetwork); ok {
-			return casted
-		}
-		if casted, ok := typ.(NLM); ok {
-			return CastNLMEstablishConnectionToNetwork(casted.Child)
-		}
-		if casted, ok := typ.(*NLM); ok {
-			return CastNLMEstablishConnectionToNetwork(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(NLMEstablishConnectionToNetwork); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NLMEstablishConnectionToNetwork); ok {
+		return casted
+	}
+	if casted, ok := structType.(NLM); ok {
+		return CastNLMEstablishConnectionToNetwork(casted.Child)
+	}
+	if casted, ok := structType.(*NLM); ok {
+		return CastNLMEstablishConnectionToNetwork(casted.Child)
+	}
+	return nil
 }
 
 func (m *NLMEstablishConnectionToNetwork) GetTypeName() string {
 	return "NLMEstablishConnectionToNetwork"
 }
 
-func (m *NLMEstablishConnectionToNetwork) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NLMEstablishConnectionToNetwork) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NLMEstablishConnectionToNetwork) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *NLMEstablishConnectionToNetwork) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (destinationNetworkAddress)
 	lengthInBits += 16
@@ -100,14 +136,16 @@ func (m *NLMEstablishConnectionToNetwork) LengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *NLMEstablishConnectionToNetwork) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NLMEstablishConnectionToNetwork) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func NLMEstablishConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
+func NLMEstablishConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLMEstablishConnectionToNetwork, error) {
 	if pullErr := readBuffer.PullContext("NLMEstablishConnectionToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationNetworkAddress)
 	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
@@ -134,7 +172,7 @@ func NLMEstablishConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLengt
 		NLM:                       &NLM{},
 	}
 	_child.NLM.Child = _child
-	return _child.NLM, nil
+	return _child, nil
 }
 
 func (m *NLMEstablishConnectionToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -170,6 +208,8 @@ func (m *NLMEstablishConnectionToNetwork) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

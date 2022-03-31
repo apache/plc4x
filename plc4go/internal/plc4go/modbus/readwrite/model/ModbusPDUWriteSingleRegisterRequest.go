@@ -35,67 +35,100 @@ type ModbusPDUWriteSingleRegisterRequest struct {
 
 // The corresponding interface
 type IModbusPDUWriteSingleRegisterRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IModbusPDU
+	// GetAddress returns Address (property field)
+	GetAddress() uint16
+	// GetValue returns Value (property field)
+	GetValue() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUWriteSingleRegisterRequest) ErrorFlag() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ModbusPDUWriteSingleRegisterRequest) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUWriteSingleRegisterRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUWriteSingleRegisterRequest) GetFunctionFlag() uint8 {
 	return 0x06
 }
 
-func (m *ModbusPDUWriteSingleRegisterRequest) Response() bool {
+func (m *ModbusPDUWriteSingleRegisterRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ModbusPDUWriteSingleRegisterRequest) InitializeParent(parent *ModbusPDU) {}
 
-func NewModbusPDUWriteSingleRegisterRequest(address uint16, value uint16) *ModbusPDU {
-	child := &ModbusPDUWriteSingleRegisterRequest{
+func (m *ModbusPDUWriteSingleRegisterRequest) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ModbusPDUWriteSingleRegisterRequest) GetAddress() uint16 {
+	return m.Address
+}
+
+func (m *ModbusPDUWriteSingleRegisterRequest) GetValue() uint16 {
+	return m.Value
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusPDUWriteSingleRegisterRequest factory function for ModbusPDUWriteSingleRegisterRequest
+func NewModbusPDUWriteSingleRegisterRequest(address uint16, value uint16) *ModbusPDUWriteSingleRegisterRequest {
+	_result := &ModbusPDUWriteSingleRegisterRequest{
 		Address:   address,
 		Value:     value,
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUWriteSingleRegisterRequest(structType interface{}) *ModbusPDUWriteSingleRegisterRequest {
-	castFunc := func(typ interface{}) *ModbusPDUWriteSingleRegisterRequest {
-		if casted, ok := typ.(ModbusPDUWriteSingleRegisterRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUWriteSingleRegisterRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUWriteSingleRegisterRequest(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUWriteSingleRegisterRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUWriteSingleRegisterRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUWriteSingleRegisterRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUWriteSingleRegisterRequest(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUWriteSingleRegisterRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUWriteSingleRegisterRequest) GetTypeName() string {
 	return "ModbusPDUWriteSingleRegisterRequest"
 }
 
-func (m *ModbusPDUWriteSingleRegisterRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUWriteSingleRegisterRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUWriteSingleRegisterRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUWriteSingleRegisterRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (address)
 	lengthInBits += 16
@@ -106,14 +139,16 @@ func (m *ModbusPDUWriteSingleRegisterRequest) LengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *ModbusPDUWriteSingleRegisterRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUWriteSingleRegisterRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUWriteSingleRegisterRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUWriteSingleRegisterRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUWriteSingleRegisterRequest, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteSingleRegisterRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (address)
 	_address, _addressErr := readBuffer.ReadUint16("address", 16)
@@ -140,7 +175,7 @@ func ModbusPDUWriteSingleRegisterRequestParse(readBuffer utils.ReadBuffer, respo
 		ModbusPDU: &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUWriteSingleRegisterRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -176,6 +211,8 @@ func (m *ModbusPDUWriteSingleRegisterRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

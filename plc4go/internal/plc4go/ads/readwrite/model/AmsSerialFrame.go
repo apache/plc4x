@@ -39,37 +39,89 @@ type AmsSerialFrame struct {
 
 // The corresponding interface
 type IAmsSerialFrame interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetMagicCookie returns MagicCookie (property field)
+	GetMagicCookie() uint16
+	// GetTransmitterAddress returns TransmitterAddress (property field)
+	GetTransmitterAddress() int8
+	// GetReceiverAddress returns ReceiverAddress (property field)
+	GetReceiverAddress() int8
+	// GetFragmentNumber returns FragmentNumber (property field)
+	GetFragmentNumber() int8
+	// GetLength returns Length (property field)
+	GetLength() int8
+	// GetUserdata returns Userdata (property field)
+	GetUserdata() *AmsPacket
+	// GetCrc returns Crc (property field)
+	GetCrc() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AmsSerialFrame) GetMagicCookie() uint16 {
+	return m.MagicCookie
+}
+
+func (m *AmsSerialFrame) GetTransmitterAddress() int8 {
+	return m.TransmitterAddress
+}
+
+func (m *AmsSerialFrame) GetReceiverAddress() int8 {
+	return m.ReceiverAddress
+}
+
+func (m *AmsSerialFrame) GetFragmentNumber() int8 {
+	return m.FragmentNumber
+}
+
+func (m *AmsSerialFrame) GetLength() int8 {
+	return m.Length
+}
+
+func (m *AmsSerialFrame) GetUserdata() *AmsPacket {
+	return m.Userdata
+}
+
+func (m *AmsSerialFrame) GetCrc() uint16 {
+	return m.Crc
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAmsSerialFrame factory function for AmsSerialFrame
 func NewAmsSerialFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, userdata *AmsPacket, crc uint16) *AmsSerialFrame {
 	return &AmsSerialFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Userdata: userdata, Crc: crc}
 }
 
 func CastAmsSerialFrame(structType interface{}) *AmsSerialFrame {
-	castFunc := func(typ interface{}) *AmsSerialFrame {
-		if casted, ok := typ.(AmsSerialFrame); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AmsSerialFrame); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AmsSerialFrame); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AmsSerialFrame); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AmsSerialFrame) GetTypeName() string {
 	return "AmsSerialFrame"
 }
 
-func (m *AmsSerialFrame) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AmsSerialFrame) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AmsSerialFrame) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AmsSerialFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (magicCookie)
@@ -88,7 +140,7 @@ func (m *AmsSerialFrame) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (userdata)
-	lengthInBits += m.Userdata.LengthInBits()
+	lengthInBits += m.Userdata.GetLengthInBits()
 
 	// Simple field (crc)
 	lengthInBits += 16
@@ -96,14 +148,16 @@ func (m *AmsSerialFrame) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AmsSerialFrame) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AmsSerialFrame) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialFrame, error) {
 	if pullErr := readBuffer.PullContext("AmsSerialFrame"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (magicCookie)
 	_magicCookie, _magicCookieErr := readBuffer.ReadUint16("magicCookie", 16)
@@ -238,6 +292,8 @@ func (m *AmsSerialFrame) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -28,74 +28,91 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestVTClose struct {
 	*BACnetConfirmedServiceRequest
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestVTClose interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetConfirmedServiceRequest
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestVTClose) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetConfirmedServiceRequestVTClose) GetServiceChoice() uint8 {
 	return 0x16
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetConfirmedServiceRequestVTClose) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestVTClose() *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestVTClose{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+func (m *BACnetConfirmedServiceRequestVTClose) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
+// NewBACnetConfirmedServiceRequestVTClose factory function for BACnetConfirmedServiceRequestVTClose
+func NewBACnetConfirmedServiceRequestVTClose(len uint16) *BACnetConfirmedServiceRequestVTClose {
+	_result := &BACnetConfirmedServiceRequestVTClose{
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestVTClose(structType interface{}) *BACnetConfirmedServiceRequestVTClose {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestVTClose {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestVTClose); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestVTClose); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestVTClose(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestVTClose(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestVTClose); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestVTClose); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestVTClose(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestVTClose(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestVTClose) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestVTClose"
 }
 
-func (m *BACnetConfirmedServiceRequestVTClose) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestVTClose) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestVTClose) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestVTClose) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestVTClose) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestVTClose) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestVTClose, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTClose"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestVTClose"); closeErr != nil {
 		return nil, closeErr
@@ -106,7 +123,7 @@ func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, len 
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestVTClose) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -128,6 +145,8 @@ func (m *BACnetConfirmedServiceRequestVTClose) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

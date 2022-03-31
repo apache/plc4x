@@ -38,95 +38,142 @@ type BACnetServiceAckReadProperty struct {
 
 // The corresponding interface
 type IBACnetServiceAckReadProperty interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetServiceAck
+	// GetObjectIdentifier returns ObjectIdentifier (property field)
+	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
+	// GetPropertyIdentifier returns PropertyIdentifier (property field)
+	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	// GetArrayIndex returns ArrayIndex (property field)
+	GetArrayIndex() *BACnetContextTagUnsignedInteger
+	// GetValues returns Values (property field)
+	GetValues() *BACnetConstructedData
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckReadProperty) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetServiceAckReadProperty) GetServiceChoice() uint8 {
 	return 0x0C
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *BACnetServiceAckReadProperty) InitializeParent(parent *BACnetServiceAck) {}
 
-func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, values *BACnetConstructedData) *BACnetServiceAck {
-	child := &BACnetServiceAckReadProperty{
+func (m *BACnetServiceAckReadProperty) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetServiceAckReadProperty) GetObjectIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.ObjectIdentifier
+}
+
+func (m *BACnetServiceAckReadProperty) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+	return m.PropertyIdentifier
+}
+
+func (m *BACnetServiceAckReadProperty) GetArrayIndex() *BACnetContextTagUnsignedInteger {
+	return m.ArrayIndex
+}
+
+func (m *BACnetServiceAckReadProperty) GetValues() *BACnetConstructedData {
+	return m.Values
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetServiceAckReadProperty factory function for BACnetServiceAckReadProperty
+func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, values *BACnetConstructedData) *BACnetServiceAckReadProperty {
+	_result := &BACnetServiceAckReadProperty{
 		ObjectIdentifier:   objectIdentifier,
 		PropertyIdentifier: propertyIdentifier,
 		ArrayIndex:         arrayIndex,
 		Values:             values,
 		BACnetServiceAck:   NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckReadProperty(structType interface{}) *BACnetServiceAckReadProperty {
-	castFunc := func(typ interface{}) *BACnetServiceAckReadProperty {
-		if casted, ok := typ.(BACnetServiceAckReadProperty); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckReadProperty); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckReadProperty(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckReadProperty(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckReadProperty); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckReadProperty); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckReadProperty(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckReadProperty(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckReadProperty) GetTypeName() string {
 	return "BACnetServiceAckReadProperty"
 }
 
-func (m *BACnetServiceAckReadProperty) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckReadProperty) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckReadProperty) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckReadProperty) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (objectIdentifier)
-	lengthInBits += m.ObjectIdentifier.LengthInBits()
+	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
 
 	// Simple field (propertyIdentifier)
-	lengthInBits += m.PropertyIdentifier.LengthInBits()
+	lengthInBits += m.PropertyIdentifier.GetLengthInBits()
 
 	// Optional Field (arrayIndex)
 	if m.ArrayIndex != nil {
-		lengthInBits += (*m.ArrayIndex).LengthInBits()
+		lengthInBits += (*m.ArrayIndex).GetLengthInBits()
 	}
 
 	// Optional Field (values)
 	if m.Values != nil {
-		lengthInBits += (*m.Values).LengthInBits()
+		lengthInBits += (*m.Values).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckReadProperty) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckReadProperty) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckReadProperty, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadProperty"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field")
 	}
@@ -139,7 +186,7 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_BACNET_PROPERTY_IDENTIFIER)
+	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
@@ -151,7 +198,7 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -172,11 +219,11 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 	// Optional Field (values) (Can be skipped, if a given expression evaluates to false)
 	var values *BACnetConstructedData = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("values"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), objectIdentifier.ObjectType, propertyIdentifier)
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
@@ -203,7 +250,7 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		BACnetServiceAck:   &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckReadProperty) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -281,6 +328,8 @@ func (m *BACnetServiceAckReadProperty) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

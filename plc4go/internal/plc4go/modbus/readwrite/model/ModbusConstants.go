@@ -36,37 +36,51 @@ type ModbusConstants struct {
 
 // The corresponding interface
 type IModbusConstants interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for const fields.
+///////////////////////
+func (m *ModbusConstants) GetModbusTcpDefaultPort() uint16 {
+	return ModbusConstants_MODBUSTCPDEFAULTPORT
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusConstants factory function for ModbusConstants
 func NewModbusConstants() *ModbusConstants {
 	return &ModbusConstants{}
 }
 
 func CastModbusConstants(structType interface{}) *ModbusConstants {
-	castFunc := func(typ interface{}) *ModbusConstants {
-		if casted, ok := typ.(ModbusConstants); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusConstants); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ModbusConstants); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusConstants); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ModbusConstants) GetTypeName() string {
 	return "ModbusConstants"
 }
 
-func (m *ModbusConstants) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusConstants) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusConstants) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *ModbusConstants) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (modbusTcpDefaultPort)
@@ -75,14 +89,16 @@ func (m *ModbusConstants) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *ModbusConstants) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusConstants) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusConstantsParse(readBuffer utils.ReadBuffer) (*ModbusConstants, error) {
 	if pullErr := readBuffer.PullContext("ModbusConstants"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (modbusTcpDefaultPort)
 	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := readBuffer.ReadUint16("modbusTcpDefaultPort", 16)
@@ -123,6 +139,8 @@ func (m *ModbusConstants) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

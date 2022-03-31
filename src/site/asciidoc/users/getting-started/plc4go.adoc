@@ -100,7 +100,7 @@ Now that the `PlcDriverManager` is configured, we can use it to get a new connec
 
 ----
    	// Get a connection to a remote PLC
-	connectionRequestChanel := driverManager.GetConnection("modbus://192.168.23.30?unit-identifier=1")
+	connectionRequestChanel := driverManager.GetConnection("modbus-tcp://192.168.23.30?unit-identifier=1")
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-connectionRequestChanel

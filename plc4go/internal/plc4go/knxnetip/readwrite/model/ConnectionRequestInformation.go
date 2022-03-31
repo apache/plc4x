@@ -33,9 +33,13 @@ type ConnectionRequestInformation struct {
 
 // The corresponding interface
 type IConnectionRequestInformation interface {
-	ConnectionType() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetConnectionType returns ConnectionType (discriminator field)
+	GetConnectionType() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,40 +51,43 @@ type IConnectionRequestInformationParent interface {
 type IConnectionRequestInformationChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *ConnectionRequestInformation)
+	GetParent() *ConnectionRequestInformation
+
 	GetTypeName() string
 	IConnectionRequestInformation
 }
 
+// NewConnectionRequestInformation factory function for ConnectionRequestInformation
 func NewConnectionRequestInformation() *ConnectionRequestInformation {
 	return &ConnectionRequestInformation{}
 }
 
 func CastConnectionRequestInformation(structType interface{}) *ConnectionRequestInformation {
-	castFunc := func(typ interface{}) *ConnectionRequestInformation {
-		if casted, ok := typ.(ConnectionRequestInformation); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConnectionRequestInformation); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ConnectionRequestInformation); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConnectionRequestInformation); ok {
+		return casted
+	}
+	if casted, ok := structType.(IConnectionRequestInformationChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *ConnectionRequestInformation) GetTypeName() string {
 	return "ConnectionRequestInformation"
 }
 
-func (m *ConnectionRequestInformation) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ConnectionRequestInformation) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ConnectionRequestInformation) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *ConnectionRequestInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *ConnectionRequestInformation) ParentLengthInBits() uint16 {
+func (m *ConnectionRequestInformation) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -91,16 +98,18 @@ func (m *ConnectionRequestInformation) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *ConnectionRequestInformation) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ConnectionRequestInformation) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (*ConnectionRequestInformation, error) {
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformation"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
@@ -114,13 +123,17 @@ func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (*Connection
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *ConnectionRequestInformation
+	type ConnectionRequestInformationChild interface {
+		InitializeParent(*ConnectionRequestInformation)
+		GetParent() *ConnectionRequestInformation
+	}
+	var _child ConnectionRequestInformationChild
 	var typeSwitchError error
 	switch {
 	case connectionType == 0x03: // ConnectionRequestInformationDeviceManagement
-		_parent, typeSwitchError = ConnectionRequestInformationDeviceManagementParse(readBuffer)
+		_child, typeSwitchError = ConnectionRequestInformationDeviceManagementParse(readBuffer)
 	case connectionType == 0x04: // ConnectionRequestInformationTunnelConnection
-		_parent, typeSwitchError = ConnectionRequestInformationTunnelConnectionParse(readBuffer)
+		_child, typeSwitchError = ConnectionRequestInformationTunnelConnectionParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -134,8 +147,8 @@ func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (*Connection
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *ConnectionRequestInformation) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,14 +161,14 @@ func (m *ConnectionRequestInformation) SerializeParent(writeBuffer utils.WriteBu
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.LengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes()))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
 	// Discriminator Field (connectionType) (Used as input to a switch field)
-	connectionType := uint8(child.ConnectionType())
+	connectionType := uint8(child.GetConnectionType())
 	_connectionTypeErr := writeBuffer.WriteUint8("connectionType", 8, (connectionType))
 
 	if _connectionTypeErr != nil {
@@ -178,6 +191,8 @@ func (m *ConnectionRequestInformation) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

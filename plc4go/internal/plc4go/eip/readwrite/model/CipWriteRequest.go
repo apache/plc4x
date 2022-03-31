@@ -34,66 +34,120 @@ type CipWriteRequest struct {
 	DataType        CIPDataTypeCode
 	ElementNb       uint16
 	Data            []byte
+
+	// Arguments.
+	ServiceLen uint16
 }
 
 // The corresponding interface
 type ICipWriteRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICipService
+	// GetRequestPathSize returns RequestPathSize (property field)
+	GetRequestPathSize() int8
+	// GetTag returns Tag (property field)
+	GetTag() []byte
+	// GetDataType returns DataType (property field)
+	GetDataType() CIPDataTypeCode
+	// GetElementNb returns ElementNb (property field)
+	GetElementNb() uint16
+	// GetData returns Data (property field)
+	GetData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CipWriteRequest) Service() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *CipWriteRequest) GetService() uint8 {
 	return 0x4D
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *CipWriteRequest) InitializeParent(parent *CipService) {}
 
-func NewCipWriteRequest(requestPathSize int8, tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte) *CipService {
-	child := &CipWriteRequest{
+func (m *CipWriteRequest) GetParent() *CipService {
+	return m.CipService
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *CipWriteRequest) GetRequestPathSize() int8 {
+	return m.RequestPathSize
+}
+
+func (m *CipWriteRequest) GetTag() []byte {
+	return m.Tag
+}
+
+func (m *CipWriteRequest) GetDataType() CIPDataTypeCode {
+	return m.DataType
+}
+
+func (m *CipWriteRequest) GetElementNb() uint16 {
+	return m.ElementNb
+}
+
+func (m *CipWriteRequest) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewCipWriteRequest factory function for CipWriteRequest
+func NewCipWriteRequest(requestPathSize int8, tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte, serviceLen uint16) *CipWriteRequest {
+	_result := &CipWriteRequest{
 		RequestPathSize: requestPathSize,
 		Tag:             tag,
 		DataType:        dataType,
 		ElementNb:       elementNb,
 		Data:            data,
-		CipService:      NewCipService(),
+		CipService:      NewCipService(serviceLen),
 	}
-	child.Child = child
-	return child.CipService
+	_result.Child = _result
+	return _result
 }
 
 func CastCipWriteRequest(structType interface{}) *CipWriteRequest {
-	castFunc := func(typ interface{}) *CipWriteRequest {
-		if casted, ok := typ.(CipWriteRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CipWriteRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(CipService); ok {
-			return CastCipWriteRequest(casted.Child)
-		}
-		if casted, ok := typ.(*CipService); ok {
-			return CastCipWriteRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CipWriteRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CipWriteRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(CipService); ok {
+		return CastCipWriteRequest(casted.Child)
+	}
+	if casted, ok := structType.(*CipService); ok {
+		return CastCipWriteRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *CipWriteRequest) GetTypeName() string {
 	return "CipWriteRequest"
 }
 
-func (m *CipWriteRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CipWriteRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CipWriteRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CipWriteRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (requestPathSize)
 	lengthInBits += 8
@@ -117,14 +171,16 @@ func (m *CipWriteRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *CipWriteRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CipWriteRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func CipWriteRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {
+func CipWriteRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipWriteRequest, error) {
 	if pullErr := readBuffer.PullContext("CipWriteRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (requestPathSize)
 	_requestPathSize, _requestPathSizeErr := readBuffer.ReadInt8("requestPathSize", 8)
@@ -179,7 +235,7 @@ func CipWriteRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipS
 		CipService:      &CipService{},
 	}
 	_child.CipService.Child = _child
-	return _child.CipService, nil
+	return _child, nil
 }
 
 func (m *CipWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -245,6 +301,8 @@ func (m *CipWriteRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

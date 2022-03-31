@@ -32,86 +32,130 @@ type BACnetUnconfirmedServiceRequestIHave struct {
 	DeviceIdentifier *BACnetApplicationTagObjectIdentifier
 	ObjectIdentifier *BACnetApplicationTagObjectIdentifier
 	ObjectName       *BACnetApplicationTagCharacterString
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestIHave interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetUnconfirmedServiceRequest
+	// GetDeviceIdentifier returns DeviceIdentifier (property field)
+	GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier
+	// GetObjectIdentifier returns ObjectIdentifier (property field)
+	GetObjectIdentifier() *BACnetApplicationTagObjectIdentifier
+	// GetObjectName returns ObjectName (property field)
+	GetObjectName() *BACnetApplicationTagCharacterString
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetUnconfirmedServiceRequestIHave) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetUnconfirmedServiceRequestIHave) GetServiceChoice() uint8 {
 	return 0x01
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetUnconfirmedServiceRequestIHave) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier *BACnetApplicationTagObjectIdentifier, objectIdentifier *BACnetApplicationTagObjectIdentifier, objectName *BACnetApplicationTagCharacterString) *BACnetUnconfirmedServiceRequest {
-	child := &BACnetUnconfirmedServiceRequestIHave{
+func (m *BACnetUnconfirmedServiceRequestIHave) GetParent() *BACnetUnconfirmedServiceRequest {
+	return m.BACnetUnconfirmedServiceRequest
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetUnconfirmedServiceRequestIHave) GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier {
+	return m.DeviceIdentifier
+}
+
+func (m *BACnetUnconfirmedServiceRequestIHave) GetObjectIdentifier() *BACnetApplicationTagObjectIdentifier {
+	return m.ObjectIdentifier
+}
+
+func (m *BACnetUnconfirmedServiceRequestIHave) GetObjectName() *BACnetApplicationTagCharacterString {
+	return m.ObjectName
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetUnconfirmedServiceRequestIHave factory function for BACnetUnconfirmedServiceRequestIHave
+func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier *BACnetApplicationTagObjectIdentifier, objectIdentifier *BACnetApplicationTagObjectIdentifier, objectName *BACnetApplicationTagCharacterString, len uint16) *BACnetUnconfirmedServiceRequestIHave {
+	_result := &BACnetUnconfirmedServiceRequestIHave{
 		DeviceIdentifier:                deviceIdentifier,
 		ObjectIdentifier:                objectIdentifier,
 		ObjectName:                      objectName,
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetUnconfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetUnconfirmedServiceRequestIHave(structType interface{}) *BACnetUnconfirmedServiceRequestIHave {
-	castFunc := func(typ interface{}) *BACnetUnconfirmedServiceRequestIHave {
-		if casted, ok := typ.(BACnetUnconfirmedServiceRequestIHave); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetUnconfirmedServiceRequestIHave); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
-			return CastBACnetUnconfirmedServiceRequestIHave(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
-			return CastBACnetUnconfirmedServiceRequestIHave(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetUnconfirmedServiceRequestIHave); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetUnconfirmedServiceRequestIHave); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetUnconfirmedServiceRequest); ok {
+		return CastBACnetUnconfirmedServiceRequestIHave(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetUnconfirmedServiceRequest); ok {
+		return CastBACnetUnconfirmedServiceRequestIHave(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestIHave) GetTypeName() string {
 	return "BACnetUnconfirmedServiceRequestIHave"
 }
 
-func (m *BACnetUnconfirmedServiceRequestIHave) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetUnconfirmedServiceRequestIHave) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetUnconfirmedServiceRequestIHave) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetUnconfirmedServiceRequestIHave) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (deviceIdentifier)
-	lengthInBits += m.DeviceIdentifier.LengthInBits()
+	lengthInBits += m.DeviceIdentifier.GetLengthInBits()
 
 	// Simple field (objectIdentifier)
-	lengthInBits += m.ObjectIdentifier.LengthInBits()
+	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
 
 	// Simple field (objectName)
-	lengthInBits += m.ObjectName.LengthInBits()
+	lengthInBits += m.ObjectName.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetUnconfirmedServiceRequestIHave) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetUnconfirmedServiceRequestIHave) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestIHave, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestIHave"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (deviceIdentifier)
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
@@ -164,7 +208,7 @@ func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, len 
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
 	_child.BACnetUnconfirmedServiceRequest.Child = _child
-	return _child.BACnetUnconfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestIHave) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -222,6 +266,8 @@ func (m *BACnetUnconfirmedServiceRequestIHave) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

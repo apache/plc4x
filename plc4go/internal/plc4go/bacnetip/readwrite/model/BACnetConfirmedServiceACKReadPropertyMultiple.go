@@ -32,70 +32,84 @@ type BACnetConfirmedServiceACKReadPropertyMultiple struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKReadPropertyMultiple interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetConfirmedServiceACK
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceACKReadPropertyMultiple) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetConfirmedServiceACKReadPropertyMultiple) GetServiceChoice() uint8 {
 	return 0x0E
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
-func NewBACnetConfirmedServiceACKReadPropertyMultiple() *BACnetConfirmedServiceACK {
-	child := &BACnetConfirmedServiceACKReadPropertyMultiple{
+func (m *BACnetConfirmedServiceACKReadPropertyMultiple) GetParent() *BACnetConfirmedServiceACK {
+	return m.BACnetConfirmedServiceACK
+}
+
+// NewBACnetConfirmedServiceACKReadPropertyMultiple factory function for BACnetConfirmedServiceACKReadPropertyMultiple
+func NewBACnetConfirmedServiceACKReadPropertyMultiple() *BACnetConfirmedServiceACKReadPropertyMultiple {
+	_result := &BACnetConfirmedServiceACKReadPropertyMultiple{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceACK
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceACKReadPropertyMultiple(structType interface{}) *BACnetConfirmedServiceACKReadPropertyMultiple {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceACKReadPropertyMultiple {
-		if casted, ok := typ.(BACnetConfirmedServiceACKReadPropertyMultiple); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACKReadPropertyMultiple); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKReadPropertyMultiple(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKReadPropertyMultiple(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceACKReadPropertyMultiple); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceACKReadPropertyMultiple); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKReadPropertyMultiple(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKReadPropertyMultiple(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) GetTypeName() string {
 	return "BACnetConfirmedServiceACKReadPropertyMultiple"
 }
 
-func (m *BACnetConfirmedServiceACKReadPropertyMultiple) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceACKReadPropertyMultiple) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceACKReadPropertyMultiple) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceACKReadPropertyMultiple) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceACKReadPropertyMultiple) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceACKReadPropertyMultiple) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACKReadPropertyMultiple, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKReadPropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceACKReadPropertyMultiple"); closeErr != nil {
 		return nil, closeErr
@@ -106,7 +120,7 @@ func BACnetConfirmedServiceACKReadPropertyMultipleParse(readBuffer utils.ReadBuf
 		BACnetConfirmedServiceACK: &BACnetConfirmedServiceACK{},
 	}
 	_child.BACnetConfirmedServiceACK.Child = _child
-	return _child.BACnetConfirmedServiceACK, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -128,6 +142,8 @@ func (m *BACnetConfirmedServiceACKReadPropertyMultiple) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

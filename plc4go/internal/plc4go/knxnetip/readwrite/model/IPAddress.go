@@ -33,37 +33,53 @@ type IPAddress struct {
 
 // The corresponding interface
 type IIPAddress interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetAddr returns Addr (property field)
+	GetAddr() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *IPAddress) GetAddr() []byte {
+	return m.Addr
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewIPAddress factory function for IPAddress
 func NewIPAddress(addr []byte) *IPAddress {
 	return &IPAddress{Addr: addr}
 }
 
 func CastIPAddress(structType interface{}) *IPAddress {
-	castFunc := func(typ interface{}) *IPAddress {
-		if casted, ok := typ.(IPAddress); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IPAddress); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(IPAddress); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IPAddress); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *IPAddress) GetTypeName() string {
 	return "IPAddress"
 }
 
-func (m *IPAddress) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *IPAddress) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *IPAddress) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *IPAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -74,14 +90,16 @@ func (m *IPAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *IPAddress) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *IPAddress) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func IPAddressParse(readBuffer utils.ReadBuffer) (*IPAddress, error) {
 	if pullErr := readBuffer.PullContext("IPAddress"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	// Byte Array field (addr)
 	numberOfBytesaddr := int(uint16(4))
 	addr, _readArrayErr := readBuffer.ReadByteArray("addr", numberOfBytesaddr)
@@ -122,6 +140,8 @@ func (m *IPAddress) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

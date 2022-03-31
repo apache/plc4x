@@ -31,63 +31,99 @@ type ApduDataDeviceDescriptorResponse struct {
 	*ApduData
 	DescriptorType uint8
 	Data           []byte
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataDeviceDescriptorResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduData
+	// GetDescriptorType returns DescriptorType (property field)
+	GetDescriptorType() uint8
+	// GetData returns Data (property field)
+	GetData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataDeviceDescriptorResponse) ApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataDeviceDescriptorResponse) GetApciType() uint8 {
 	return 0xD
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataDeviceDescriptorResponse) InitializeParent(parent *ApduData) {}
 
-func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte) *ApduData {
-	child := &ApduDataDeviceDescriptorResponse{
+func (m *ApduDataDeviceDescriptorResponse) GetParent() *ApduData {
+	return m.ApduData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ApduDataDeviceDescriptorResponse) GetDescriptorType() uint8 {
+	return m.DescriptorType
+}
+
+func (m *ApduDataDeviceDescriptorResponse) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewApduDataDeviceDescriptorResponse factory function for ApduDataDeviceDescriptorResponse
+func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, dataLength uint8) *ApduDataDeviceDescriptorResponse {
+	_result := &ApduDataDeviceDescriptorResponse{
 		DescriptorType: descriptorType,
 		Data:           data,
-		ApduData:       NewApduData(),
+		ApduData:       NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataDeviceDescriptorResponse(structType interface{}) *ApduDataDeviceDescriptorResponse {
-	castFunc := func(typ interface{}) *ApduDataDeviceDescriptorResponse {
-		if casted, ok := typ.(ApduDataDeviceDescriptorResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataDeviceDescriptorResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataDeviceDescriptorResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataDeviceDescriptorResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataDeviceDescriptorResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataDeviceDescriptorResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataDeviceDescriptorResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataDeviceDescriptorResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataDeviceDescriptorResponse) GetTypeName() string {
 	return "ApduDataDeviceDescriptorResponse"
 }
 
-func (m *ApduDataDeviceDescriptorResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataDeviceDescriptorResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataDeviceDescriptorResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataDeviceDescriptorResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (descriptorType)
 	lengthInBits += 6
@@ -100,14 +136,16 @@ func (m *ApduDataDeviceDescriptorResponse) LengthInBitsConditional(lastItem bool
 	return lengthInBits
 }
 
-func (m *ApduDataDeviceDescriptorResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataDeviceDescriptorResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataDeviceDescriptorResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataDeviceDescriptorResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataDeviceDescriptorResponse, error) {
 	if pullErr := readBuffer.PullContext("ApduDataDeviceDescriptorResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (descriptorType)
 	_descriptorType, _descriptorTypeErr := readBuffer.ReadUint8("descriptorType", 6)
@@ -133,7 +171,7 @@ func ApduDataDeviceDescriptorResponseParse(readBuffer utils.ReadBuffer, dataLeng
 		ApduData:       &ApduData{},
 	}
 	_child.ApduData.Child = _child
-	return _child.ApduData, nil
+	return _child, nil
 }
 
 func (m *ApduDataDeviceDescriptorResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -171,6 +209,8 @@ func (m *ApduDataDeviceDescriptorResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

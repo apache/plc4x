@@ -33,9 +33,13 @@ type S7Address struct {
 
 // The corresponding interface
 type IS7Address interface {
-	AddressType() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetAddressType returns AddressType (discriminator field)
+	GetAddressType() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,40 +51,43 @@ type IS7AddressParent interface {
 type IS7AddressChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *S7Address)
+	GetParent() *S7Address
+
 	GetTypeName() string
 	IS7Address
 }
 
+// NewS7Address factory function for S7Address
 func NewS7Address() *S7Address {
 	return &S7Address{}
 }
 
 func CastS7Address(structType interface{}) *S7Address {
-	castFunc := func(typ interface{}) *S7Address {
-		if casted, ok := typ.(S7Address); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7Address); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(S7Address); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7Address); ok {
+		return casted
+	}
+	if casted, ok := structType.(IS7AddressChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *S7Address) GetTypeName() string {
 	return "S7Address"
 }
 
-func (m *S7Address) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7Address) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7Address) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *S7Address) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *S7Address) ParentLengthInBits() uint16 {
+func (m *S7Address) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (addressType)
 	lengthInBits += 8
@@ -88,14 +95,16 @@ func (m *S7Address) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *S7Address) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7Address) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7AddressParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 	if pullErr := readBuffer.PullContext("S7Address"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType, _addressTypeErr := readBuffer.ReadUint8("addressType", 8)
@@ -104,11 +113,15 @@ func S7AddressParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *S7Address
+	type S7AddressChild interface {
+		InitializeParent(*S7Address)
+		GetParent() *S7Address
+	}
+	var _child S7AddressChild
 	var typeSwitchError error
 	switch {
 	case addressType == 0x10: // S7AddressAny
-		_parent, typeSwitchError = S7AddressAnyParse(readBuffer)
+		_child, typeSwitchError = S7AddressAnyParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -122,8 +135,8 @@ func S7AddressParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *S7Address) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -136,7 +149,7 @@ func (m *S7Address) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Addr
 	}
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
-	addressType := uint8(child.AddressType())
+	addressType := uint8(child.GetAddressType())
 	_addressTypeErr := writeBuffer.WriteUint8("addressType", 8, (addressType))
 
 	if _addressTypeErr != nil {
@@ -159,6 +172,8 @@ func (m *S7Address) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

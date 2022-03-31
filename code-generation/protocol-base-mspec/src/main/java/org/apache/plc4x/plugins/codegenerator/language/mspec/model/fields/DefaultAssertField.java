@@ -19,37 +19,42 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.AssertField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
-public class DefaultAssertField extends DefaultField implements AssertField {
+public class DefaultAssertField extends DefaultTypedNamedField implements AssertField {
 
-    private final TypeReference type;
-    private final String name;
     private final Term conditionExpression;
 
-    public DefaultAssertField(Map<String, Term> attributes, TypeReference type, String name, Term conditionExpression) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+    public DefaultAssertField(Map<String, Term> attributes, String name, Term conditionExpression) {
+        super(attributes, name);
         this.conditionExpression = Objects.requireNonNull(conditionExpression);
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Term getConditionExpression() {
         return conditionExpression;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultAssertField{" +
+            "conditionExpression=" + conditionExpression +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultAssertField that = (DefaultAssertField) o;
+        return Objects.equals(conditionExpression, that.conditionExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), conditionExpression);
+    }
 }

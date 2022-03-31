@@ -34,66 +34,93 @@ type ModbusPDUReadExceptionStatusResponse struct {
 
 // The corresponding interface
 type IModbusPDUReadExceptionStatusResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IModbusPDU
+	// GetValue returns Value (property field)
+	GetValue() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUReadExceptionStatusResponse) ErrorFlag() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ModbusPDUReadExceptionStatusResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadExceptionStatusResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUReadExceptionStatusResponse) GetFunctionFlag() uint8 {
 	return 0x07
 }
 
-func (m *ModbusPDUReadExceptionStatusResponse) Response() bool {
+func (m *ModbusPDUReadExceptionStatusResponse) GetResponse() bool {
 	return bool(true)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ModbusPDUReadExceptionStatusResponse) InitializeParent(parent *ModbusPDU) {}
 
-func NewModbusPDUReadExceptionStatusResponse(value uint8) *ModbusPDU {
-	child := &ModbusPDUReadExceptionStatusResponse{
+func (m *ModbusPDUReadExceptionStatusResponse) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ModbusPDUReadExceptionStatusResponse) GetValue() uint8 {
+	return m.Value
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusPDUReadExceptionStatusResponse factory function for ModbusPDUReadExceptionStatusResponse
+func NewModbusPDUReadExceptionStatusResponse(value uint8) *ModbusPDUReadExceptionStatusResponse {
+	_result := &ModbusPDUReadExceptionStatusResponse{
 		Value:     value,
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReadExceptionStatusResponse(structType interface{}) *ModbusPDUReadExceptionStatusResponse {
-	castFunc := func(typ interface{}) *ModbusPDUReadExceptionStatusResponse {
-		if casted, ok := typ.(ModbusPDUReadExceptionStatusResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReadExceptionStatusResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUReadExceptionStatusResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUReadExceptionStatusResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReadExceptionStatusResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReadExceptionStatusResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUReadExceptionStatusResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUReadExceptionStatusResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUReadExceptionStatusResponse) GetTypeName() string {
 	return "ModbusPDUReadExceptionStatusResponse"
 }
 
-func (m *ModbusPDUReadExceptionStatusResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadExceptionStatusResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadExceptionStatusResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadExceptionStatusResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (value)
 	lengthInBits += 8
@@ -101,14 +128,16 @@ func (m *ModbusPDUReadExceptionStatusResponse) LengthInBitsConditional(lastItem 
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadExceptionStatusResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadExceptionStatusResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUReadExceptionStatusResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUReadExceptionStatusResponse, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadExceptionStatusResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (value)
 	_value, _valueErr := readBuffer.ReadUint8("value", 8)
@@ -127,7 +156,7 @@ func ModbusPDUReadExceptionStatusResponseParse(readBuffer utils.ReadBuffer, resp
 		ModbusPDU: &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUReadExceptionStatusResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -156,6 +185,8 @@ func (m *ModbusPDUReadExceptionStatusResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -36,72 +36,108 @@ type BACnetReadAccessSpecification struct {
 
 // The corresponding interface
 type IBACnetReadAccessSpecification interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetObjectIdentifier returns ObjectIdentifier (property field)
+	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
+	// GetOpeningTag returns OpeningTag (property field)
+	GetOpeningTag() *BACnetOpeningTag
+	// GetListOfPropertyReferences returns ListOfPropertyReferences (property field)
+	GetListOfPropertyReferences() []*BACnetPropertyReference
+	// GetClosingTag returns ClosingTag (property field)
+	GetClosingTag() *BACnetClosingTag
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetReadAccessSpecification) GetObjectIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.ObjectIdentifier
+}
+
+func (m *BACnetReadAccessSpecification) GetOpeningTag() *BACnetOpeningTag {
+	return m.OpeningTag
+}
+
+func (m *BACnetReadAccessSpecification) GetListOfPropertyReferences() []*BACnetPropertyReference {
+	return m.ListOfPropertyReferences
+}
+
+func (m *BACnetReadAccessSpecification) GetClosingTag() *BACnetClosingTag {
+	return m.ClosingTag
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetReadAccessSpecification factory function for BACnetReadAccessSpecification
 func NewBACnetReadAccessSpecification(objectIdentifier *BACnetContextTagObjectIdentifier, openingTag *BACnetOpeningTag, listOfPropertyReferences []*BACnetPropertyReference, closingTag *BACnetClosingTag) *BACnetReadAccessSpecification {
 	return &BACnetReadAccessSpecification{ObjectIdentifier: objectIdentifier, OpeningTag: openingTag, ListOfPropertyReferences: listOfPropertyReferences, ClosingTag: closingTag}
 }
 
 func CastBACnetReadAccessSpecification(structType interface{}) *BACnetReadAccessSpecification {
-	castFunc := func(typ interface{}) *BACnetReadAccessSpecification {
-		if casted, ok := typ.(BACnetReadAccessSpecification); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetReadAccessSpecification); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetReadAccessSpecification); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetReadAccessSpecification); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetReadAccessSpecification) GetTypeName() string {
 	return "BACnetReadAccessSpecification"
 }
 
-func (m *BACnetReadAccessSpecification) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetReadAccessSpecification) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetReadAccessSpecification) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetReadAccessSpecification) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (objectIdentifier)
-	lengthInBits += m.ObjectIdentifier.LengthInBits()
+	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.LengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits()
 
 	// Array field
 	if len(m.ListOfPropertyReferences) > 0 {
 		for _, element := range m.ListOfPropertyReferences {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.LengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetReadAccessSpecification) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetReadAccessSpecification) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetReadAccessSpecificationParse(readBuffer utils.ReadBuffer) (*BACnetReadAccessSpecification, error) {
 	if pullErr := readBuffer.PullContext("BACnetReadAccessSpecification"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field")
 	}
@@ -114,7 +150,7 @@ func BACnetReadAccessSpecificationParse(readBuffer utils.ReadBuffer) (*BACnetRea
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_OPENING_TAG)
+	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_OPENING_TAG))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
 	}
@@ -147,7 +183,7 @@ func BACnetReadAccessSpecificationParse(readBuffer utils.ReadBuffer) (*BACnetRea
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_CLOSING_TAG)
+	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_CLOSING_TAG))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
 	}
@@ -232,6 +268,8 @@ func (m *BACnetReadAccessSpecification) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

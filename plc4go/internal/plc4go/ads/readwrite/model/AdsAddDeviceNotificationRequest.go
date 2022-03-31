@@ -40,26 +40,86 @@ type AdsAddDeviceNotificationRequest struct {
 
 // The corresponding interface
 type IAdsAddDeviceNotificationRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAdsData
+	// GetIndexGroup returns IndexGroup (property field)
+	GetIndexGroup() uint32
+	// GetIndexOffset returns IndexOffset (property field)
+	GetIndexOffset() uint32
+	// GetLength returns Length (property field)
+	GetLength() uint32
+	// GetTransmissionMode returns TransmissionMode (property field)
+	GetTransmissionMode() uint32
+	// GetMaxDelay returns MaxDelay (property field)
+	GetMaxDelay() uint32
+	// GetCycleTime returns CycleTime (property field)
+	GetCycleTime() uint32
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsAddDeviceNotificationRequest) CommandId() CommandId {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *AdsAddDeviceNotificationRequest) GetCommandId() CommandId {
 	return CommandId_ADS_ADD_DEVICE_NOTIFICATION
 }
 
-func (m *AdsAddDeviceNotificationRequest) Response() bool {
+func (m *AdsAddDeviceNotificationRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *AdsAddDeviceNotificationRequest) InitializeParent(parent *AdsData) {}
 
-func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode uint32, maxDelay uint32, cycleTime uint32) *AdsData {
-	child := &AdsAddDeviceNotificationRequest{
+func (m *AdsAddDeviceNotificationRequest) GetParent() *AdsData {
+	return m.AdsData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AdsAddDeviceNotificationRequest) GetIndexGroup() uint32 {
+	return m.IndexGroup
+}
+
+func (m *AdsAddDeviceNotificationRequest) GetIndexOffset() uint32 {
+	return m.IndexOffset
+}
+
+func (m *AdsAddDeviceNotificationRequest) GetLength() uint32 {
+	return m.Length
+}
+
+func (m *AdsAddDeviceNotificationRequest) GetTransmissionMode() uint32 {
+	return m.TransmissionMode
+}
+
+func (m *AdsAddDeviceNotificationRequest) GetMaxDelay() uint32 {
+	return m.MaxDelay
+}
+
+func (m *AdsAddDeviceNotificationRequest) GetCycleTime() uint32 {
+	return m.CycleTime
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAdsAddDeviceNotificationRequest factory function for AdsAddDeviceNotificationRequest
+func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode uint32, maxDelay uint32, cycleTime uint32) *AdsAddDeviceNotificationRequest {
+	_result := &AdsAddDeviceNotificationRequest{
 		IndexGroup:       indexGroup,
 		IndexOffset:      indexOffset,
 		Length:           length,
@@ -68,39 +128,36 @@ func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, l
 		CycleTime:        cycleTime,
 		AdsData:          NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsAddDeviceNotificationRequest(structType interface{}) *AdsAddDeviceNotificationRequest {
-	castFunc := func(typ interface{}) *AdsAddDeviceNotificationRequest {
-		if casted, ok := typ.(AdsAddDeviceNotificationRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsAddDeviceNotificationRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsAddDeviceNotificationRequest(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsAddDeviceNotificationRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsAddDeviceNotificationRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsAddDeviceNotificationRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsAddDeviceNotificationRequest(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsAddDeviceNotificationRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsAddDeviceNotificationRequest) GetTypeName() string {
 	return "AdsAddDeviceNotificationRequest"
 }
 
-func (m *AdsAddDeviceNotificationRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsAddDeviceNotificationRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsAddDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsAddDeviceNotificationRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -129,14 +186,16 @@ func (m *AdsAddDeviceNotificationRequest) LengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *AdsAddDeviceNotificationRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsAddDeviceNotificationRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsAddDeviceNotificationRequest, error) {
 	if pullErr := readBuffer.PullContext("AdsAddDeviceNotificationRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (indexGroup)
 	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
@@ -223,7 +282,7 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 		AdsData:          &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -303,6 +362,8 @@ func (m *AdsAddDeviceNotificationRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

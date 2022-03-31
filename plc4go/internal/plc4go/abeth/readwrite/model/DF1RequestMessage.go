@@ -38,9 +38,21 @@ type DF1RequestMessage struct {
 
 // The corresponding interface
 type IDF1RequestMessage interface {
-	CommandCode() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetCommandCode returns CommandCode (discriminator field)
+	GetCommandCode() uint8
+	// GetDestinationAddress returns DestinationAddress (property field)
+	GetDestinationAddress() uint8
+	// GetSourceAddress returns SourceAddress (property field)
+	GetSourceAddress() uint8
+	// GetStatus returns Status (property field)
+	GetStatus() uint8
+	// GetTransactionCounter returns TransactionCounter (property field)
+	GetTransactionCounter() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -52,40 +64,68 @@ type IDF1RequestMessageParent interface {
 type IDF1RequestMessageChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *DF1RequestMessage, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16)
+	GetParent() *DF1RequestMessage
+
 	GetTypeName() string
 	IDF1RequestMessage
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *DF1RequestMessage) GetDestinationAddress() uint8 {
+	return m.DestinationAddress
+}
+
+func (m *DF1RequestMessage) GetSourceAddress() uint8 {
+	return m.SourceAddress
+}
+
+func (m *DF1RequestMessage) GetStatus() uint8 {
+	return m.Status
+}
+
+func (m *DF1RequestMessage) GetTransactionCounter() uint16 {
+	return m.TransactionCounter
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewDF1RequestMessage factory function for DF1RequestMessage
 func NewDF1RequestMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1RequestMessage {
 	return &DF1RequestMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter}
 }
 
 func CastDF1RequestMessage(structType interface{}) *DF1RequestMessage {
-	castFunc := func(typ interface{}) *DF1RequestMessage {
-		if casted, ok := typ.(DF1RequestMessage); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1RequestMessage); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DF1RequestMessage); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1RequestMessage); ok {
+		return casted
+	}
+	if casted, ok := structType.(IDF1RequestMessageChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *DF1RequestMessage) GetTypeName() string {
 	return "DF1RequestMessage"
 }
 
-func (m *DF1RequestMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1RequestMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1RequestMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *DF1RequestMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *DF1RequestMessage) ParentLengthInBits() uint16 {
+func (m *DF1RequestMessage) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (destinationAddress)
@@ -108,14 +148,16 @@ func (m *DF1RequestMessage) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *DF1RequestMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1RequestMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMessage, error) {
 	if pullErr := readBuffer.PullContext("DF1RequestMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationAddress)
 	_destinationAddress, _destinationAddressErr := readBuffer.ReadUint8("destinationAddress", 8)
@@ -166,11 +208,15 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMessage, er
 	transactionCounter := _transactionCounter
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *DF1RequestMessage
+	type DF1RequestMessageChild interface {
+		InitializeParent(*DF1RequestMessage, uint8, uint8, uint8, uint16)
+		GetParent() *DF1RequestMessage
+	}
+	var _child DF1RequestMessageChild
 	var typeSwitchError error
 	switch {
 	case commandCode == 0x0F: // DF1CommandRequestMessage
-		_parent, typeSwitchError = DF1CommandRequestMessageParse(readBuffer)
+		_child, typeSwitchError = DF1CommandRequestMessageParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -184,8 +230,8 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMessage, er
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, destinationAddress, sourceAddress, status, transactionCounter)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), destinationAddress, sourceAddress, status, transactionCounter)
+	return _child.GetParent(), nil
 }
 
 func (m *DF1RequestMessage) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -220,7 +266,7 @@ func (m *DF1RequestMessage) SerializeParent(writeBuffer utils.WriteBuffer, child
 	}
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
-	commandCode := uint8(child.CommandCode())
+	commandCode := uint8(child.GetCommandCode())
 	_commandCodeErr := writeBuffer.WriteUint8("commandCode", 8, (commandCode))
 
 	if _commandCodeErr != nil {
@@ -257,6 +303,8 @@ func (m *DF1RequestMessage) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

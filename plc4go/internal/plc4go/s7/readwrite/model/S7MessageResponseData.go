@@ -35,17 +35,31 @@ type S7MessageResponseData struct {
 
 // The corresponding interface
 type IS7MessageResponseData interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7Message
+	// GetErrorClass returns ErrorClass (property field)
+	GetErrorClass() uint8
+	// GetErrorCode returns ErrorCode (property field)
+	GetErrorCode() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7MessageResponseData) MessageType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7MessageResponseData) GetMessageType() uint8 {
 	return 0x03
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *S7MessageResponseData) InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) {
 	m.S7Message.TpduReference = tpduReference
@@ -53,45 +67,64 @@ func (m *S7MessageResponseData) InitializeParent(parent *S7Message, tpduReferenc
 	m.S7Message.Payload = payload
 }
 
-func NewS7MessageResponseData(errorClass uint8, errorCode uint8, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
-	child := &S7MessageResponseData{
+func (m *S7MessageResponseData) GetParent() *S7Message {
+	return m.S7Message
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7MessageResponseData) GetErrorClass() uint8 {
+	return m.ErrorClass
+}
+
+func (m *S7MessageResponseData) GetErrorCode() uint8 {
+	return m.ErrorCode
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7MessageResponseData factory function for S7MessageResponseData
+func NewS7MessageResponseData(errorClass uint8, errorCode uint8, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7MessageResponseData {
+	_result := &S7MessageResponseData{
 		ErrorClass: errorClass,
 		ErrorCode:  errorCode,
 		S7Message:  NewS7Message(tpduReference, parameter, payload),
 	}
-	child.Child = child
-	return child.S7Message
+	_result.Child = _result
+	return _result
 }
 
 func CastS7MessageResponseData(structType interface{}) *S7MessageResponseData {
-	castFunc := func(typ interface{}) *S7MessageResponseData {
-		if casted, ok := typ.(S7MessageResponseData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7MessageResponseData); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7Message); ok {
-			return CastS7MessageResponseData(casted.Child)
-		}
-		if casted, ok := typ.(*S7Message); ok {
-			return CastS7MessageResponseData(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7MessageResponseData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7MessageResponseData); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7Message); ok {
+		return CastS7MessageResponseData(casted.Child)
+	}
+	if casted, ok := structType.(*S7Message); ok {
+		return CastS7MessageResponseData(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7MessageResponseData) GetTypeName() string {
 	return "S7MessageResponseData"
 }
 
-func (m *S7MessageResponseData) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7MessageResponseData) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7MessageResponseData) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7MessageResponseData) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (errorClass)
 	lengthInBits += 8
@@ -102,14 +135,16 @@ func (m *S7MessageResponseData) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *S7MessageResponseData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7MessageResponseData) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7MessageResponseDataParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
+func S7MessageResponseDataParse(readBuffer utils.ReadBuffer) (*S7MessageResponseData, error) {
 	if pullErr := readBuffer.PullContext("S7MessageResponseData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (errorClass)
 	_errorClass, _errorClassErr := readBuffer.ReadUint8("errorClass", 8)
@@ -136,7 +171,7 @@ func S7MessageResponseDataParse(readBuffer utils.ReadBuffer) (*S7Message, error)
 		S7Message:  &S7Message{},
 	}
 	_child.S7Message.Child = _child
-	return _child.S7Message, nil
+	return _child, nil
 }
 
 func (m *S7MessageResponseData) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -172,6 +207,8 @@ func (m *S7MessageResponseData) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

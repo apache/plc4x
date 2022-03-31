@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.bacnetip.readwrite.utils;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
@@ -25,6 +26,8 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.math.BigInteger;
 
 import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithAdditionalStringRepresentation;
 
@@ -338,4 +341,172 @@ public class StaticHelper {
         // TODO: temporary
         return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
     }
+
+    public static long parseVarUint(byte[] data) {
+        return new BigInteger(data).longValue();
+    }
+
+    public static byte[] writeVarUint(long value) {
+        return BigInteger.valueOf(value).toByteArray();
+    }
+
+    public static BACnetTagHeader createBACnetTagHeaderBalanced(boolean isContext, short id, long value) {
+        TagClass tagClass = TagClass.APPLICATION_TAGS;
+        if (isContext) {
+            tagClass = TagClass.CONTEXT_SPECIFIC_TAGS;
+        }
+
+        byte tagNumber;
+        Short extTagNumber = null;
+        if (id <= 14) {
+            tagNumber = (byte) id;
+        } else {
+            tagNumber = 0xF;
+            extTagNumber = id;
+        }
+
+        byte lengthValueType;
+        Short extLength = null;
+        Integer extExtLength = null;
+        Long extExtExtLength = null;
+        if (value <= 4) {
+            lengthValueType = (byte) value;
+        } else {
+            lengthValueType = 5;
+            // Depending on the length, we will either write it as an 8 bit, 32 bit, or 64 bit integer
+            if (value <= 253) {
+                extLength = (short) value;
+            } else if (value <= 65535) {
+                extLength = 254;
+                extExtLength = (int) value;
+            } else {
+                extLength = 255;
+                extExtExtLength = value;
+            }
+        }
+
+        return new BACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength);
+    }
+
+    public static BACnetApplicationTagObjectIdentifier createBACnetApplicationTagObjectIdentifier(int objectType, long instance) {
+        BACnetTagHeader header = new BACnetTagHeader((byte) 0xC, TagClass.APPLICATION_TAGS, (byte) 4, null, null, null, null);
+        BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
+        if (objectType >= 128 || !BACnetObjectType.isDefined(objectType)) {
+            objectTypeEnum = BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
+        }
+        BACnetTagPayloadObjectIdentifier payload = new BACnetTagPayloadObjectIdentifier(objectTypeEnum, objectType, instance);
+        return new BACnetApplicationTagObjectIdentifier(header, payload);
+    }
+
+    public static BACnetContextTagObjectIdentifier createBACnetContextTagObjectIdentifier(byte tagNum, int objectType, long instance) {
+        BACnetTagHeader header = new BACnetTagHeader(tagNum, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) 4, null, null, null, null);
+        BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
+        if (objectType >= 128 || !BACnetObjectType.isDefined(objectType)) {
+            objectTypeEnum = BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
+        }
+        BACnetTagPayloadObjectIdentifier payload = new BACnetTagPayloadObjectIdentifier(objectTypeEnum, objectType, instance);
+        return new BACnetContextTagObjectIdentifier(header, payload, (short) tagNum, true);
+    }
+
+    public static BACnetApplicationTagEnumerated createBACnetApplicationTagEnumerated(long value) {
+        Pair<Long, BACnetTagPayloadEnumerated> lengthPayload = CreateEnumeratedPayload(value);
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 0x9, lengthPayload.getLeft());
+        return new BACnetApplicationTagEnumerated(header, lengthPayload.getRight());
+    }
+
+    public static BACnetContextTagEnumerated CreateBACnetContextTagEnumerated(byte tagNumber, long value) {
+        Pair<Long, BACnetTagPayloadEnumerated> lengthPayload = CreateEnumeratedPayload(value);
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNumber, lengthPayload.getLeft());
+        return new BACnetContextTagEnumerated(header, lengthPayload.getRight(), (short) tagNumber, true);
+    }
+
+    public static Pair<Long, BACnetTagPayloadEnumerated> CreateEnumeratedPayload(long value) {
+        long length;
+        if (value < 0x100)
+            length = 1;
+        else if (value < 0x10000)
+            length = 2;
+        else if (value < 0x1000000)
+            length = 3;
+        else
+            length = 4;
+        byte[] data = writeVarUint(value);
+        BACnetTagPayloadEnumerated payload = new BACnetTagPayloadEnumerated(data, length);
+        return Pair.of(length, payload);
+    }
+
+    public static BACnetApplicationTagUnsignedInteger createBACnetApplicationTagUnsignedInteger(long value) {
+        Pair<Long, BACnetTagPayloadUnsignedInteger> lengthPayload = createUnsignedPayload(value);
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 0x2, lengthPayload.getLeft());
+        return new BACnetApplicationTagUnsignedInteger(header, lengthPayload.getRight());
+    }
+
+    public static BACnetContextTagUnsignedInteger createBACnetContextTagUnsignedInteger(byte tagNumber, long value) {
+        Pair<Long, BACnetTagPayloadUnsignedInteger> lengthPayload = createUnsignedPayload(value);
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNumber, lengthPayload.getLeft());
+        return new BACnetContextTagUnsignedInteger(header, lengthPayload.getRight(), (short) tagNumber, true);
+    }
+
+    public static Pair<Long, BACnetTagPayloadUnsignedInteger> createUnsignedPayload(long value) {
+        long length;
+        Short valueUint8 = null;
+        Integer valueUint16 = null;
+        Long valueUint24 = null;
+        Long valueUint32 = null;
+        BigInteger valueUint40 = null;
+        BigInteger valueUint48 = null;
+        BigInteger valueUint56 = null;
+        BigInteger valueUint64 = null;
+        if (value < 0x100) {
+            length = 1;
+            valueUint8 = (short) value;
+        } else if (value < 0x10000) {
+            length = 2;
+            valueUint16 = (int) value;
+        } else if (value < 0x1000000) {
+            length = 3;
+            valueUint24 = value;
+        } else {
+            length = 4;
+            valueUint32 = value;
+        }
+        BACnetTagPayloadUnsignedInteger payload = new BACnetTagPayloadUnsignedInteger(valueUint8, valueUint16, valueUint24, valueUint32, valueUint40, valueUint48, valueUint56, valueUint64, length);
+        return Pair.of(length, payload);
+    }
+
+    public static BACnetApplicationTagSignedInteger createBACnetApplicationTagSignedInteger(long value) {
+        Pair<Long, BACnetTagPayloadSignedInteger> lengthPayload = createSignedPayload(value);
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 0x3, lengthPayload.getLeft());
+        return new BACnetApplicationTagSignedInteger(header, lengthPayload.getRight());
+    }
+
+    public static BACnetContextTagSignedInteger createBACnetContextTagSignedInteger(short tagNumber, long value) {
+        Pair<Long, BACnetTagPayloadSignedInteger> lengthPayload = createSignedPayload(value);
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) tagNumber, lengthPayload.getLeft());
+        return new BACnetContextTagSignedInteger(header, lengthPayload.getRight(), tagNumber, true);
+    }
+
+    public static Pair<Long, BACnetTagPayloadSignedInteger> createSignedPayload(long value) {
+        long length;
+        Byte valueInt8 = null;
+        Short valueInt16 = null;
+        Integer valueInt24 = null;
+        Integer valueInt32 = null;
+        if (value < 0x100) {
+            length = 1;
+            valueInt8 = (byte) value;
+        } else if (value < 0x10000) {
+            length = 2;
+            valueInt16 = (short) value;
+        } else if (value < 0x1000000) {
+            length = 3;
+            valueInt24 = (int) value;
+        } else {
+            length = 4;
+            valueInt32 = (int) value;
+        }
+        BACnetTagPayloadSignedInteger payload = new BACnetTagPayloadSignedInteger(valueInt8, valueInt16, valueInt24, valueInt32, null, null, null, null, length);
+        return Pair.of(length, payload);
+    }
+
 }

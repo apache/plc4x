@@ -42,37 +42,95 @@ type AlarmMessageAckObjectPushType struct {
 
 // The corresponding interface
 type IAlarmMessageAckObjectPushType interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetLengthSpec returns LengthSpec (property field)
+	GetLengthSpec() uint8
+	// GetSyntaxId returns SyntaxId (property field)
+	GetSyntaxId() SyntaxIdType
+	// GetNumberOfValues returns NumberOfValues (property field)
+	GetNumberOfValues() uint8
+	// GetEventId returns EventId (property field)
+	GetEventId() uint32
+	// GetAckStateGoing returns AckStateGoing (property field)
+	GetAckStateGoing() *State
+	// GetAckStateComing returns AckStateComing (property field)
+	GetAckStateComing() *State
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AlarmMessageAckObjectPushType) GetLengthSpec() uint8 {
+	return m.LengthSpec
+}
+
+func (m *AlarmMessageAckObjectPushType) GetSyntaxId() SyntaxIdType {
+	return m.SyntaxId
+}
+
+func (m *AlarmMessageAckObjectPushType) GetNumberOfValues() uint8 {
+	return m.NumberOfValues
+}
+
+func (m *AlarmMessageAckObjectPushType) GetEventId() uint32 {
+	return m.EventId
+}
+
+func (m *AlarmMessageAckObjectPushType) GetAckStateGoing() *State {
+	return m.AckStateGoing
+}
+
+func (m *AlarmMessageAckObjectPushType) GetAckStateComing() *State {
+	return m.AckStateComing
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for const fields.
+///////////////////////
+func (m *AlarmMessageAckObjectPushType) GetVariableSpec() uint8 {
+	return AlarmMessageAckObjectPushType_VARIABLESPEC
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAlarmMessageAckObjectPushType factory function for AlarmMessageAckObjectPushType
 func NewAlarmMessageAckObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing *State, ackStateComing *State) *AlarmMessageAckObjectPushType {
 	return &AlarmMessageAckObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}
 }
 
 func CastAlarmMessageAckObjectPushType(structType interface{}) *AlarmMessageAckObjectPushType {
-	castFunc := func(typ interface{}) *AlarmMessageAckObjectPushType {
-		if casted, ok := typ.(AlarmMessageAckObjectPushType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AlarmMessageAckObjectPushType); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AlarmMessageAckObjectPushType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AlarmMessageAckObjectPushType); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AlarmMessageAckObjectPushType) GetTypeName() string {
 	return "AlarmMessageAckObjectPushType"
 }
 
-func (m *AlarmMessageAckObjectPushType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AlarmMessageAckObjectPushType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageAckObjectPushType) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AlarmMessageAckObjectPushType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (variableSpec)
@@ -91,22 +149,24 @@ func (m *AlarmMessageAckObjectPushType) LengthInBitsConditional(lastItem bool) u
 	lengthInBits += 32
 
 	// Simple field (ackStateGoing)
-	lengthInBits += m.AckStateGoing.LengthInBits()
+	lengthInBits += m.AckStateGoing.GetLengthInBits()
 
 	// Simple field (ackStateComing)
-	lengthInBits += m.AckStateComing.LengthInBits()
+	lengthInBits += m.AckStateComing.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *AlarmMessageAckObjectPushType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AlarmMessageAckObjectPushType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AlarmMessageAckObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAckObjectPushType, error) {
 	if pullErr := readBuffer.PullContext("AlarmMessageAckObjectPushType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (variableSpec)
 	variableSpec, _variableSpecErr := readBuffer.ReadUint8("variableSpec", 8)
@@ -264,6 +324,8 @@ func (m *AlarmMessageAckObjectPushType) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

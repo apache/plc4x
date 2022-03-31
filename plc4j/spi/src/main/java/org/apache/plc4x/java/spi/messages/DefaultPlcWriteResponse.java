@@ -26,7 +26,6 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -39,13 +38,13 @@ import java.util.Map;
 public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
 
     private final PlcWriteRequest request;
-    private final Map<String, PlcResponseCode> values;
+    private final Map<String, PlcResponseCode> responses;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultPlcWriteResponse(@JsonProperty("request") PlcWriteRequest request,
-                                   @JsonProperty("values") Map<String, PlcResponseCode> values) {
+                                   @JsonProperty("values") Map<String, PlcResponseCode> responses) {
         this.request = request;
-        this.values = values;
+        this.responses = responses;
     }
 
     @Override
@@ -68,7 +67,7 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
     @Override
     @JsonIgnore
     public PlcResponseCode getResponseCode(String name) {
-        return values.get(name);
+        return responses.get(name);
     }
 
     @Override
@@ -79,7 +78,7 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
             ((Serializable) request).serialize(writeBuffer);
         }
         writeBuffer.pushContext("fields");
-        for (Map.Entry<String, PlcResponseCode> fieldEntry : values.entrySet()) {
+        for (Map.Entry<String, PlcResponseCode> fieldEntry : responses.entrySet()) {
             String fieldName = fieldEntry.getKey();
             final PlcResponseCode fieldResponseCode = fieldEntry.getValue();
             String result = fieldResponseCode.name();

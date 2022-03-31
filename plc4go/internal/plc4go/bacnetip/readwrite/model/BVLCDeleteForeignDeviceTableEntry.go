@@ -32,71 +32,83 @@ type BVLCDeleteForeignDeviceTableEntry struct {
 
 // The corresponding interface
 type IBVLCDeleteForeignDeviceTableEntry interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBVLC
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCDeleteForeignDeviceTableEntry) BvlcFunction() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BVLCDeleteForeignDeviceTableEntry) GetBvlcFunction() uint8 {
 	return 0x08
 }
 
-func (m *BVLCDeleteForeignDeviceTableEntry) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+func (m *BVLCDeleteForeignDeviceTableEntry) InitializeParent(parent *BVLC) {}
+
+func (m *BVLCDeleteForeignDeviceTableEntry) GetParent() *BVLC {
+	return m.BVLC
 }
 
-func NewBVLCDeleteForeignDeviceTableEntry(bvlcPayloadLength uint16) *BVLC {
-	child := &BVLCDeleteForeignDeviceTableEntry{
-		BVLC: NewBVLC(bvlcPayloadLength),
+// NewBVLCDeleteForeignDeviceTableEntry factory function for BVLCDeleteForeignDeviceTableEntry
+func NewBVLCDeleteForeignDeviceTableEntry() *BVLCDeleteForeignDeviceTableEntry {
+	_result := &BVLCDeleteForeignDeviceTableEntry{
+		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCDeleteForeignDeviceTableEntry(structType interface{}) *BVLCDeleteForeignDeviceTableEntry {
-	castFunc := func(typ interface{}) *BVLCDeleteForeignDeviceTableEntry {
-		if casted, ok := typ.(BVLCDeleteForeignDeviceTableEntry); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCDeleteForeignDeviceTableEntry); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCDeleteForeignDeviceTableEntry(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCDeleteForeignDeviceTableEntry(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCDeleteForeignDeviceTableEntry); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCDeleteForeignDeviceTableEntry); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCDeleteForeignDeviceTableEntry(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCDeleteForeignDeviceTableEntry(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCDeleteForeignDeviceTableEntry) GetTypeName() string {
 	return "BVLCDeleteForeignDeviceTableEntry"
 }
 
-func (m *BVLCDeleteForeignDeviceTableEntry) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCDeleteForeignDeviceTableEntry) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCDeleteForeignDeviceTableEntry) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCDeleteForeignDeviceTableEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BVLCDeleteForeignDeviceTableEntry) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCDeleteForeignDeviceTableEntry) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
+func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (*BVLCDeleteForeignDeviceTableEntry, error) {
 	if pullErr := readBuffer.PullContext("BVLCDeleteForeignDeviceTableEntry"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BVLCDeleteForeignDeviceTableEntry"); closeErr != nil {
 		return nil, closeErr
@@ -107,7 +119,7 @@ func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (*BVLC,
 		BVLC: &BVLC{},
 	}
 	_child.BVLC.Child = _child
-	return _child.BVLC, nil
+	return _child, nil
 }
 
 func (m *BVLCDeleteForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -129,6 +141,8 @@ func (m *BVLCDeleteForeignDeviceTableEntry) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

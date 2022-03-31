@@ -38,9 +38,13 @@ type S7DataAlarmMessage struct {
 
 // The corresponding interface
 type IS7DataAlarmMessage interface {
-	CpuFunctionType() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
+	GetCpuFunctionType() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -52,40 +56,60 @@ type IS7DataAlarmMessageParent interface {
 type IS7DataAlarmMessageChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *S7DataAlarmMessage)
+	GetParent() *S7DataAlarmMessage
+
 	GetTypeName() string
 	IS7DataAlarmMessage
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for const fields.
+///////////////////////
+func (m *S7DataAlarmMessage) GetFunctionId() uint8 {
+	return S7DataAlarmMessage_FUNCTIONID
+}
+
+func (m *S7DataAlarmMessage) GetNumberMessageObj() uint8 {
+	return S7DataAlarmMessage_NUMBERMESSAGEOBJ
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7DataAlarmMessage factory function for S7DataAlarmMessage
 func NewS7DataAlarmMessage() *S7DataAlarmMessage {
 	return &S7DataAlarmMessage{}
 }
 
 func CastS7DataAlarmMessage(structType interface{}) *S7DataAlarmMessage {
-	castFunc := func(typ interface{}) *S7DataAlarmMessage {
-		if casted, ok := typ.(S7DataAlarmMessage); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7DataAlarmMessage); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(S7DataAlarmMessage); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7DataAlarmMessage); ok {
+		return casted
+	}
+	if casted, ok := structType.(IS7DataAlarmMessageChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *S7DataAlarmMessage) GetTypeName() string {
 	return "S7DataAlarmMessage"
 }
 
-func (m *S7DataAlarmMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7DataAlarmMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7DataAlarmMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *S7DataAlarmMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *S7DataAlarmMessage) ParentLengthInBits() uint16 {
+func (m *S7DataAlarmMessage) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (functionId)
@@ -97,14 +121,16 @@ func (m *S7DataAlarmMessage) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *S7DataAlarmMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7DataAlarmMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (*S7DataAlarmMessage, error) {
 	if pullErr := readBuffer.PullContext("S7DataAlarmMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (functionId)
 	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
@@ -125,13 +151,17 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *S7DataAlarmMessage
+	type S7DataAlarmMessageChild interface {
+		InitializeParent(*S7DataAlarmMessage)
+		GetParent() *S7DataAlarmMessage
+	}
+	var _child S7DataAlarmMessageChild
 	var typeSwitchError error
 	switch {
 	case cpuFunctionType == 0x04: // S7MessageObjectRequest
-		_parent, typeSwitchError = S7MessageObjectRequestParse(readBuffer, cpuFunctionType)
+		_child, typeSwitchError = S7MessageObjectRequestParse(readBuffer, cpuFunctionType)
 	case cpuFunctionType == 0x08: // S7MessageObjectResponse
-		_parent, typeSwitchError = S7MessageObjectResponseParse(readBuffer, cpuFunctionType)
+		_child, typeSwitchError = S7MessageObjectResponseParse(readBuffer, cpuFunctionType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -145,8 +175,8 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *S7DataAlarmMessage) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -186,6 +216,8 @@ func (m *S7DataAlarmMessage) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

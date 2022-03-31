@@ -27,7 +27,7 @@
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-hello-webapp</artifactId>
+  <artifactId>plc4j-examples-hello-webapp</artifactId>
   <name>PLC4J: Examples: Hello-Webapp (root)</name>
   <packaging>pom</packaging>
 

@@ -41,37 +41,101 @@ type GroupObjectDescriptorRealisationType7 struct {
 
 // The corresponding interface
 type IGroupObjectDescriptorRealisationType7 interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetDataAddress returns DataAddress (property field)
+	GetDataAddress() uint16
+	// GetUpdateEnable returns UpdateEnable (property field)
+	GetUpdateEnable() bool
+	// GetTransmitEnable returns TransmitEnable (property field)
+	GetTransmitEnable() bool
+	// GetSegmentSelectorEnable returns SegmentSelectorEnable (property field)
+	GetSegmentSelectorEnable() bool
+	// GetWriteEnable returns WriteEnable (property field)
+	GetWriteEnable() bool
+	// GetReadEnable returns ReadEnable (property field)
+	GetReadEnable() bool
+	// GetCommunicationEnable returns CommunicationEnable (property field)
+	GetCommunicationEnable() bool
+	// GetPriority returns Priority (property field)
+	GetPriority() CEMIPriority
+	// GetValueType returns ValueType (property field)
+	GetValueType() ComObjectValueType
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *GroupObjectDescriptorRealisationType7) GetDataAddress() uint16 {
+	return m.DataAddress
+}
+
+func (m *GroupObjectDescriptorRealisationType7) GetUpdateEnable() bool {
+	return m.UpdateEnable
+}
+
+func (m *GroupObjectDescriptorRealisationType7) GetTransmitEnable() bool {
+	return m.TransmitEnable
+}
+
+func (m *GroupObjectDescriptorRealisationType7) GetSegmentSelectorEnable() bool {
+	return m.SegmentSelectorEnable
+}
+
+func (m *GroupObjectDescriptorRealisationType7) GetWriteEnable() bool {
+	return m.WriteEnable
+}
+
+func (m *GroupObjectDescriptorRealisationType7) GetReadEnable() bool {
+	return m.ReadEnable
+}
+
+func (m *GroupObjectDescriptorRealisationType7) GetCommunicationEnable() bool {
+	return m.CommunicationEnable
+}
+
+func (m *GroupObjectDescriptorRealisationType7) GetPriority() CEMIPriority {
+	return m.Priority
+}
+
+func (m *GroupObjectDescriptorRealisationType7) GetValueType() ComObjectValueType {
+	return m.ValueType
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewGroupObjectDescriptorRealisationType7 factory function for GroupObjectDescriptorRealisationType7
 func NewGroupObjectDescriptorRealisationType7(dataAddress uint16, updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *GroupObjectDescriptorRealisationType7 {
 	return &GroupObjectDescriptorRealisationType7{DataAddress: dataAddress, UpdateEnable: updateEnable, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}
 }
 
 func CastGroupObjectDescriptorRealisationType7(structType interface{}) *GroupObjectDescriptorRealisationType7 {
-	castFunc := func(typ interface{}) *GroupObjectDescriptorRealisationType7 {
-		if casted, ok := typ.(GroupObjectDescriptorRealisationType7); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*GroupObjectDescriptorRealisationType7); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(GroupObjectDescriptorRealisationType7); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*GroupObjectDescriptorRealisationType7); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *GroupObjectDescriptorRealisationType7) GetTypeName() string {
 	return "GroupObjectDescriptorRealisationType7"
 }
 
-func (m *GroupObjectDescriptorRealisationType7) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *GroupObjectDescriptorRealisationType7) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *GroupObjectDescriptorRealisationType7) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *GroupObjectDescriptorRealisationType7) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (dataAddress)
@@ -104,14 +168,16 @@ func (m *GroupObjectDescriptorRealisationType7) LengthInBitsConditional(lastItem
 	return lengthInBits
 }
 
-func (m *GroupObjectDescriptorRealisationType7) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *GroupObjectDescriptorRealisationType7) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func GroupObjectDescriptorRealisationType7Parse(readBuffer utils.ReadBuffer) (*GroupObjectDescriptorRealisationType7, error) {
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType7"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (dataAddress)
 	_dataAddress, _dataAddressErr := readBuffer.ReadUint16("dataAddress", 16)
@@ -285,6 +351,8 @@ func (m *GroupObjectDescriptorRealisationType7) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

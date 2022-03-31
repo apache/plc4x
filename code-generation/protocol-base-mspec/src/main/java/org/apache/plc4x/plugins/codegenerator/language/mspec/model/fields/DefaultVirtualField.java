@@ -24,29 +24,37 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
 
-public class DefaultVirtualField extends DefaultField implements VirtualField {
+public class DefaultVirtualField extends DefaultTypedNamedField implements VirtualField {
 
-    private final TypeReference type;
-    private final String name;
     private final Term valueExpression;
 
-    public DefaultVirtualField(Map<String, Term> attributes, TypeReference type, String name, Term valueExpression) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+    public DefaultVirtualField(Map<String, Term> attributes, String name, Term valueExpression) {
+        super(attributes, name);
         this.valueExpression = Objects.requireNonNull(valueExpression);
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Term getValueExpression() {
         return valueExpression;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultVirtualField{" +
+            "valueExpression=" + valueExpression +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultVirtualField that = (DefaultVirtualField) o;
+        return Objects.equals(valueExpression, that.valueExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), valueExpression);
+    }
 }

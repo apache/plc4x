@@ -86,12 +86,12 @@ func CastTagClass(structType interface{}) TagClass {
 	return castFunc(structType)
 }
 
-func (m TagClass) LengthInBits() uint16 {
+func (m TagClass) GetLengthInBits() uint16 {
 	return 1
 }
 
-func (m TagClass) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m TagClass) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func TagClassParse(readBuffer utils.ReadBuffer) (TagClass, error) {

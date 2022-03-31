@@ -32,73 +32,87 @@ type SysexCommandCapabilityResponse struct {
 
 // The corresponding interface
 type ISysexCommandCapabilityResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ISysexCommand
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandCapabilityResponse) CommandType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *SysexCommandCapabilityResponse) GetCommandType() uint8 {
 	return 0x6C
 }
 
-func (m *SysexCommandCapabilityResponse) Response() bool {
+func (m *SysexCommandCapabilityResponse) GetResponse() bool {
 	return false
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *SysexCommandCapabilityResponse) InitializeParent(parent *SysexCommand) {}
 
-func NewSysexCommandCapabilityResponse() *SysexCommand {
-	child := &SysexCommandCapabilityResponse{
+func (m *SysexCommandCapabilityResponse) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
+// NewSysexCommandCapabilityResponse factory function for SysexCommandCapabilityResponse
+func NewSysexCommandCapabilityResponse() *SysexCommandCapabilityResponse {
+	_result := &SysexCommandCapabilityResponse{
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandCapabilityResponse(structType interface{}) *SysexCommandCapabilityResponse {
-	castFunc := func(typ interface{}) *SysexCommandCapabilityResponse {
-		if casted, ok := typ.(SysexCommandCapabilityResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandCapabilityResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandCapabilityResponse(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandCapabilityResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandCapabilityResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandCapabilityResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandCapabilityResponse(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandCapabilityResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandCapabilityResponse) GetTypeName() string {
 	return "SysexCommandCapabilityResponse"
 }
 
-func (m *SysexCommandCapabilityResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandCapabilityResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandCapabilityResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandCapabilityResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *SysexCommandCapabilityResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandCapabilityResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandCapabilityResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
+func SysexCommandCapabilityResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandCapabilityResponse, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandCapabilityResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandCapabilityResponse"); closeErr != nil {
 		return nil, closeErr
@@ -109,7 +123,7 @@ func SysexCommandCapabilityResponseParse(readBuffer utils.ReadBuffer, response b
 		SysexCommand: &SysexCommand{},
 	}
 	_child.SysexCommand.Child = _child
-	return _child.SysexCommand, nil
+	return _child, nil
 }
 
 func (m *SysexCommandCapabilityResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -131,6 +145,8 @@ func (m *SysexCommandCapabilityResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

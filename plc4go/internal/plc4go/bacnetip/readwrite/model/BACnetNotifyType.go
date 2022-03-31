@@ -92,12 +92,12 @@ func CastBACnetNotifyType(structType interface{}) BACnetNotifyType {
 	return castFunc(structType)
 }
 
-func (m BACnetNotifyType) LengthInBits() uint16 {
+func (m BACnetNotifyType) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m BACnetNotifyType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m BACnetNotifyType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetNotifyTypeParse(readBuffer utils.ReadBuffer) (BACnetNotifyType, error) {

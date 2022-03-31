@@ -42,10 +42,6 @@ import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author julian
- * Created by julian on 2019-08-16
- */
 public class PcapReplayChannel extends OioByteStreamChannel {
 
     private static final Logger logger = LoggerFactory.getLogger(PcapReplayChannel.class);

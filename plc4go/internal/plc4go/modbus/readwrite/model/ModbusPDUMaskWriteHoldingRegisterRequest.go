@@ -36,68 +36,107 @@ type ModbusPDUMaskWriteHoldingRegisterRequest struct {
 
 // The corresponding interface
 type IModbusPDUMaskWriteHoldingRegisterRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IModbusPDU
+	// GetReferenceAddress returns ReferenceAddress (property field)
+	GetReferenceAddress() uint16
+	// GetAndMask returns AndMask (property field)
+	GetAndMask() uint16
+	// GetOrMask returns OrMask (property field)
+	GetOrMask() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUMaskWriteHoldingRegisterRequest) ErrorFlag() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUMaskWriteHoldingRegisterRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetFunctionFlag() uint8 {
 	return 0x16
 }
 
-func (m *ModbusPDUMaskWriteHoldingRegisterRequest) Response() bool {
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) InitializeParent(parent *ModbusPDU) {}
 
-func NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress uint16, andMask uint16, orMask uint16) *ModbusPDU {
-	child := &ModbusPDUMaskWriteHoldingRegisterRequest{
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetReferenceAddress() uint16 {
+	return m.ReferenceAddress
+}
+
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetAndMask() uint16 {
+	return m.AndMask
+}
+
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetOrMask() uint16 {
+	return m.OrMask
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusPDUMaskWriteHoldingRegisterRequest factory function for ModbusPDUMaskWriteHoldingRegisterRequest
+func NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress uint16, andMask uint16, orMask uint16) *ModbusPDUMaskWriteHoldingRegisterRequest {
+	_result := &ModbusPDUMaskWriteHoldingRegisterRequest{
 		ReferenceAddress: referenceAddress,
 		AndMask:          andMask,
 		OrMask:           orMask,
 		ModbusPDU:        NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUMaskWriteHoldingRegisterRequest(structType interface{}) *ModbusPDUMaskWriteHoldingRegisterRequest {
-	castFunc := func(typ interface{}) *ModbusPDUMaskWriteHoldingRegisterRequest {
-		if casted, ok := typ.(ModbusPDUMaskWriteHoldingRegisterRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUMaskWriteHoldingRegisterRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUMaskWriteHoldingRegisterRequest(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUMaskWriteHoldingRegisterRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUMaskWriteHoldingRegisterRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUMaskWriteHoldingRegisterRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUMaskWriteHoldingRegisterRequest(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUMaskWriteHoldingRegisterRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetTypeName() string {
 	return "ModbusPDUMaskWriteHoldingRegisterRequest"
 }
 
-func (m *ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (referenceAddress)
 	lengthInBits += 16
@@ -111,14 +150,16 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBitsConditional(lastI
 	return lengthInBits
 }
 
-func (m *ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUMaskWriteHoldingRegisterRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUMaskWriteHoldingRegisterRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUMaskWriteHoldingRegisterRequest, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUMaskWriteHoldingRegisterRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (referenceAddress)
 	_referenceAddress, _referenceAddressErr := readBuffer.ReadUint16("referenceAddress", 16)
@@ -153,7 +194,7 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParse(readBuffer utils.ReadBuffer, 
 		ModbusPDU:        &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -196,6 +237,8 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

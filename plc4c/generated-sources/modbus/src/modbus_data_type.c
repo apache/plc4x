@@ -234,10 +234,10 @@ plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_typ
 uint8_t plc4c_modbus_read_write_modbus_data_type_get_data_type_size(plc4c_modbus_read_write_modbus_data_type value) {
   switch(value) {
     case plc4c_modbus_read_write_modbus_data_type_BOOL: { /* '1' */
-      return 1;
+      return 2;
     }
     case plc4c_modbus_read_write_modbus_data_type_USINT: { /* '10' */
-      return 1;
+      return 2;
     }
     case plc4c_modbus_read_write_modbus_data_type_UINT: { /* '11' */
       return 2;
@@ -267,7 +267,7 @@ uint8_t plc4c_modbus_read_write_modbus_data_type_get_data_type_size(plc4c_modbus
       return 8;
     }
     case plc4c_modbus_read_write_modbus_data_type_BYTE: { /* '2' */
-      return 1;
+      return 2;
     }
     case plc4c_modbus_read_write_modbus_data_type_TIME_OF_DAY: { /* '20' */
       return 8;
@@ -303,7 +303,7 @@ uint8_t plc4c_modbus_read_write_modbus_data_type_get_data_type_size(plc4c_modbus
       return 8;
     }
     case plc4c_modbus_read_write_modbus_data_type_SINT: { /* '6' */
-      return 1;
+      return 2;
     }
     case plc4c_modbus_read_write_modbus_data_type_INT: { /* '7' */
       return 2;
@@ -323,10 +323,10 @@ uint8_t plc4c_modbus_read_write_modbus_data_type_get_data_type_size(plc4c_modbus
 plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_type_get_first_enum_for_field_data_type_size(uint8_t value) {
     switch(value) {
         case 1: {
-            return plc4c_modbus_read_write_modbus_data_type_BOOL;
+            return plc4c_modbus_read_write_modbus_data_type_CHAR;
         }
         case 2: {
-            return plc4c_modbus_read_write_modbus_data_type_WORD;
+            return plc4c_modbus_read_write_modbus_data_type_BOOL;
         }
         case 4: {
             return plc4c_modbus_read_write_modbus_data_type_DWORD;

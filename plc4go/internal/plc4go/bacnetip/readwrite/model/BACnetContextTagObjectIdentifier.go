@@ -29,125 +29,165 @@ import (
 // The data-structure of this message
 type BACnetContextTagObjectIdentifier struct {
 	*BACnetContextTag
-	ObjectType       BACnetObjectType
-	ProprietaryValue uint16
-	InstanceNumber   uint32
-	IsProprietary    bool
+	Payload *BACnetTagPayloadObjectIdentifier
+
+	// Arguments.
+	TagNumberArgument        uint8
+	IsNotOpeningOrClosingTag bool
 }
 
 // The corresponding interface
 type IBACnetContextTagObjectIdentifier interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetContextTag
+	// GetPayload returns Payload (property field)
+	GetPayload() *BACnetTagPayloadObjectIdentifier
+	// GetObjectType returns ObjectType (virtual field)
+	GetObjectType() BACnetObjectType
+	// GetInstanceNumber returns InstanceNumber (virtual field)
+	GetInstanceNumber() uint32
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagObjectIdentifier) DataType() BACnetDataType {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetContextTagObjectIdentifier) GetDataType() BACnetDataType {
 	return BACnetDataType_BACNET_OBJECT_IDENTIFIER
 }
 
-func (m *BACnetContextTagObjectIdentifier) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+func (m *BACnetContextTagObjectIdentifier) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader) {
 	m.BACnetContextTag.Header = header
-	m.BACnetContextTag.TagNumber = tagNumber
-	m.BACnetContextTag.ActualLength = actualLength
-	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
-func NewBACnetContextTagObjectIdentifier(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32, isProprietary bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagObjectIdentifier{
-		ObjectType:       objectType,
-		ProprietaryValue: proprietaryValue,
-		InstanceNumber:   instanceNumber,
-		IsProprietary:    isProprietary,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
+func (m *BACnetContextTagObjectIdentifier) GetParent() *BACnetContextTag {
+	return m.BACnetContextTag
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetContextTagObjectIdentifier) GetPayload() *BACnetTagPayloadObjectIdentifier {
+	return m.Payload
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+func (m *BACnetContextTagObjectIdentifier) GetObjectType() BACnetObjectType {
+	return BACnetObjectType(m.GetPayload().GetObjectType())
+}
+
+func (m *BACnetContextTagObjectIdentifier) GetInstanceNumber() uint32 {
+	return uint32(m.GetPayload().GetInstanceNumber())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetContextTagObjectIdentifier factory function for BACnetContextTagObjectIdentifier
+func NewBACnetContextTagObjectIdentifier(payload *BACnetTagPayloadObjectIdentifier, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagObjectIdentifier {
+	_result := &BACnetContextTagObjectIdentifier{
+		Payload:          payload,
+		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagObjectIdentifier(structType interface{}) *BACnetContextTagObjectIdentifier {
-	castFunc := func(typ interface{}) *BACnetContextTagObjectIdentifier {
-		if casted, ok := typ.(BACnetContextTagObjectIdentifier); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagObjectIdentifier); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagObjectIdentifier(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagObjectIdentifier(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagObjectIdentifier); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagObjectIdentifier); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagObjectIdentifier(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagObjectIdentifier(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagObjectIdentifier) GetTypeName() string {
 	return "BACnetContextTagObjectIdentifier"
 }
 
-func (m *BACnetContextTagObjectIdentifier) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTagObjectIdentifier) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTagObjectIdentifier) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetContextTagObjectIdentifier) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Manual Field (objectType)
-	lengthInBits += uint16(int32(10))
-
-	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(int32(0))
+	// Simple field (payload)
+	lengthInBits += m.Payload.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
-	// Simple field (instanceNumber)
-	lengthInBits += 22
+	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *BACnetContextTagObjectIdentifier) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTagObjectIdentifier) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool) (*BACnetContextTag, error) {
+func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool) (*BACnetContextTagObjectIdentifier, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagObjectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {
 		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
 	}
 
-	// Manual Field (objectType)
-	objectType, _objectTypeErr := ReadObjectType(readBuffer)
-	if _objectTypeErr != nil {
-		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
+	// Simple Field (payload)
+	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
+		return nil, pullErr
 	}
-
-	// Manual Field (proprietaryValue)
-	proprietaryValue, _proprietaryValueErr := ReadProprietaryObjectType(readBuffer, objectType)
-	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
+	_payload, _payloadErr := BACnetTagPayloadObjectIdentifierParse(readBuffer)
+	if _payloadErr != nil {
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+	}
+	payload := CastBACnetTagPayloadObjectIdentifier(_payload)
+	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Virtual field
-	_isProprietary := bool((objectType) == (BACnetObjectType_VENDOR_PROPRIETARY_VALUE))
-	isProprietary := bool(_isProprietary)
+	_objectType := payload.GetObjectType()
+	objectType := BACnetObjectType(_objectType)
+	_ = objectType
 
-	// Simple Field (instanceNumber)
-	_instanceNumber, _instanceNumberErr := readBuffer.ReadUint32("instanceNumber", 22)
-	if _instanceNumberErr != nil {
-		return nil, errors.Wrap(_instanceNumberErr, "Error parsing 'instanceNumber' field")
-	}
-	instanceNumber := _instanceNumber
+	// Virtual field
+	_instanceNumber := payload.GetInstanceNumber()
+	instanceNumber := uint32(_instanceNumber)
+	_ = instanceNumber
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagObjectIdentifier"); closeErr != nil {
 		return nil, closeErr
@@ -155,14 +195,11 @@ func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &BACnetContextTagObjectIdentifier{
-		ObjectType:       objectType,
-		ProprietaryValue: proprietaryValue,
-		InstanceNumber:   instanceNumber,
-		IsProprietary:    isProprietary,
+		Payload:          CastBACnetTagPayloadObjectIdentifier(payload),
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
-	return _child.BACnetContextTag, nil
+	return _child, nil
 }
 
 func (m *BACnetContextTagObjectIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -171,26 +208,23 @@ func (m *BACnetContextTagObjectIdentifier) Serialize(writeBuffer utils.WriteBuff
 			return pushErr
 		}
 
-		// Manual Field (objectType)
-		_objectTypeErr := WriteObjectType(writeBuffer, m.ObjectType)
-		if _objectTypeErr != nil {
-			return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
+		// Simple Field (payload)
+		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
+			return pushErr
 		}
-
-		// Manual Field (proprietaryValue)
-		_proprietaryValueErr := WriteProprietaryObjectType(writeBuffer, m.ObjectType, m.ProprietaryValue)
-		if _proprietaryValueErr != nil {
-			return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
+		_payloadErr := m.Payload.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
+			return popErr
+		}
+		if _payloadErr != nil {
+			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 		// Virtual field
-		if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.IsProprietary); _isProprietaryErr != nil {
-			return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
+		if _objectTypeErr := writeBuffer.WriteVirtual("objectType", m.GetObjectType()); _objectTypeErr != nil {
+			return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 		}
-
-		// Simple Field (instanceNumber)
-		instanceNumber := uint32(m.InstanceNumber)
-		_instanceNumberErr := writeBuffer.WriteUint32("instanceNumber", 22, (instanceNumber))
-		if _instanceNumberErr != nil {
+		// Virtual field
+		if _instanceNumberErr := writeBuffer.WriteVirtual("instanceNumber", m.GetInstanceNumber()); _instanceNumberErr != nil {
 			return errors.Wrap(_instanceNumberErr, "Error serializing 'instanceNumber' field")
 		}
 
@@ -207,6 +241,8 @@ func (m *BACnetContextTagObjectIdentifier) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

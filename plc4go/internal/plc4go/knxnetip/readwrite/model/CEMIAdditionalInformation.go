@@ -33,9 +33,13 @@ type CEMIAdditionalInformation struct {
 
 // The corresponding interface
 type ICEMIAdditionalInformation interface {
-	AdditionalInformationType() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetAdditionalInformationType returns AdditionalInformationType (discriminator field)
+	GetAdditionalInformationType() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,40 +51,43 @@ type ICEMIAdditionalInformationParent interface {
 type ICEMIAdditionalInformationChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *CEMIAdditionalInformation)
+	GetParent() *CEMIAdditionalInformation
+
 	GetTypeName() string
 	ICEMIAdditionalInformation
 }
 
+// NewCEMIAdditionalInformation factory function for CEMIAdditionalInformation
 func NewCEMIAdditionalInformation() *CEMIAdditionalInformation {
 	return &CEMIAdditionalInformation{}
 }
 
 func CastCEMIAdditionalInformation(structType interface{}) *CEMIAdditionalInformation {
-	castFunc := func(typ interface{}) *CEMIAdditionalInformation {
-		if casted, ok := typ.(CEMIAdditionalInformation); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CEMIAdditionalInformation); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CEMIAdditionalInformation); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CEMIAdditionalInformation); ok {
+		return casted
+	}
+	if casted, ok := structType.(ICEMIAdditionalInformationChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *CEMIAdditionalInformation) GetTypeName() string {
 	return "CEMIAdditionalInformation"
 }
 
-func (m *CEMIAdditionalInformation) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CEMIAdditionalInformation) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CEMIAdditionalInformation) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *CEMIAdditionalInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *CEMIAdditionalInformation) ParentLengthInBits() uint16 {
+func (m *CEMIAdditionalInformation) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (additionalInformationType)
 	lengthInBits += 8
@@ -88,14 +95,16 @@ func (m *CEMIAdditionalInformation) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *CEMIAdditionalInformation) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CEMIAdditionalInformation) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformation"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
 	additionalInformationType, _additionalInformationTypeErr := readBuffer.ReadUint8("additionalInformationType", 8)
@@ -104,13 +113,17 @@ func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (*CEMIAdditiona
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *CEMIAdditionalInformation
+	type CEMIAdditionalInformationChild interface {
+		InitializeParent(*CEMIAdditionalInformation)
+		GetParent() *CEMIAdditionalInformation
+	}
+	var _child CEMIAdditionalInformationChild
 	var typeSwitchError error
 	switch {
 	case additionalInformationType == 0x03: // CEMIAdditionalInformationBusmonitorInfo
-		_parent, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParse(readBuffer)
+		_child, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParse(readBuffer)
 	case additionalInformationType == 0x04: // CEMIAdditionalInformationRelativeTimestamp
-		_parent, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParse(readBuffer)
+		_child, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -124,8 +137,8 @@ func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (*CEMIAdditiona
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *CEMIAdditionalInformation) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -138,7 +151,7 @@ func (m *CEMIAdditionalInformation) SerializeParent(writeBuffer utils.WriteBuffe
 	}
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
-	additionalInformationType := uint8(child.AdditionalInformationType())
+	additionalInformationType := uint8(child.GetAdditionalInformationType())
 	_additionalInformationTypeErr := writeBuffer.WriteUint8("additionalInformationType", 8, (additionalInformationType))
 
 	if _additionalInformationTypeErr != nil {
@@ -161,6 +174,8 @@ func (m *CEMIAdditionalInformation) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

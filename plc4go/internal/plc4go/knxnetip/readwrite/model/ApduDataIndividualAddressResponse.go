@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type ApduDataIndividualAddressResponse struct {
 	*ApduData
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataIndividualAddressResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduData
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataIndividualAddressResponse) ApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataIndividualAddressResponse) GetApciType() uint8 {
 	return 0x5
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataIndividualAddressResponse) InitializeParent(parent *ApduData) {}
 
-func NewApduDataIndividualAddressResponse() *ApduData {
-	child := &ApduDataIndividualAddressResponse{
-		ApduData: NewApduData(),
+func (m *ApduDataIndividualAddressResponse) GetParent() *ApduData {
+	return m.ApduData
+}
+
+// NewApduDataIndividualAddressResponse factory function for ApduDataIndividualAddressResponse
+func NewApduDataIndividualAddressResponse(dataLength uint8) *ApduDataIndividualAddressResponse {
+	_result := &ApduDataIndividualAddressResponse{
+		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataIndividualAddressResponse(structType interface{}) *ApduDataIndividualAddressResponse {
-	castFunc := func(typ interface{}) *ApduDataIndividualAddressResponse {
-		if casted, ok := typ.(ApduDataIndividualAddressResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataIndividualAddressResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataIndividualAddressResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataIndividualAddressResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataIndividualAddressResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataIndividualAddressResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataIndividualAddressResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataIndividualAddressResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataIndividualAddressResponse) GetTypeName() string {
 	return "ApduDataIndividualAddressResponse"
 }
 
-func (m *ApduDataIndividualAddressResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataIndividualAddressResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataIndividualAddressResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataIndividualAddressResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataIndividualAddressResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataIndividualAddressResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataIndividualAddressResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataIndividualAddressResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataIndividualAddressResponse, error) {
 	if pullErr := readBuffer.PullContext("ApduDataIndividualAddressResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataIndividualAddressResponse"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func ApduDataIndividualAddressResponseParse(readBuffer utils.ReadBuffer, dataLen
 		ApduData: &ApduData{},
 	}
 	_child.ApduData.Child = _child
-	return _child.ApduData, nil
+	return _child, nil
 }
 
 func (m *ApduDataIndividualAddressResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *ApduDataIndividualAddressResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

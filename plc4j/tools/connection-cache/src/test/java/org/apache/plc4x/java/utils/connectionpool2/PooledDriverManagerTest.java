@@ -27,11 +27,6 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-/**
- *
- * @author julian
- * Created by julian on 24.02.20
- */
 class PooledDriverManagerTest implements WithAssertions {
 
     @Test

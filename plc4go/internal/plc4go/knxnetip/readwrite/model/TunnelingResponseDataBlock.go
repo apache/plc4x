@@ -35,37 +35,65 @@ type TunnelingResponseDataBlock struct {
 
 // The corresponding interface
 type ITunnelingResponseDataBlock interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetCommunicationChannelId returns CommunicationChannelId (property field)
+	GetCommunicationChannelId() uint8
+	// GetSequenceCounter returns SequenceCounter (property field)
+	GetSequenceCounter() uint8
+	// GetStatus returns Status (property field)
+	GetStatus() Status
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *TunnelingResponseDataBlock) GetCommunicationChannelId() uint8 {
+	return m.CommunicationChannelId
+}
+
+func (m *TunnelingResponseDataBlock) GetSequenceCounter() uint8 {
+	return m.SequenceCounter
+}
+
+func (m *TunnelingResponseDataBlock) GetStatus() Status {
+	return m.Status
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewTunnelingResponseDataBlock factory function for TunnelingResponseDataBlock
 func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *TunnelingResponseDataBlock {
 	return &TunnelingResponseDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
 }
 
 func CastTunnelingResponseDataBlock(structType interface{}) *TunnelingResponseDataBlock {
-	castFunc := func(typ interface{}) *TunnelingResponseDataBlock {
-		if casted, ok := typ.(TunnelingResponseDataBlock); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*TunnelingResponseDataBlock); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(TunnelingResponseDataBlock); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*TunnelingResponseDataBlock); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *TunnelingResponseDataBlock) GetTypeName() string {
 	return "TunnelingResponseDataBlock"
 }
 
-func (m *TunnelingResponseDataBlock) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *TunnelingResponseDataBlock) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *TunnelingResponseDataBlock) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *TunnelingResponseDataBlock) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -83,16 +111,18 @@ func (m *TunnelingResponseDataBlock) LengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *TunnelingResponseDataBlock) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *TunnelingResponseDataBlock) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (*TunnelingResponseDataBlock, error) {
 	if pullErr := readBuffer.PullContext("TunnelingResponseDataBlock"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
@@ -140,7 +170,7 @@ func (m *TunnelingResponseDataBlock) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.LengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes()))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
@@ -183,6 +213,8 @@ func (m *TunnelingResponseDataBlock) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

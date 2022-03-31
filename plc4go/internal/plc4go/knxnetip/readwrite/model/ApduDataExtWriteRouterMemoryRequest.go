@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type ApduDataExtWriteRouterMemoryRequest struct {
 	*ApduDataExt
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtWriteRouterMemoryRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduDataExt
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtWriteRouterMemoryRequest) ExtApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataExtWriteRouterMemoryRequest) GetExtApciType() uint8 {
 	return 0x0A
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataExtWriteRouterMemoryRequest) InitializeParent(parent *ApduDataExt) {}
 
-func NewApduDataExtWriteRouterMemoryRequest() *ApduDataExt {
-	child := &ApduDataExtWriteRouterMemoryRequest{
-		ApduDataExt: NewApduDataExt(),
+func (m *ApduDataExtWriteRouterMemoryRequest) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
+// NewApduDataExtWriteRouterMemoryRequest factory function for ApduDataExtWriteRouterMemoryRequest
+func NewApduDataExtWriteRouterMemoryRequest(length uint8) *ApduDataExtWriteRouterMemoryRequest {
+	_result := &ApduDataExtWriteRouterMemoryRequest{
+		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtWriteRouterMemoryRequest(structType interface{}) *ApduDataExtWriteRouterMemoryRequest {
-	castFunc := func(typ interface{}) *ApduDataExtWriteRouterMemoryRequest {
-		if casted, ok := typ.(ApduDataExtWriteRouterMemoryRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtWriteRouterMemoryRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtWriteRouterMemoryRequest(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtWriteRouterMemoryRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtWriteRouterMemoryRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtWriteRouterMemoryRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtWriteRouterMemoryRequest(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtWriteRouterMemoryRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtWriteRouterMemoryRequest) GetTypeName() string {
 	return "ApduDataExtWriteRouterMemoryRequest"
 }
 
-func (m *ApduDataExtWriteRouterMemoryRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtWriteRouterMemoryRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtWriteRouterMemoryRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtWriteRouterMemoryRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataExtWriteRouterMemoryRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtWriteRouterMemoryRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtWriteRouterMemoryRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtWriteRouterMemoryRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtWriteRouterMemoryRequest, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtWriteRouterMemoryRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtWriteRouterMemoryRequest"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func ApduDataExtWriteRouterMemoryRequestParse(readBuffer utils.ReadBuffer, lengt
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtWriteRouterMemoryRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *ApduDataExtWriteRouterMemoryRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

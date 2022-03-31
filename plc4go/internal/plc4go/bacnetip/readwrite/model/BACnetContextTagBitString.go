@@ -29,145 +29,129 @@ import (
 // The data-structure of this message
 type BACnetContextTagBitString struct {
 	*BACnetContextTag
-	UnusedBits uint8
-	Data       []bool
-	Unused     []bool
+	Payload *BACnetTagPayloadBitString
+
+	// Arguments.
+	TagNumberArgument        uint8
+	IsNotOpeningOrClosingTag bool
 }
 
 // The corresponding interface
 type IBACnetContextTagBitString interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetContextTag
+	// GetPayload returns Payload (property field)
+	GetPayload() *BACnetTagPayloadBitString
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagBitString) DataType() BACnetDataType {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetContextTagBitString) GetDataType() BACnetDataType {
 	return BACnetDataType_BIT_STRING
 }
 
-func (m *BACnetContextTagBitString) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+func (m *BACnetContextTagBitString) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader) {
 	m.BACnetContextTag.Header = header
-	m.BACnetContextTag.TagNumber = tagNumber
-	m.BACnetContextTag.ActualLength = actualLength
-	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
-func NewBACnetContextTagBitString(unusedBits uint8, data []bool, unused []bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagBitString{
-		UnusedBits:       unusedBits,
-		Data:             data,
-		Unused:           unused,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
+func (m *BACnetContextTagBitString) GetParent() *BACnetContextTag {
+	return m.BACnetContextTag
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetContextTagBitString) GetPayload() *BACnetTagPayloadBitString {
+	return m.Payload
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetContextTagBitString factory function for BACnetContextTagBitString
+func NewBACnetContextTagBitString(payload *BACnetTagPayloadBitString, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagBitString {
+	_result := &BACnetContextTagBitString{
+		Payload:          payload,
+		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagBitString(structType interface{}) *BACnetContextTagBitString {
-	castFunc := func(typ interface{}) *BACnetContextTagBitString {
-		if casted, ok := typ.(BACnetContextTagBitString); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagBitString); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagBitString(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagBitString(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagBitString); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagBitString); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagBitString(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagBitString(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagBitString) GetTypeName() string {
 	return "BACnetContextTagBitString"
 }
 
-func (m *BACnetContextTagBitString) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTagBitString) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTagBitString) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetContextTagBitString) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (unusedBits)
-	lengthInBits += 8
-
-	// Array field
-	if len(m.Data) > 0 {
-		lengthInBits += 1 * uint16(len(m.Data))
-	}
-
-	// Array field
-	if len(m.Unused) > 0 {
-		lengthInBits += 1 * uint16(len(m.Unused))
-	}
+	// Simple field (payload)
+	lengthInBits += m.Payload.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetContextTagBitString) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTagBitString) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTag, error) {
+func BACnetContextTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, header *BACnetTagHeader) (*BACnetContextTagBitString, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagBitString"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {
 		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
 	}
 
-	// Simple Field (unusedBits)
-	_unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)
-	if _unusedBitsErr != nil {
-		return nil, errors.Wrap(_unusedBitsErr, "Error parsing 'unusedBits' field")
-	}
-	unusedBits := _unusedBits
-
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+	// Simple Field (payload)
+	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Count array
-	data := make([]bool, uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits))
-	{
-		for curItem := uint16(0); curItem < uint16(uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits)); curItem++ {
-			_item, _err := readBuffer.ReadBit("")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field")
-			}
-			data[curItem] = _item
-		}
+	_payload, _payloadErr := BACnetTagPayloadBitStringParse(readBuffer, uint32(header.GetActualLength()))
+	if _payloadErr != nil {
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
 	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
-	}
-
-	// Array field (unused)
-	if pullErr := readBuffer.PullContext("unused", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	unused := make([]bool, unusedBits)
-	{
-		for curItem := uint16(0); curItem < uint16(unusedBits); curItem++ {
-			_item, _err := readBuffer.ReadBit("")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'unused' field")
-			}
-			unused[curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("unused", utils.WithRenderAsList(true)); closeErr != nil {
+	payload := CastBACnetTagPayloadBitString(_payload)
+	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
 		return nil, closeErr
 	}
 
@@ -177,13 +161,11 @@ func BACnetContextTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgume
 
 	// Create a partially initialized instance
 	_child := &BACnetContextTagBitString{
-		UnusedBits:       unusedBits,
-		Data:             data,
-		Unused:           unused,
+		Payload:          CastBACnetTagPayloadBitString(payload),
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
-	return _child.BACnetContextTag, nil
+	return _child, nil
 }
 
 func (m *BACnetContextTagBitString) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -192,43 +174,16 @@ func (m *BACnetContextTagBitString) Serialize(writeBuffer utils.WriteBuffer) err
 			return pushErr
 		}
 
-		// Simple Field (unusedBits)
-		unusedBits := uint8(m.UnusedBits)
-		_unusedBitsErr := writeBuffer.WriteUint8("unusedBits", 8, (unusedBits))
-		if _unusedBitsErr != nil {
-			return errors.Wrap(_unusedBitsErr, "Error serializing 'unusedBits' field")
+		// Simple Field (payload)
+		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
+			return pushErr
 		}
-
-		// Array Field (data)
-		if m.Data != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Data {
-				_elementErr := writeBuffer.WriteBit("", _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
-			}
+		_payloadErr := m.Payload.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
+			return popErr
 		}
-
-		// Array Field (unused)
-		if m.Unused != nil {
-			if pushErr := writeBuffer.PushContext("unused", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Unused {
-				_elementErr := writeBuffer.WriteBit("", _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'unused' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("unused", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
-			}
+		if _payloadErr != nil {
+			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetContextTagBitString"); popErr != nil {
@@ -244,6 +199,8 @@ func (m *BACnetContextTagBitString) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

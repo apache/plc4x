@@ -37,69 +37,114 @@ type ModbusPDUGetComEventLogResponse struct {
 
 // The corresponding interface
 type IModbusPDUGetComEventLogResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IModbusPDU
+	// GetStatus returns Status (property field)
+	GetStatus() uint16
+	// GetEventCount returns EventCount (property field)
+	GetEventCount() uint16
+	// GetMessageCount returns MessageCount (property field)
+	GetMessageCount() uint16
+	// GetEvents returns Events (property field)
+	GetEvents() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUGetComEventLogResponse) ErrorFlag() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ModbusPDUGetComEventLogResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUGetComEventLogResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUGetComEventLogResponse) GetFunctionFlag() uint8 {
 	return 0x0C
 }
 
-func (m *ModbusPDUGetComEventLogResponse) Response() bool {
+func (m *ModbusPDUGetComEventLogResponse) GetResponse() bool {
 	return bool(true)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ModbusPDUGetComEventLogResponse) InitializeParent(parent *ModbusPDU) {}
 
-func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []byte) *ModbusPDU {
-	child := &ModbusPDUGetComEventLogResponse{
+func (m *ModbusPDUGetComEventLogResponse) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ModbusPDUGetComEventLogResponse) GetStatus() uint16 {
+	return m.Status
+}
+
+func (m *ModbusPDUGetComEventLogResponse) GetEventCount() uint16 {
+	return m.EventCount
+}
+
+func (m *ModbusPDUGetComEventLogResponse) GetMessageCount() uint16 {
+	return m.MessageCount
+}
+
+func (m *ModbusPDUGetComEventLogResponse) GetEvents() []byte {
+	return m.Events
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusPDUGetComEventLogResponse factory function for ModbusPDUGetComEventLogResponse
+func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []byte) *ModbusPDUGetComEventLogResponse {
+	_result := &ModbusPDUGetComEventLogResponse{
 		Status:       status,
 		EventCount:   eventCount,
 		MessageCount: messageCount,
 		Events:       events,
 		ModbusPDU:    NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUGetComEventLogResponse(structType interface{}) *ModbusPDUGetComEventLogResponse {
-	castFunc := func(typ interface{}) *ModbusPDUGetComEventLogResponse {
-		if casted, ok := typ.(ModbusPDUGetComEventLogResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUGetComEventLogResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUGetComEventLogResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUGetComEventLogResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUGetComEventLogResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUGetComEventLogResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUGetComEventLogResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUGetComEventLogResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUGetComEventLogResponse) GetTypeName() string {
 	return "ModbusPDUGetComEventLogResponse"
 }
 
-func (m *ModbusPDUGetComEventLogResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUGetComEventLogResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUGetComEventLogResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUGetComEventLogResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -121,16 +166,18 @@ func (m *ModbusPDUGetComEventLogResponse) LengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *ModbusPDUGetComEventLogResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUGetComEventLogResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUGetComEventLogResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUGetComEventLogResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUGetComEventLogResponse, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventLogResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
@@ -177,7 +224,7 @@ func ModbusPDUGetComEventLogResponseParse(readBuffer utils.ReadBuffer, response 
 		ModbusPDU:    &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUGetComEventLogResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -187,7 +234,7 @@ func (m *ModbusPDUGetComEventLogResponse) Serialize(writeBuffer utils.WriteBuffe
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint8(uint8(uint8(len(m.Events))) + uint8(uint8(6)))
+		byteCount := uint8(uint8(uint8(len(m.GetEvents()))) + uint8(uint8(6)))
 		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
@@ -236,6 +283,8 @@ func (m *ModbusPDUGetComEventLogResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

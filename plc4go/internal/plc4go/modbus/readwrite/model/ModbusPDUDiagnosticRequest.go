@@ -35,67 +35,100 @@ type ModbusPDUDiagnosticRequest struct {
 
 // The corresponding interface
 type IModbusPDUDiagnosticRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IModbusPDU
+	// GetSubFunction returns SubFunction (property field)
+	GetSubFunction() uint16
+	// GetData returns Data (property field)
+	GetData() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUDiagnosticRequest) ErrorFlag() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ModbusPDUDiagnosticRequest) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUDiagnosticRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUDiagnosticRequest) GetFunctionFlag() uint8 {
 	return 0x08
 }
 
-func (m *ModbusPDUDiagnosticRequest) Response() bool {
+func (m *ModbusPDUDiagnosticRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ModbusPDUDiagnosticRequest) InitializeParent(parent *ModbusPDU) {}
 
-func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16) *ModbusPDU {
-	child := &ModbusPDUDiagnosticRequest{
+func (m *ModbusPDUDiagnosticRequest) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ModbusPDUDiagnosticRequest) GetSubFunction() uint16 {
+	return m.SubFunction
+}
+
+func (m *ModbusPDUDiagnosticRequest) GetData() uint16 {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusPDUDiagnosticRequest factory function for ModbusPDUDiagnosticRequest
+func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16) *ModbusPDUDiagnosticRequest {
+	_result := &ModbusPDUDiagnosticRequest{
 		SubFunction: subFunction,
 		Data:        data,
 		ModbusPDU:   NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUDiagnosticRequest(structType interface{}) *ModbusPDUDiagnosticRequest {
-	castFunc := func(typ interface{}) *ModbusPDUDiagnosticRequest {
-		if casted, ok := typ.(ModbusPDUDiagnosticRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUDiagnosticRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUDiagnosticRequest(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUDiagnosticRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUDiagnosticRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUDiagnosticRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUDiagnosticRequest(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUDiagnosticRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUDiagnosticRequest) GetTypeName() string {
 	return "ModbusPDUDiagnosticRequest"
 }
 
-func (m *ModbusPDUDiagnosticRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUDiagnosticRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUDiagnosticRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUDiagnosticRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (subFunction)
 	lengthInBits += 16
@@ -106,14 +139,16 @@ func (m *ModbusPDUDiagnosticRequest) LengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *ModbusPDUDiagnosticRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUDiagnosticRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUDiagnosticRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUDiagnosticRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUDiagnosticRequest, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUDiagnosticRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (subFunction)
 	_subFunction, _subFunctionErr := readBuffer.ReadUint16("subFunction", 16)
@@ -140,7 +175,7 @@ func ModbusPDUDiagnosticRequestParse(readBuffer utils.ReadBuffer, response bool)
 		ModbusPDU:   &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUDiagnosticRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -176,6 +211,8 @@ func (m *ModbusPDUDiagnosticRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

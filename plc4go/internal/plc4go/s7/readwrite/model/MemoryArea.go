@@ -182,12 +182,12 @@ func CastMemoryArea(structType interface{}) MemoryArea {
 	return castFunc(structType)
 }
 
-func (m MemoryArea) LengthInBits() uint16 {
+func (m MemoryArea) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m MemoryArea) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m MemoryArea) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func MemoryAreaParse(readBuffer utils.ReadBuffer) (MemoryArea, error) {

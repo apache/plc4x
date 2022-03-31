@@ -110,12 +110,12 @@ func CastBACnetCharacterEncoding(structType interface{}) BACnetCharacterEncoding
 	return castFunc(structType)
 }
 
-func (m BACnetCharacterEncoding) LengthInBits() uint16 {
+func (m BACnetCharacterEncoding) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m BACnetCharacterEncoding) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m BACnetCharacterEncoding) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetCharacterEncodingParse(readBuffer utils.ReadBuffer) (BACnetCharacterEncoding, error) {

@@ -31,50 +31,53 @@ type GroupObjectDescriptorRealisationType6 struct {
 
 // The corresponding interface
 type IGroupObjectDescriptorRealisationType6 interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// NewGroupObjectDescriptorRealisationType6 factory function for GroupObjectDescriptorRealisationType6
 func NewGroupObjectDescriptorRealisationType6() *GroupObjectDescriptorRealisationType6 {
 	return &GroupObjectDescriptorRealisationType6{}
 }
 
 func CastGroupObjectDescriptorRealisationType6(structType interface{}) *GroupObjectDescriptorRealisationType6 {
-	castFunc := func(typ interface{}) *GroupObjectDescriptorRealisationType6 {
-		if casted, ok := typ.(GroupObjectDescriptorRealisationType6); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*GroupObjectDescriptorRealisationType6); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(GroupObjectDescriptorRealisationType6); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*GroupObjectDescriptorRealisationType6); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *GroupObjectDescriptorRealisationType6) GetTypeName() string {
 	return "GroupObjectDescriptorRealisationType6"
 }
 
-func (m *GroupObjectDescriptorRealisationType6) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *GroupObjectDescriptorRealisationType6) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *GroupObjectDescriptorRealisationType6) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *GroupObjectDescriptorRealisationType6) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *GroupObjectDescriptorRealisationType6) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *GroupObjectDescriptorRealisationType6) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func GroupObjectDescriptorRealisationType6Parse(readBuffer utils.ReadBuffer) (*GroupObjectDescriptorRealisationType6, error) {
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType6"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("GroupObjectDescriptorRealisationType6"); closeErr != nil {
 		return nil, closeErr
@@ -100,6 +103,8 @@ func (m *GroupObjectDescriptorRealisationType6) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

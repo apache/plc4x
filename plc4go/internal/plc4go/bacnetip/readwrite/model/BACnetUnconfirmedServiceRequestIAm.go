@@ -33,90 +33,140 @@ type BACnetUnconfirmedServiceRequestIAm struct {
 	MaximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger
 	SegmentationSupported           *BACnetSegmentation
 	VendorId                        *BACnetApplicationTagUnsignedInteger
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestIAm interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetUnconfirmedServiceRequest
+	// GetDeviceIdentifier returns DeviceIdentifier (property field)
+	GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier
+	// GetMaximumApduLengthAcceptedLength returns MaximumApduLengthAcceptedLength (property field)
+	GetMaximumApduLengthAcceptedLength() *BACnetApplicationTagUnsignedInteger
+	// GetSegmentationSupported returns SegmentationSupported (property field)
+	GetSegmentationSupported() *BACnetSegmentation
+	// GetVendorId returns VendorId (property field)
+	GetVendorId() *BACnetApplicationTagUnsignedInteger
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetUnconfirmedServiceRequestIAm) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetUnconfirmedServiceRequestIAm) GetServiceChoice() uint8 {
 	return 0x00
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetUnconfirmedServiceRequestIAm) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger, segmentationSupported *BACnetSegmentation, vendorId *BACnetApplicationTagUnsignedInteger) *BACnetUnconfirmedServiceRequest {
-	child := &BACnetUnconfirmedServiceRequestIAm{
+func (m *BACnetUnconfirmedServiceRequestIAm) GetParent() *BACnetUnconfirmedServiceRequest {
+	return m.BACnetUnconfirmedServiceRequest
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetUnconfirmedServiceRequestIAm) GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier {
+	return m.DeviceIdentifier
+}
+
+func (m *BACnetUnconfirmedServiceRequestIAm) GetMaximumApduLengthAcceptedLength() *BACnetApplicationTagUnsignedInteger {
+	return m.MaximumApduLengthAcceptedLength
+}
+
+func (m *BACnetUnconfirmedServiceRequestIAm) GetSegmentationSupported() *BACnetSegmentation {
+	return m.SegmentationSupported
+}
+
+func (m *BACnetUnconfirmedServiceRequestIAm) GetVendorId() *BACnetApplicationTagUnsignedInteger {
+	return m.VendorId
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetUnconfirmedServiceRequestIAm factory function for BACnetUnconfirmedServiceRequestIAm
+func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger, segmentationSupported *BACnetSegmentation, vendorId *BACnetApplicationTagUnsignedInteger, len uint16) *BACnetUnconfirmedServiceRequestIAm {
+	_result := &BACnetUnconfirmedServiceRequestIAm{
 		DeviceIdentifier:                deviceIdentifier,
 		MaximumApduLengthAcceptedLength: maximumApduLengthAcceptedLength,
 		SegmentationSupported:           segmentationSupported,
 		VendorId:                        vendorId,
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetUnconfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetUnconfirmedServiceRequestIAm(structType interface{}) *BACnetUnconfirmedServiceRequestIAm {
-	castFunc := func(typ interface{}) *BACnetUnconfirmedServiceRequestIAm {
-		if casted, ok := typ.(BACnetUnconfirmedServiceRequestIAm); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetUnconfirmedServiceRequestIAm); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
-			return CastBACnetUnconfirmedServiceRequestIAm(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
-			return CastBACnetUnconfirmedServiceRequestIAm(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetUnconfirmedServiceRequestIAm); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetUnconfirmedServiceRequestIAm); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetUnconfirmedServiceRequest); ok {
+		return CastBACnetUnconfirmedServiceRequestIAm(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetUnconfirmedServiceRequest); ok {
+		return CastBACnetUnconfirmedServiceRequestIAm(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestIAm) GetTypeName() string {
 	return "BACnetUnconfirmedServiceRequestIAm"
 }
 
-func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetUnconfirmedServiceRequestIAm) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetUnconfirmedServiceRequestIAm) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (deviceIdentifier)
-	lengthInBits += m.DeviceIdentifier.LengthInBits()
+	lengthInBits += m.DeviceIdentifier.GetLengthInBits()
 
 	// Simple field (maximumApduLengthAcceptedLength)
-	lengthInBits += m.MaximumApduLengthAcceptedLength.LengthInBits()
+	lengthInBits += m.MaximumApduLengthAcceptedLength.GetLengthInBits()
 
 	// Simple field (segmentationSupported)
-	lengthInBits += m.SegmentationSupported.LengthInBits()
+	lengthInBits += m.SegmentationSupported.GetLengthInBits()
 
 	// Simple field (vendorId)
-	lengthInBits += m.VendorId.LengthInBits()
+	lengthInBits += m.VendorId.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetUnconfirmedServiceRequestIAm) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestIAm, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestIAm"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (deviceIdentifier)
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
@@ -183,7 +233,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
 	_child.BACnetUnconfirmedServiceRequest.Child = _child
-	return _child.BACnetUnconfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -253,6 +303,8 @@ func (m *BACnetUnconfirmedServiceRequestIAm) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -42,37 +42,101 @@ type State struct {
 
 // The corresponding interface
 type IState interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetInitCommand returns InitCommand (property field)
+	GetInitCommand() bool
+	// GetUpdCommand returns UpdCommand (property field)
+	GetUpdCommand() bool
+	// GetTimestampAdded returns TimestampAdded (property field)
+	GetTimestampAdded() bool
+	// GetHighPriorityCommand returns HighPriorityCommand (property field)
+	GetHighPriorityCommand() bool
+	// GetSystemCommand returns SystemCommand (property field)
+	GetSystemCommand() bool
+	// GetAdsCommand returns AdsCommand (property field)
+	GetAdsCommand() bool
+	// GetNoReturn returns NoReturn (property field)
+	GetNoReturn() bool
+	// GetResponse returns Response (property field)
+	GetResponse() bool
+	// GetBroadcast returns Broadcast (property field)
+	GetBroadcast() bool
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *State) GetInitCommand() bool {
+	return m.InitCommand
+}
+
+func (m *State) GetUpdCommand() bool {
+	return m.UpdCommand
+}
+
+func (m *State) GetTimestampAdded() bool {
+	return m.TimestampAdded
+}
+
+func (m *State) GetHighPriorityCommand() bool {
+	return m.HighPriorityCommand
+}
+
+func (m *State) GetSystemCommand() bool {
+	return m.SystemCommand
+}
+
+func (m *State) GetAdsCommand() bool {
+	return m.AdsCommand
+}
+
+func (m *State) GetNoReturn() bool {
+	return m.NoReturn
+}
+
+func (m *State) GetResponse() bool {
+	return m.Response
+}
+
+func (m *State) GetBroadcast() bool {
+	return m.Broadcast
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewState factory function for State
 func NewState(initCommand bool, updCommand bool, timestampAdded bool, highPriorityCommand bool, systemCommand bool, adsCommand bool, noReturn bool, response bool, broadcast bool) *State {
 	return &State{InitCommand: initCommand, UpdCommand: updCommand, TimestampAdded: timestampAdded, HighPriorityCommand: highPriorityCommand, SystemCommand: systemCommand, AdsCommand: adsCommand, NoReturn: noReturn, Response: response, Broadcast: broadcast}
 }
 
 func CastState(structType interface{}) *State {
-	castFunc := func(typ interface{}) *State {
-		if casted, ok := typ.(State); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*State); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(State); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*State); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *State) GetTypeName() string {
 	return "State"
 }
 
-func (m *State) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *State) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *State) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *State) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (initCommand)
@@ -108,14 +172,16 @@ func (m *State) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *State) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *State) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func StateParse(readBuffer utils.ReadBuffer) (*State, error) {
 	if pullErr := readBuffer.PullContext("State"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (initCommand)
 	_initCommand, _initCommandErr := readBuffer.ReadBit("initCommand")
@@ -289,6 +355,8 @@ func (m *State) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

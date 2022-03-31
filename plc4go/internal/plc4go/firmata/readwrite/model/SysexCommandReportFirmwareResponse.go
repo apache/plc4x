@@ -36,64 +36,103 @@ type SysexCommandReportFirmwareResponse struct {
 
 // The corresponding interface
 type ISysexCommandReportFirmwareResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ISysexCommand
+	// GetMajorVersion returns MajorVersion (property field)
+	GetMajorVersion() uint8
+	// GetMinorVersion returns MinorVersion (property field)
+	GetMinorVersion() uint8
+	// GetFileName returns FileName (property field)
+	GetFileName() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandReportFirmwareResponse) CommandType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *SysexCommandReportFirmwareResponse) GetCommandType() uint8 {
 	return 0x79
 }
 
-func (m *SysexCommandReportFirmwareResponse) Response() bool {
+func (m *SysexCommandReportFirmwareResponse) GetResponse() bool {
 	return bool(true)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *SysexCommandReportFirmwareResponse) InitializeParent(parent *SysexCommand) {}
 
-func NewSysexCommandReportFirmwareResponse(majorVersion uint8, minorVersion uint8, fileName []byte) *SysexCommand {
-	child := &SysexCommandReportFirmwareResponse{
+func (m *SysexCommandReportFirmwareResponse) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *SysexCommandReportFirmwareResponse) GetMajorVersion() uint8 {
+	return m.MajorVersion
+}
+
+func (m *SysexCommandReportFirmwareResponse) GetMinorVersion() uint8 {
+	return m.MinorVersion
+}
+
+func (m *SysexCommandReportFirmwareResponse) GetFileName() []byte {
+	return m.FileName
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewSysexCommandReportFirmwareResponse factory function for SysexCommandReportFirmwareResponse
+func NewSysexCommandReportFirmwareResponse(majorVersion uint8, minorVersion uint8, fileName []byte) *SysexCommandReportFirmwareResponse {
+	_result := &SysexCommandReportFirmwareResponse{
 		MajorVersion: majorVersion,
 		MinorVersion: minorVersion,
 		FileName:     fileName,
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandReportFirmwareResponse(structType interface{}) *SysexCommandReportFirmwareResponse {
-	castFunc := func(typ interface{}) *SysexCommandReportFirmwareResponse {
-		if casted, ok := typ.(SysexCommandReportFirmwareResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandReportFirmwareResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandReportFirmwareResponse(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandReportFirmwareResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandReportFirmwareResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandReportFirmwareResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandReportFirmwareResponse(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandReportFirmwareResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandReportFirmwareResponse) GetTypeName() string {
 	return "SysexCommandReportFirmwareResponse"
 }
 
-func (m *SysexCommandReportFirmwareResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandReportFirmwareResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandReportFirmwareResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandReportFirmwareResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (majorVersion)
 	lengthInBits += 8
@@ -102,20 +141,21 @@ func (m *SysexCommandReportFirmwareResponse) LengthInBitsConditional(lastItem bo
 	lengthInBits += 8
 
 	// Manual Array Field (fileName)
-	fileName := m.FileName
-	lengthInBits += LengthSysexString(fileName) * 8
+	lengthInBits += uint16(LengthSysexString(m.GetFileName()))
 
 	return lengthInBits
 }
 
-func (m *SysexCommandReportFirmwareResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandReportFirmwareResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
+func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandReportFirmwareResponse, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandReportFirmwareResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (majorVersion)
 	_majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)
@@ -144,10 +184,7 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 
 		}
 	}
-	fileName := make([]byte, len(_fileNameList))
-	for i := 0; i < len(_fileNameList); i++ {
-		fileName[i] = byte(_fileNameList[i])
-	}
+	fileName := _fileNameList
 	if closeErr := readBuffer.CloseContext("fileName", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
 	}
@@ -164,7 +201,7 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 		SysexCommand: &SysexCommand{},
 	}
 	_child.SysexCommand.Child = _child
-	return _child.SysexCommand, nil
+	return _child, nil
 }
 
 func (m *SysexCommandReportFirmwareResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -213,6 +250,8 @@ func (m *SysexCommandReportFirmwareResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

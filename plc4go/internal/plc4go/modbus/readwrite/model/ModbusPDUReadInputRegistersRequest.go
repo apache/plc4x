@@ -35,67 +35,100 @@ type ModbusPDUReadInputRegistersRequest struct {
 
 // The corresponding interface
 type IModbusPDUReadInputRegistersRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IModbusPDU
+	// GetStartingAddress returns StartingAddress (property field)
+	GetStartingAddress() uint16
+	// GetQuantity returns Quantity (property field)
+	GetQuantity() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUReadInputRegistersRequest) ErrorFlag() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ModbusPDUReadInputRegistersRequest) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadInputRegistersRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUReadInputRegistersRequest) GetFunctionFlag() uint8 {
 	return 0x04
 }
 
-func (m *ModbusPDUReadInputRegistersRequest) Response() bool {
+func (m *ModbusPDUReadInputRegistersRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ModbusPDUReadInputRegistersRequest) InitializeParent(parent *ModbusPDU) {}
 
-func NewModbusPDUReadInputRegistersRequest(startingAddress uint16, quantity uint16) *ModbusPDU {
-	child := &ModbusPDUReadInputRegistersRequest{
+func (m *ModbusPDUReadInputRegistersRequest) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ModbusPDUReadInputRegistersRequest) GetStartingAddress() uint16 {
+	return m.StartingAddress
+}
+
+func (m *ModbusPDUReadInputRegistersRequest) GetQuantity() uint16 {
+	return m.Quantity
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusPDUReadInputRegistersRequest factory function for ModbusPDUReadInputRegistersRequest
+func NewModbusPDUReadInputRegistersRequest(startingAddress uint16, quantity uint16) *ModbusPDUReadInputRegistersRequest {
+	_result := &ModbusPDUReadInputRegistersRequest{
 		StartingAddress: startingAddress,
 		Quantity:        quantity,
 		ModbusPDU:       NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReadInputRegistersRequest(structType interface{}) *ModbusPDUReadInputRegistersRequest {
-	castFunc := func(typ interface{}) *ModbusPDUReadInputRegistersRequest {
-		if casted, ok := typ.(ModbusPDUReadInputRegistersRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReadInputRegistersRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUReadInputRegistersRequest(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUReadInputRegistersRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReadInputRegistersRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReadInputRegistersRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUReadInputRegistersRequest(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUReadInputRegistersRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUReadInputRegistersRequest) GetTypeName() string {
 	return "ModbusPDUReadInputRegistersRequest"
 }
 
-func (m *ModbusPDUReadInputRegistersRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadInputRegistersRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadInputRegistersRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadInputRegistersRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -106,14 +139,16 @@ func (m *ModbusPDUReadInputRegistersRequest) LengthInBitsConditional(lastItem bo
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadInputRegistersRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadInputRegistersRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadInputRegistersRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUReadInputRegistersRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUReadInputRegistersRequest, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadInputRegistersRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (startingAddress)
 	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
@@ -140,7 +175,7 @@ func ModbusPDUReadInputRegistersRequestParse(readBuffer utils.ReadBuffer, respon
 		ModbusPDU:       &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUReadInputRegistersRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -176,6 +211,8 @@ func (m *ModbusPDUReadInputRegistersRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

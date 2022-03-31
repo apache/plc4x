@@ -27,7 +27,7 @@
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition" -->
 <#-- Declare the name and type of variables declared locally inside the template -->
 <#-- @ftlvariable name="field" type="org.apache.plc4x.plugins.codegenerator.types.fields.NamedField" -->
-<#if !type.isDiscriminatedChildTypeDefinition()>${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(type.name)}.h
+${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(type.name)}.h
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -58,8 +58,8 @@
 <#--
     Add any import statements for partent-types, complex types used in properties or parser arguments.
 -->
-<#if helper.getComplexTypeReferences()?has_content>
-    <#list helper.getComplexTypeReferences() as typeReference>
+<#if helper.getTypeNamesForImportStatements()?has_content>
+    <#list helper.getTypeNamesForImportStatements() as typeReference>
 #include "${helper.camelCaseToSnakeCase(typeReference)}.h"
     </#list>
 </#if>
@@ -75,7 +75,7 @@ extern "C" {
 <#--
     Define the parse-method for elements of this tpye
 -->
-plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, <#if parserArguments?has_content><#list parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#if !helper.isSimpleTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>plc4c_data** data_item);
+plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, <#if parserArguments?has_content><#list parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#if !parserArgument.type.isSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>plc4c_data** data_item);
 
 <#--
     Define the serialize-method for elements of this tpye
@@ -90,5 +90,4 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(plc4c_data* data_item)
 }
 #endif
 #endif  // ${helper.getCTypeName(type.name)?upper_case}_H_
-</#if>
 </#outputformat>

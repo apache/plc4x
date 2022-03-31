@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type MPropInfoInd struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type IMPropInfoInd interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICEMI
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MPropInfoInd) MessageCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *MPropInfoInd) GetMessageCode() uint8 {
 	return 0xF7
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *MPropInfoInd) InitializeParent(parent *CEMI) {}
 
-func NewMPropInfoInd() *CEMI {
-	child := &MPropInfoInd{
-		CEMI: NewCEMI(),
+func (m *MPropInfoInd) GetParent() *CEMI {
+	return m.CEMI
+}
+
+// NewMPropInfoInd factory function for MPropInfoInd
+func NewMPropInfoInd(size uint16) *MPropInfoInd {
+	_result := &MPropInfoInd{
+		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastMPropInfoInd(structType interface{}) *MPropInfoInd {
-	castFunc := func(typ interface{}) *MPropInfoInd {
-		if casted, ok := typ.(MPropInfoInd); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MPropInfoInd); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMPropInfoInd(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMPropInfoInd(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MPropInfoInd); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MPropInfoInd); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastMPropInfoInd(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastMPropInfoInd(casted.Child)
+	}
+	return nil
 }
 
 func (m *MPropInfoInd) GetTypeName() string {
 	return "MPropInfoInd"
 }
 
-func (m *MPropInfoInd) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *MPropInfoInd) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *MPropInfoInd) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *MPropInfoInd) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *MPropInfoInd) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *MPropInfoInd) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func MPropInfoIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func MPropInfoIndParse(readBuffer utils.ReadBuffer, size uint16) (*MPropInfoInd, error) {
 	if pullErr := readBuffer.PullContext("MPropInfoInd"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("MPropInfoInd"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func MPropInfoIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) 
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *MPropInfoInd) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *MPropInfoInd) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

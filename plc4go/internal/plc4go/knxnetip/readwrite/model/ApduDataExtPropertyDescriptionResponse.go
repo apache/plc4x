@@ -38,26 +38,101 @@ type ApduDataExtPropertyDescriptionResponse struct {
 	MaxNrOfElements  uint16
 	ReadLevel        AccessLevel
 	WriteLevel       AccessLevel
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtPropertyDescriptionResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduDataExt
+	// GetObjectIndex returns ObjectIndex (property field)
+	GetObjectIndex() uint8
+	// GetPropertyId returns PropertyId (property field)
+	GetPropertyId() uint8
+	// GetIndex returns Index (property field)
+	GetIndex() uint8
+	// GetWriteEnabled returns WriteEnabled (property field)
+	GetWriteEnabled() bool
+	// GetPropertyDataType returns PropertyDataType (property field)
+	GetPropertyDataType() KnxPropertyDataType
+	// GetMaxNrOfElements returns MaxNrOfElements (property field)
+	GetMaxNrOfElements() uint16
+	// GetReadLevel returns ReadLevel (property field)
+	GetReadLevel() AccessLevel
+	// GetWriteLevel returns WriteLevel (property field)
+	GetWriteLevel() AccessLevel
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtPropertyDescriptionResponse) ExtApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataExtPropertyDescriptionResponse) GetExtApciType() uint8 {
 	return 0x19
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataExtPropertyDescriptionResponse) InitializeParent(parent *ApduDataExt) {}
 
-func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel) *ApduDataExt {
-	child := &ApduDataExtPropertyDescriptionResponse{
+func (m *ApduDataExtPropertyDescriptionResponse) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ApduDataExtPropertyDescriptionResponse) GetObjectIndex() uint8 {
+	return m.ObjectIndex
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetPropertyId() uint8 {
+	return m.PropertyId
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetIndex() uint8 {
+	return m.Index
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetWriteEnabled() bool {
+	return m.WriteEnabled
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetPropertyDataType() KnxPropertyDataType {
+	return m.PropertyDataType
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetMaxNrOfElements() uint16 {
+	return m.MaxNrOfElements
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetReadLevel() AccessLevel {
+	return m.ReadLevel
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetWriteLevel() AccessLevel {
+	return m.WriteLevel
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewApduDataExtPropertyDescriptionResponse factory function for ApduDataExtPropertyDescriptionResponse
+func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel, length uint8) *ApduDataExtPropertyDescriptionResponse {
+	_result := &ApduDataExtPropertyDescriptionResponse{
 		ObjectIndex:      objectIndex,
 		PropertyId:       propertyId,
 		Index:            index,
@@ -66,41 +141,38 @@ func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uin
 		MaxNrOfElements:  maxNrOfElements,
 		ReadLevel:        readLevel,
 		WriteLevel:       writeLevel,
-		ApduDataExt:      NewApduDataExt(),
+		ApduDataExt:      NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtPropertyDescriptionResponse(structType interface{}) *ApduDataExtPropertyDescriptionResponse {
-	castFunc := func(typ interface{}) *ApduDataExtPropertyDescriptionResponse {
-		if casted, ok := typ.(ApduDataExtPropertyDescriptionResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtPropertyDescriptionResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtPropertyDescriptionResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtPropertyDescriptionResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtPropertyDescriptionResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtPropertyDescriptionResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtPropertyDescriptionResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtPropertyDescriptionResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtPropertyDescriptionResponse) GetTypeName() string {
 	return "ApduDataExtPropertyDescriptionResponse"
 }
 
-func (m *ApduDataExtPropertyDescriptionResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtPropertyDescriptionResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtPropertyDescriptionResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtPropertyDescriptionResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -135,14 +207,16 @@ func (m *ApduDataExtPropertyDescriptionResponse) LengthInBitsConditional(lastIte
 	return lengthInBits
 }
 
-func (m *ApduDataExtPropertyDescriptionResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtPropertyDescriptionResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtPropertyDescriptionResponse, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyDescriptionResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (objectIndex)
 	_objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
@@ -263,7 +337,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 		ApduDataExt:      &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -372,6 +446,8 @@ func (m *ApduDataExtPropertyDescriptionResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

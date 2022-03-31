@@ -34,62 +34,89 @@ type AdsWriteResponse struct {
 
 // The corresponding interface
 type IAdsWriteResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAdsData
+	// GetResult returns Result (property field)
+	GetResult() ReturnCode
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsWriteResponse) CommandId() CommandId {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *AdsWriteResponse) GetCommandId() CommandId {
 	return CommandId_ADS_WRITE
 }
 
-func (m *AdsWriteResponse) Response() bool {
+func (m *AdsWriteResponse) GetResponse() bool {
 	return bool(true)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *AdsWriteResponse) InitializeParent(parent *AdsData) {}
 
-func NewAdsWriteResponse(result ReturnCode) *AdsData {
-	child := &AdsWriteResponse{
+func (m *AdsWriteResponse) GetParent() *AdsData {
+	return m.AdsData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AdsWriteResponse) GetResult() ReturnCode {
+	return m.Result
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAdsWriteResponse factory function for AdsWriteResponse
+func NewAdsWriteResponse(result ReturnCode) *AdsWriteResponse {
+	_result := &AdsWriteResponse{
 		Result:  result,
 		AdsData: NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsWriteResponse(structType interface{}) *AdsWriteResponse {
-	castFunc := func(typ interface{}) *AdsWriteResponse {
-		if casted, ok := typ.(AdsWriteResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsWriteResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsWriteResponse(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsWriteResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsWriteResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsWriteResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsWriteResponse(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsWriteResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsWriteResponse) GetTypeName() string {
 	return "AdsWriteResponse"
 }
 
-func (m *AdsWriteResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsWriteResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsWriteResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsWriteResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -97,14 +124,16 @@ func (m *AdsWriteResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AdsWriteResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsWriteResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func AdsWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsWriteResponse, error) {
 	if pullErr := readBuffer.PullContext("AdsWriteResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
@@ -129,7 +158,7 @@ func AdsWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, res
 		AdsData: &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -163,6 +192,8 @@ func (m *AdsWriteResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -20,12 +20,16 @@ package org.apache.plc4x.protocol.opcua;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
+import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class OpcuaProtocol implements Protocol {
 
@@ -35,39 +39,60 @@ public class OpcuaProtocol implements Protocol {
     }
 
     @Override
-    public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
+    public TypeContext getTypeContext() throws GenerationException {
         System.out.println("Parsing: opc-manual.mspec");
         InputStream manualInputStream = OpcuaProtocol.class.getResourceAsStream(
             "/protocols/opcua/opc-manual.mspec");
-        if(manualInputStream == null) {
+        if (manualInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }
-        Map<String, TypeDefinition> typeDefinitionMap =
-            new LinkedHashMap<>(new MessageFormatParser().parse(manualInputStream));
+        Map<String, TypeDefinition> typeDefinitionMap = new LinkedHashMap<>();
+        TypeContext typeContext;
+
+        typeContext = new MessageFormatParser().parse(manualInputStream);
+        typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
 
         System.out.println("Parsing: opc-services.mspec");
         InputStream servicesInputStream = OpcuaProtocol.class.getResourceAsStream(
             "/protocols/opcua/opc-services.mspec");
-        if(servicesInputStream == null) {
+        if (servicesInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }
-        typeDefinitionMap.putAll(new MessageFormatParser().parse(servicesInputStream));
+        typeContext = new MessageFormatParser().parse(servicesInputStream, typeContext.getUnresolvedTypeReferences());
+        typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
 
         System.out.println("Parsing: opc-status.mspec");
         InputStream statusInputStream = OpcuaProtocol.class.getResourceAsStream(
             "/protocols/opcua/opc-status.mspec");
-        if(statusInputStream == null) {
+        if (statusInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }
-        typeDefinitionMap.putAll(new MessageFormatParser().parse(statusInputStream));
+        typeContext = new MessageFormatParser().parse(statusInputStream, typeContext.getUnresolvedTypeReferences());
+        typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
 
         System.out.println("Parsing: opc-types.mspec");
         InputStream typesInputStream = OpcuaProtocol.class.getResourceAsStream(
             "/protocols/opcua/opc-types.mspec");
-        if(typesInputStream == null) {
+        if (typesInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }
-        typeDefinitionMap.putAll(new MessageFormatParser().parse(typesInputStream));
-        return typeDefinitionMap;
+        typeContext = new MessageFormatParser().parse(typesInputStream, typeContext.getUnresolvedTypeReferences());
+        typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
+
+        if (typeContext.getUnresolvedTypeReferences().size() > 0) {
+            throw new GenerationException("Unresolved types left: " + typeContext.getUnresolvedTypeReferences());
+        }
+
+        return new TypeContext() {
+            @Override
+            public Map<String, TypeDefinition> getTypeDefinitions() {
+                return typeDefinitionMap;
+            }
+
+            @Override
+            public Map<String, List<Consumer<TypeDefinition>>> getUnresolvedTypeReferences() {
+                return Collections.emptyMap();
+            }
+        };
     }
 }

@@ -30,64 +30,94 @@ import (
 type NLMDisconnectConnectionToNetwork struct {
 	*NLM
 	DestinationNetworkAddress uint16
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
 type INLMDisconnectConnectionToNetwork interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	INLM
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
+	GetDestinationNetworkAddress() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NLMDisconnectConnectionToNetwork) MessageType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *NLMDisconnectConnectionToNetwork) GetMessageType() uint8 {
 	return 0x09
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *NLMDisconnectConnectionToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
 	m.NLM.VendorId = vendorId
 }
 
-func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, vendorId *uint16) *NLM {
-	child := &NLMDisconnectConnectionToNetwork{
+func (m *NLMDisconnectConnectionToNetwork) GetParent() *NLM {
+	return m.NLM
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *NLMDisconnectConnectionToNetwork) GetDestinationNetworkAddress() uint16 {
+	return m.DestinationNetworkAddress
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewNLMDisconnectConnectionToNetwork factory function for NLMDisconnectConnectionToNetwork
+func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, vendorId *uint16, apduLength uint16) *NLMDisconnectConnectionToNetwork {
+	_result := &NLMDisconnectConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
-		NLM:                       NewNLM(vendorId),
+		NLM:                       NewNLM(vendorId, apduLength),
 	}
-	child.Child = child
-	return child.NLM
+	_result.Child = _result
+	return _result
 }
 
 func CastNLMDisconnectConnectionToNetwork(structType interface{}) *NLMDisconnectConnectionToNetwork {
-	castFunc := func(typ interface{}) *NLMDisconnectConnectionToNetwork {
-		if casted, ok := typ.(NLMDisconnectConnectionToNetwork); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NLMDisconnectConnectionToNetwork); ok {
-			return casted
-		}
-		if casted, ok := typ.(NLM); ok {
-			return CastNLMDisconnectConnectionToNetwork(casted.Child)
-		}
-		if casted, ok := typ.(*NLM); ok {
-			return CastNLMDisconnectConnectionToNetwork(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(NLMDisconnectConnectionToNetwork); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NLMDisconnectConnectionToNetwork); ok {
+		return casted
+	}
+	if casted, ok := structType.(NLM); ok {
+		return CastNLMDisconnectConnectionToNetwork(casted.Child)
+	}
+	if casted, ok := structType.(*NLM); ok {
+		return CastNLMDisconnectConnectionToNetwork(casted.Child)
+	}
+	return nil
 }
 
 func (m *NLMDisconnectConnectionToNetwork) GetTypeName() string {
 	return "NLMDisconnectConnectionToNetwork"
 }
 
-func (m *NLMDisconnectConnectionToNetwork) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NLMDisconnectConnectionToNetwork) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NLMDisconnectConnectionToNetwork) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *NLMDisconnectConnectionToNetwork) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (destinationNetworkAddress)
 	lengthInBits += 16
@@ -95,14 +125,16 @@ func (m *NLMDisconnectConnectionToNetwork) LengthInBitsConditional(lastItem bool
 	return lengthInBits
 }
 
-func (m *NLMDisconnectConnectionToNetwork) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NLMDisconnectConnectionToNetwork) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func NLMDisconnectConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
+func NLMDisconnectConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLMDisconnectConnectionToNetwork, error) {
 	if pullErr := readBuffer.PullContext("NLMDisconnectConnectionToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationNetworkAddress)
 	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
@@ -121,7 +153,7 @@ func NLMDisconnectConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLeng
 		NLM:                       &NLM{},
 	}
 	_child.NLM.Child = _child
-	return _child.NLM, nil
+	return _child, nil
 }
 
 func (m *NLMDisconnectConnectionToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -150,6 +182,8 @@ func (m *NLMDisconnectConnectionToNetwork) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

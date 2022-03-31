@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type ApduDataRestart struct {
 	*ApduData
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataRestart interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduData
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataRestart) ApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataRestart) GetApciType() uint8 {
 	return 0xE
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataRestart) InitializeParent(parent *ApduData) {}
 
-func NewApduDataRestart() *ApduData {
-	child := &ApduDataRestart{
-		ApduData: NewApduData(),
+func (m *ApduDataRestart) GetParent() *ApduData {
+	return m.ApduData
+}
+
+// NewApduDataRestart factory function for ApduDataRestart
+func NewApduDataRestart(dataLength uint8) *ApduDataRestart {
+	_result := &ApduDataRestart{
+		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataRestart(structType interface{}) *ApduDataRestart {
-	castFunc := func(typ interface{}) *ApduDataRestart {
-		if casted, ok := typ.(ApduDataRestart); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataRestart); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataRestart(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataRestart(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataRestart); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataRestart); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataRestart(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataRestart(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataRestart) GetTypeName() string {
 	return "ApduDataRestart"
 }
 
-func (m *ApduDataRestart) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataRestart) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataRestart) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataRestart) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataRestart) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataRestart) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataRestartParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataRestartParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataRestart, error) {
 	if pullErr := readBuffer.PullContext("ApduDataRestart"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataRestart"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func ApduDataRestartParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduD
 		ApduData: &ApduData{},
 	}
 	_child.ApduData.Child = _child
-	return _child.ApduData, nil
+	return _child, nil
 }
 
 func (m *ApduDataRestart) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *ApduDataRestart) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

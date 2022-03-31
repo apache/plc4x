@@ -39,21 +39,43 @@ type LDataExtended struct {
 
 // The corresponding interface
 type ILDataExtended interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ILDataFrame
+	// GetGroupAddress returns GroupAddress (property field)
+	GetGroupAddress() bool
+	// GetHopCount returns HopCount (property field)
+	GetHopCount() uint8
+	// GetExtendedFrameFormat returns ExtendedFrameFormat (property field)
+	GetExtendedFrameFormat() uint8
+	// GetSourceAddress returns SourceAddress (property field)
+	GetSourceAddress() *KnxAddress
+	// GetDestinationAddress returns DestinationAddress (property field)
+	GetDestinationAddress() []byte
+	// GetApdu returns Apdu (property field)
+	GetApdu() *Apdu
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LDataExtended) NotAckFrame() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *LDataExtended) GetNotAckFrame() bool {
 	return bool(true)
 }
 
-func (m *LDataExtended) Polling() bool {
+func (m *LDataExtended) GetPolling() bool {
 	return bool(false)
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *LDataExtended) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
 	m.LDataFrame.FrameType = frameType
@@ -63,8 +85,46 @@ func (m *LDataExtended) InitializeParent(parent *LDataFrame, frameType bool, not
 	m.LDataFrame.ErrorFlag = errorFlag
 }
 
-func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []byte, apdu *Apdu, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
-	child := &LDataExtended{
+func (m *LDataExtended) GetParent() *LDataFrame {
+	return m.LDataFrame
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *LDataExtended) GetGroupAddress() bool {
+	return m.GroupAddress
+}
+
+func (m *LDataExtended) GetHopCount() uint8 {
+	return m.HopCount
+}
+
+func (m *LDataExtended) GetExtendedFrameFormat() uint8 {
+	return m.ExtendedFrameFormat
+}
+
+func (m *LDataExtended) GetSourceAddress() *KnxAddress {
+	return m.SourceAddress
+}
+
+func (m *LDataExtended) GetDestinationAddress() []byte {
+	return m.DestinationAddress
+}
+
+func (m *LDataExtended) GetApdu() *Apdu {
+	return m.Apdu
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewLDataExtended factory function for LDataExtended
+func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []byte, apdu *Apdu, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataExtended {
+	_result := &LDataExtended{
 		GroupAddress:        groupAddress,
 		HopCount:            hopCount,
 		ExtendedFrameFormat: extendedFrameFormat,
@@ -73,39 +133,36 @@ func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uin
 		Apdu:                apdu,
 		LDataFrame:          NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 	}
-	child.Child = child
-	return child.LDataFrame
+	_result.Child = _result
+	return _result
 }
 
 func CastLDataExtended(structType interface{}) *LDataExtended {
-	castFunc := func(typ interface{}) *LDataExtended {
-		if casted, ok := typ.(LDataExtended); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LDataExtended); ok {
-			return casted
-		}
-		if casted, ok := typ.(LDataFrame); ok {
-			return CastLDataExtended(casted.Child)
-		}
-		if casted, ok := typ.(*LDataFrame); ok {
-			return CastLDataExtended(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LDataExtended); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LDataExtended); ok {
+		return casted
+	}
+	if casted, ok := structType.(LDataFrame); ok {
+		return CastLDataExtended(casted.Child)
+	}
+	if casted, ok := structType.(*LDataFrame); ok {
+		return CastLDataExtended(casted.Child)
+	}
+	return nil
 }
 
 func (m *LDataExtended) GetTypeName() string {
 	return "LDataExtended"
 }
 
-func (m *LDataExtended) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LDataExtended) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LDataExtended) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LDataExtended) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (groupAddress)
 	lengthInBits += 1
@@ -117,7 +174,7 @@ func (m *LDataExtended) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 4
 
 	// Simple field (sourceAddress)
-	lengthInBits += m.SourceAddress.LengthInBits()
+	lengthInBits += m.SourceAddress.GetLengthInBits()
 
 	// Array field
 	if len(m.DestinationAddress) > 0 {
@@ -128,19 +185,21 @@ func (m *LDataExtended) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (apdu)
-	lengthInBits += m.Apdu.LengthInBits()
+	lengthInBits += m.Apdu.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *LDataExtended) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LDataExtended) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
+func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataExtended, error) {
 	if pullErr := readBuffer.PullContext("LDataExtended"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (groupAddress)
 	_groupAddress, _groupAddressErr := readBuffer.ReadBit("groupAddress")
@@ -182,7 +241,7 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'destinationAddress' field")
 	}
 
-	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := readBuffer.ReadUint8("dataLength", 8)
 	_ = dataLength
 	if _dataLengthErr != nil {
@@ -193,7 +252,7 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
 		return nil, pullErr
 	}
-	_apdu, _apduErr := ApduParse(readBuffer, dataLength)
+	_apdu, _apduErr := ApduParse(readBuffer, uint8(dataLength))
 	if _apduErr != nil {
 		return nil, errors.Wrap(_apduErr, "Error parsing 'apdu' field")
 	}
@@ -217,7 +276,7 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		LDataFrame:          &LDataFrame{},
 	}
 	_child.LDataFrame.Child = _child
-	return _child.LDataFrame, nil
+	return _child, nil
 }
 
 func (m *LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -269,7 +328,7 @@ func (m *LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		dataLength := uint8(uint8(m.Apdu.LengthInBytes()) - uint8(uint8(1)))
+		dataLength := uint8(uint8(m.GetApdu().GetLengthInBytes()) - uint8(uint8(1)))
 		_dataLengthErr := writeBuffer.WriteUint8("dataLength", 8, (dataLength))
 		if _dataLengthErr != nil {
 			return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
@@ -300,6 +359,8 @@ func (m *LDataExtended) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

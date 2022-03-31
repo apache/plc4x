@@ -134,12 +134,12 @@ func CastModbusErrorCode(structType interface{}) ModbusErrorCode {
 	return castFunc(structType)
 }
 
-func (m ModbusErrorCode) LengthInBits() uint16 {
+func (m ModbusErrorCode) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m ModbusErrorCode) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m ModbusErrorCode) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusErrorCodeParse(readBuffer utils.ReadBuffer) (ModbusErrorCode, error) {

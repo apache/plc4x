@@ -32,73 +32,87 @@ type SysexCommandStringData struct {
 
 // The corresponding interface
 type ISysexCommandStringData interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ISysexCommand
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandStringData) CommandType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *SysexCommandStringData) GetCommandType() uint8 {
 	return 0x71
 }
 
-func (m *SysexCommandStringData) Response() bool {
+func (m *SysexCommandStringData) GetResponse() bool {
 	return false
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *SysexCommandStringData) InitializeParent(parent *SysexCommand) {}
 
-func NewSysexCommandStringData() *SysexCommand {
-	child := &SysexCommandStringData{
+func (m *SysexCommandStringData) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
+// NewSysexCommandStringData factory function for SysexCommandStringData
+func NewSysexCommandStringData() *SysexCommandStringData {
+	_result := &SysexCommandStringData{
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandStringData(structType interface{}) *SysexCommandStringData {
-	castFunc := func(typ interface{}) *SysexCommandStringData {
-		if casted, ok := typ.(SysexCommandStringData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandStringData); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandStringData(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandStringData(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandStringData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandStringData); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandStringData(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandStringData(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandStringData) GetTypeName() string {
 	return "SysexCommandStringData"
 }
 
-func (m *SysexCommandStringData) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandStringData) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandStringData) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandStringData) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *SysexCommandStringData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandStringData) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandStringDataParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
+func SysexCommandStringDataParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandStringData, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandStringData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandStringData"); closeErr != nil {
 		return nil, closeErr
@@ -109,7 +123,7 @@ func SysexCommandStringDataParse(readBuffer utils.ReadBuffer, response bool) (*S
 		SysexCommand: &SysexCommand{},
 	}
 	_child.SysexCommand.Child = _child
-	return _child.SysexCommand, nil
+	return _child, nil
 }
 
 func (m *SysexCommandStringData) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -131,6 +145,8 @@ func (m *SysexCommandStringData) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -75,7 +75,7 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typ
         <#if typeDefinition.parserArguments.isPresent()>
             <#list 0..typeDefinition.parserArguments.orElseThrow()?size-1 as i>
                 <#assign parserArgument=typeDefinition.parserArguments.orElseThrow()[i]>
-                <#if helper.isEnumTypeReference(parserArgument.type)>
+                <#if parserArgument.type.isEnumTypeReference()>
             ${parserArgument.name} := model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}ByName(parserArguments[${i}])
                 <#else>
                     <#switch helper.getLanguageTypeNameForTypeReference(parserArgument.type)>
@@ -111,12 +111,12 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typ
                             <#break>
                         <#default>
 			// TODO: find a way to parse the sub types
-            var ${parserArgument.name} model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+            var ${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference()>model.</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
                             <#break>
                     </#switch>
                 </#if>
             </#list>
-            <#assign parserArgumentList><#list typeDefinition.parserArguments.orElseThrow() as parserArgument><#if helper.isComplexTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#sep> </#list> </#assign>
+            <#assign parserArgumentList><#list typeDefinition.parserArguments.orElseThrow() as parserArgument><#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>&</#if>${parserArgument.name}<#sep>, </#sep> </#list> </#assign>
             return model.${typeDefinition.name}Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), ${parserArgumentList})
         <#else>
 			return model.${typeDefinition.name}Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

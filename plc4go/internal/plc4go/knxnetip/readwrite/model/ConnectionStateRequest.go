@@ -36,59 +36,92 @@ type ConnectionStateRequest struct {
 
 // The corresponding interface
 type IConnectionStateRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IKnxNetIpMessage
+	// GetCommunicationChannelId returns CommunicationChannelId (property field)
+	GetCommunicationChannelId() uint8
+	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
+	GetHpaiControlEndpoint() *HPAIControlEndpoint
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ConnectionStateRequest) MsgType() uint16 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ConnectionStateRequest) GetMsgType() uint16 {
 	return 0x0207
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ConnectionStateRequest) InitializeParent(parent *KnxNetIpMessage) {}
 
-func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
-	child := &ConnectionStateRequest{
+func (m *ConnectionStateRequest) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ConnectionStateRequest) GetCommunicationChannelId() uint8 {
+	return m.CommunicationChannelId
+}
+
+func (m *ConnectionStateRequest) GetHpaiControlEndpoint() *HPAIControlEndpoint {
+	return m.HpaiControlEndpoint
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewConnectionStateRequest factory function for ConnectionStateRequest
+func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint *HPAIControlEndpoint) *ConnectionStateRequest {
+	_result := &ConnectionStateRequest{
 		CommunicationChannelId: communicationChannelId,
 		HpaiControlEndpoint:    hpaiControlEndpoint,
 		KnxNetIpMessage:        NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastConnectionStateRequest(structType interface{}) *ConnectionStateRequest {
-	castFunc := func(typ interface{}) *ConnectionStateRequest {
-		if casted, ok := typ.(ConnectionStateRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConnectionStateRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastConnectionStateRequest(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastConnectionStateRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ConnectionStateRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConnectionStateRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastConnectionStateRequest(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastConnectionStateRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ConnectionStateRequest) GetTypeName() string {
 	return "ConnectionStateRequest"
 }
 
-func (m *ConnectionStateRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ConnectionStateRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ConnectionStateRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ConnectionStateRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -97,19 +130,21 @@ func (m *ConnectionStateRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
+	lengthInBits += m.HpaiControlEndpoint.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *ConnectionStateRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ConnectionStateRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (*ConnectionStateRequest, error) {
 	if pullErr := readBuffer.PullContext("ConnectionStateRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (communicationChannelId)
 	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
@@ -156,7 +191,7 @@ func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage,
 		KnxNetIpMessage:        &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *ConnectionStateRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -205,6 +240,8 @@ func (m *ConnectionStateRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

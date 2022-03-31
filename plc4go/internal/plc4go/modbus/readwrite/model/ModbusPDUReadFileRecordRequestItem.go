@@ -36,37 +36,71 @@ type ModbusPDUReadFileRecordRequestItem struct {
 
 // The corresponding interface
 type IModbusPDUReadFileRecordRequestItem interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetReferenceType returns ReferenceType (property field)
+	GetReferenceType() uint8
+	// GetFileNumber returns FileNumber (property field)
+	GetFileNumber() uint16
+	// GetRecordNumber returns RecordNumber (property field)
+	GetRecordNumber() uint16
+	// GetRecordLength returns RecordLength (property field)
+	GetRecordLength() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ModbusPDUReadFileRecordRequestItem) GetReferenceType() uint8 {
+	return m.ReferenceType
+}
+
+func (m *ModbusPDUReadFileRecordRequestItem) GetFileNumber() uint16 {
+	return m.FileNumber
+}
+
+func (m *ModbusPDUReadFileRecordRequestItem) GetRecordNumber() uint16 {
+	return m.RecordNumber
+}
+
+func (m *ModbusPDUReadFileRecordRequestItem) GetRecordLength() uint16 {
+	return m.RecordLength
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusPDUReadFileRecordRequestItem factory function for ModbusPDUReadFileRecordRequestItem
 func NewModbusPDUReadFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) *ModbusPDUReadFileRecordRequestItem {
 	return &ModbusPDUReadFileRecordRequestItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordLength: recordLength}
 }
 
 func CastModbusPDUReadFileRecordRequestItem(structType interface{}) *ModbusPDUReadFileRecordRequestItem {
-	castFunc := func(typ interface{}) *ModbusPDUReadFileRecordRequestItem {
-		if casted, ok := typ.(ModbusPDUReadFileRecordRequestItem); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReadFileRecordRequestItem); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReadFileRecordRequestItem); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReadFileRecordRequestItem); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ModbusPDUReadFileRecordRequestItem) GetTypeName() string {
 	return "ModbusPDUReadFileRecordRequestItem"
 }
 
-func (m *ModbusPDUReadFileRecordRequestItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadFileRecordRequestItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadFileRecordRequestItem) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *ModbusPDUReadFileRecordRequestItem) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (referenceType)
@@ -84,14 +118,16 @@ func (m *ModbusPDUReadFileRecordRequestItem) LengthInBitsConditional(lastItem bo
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadFileRecordRequestItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadFileRecordRequestItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUReadFileRecordRequestItemParse(readBuffer utils.ReadBuffer) (*ModbusPDUReadFileRecordRequestItem, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFileRecordRequestItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (referenceType)
 	_referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
@@ -173,6 +209,8 @@ func (m *ModbusPDUReadFileRecordRequestItem) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

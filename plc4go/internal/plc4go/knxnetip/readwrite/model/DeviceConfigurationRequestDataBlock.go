@@ -35,37 +35,59 @@ type DeviceConfigurationRequestDataBlock struct {
 
 // The corresponding interface
 type IDeviceConfigurationRequestDataBlock interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetCommunicationChannelId returns CommunicationChannelId (property field)
+	GetCommunicationChannelId() uint8
+	// GetSequenceCounter returns SequenceCounter (property field)
+	GetSequenceCounter() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *DeviceConfigurationRequestDataBlock) GetCommunicationChannelId() uint8 {
+	return m.CommunicationChannelId
+}
+
+func (m *DeviceConfigurationRequestDataBlock) GetSequenceCounter() uint8 {
+	return m.SequenceCounter
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewDeviceConfigurationRequestDataBlock factory function for DeviceConfigurationRequestDataBlock
 func NewDeviceConfigurationRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *DeviceConfigurationRequestDataBlock {
 	return &DeviceConfigurationRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
 }
 
 func CastDeviceConfigurationRequestDataBlock(structType interface{}) *DeviceConfigurationRequestDataBlock {
-	castFunc := func(typ interface{}) *DeviceConfigurationRequestDataBlock {
-		if casted, ok := typ.(DeviceConfigurationRequestDataBlock); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DeviceConfigurationRequestDataBlock); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DeviceConfigurationRequestDataBlock); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DeviceConfigurationRequestDataBlock); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *DeviceConfigurationRequestDataBlock) GetTypeName() string {
 	return "DeviceConfigurationRequestDataBlock"
 }
 
-func (m *DeviceConfigurationRequestDataBlock) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DeviceConfigurationRequestDataBlock) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DeviceConfigurationRequestDataBlock) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *DeviceConfigurationRequestDataBlock) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -83,16 +105,18 @@ func (m *DeviceConfigurationRequestDataBlock) LengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *DeviceConfigurationRequestDataBlock) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DeviceConfigurationRequestDataBlock) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DeviceConfigurationRequestDataBlockParse(readBuffer utils.ReadBuffer) (*DeviceConfigurationRequestDataBlock, error) {
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequestDataBlock"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
@@ -141,7 +165,7 @@ func (m *DeviceConfigurationRequestDataBlock) Serialize(writeBuffer utils.WriteB
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.LengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes()))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
@@ -180,6 +204,8 @@ func (m *DeviceConfigurationRequestDataBlock) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

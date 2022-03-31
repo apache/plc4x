@@ -134,12 +134,12 @@ func CastCommandId(structType interface{}) CommandId {
 	return castFunc(structType)
 }
 
-func (m CommandId) LengthInBits() uint16 {
+func (m CommandId) GetLengthInBits() uint16 {
 	return 16
 }
 
-func (m CommandId) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m CommandId) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CommandIdParse(readBuffer utils.ReadBuffer) (CommandId, error) {

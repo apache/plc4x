@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type ApduDataExtGroupPropertyValueInfoReport struct {
 	*ApduDataExt
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtGroupPropertyValueInfoReport interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduDataExt
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtGroupPropertyValueInfoReport) ExtApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataExtGroupPropertyValueInfoReport) GetExtApciType() uint8 {
 	return 0x2B
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataExtGroupPropertyValueInfoReport) InitializeParent(parent *ApduDataExt) {}
 
-func NewApduDataExtGroupPropertyValueInfoReport() *ApduDataExt {
-	child := &ApduDataExtGroupPropertyValueInfoReport{
-		ApduDataExt: NewApduDataExt(),
+func (m *ApduDataExtGroupPropertyValueInfoReport) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
+// NewApduDataExtGroupPropertyValueInfoReport factory function for ApduDataExtGroupPropertyValueInfoReport
+func NewApduDataExtGroupPropertyValueInfoReport(length uint8) *ApduDataExtGroupPropertyValueInfoReport {
+	_result := &ApduDataExtGroupPropertyValueInfoReport{
+		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtGroupPropertyValueInfoReport(structType interface{}) *ApduDataExtGroupPropertyValueInfoReport {
-	castFunc := func(typ interface{}) *ApduDataExtGroupPropertyValueInfoReport {
-		if casted, ok := typ.(ApduDataExtGroupPropertyValueInfoReport); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtGroupPropertyValueInfoReport); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtGroupPropertyValueInfoReport(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtGroupPropertyValueInfoReport(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtGroupPropertyValueInfoReport); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtGroupPropertyValueInfoReport); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtGroupPropertyValueInfoReport(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtGroupPropertyValueInfoReport(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtGroupPropertyValueInfoReport) GetTypeName() string {
 	return "ApduDataExtGroupPropertyValueInfoReport"
 }
 
-func (m *ApduDataExtGroupPropertyValueInfoReport) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtGroupPropertyValueInfoReport) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtGroupPropertyValueInfoReport) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtGroupPropertyValueInfoReport) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataExtGroupPropertyValueInfoReport) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtGroupPropertyValueInfoReport) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtGroupPropertyValueInfoReportParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtGroupPropertyValueInfoReportParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtGroupPropertyValueInfoReport, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtGroupPropertyValueInfoReport"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtGroupPropertyValueInfoReport"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func ApduDataExtGroupPropertyValueInfoReportParse(readBuffer utils.ReadBuffer, l
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtGroupPropertyValueInfoReport) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *ApduDataExtGroupPropertyValueInfoReport) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

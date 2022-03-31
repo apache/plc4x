@@ -32,73 +32,87 @@ type SysexCommandSamplingInterval struct {
 
 // The corresponding interface
 type ISysexCommandSamplingInterval interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ISysexCommand
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandSamplingInterval) CommandType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *SysexCommandSamplingInterval) GetCommandType() uint8 {
 	return 0x7A
 }
 
-func (m *SysexCommandSamplingInterval) Response() bool {
+func (m *SysexCommandSamplingInterval) GetResponse() bool {
 	return false
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *SysexCommandSamplingInterval) InitializeParent(parent *SysexCommand) {}
 
-func NewSysexCommandSamplingInterval() *SysexCommand {
-	child := &SysexCommandSamplingInterval{
+func (m *SysexCommandSamplingInterval) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
+// NewSysexCommandSamplingInterval factory function for SysexCommandSamplingInterval
+func NewSysexCommandSamplingInterval() *SysexCommandSamplingInterval {
+	_result := &SysexCommandSamplingInterval{
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandSamplingInterval(structType interface{}) *SysexCommandSamplingInterval {
-	castFunc := func(typ interface{}) *SysexCommandSamplingInterval {
-		if casted, ok := typ.(SysexCommandSamplingInterval); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandSamplingInterval); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandSamplingInterval(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandSamplingInterval(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandSamplingInterval); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandSamplingInterval); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandSamplingInterval(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandSamplingInterval(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandSamplingInterval) GetTypeName() string {
 	return "SysexCommandSamplingInterval"
 }
 
-func (m *SysexCommandSamplingInterval) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandSamplingInterval) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandSamplingInterval) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandSamplingInterval) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *SysexCommandSamplingInterval) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandSamplingInterval) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandSamplingIntervalParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
+func SysexCommandSamplingIntervalParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandSamplingInterval, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandSamplingInterval"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandSamplingInterval"); closeErr != nil {
 		return nil, closeErr
@@ -109,7 +123,7 @@ func SysexCommandSamplingIntervalParse(readBuffer utils.ReadBuffer, response boo
 		SysexCommand: &SysexCommand{},
 	}
 	_child.SysexCommand.Child = _child
-	return _child.SysexCommand, nil
+	return _child, nil
 }
 
 func (m *SysexCommandSamplingInterval) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -131,6 +145,8 @@ func (m *SysexCommandSamplingInterval) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

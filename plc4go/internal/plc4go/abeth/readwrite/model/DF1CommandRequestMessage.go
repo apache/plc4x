@@ -34,17 +34,29 @@ type DF1CommandRequestMessage struct {
 
 // The corresponding interface
 type IDF1CommandRequestMessage interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IDF1RequestMessage
+	// GetCommand returns Command (property field)
+	GetCommand() *DF1RequestCommand
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DF1CommandRequestMessage) CommandCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *DF1CommandRequestMessage) GetCommandCode() uint8 {
 	return 0x0F
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *DF1CommandRequestMessage) InitializeParent(parent *DF1RequestMessage, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) {
 	m.DF1RequestMessage.DestinationAddress = destinationAddress
@@ -53,59 +65,76 @@ func (m *DF1CommandRequestMessage) InitializeParent(parent *DF1RequestMessage, d
 	m.DF1RequestMessage.TransactionCounter = transactionCounter
 }
 
-func NewDF1CommandRequestMessage(command *DF1RequestCommand, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1RequestMessage {
-	child := &DF1CommandRequestMessage{
+func (m *DF1CommandRequestMessage) GetParent() *DF1RequestMessage {
+	return m.DF1RequestMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *DF1CommandRequestMessage) GetCommand() *DF1RequestCommand {
+	return m.Command
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewDF1CommandRequestMessage factory function for DF1CommandRequestMessage
+func NewDF1CommandRequestMessage(command *DF1RequestCommand, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1CommandRequestMessage {
+	_result := &DF1CommandRequestMessage{
 		Command:           command,
 		DF1RequestMessage: NewDF1RequestMessage(destinationAddress, sourceAddress, status, transactionCounter),
 	}
-	child.Child = child
-	return child.DF1RequestMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastDF1CommandRequestMessage(structType interface{}) *DF1CommandRequestMessage {
-	castFunc := func(typ interface{}) *DF1CommandRequestMessage {
-		if casted, ok := typ.(DF1CommandRequestMessage); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1CommandRequestMessage); ok {
-			return casted
-		}
-		if casted, ok := typ.(DF1RequestMessage); ok {
-			return CastDF1CommandRequestMessage(casted.Child)
-		}
-		if casted, ok := typ.(*DF1RequestMessage); ok {
-			return CastDF1CommandRequestMessage(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DF1CommandRequestMessage); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1CommandRequestMessage); ok {
+		return casted
+	}
+	if casted, ok := structType.(DF1RequestMessage); ok {
+		return CastDF1CommandRequestMessage(casted.Child)
+	}
+	if casted, ok := structType.(*DF1RequestMessage); ok {
+		return CastDF1CommandRequestMessage(casted.Child)
+	}
+	return nil
 }
 
 func (m *DF1CommandRequestMessage) GetTypeName() string {
 	return "DF1CommandRequestMessage"
 }
 
-func (m *DF1CommandRequestMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1CommandRequestMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1CommandRequestMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DF1CommandRequestMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (command)
-	lengthInBits += m.Command.LengthInBits()
+	lengthInBits += m.Command.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *DF1CommandRequestMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1CommandRequestMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMessage, error) {
+func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (*DF1CommandRequestMessage, error) {
 	if pullErr := readBuffer.PullContext("DF1CommandRequestMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (command)
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
@@ -130,7 +159,7 @@ func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMess
 		DF1RequestMessage: &DF1RequestMessage{},
 	}
 	_child.DF1RequestMessage.Child = _child
-	return _child.DF1RequestMessage, nil
+	return _child, nil
 }
 
 func (m *DF1CommandRequestMessage) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -164,6 +193,8 @@ func (m *DF1CommandRequestMessage) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

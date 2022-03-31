@@ -34,62 +34,89 @@ type S7ParameterUserData struct {
 
 // The corresponding interface
 type IS7ParameterUserData interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7Parameter
+	// GetItems returns Items (property field)
+	GetItems() []*S7ParameterUserDataItem
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7ParameterUserData) ParameterType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7ParameterUserData) GetParameterType() uint8 {
 	return 0x00
 }
 
-func (m *S7ParameterUserData) MessageType() uint8 {
+func (m *S7ParameterUserData) GetMessageType() uint8 {
 	return 0x07
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *S7ParameterUserData) InitializeParent(parent *S7Parameter) {}
 
-func NewS7ParameterUserData(items []*S7ParameterUserDataItem) *S7Parameter {
-	child := &S7ParameterUserData{
+func (m *S7ParameterUserData) GetParent() *S7Parameter {
+	return m.S7Parameter
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7ParameterUserData) GetItems() []*S7ParameterUserDataItem {
+	return m.Items
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7ParameterUserData factory function for S7ParameterUserData
+func NewS7ParameterUserData(items []*S7ParameterUserDataItem) *S7ParameterUserData {
+	_result := &S7ParameterUserData{
 		Items:       items,
 		S7Parameter: NewS7Parameter(),
 	}
-	child.Child = child
-	return child.S7Parameter
+	_result.Child = _result
+	return _result
 }
 
 func CastS7ParameterUserData(structType interface{}) *S7ParameterUserData {
-	castFunc := func(typ interface{}) *S7ParameterUserData {
-		if casted, ok := typ.(S7ParameterUserData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7ParameterUserData); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7Parameter); ok {
-			return CastS7ParameterUserData(casted.Child)
-		}
-		if casted, ok := typ.(*S7Parameter); ok {
-			return CastS7ParameterUserData(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7ParameterUserData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7ParameterUserData); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7Parameter); ok {
+		return CastS7ParameterUserData(casted.Child)
+	}
+	if casted, ok := structType.(*S7Parameter); ok {
+		return CastS7ParameterUserData(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7ParameterUserData) GetTypeName() string {
 	return "S7ParameterUserData"
 }
 
-func (m *S7ParameterUserData) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7ParameterUserData) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7ParameterUserData) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7ParameterUserData) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (numItems)
 	lengthInBits += 8
@@ -98,23 +125,25 @@ func (m *S7ParameterUserData) LengthInBitsConditional(lastItem bool) uint16 {
 	if len(m.Items) > 0 {
 		for i, element := range m.Items {
 			last := i == len(m.Items)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *S7ParameterUserData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7ParameterUserData) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterUserDataParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
+func S7ParameterUserDataParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7ParameterUserData, error) {
 	if pullErr := readBuffer.PullContext("S7ParameterUserData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (numItems) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	numItems, _numItemsErr := readBuffer.ReadUint8("numItems", 8)
 	_ = numItems
 	if _numItemsErr != nil {
@@ -150,7 +179,7 @@ func S7ParameterUserDataParse(readBuffer utils.ReadBuffer, messageType uint8) (*
 		S7Parameter: &S7Parameter{},
 	}
 	_child.S7Parameter.Child = _child
-	return _child.S7Parameter, nil
+	return _child, nil
 }
 
 func (m *S7ParameterUserData) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -160,7 +189,7 @@ func (m *S7ParameterUserData) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		numItems := uint8(uint8(len(m.Items)))
+		numItems := uint8(uint8(len(m.GetItems())))
 		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, (numItems))
 		if _numItemsErr != nil {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
@@ -195,6 +224,8 @@ func (m *S7ParameterUserData) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

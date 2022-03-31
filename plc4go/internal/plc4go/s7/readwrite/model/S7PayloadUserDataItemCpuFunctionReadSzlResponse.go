@@ -40,74 +40,125 @@ type S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7PayloadUserDataItem
+	// GetSzlId returns SzlId (property field)
+	GetSzlId() *SzlId
+	// GetSzlIndex returns SzlIndex (property field)
+	GetSzlIndex() uint16
+	// GetItems returns Items (property field)
+	GetItems() []*SzlDataTreeItem
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) CpuFunctionType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetCpuFunctionType() uint8 {
 	return 0x08
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) CpuSubfunction() uint8 {
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetCpuSubfunction() uint8 {
 	return 0x01
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) DataLength() uint16 {
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetDataLength() uint16 {
 	return 0
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
 	m.S7PayloadUserDataItem.ReturnCode = returnCode
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
 
-func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(szlId *SzlId, szlIndex uint16, items []*SzlDataTreeItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
-	child := &S7PayloadUserDataItemCpuFunctionReadSzlResponse{
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetParent() *S7PayloadUserDataItem {
+	return m.S7PayloadUserDataItem
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetSzlId() *SzlId {
+	return m.SzlId
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetSzlIndex() uint16 {
+	return m.SzlIndex
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetItems() []*SzlDataTreeItem {
+	return m.Items
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for const fields.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetSzlItemLength() uint16 {
+	return S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7PayloadUserDataItemCpuFunctionReadSzlResponse factory function for S7PayloadUserDataItemCpuFunctionReadSzlResponse
+func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(szlId *SzlId, szlIndex uint16, items []*SzlDataTreeItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItemCpuFunctionReadSzlResponse {
+	_result := &S7PayloadUserDataItemCpuFunctionReadSzlResponse{
 		SzlId:                 szlId,
 		SzlIndex:              szlIndex,
 		Items:                 items,
 		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Child = child
-	return child.S7PayloadUserDataItem
+	_result.Child = _result
+	return _result
 }
 
 func CastS7PayloadUserDataItemCpuFunctionReadSzlResponse(structType interface{}) *S7PayloadUserDataItemCpuFunctionReadSzlResponse {
-	castFunc := func(typ interface{}) *S7PayloadUserDataItemCpuFunctionReadSzlResponse {
-		if casted, ok := typ.(S7PayloadUserDataItemCpuFunctionReadSzlResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItemCpuFunctionReadSzlResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7PayloadUserDataItem); ok {
-			return CastS7PayloadUserDataItemCpuFunctionReadSzlResponse(casted.Child)
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItem); ok {
-			return CastS7PayloadUserDataItemCpuFunctionReadSzlResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionReadSzlResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7PayloadUserDataItemCpuFunctionReadSzlResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7PayloadUserDataItem); ok {
+		return CastS7PayloadUserDataItemCpuFunctionReadSzlResponse(casted.Child)
+	}
+	if casted, ok := structType.(*S7PayloadUserDataItem); ok {
+		return CastS7PayloadUserDataItemCpuFunctionReadSzlResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionReadSzlResponse"
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (szlId)
-	lengthInBits += m.SzlId.LengthInBits()
+	lengthInBits += m.SzlId.GetLengthInBits()
 
 	// Simple field (szlIndex)
 	lengthInBits += 16
@@ -122,21 +173,23 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBitsConditiona
 	if len(m.Items) > 0 {
 		for i, element := range m.Items {
 			last := i == len(m.Items)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItemCpuFunctionReadSzlResponse, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (szlId)
 	if pullErr := readBuffer.PullContext("szlId"); pullErr != nil {
@@ -167,7 +220,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadB
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH) + " but got " + fmt.Sprintf("%d", szlItemLength))
 	}
 
-	// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (szlItemCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	szlItemCount, _szlItemCountErr := readBuffer.ReadUint16("szlItemCount", 16)
 	_ = szlItemCount
 	if _szlItemCountErr != nil {
@@ -205,7 +258,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadB
 		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
 	_child.S7PayloadUserDataItem.Child = _child
-	return _child.S7PayloadUserDataItem, nil
+	return _child, nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -240,7 +293,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(writeBuffer 
 		}
 
 		// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		szlItemCount := uint16(uint16(len(m.Items)))
+		szlItemCount := uint16(uint16(len(m.GetItems())))
 		_szlItemCountErr := writeBuffer.WriteUint16("szlItemCount", 16, (szlItemCount))
 		if _szlItemCountErr != nil {
 			return errors.Wrap(_szlItemCountErr, "Error serializing 'szlItemCount' field")
@@ -275,6 +328,8 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

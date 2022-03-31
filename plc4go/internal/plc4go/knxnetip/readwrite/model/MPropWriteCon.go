@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type MPropWriteCon struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type IMPropWriteCon interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICEMI
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MPropWriteCon) MessageCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *MPropWriteCon) GetMessageCode() uint8 {
 	return 0xF5
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *MPropWriteCon) InitializeParent(parent *CEMI) {}
 
-func NewMPropWriteCon() *CEMI {
-	child := &MPropWriteCon{
-		CEMI: NewCEMI(),
+func (m *MPropWriteCon) GetParent() *CEMI {
+	return m.CEMI
+}
+
+// NewMPropWriteCon factory function for MPropWriteCon
+func NewMPropWriteCon(size uint16) *MPropWriteCon {
+	_result := &MPropWriteCon{
+		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastMPropWriteCon(structType interface{}) *MPropWriteCon {
-	castFunc := func(typ interface{}) *MPropWriteCon {
-		if casted, ok := typ.(MPropWriteCon); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MPropWriteCon); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMPropWriteCon(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMPropWriteCon(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MPropWriteCon); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MPropWriteCon); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastMPropWriteCon(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastMPropWriteCon(casted.Child)
+	}
+	return nil
 }
 
 func (m *MPropWriteCon) GetTypeName() string {
 	return "MPropWriteCon"
 }
 
-func (m *MPropWriteCon) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *MPropWriteCon) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *MPropWriteCon) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *MPropWriteCon) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *MPropWriteCon) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *MPropWriteCon) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func MPropWriteConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func MPropWriteConParse(readBuffer utils.ReadBuffer, size uint16) (*MPropWriteCon, error) {
 	if pullErr := readBuffer.PullContext("MPropWriteCon"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("MPropWriteCon"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func MPropWriteConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error)
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *MPropWriteCon) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *MPropWriteCon) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

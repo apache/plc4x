@@ -30,104 +30,160 @@ import (
 type BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
 	*BACnetConfirmedServiceRequest
 	SubscriberProcessIdentifier *BACnetContextTagUnsignedInteger
+	InitiatingDeviceIdentifier  *BACnetContextTagObjectIdentifier
 	MonitoredObjectIdentifier   *BACnetContextTagObjectIdentifier
-	IssueConfirmed              *BACnetContextTagBoolean
 	LifetimeInSeconds           *BACnetContextTagUnsignedInteger
 	ListOfValues                *BACnetPropertyValues
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedCOVNotification interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetConfirmedServiceRequest
+	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
+	GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger
+	// GetInitiatingDeviceIdentifier returns InitiatingDeviceIdentifier (property field)
+	GetInitiatingDeviceIdentifier() *BACnetContextTagObjectIdentifier
+	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier (property field)
+	GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier
+	// GetLifetimeInSeconds returns LifetimeInSeconds (property field)
+	GetLifetimeInSeconds() *BACnetContextTagUnsignedInteger
+	// GetListOfValues returns ListOfValues (property field)
+	GetListOfValues() *BACnetPropertyValues
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetServiceChoice() uint8 {
 	return 0x01
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, issueConfirmed *BACnetContextTagBoolean, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetPropertyValues) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestConfirmedCOVNotification{
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger {
+	return m.SubscriberProcessIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetInitiatingDeviceIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.InitiatingDeviceIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.MonitoredObjectIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetLifetimeInSeconds() *BACnetContextTagUnsignedInteger {
+	return m.LifetimeInSeconds
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetListOfValues() *BACnetPropertyValues {
+	return m.ListOfValues
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetConfirmedServiceRequestConfirmedCOVNotification factory function for BACnetConfirmedServiceRequestConfirmedCOVNotification
+func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetPropertyValues, len uint16) *BACnetConfirmedServiceRequestConfirmedCOVNotification {
+	_result := &BACnetConfirmedServiceRequestConfirmedCOVNotification{
 		SubscriberProcessIdentifier:   subscriberProcessIdentifier,
+		InitiatingDeviceIdentifier:    initiatingDeviceIdentifier,
 		MonitoredObjectIdentifier:     monitoredObjectIdentifier,
-		IssueConfirmed:                issueConfirmed,
 		LifetimeInSeconds:             lifetimeInSeconds,
 		ListOfValues:                  listOfValues,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType interface{}) *BACnetConfirmedServiceRequestConfirmedCOVNotification {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestConfirmedCOVNotification {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestConfirmedCOVNotification(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestConfirmedCOVNotification(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestConfirmedCOVNotification(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestConfirmedCOVNotification(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestConfirmedCOVNotification"
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (subscriberProcessIdentifier)
-	lengthInBits += m.SubscriberProcessIdentifier.LengthInBits()
+	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits()
+
+	// Simple field (initiatingDeviceIdentifier)
+	lengthInBits += m.InitiatingDeviceIdentifier.GetLengthInBits()
 
 	// Simple field (monitoredObjectIdentifier)
-	lengthInBits += m.MonitoredObjectIdentifier.LengthInBits()
-
-	// Simple field (issueConfirmed)
-	lengthInBits += m.IssueConfirmed.LengthInBits()
+	lengthInBits += m.MonitoredObjectIdentifier.GetLengthInBits()
 
 	// Simple field (lifetimeInSeconds)
-	lengthInBits += m.LifetimeInSeconds.LengthInBits()
+	lengthInBits += m.LifetimeInSeconds.GetLengthInBits()
 
 	// Simple field (listOfValues)
-	lengthInBits += m.ListOfValues.LengthInBits()
+	lengthInBits += m.ListOfValues.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestConfirmedCOVNotification, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (subscriberProcessIdentifier)
 	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
+	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _subscriberProcessIdentifierErr != nil {
 		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field")
 	}
@@ -136,11 +192,24 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 		return nil, closeErr
 	}
 
+	// Simple Field (initiatingDeviceIdentifier)
+	if pullErr := readBuffer.PullContext("initiatingDeviceIdentifier"); pullErr != nil {
+		return nil, pullErr
+	}
+	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	if _initiatingDeviceIdentifierErr != nil {
+		return nil, errors.Wrap(_initiatingDeviceIdentifierErr, "Error parsing 'initiatingDeviceIdentifier' field")
+	}
+	initiatingDeviceIdentifier := CastBACnetContextTagObjectIdentifier(_initiatingDeviceIdentifier)
+	if closeErr := readBuffer.CloseContext("initiatingDeviceIdentifier"); closeErr != nil {
+		return nil, closeErr
+	}
+
 	// Simple Field (monitoredObjectIdentifier)
 	if pullErr := readBuffer.PullContext("monitoredObjectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
 		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field")
 	}
@@ -149,24 +218,11 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 		return nil, closeErr
 	}
 
-	// Simple Field (issueConfirmed)
-	if pullErr := readBuffer.PullContext("issueConfirmed"); pullErr != nil {
-		return nil, pullErr
-	}
-	_issueConfirmed, _issueConfirmedErr := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_BOOLEAN)
-	if _issueConfirmedErr != nil {
-		return nil, errors.Wrap(_issueConfirmedErr, "Error parsing 'issueConfirmed' field")
-	}
-	issueConfirmed := CastBACnetContextTagBoolean(_issueConfirmed)
-	if closeErr := readBuffer.CloseContext("issueConfirmed"); closeErr != nil {
-		return nil, closeErr
-	}
-
 	// Simple Field (lifetimeInSeconds)
 	if pullErr := readBuffer.PullContext("lifetimeInSeconds"); pullErr != nil {
 		return nil, pullErr
 	}
-	_lifetimeInSeconds, _lifetimeInSecondsErr := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
+	_lifetimeInSeconds, _lifetimeInSecondsErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _lifetimeInSecondsErr != nil {
 		return nil, errors.Wrap(_lifetimeInSecondsErr, "Error parsing 'lifetimeInSeconds' field")
 	}
@@ -179,7 +235,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 		return nil, pullErr
 	}
-	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(4), monitoredObjectIdentifier.ObjectType)
+	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(uint8(4)), BACnetObjectType(monitoredObjectIdentifier.GetObjectType()))
 	if _listOfValuesErr != nil {
 		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field")
 	}
@@ -195,14 +251,14 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestConfirmedCOVNotification{
 		SubscriberProcessIdentifier:   CastBACnetContextTagUnsignedInteger(subscriberProcessIdentifier),
+		InitiatingDeviceIdentifier:    CastBACnetContextTagObjectIdentifier(initiatingDeviceIdentifier),
 		MonitoredObjectIdentifier:     CastBACnetContextTagObjectIdentifier(monitoredObjectIdentifier),
-		IssueConfirmed:                CastBACnetContextTagBoolean(issueConfirmed),
 		LifetimeInSeconds:             CastBACnetContextTagUnsignedInteger(lifetimeInSeconds),
 		ListOfValues:                  CastBACnetPropertyValues(listOfValues),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -223,6 +279,18 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(writeB
 			return errors.Wrap(_subscriberProcessIdentifierErr, "Error serializing 'subscriberProcessIdentifier' field")
 		}
 
+		// Simple Field (initiatingDeviceIdentifier)
+		if pushErr := writeBuffer.PushContext("initiatingDeviceIdentifier"); pushErr != nil {
+			return pushErr
+		}
+		_initiatingDeviceIdentifierErr := m.InitiatingDeviceIdentifier.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("initiatingDeviceIdentifier"); popErr != nil {
+			return popErr
+		}
+		if _initiatingDeviceIdentifierErr != nil {
+			return errors.Wrap(_initiatingDeviceIdentifierErr, "Error serializing 'initiatingDeviceIdentifier' field")
+		}
+
 		// Simple Field (monitoredObjectIdentifier)
 		if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
 			return pushErr
@@ -233,18 +301,6 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(writeB
 		}
 		if _monitoredObjectIdentifierErr != nil {
 			return errors.Wrap(_monitoredObjectIdentifierErr, "Error serializing 'monitoredObjectIdentifier' field")
-		}
-
-		// Simple Field (issueConfirmed)
-		if pushErr := writeBuffer.PushContext("issueConfirmed"); pushErr != nil {
-			return pushErr
-		}
-		_issueConfirmedErr := m.IssueConfirmed.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("issueConfirmed"); popErr != nil {
-			return popErr
-		}
-		if _issueConfirmedErr != nil {
-			return errors.Wrap(_issueConfirmedErr, "Error serializing 'issueConfirmed' field")
 		}
 
 		// Simple Field (lifetimeInSeconds)
@@ -284,6 +340,8 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) String() string 
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

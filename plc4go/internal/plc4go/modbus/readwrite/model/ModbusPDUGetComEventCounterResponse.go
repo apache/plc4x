@@ -35,67 +35,100 @@ type ModbusPDUGetComEventCounterResponse struct {
 
 // The corresponding interface
 type IModbusPDUGetComEventCounterResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IModbusPDU
+	// GetStatus returns Status (property field)
+	GetStatus() uint16
+	// GetEventCount returns EventCount (property field)
+	GetEventCount() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUGetComEventCounterResponse) ErrorFlag() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ModbusPDUGetComEventCounterResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUGetComEventCounterResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUGetComEventCounterResponse) GetFunctionFlag() uint8 {
 	return 0x0B
 }
 
-func (m *ModbusPDUGetComEventCounterResponse) Response() bool {
+func (m *ModbusPDUGetComEventCounterResponse) GetResponse() bool {
 	return bool(true)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ModbusPDUGetComEventCounterResponse) InitializeParent(parent *ModbusPDU) {}
 
-func NewModbusPDUGetComEventCounterResponse(status uint16, eventCount uint16) *ModbusPDU {
-	child := &ModbusPDUGetComEventCounterResponse{
+func (m *ModbusPDUGetComEventCounterResponse) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ModbusPDUGetComEventCounterResponse) GetStatus() uint16 {
+	return m.Status
+}
+
+func (m *ModbusPDUGetComEventCounterResponse) GetEventCount() uint16 {
+	return m.EventCount
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusPDUGetComEventCounterResponse factory function for ModbusPDUGetComEventCounterResponse
+func NewModbusPDUGetComEventCounterResponse(status uint16, eventCount uint16) *ModbusPDUGetComEventCounterResponse {
+	_result := &ModbusPDUGetComEventCounterResponse{
 		Status:     status,
 		EventCount: eventCount,
 		ModbusPDU:  NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUGetComEventCounterResponse(structType interface{}) *ModbusPDUGetComEventCounterResponse {
-	castFunc := func(typ interface{}) *ModbusPDUGetComEventCounterResponse {
-		if casted, ok := typ.(ModbusPDUGetComEventCounterResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUGetComEventCounterResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUGetComEventCounterResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUGetComEventCounterResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUGetComEventCounterResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUGetComEventCounterResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUGetComEventCounterResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUGetComEventCounterResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUGetComEventCounterResponse) GetTypeName() string {
 	return "ModbusPDUGetComEventCounterResponse"
 }
 
-func (m *ModbusPDUGetComEventCounterResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUGetComEventCounterResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUGetComEventCounterResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUGetComEventCounterResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (status)
 	lengthInBits += 16
@@ -106,14 +139,16 @@ func (m *ModbusPDUGetComEventCounterResponse) LengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *ModbusPDUGetComEventCounterResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUGetComEventCounterResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUGetComEventCounterResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUGetComEventCounterResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUGetComEventCounterResponse, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventCounterResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (status)
 	_status, _statusErr := readBuffer.ReadUint16("status", 16)
@@ -140,7 +175,7 @@ func ModbusPDUGetComEventCounterResponseParse(readBuffer utils.ReadBuffer, respo
 		ModbusPDU:  &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUGetComEventCounterResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -176,6 +211,8 @@ func (m *ModbusPDUGetComEventCounterResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -153,6 +153,36 @@
       </plugin>
 
       <!--
+        As our libraries should be consumable on Java 1.8, downgrade the compiler settings.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <release>8</release>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <release>11</release>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
         Make the surefire execute all unit-tests
       -->
       <plugin>
@@ -205,28 +235,6 @@
           <archive>
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
           </archive>
-        </configuration>
-      </plugin>
-
-      <!--
-        Make the failsafe execute all integration-tests
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <!--
-                Notice the @ instead of the $ as prefix? That's late evaluation.
-          -->
-          <!--argLine>@{failsafeArgLine}</argLine-->
         </configuration>
       </plugin>
 

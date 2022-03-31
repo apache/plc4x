@@ -34,37 +34,59 @@ type ChannelInformation struct {
 
 // The corresponding interface
 type IChannelInformation interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetNumChannels returns NumChannels (property field)
+	GetNumChannels() uint8
+	// GetChannelCode returns ChannelCode (property field)
+	GetChannelCode() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ChannelInformation) GetNumChannels() uint8 {
+	return m.NumChannels
+}
+
+func (m *ChannelInformation) GetChannelCode() uint16 {
+	return m.ChannelCode
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewChannelInformation factory function for ChannelInformation
 func NewChannelInformation(numChannels uint8, channelCode uint16) *ChannelInformation {
 	return &ChannelInformation{NumChannels: numChannels, ChannelCode: channelCode}
 }
 
 func CastChannelInformation(structType interface{}) *ChannelInformation {
-	castFunc := func(typ interface{}) *ChannelInformation {
-		if casted, ok := typ.(ChannelInformation); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ChannelInformation); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ChannelInformation); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ChannelInformation); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ChannelInformation) GetTypeName() string {
 	return "ChannelInformation"
 }
 
-func (m *ChannelInformation) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ChannelInformation) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ChannelInformation) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *ChannelInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (numChannels)
@@ -76,14 +98,16 @@ func (m *ChannelInformation) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *ChannelInformation) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ChannelInformation) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ChannelInformationParse(readBuffer utils.ReadBuffer) (*ChannelInformation, error) {
 	if pullErr := readBuffer.PullContext("ChannelInformation"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (numChannels)
 	_numChannels, _numChannelsErr := readBuffer.ReadUint8("numChannels", 3)
@@ -137,6 +161,8 @@ func (m *ChannelInformation) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

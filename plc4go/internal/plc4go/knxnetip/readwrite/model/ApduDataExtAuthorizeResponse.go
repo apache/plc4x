@@ -30,62 +30,92 @@ import (
 type ApduDataExtAuthorizeResponse struct {
 	*ApduDataExt
 	Level uint8
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtAuthorizeResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduDataExt
+	// GetLevel returns Level (property field)
+	GetLevel() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtAuthorizeResponse) ExtApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataExtAuthorizeResponse) GetExtApciType() uint8 {
 	return 0x12
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataExtAuthorizeResponse) InitializeParent(parent *ApduDataExt) {}
 
-func NewApduDataExtAuthorizeResponse(level uint8) *ApduDataExt {
-	child := &ApduDataExtAuthorizeResponse{
+func (m *ApduDataExtAuthorizeResponse) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ApduDataExtAuthorizeResponse) GetLevel() uint8 {
+	return m.Level
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewApduDataExtAuthorizeResponse factory function for ApduDataExtAuthorizeResponse
+func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *ApduDataExtAuthorizeResponse {
+	_result := &ApduDataExtAuthorizeResponse{
 		Level:       level,
-		ApduDataExt: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtAuthorizeResponse(structType interface{}) *ApduDataExtAuthorizeResponse {
-	castFunc := func(typ interface{}) *ApduDataExtAuthorizeResponse {
-		if casted, ok := typ.(ApduDataExtAuthorizeResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtAuthorizeResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtAuthorizeResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtAuthorizeResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtAuthorizeResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtAuthorizeResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtAuthorizeResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtAuthorizeResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtAuthorizeResponse) GetTypeName() string {
 	return "ApduDataExtAuthorizeResponse"
 }
 
-func (m *ApduDataExtAuthorizeResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtAuthorizeResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtAuthorizeResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtAuthorizeResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (level)
 	lengthInBits += 8
@@ -93,14 +123,16 @@ func (m *ApduDataExtAuthorizeResponse) LengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *ApduDataExtAuthorizeResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtAuthorizeResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtAuthorizeResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtAuthorizeResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtAuthorizeResponse, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtAuthorizeResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (level)
 	_level, _levelErr := readBuffer.ReadUint8("level", 8)
@@ -119,7 +151,7 @@ func ApduDataExtAuthorizeResponseParse(readBuffer utils.ReadBuffer, length uint8
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtAuthorizeResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,6 +180,8 @@ func (m *ApduDataExtAuthorizeResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -30,95 +30,127 @@ import (
 type S7PayloadReadVarResponse struct {
 	*S7Payload
 	Items []*S7VarPayloadDataItem
+
+	// Arguments.
+	Parameter S7Parameter
 }
 
 // The corresponding interface
 type IS7PayloadReadVarResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7Payload
+	// GetItems returns Items (property field)
+	GetItems() []*S7VarPayloadDataItem
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadReadVarResponse) ParameterParameterType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7PayloadReadVarResponse) GetParameterParameterType() uint8 {
 	return 0x04
 }
 
-func (m *S7PayloadReadVarResponse) MessageType() uint8 {
+func (m *S7PayloadReadVarResponse) GetMessageType() uint8 {
 	return 0x03
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *S7PayloadReadVarResponse) InitializeParent(parent *S7Payload) {}
 
-func NewS7PayloadReadVarResponse(items []*S7VarPayloadDataItem) *S7Payload {
-	child := &S7PayloadReadVarResponse{
+func (m *S7PayloadReadVarResponse) GetParent() *S7Payload {
+	return m.S7Payload
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7PayloadReadVarResponse) GetItems() []*S7VarPayloadDataItem {
+	return m.Items
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7PayloadReadVarResponse factory function for S7PayloadReadVarResponse
+func NewS7PayloadReadVarResponse(items []*S7VarPayloadDataItem, parameter S7Parameter) *S7PayloadReadVarResponse {
+	_result := &S7PayloadReadVarResponse{
 		Items:     items,
-		S7Payload: NewS7Payload(),
+		S7Payload: NewS7Payload(parameter),
 	}
-	child.Child = child
-	return child.S7Payload
+	_result.Child = _result
+	return _result
 }
 
 func CastS7PayloadReadVarResponse(structType interface{}) *S7PayloadReadVarResponse {
-	castFunc := func(typ interface{}) *S7PayloadReadVarResponse {
-		if casted, ok := typ.(S7PayloadReadVarResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7PayloadReadVarResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7Payload); ok {
-			return CastS7PayloadReadVarResponse(casted.Child)
-		}
-		if casted, ok := typ.(*S7Payload); ok {
-			return CastS7PayloadReadVarResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7PayloadReadVarResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7PayloadReadVarResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7Payload); ok {
+		return CastS7PayloadReadVarResponse(casted.Child)
+	}
+	if casted, ok := structType.(*S7Payload); ok {
+		return CastS7PayloadReadVarResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7PayloadReadVarResponse) GetTypeName() string {
 	return "S7PayloadReadVarResponse"
 }
 
-func (m *S7PayloadReadVarResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadReadVarResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadReadVarResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadReadVarResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.Items) > 0 {
 		for i, element := range m.Items {
 			last := i == len(m.Items)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *S7PayloadReadVarResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadReadVarResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadReadVarResponseParse(readBuffer utils.ReadBuffer, messageType uint8, parameter *S7Parameter) (*S7Payload, error) {
+func S7PayloadReadVarResponseParse(readBuffer utils.ReadBuffer, messageType uint8, parameter *S7Parameter) (*S7PayloadReadVarResponse, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadReadVarResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (items)
 	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, pullErr
 	}
 	// Count array
-	items := make([]*S7VarPayloadDataItem, CastS7ParameterReadVarResponse(parameter).NumItems)
+	items := make([]*S7VarPayloadDataItem, CastS7ParameterReadVarResponse(parameter).GetNumItems())
 	{
-		for curItem := uint16(0); curItem < uint16(CastS7ParameterReadVarResponse(parameter).NumItems); curItem++ {
+		for curItem := uint16(0); curItem < uint16(CastS7ParameterReadVarResponse(parameter).GetNumItems()); curItem++ {
 			_item, _err := S7VarPayloadDataItemParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field")
@@ -140,7 +172,7 @@ func S7PayloadReadVarResponseParse(readBuffer utils.ReadBuffer, messageType uint
 		S7Payload: &S7Payload{},
 	}
 	_child.S7Payload.Child = _child
-	return _child.S7Payload, nil
+	return _child, nil
 }
 
 func (m *S7PayloadReadVarResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -178,6 +210,8 @@ func (m *S7PayloadReadVarResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

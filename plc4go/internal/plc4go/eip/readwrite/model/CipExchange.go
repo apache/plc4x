@@ -35,41 +35,80 @@ const CipExchange_UNCONNECTEDDATA uint16 = 0x00B2
 // The data-structure of this message
 type CipExchange struct {
 	Service *CipService
+
+	// Arguments.
+	ExchangeLen uint16
 }
 
 // The corresponding interface
 type ICipExchange interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetService returns Service (property field)
+	GetService() *CipService
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewCipExchange(service *CipService) *CipExchange {
-	return &CipExchange{Service: service}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *CipExchange) GetService() *CipService {
+	return m.Service
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for const fields.
+///////////////////////
+func (m *CipExchange) GetItemCount() uint16 {
+	return CipExchange_ITEMCOUNT
+}
+
+func (m *CipExchange) GetNullPtr() uint32 {
+	return CipExchange_NULLPTR
+}
+
+func (m *CipExchange) GetUnconnectedData() uint16 {
+	return CipExchange_UNCONNECTEDDATA
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewCipExchange factory function for CipExchange
+func NewCipExchange(service *CipService, exchangeLen uint16) *CipExchange {
+	return &CipExchange{Service: service, ExchangeLen: exchangeLen}
 }
 
 func CastCipExchange(structType interface{}) *CipExchange {
-	castFunc := func(typ interface{}) *CipExchange {
-		if casted, ok := typ.(CipExchange); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CipExchange); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CipExchange); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CipExchange); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CipExchange) GetTypeName() string {
 	return "CipExchange"
 }
 
-func (m *CipExchange) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CipExchange) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CipExchange) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *CipExchange) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (itemCount)
@@ -85,19 +124,21 @@ func (m *CipExchange) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 16
 
 	// Simple field (service)
-	lengthInBits += m.Service.LengthInBits()
+	lengthInBits += m.Service.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *CipExchange) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CipExchange) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExchange, error) {
 	if pullErr := readBuffer.PullContext("CipExchange"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (itemCount)
 	itemCount, _itemCountErr := readBuffer.ReadUint16("itemCount", 16)
@@ -126,7 +167,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CipExchange_UNCONNECTEDDATA) + " but got " + fmt.Sprintf("%d", unconnectedData))
 	}
 
-	// Implicit Field (size) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (size) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	size, _sizeErr := readBuffer.ReadUint16("size", 16)
 	_ = size
 	if _sizeErr != nil {
@@ -137,7 +178,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 	if pullErr := readBuffer.PullContext("service"); pullErr != nil {
 		return nil, pullErr
 	}
-	_service, _serviceErr := CipServiceParse(readBuffer, uint16(exchangeLen)-uint16(uint16(10)))
+	_service, _serviceErr := CipServiceParse(readBuffer, uint16(uint16(exchangeLen)-uint16(uint16(10))))
 	if _serviceErr != nil {
 		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field")
 	}
@@ -151,7 +192,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 	}
 
 	// Create the instance
-	return NewCipExchange(service), nil
+	return NewCipExchange(service, exchangeLen), nil
 }
 
 func (m *CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -178,7 +219,7 @@ func (m *CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Implicit Field (size) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	size := uint16(uint16(uint16(uint16(m.LengthInBytes()))-uint16(uint16(8))) - uint16(uint16(2)))
+	size := uint16(uint16(uint16(uint16(m.GetLengthInBytes()))-uint16(uint16(8))) - uint16(uint16(2)))
 	_sizeErr := writeBuffer.WriteUint16("size", 16, (size))
 	if _sizeErr != nil {
 		return errors.Wrap(_sizeErr, "Error serializing 'size' field")
@@ -207,6 +248,8 @@ func (m *CipExchange) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

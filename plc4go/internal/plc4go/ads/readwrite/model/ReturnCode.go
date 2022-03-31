@@ -806,12 +806,12 @@ func CastReturnCode(structType interface{}) ReturnCode {
 	return castFunc(structType)
 }
 
-func (m ReturnCode) LengthInBits() uint16 {
+func (m ReturnCode) GetLengthInBits() uint16 {
 	return 32
 }
 
-func (m ReturnCode) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m ReturnCode) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ReturnCodeParse(readBuffer utils.ReadBuffer) (ReturnCode, error) {

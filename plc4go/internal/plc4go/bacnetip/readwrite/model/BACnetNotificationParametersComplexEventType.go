@@ -30,88 +30,116 @@ import (
 type BACnetNotificationParametersComplexEventType struct {
 	*BACnetNotificationParameters
 	ListOfValues *BACnetPropertyValues
+
+	// Arguments.
+	TagNumber  uint8
+	ObjectType BACnetObjectType
 }
 
 // The corresponding interface
 type IBACnetNotificationParametersComplexEventType interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetNotificationParameters
+	// GetListOfValues returns ListOfValues (property field)
+	GetListOfValues() *BACnetPropertyValues
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetNotificationParametersComplexEventType) PeekedTagNumber() uint8 {
-	return uint8(6)
-}
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
-func (m *BACnetNotificationParametersComplexEventType) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
+func (m *BACnetNotificationParametersComplexEventType) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetNotificationParameters.OpeningTag = openingTag
 	m.BACnetNotificationParameters.PeekedTagHeader = peekedTagHeader
 	m.BACnetNotificationParameters.ClosingTag = closingTag
-	m.BACnetNotificationParameters.PeekedTagNumber = peekedTagNumber
 }
 
-func NewBACnetNotificationParametersComplexEventType(listOfValues *BACnetPropertyValues, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {
-	child := &BACnetNotificationParametersComplexEventType{
+func (m *BACnetNotificationParametersComplexEventType) GetParent() *BACnetNotificationParameters {
+	return m.BACnetNotificationParameters
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetNotificationParametersComplexEventType) GetListOfValues() *BACnetPropertyValues {
+	return m.ListOfValues
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetNotificationParametersComplexEventType factory function for BACnetNotificationParametersComplexEventType
+func NewBACnetNotificationParametersComplexEventType(listOfValues *BACnetPropertyValues, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersComplexEventType {
+	_result := &BACnetNotificationParametersComplexEventType{
 		ListOfValues:                 listOfValues,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectType),
 	}
-	child.Child = child
-	return child.BACnetNotificationParameters
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetNotificationParametersComplexEventType(structType interface{}) *BACnetNotificationParametersComplexEventType {
-	castFunc := func(typ interface{}) *BACnetNotificationParametersComplexEventType {
-		if casted, ok := typ.(BACnetNotificationParametersComplexEventType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetNotificationParametersComplexEventType); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersComplexEventType(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersComplexEventType(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetNotificationParametersComplexEventType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetNotificationParametersComplexEventType); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersComplexEventType(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersComplexEventType(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetNotificationParametersComplexEventType) GetTypeName() string {
 	return "BACnetNotificationParametersComplexEventType"
 }
 
-func (m *BACnetNotificationParametersComplexEventType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetNotificationParametersComplexEventType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetNotificationParametersComplexEventType) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetNotificationParametersComplexEventType) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (listOfValues)
-	lengthInBits += m.ListOfValues.LengthInBits()
+	lengthInBits += m.ListOfValues.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetNotificationParametersComplexEventType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetNotificationParametersComplexEventType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParameters, error) {
+func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersComplexEventType, error) {
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersComplexEventType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (listOfValues)
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 		return nil, pullErr
 	}
-	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, peekedTagNumber, objectType)
+	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(peekedTagNumber), BACnetObjectType(objectType))
 	if _listOfValuesErr != nil {
 		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field")
 	}
@@ -130,7 +158,7 @@ func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuff
 		BACnetNotificationParameters: &BACnetNotificationParameters{},
 	}
 	_child.BACnetNotificationParameters.Child = _child
-	return _child.BACnetNotificationParameters, nil
+	return _child, nil
 }
 
 func (m *BACnetNotificationParametersComplexEventType) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -164,6 +192,8 @@ func (m *BACnetNotificationParametersComplexEventType) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

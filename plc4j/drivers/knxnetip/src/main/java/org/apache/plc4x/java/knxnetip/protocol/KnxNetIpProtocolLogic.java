@@ -35,7 +35,7 @@ import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress2Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress3Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddressFreeLevel;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KnxDatapointIO;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxDatapoint;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
@@ -70,7 +70,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
     private static final AtomicInteger sequenceCounter = new AtomicInteger(0);
     private RequestTransactionManager tm;
 
-    private Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
+    private final Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
 
     @Override
     public void setDriverContext(DriverContext driverContext) {
@@ -284,8 +284,8 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
 
                 // Use the data in the ets5 model to correctly check and serialize the PlcValue
                 try {
-                    final WriteBufferByteBased writeBuffer = KnxDatapointIO.staticSerialize(value,
-                        groupAddress.getType());
+                    final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(KnxDatapoint.getLengthInBytes(value, groupAddress.getType()));
+                    KnxDatapoint.staticSerialize(writeBuffer, value, groupAddress.getType());
                     final byte[] serialized = writeBuffer.getData();
                     dataFirstByte = serialized[0];
                     data = new byte[serialized.length - 1];
@@ -305,6 +305,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 } else if (value.isList()) {
                     // Check each item of the list, if it's also a byte.
                     List<? extends PlcValue> list = value.getList();
+                    // TODO: This could cause an exception.
                     data = new byte[list.size() - 1];
                     boolean allValuesAreBytes = !list.isEmpty();
                     int numByte = 0;
@@ -339,11 +340,17 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
             TunnelingRequest knxRequest = new TunnelingRequest(
                 new TunnelingRequestDataBlock(communicationChannelId,
                     (short) sequenceCounter.getAndIncrement()),
-                new LDataReq((short) 0, new ArrayList<>(0),
+                new LDataReq(
+                    (short) 0,
+                    new ArrayList<>(0),
                     new LDataExtended(false, false, CEMIPriority.LOW, false, false,
                         true, (byte) 6, (byte) 0, knxNetIpDriverContext.getClientKnxAddress(), destinationAddress,
-                        new ApduDataContainer(true, (byte) 0, new ApduDataGroupValueWrite(dataFirstByte, data)))
-                ));
+                        new ApduDataContainer(true, (byte) 0, new ApduDataGroupValueWrite(dataFirstByte, data, (short) -1), (short) -1)
+                    ),
+                    -1
+                ),
+                -1
+            );
 
             // Start a new request-transaction (Is ended in the response-handler)
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -398,13 +405,13 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                     if (lDataFrame instanceof LDataExtended) {
                         LDataExtended lDataFrameDataExt = (LDataExtended) lDataFrame;
                         Apdu apdu = lDataFrameDataExt.getApdu();
-                        if(apdu instanceof ApduDataContainer) {
+                        if (apdu instanceof ApduDataContainer) {
                             ApduDataContainer apduDataContainer = (ApduDataContainer) apdu;
                             ApduData dataApdu = apduDataContainer.getDataApdu();
-                            if(dataApdu instanceof ApduDataGroupValueWrite) {
+                            if (dataApdu instanceof ApduDataGroupValueWrite) {
                                 ApduDataGroupValueWrite groupWrite = (ApduDataGroupValueWrite) dataApdu;
                                 processCemiData(lDataFrameDataExt.getSourceAddress(), lDataFrameDataExt.getDestinationAddress(),
-                                    groupWrite.getDataFirstByte(),groupWrite.getData());
+                                    groupWrite.getDataFirstByte(), groupWrite.getData());
                             }
                         }
                     }
@@ -469,7 +476,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
 
                 // Parse the payload depending on the type of the group-address.
                 ReadBuffer rawDataReader = new ReadBufferByteBased(payload);
-                final PlcValue value = KnxDatapointIO.staticParse(rawDataReader,
+                final PlcValue value = KnxDatapoint.staticParse(rawDataReader,
                     groupAddress.getType());
 
                 // Assemble the plc4x return data-structure.
@@ -574,16 +581,16 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         try {
             switch (knxNetIpDriverContext.getGroupAddressType()) {
                 case 3:
-                    address.writeUnsignedShort(5, Short.valueOf(field.getMainGroup()));
-                    address.writeUnsignedByte(3, Byte.valueOf(field.getMiddleGroup()));
-                    address.writeUnsignedShort(8, Short.valueOf(field.getSubGroup()));
+                    address.writeUnsignedShort(5, Short.parseShort(field.getMainGroup()));
+                    address.writeUnsignedByte(3, Byte.parseByte(field.getMiddleGroup()));
+                    address.writeUnsignedShort(8, Short.parseShort(field.getSubGroup()));
                     break;
                 case 2:
-                    address.writeUnsignedShort(5, Short.valueOf(field.getMainGroup()));
-                    address.writeUnsignedShort(11, Short.valueOf(field.getSubGroup()));
+                    address.writeUnsignedShort(5, Short.parseShort(field.getMainGroup()));
+                    address.writeUnsignedShort(11, Short.parseShort(field.getSubGroup()));
                     break;
                 case 1:
-                    address.writeUnsignedShort(16, Short.valueOf(field.getSubGroup()));
+                    address.writeUnsignedShort(16, Short.parseShort(field.getSubGroup()));
                     break;
             }
         } catch (Exception e) {

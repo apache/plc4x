@@ -33,100 +33,146 @@ type BACnetNotificationParametersChangeOfBitString struct {
 	ChangeOfBitString *BACnetContextTagBitString
 	StatusFlags       *BACnetStatusFlags
 	InnerClosingTag   *BACnetClosingTag
+
+	// Arguments.
+	TagNumber  uint8
+	ObjectType BACnetObjectType
 }
 
 // The corresponding interface
 type IBACnetNotificationParametersChangeOfBitString interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetNotificationParameters
+	// GetInnerOpeningTag returns InnerOpeningTag (property field)
+	GetInnerOpeningTag() *BACnetOpeningTag
+	// GetChangeOfBitString returns ChangeOfBitString (property field)
+	GetChangeOfBitString() *BACnetContextTagBitString
+	// GetStatusFlags returns StatusFlags (property field)
+	GetStatusFlags() *BACnetStatusFlags
+	// GetInnerClosingTag returns InnerClosingTag (property field)
+	GetInnerClosingTag() *BACnetClosingTag
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetNotificationParametersChangeOfBitString) PeekedTagNumber() uint8 {
-	return uint8(0)
-}
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
-func (m *BACnetNotificationParametersChangeOfBitString) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
+func (m *BACnetNotificationParametersChangeOfBitString) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetNotificationParameters.OpeningTag = openingTag
 	m.BACnetNotificationParameters.PeekedTagHeader = peekedTagHeader
 	m.BACnetNotificationParameters.ClosingTag = closingTag
-	m.BACnetNotificationParameters.PeekedTagNumber = peekedTagNumber
 }
 
-func NewBACnetNotificationParametersChangeOfBitString(innerOpeningTag *BACnetOpeningTag, changeOfBitString *BACnetContextTagBitString, statusFlags *BACnetStatusFlags, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {
-	child := &BACnetNotificationParametersChangeOfBitString{
+func (m *BACnetNotificationParametersChangeOfBitString) GetParent() *BACnetNotificationParameters {
+	return m.BACnetNotificationParameters
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetNotificationParametersChangeOfBitString) GetInnerOpeningTag() *BACnetOpeningTag {
+	return m.InnerOpeningTag
+}
+
+func (m *BACnetNotificationParametersChangeOfBitString) GetChangeOfBitString() *BACnetContextTagBitString {
+	return m.ChangeOfBitString
+}
+
+func (m *BACnetNotificationParametersChangeOfBitString) GetStatusFlags() *BACnetStatusFlags {
+	return m.StatusFlags
+}
+
+func (m *BACnetNotificationParametersChangeOfBitString) GetInnerClosingTag() *BACnetClosingTag {
+	return m.InnerClosingTag
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetNotificationParametersChangeOfBitString factory function for BACnetNotificationParametersChangeOfBitString
+func NewBACnetNotificationParametersChangeOfBitString(innerOpeningTag *BACnetOpeningTag, changeOfBitString *BACnetContextTagBitString, statusFlags *BACnetStatusFlags, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfBitString {
+	_result := &BACnetNotificationParametersChangeOfBitString{
 		InnerOpeningTag:              innerOpeningTag,
 		ChangeOfBitString:            changeOfBitString,
 		StatusFlags:                  statusFlags,
 		InnerClosingTag:              innerClosingTag,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectType),
 	}
-	child.Child = child
-	return child.BACnetNotificationParameters
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetNotificationParametersChangeOfBitString(structType interface{}) *BACnetNotificationParametersChangeOfBitString {
-	castFunc := func(typ interface{}) *BACnetNotificationParametersChangeOfBitString {
-		if casted, ok := typ.(BACnetNotificationParametersChangeOfBitString); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetNotificationParametersChangeOfBitString); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersChangeOfBitString(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersChangeOfBitString(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetNotificationParametersChangeOfBitString); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetNotificationParametersChangeOfBitString); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersChangeOfBitString(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersChangeOfBitString(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetNotificationParametersChangeOfBitString) GetTypeName() string {
 	return "BACnetNotificationParametersChangeOfBitString"
 }
 
-func (m *BACnetNotificationParametersChangeOfBitString) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetNotificationParametersChangeOfBitString) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetNotificationParametersChangeOfBitString) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetNotificationParametersChangeOfBitString) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.LengthInBits()
+	lengthInBits += m.InnerOpeningTag.GetLengthInBits()
 
 	// Simple field (changeOfBitString)
-	lengthInBits += m.ChangeOfBitString.LengthInBits()
+	lengthInBits += m.ChangeOfBitString.GetLengthInBits()
 
 	// Simple field (statusFlags)
-	lengthInBits += m.StatusFlags.LengthInBits()
+	lengthInBits += m.StatusFlags.GetLengthInBits()
 
 	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.LengthInBits()
+	lengthInBits += m.InnerClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetNotificationParametersChangeOfBitString) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetNotificationParametersChangeOfBitString) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParameters, error) {
+func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersChangeOfBitString, error) {
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfBitString"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_OPENING_TAG)
+	_innerOpeningTag, _innerOpeningTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_OPENING_TAG))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
 	}
@@ -139,7 +185,7 @@ func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("changeOfBitString"); pullErr != nil {
 		return nil, pullErr
 	}
-	_changeOfBitString, _changeOfBitStringErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BIT_STRING)
+	_changeOfBitString, _changeOfBitStringErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _changeOfBitStringErr != nil {
 		return nil, errors.Wrap(_changeOfBitStringErr, "Error parsing 'changeOfBitString' field")
 	}
@@ -152,7 +198,7 @@ func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(1))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
@@ -165,7 +211,7 @@ func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_CLOSING_TAG)
+	_innerClosingTag, _innerClosingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_CLOSING_TAG))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
 	}
@@ -187,7 +233,7 @@ func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuf
 		BACnetNotificationParameters: &BACnetNotificationParameters{},
 	}
 	_child.BACnetNotificationParameters.Child = _child
-	return _child.BACnetNotificationParameters, nil
+	return _child, nil
 }
 
 func (m *BACnetNotificationParametersChangeOfBitString) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -257,6 +303,8 @@ func (m *BACnetNotificationParametersChangeOfBitString) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

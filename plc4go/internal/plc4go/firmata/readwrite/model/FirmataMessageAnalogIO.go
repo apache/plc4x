@@ -31,63 +31,99 @@ type FirmataMessageAnalogIO struct {
 	*FirmataMessage
 	Pin  uint8
 	Data []int8
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
 type IFirmataMessageAnalogIO interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IFirmataMessage
+	// GetPin returns Pin (property field)
+	GetPin() uint8
+	// GetData returns Data (property field)
+	GetData() []int8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataMessageAnalogIO) MessageType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *FirmataMessageAnalogIO) GetMessageType() uint8 {
 	return 0xE
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *FirmataMessageAnalogIO) InitializeParent(parent *FirmataMessage) {}
 
-func NewFirmataMessageAnalogIO(pin uint8, data []int8) *FirmataMessage {
-	child := &FirmataMessageAnalogIO{
+func (m *FirmataMessageAnalogIO) GetParent() *FirmataMessage {
+	return m.FirmataMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *FirmataMessageAnalogIO) GetPin() uint8 {
+	return m.Pin
+}
+
+func (m *FirmataMessageAnalogIO) GetData() []int8 {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewFirmataMessageAnalogIO factory function for FirmataMessageAnalogIO
+func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *FirmataMessageAnalogIO {
+	_result := &FirmataMessageAnalogIO{
 		Pin:            pin,
 		Data:           data,
-		FirmataMessage: NewFirmataMessage(),
+		FirmataMessage: NewFirmataMessage(response),
 	}
-	child.Child = child
-	return child.FirmataMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataMessageAnalogIO(structType interface{}) *FirmataMessageAnalogIO {
-	castFunc := func(typ interface{}) *FirmataMessageAnalogIO {
-		if casted, ok := typ.(FirmataMessageAnalogIO); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataMessageAnalogIO); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataMessage); ok {
-			return CastFirmataMessageAnalogIO(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataMessage); ok {
-			return CastFirmataMessageAnalogIO(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataMessageAnalogIO); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataMessageAnalogIO); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataMessage); ok {
+		return CastFirmataMessageAnalogIO(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataMessage); ok {
+		return CastFirmataMessageAnalogIO(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataMessageAnalogIO) GetTypeName() string {
 	return "FirmataMessageAnalogIO"
 }
 
-func (m *FirmataMessageAnalogIO) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataMessageAnalogIO) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataMessageAnalogIO) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataMessageAnalogIO) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 4
@@ -100,14 +136,16 @@ func (m *FirmataMessageAnalogIO) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *FirmataMessageAnalogIO) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataMessageAnalogIO) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {
+func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessageAnalogIO, error) {
 	if pullErr := readBuffer.PullContext("FirmataMessageAnalogIO"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (pin)
 	_pin, _pinErr := readBuffer.ReadUint8("pin", 4)
@@ -146,7 +184,7 @@ func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (*F
 		FirmataMessage: &FirmataMessage{},
 	}
 	_child.FirmataMessage.Child = _child
-	return _child.FirmataMessage, nil
+	return _child, nil
 }
 
 func (m *FirmataMessageAnalogIO) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -191,6 +229,8 @@ func (m *FirmataMessageAnalogIO) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

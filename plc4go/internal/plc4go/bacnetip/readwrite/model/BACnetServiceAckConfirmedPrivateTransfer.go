@@ -32,69 +32,83 @@ type BACnetServiceAckConfirmedPrivateTransfer struct {
 
 // The corresponding interface
 type IBACnetServiceAckConfirmedPrivateTransfer interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetServiceAck
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckConfirmedPrivateTransfer) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetServiceAckConfirmedPrivateTransfer) GetServiceChoice() uint8 {
 	return 0x12
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *BACnetServiceAckConfirmedPrivateTransfer) InitializeParent(parent *BACnetServiceAck) {}
 
-func NewBACnetServiceAckConfirmedPrivateTransfer() *BACnetServiceAck {
-	child := &BACnetServiceAckConfirmedPrivateTransfer{
+func (m *BACnetServiceAckConfirmedPrivateTransfer) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
+// NewBACnetServiceAckConfirmedPrivateTransfer factory function for BACnetServiceAckConfirmedPrivateTransfer
+func NewBACnetServiceAckConfirmedPrivateTransfer() *BACnetServiceAckConfirmedPrivateTransfer {
+	_result := &BACnetServiceAckConfirmedPrivateTransfer{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckConfirmedPrivateTransfer(structType interface{}) *BACnetServiceAckConfirmedPrivateTransfer {
-	castFunc := func(typ interface{}) *BACnetServiceAckConfirmedPrivateTransfer {
-		if casted, ok := typ.(BACnetServiceAckConfirmedPrivateTransfer); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckConfirmedPrivateTransfer); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckConfirmedPrivateTransfer(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckConfirmedPrivateTransfer(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckConfirmedPrivateTransfer); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckConfirmedPrivateTransfer); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckConfirmedPrivateTransfer(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckConfirmedPrivateTransfer(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckConfirmedPrivateTransfer) GetTypeName() string {
 	return "BACnetServiceAckConfirmedPrivateTransfer"
 }
 
-func (m *BACnetServiceAckConfirmedPrivateTransfer) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckConfirmedPrivateTransfer) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckConfirmedPrivateTransfer) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckConfirmedPrivateTransfer) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckConfirmedPrivateTransfer) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckConfirmedPrivateTransfer) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckConfirmedPrivateTransfer, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckConfirmedPrivateTransfer"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckConfirmedPrivateTransfer"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) 
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckConfirmedPrivateTransfer) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

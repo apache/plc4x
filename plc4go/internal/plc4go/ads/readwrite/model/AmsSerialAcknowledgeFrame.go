@@ -38,37 +38,83 @@ type AmsSerialAcknowledgeFrame struct {
 
 // The corresponding interface
 type IAmsSerialAcknowledgeFrame interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetMagicCookie returns MagicCookie (property field)
+	GetMagicCookie() uint16
+	// GetTransmitterAddress returns TransmitterAddress (property field)
+	GetTransmitterAddress() int8
+	// GetReceiverAddress returns ReceiverAddress (property field)
+	GetReceiverAddress() int8
+	// GetFragmentNumber returns FragmentNumber (property field)
+	GetFragmentNumber() int8
+	// GetLength returns Length (property field)
+	GetLength() int8
+	// GetCrc returns Crc (property field)
+	GetCrc() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AmsSerialAcknowledgeFrame) GetMagicCookie() uint16 {
+	return m.MagicCookie
+}
+
+func (m *AmsSerialAcknowledgeFrame) GetTransmitterAddress() int8 {
+	return m.TransmitterAddress
+}
+
+func (m *AmsSerialAcknowledgeFrame) GetReceiverAddress() int8 {
+	return m.ReceiverAddress
+}
+
+func (m *AmsSerialAcknowledgeFrame) GetFragmentNumber() int8 {
+	return m.FragmentNumber
+}
+
+func (m *AmsSerialAcknowledgeFrame) GetLength() int8 {
+	return m.Length
+}
+
+func (m *AmsSerialAcknowledgeFrame) GetCrc() uint16 {
+	return m.Crc
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAmsSerialAcknowledgeFrame factory function for AmsSerialAcknowledgeFrame
 func NewAmsSerialAcknowledgeFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *AmsSerialAcknowledgeFrame {
 	return &AmsSerialAcknowledgeFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
 }
 
 func CastAmsSerialAcknowledgeFrame(structType interface{}) *AmsSerialAcknowledgeFrame {
-	castFunc := func(typ interface{}) *AmsSerialAcknowledgeFrame {
-		if casted, ok := typ.(AmsSerialAcknowledgeFrame); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AmsSerialAcknowledgeFrame); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AmsSerialAcknowledgeFrame); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AmsSerialAcknowledgeFrame); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AmsSerialAcknowledgeFrame) GetTypeName() string {
 	return "AmsSerialAcknowledgeFrame"
 }
 
-func (m *AmsSerialAcknowledgeFrame) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AmsSerialAcknowledgeFrame) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AmsSerialAcknowledgeFrame) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AmsSerialAcknowledgeFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (magicCookie)
@@ -92,14 +138,16 @@ func (m *AmsSerialAcknowledgeFrame) LengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *AmsSerialAcknowledgeFrame) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AmsSerialAcknowledgeFrame) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AmsSerialAcknowledgeFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialAcknowledgeFrame, error) {
 	if pullErr := readBuffer.PullContext("AmsSerialAcknowledgeFrame"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (magicCookie)
 	_magicCookie, _magicCookieErr := readBuffer.ReadUint16("magicCookie", 16)
@@ -209,6 +257,8 @@ func (m *AmsSerialAcknowledgeFrame) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

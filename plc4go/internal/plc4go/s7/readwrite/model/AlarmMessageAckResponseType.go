@@ -35,37 +35,65 @@ type AlarmMessageAckResponseType struct {
 
 // The corresponding interface
 type IAlarmMessageAckResponseType interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetFunctionId returns FunctionId (property field)
+	GetFunctionId() uint8
+	// GetNumberOfObjects returns NumberOfObjects (property field)
+	GetNumberOfObjects() uint8
+	// GetMessageObjects returns MessageObjects (property field)
+	GetMessageObjects() []uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AlarmMessageAckResponseType) GetFunctionId() uint8 {
+	return m.FunctionId
+}
+
+func (m *AlarmMessageAckResponseType) GetNumberOfObjects() uint8 {
+	return m.NumberOfObjects
+}
+
+func (m *AlarmMessageAckResponseType) GetMessageObjects() []uint8 {
+	return m.MessageObjects
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAlarmMessageAckResponseType factory function for AlarmMessageAckResponseType
 func NewAlarmMessageAckResponseType(functionId uint8, numberOfObjects uint8, messageObjects []uint8) *AlarmMessageAckResponseType {
 	return &AlarmMessageAckResponseType{FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
 }
 
 func CastAlarmMessageAckResponseType(structType interface{}) *AlarmMessageAckResponseType {
-	castFunc := func(typ interface{}) *AlarmMessageAckResponseType {
-		if casted, ok := typ.(AlarmMessageAckResponseType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AlarmMessageAckResponseType); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AlarmMessageAckResponseType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AlarmMessageAckResponseType); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AlarmMessageAckResponseType) GetTypeName() string {
 	return "AlarmMessageAckResponseType"
 }
 
-func (m *AlarmMessageAckResponseType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AlarmMessageAckResponseType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageAckResponseType) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AlarmMessageAckResponseType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (functionId)
@@ -82,14 +110,16 @@ func (m *AlarmMessageAckResponseType) LengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *AlarmMessageAckResponseType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AlarmMessageAckResponseType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AlarmMessageAckResponseTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAckResponseType, error) {
 	if pullErr := readBuffer.PullContext("AlarmMessageAckResponseType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (functionId)
 	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
@@ -178,6 +208,8 @@ func (m *AlarmMessageAckResponseType) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

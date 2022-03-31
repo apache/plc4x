@@ -20,10 +20,6 @@ package org.apache.plc4x.java.transport.socketcan;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.socketcan.readwrite.SocketCANFrame;
-import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
 
 public class SocketCANFrameBuilder implements CANFrameBuilder<SocketCANFrame> {

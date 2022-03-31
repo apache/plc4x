@@ -42,60 +42,115 @@ type S7MessageObjectRequest struct {
 
 // The corresponding interface
 type IS7MessageObjectRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7DataAlarmMessage
+	// GetSyntaxId returns SyntaxId (property field)
+	GetSyntaxId() SyntaxIdType
+	// GetQueryType returns QueryType (property field)
+	GetQueryType() QueryType
+	// GetAlarmType returns AlarmType (property field)
+	GetAlarmType() AlarmType
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7MessageObjectRequest) CpuFunctionType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7MessageObjectRequest) GetCpuFunctionType() uint8 {
 	return 0x04
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *S7MessageObjectRequest) InitializeParent(parent *S7DataAlarmMessage) {}
 
-func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *S7DataAlarmMessage {
-	child := &S7MessageObjectRequest{
+func (m *S7MessageObjectRequest) GetParent() *S7DataAlarmMessage {
+	return m.S7DataAlarmMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7MessageObjectRequest) GetSyntaxId() SyntaxIdType {
+	return m.SyntaxId
+}
+
+func (m *S7MessageObjectRequest) GetQueryType() QueryType {
+	return m.QueryType
+}
+
+func (m *S7MessageObjectRequest) GetAlarmType() AlarmType {
+	return m.AlarmType
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for const fields.
+///////////////////////
+func (m *S7MessageObjectRequest) GetVariableSpec() uint8 {
+	return S7MessageObjectRequest_VARIABLESPEC
+}
+
+func (m *S7MessageObjectRequest) GetLength() uint8 {
+	return S7MessageObjectRequest_LENGTH
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7MessageObjectRequest factory function for S7MessageObjectRequest
+func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *S7MessageObjectRequest {
+	_result := &S7MessageObjectRequest{
 		SyntaxId:           syntaxId,
 		QueryType:          queryType,
 		AlarmType:          alarmType,
 		S7DataAlarmMessage: NewS7DataAlarmMessage(),
 	}
-	child.Child = child
-	return child.S7DataAlarmMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastS7MessageObjectRequest(structType interface{}) *S7MessageObjectRequest {
-	castFunc := func(typ interface{}) *S7MessageObjectRequest {
-		if casted, ok := typ.(S7MessageObjectRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7MessageObjectRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7DataAlarmMessage); ok {
-			return CastS7MessageObjectRequest(casted.Child)
-		}
-		if casted, ok := typ.(*S7DataAlarmMessage); ok {
-			return CastS7MessageObjectRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7MessageObjectRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7MessageObjectRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7DataAlarmMessage); ok {
+		return CastS7MessageObjectRequest(casted.Child)
+	}
+	if casted, ok := structType.(*S7DataAlarmMessage); ok {
+		return CastS7MessageObjectRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7MessageObjectRequest) GetTypeName() string {
 	return "S7MessageObjectRequest"
 }
 
-func (m *S7MessageObjectRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7MessageObjectRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7MessageObjectRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7MessageObjectRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (variableSpec)
 	lengthInBits += 8
@@ -121,14 +176,16 @@ func (m *S7MessageObjectRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *S7MessageObjectRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7MessageObjectRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (*S7DataAlarmMessage, error) {
+func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (*S7MessageObjectRequest, error) {
 	if pullErr := readBuffer.PullContext("S7MessageObjectRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (variableSpec)
 	variableSpec, _variableSpecErr := readBuffer.ReadUint8("variableSpec", 8)
@@ -227,7 +284,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 		S7DataAlarmMessage: &S7DataAlarmMessage{},
 	}
 	_child.S7DataAlarmMessage.Child = _child
-	return _child.S7DataAlarmMessage, nil
+	return _child, nil
 }
 
 func (m *S7MessageObjectRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -313,6 +370,8 @@ func (m *S7MessageObjectRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

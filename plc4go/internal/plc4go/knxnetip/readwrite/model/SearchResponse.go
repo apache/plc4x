@@ -36,81 +36,122 @@ type SearchResponse struct {
 
 // The corresponding interface
 type ISearchResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IKnxNetIpMessage
+	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
+	GetHpaiControlEndpoint() *HPAIControlEndpoint
+	// GetDibDeviceInfo returns DibDeviceInfo (property field)
+	GetDibDeviceInfo() *DIBDeviceInfo
+	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies (property field)
+	GetDibSuppSvcFamilies() *DIBSuppSvcFamilies
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SearchResponse) MsgType() uint16 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *SearchResponse) GetMsgType() uint16 {
 	return 0x0202
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *SearchResponse) InitializeParent(parent *KnxNetIpMessage) {}
 
-func NewSearchResponse(hpaiControlEndpoint *HPAIControlEndpoint, dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies) *KnxNetIpMessage {
-	child := &SearchResponse{
+func (m *SearchResponse) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *SearchResponse) GetHpaiControlEndpoint() *HPAIControlEndpoint {
+	return m.HpaiControlEndpoint
+}
+
+func (m *SearchResponse) GetDibDeviceInfo() *DIBDeviceInfo {
+	return m.DibDeviceInfo
+}
+
+func (m *SearchResponse) GetDibSuppSvcFamilies() *DIBSuppSvcFamilies {
+	return m.DibSuppSvcFamilies
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewSearchResponse factory function for SearchResponse
+func NewSearchResponse(hpaiControlEndpoint *HPAIControlEndpoint, dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies) *SearchResponse {
+	_result := &SearchResponse{
 		HpaiControlEndpoint: hpaiControlEndpoint,
 		DibDeviceInfo:       dibDeviceInfo,
 		DibSuppSvcFamilies:  dibSuppSvcFamilies,
 		KnxNetIpMessage:     NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastSearchResponse(structType interface{}) *SearchResponse {
-	castFunc := func(typ interface{}) *SearchResponse {
-		if casted, ok := typ.(SearchResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SearchResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastSearchResponse(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastSearchResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SearchResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SearchResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastSearchResponse(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastSearchResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *SearchResponse) GetTypeName() string {
 	return "SearchResponse"
 }
 
-func (m *SearchResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SearchResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SearchResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SearchResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
+	lengthInBits += m.HpaiControlEndpoint.GetLengthInBits()
 
 	// Simple field (dibDeviceInfo)
-	lengthInBits += m.DibDeviceInfo.LengthInBits()
+	lengthInBits += m.DibDeviceInfo.GetLengthInBits()
 
 	// Simple field (dibSuppSvcFamilies)
-	lengthInBits += m.DibSuppSvcFamilies.LengthInBits()
+	lengthInBits += m.DibSuppSvcFamilies.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *SearchResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SearchResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func SearchResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func SearchResponseParse(readBuffer utils.ReadBuffer) (*SearchResponse, error) {
 	if pullErr := readBuffer.PullContext("SearchResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (hpaiControlEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
@@ -163,7 +204,7 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) 
 		KnxNetIpMessage:     &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *SearchResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -221,6 +262,8 @@ func (m *SearchResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

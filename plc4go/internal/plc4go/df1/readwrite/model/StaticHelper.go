@@ -57,7 +57,7 @@ func ReadData(io utils.ReadBuffer) uint8 {
 	// If we read a 0x10, this has to be followed by another 0x10, which is how
 	// this value is escaped in DF1, so if we encounter two 0x10, we simply ignore the first.
 	if rbbb.PeekByte(0) == 0x10 && rbbb.PeekByte(1) == 0x10 {
-		io.ReadUint8("", 8)
+		_, _ = io.ReadUint8("", 8)
 	}
 	data, _ := io.ReadUint8("", 8)
 	return data
@@ -66,9 +66,9 @@ func ReadData(io utils.ReadBuffer) uint8 {
 func WriteData(io utils.WriteBuffer, element uint8) {
 	if element == 0x10 {
 		// If a value is 0x10, this has to be duplicated in order to be escaped.
-		io.WriteUint8("", 8, element)
+		_ = io.WriteUint8("", 8, element)
 	}
-	io.WriteUint8("", 8, element)
+	_ = io.WriteUint8("", 8, element)
 }
 
 func DataLength(data []byte) uint16 {

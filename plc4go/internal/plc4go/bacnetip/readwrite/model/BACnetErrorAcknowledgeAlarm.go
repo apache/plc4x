@@ -32,72 +32,86 @@ type BACnetErrorAcknowledgeAlarm struct {
 
 // The corresponding interface
 type IBACnetErrorAcknowledgeAlarm interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetError
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorAcknowledgeAlarm) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetErrorAcknowledgeAlarm) GetServiceChoice() uint8 {
 	return 0x00
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetErrorAcknowledgeAlarm) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
 	m.BACnetError.ErrorClass = errorClass
 	m.BACnetError.ErrorCode = errorCode
 }
 
-func NewBACnetErrorAcknowledgeAlarm(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorAcknowledgeAlarm{
+func (m *BACnetErrorAcknowledgeAlarm) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
+// NewBACnetErrorAcknowledgeAlarm factory function for BACnetErrorAcknowledgeAlarm
+func NewBACnetErrorAcknowledgeAlarm(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorAcknowledgeAlarm {
+	_result := &BACnetErrorAcknowledgeAlarm{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorAcknowledgeAlarm(structType interface{}) *BACnetErrorAcknowledgeAlarm {
-	castFunc := func(typ interface{}) *BACnetErrorAcknowledgeAlarm {
-		if casted, ok := typ.(BACnetErrorAcknowledgeAlarm); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorAcknowledgeAlarm); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorAcknowledgeAlarm(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorAcknowledgeAlarm(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorAcknowledgeAlarm); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorAcknowledgeAlarm); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorAcknowledgeAlarm(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorAcknowledgeAlarm(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorAcknowledgeAlarm) GetTypeName() string {
 	return "BACnetErrorAcknowledgeAlarm"
 }
 
-func (m *BACnetErrorAcknowledgeAlarm) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetErrorAcknowledgeAlarm) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetErrorAcknowledgeAlarm) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetErrorAcknowledgeAlarm) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetErrorAcknowledgeAlarm) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetErrorAcknowledgeAlarm) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorAcknowledgeAlarmParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorAcknowledgeAlarmParse(readBuffer utils.ReadBuffer) (*BACnetErrorAcknowledgeAlarm, error) {
 	if pullErr := readBuffer.PullContext("BACnetErrorAcknowledgeAlarm"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorAcknowledgeAlarm"); closeErr != nil {
 		return nil, closeErr
@@ -108,7 +122,7 @@ func BACnetErrorAcknowledgeAlarmParse(readBuffer utils.ReadBuffer) (*BACnetError
 		BACnetError: &BACnetError{},
 	}
 	_child.BACnetError.Child = _child
-	return _child.BACnetError, nil
+	return _child, nil
 }
 
 func (m *BACnetErrorAcknowledgeAlarm) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -130,6 +144,8 @@ func (m *BACnetErrorAcknowledgeAlarm) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

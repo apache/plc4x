@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type MResetReq struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type IMResetReq interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICEMI
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MResetReq) MessageCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *MResetReq) GetMessageCode() uint8 {
 	return 0xF1
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *MResetReq) InitializeParent(parent *CEMI) {}
 
-func NewMResetReq() *CEMI {
-	child := &MResetReq{
-		CEMI: NewCEMI(),
+func (m *MResetReq) GetParent() *CEMI {
+	return m.CEMI
+}
+
+// NewMResetReq factory function for MResetReq
+func NewMResetReq(size uint16) *MResetReq {
+	_result := &MResetReq{
+		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastMResetReq(structType interface{}) *MResetReq {
-	castFunc := func(typ interface{}) *MResetReq {
-		if casted, ok := typ.(MResetReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MResetReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMResetReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMResetReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MResetReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MResetReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastMResetReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastMResetReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *MResetReq) GetTypeName() string {
 	return "MResetReq"
 }
 
-func (m *MResetReq) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *MResetReq) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *MResetReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *MResetReq) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *MResetReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *MResetReq) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func MResetReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func MResetReqParse(readBuffer utils.ReadBuffer, size uint16) (*MResetReq, error) {
 	if pullErr := readBuffer.PullContext("MResetReq"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("MResetReq"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func MResetReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *MResetReq) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *MResetReq) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

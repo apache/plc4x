@@ -35,37 +35,65 @@ type BVLCWriteBroadcastDistributionTableEntry struct {
 
 // The corresponding interface
 type IBVLCWriteBroadcastDistributionTableEntry interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetIp returns Ip (property field)
+	GetIp() []uint8
+	// GetPort returns Port (property field)
+	GetPort() uint16
+	// GetBroadcastDistributionMap returns BroadcastDistributionMap (property field)
+	GetBroadcastDistributionMap() []uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BVLCWriteBroadcastDistributionTableEntry) GetIp() []uint8 {
+	return m.Ip
+}
+
+func (m *BVLCWriteBroadcastDistributionTableEntry) GetPort() uint16 {
+	return m.Port
+}
+
+func (m *BVLCWriteBroadcastDistributionTableEntry) GetBroadcastDistributionMap() []uint8 {
+	return m.BroadcastDistributionMap
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBVLCWriteBroadcastDistributionTableEntry factory function for BVLCWriteBroadcastDistributionTableEntry
 func NewBVLCWriteBroadcastDistributionTableEntry(ip []uint8, port uint16, broadcastDistributionMap []uint8) *BVLCWriteBroadcastDistributionTableEntry {
 	return &BVLCWriteBroadcastDistributionTableEntry{Ip: ip, Port: port, BroadcastDistributionMap: broadcastDistributionMap}
 }
 
 func CastBVLCWriteBroadcastDistributionTableEntry(structType interface{}) *BVLCWriteBroadcastDistributionTableEntry {
-	castFunc := func(typ interface{}) *BVLCWriteBroadcastDistributionTableEntry {
-		if casted, ok := typ.(BVLCWriteBroadcastDistributionTableEntry); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCWriteBroadcastDistributionTableEntry); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BVLCWriteBroadcastDistributionTableEntry); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCWriteBroadcastDistributionTableEntry); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BVLCWriteBroadcastDistributionTableEntry) GetTypeName() string {
 	return "BVLCWriteBroadcastDistributionTableEntry"
 }
 
-func (m *BVLCWriteBroadcastDistributionTableEntry) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCWriteBroadcastDistributionTableEntry) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCWriteBroadcastDistributionTableEntry) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BVLCWriteBroadcastDistributionTableEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -84,14 +112,16 @@ func (m *BVLCWriteBroadcastDistributionTableEntry) LengthInBitsConditional(lastI
 	return lengthInBits
 }
 
-func (m *BVLCWriteBroadcastDistributionTableEntry) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCWriteBroadcastDistributionTableEntry) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BVLCWriteBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (*BVLCWriteBroadcastDistributionTableEntry, error) {
 	if pullErr := readBuffer.PullContext("BVLCWriteBroadcastDistributionTableEntry"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (ip)
 	if pullErr := readBuffer.PullContext("ip", utils.WithRenderAsList(true)); pullErr != nil {
@@ -201,6 +231,8 @@ func (m *BVLCWriteBroadcastDistributionTableEntry) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

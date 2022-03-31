@@ -35,70 +35,103 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7PayloadUserDataItem
+	// GetResult returns Result (property field)
+	GetResult() uint8
+	// GetReserved01 returns Reserved01 (property field)
+	GetReserved01() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) CpuFunctionType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetCpuFunctionType() uint8 {
 	return 0x08
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) CpuSubfunction() uint8 {
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetCpuSubfunction() uint8 {
 	return 0x02
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) DataLength() uint16 {
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetDataLength() uint16 {
 	return 0x02
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
 	m.S7PayloadUserDataItem.ReturnCode = returnCode
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
 
-func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(result uint8, reserved01 uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
-	child := &S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetParent() *S7PayloadUserDataItem {
+	return m.S7PayloadUserDataItem
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetResult() uint8 {
+	return m.Result
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetReserved01() uint8 {
+	return m.Reserved01
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse factory function for S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(result uint8, reserved01 uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
+	_result := &S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
 		Result:                result,
 		Reserved01:            reserved01,
 		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Child = child
-	return child.S7PayloadUserDataItem
+	_result.Child = _result
+	return _result
 }
 
 func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(structType interface{}) *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
-	castFunc := func(typ interface{}) *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
-		if casted, ok := typ.(S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7PayloadUserDataItem); ok {
-			return CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(casted.Child)
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItem); ok {
-			return CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7PayloadUserDataItem); ok {
+		return CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(casted.Child)
+	}
+	if casted, ok := structType.(*S7PayloadUserDataItem); ok {
+		return CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse"
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 8
@@ -109,14 +142,16 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) LengthInBit
 	return lengthInBits
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (result)
 	_result, _resultErr := readBuffer.ReadUint8("result", 8)
@@ -143,7 +178,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(readBuffer 
 		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
 	_child.S7PayloadUserDataItem.Child = _child
-	return _child.S7PayloadUserDataItem, nil
+	return _child, nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -179,6 +214,8 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) String() st
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

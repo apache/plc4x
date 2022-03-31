@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type ApduDataExtMemoryBitWrite struct {
 	*ApduDataExt
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtMemoryBitWrite interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduDataExt
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtMemoryBitWrite) ExtApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataExtMemoryBitWrite) GetExtApciType() uint8 {
 	return 0x10
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataExtMemoryBitWrite) InitializeParent(parent *ApduDataExt) {}
 
-func NewApduDataExtMemoryBitWrite() *ApduDataExt {
-	child := &ApduDataExtMemoryBitWrite{
-		ApduDataExt: NewApduDataExt(),
+func (m *ApduDataExtMemoryBitWrite) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
+// NewApduDataExtMemoryBitWrite factory function for ApduDataExtMemoryBitWrite
+func NewApduDataExtMemoryBitWrite(length uint8) *ApduDataExtMemoryBitWrite {
+	_result := &ApduDataExtMemoryBitWrite{
+		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtMemoryBitWrite(structType interface{}) *ApduDataExtMemoryBitWrite {
-	castFunc := func(typ interface{}) *ApduDataExtMemoryBitWrite {
-		if casted, ok := typ.(ApduDataExtMemoryBitWrite); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtMemoryBitWrite); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtMemoryBitWrite(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtMemoryBitWrite(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtMemoryBitWrite); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtMemoryBitWrite); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtMemoryBitWrite(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtMemoryBitWrite(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtMemoryBitWrite) GetTypeName() string {
 	return "ApduDataExtMemoryBitWrite"
 }
 
-func (m *ApduDataExtMemoryBitWrite) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtMemoryBitWrite) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtMemoryBitWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtMemoryBitWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataExtMemoryBitWrite) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtMemoryBitWrite) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtMemoryBitWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtMemoryBitWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtMemoryBitWrite, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtMemoryBitWrite"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtMemoryBitWrite"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func ApduDataExtMemoryBitWriteParse(readBuffer utils.ReadBuffer, length uint8) (
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtMemoryBitWrite) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *ApduDataExtMemoryBitWrite) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

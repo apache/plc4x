@@ -44,71 +44,134 @@ type S7PayloadUserDataItemCpuFunctionAlarmQuery struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionAlarmQuery interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7PayloadUserDataItem
+	// GetSyntaxId returns SyntaxId (property field)
+	GetSyntaxId() SyntaxIdType
+	// GetQueryType returns QueryType (property field)
+	GetQueryType() QueryType
+	// GetAlarmType returns AlarmType (property field)
+	GetAlarmType() AlarmType
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) CpuFunctionType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetCpuFunctionType() uint8 {
 	return 0x04
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) CpuSubfunction() uint8 {
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetCpuSubfunction() uint8 {
 	return 0x13
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) DataLength() uint16 {
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetDataLength() uint16 {
 	return 0
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
 	m.S7PayloadUserDataItem.ReturnCode = returnCode
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
 
-func NewS7PayloadUserDataItemCpuFunctionAlarmQuery(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
-	child := &S7PayloadUserDataItemCpuFunctionAlarmQuery{
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetParent() *S7PayloadUserDataItem {
+	return m.S7PayloadUserDataItem
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetSyntaxId() SyntaxIdType {
+	return m.SyntaxId
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetQueryType() QueryType {
+	return m.QueryType
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetAlarmType() AlarmType {
+	return m.AlarmType
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for const fields.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetFunctionId() uint8 {
+	return S7PayloadUserDataItemCpuFunctionAlarmQuery_FUNCTIONID
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetNumberMessageObj() uint8 {
+	return S7PayloadUserDataItemCpuFunctionAlarmQuery_NUMBERMESSAGEOBJ
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetVariableSpec() uint8 {
+	return S7PayloadUserDataItemCpuFunctionAlarmQuery_VARIABLESPEC
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetLength() uint8 {
+	return S7PayloadUserDataItemCpuFunctionAlarmQuery_LENGTH
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7PayloadUserDataItemCpuFunctionAlarmQuery factory function for S7PayloadUserDataItemCpuFunctionAlarmQuery
+func NewS7PayloadUserDataItemCpuFunctionAlarmQuery(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItemCpuFunctionAlarmQuery {
+	_result := &S7PayloadUserDataItemCpuFunctionAlarmQuery{
 		SyntaxId:              syntaxId,
 		QueryType:             queryType,
 		AlarmType:             alarmType,
 		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Child = child
-	return child.S7PayloadUserDataItem
+	_result.Child = _result
+	return _result
 }
 
 func CastS7PayloadUserDataItemCpuFunctionAlarmQuery(structType interface{}) *S7PayloadUserDataItemCpuFunctionAlarmQuery {
-	castFunc := func(typ interface{}) *S7PayloadUserDataItemCpuFunctionAlarmQuery {
-		if casted, ok := typ.(S7PayloadUserDataItemCpuFunctionAlarmQuery); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItemCpuFunctionAlarmQuery); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7PayloadUserDataItem); ok {
-			return CastS7PayloadUserDataItemCpuFunctionAlarmQuery(casted.Child)
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItem); ok {
-			return CastS7PayloadUserDataItemCpuFunctionAlarmQuery(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionAlarmQuery); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7PayloadUserDataItemCpuFunctionAlarmQuery); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7PayloadUserDataItem); ok {
+		return CastS7PayloadUserDataItemCpuFunctionAlarmQuery(casted.Child)
+	}
+	if casted, ok := structType.(*S7PayloadUserDataItem); ok {
+		return CastS7PayloadUserDataItemCpuFunctionAlarmQuery(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionAlarmQuery"
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (functionId)
 	lengthInBits += 8
@@ -140,14 +203,16 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) LengthInBitsConditional(las
 	return lengthInBits
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItemCpuFunctionAlarmQuery, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmQuery"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (functionId)
 	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
@@ -264,7 +329,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer
 		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
 	_child.S7PayloadUserDataItem.Child = _child
-	return _child.S7PayloadUserDataItem, nil
+	return _child, nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -362,6 +427,8 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

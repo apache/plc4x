@@ -34,73 +34,102 @@ type DeviceConfigurationAck struct {
 
 // The corresponding interface
 type IDeviceConfigurationAck interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IKnxNetIpMessage
+	// GetDeviceConfigurationAckDataBlock returns DeviceConfigurationAckDataBlock (property field)
+	GetDeviceConfigurationAckDataBlock() *DeviceConfigurationAckDataBlock
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DeviceConfigurationAck) MsgType() uint16 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *DeviceConfigurationAck) GetMsgType() uint16 {
 	return 0x0311
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *DeviceConfigurationAck) InitializeParent(parent *KnxNetIpMessage) {}
 
-func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock *DeviceConfigurationAckDataBlock) *KnxNetIpMessage {
-	child := &DeviceConfigurationAck{
+func (m *DeviceConfigurationAck) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *DeviceConfigurationAck) GetDeviceConfigurationAckDataBlock() *DeviceConfigurationAckDataBlock {
+	return m.DeviceConfigurationAckDataBlock
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewDeviceConfigurationAck factory function for DeviceConfigurationAck
+func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock *DeviceConfigurationAckDataBlock) *DeviceConfigurationAck {
+	_result := &DeviceConfigurationAck{
 		DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock,
 		KnxNetIpMessage:                 NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastDeviceConfigurationAck(structType interface{}) *DeviceConfigurationAck {
-	castFunc := func(typ interface{}) *DeviceConfigurationAck {
-		if casted, ok := typ.(DeviceConfigurationAck); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DeviceConfigurationAck); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastDeviceConfigurationAck(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastDeviceConfigurationAck(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DeviceConfigurationAck); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DeviceConfigurationAck); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastDeviceConfigurationAck(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastDeviceConfigurationAck(casted.Child)
+	}
+	return nil
 }
 
 func (m *DeviceConfigurationAck) GetTypeName() string {
 	return "DeviceConfigurationAck"
 }
 
-func (m *DeviceConfigurationAck) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DeviceConfigurationAck) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DeviceConfigurationAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DeviceConfigurationAck) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (deviceConfigurationAckDataBlock)
-	lengthInBits += m.DeviceConfigurationAckDataBlock.LengthInBits()
+	lengthInBits += m.DeviceConfigurationAckDataBlock.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *DeviceConfigurationAck) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DeviceConfigurationAck) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*DeviceConfigurationAck, error) {
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAck"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (deviceConfigurationAckDataBlock)
 	if pullErr := readBuffer.PullContext("deviceConfigurationAckDataBlock"); pullErr != nil {
@@ -125,7 +154,7 @@ func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage,
 		KnxNetIpMessage:                 &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *DeviceConfigurationAck) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -159,6 +188,8 @@ func (m *DeviceConfigurationAck) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

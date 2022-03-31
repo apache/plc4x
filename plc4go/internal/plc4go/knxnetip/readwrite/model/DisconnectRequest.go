@@ -36,59 +36,92 @@ type DisconnectRequest struct {
 
 // The corresponding interface
 type IDisconnectRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IKnxNetIpMessage
+	// GetCommunicationChannelId returns CommunicationChannelId (property field)
+	GetCommunicationChannelId() uint8
+	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
+	GetHpaiControlEndpoint() *HPAIControlEndpoint
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DisconnectRequest) MsgType() uint16 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *DisconnectRequest) GetMsgType() uint16 {
 	return 0x0209
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *DisconnectRequest) InitializeParent(parent *KnxNetIpMessage) {}
 
-func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
-	child := &DisconnectRequest{
+func (m *DisconnectRequest) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *DisconnectRequest) GetCommunicationChannelId() uint8 {
+	return m.CommunicationChannelId
+}
+
+func (m *DisconnectRequest) GetHpaiControlEndpoint() *HPAIControlEndpoint {
+	return m.HpaiControlEndpoint
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewDisconnectRequest factory function for DisconnectRequest
+func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint *HPAIControlEndpoint) *DisconnectRequest {
+	_result := &DisconnectRequest{
 		CommunicationChannelId: communicationChannelId,
 		HpaiControlEndpoint:    hpaiControlEndpoint,
 		KnxNetIpMessage:        NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastDisconnectRequest(structType interface{}) *DisconnectRequest {
-	castFunc := func(typ interface{}) *DisconnectRequest {
-		if casted, ok := typ.(DisconnectRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DisconnectRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastDisconnectRequest(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastDisconnectRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DisconnectRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DisconnectRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastDisconnectRequest(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastDisconnectRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *DisconnectRequest) GetTypeName() string {
 	return "DisconnectRequest"
 }
 
-func (m *DisconnectRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DisconnectRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DisconnectRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DisconnectRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -97,19 +130,21 @@ func (m *DisconnectRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
+	lengthInBits += m.HpaiControlEndpoint.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *DisconnectRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DisconnectRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func DisconnectRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func DisconnectRequestParse(readBuffer utils.ReadBuffer) (*DisconnectRequest, error) {
 	if pullErr := readBuffer.PullContext("DisconnectRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (communicationChannelId)
 	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
@@ -156,7 +191,7 @@ func DisconnectRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 		KnxNetIpMessage:        &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *DisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -205,6 +240,8 @@ func (m *DisconnectRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

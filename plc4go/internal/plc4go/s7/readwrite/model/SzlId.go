@@ -35,37 +35,65 @@ type SzlId struct {
 
 // The corresponding interface
 type ISzlId interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetTypeClass returns TypeClass (property field)
+	GetTypeClass() SzlModuleTypeClass
+	// GetSublistExtract returns SublistExtract (property field)
+	GetSublistExtract() uint8
+	// GetSublistList returns SublistList (property field)
+	GetSublistList() SzlSublist
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *SzlId) GetTypeClass() SzlModuleTypeClass {
+	return m.TypeClass
+}
+
+func (m *SzlId) GetSublistExtract() uint8 {
+	return m.SublistExtract
+}
+
+func (m *SzlId) GetSublistList() SzlSublist {
+	return m.SublistList
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewSzlId factory function for SzlId
 func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) *SzlId {
 	return &SzlId{TypeClass: typeClass, SublistExtract: sublistExtract, SublistList: sublistList}
 }
 
 func CastSzlId(structType interface{}) *SzlId {
-	castFunc := func(typ interface{}) *SzlId {
-		if casted, ok := typ.(SzlId); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SzlId); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(SzlId); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SzlId); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *SzlId) GetTypeName() string {
 	return "SzlId"
 }
 
-func (m *SzlId) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SzlId) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SzlId) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *SzlId) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (typeClass)
@@ -80,14 +108,16 @@ func (m *SzlId) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *SzlId) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SzlId) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SzlIdParse(readBuffer utils.ReadBuffer) (*SzlId, error) {
 	if pullErr := readBuffer.PullContext("SzlId"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (typeClass)
 	if pullErr := readBuffer.PullContext("typeClass"); pullErr != nil {
@@ -177,6 +207,8 @@ func (m *SzlId) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

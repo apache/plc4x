@@ -33,9 +33,13 @@ type ServiceId struct {
 
 // The corresponding interface
 type IServiceId interface {
-	ServiceType() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetServiceType returns ServiceType (discriminator field)
+	GetServiceType() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,40 +51,43 @@ type IServiceIdParent interface {
 type IServiceIdChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *ServiceId)
+	GetParent() *ServiceId
+
 	GetTypeName() string
 	IServiceId
 }
 
+// NewServiceId factory function for ServiceId
 func NewServiceId() *ServiceId {
 	return &ServiceId{}
 }
 
 func CastServiceId(structType interface{}) *ServiceId {
-	castFunc := func(typ interface{}) *ServiceId {
-		if casted, ok := typ.(ServiceId); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ServiceId); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ServiceId); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ServiceId); ok {
+		return casted
+	}
+	if casted, ok := structType.(IServiceIdChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *ServiceId) GetTypeName() string {
 	return "ServiceId"
 }
 
-func (m *ServiceId) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ServiceId) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ServiceId) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *ServiceId) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *ServiceId) ParentLengthInBits() uint16 {
+func (m *ServiceId) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceType)
 	lengthInBits += 8
@@ -88,14 +95,16 @@ func (m *ServiceId) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *ServiceId) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ServiceId) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ServiceIdParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 	if pullErr := readBuffer.PullContext("ServiceId"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType, _serviceTypeErr := readBuffer.ReadUint8("serviceType", 8)
@@ -104,23 +113,27 @@ func ServiceIdParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *ServiceId
+	type ServiceIdChild interface {
+		InitializeParent(*ServiceId)
+		GetParent() *ServiceId
+	}
+	var _child ServiceIdChild
 	var typeSwitchError error
 	switch {
 	case serviceType == 0x02: // KnxNetIpCore
-		_parent, typeSwitchError = KnxNetIpCoreParse(readBuffer)
+		_child, typeSwitchError = KnxNetIpCoreParse(readBuffer)
 	case serviceType == 0x03: // KnxNetIpDeviceManagement
-		_parent, typeSwitchError = KnxNetIpDeviceManagementParse(readBuffer)
+		_child, typeSwitchError = KnxNetIpDeviceManagementParse(readBuffer)
 	case serviceType == 0x04: // KnxNetIpTunneling
-		_parent, typeSwitchError = KnxNetIpTunnelingParse(readBuffer)
+		_child, typeSwitchError = KnxNetIpTunnelingParse(readBuffer)
 	case serviceType == 0x05: // KnxNetIpRouting
-		_parent, typeSwitchError = KnxNetIpRoutingParse(readBuffer)
+		_child, typeSwitchError = KnxNetIpRoutingParse(readBuffer)
 	case serviceType == 0x06: // KnxNetRemoteLogging
-		_parent, typeSwitchError = KnxNetRemoteLoggingParse(readBuffer)
+		_child, typeSwitchError = KnxNetRemoteLoggingParse(readBuffer)
 	case serviceType == 0x07: // KnxNetRemoteConfigurationAndDiagnosis
-		_parent, typeSwitchError = KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer)
+		_child, typeSwitchError = KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer)
 	case serviceType == 0x08: // KnxNetObjectServer
-		_parent, typeSwitchError = KnxNetObjectServerParse(readBuffer)
+		_child, typeSwitchError = KnxNetObjectServerParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -134,8 +147,8 @@ func ServiceIdParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *ServiceId) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,7 +161,7 @@ func (m *ServiceId) SerializeParent(writeBuffer utils.WriteBuffer, child IServic
 	}
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
-	serviceType := uint8(child.ServiceType())
+	serviceType := uint8(child.GetServiceType())
 	_serviceTypeErr := writeBuffer.WriteUint8("serviceType", 8, (serviceType))
 
 	if _serviceTypeErr != nil {
@@ -171,6 +184,8 @@ func (m *ServiceId) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

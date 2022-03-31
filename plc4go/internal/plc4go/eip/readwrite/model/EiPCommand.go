@@ -92,12 +92,12 @@ func CastEiPCommand(structType interface{}) EiPCommand {
 	return castFunc(structType)
 }
 
-func (m EiPCommand) LengthInBits() uint16 {
+func (m EiPCommand) GetLengthInBits() uint16 {
 	return 16
 }
 
-func (m EiPCommand) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m EiPCommand) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func EiPCommandParse(readBuffer utils.ReadBuffer) (EiPCommand, error) {

@@ -32,69 +32,83 @@ type BACnetServiceAckReadPropertyMultiple struct {
 
 // The corresponding interface
 type IBACnetServiceAckReadPropertyMultiple interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetServiceAck
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckReadPropertyMultiple) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetServiceAckReadPropertyMultiple) GetServiceChoice() uint8 {
 	return 0x0E
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *BACnetServiceAckReadPropertyMultiple) InitializeParent(parent *BACnetServiceAck) {}
 
-func NewBACnetServiceAckReadPropertyMultiple() *BACnetServiceAck {
-	child := &BACnetServiceAckReadPropertyMultiple{
+func (m *BACnetServiceAckReadPropertyMultiple) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
+// NewBACnetServiceAckReadPropertyMultiple factory function for BACnetServiceAckReadPropertyMultiple
+func NewBACnetServiceAckReadPropertyMultiple() *BACnetServiceAckReadPropertyMultiple {
+	_result := &BACnetServiceAckReadPropertyMultiple{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckReadPropertyMultiple(structType interface{}) *BACnetServiceAckReadPropertyMultiple {
-	castFunc := func(typ interface{}) *BACnetServiceAckReadPropertyMultiple {
-		if casted, ok := typ.(BACnetServiceAckReadPropertyMultiple); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckReadPropertyMultiple); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckReadPropertyMultiple(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckReadPropertyMultiple(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckReadPropertyMultiple); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckReadPropertyMultiple); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckReadPropertyMultiple(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckReadPropertyMultiple(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckReadPropertyMultiple) GetTypeName() string {
 	return "BACnetServiceAckReadPropertyMultiple"
 }
 
-func (m *BACnetServiceAckReadPropertyMultiple) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckReadPropertyMultiple) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckReadPropertyMultiple) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckReadPropertyMultiple) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckReadPropertyMultiple) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckReadPropertyMultiple) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckReadPropertyMultiple, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckReadPropertyMultiple"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BA
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckReadPropertyMultiple) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *BACnetServiceAckReadPropertyMultiple) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

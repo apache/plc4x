@@ -34,66 +34,93 @@ type ModbusPDUReadFifoQueueResponse struct {
 
 // The corresponding interface
 type IModbusPDUReadFifoQueueResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IModbusPDU
+	// GetFifoValue returns FifoValue (property field)
+	GetFifoValue() []uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUReadFifoQueueResponse) ErrorFlag() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ModbusPDUReadFifoQueueResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadFifoQueueResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUReadFifoQueueResponse) GetFunctionFlag() uint8 {
 	return 0x18
 }
 
-func (m *ModbusPDUReadFifoQueueResponse) Response() bool {
+func (m *ModbusPDUReadFifoQueueResponse) GetResponse() bool {
 	return bool(true)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ModbusPDUReadFifoQueueResponse) InitializeParent(parent *ModbusPDU) {}
 
-func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) *ModbusPDU {
-	child := &ModbusPDUReadFifoQueueResponse{
+func (m *ModbusPDUReadFifoQueueResponse) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ModbusPDUReadFifoQueueResponse) GetFifoValue() []uint16 {
+	return m.FifoValue
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusPDUReadFifoQueueResponse factory function for ModbusPDUReadFifoQueueResponse
+func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) *ModbusPDUReadFifoQueueResponse {
+	_result := &ModbusPDUReadFifoQueueResponse{
 		FifoValue: fifoValue,
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReadFifoQueueResponse(structType interface{}) *ModbusPDUReadFifoQueueResponse {
-	castFunc := func(typ interface{}) *ModbusPDUReadFifoQueueResponse {
-		if casted, ok := typ.(ModbusPDUReadFifoQueueResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReadFifoQueueResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUReadFifoQueueResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUReadFifoQueueResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReadFifoQueueResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReadFifoQueueResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUReadFifoQueueResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUReadFifoQueueResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUReadFifoQueueResponse) GetTypeName() string {
 	return "ModbusPDUReadFifoQueueResponse"
 }
 
-func (m *ModbusPDUReadFifoQueueResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadFifoQueueResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadFifoQueueResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadFifoQueueResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 16
@@ -109,23 +136,25 @@ func (m *ModbusPDUReadFifoQueueResponse) LengthInBitsConditional(lastItem bool) 
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadFifoQueueResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadFifoQueueResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUReadFifoQueueResponse, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFifoQueueResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := readBuffer.ReadUint16("byteCount", 16)
 	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
-	// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (fifoCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	fifoCount, _fifoCountErr := readBuffer.ReadUint16("fifoCount", 16)
 	_ = fifoCount
 	if _fifoCountErr != nil {
@@ -161,7 +190,7 @@ func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response b
 		ModbusPDU: &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUReadFifoQueueResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -171,14 +200,14 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(writeBuffer utils.WriteBuffer
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) + uint16(uint16(2)))
+		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.GetFifoValue())))*uint16(uint16(2)))) + uint16(uint16(2)))
 		_byteCountErr := writeBuffer.WriteUint16("byteCount", 16, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		fifoCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) / uint16(uint16(2)))
+		fifoCount := uint16(uint16(uint16(uint16(uint16(len(m.GetFifoValue())))*uint16(uint16(2)))) / uint16(uint16(2)))
 		_fifoCountErr := writeBuffer.WriteUint16("fifoCount", 16, (fifoCount))
 		if _fifoCountErr != nil {
 			return errors.Wrap(_fifoCountErr, "Error serializing 'fifoCount' field")
@@ -213,6 +242,8 @@ func (m *ModbusPDUReadFifoQueueResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

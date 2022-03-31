@@ -30,62 +30,92 @@ import (
 type COTPParameterCallingTsap struct {
 	*COTPParameter
 	TsapId uint16
+
+	// Arguments.
+	Rest uint8
 }
 
 // The corresponding interface
 type ICOTPParameterCallingTsap interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICOTPParameter
+	// GetTsapId returns TsapId (property field)
+	GetTsapId() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *COTPParameterCallingTsap) ParameterType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *COTPParameterCallingTsap) GetParameterType() uint8 {
 	return 0xC1
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *COTPParameterCallingTsap) InitializeParent(parent *COTPParameter) {}
 
-func NewCOTPParameterCallingTsap(tsapId uint16) *COTPParameter {
-	child := &COTPParameterCallingTsap{
+func (m *COTPParameterCallingTsap) GetParent() *COTPParameter {
+	return m.COTPParameter
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *COTPParameterCallingTsap) GetTsapId() uint16 {
+	return m.TsapId
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewCOTPParameterCallingTsap factory function for COTPParameterCallingTsap
+func NewCOTPParameterCallingTsap(tsapId uint16, rest uint8) *COTPParameterCallingTsap {
+	_result := &COTPParameterCallingTsap{
 		TsapId:        tsapId,
-		COTPParameter: NewCOTPParameter(),
+		COTPParameter: NewCOTPParameter(rest),
 	}
-	child.Child = child
-	return child.COTPParameter
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPParameterCallingTsap(structType interface{}) *COTPParameterCallingTsap {
-	castFunc := func(typ interface{}) *COTPParameterCallingTsap {
-		if casted, ok := typ.(COTPParameterCallingTsap); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPParameterCallingTsap); ok {
-			return casted
-		}
-		if casted, ok := typ.(COTPParameter); ok {
-			return CastCOTPParameterCallingTsap(casted.Child)
-		}
-		if casted, ok := typ.(*COTPParameter); ok {
-			return CastCOTPParameterCallingTsap(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(COTPParameterCallingTsap); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPParameterCallingTsap); ok {
+		return casted
+	}
+	if casted, ok := structType.(COTPParameter); ok {
+		return CastCOTPParameterCallingTsap(casted.Child)
+	}
+	if casted, ok := structType.(*COTPParameter); ok {
+		return CastCOTPParameterCallingTsap(casted.Child)
+	}
+	return nil
 }
 
 func (m *COTPParameterCallingTsap) GetTypeName() string {
 	return "COTPParameterCallingTsap"
 }
 
-func (m *COTPParameterCallingTsap) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPParameterCallingTsap) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPParameterCallingTsap) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *COTPParameterCallingTsap) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (tsapId)
 	lengthInBits += 16
@@ -93,14 +123,16 @@ func (m *COTPParameterCallingTsap) LengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *COTPParameterCallingTsap) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPParameterCallingTsap) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func COTPParameterCallingTsapParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+func COTPParameterCallingTsapParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameterCallingTsap, error) {
 	if pullErr := readBuffer.PullContext("COTPParameterCallingTsap"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (tsapId)
 	_tsapId, _tsapIdErr := readBuffer.ReadUint16("tsapId", 16)
@@ -119,7 +151,7 @@ func COTPParameterCallingTsapParse(readBuffer utils.ReadBuffer, rest uint8) (*CO
 		COTPParameter: &COTPParameter{},
 	}
 	_child.COTPParameter.Child = _child
-	return _child.COTPParameter, nil
+	return _child, nil
 }
 
 func (m *COTPParameterCallingTsap) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,6 +180,8 @@ func (m *COTPParameterCallingTsap) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

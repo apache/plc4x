@@ -294,6 +294,14 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 }
 
 func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataProtocolId string, stringLength int32) error {
+	m := struct {
+		DataProtocolId string
+		StringLength   int32
+	}{
+		DataProtocolId: dataProtocolId,
+		StringLength:   stringLength,
+	}
+	_ = m
 	writeBuffer.PushContext("DataItem")
 	switch {
 	case dataProtocolId == "IEC61131_BOOL": // BOOL
@@ -402,13 +410,13 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 		}
 	case dataProtocolId == "IEC61131_STRING": // STRING
 		// Manual Field (value)
-		_valueErr := SerializeS7String(writeBuffer, value, stringLength, "UTF-8")
+		_valueErr := SerializeS7String(writeBuffer, value, m.StringLength, "UTF-8")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WSTRING": // STRING
 		// Manual Field (value)
-		_valueErr := SerializeS7String(writeBuffer, value, stringLength, "UTF-16")
+		_valueErr := SerializeS7String(writeBuffer, value, m.StringLength, "UTF-16")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

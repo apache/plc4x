@@ -31,14 +31,25 @@ import (
 type COTPPacket struct {
 	Parameters []*COTPParameter
 	Payload    *S7Message
-	Child      ICOTPPacketChild
+
+	// Arguments.
+	CotpLen uint16
+	Child   ICOTPPacketChild
 }
 
 // The corresponding interface
 type ICOTPPacket interface {
-	TpduCode() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetTpduCode returns TpduCode (discriminator field)
+	GetTpduCode() uint8
+	// GetParameters returns Parameters (property field)
+	GetParameters() []*COTPParameter
+	// GetPayload returns Payload (property field)
+	GetPayload() *S7Message
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,40 +61,60 @@ type ICOTPPacketParent interface {
 type ICOTPPacketChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message)
+	GetParent() *COTPPacket
+
 	GetTypeName() string
 	ICOTPPacket
 }
 
-func NewCOTPPacket(parameters []*COTPParameter, payload *S7Message) *COTPPacket {
-	return &COTPPacket{Parameters: parameters, Payload: payload}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *COTPPacket) GetParameters() []*COTPParameter {
+	return m.Parameters
+}
+
+func (m *COTPPacket) GetPayload() *S7Message {
+	return m.Payload
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewCOTPPacket factory function for COTPPacket
+func NewCOTPPacket(parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacket {
+	return &COTPPacket{Parameters: parameters, Payload: payload, CotpLen: cotpLen}
 }
 
 func CastCOTPPacket(structType interface{}) *COTPPacket {
-	castFunc := func(typ interface{}) *COTPPacket {
-		if casted, ok := typ.(COTPPacket); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPPacket); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(COTPPacket); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPPacket); ok {
+		return casted
+	}
+	if casted, ok := structType.(ICOTPPacketChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *COTPPacket) GetTypeName() string {
 	return "COTPPacket"
 }
 
-func (m *COTPPacket) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPPacket) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPPacket) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *COTPPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *COTPPacket) ParentLengthInBits() uint16 {
+func (m *COTPPacket) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)
@@ -94,30 +125,32 @@ func (m *COTPPacket) ParentLengthInBits() uint16 {
 	// Array field
 	if len(m.Parameters) > 0 {
 		for _, element := range m.Parameters {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
 	// Optional Field (payload)
 	if m.Payload != nil {
-		lengthInBits += (*m.Payload).LengthInBits()
+		lengthInBits += (*m.Payload).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *COTPPacket) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPPacket) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
 	if pullErr := readBuffer.PullContext("COTPPacket"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	var startPos = readBuffer.GetPos()
 	var curPos uint16
 
-	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	headerLength, _headerLengthErr := readBuffer.ReadUint8("headerLength", 8)
 	_ = headerLength
 	if _headerLengthErr != nil {
@@ -131,21 +164,25 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *COTPPacket
+	type COTPPacketChild interface {
+		InitializeParent(*COTPPacket, []*COTPParameter, *S7Message)
+		GetParent() *COTPPacket
+	}
+	var _child COTPPacketChild
 	var typeSwitchError error
 	switch {
 	case tpduCode == 0xF0: // COTPPacketData
-		_parent, typeSwitchError = COTPPacketDataParse(readBuffer, cotpLen)
+		_child, typeSwitchError = COTPPacketDataParse(readBuffer, cotpLen)
 	case tpduCode == 0xE0: // COTPPacketConnectionRequest
-		_parent, typeSwitchError = COTPPacketConnectionRequestParse(readBuffer, cotpLen)
+		_child, typeSwitchError = COTPPacketConnectionRequestParse(readBuffer, cotpLen)
 	case tpduCode == 0xD0: // COTPPacketConnectionResponse
-		_parent, typeSwitchError = COTPPacketConnectionResponseParse(readBuffer, cotpLen)
+		_child, typeSwitchError = COTPPacketConnectionResponseParse(readBuffer, cotpLen)
 	case tpduCode == 0x80: // COTPPacketDisconnectRequest
-		_parent, typeSwitchError = COTPPacketDisconnectRequestParse(readBuffer, cotpLen)
+		_child, typeSwitchError = COTPPacketDisconnectRequestParse(readBuffer, cotpLen)
 	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
-		_parent, typeSwitchError = COTPPacketDisconnectResponseParse(readBuffer, cotpLen)
+		_child, typeSwitchError = COTPPacketDisconnectResponseParse(readBuffer, cotpLen)
 	case tpduCode == 0x70: // COTPPacketTpduError
-		_parent, typeSwitchError = COTPPacketTpduErrorParse(readBuffer, cotpLen)
+		_child, typeSwitchError = COTPPacketTpduErrorParse(readBuffer, cotpLen)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -181,7 +218,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	curPos = readBuffer.GetPos() - startPos
 	var payload *S7Message = nil
 	if bool((curPos) < (cotpLen)) {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -204,8 +241,8 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, parameters, payload)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), parameters, payload)
+	return _child.GetParent(), nil
 }
 
 func (m *COTPPacket) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -218,14 +255,14 @@ func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPP
 	}
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.Payload) != (nil))), func() interface{} { return uint8(m.Payload.LengthInBytes()) }, func() interface{} { return uint8(uint8(0)) }).(uint8)))+uint8(uint8(1)))))
+	headerLength := uint8(uint8(uint8(m.GetLengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.GetPayload()) != (nil))), func() interface{} { return uint8((*m.GetPayload()).GetLengthInBytes()) }, func() interface{} { return uint8(uint8(0)) }).(uint8)))+uint8(uint8(1)))))
 	_headerLengthErr := writeBuffer.WriteUint8("headerLength", 8, (headerLength))
 	if _headerLengthErr != nil {
 		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
 	}
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
-	tpduCode := uint8(child.TpduCode())
+	tpduCode := uint8(child.GetTpduCode())
 	_tpduCodeErr := writeBuffer.WriteUint8("tpduCode", 8, (tpduCode))
 
 	if _tpduCodeErr != nil {
@@ -280,6 +317,8 @@ func (m *COTPPacket) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

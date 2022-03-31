@@ -34,37 +34,53 @@ type DeviceStatus struct {
 
 // The corresponding interface
 type IDeviceStatus interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetProgramMode returns ProgramMode (property field)
+	GetProgramMode() bool
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *DeviceStatus) GetProgramMode() bool {
+	return m.ProgramMode
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewDeviceStatus factory function for DeviceStatus
 func NewDeviceStatus(programMode bool) *DeviceStatus {
 	return &DeviceStatus{ProgramMode: programMode}
 }
 
 func CastDeviceStatus(structType interface{}) *DeviceStatus {
-	castFunc := func(typ interface{}) *DeviceStatus {
-		if casted, ok := typ.(DeviceStatus); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DeviceStatus); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DeviceStatus); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DeviceStatus); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *DeviceStatus) GetTypeName() string {
 	return "DeviceStatus"
 }
 
-func (m *DeviceStatus) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DeviceStatus) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DeviceStatus) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *DeviceStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)
@@ -76,14 +92,16 @@ func (m *DeviceStatus) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *DeviceStatus) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DeviceStatus) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DeviceStatusParse(readBuffer utils.ReadBuffer) (*DeviceStatus, error) {
 	if pullErr := readBuffer.PullContext("DeviceStatus"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -145,6 +163,8 @@ func (m *DeviceStatus) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -86,7 +86,7 @@ See the PLC4J user guide on the website to start using PLC4X in your Java applic
 Currently, the project is configured to require the following software:
 
 1. Java 11 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME` configured to point to that.
-2. libpcap/WinPcap for raw socket tests in Java or use of `passive-mode` drivers
+2. libpcap/Npcap for raw socket tests in Java or use of `passive-mode` drivers
 3. (Optional) [Graphviz](https://www.graphviz.org/) : For generating the graphs in the documentation
 4. Git (even when working on the source distribution)
 
@@ -116,7 +116,7 @@ https://dev.to/carlos487/installing-dotnet-core-in-ubuntu-1804-7lp
 
 #### Mac
 
-Make sure `Homebrew` ist installed in order to update `Bison` to a newer version (the version 2.3 installed per default is too old)
+Make sure `Homebrew` is installed in order to update `Bison` to a newer version (the version 2.3 installed per default is too old)
 
 ```
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -156,7 +156,7 @@ Some tools need to be installed before being able to build on Windows:
 * Flex (for `with-cpp` profiles)
 * Python 2.7 (for `with-python`, `with-proxies` profiles)
 * Dotnet (for `with-dotnet` profiles)
-* WinPCAP
+* Npcap
 * OpenSSL
 
 We have tested `WinBuilds` with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
@@ -185,9 +185,9 @@ For `.Net`, you need the `Developer Pack` in order to build .Net applications. S
 
 If you're building a source-distribution and haven't installed git yet, be sure to do so.
 
-The Windows version of the PCAP library can be found here: https://sourceforge.net/projects/winpcap413-176/
-(In order to read PCAPNG files we require a libpcap version 1.1.0 or greater. The default
-Windows version is 1.0. At this location there is a patched version based on libpcap 1.7.4)
+The Windows version of the PCAP library can be found here: https://npcap.com/ . 
+Additional tasks to enable Java to find the pcap executables may need to be done.
+Follow the instructions here https://github.com/kaitoy/pcap4j#about-native-library-loading
 
 Last not least we need to install OpenSSL, which is available from here: https://indy.fulgan.com/SSL/
 The letter at the end of the version is sort of a "sub-minor" version, so I usually just take the version with the highest letter.

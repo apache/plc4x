@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.s7.events;
 
-/**
- *
- * @author cgarcia
- */
 public class S7CyclicValueEvent {
     
 }

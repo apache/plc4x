@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type ApduDataExtReadRoutingTableRequest struct {
 	*ApduDataExt
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtReadRoutingTableRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduDataExt
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtReadRoutingTableRequest) ExtApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataExtReadRoutingTableRequest) GetExtApciType() uint8 {
 	return 0x01
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataExtReadRoutingTableRequest) InitializeParent(parent *ApduDataExt) {}
 
-func NewApduDataExtReadRoutingTableRequest() *ApduDataExt {
-	child := &ApduDataExtReadRoutingTableRequest{
-		ApduDataExt: NewApduDataExt(),
+func (m *ApduDataExtReadRoutingTableRequest) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
+// NewApduDataExtReadRoutingTableRequest factory function for ApduDataExtReadRoutingTableRequest
+func NewApduDataExtReadRoutingTableRequest(length uint8) *ApduDataExtReadRoutingTableRequest {
+	_result := &ApduDataExtReadRoutingTableRequest{
+		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtReadRoutingTableRequest(structType interface{}) *ApduDataExtReadRoutingTableRequest {
-	castFunc := func(typ interface{}) *ApduDataExtReadRoutingTableRequest {
-		if casted, ok := typ.(ApduDataExtReadRoutingTableRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtReadRoutingTableRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtReadRoutingTableRequest(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtReadRoutingTableRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtReadRoutingTableRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtReadRoutingTableRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtReadRoutingTableRequest(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtReadRoutingTableRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtReadRoutingTableRequest) GetTypeName() string {
 	return "ApduDataExtReadRoutingTableRequest"
 }
 
-func (m *ApduDataExtReadRoutingTableRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtReadRoutingTableRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtReadRoutingTableRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtReadRoutingTableRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataExtReadRoutingTableRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtReadRoutingTableRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtReadRoutingTableRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtReadRoutingTableRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtReadRoutingTableRequest, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtReadRoutingTableRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtReadRoutingTableRequest"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func ApduDataExtReadRoutingTableRequestParse(readBuffer utils.ReadBuffer, length
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtReadRoutingTableRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *ApduDataExtReadRoutingTableRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

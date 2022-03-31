@@ -32,21 +32,31 @@ type LDataFrameACK struct {
 
 // The corresponding interface
 type ILDataFrameACK interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ILDataFrame
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LDataFrameACK) NotAckFrame() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *LDataFrameACK) GetNotAckFrame() bool {
 	return bool(false)
 }
 
-func (m *LDataFrameACK) Polling() bool {
+func (m *LDataFrameACK) GetPolling() bool {
 	return false
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *LDataFrameACK) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
 	m.LDataFrame.FrameType = frameType
@@ -56,55 +66,59 @@ func (m *LDataFrameACK) InitializeParent(parent *LDataFrame, frameType bool, not
 	m.LDataFrame.ErrorFlag = errorFlag
 }
 
-func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
-	child := &LDataFrameACK{
+func (m *LDataFrameACK) GetParent() *LDataFrame {
+	return m.LDataFrame
+}
+
+// NewLDataFrameACK factory function for LDataFrameACK
+func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrameACK {
+	_result := &LDataFrameACK{
 		LDataFrame: NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 	}
-	child.Child = child
-	return child.LDataFrame
+	_result.Child = _result
+	return _result
 }
 
 func CastLDataFrameACK(structType interface{}) *LDataFrameACK {
-	castFunc := func(typ interface{}) *LDataFrameACK {
-		if casted, ok := typ.(LDataFrameACK); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LDataFrameACK); ok {
-			return casted
-		}
-		if casted, ok := typ.(LDataFrame); ok {
-			return CastLDataFrameACK(casted.Child)
-		}
-		if casted, ok := typ.(*LDataFrame); ok {
-			return CastLDataFrameACK(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LDataFrameACK); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LDataFrameACK); ok {
+		return casted
+	}
+	if casted, ok := structType.(LDataFrame); ok {
+		return CastLDataFrameACK(casted.Child)
+	}
+	if casted, ok := structType.(*LDataFrame); ok {
+		return CastLDataFrameACK(casted.Child)
+	}
+	return nil
 }
 
 func (m *LDataFrameACK) GetTypeName() string {
 	return "LDataFrameACK"
 }
 
-func (m *LDataFrameACK) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LDataFrameACK) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LDataFrameACK) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LDataFrameACK) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *LDataFrameACK) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LDataFrameACK) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func LDataFrameACKParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
+func LDataFrameACKParse(readBuffer utils.ReadBuffer) (*LDataFrameACK, error) {
 	if pullErr := readBuffer.PullContext("LDataFrameACK"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("LDataFrameACK"); closeErr != nil {
 		return nil, closeErr
@@ -115,7 +129,7 @@ func LDataFrameACKParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		LDataFrame: &LDataFrame{},
 	}
 	_child.LDataFrame.Child = _child
-	return _child.LDataFrame, nil
+	return _child, nil
 }
 
 func (m *LDataFrameACK) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -137,6 +151,8 @@ func (m *LDataFrameACK) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

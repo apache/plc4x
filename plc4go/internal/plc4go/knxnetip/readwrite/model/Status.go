@@ -146,12 +146,12 @@ func CastStatus(structType interface{}) Status {
 	return castFunc(structType)
 }
 
-func (m Status) LengthInBits() uint16 {
+func (m Status) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m Status) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m Status) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func StatusParse(readBuffer utils.ReadBuffer) (Status, error) {

@@ -32,17 +32,27 @@ type S7MessageUserData struct {
 
 // The corresponding interface
 type IS7MessageUserData interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7Message
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7MessageUserData) MessageType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7MessageUserData) GetMessageType() uint8 {
 	return 0x07
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *S7MessageUserData) InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) {
 	m.S7Message.TpduReference = tpduReference
@@ -50,55 +60,59 @@ func (m *S7MessageUserData) InitializeParent(parent *S7Message, tpduReference ui
 	m.S7Message.Payload = payload
 }
 
-func NewS7MessageUserData(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
-	child := &S7MessageUserData{
+func (m *S7MessageUserData) GetParent() *S7Message {
+	return m.S7Message
+}
+
+// NewS7MessageUserData factory function for S7MessageUserData
+func NewS7MessageUserData(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7MessageUserData {
+	_result := &S7MessageUserData{
 		S7Message: NewS7Message(tpduReference, parameter, payload),
 	}
-	child.Child = child
-	return child.S7Message
+	_result.Child = _result
+	return _result
 }
 
 func CastS7MessageUserData(structType interface{}) *S7MessageUserData {
-	castFunc := func(typ interface{}) *S7MessageUserData {
-		if casted, ok := typ.(S7MessageUserData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7MessageUserData); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7Message); ok {
-			return CastS7MessageUserData(casted.Child)
-		}
-		if casted, ok := typ.(*S7Message); ok {
-			return CastS7MessageUserData(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7MessageUserData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7MessageUserData); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7Message); ok {
+		return CastS7MessageUserData(casted.Child)
+	}
+	if casted, ok := structType.(*S7Message); ok {
+		return CastS7MessageUserData(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7MessageUserData) GetTypeName() string {
 	return "S7MessageUserData"
 }
 
-func (m *S7MessageUserData) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7MessageUserData) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7MessageUserData) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7MessageUserData) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *S7MessageUserData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7MessageUserData) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7MessageUserDataParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
+func S7MessageUserDataParse(readBuffer utils.ReadBuffer) (*S7MessageUserData, error) {
 	if pullErr := readBuffer.PullContext("S7MessageUserData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("S7MessageUserData"); closeErr != nil {
 		return nil, closeErr
@@ -109,7 +123,7 @@ func S7MessageUserDataParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 		S7Message: &S7Message{},
 	}
 	_child.S7Message.Child = _child
-	return _child.S7Message, nil
+	return _child, nil
 }
 
 func (m *S7MessageUserData) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -131,6 +145,8 @@ func (m *S7MessageUserData) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

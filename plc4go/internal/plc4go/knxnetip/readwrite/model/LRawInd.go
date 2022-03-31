@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type LRawInd struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type ILRawInd interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICEMI
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LRawInd) MessageCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *LRawInd) GetMessageCode() uint8 {
 	return 0x2D
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *LRawInd) InitializeParent(parent *CEMI) {}
 
-func NewLRawInd() *CEMI {
-	child := &LRawInd{
-		CEMI: NewCEMI(),
+func (m *LRawInd) GetParent() *CEMI {
+	return m.CEMI
+}
+
+// NewLRawInd factory function for LRawInd
+func NewLRawInd(size uint16) *LRawInd {
+	_result := &LRawInd{
+		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastLRawInd(structType interface{}) *LRawInd {
-	castFunc := func(typ interface{}) *LRawInd {
-		if casted, ok := typ.(LRawInd); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LRawInd); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastLRawInd(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastLRawInd(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LRawInd); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LRawInd); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastLRawInd(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastLRawInd(casted.Child)
+	}
+	return nil
 }
 
 func (m *LRawInd) GetTypeName() string {
 	return "LRawInd"
 }
 
-func (m *LRawInd) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LRawInd) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LRawInd) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LRawInd) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *LRawInd) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LRawInd) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func LRawIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func LRawIndParse(readBuffer utils.ReadBuffer, size uint16) (*LRawInd, error) {
 	if pullErr := readBuffer.PullContext("LRawInd"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("LRawInd"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func LRawIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *LRawInd) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *LRawInd) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

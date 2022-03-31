@@ -34,11 +34,14 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
 
     private final ByteOrder byteOrder;
     private final Object[] parserArgs;
-    private final MessageInput<T> io;
+    private final MessageInput<T> messageInput;
+    private final MessageOutput<T> messageOutput;
 
-    protected GeneratedDriverByteToMessageCodec(MessageInput<T> io, Class<T> clazz, ByteOrder byteOrder, Object[] parserArgs) {
-        super(clazz);
-        this.io = io;
+    protected GeneratedDriverByteToMessageCodec(MessageInput<T> messageInput, MessageOutput<T> messageOutput,
+                                                Class<T> outboundMessageType, ByteOrder byteOrder, Object[] parserArgs) {
+        super(outboundMessageType);
+        this.messageInput = messageInput;
+        this.messageOutput = messageOutput;
         this.byteOrder = byteOrder;
         this.parserArgs = parserArgs;
     }
@@ -46,8 +49,13 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
     @Override
     protected void encode(ChannelHandlerContext ctx, T packet, ByteBuf byteBuf) {
         try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(packet.getLengthInBytes(), byteOrder);
-            packet.serialize(buffer);
+            WriteBufferByteBased buffer;
+            if(messageOutput != null) {
+                buffer = messageOutput.serialize(packet);
+            } else {
+                buffer = new WriteBufferByteBased(packet.getLengthInBytes(), byteOrder);
+                packet.serialize(buffer);
+            }
             byteBuf.writeBytes(buffer.getData());
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
@@ -76,7 +84,7 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
                 ReadBuffer readBuffer = new ReadBufferByteBased(bytes, byteOrder);
 
                 // Parse the packet.
-                T packet = io.parse(readBuffer, parserArgs);
+                T packet = messageInput.parse(readBuffer, parserArgs);
 
                 // Pass the packet to the pipeline.
                 out.add(packet);

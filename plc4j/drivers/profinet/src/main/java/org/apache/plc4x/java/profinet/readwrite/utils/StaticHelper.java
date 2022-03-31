@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.profinet.readwrite.utils;
 
 import org.apache.plc4x.java.profinet.readwrite.IpAddress;
+import org.apache.plc4x.java.profinet.readwrite.PnDcp_FrameId;
 
 public class StaticHelper {
 
@@ -77,6 +78,79 @@ public class StaticHelper {
         System.out.println(calculateIPv4Checksum(198, 0x0048, 30,
             new IpAddress(new byte[]{(byte) 0xC0, (byte) 0xA8, (byte) 0x18, (byte) 0x1F}),
             new IpAddress(new byte[]{(byte) 0xC0, (byte) 0xA8, (byte) 0x18, (byte) 0xC8})));
+    }
+
+    public static PnDcp_FrameId getFrameId(int frameIdValue) {
+        // Range 1
+        if(frameIdValue == 0x0020) {
+            return PnDcp_FrameId.PTCP_RTSyncPDUWithFollowUp;
+        }
+        // Range 2
+        if(frameIdValue == 0x0080) {
+            return PnDcp_FrameId.PTCP_RTSyncPDU;
+        }
+        // Range 3
+        if(frameIdValue >= 0x0100 && frameIdValue <= 0x0FFF) {
+            return PnDcp_FrameId.RT_CLASS_3;
+        }
+        // (We do not support RT Class 3 (No need to implement these))
+        // Range 4
+        // (Not used)
+        // Range 5
+        // (Not used)
+        // Range 6
+        if(frameIdValue >= 8000 && frameIdValue <= 0xBFFF) {
+            return PnDcp_FrameId.RT_CLASS_1;
+        }
+        // Range 7
+        if(frameIdValue >= 0xC000 && frameIdValue <= 0xFBFF) {
+            return PnDcp_FrameId.RT_CLASS_UDP;
+        }
+        // Range 8
+        if(frameIdValue == 0xFC01) {
+            return PnDcp_FrameId.Alarm_High;
+        }
+        if(frameIdValue == 0xFE01) {
+            return PnDcp_FrameId.Alarm_Low;
+        }
+        if(frameIdValue == 0xFEFC) {
+            return PnDcp_FrameId.DCP_Hello_ReqPDU;
+        }
+        if(frameIdValue == 0xFEFD) {
+            return PnDcp_FrameId.DCP_GetSet_PDU;
+        }
+        if(frameIdValue == 0xFEFE) {
+            return PnDcp_FrameId.DCP_Identify_ReqPDU;
+        }
+        if(frameIdValue == 0xFEFF) {
+            return PnDcp_FrameId.DCP_Identify_ResPDU;
+        }
+        // Range 9
+        if(frameIdValue == 0xFF00) {
+            return PnDcp_FrameId.PTCP_AnnouncePDU;
+        }
+        if(frameIdValue == 0xFF20) {
+            return PnDcp_FrameId.PTCP_FollowUpPDU;
+        }
+        if(frameIdValue == 0xFF40) {
+            return PnDcp_FrameId.PTCP_DelayReqPDU;
+        }
+        if(frameIdValue == 0xFF41) {
+            return PnDcp_FrameId.PTCP_DelayResPDUWithFollowUp;
+        }
+        if(frameIdValue == 0xFF42) {
+            return PnDcp_FrameId.PTCP_DelayFuResPDUWithFollowUp;
+        }
+        if(frameIdValue == 0xFF43) {
+            return PnDcp_FrameId.PTCP_DelayResPDUWithoutFollowUp;
+        }
+        // Range 12
+        // 0xFF80 - 0xFF8F FragmentationFrameId
+        if(frameIdValue >= 0xFF80 && frameIdValue <= 0xFF8F) {
+            return PnDcp_FrameId.FragmentationFrameId;
+        }
+
+        return PnDcp_FrameId.RESERVED;
     }
 
 }

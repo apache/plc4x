@@ -34,58 +34,85 @@ type KnxNetRemoteLogging struct {
 
 // The corresponding interface
 type IKnxNetRemoteLogging interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IServiceId
+	// GetVersion returns Version (property field)
+	GetVersion() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxNetRemoteLogging) ServiceType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *KnxNetRemoteLogging) GetServiceType() uint8 {
 	return 0x06
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *KnxNetRemoteLogging) InitializeParent(parent *ServiceId) {}
 
-func NewKnxNetRemoteLogging(version uint8) *ServiceId {
-	child := &KnxNetRemoteLogging{
+func (m *KnxNetRemoteLogging) GetParent() *ServiceId {
+	return m.ServiceId
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *KnxNetRemoteLogging) GetVersion() uint8 {
+	return m.Version
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewKnxNetRemoteLogging factory function for KnxNetRemoteLogging
+func NewKnxNetRemoteLogging(version uint8) *KnxNetRemoteLogging {
+	_result := &KnxNetRemoteLogging{
 		Version:   version,
 		ServiceId: NewServiceId(),
 	}
-	child.Child = child
-	return child.ServiceId
+	_result.Child = _result
+	return _result
 }
 
 func CastKnxNetRemoteLogging(structType interface{}) *KnxNetRemoteLogging {
-	castFunc := func(typ interface{}) *KnxNetRemoteLogging {
-		if casted, ok := typ.(KnxNetRemoteLogging); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxNetRemoteLogging); ok {
-			return casted
-		}
-		if casted, ok := typ.(ServiceId); ok {
-			return CastKnxNetRemoteLogging(casted.Child)
-		}
-		if casted, ok := typ.(*ServiceId); ok {
-			return CastKnxNetRemoteLogging(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(KnxNetRemoteLogging); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxNetRemoteLogging); ok {
+		return casted
+	}
+	if casted, ok := structType.(ServiceId); ok {
+		return CastKnxNetRemoteLogging(casted.Child)
+	}
+	if casted, ok := structType.(*ServiceId); ok {
+		return CastKnxNetRemoteLogging(casted.Child)
+	}
+	return nil
 }
 
 func (m *KnxNetRemoteLogging) GetTypeName() string {
 	return "KnxNetRemoteLogging"
 }
 
-func (m *KnxNetRemoteLogging) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxNetRemoteLogging) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxNetRemoteLogging) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *KnxNetRemoteLogging) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -93,14 +120,16 @@ func (m *KnxNetRemoteLogging) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *KnxNetRemoteLogging) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxNetRemoteLogging) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func KnxNetRemoteLoggingParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetRemoteLoggingParse(readBuffer utils.ReadBuffer) (*KnxNetRemoteLogging, error) {
 	if pullErr := readBuffer.PullContext("KnxNetRemoteLogging"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadUint8("version", 8)
@@ -119,7 +148,7 @@ func KnxNetRemoteLoggingParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 		ServiceId: &ServiceId{},
 	}
 	_child.ServiceId.Child = _child
-	return _child.ServiceId, nil
+	return _child, nil
 }
 
 func (m *KnxNetRemoteLogging) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,6 +177,8 @@ func (m *KnxNetRemoteLogging) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -32,63 +32,99 @@ type APDUReject struct {
 	*APDU
 	OriginalInvokeId uint8
 	RejectReason     uint8
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
 type IAPDUReject interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAPDU
+	// GetOriginalInvokeId returns OriginalInvokeId (property field)
+	GetOriginalInvokeId() uint8
+	// GetRejectReason returns RejectReason (property field)
+	GetRejectReason() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *APDUReject) ApduType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *APDUReject) GetApduType() uint8 {
 	return 0x6
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *APDUReject) InitializeParent(parent *APDU) {}
 
-func NewAPDUReject(originalInvokeId uint8, rejectReason uint8) *APDU {
-	child := &APDUReject{
+func (m *APDUReject) GetParent() *APDU {
+	return m.APDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *APDUReject) GetOriginalInvokeId() uint8 {
+	return m.OriginalInvokeId
+}
+
+func (m *APDUReject) GetRejectReason() uint8 {
+	return m.RejectReason
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAPDUReject factory function for APDUReject
+func NewAPDUReject(originalInvokeId uint8, rejectReason uint8, apduLength uint16) *APDUReject {
+	_result := &APDUReject{
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
-		APDU:             NewAPDU(),
+		APDU:             NewAPDU(apduLength),
 	}
-	child.Child = child
-	return child.APDU
+	_result.Child = _result
+	return _result
 }
 
 func CastAPDUReject(structType interface{}) *APDUReject {
-	castFunc := func(typ interface{}) *APDUReject {
-		if casted, ok := typ.(APDUReject); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*APDUReject); ok {
-			return casted
-		}
-		if casted, ok := typ.(APDU); ok {
-			return CastAPDUReject(casted.Child)
-		}
-		if casted, ok := typ.(*APDU); ok {
-			return CastAPDUReject(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(APDUReject); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*APDUReject); ok {
+		return casted
+	}
+	if casted, ok := structType.(APDU); ok {
+		return CastAPDUReject(casted.Child)
+	}
+	if casted, ok := structType.(*APDU); ok {
+		return CastAPDUReject(casted.Child)
+	}
+	return nil
 }
 
 func (m *APDUReject) GetTypeName() string {
 	return "APDUReject"
 }
 
-func (m *APDUReject) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDUReject) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDUReject) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *APDUReject) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -102,14 +138,16 @@ func (m *APDUReject) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *APDUReject) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDUReject) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUReject, error) {
 	if pullErr := readBuffer.PullContext("APDUReject"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -150,7 +188,7 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, err
 		APDU:             &APDU{},
 	}
 	_child.APDU.Child = _child
-	return _child.APDU, nil
+	return _child, nil
 }
 
 func (m *APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -194,6 +232,8 @@ func (m *APDUReject) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

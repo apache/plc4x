@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.values;
 
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -134,7 +135,18 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                     return PlcBOOL.of(value);
                 case "BYTE":
                 case "BITARR8":
-                    return PlcBYTE.of(value);
+                    if(value instanceof Short) {
+                        return new PlcBitString((short) value);
+                    } else if(value instanceof Integer) {
+                        return new PlcBitString(((Integer) value).shortValue());
+                    } else if(value instanceof Long) {
+                        return new PlcBitString(((Long) value).shortValue());
+                    } else if(value instanceof BigInteger) {
+                        return new PlcBitString(((BigInteger) value).shortValue());
+                    } else if(value instanceof boolean[]) {
+                        return new PlcBitString((boolean[]) value);
+                    }
+                    throw new PlcRuntimeException("BYTE requires short or boolean[8]");
                 case "SINT":
                 case "INT8":
                     return PlcSINT.of(value);
@@ -150,7 +162,18 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                     return PlcUINT.of(value);
                 case "WORD":
                 case "BITARR16":
-                    return PlcWORD.of(value);
+                    if(value instanceof Short) {
+                        return new PlcBitString((int) value);
+                    } else if(value instanceof Integer) {
+                        return new PlcBitString((int) value);
+                    } else if(value instanceof Long) {
+                        return new PlcBitString(((Long) value).intValue());
+                    } else if(value instanceof BigInteger) {
+                        return new PlcBitString(((BigInteger) value).intValue());
+                    } else if(value instanceof boolean[]) {
+                        return new PlcBitString((boolean[]) value);
+                    }
+                    throw new PlcRuntimeException("WORD requires int or boolean[16]");
                 case "DINT":
                 case "INT32":
                     return PlcDINT.of(value);
@@ -159,7 +182,18 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                     return PlcUDINT.of(value);
                 case "DWORD":
                 case "BITARR32":
-                    return PlcDWORD.of(value);
+                    if(value instanceof Short) {
+                        return new PlcBitString((long) value);
+                    } else if(value instanceof Integer) {
+                        return new PlcBitString((long) value);
+                    } else if(value instanceof Long) {
+                        return new PlcBitString((long) value);
+                    } else if(value instanceof BigInteger) {
+                        return new PlcBitString(((BigInteger) value).longValue());
+                    } else if(value instanceof boolean[]) {
+                        return new PlcBitString((boolean[]) value);
+                    }
+                    throw new PlcRuntimeException("DWORD requires long or boolean[32]");
                 case "LINT":
                 case "INT64":
                     return PlcLINT.of(value);
@@ -168,7 +202,18 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                     return PlcULINT.of(value);
                 case "LWORD":
                 case "BITARR64":
-                    return PlcLWORD.of(value);
+                    if(value instanceof Short) {
+                        return new PlcBitString(BigInteger.valueOf((long) value));
+                    } else if(value instanceof Integer) {
+                        return new PlcBitString(BigInteger.valueOf((long) value));
+                    } else if(value instanceof Long) {
+                        return new PlcBitString(BigInteger.valueOf((long) value));
+                    } else if(value instanceof BigInteger) {
+                        return new PlcBitString((BigInteger) value);
+                    } else if(value instanceof boolean[]) {
+                        return new PlcBitString((boolean[]) value);
+                    }
+                    throw new PlcRuntimeException("LWORD requires BigInteger or boolean[64]");
                 case "REAL":
                 case "FLOAT":
                     return PlcREAL.of(value);

@@ -28,10 +28,10 @@ import (
 
 func main() {
 	driverManager := plc4go.NewPlcDriverManager()
-	drivers.RegisterModbusDriver(driverManager)
+	drivers.RegisterModbusTcpDriver(driverManager)
 
 	// Get a connection to a remote PLC
-	crc := driverManager.GetConnection("modbus:tcp://192.168.23.30")
+	crc := driverManager.GetConnection("modbus-tcp://192.168.23.30")
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc

@@ -26,10 +26,9 @@ import java.util.Optional;
 
 public abstract class DefaultField {
 
-    private final Map<String, Term> attributes;
+    protected final Map<String, Term> attributes;
 
     protected DefaultField(Map<String, Term> attributes) {
-        super();
         this.attributes = Objects.requireNonNull(attributes);
     }
 
@@ -40,4 +39,23 @@ public abstract class DefaultField {
         return Optional.empty();
     }
 
+    @Override
+    public String toString() {
+        return "DefaultField{" +
+            "attributes=" + attributes +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DefaultField that = (DefaultField) o;
+        return Objects.equals(attributes, that.attributes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attributes);
+    }
 }

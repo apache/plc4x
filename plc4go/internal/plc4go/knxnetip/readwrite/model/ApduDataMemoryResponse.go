@@ -31,63 +31,99 @@ type ApduDataMemoryResponse struct {
 	*ApduData
 	Address uint16
 	Data    []byte
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataMemoryResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduData
+	// GetAddress returns Address (property field)
+	GetAddress() uint16
+	// GetData returns Data (property field)
+	GetData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataMemoryResponse) ApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataMemoryResponse) GetApciType() uint8 {
 	return 0x9
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataMemoryResponse) InitializeParent(parent *ApduData) {}
 
-func NewApduDataMemoryResponse(address uint16, data []byte) *ApduData {
-	child := &ApduDataMemoryResponse{
+func (m *ApduDataMemoryResponse) GetParent() *ApduData {
+	return m.ApduData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ApduDataMemoryResponse) GetAddress() uint16 {
+	return m.Address
+}
+
+func (m *ApduDataMemoryResponse) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewApduDataMemoryResponse factory function for ApduDataMemoryResponse
+func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *ApduDataMemoryResponse {
+	_result := &ApduDataMemoryResponse{
 		Address:  address,
 		Data:     data,
-		ApduData: NewApduData(),
+		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataMemoryResponse(structType interface{}) *ApduDataMemoryResponse {
-	castFunc := func(typ interface{}) *ApduDataMemoryResponse {
-		if casted, ok := typ.(ApduDataMemoryResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataMemoryResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataMemoryResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataMemoryResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataMemoryResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataMemoryResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataMemoryResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataMemoryResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataMemoryResponse) GetTypeName() string {
 	return "ApduDataMemoryResponse"
 }
 
-func (m *ApduDataMemoryResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataMemoryResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataMemoryResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataMemoryResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (numBytes)
 	lengthInBits += 6
@@ -103,16 +139,18 @@ func (m *ApduDataMemoryResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *ApduDataMemoryResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataMemoryResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataMemoryResponse, error) {
 	if pullErr := readBuffer.PullContext("ApduDataMemoryResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (numBytes) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	numBytes, _numBytesErr := readBuffer.ReadUint8("numBytes", 6)
 	_ = numBytes
 	if _numBytesErr != nil {
@@ -143,7 +181,7 @@ func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) 
 		ApduData: &ApduData{},
 	}
 	_child.ApduData.Child = _child
-	return _child.ApduData, nil
+	return _child, nil
 }
 
 func (m *ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -153,7 +191,7 @@ func (m *ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 
 		// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		numBytes := uint8(uint8(len(m.Data)))
+		numBytes := uint8(uint8(len(m.GetData())))
 		_numBytesErr := writeBuffer.WriteUint8("numBytes", 6, (numBytes))
 		if _numBytesErr != nil {
 			return errors.Wrap(_numBytesErr, "Error serializing 'numBytes' field")
@@ -188,6 +226,8 @@ func (m *ApduDataMemoryResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

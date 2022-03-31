@@ -29,105 +29,139 @@ import (
 // The data-structure of this message
 type BACnetApplicationTagEnumerated struct {
 	*BACnetApplicationTag
-	Data []int8
+	Payload *BACnetTagPayloadEnumerated
 }
 
 // The corresponding interface
 type IBACnetApplicationTagEnumerated interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetApplicationTag
+	// GetPayload returns Payload (property field)
+	GetPayload() *BACnetTagPayloadEnumerated
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() uint32
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagEnumerated) ActualTagNumber() uint8 {
-	return 0x9
-}
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
-func (m *BACnetApplicationTagEnumerated) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) {
+func (m *BACnetApplicationTagEnumerated) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader) {
 	m.BACnetApplicationTag.Header = header
-	m.BACnetApplicationTag.ActualTagNumber = actualTagNumber
-	m.BACnetApplicationTag.ActualLength = actualLength
 }
 
-func NewBACnetApplicationTagEnumerated(data []int8, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
-	child := &BACnetApplicationTagEnumerated{
-		Data:                 data,
-		BACnetApplicationTag: NewBACnetApplicationTag(header, actualTagNumber, actualLength),
+func (m *BACnetApplicationTagEnumerated) GetParent() *BACnetApplicationTag {
+	return m.BACnetApplicationTag
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetApplicationTagEnumerated) GetPayload() *BACnetTagPayloadEnumerated {
+	return m.Payload
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+func (m *BACnetApplicationTagEnumerated) GetActualValue() uint32 {
+	return uint32(m.GetPayload().GetActualValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetApplicationTagEnumerated factory function for BACnetApplicationTagEnumerated
+func NewBACnetApplicationTagEnumerated(payload *BACnetTagPayloadEnumerated, header *BACnetTagHeader) *BACnetApplicationTagEnumerated {
+	_result := &BACnetApplicationTagEnumerated{
+		Payload:              payload,
+		BACnetApplicationTag: NewBACnetApplicationTag(header),
 	}
-	child.Child = child
-	return child.BACnetApplicationTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetApplicationTagEnumerated(structType interface{}) *BACnetApplicationTagEnumerated {
-	castFunc := func(typ interface{}) *BACnetApplicationTagEnumerated {
-		if casted, ok := typ.(BACnetApplicationTagEnumerated); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetApplicationTagEnumerated); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagEnumerated(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagEnumerated(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetApplicationTagEnumerated); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetApplicationTagEnumerated); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagEnumerated(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagEnumerated(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetApplicationTagEnumerated) GetTypeName() string {
 	return "BACnetApplicationTagEnumerated"
 }
 
-func (m *BACnetApplicationTagEnumerated) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetApplicationTagEnumerated) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetApplicationTagEnumerated) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetApplicationTagEnumerated) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Array field
-	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
-	}
+	// Simple field (payload)
+	lengthInBits += m.Payload.GetLengthInBits()
+
+	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *BACnetApplicationTagEnumerated) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetApplicationTagEnumerated) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagEnumeratedParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetApplicationTag, error) {
+func BACnetApplicationTagEnumeratedParse(readBuffer utils.ReadBuffer, header *BACnetTagHeader) (*BACnetApplicationTagEnumerated, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagEnumerated"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+	// Simple Field (payload)
+	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Length array
-	data := make([]int8, 0)
-	{
-		_dataLength := actualLength
-		_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
-		for readBuffer.GetPos() < _dataEndPos {
-			_item, _err := readBuffer.ReadInt8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field")
-			}
-			data = append(data, _item)
-		}
+	_payload, _payloadErr := BACnetTagPayloadEnumeratedParse(readBuffer, uint32(header.GetActualLength()))
+	if _payloadErr != nil {
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
 	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+	payload := CastBACnetTagPayloadEnumerated(_payload)
+	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
 		return nil, closeErr
 	}
+
+	// Virtual field
+	_actualValue := payload.GetActualValue()
+	actualValue := uint32(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagEnumerated"); closeErr != nil {
 		return nil, closeErr
@@ -135,11 +169,11 @@ func BACnetApplicationTagEnumeratedParse(readBuffer utils.ReadBuffer, actualLeng
 
 	// Create a partially initialized instance
 	_child := &BACnetApplicationTagEnumerated{
-		Data:                 data,
+		Payload:              CastBACnetTagPayloadEnumerated(payload),
 		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
 	_child.BACnetApplicationTag.Child = _child
-	return _child.BACnetApplicationTag, nil
+	return _child, nil
 }
 
 func (m *BACnetApplicationTagEnumerated) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,20 +182,20 @@ func (m *BACnetApplicationTagEnumerated) Serialize(writeBuffer utils.WriteBuffer
 			return pushErr
 		}
 
-		// Array Field (data)
-		if m.Data != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Data {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
-			}
+		// Simple Field (payload)
+		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
+			return pushErr
+		}
+		_payloadErr := m.Payload.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
+			return popErr
+		}
+		if _payloadErr != nil {
+			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetApplicationTagEnumerated"); popErr != nil {
@@ -177,6 +211,8 @@ func (m *BACnetApplicationTagEnumerated) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

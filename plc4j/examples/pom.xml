@@ -50,6 +50,7 @@
     <module>hello-opm</module>
     <module>hello-webapp</module>
     <module>hello-webservice</module>
+    <module>hello-world-kotlin</module>
     <module>hello-world-plc4x</module>
     <module>hello-world-plc4x-subscription</module>
     <module>hello-world-plc4x-write</module>

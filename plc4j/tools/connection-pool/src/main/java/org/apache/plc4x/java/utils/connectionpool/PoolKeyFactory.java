@@ -85,7 +85,7 @@ public class PoolKeyFactory {
                 return new PoolKey(url, plcAuthentication) {
                     private final Pattern inetAddressPattern = Pattern.compile("tcp://(?<host>[\\w.]+)(:(?<port>\\d*))?");
                     private final Pattern serialPattern = Pattern.compile("serial://(?<serialDefinition>((?!/\\d).)*)");
-                    private final Pattern modbusUriPattern = Pattern.compile("^(?<poolablePart>modbus:(" + inetAddressPattern + "|" + serialPattern + "))/?" + "(?<params>\\?.*)?");
+                    private final Pattern modbusUriPattern = Pattern.compile("^(?<poolablePart>modbus-tcp:(" + inetAddressPattern + "|" + serialPattern + "))/?" + "(?<params>\\?.*)?");
 
                     @Override
                     public String getPoolableKey() {

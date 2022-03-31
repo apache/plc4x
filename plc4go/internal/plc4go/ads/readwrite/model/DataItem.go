@@ -228,6 +228,14 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataFormatName string, stringLen
 }
 
 func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataFormatName string, stringLength int32) error {
+	m := struct {
+		DataFormatName string
+		StringLength   int32
+	}{
+		DataFormatName: dataFormatName,
+		StringLength:   stringLength,
+	}
+	_ = m
 	writeBuffer.PushContext("DataItem")
 	switch {
 	case dataFormatName == "IEC61131_BOOL": // BOOL
@@ -317,13 +325,13 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataFo
 		}
 	case dataFormatName == "IEC61131_STRING": // STRING
 		// Manual Field (value)
-		_valueErr := SerializeAmsString(writeBuffer, value, stringLength, "UTF-8")
+		_valueErr := SerializeAmsString(writeBuffer, value, m.StringLength, "UTF-8")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_WSTRING": // STRING
 		// Manual Field (value)
-		_valueErr := SerializeAmsString(writeBuffer, value, stringLength, "UTF-16")
+		_valueErr := SerializeAmsString(writeBuffer, value, m.StringLength, "UTF-16")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

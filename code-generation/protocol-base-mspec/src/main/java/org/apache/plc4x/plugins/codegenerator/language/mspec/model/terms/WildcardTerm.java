@@ -33,4 +33,9 @@ public class WildcardTerm implements Term {
     public String stringRepresentation() {
         throw new IllegalStateException("Should never be called");
     }
+
+    @Override
+    public String toString() {
+        return "WildcardTerm{}";
+    }
 }

@@ -30,83 +30,115 @@ import (
 type FirmataMessageCommand struct {
 	*FirmataMessage
 	Command *FirmataCommand
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
 type IFirmataMessageCommand interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IFirmataMessage
+	// GetCommand returns Command (property field)
+	GetCommand() *FirmataCommand
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataMessageCommand) MessageType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *FirmataMessageCommand) GetMessageType() uint8 {
 	return 0xF
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *FirmataMessageCommand) InitializeParent(parent *FirmataMessage) {}
 
-func NewFirmataMessageCommand(command *FirmataCommand) *FirmataMessage {
-	child := &FirmataMessageCommand{
+func (m *FirmataMessageCommand) GetParent() *FirmataMessage {
+	return m.FirmataMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *FirmataMessageCommand) GetCommand() *FirmataCommand {
+	return m.Command
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewFirmataMessageCommand factory function for FirmataMessageCommand
+func NewFirmataMessageCommand(command *FirmataCommand, response bool) *FirmataMessageCommand {
+	_result := &FirmataMessageCommand{
 		Command:        command,
-		FirmataMessage: NewFirmataMessage(),
+		FirmataMessage: NewFirmataMessage(response),
 	}
-	child.Child = child
-	return child.FirmataMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataMessageCommand(structType interface{}) *FirmataMessageCommand {
-	castFunc := func(typ interface{}) *FirmataMessageCommand {
-		if casted, ok := typ.(FirmataMessageCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataMessageCommand); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataMessage); ok {
-			return CastFirmataMessageCommand(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataMessage); ok {
-			return CastFirmataMessageCommand(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataMessageCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataMessageCommand); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataMessage); ok {
+		return CastFirmataMessageCommand(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataMessage); ok {
+		return CastFirmataMessageCommand(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataMessageCommand) GetTypeName() string {
 	return "FirmataMessageCommand"
 }
 
-func (m *FirmataMessageCommand) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataMessageCommand) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataMessageCommand) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataMessageCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (command)
-	lengthInBits += m.Command.LengthInBits()
+	lengthInBits += m.Command.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *FirmataMessageCommand) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataMessageCommand) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func FirmataMessageCommandParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {
+func FirmataMessageCommandParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessageCommand, error) {
 	if pullErr := readBuffer.PullContext("FirmataMessageCommand"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (command)
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, pullErr
 	}
-	_command, _commandErr := FirmataCommandParse(readBuffer, response)
+	_command, _commandErr := FirmataCommandParse(readBuffer, bool(response))
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
 	}
@@ -125,7 +157,7 @@ func FirmataMessageCommandParse(readBuffer utils.ReadBuffer, response bool) (*Fi
 		FirmataMessage: &FirmataMessage{},
 	}
 	_child.FirmataMessage.Child = _child
-	return _child.FirmataMessage, nil
+	return _child, nil
 }
 
 func (m *FirmataMessageCommand) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -159,6 +191,8 @@ func (m *FirmataMessageCommand) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

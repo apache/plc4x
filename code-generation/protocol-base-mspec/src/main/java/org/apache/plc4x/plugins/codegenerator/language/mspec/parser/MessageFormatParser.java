@@ -23,15 +23,30 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecLexer;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
+import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class MessageFormatParser {
 
-    public Map<String, TypeDefinition> parse(InputStream source) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageFormatParser.class);
+
+    public TypeContext parse(InputStream source) {
+        return parse(source, new HashMap<>());
+    }
+
+    public TypeContext parse(InputStream source, Map<String, List<Consumer<TypeDefinition>>> unresolvedTypeReferences) {
+        LOGGER.debug("Parsing: {}", source);
         MSpecLexer lexer;
         try {
             lexer = new MSpecLexer(CharStreams.fromStream(source));
@@ -39,8 +54,24 @@ public class MessageFormatParser {
             throw new RuntimeException(e);
         }
         MessageFormatListener listener = new MessageFormatListener();
+        if (unresolvedTypeReferences != null) {
+            LOGGER.debug("Continue with {} unresolvedTypeReferences", unresolvedTypeReferences.size());
+            listener.typeDefinitionConsumers = unresolvedTypeReferences;
+        }
         new ParseTreeWalker().walk(listener, new MSpecParser(new CommonTokenStream(lexer)).file());
-        return listener.getTypes();
+        LOGGER.info("Checking for open consumers");
+        listener.typeDefinitionConsumers.forEach((key, value) -> LOGGER.warn("{} has {} open consumers", key, value.size()));
+        return new TypeContext() {
+            @Override
+            public Map<String, TypeDefinition> getTypeDefinitions() {
+                return listener.types;
+            }
+
+            @Override
+            public Map<String, List<Consumer<TypeDefinition>>> getUnresolvedTypeReferences() {
+                return listener.typeDefinitionConsumers;
+            }
+        };
     }
 
 }

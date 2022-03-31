@@ -26,12 +26,6 @@ import java.nio.channels.*;
 import java.nio.channels.spi.AbstractSelector;
 import java.nio.channels.spi.SelectorProvider;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-10
- */
 class SerialSelectorProvider extends SelectorProvider {
 
     @Override

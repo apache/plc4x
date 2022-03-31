@@ -34,66 +34,93 @@ type ModbusPDUReadCoilsResponse struct {
 
 // The corresponding interface
 type IModbusPDUReadCoilsResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IModbusPDU
+	// GetValue returns Value (property field)
+	GetValue() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUReadCoilsResponse) ErrorFlag() bool {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ModbusPDUReadCoilsResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadCoilsResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUReadCoilsResponse) GetFunctionFlag() uint8 {
 	return 0x01
 }
 
-func (m *ModbusPDUReadCoilsResponse) Response() bool {
+func (m *ModbusPDUReadCoilsResponse) GetResponse() bool {
 	return bool(true)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ModbusPDUReadCoilsResponse) InitializeParent(parent *ModbusPDU) {}
 
-func NewModbusPDUReadCoilsResponse(value []byte) *ModbusPDU {
-	child := &ModbusPDUReadCoilsResponse{
+func (m *ModbusPDUReadCoilsResponse) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ModbusPDUReadCoilsResponse) GetValue() []byte {
+	return m.Value
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusPDUReadCoilsResponse factory function for ModbusPDUReadCoilsResponse
+func NewModbusPDUReadCoilsResponse(value []byte) *ModbusPDUReadCoilsResponse {
+	_result := &ModbusPDUReadCoilsResponse{
 		Value:     value,
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReadCoilsResponse(structType interface{}) *ModbusPDUReadCoilsResponse {
-	castFunc := func(typ interface{}) *ModbusPDUReadCoilsResponse {
-		if casted, ok := typ.(ModbusPDUReadCoilsResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReadCoilsResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUReadCoilsResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUReadCoilsResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReadCoilsResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReadCoilsResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUReadCoilsResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUReadCoilsResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUReadCoilsResponse) GetTypeName() string {
 	return "ModbusPDUReadCoilsResponse"
 }
 
-func (m *ModbusPDUReadCoilsResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadCoilsResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadCoilsResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadCoilsResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -106,16 +133,18 @@ func (m *ModbusPDUReadCoilsResponse) LengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadCoilsResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadCoilsResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadCoilsResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUReadCoilsResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUReadCoilsResponse, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadCoilsResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
@@ -138,7 +167,7 @@ func ModbusPDUReadCoilsResponseParse(readBuffer utils.ReadBuffer, response bool)
 		ModbusPDU: &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUReadCoilsResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,7 +177,7 @@ func (m *ModbusPDUReadCoilsResponse) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint8(uint8(len(m.Value)))
+		byteCount := uint8(uint8(len(m.GetValue())))
 		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
@@ -176,6 +205,8 @@ func (m *ModbusPDUReadCoilsResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

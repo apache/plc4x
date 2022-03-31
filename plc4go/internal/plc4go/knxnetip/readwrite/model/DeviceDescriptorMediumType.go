@@ -110,12 +110,12 @@ func CastDeviceDescriptorMediumType(structType interface{}) DeviceDescriptorMedi
 	return castFunc(structType)
 }
 
-func (m DeviceDescriptorMediumType) LengthInBits() uint16 {
+func (m DeviceDescriptorMediumType) GetLengthInBits() uint16 {
 	return 4
 }
 
-func (m DeviceDescriptorMediumType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m DeviceDescriptorMediumType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DeviceDescriptorMediumTypeParse(readBuffer utils.ReadBuffer) (DeviceDescriptorMediumType, error) {

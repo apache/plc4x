@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type FirmataCommandSystemReset struct {
 	*FirmataCommand
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
 type IFirmataCommandSystemReset interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IFirmataCommand
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataCommandSystemReset) CommandCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *FirmataCommandSystemReset) GetCommandCode() uint8 {
 	return 0xF
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *FirmataCommandSystemReset) InitializeParent(parent *FirmataCommand) {}
 
-func NewFirmataCommandSystemReset() *FirmataCommand {
-	child := &FirmataCommandSystemReset{
-		FirmataCommand: NewFirmataCommand(),
+func (m *FirmataCommandSystemReset) GetParent() *FirmataCommand {
+	return m.FirmataCommand
+}
+
+// NewFirmataCommandSystemReset factory function for FirmataCommandSystemReset
+func NewFirmataCommandSystemReset(response bool) *FirmataCommandSystemReset {
+	_result := &FirmataCommandSystemReset{
+		FirmataCommand: NewFirmataCommand(response),
 	}
-	child.Child = child
-	return child.FirmataCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataCommandSystemReset(structType interface{}) *FirmataCommandSystemReset {
-	castFunc := func(typ interface{}) *FirmataCommandSystemReset {
-		if casted, ok := typ.(FirmataCommandSystemReset); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataCommandSystemReset); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataCommand); ok {
-			return CastFirmataCommandSystemReset(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataCommand); ok {
-			return CastFirmataCommandSystemReset(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataCommandSystemReset); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataCommandSystemReset); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataCommand); ok {
+		return CastFirmataCommandSystemReset(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataCommand); ok {
+		return CastFirmataCommandSystemReset(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataCommandSystemReset) GetTypeName() string {
 	return "FirmataCommandSystemReset"
 }
 
-func (m *FirmataCommandSystemReset) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataCommandSystemReset) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataCommandSystemReset) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataCommandSystemReset) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *FirmataCommandSystemReset) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataCommandSystemReset) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func FirmataCommandSystemResetParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {
+func FirmataCommandSystemResetParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommandSystemReset, error) {
 	if pullErr := readBuffer.PullContext("FirmataCommandSystemReset"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandSystemReset"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func FirmataCommandSystemResetParse(readBuffer utils.ReadBuffer, response bool) 
 		FirmataCommand: &FirmataCommand{},
 	}
 	_child.FirmataCommand.Child = _child
-	return _child.FirmataCommand, nil
+	return _child, nil
 }
 
 func (m *FirmataCommandSystemReset) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *FirmataCommandSystemReset) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

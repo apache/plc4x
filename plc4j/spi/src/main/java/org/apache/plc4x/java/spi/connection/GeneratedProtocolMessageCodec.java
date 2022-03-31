@@ -32,12 +32,25 @@ public class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> ex
 
     public GeneratedProtocolMessageCodec(
         Class<BASE_PACKET_CLASS> basePacketClass,
-        MessageInput<BASE_PACKET_CLASS> messageIO,
+        MessageInput<BASE_PACKET_CLASS> messageInput,
         ByteOrder byteOrder,
         Object[] parserArgs,
         ToIntFunction<ByteBuf> packetSizeEstimator,
         Consumer<ByteBuf> corruptPackageRemover) {
-        super(messageIO, basePacketClass, byteOrder, parserArgs);
+        super(messageInput, null, basePacketClass, byteOrder, parserArgs);
+        this.packetSizeEstimator = packetSizeEstimator;
+        this.corruptPackageRemover = corruptPackageRemover;
+    }
+
+    public GeneratedProtocolMessageCodec(
+        Class<BASE_PACKET_CLASS> basePacketClass,
+        MessageInput<BASE_PACKET_CLASS> messageInput,
+        MessageOutput<BASE_PACKET_CLASS> messageOutput,
+        ByteOrder byteOrder,
+        Object[] parserArgs,
+        ToIntFunction<ByteBuf> packetSizeEstimator,
+        Consumer<ByteBuf> corruptPackageRemover) {
+        super(messageInput, messageOutput, basePacketClass, byteOrder, parserArgs);
         this.packetSizeEstimator = packetSizeEstimator;
         this.corruptPackageRemover = corruptPackageRemover;
     }

@@ -31,63 +31,99 @@ type ApduDataGroupValueResponse struct {
 	*ApduData
 	DataFirstByte int8
 	Data          []byte
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataGroupValueResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduData
+	// GetDataFirstByte returns DataFirstByte (property field)
+	GetDataFirstByte() int8
+	// GetData returns Data (property field)
+	GetData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataGroupValueResponse) ApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataGroupValueResponse) GetApciType() uint8 {
 	return 0x1
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataGroupValueResponse) InitializeParent(parent *ApduData) {}
 
-func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte) *ApduData {
-	child := &ApduDataGroupValueResponse{
+func (m *ApduDataGroupValueResponse) GetParent() *ApduData {
+	return m.ApduData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ApduDataGroupValueResponse) GetDataFirstByte() int8 {
+	return m.DataFirstByte
+}
+
+func (m *ApduDataGroupValueResponse) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewApduDataGroupValueResponse factory function for ApduDataGroupValueResponse
+func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte, dataLength uint8) *ApduDataGroupValueResponse {
+	_result := &ApduDataGroupValueResponse{
 		DataFirstByte: dataFirstByte,
 		Data:          data,
-		ApduData:      NewApduData(),
+		ApduData:      NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataGroupValueResponse(structType interface{}) *ApduDataGroupValueResponse {
-	castFunc := func(typ interface{}) *ApduDataGroupValueResponse {
-		if casted, ok := typ.(ApduDataGroupValueResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataGroupValueResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataGroupValueResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataGroupValueResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataGroupValueResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataGroupValueResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataGroupValueResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataGroupValueResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataGroupValueResponse) GetTypeName() string {
 	return "ApduDataGroupValueResponse"
 }
 
-func (m *ApduDataGroupValueResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataGroupValueResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataGroupValueResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataGroupValueResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (dataFirstByte)
 	lengthInBits += 6
@@ -100,14 +136,16 @@ func (m *ApduDataGroupValueResponse) LengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *ApduDataGroupValueResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataGroupValueResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataGroupValueResponse, error) {
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (dataFirstByte)
 	_dataFirstByte, _dataFirstByteErr := readBuffer.ReadInt8("dataFirstByte", 6)
@@ -133,7 +171,7 @@ func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uin
 		ApduData:      &ApduData{},
 	}
 	_child.ApduData.Child = _child
-	return _child.ApduData, nil
+	return _child, nil
 }
 
 func (m *ApduDataGroupValueResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -171,6 +209,8 @@ func (m *ApduDataGroupValueResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

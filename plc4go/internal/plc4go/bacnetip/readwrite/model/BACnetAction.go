@@ -29,49 +29,90 @@ import (
 
 // The data-structure of this message
 type BACnetAction struct {
-	RawData   *BACnetContextTagEnumerated
-	IsDirect  bool
-	IsReverse bool
+	RawData *BACnetContextTagEnumerated
+
+	// Arguments.
+	TagNumber uint8
 }
 
 // The corresponding interface
 type IBACnetAction interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetRawData returns RawData (property field)
+	GetRawData() *BACnetContextTagEnumerated
+	// GetIsDirect returns IsDirect (virtual field)
+	GetIsDirect() bool
+	// GetIsReverse returns IsReverse (virtual field)
+	GetIsReverse() bool
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewBACnetAction(rawData *BACnetContextTagEnumerated, isDirect bool, isReverse bool) *BACnetAction {
-	return &BACnetAction{RawData: rawData, IsDirect: isDirect, IsReverse: isReverse}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetAction) GetRawData() *BACnetContextTagEnumerated {
+	return m.RawData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+func (m *BACnetAction) GetIsDirect() bool {
+	rawData := m.RawData
+	_ = rawData
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (0))))
+}
+
+func (m *BACnetAction) GetIsReverse() bool {
+	rawData := m.RawData
+	_ = rawData
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (1))))
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetAction factory function for BACnetAction
+func NewBACnetAction(rawData *BACnetContextTagEnumerated, tagNumber uint8) *BACnetAction {
+	return &BACnetAction{RawData: rawData, TagNumber: tagNumber}
 }
 
 func CastBACnetAction(structType interface{}) *BACnetAction {
-	castFunc := func(typ interface{}) *BACnetAction {
-		if casted, ok := typ.(BACnetAction); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetAction); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetAction); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetAction); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetAction) GetTypeName() string {
 	return "BACnetAction"
 }
 
-func (m *BACnetAction) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetAction) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetAction) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetAction) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Optional Field (rawData)
 	if m.RawData != nil {
-		lengthInBits += (*m.RawData).LengthInBits()
+		lengthInBits += (*m.RawData).GetLengthInBits()
 	}
 
 	// A virtual field doesn't have any in- or output.
@@ -81,19 +122,21 @@ func (m *BACnetAction) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetAction) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetAction) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetActionParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetAction, error) {
 	if pullErr := readBuffer.PullContext("BACnetAction"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (rawData) (Can be skipped, if a given expression evaluates to false)
 	var rawData *BACnetContextTagEnumerated = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("rawData"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -112,19 +155,21 @@ func BACnetActionParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetAct
 	}
 
 	// Virtual field
-	_isDirect := bool(bool(bool((rawData) != (nil))) && bool(bool((len((*rawData).Data)) == (1)))) && bool(bool(((*rawData).Data[0]) == (0)))
+	_isDirect := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (0)))
 	isDirect := bool(_isDirect)
+	_ = isDirect
 
 	// Virtual field
-	_isReverse := bool(bool(bool((rawData) != (nil))) && bool(bool((len((*rawData).Data)) == (1)))) && bool(bool(((*rawData).Data[0]) == (1)))
+	_isReverse := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (1)))
 	isReverse := bool(_isReverse)
+	_ = isReverse
 
 	if closeErr := readBuffer.CloseContext("BACnetAction"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetAction(rawData, isDirect, isReverse), nil
+	return NewBACnetAction(rawData, tagNumber), nil
 }
 
 func (m *BACnetAction) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,11 +193,11 @@ func (m *BACnetAction) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 	}
 	// Virtual field
-	if _isDirectErr := writeBuffer.WriteVirtual("isDirect", m.IsDirect); _isDirectErr != nil {
+	if _isDirectErr := writeBuffer.WriteVirtual("isDirect", m.GetIsDirect()); _isDirectErr != nil {
 		return errors.Wrap(_isDirectErr, "Error serializing 'isDirect' field")
 	}
 	// Virtual field
-	if _isReverseErr := writeBuffer.WriteVirtual("isReverse", m.IsReverse); _isReverseErr != nil {
+	if _isReverseErr := writeBuffer.WriteVirtual("isReverse", m.GetIsReverse()); _isReverseErr != nil {
 		return errors.Wrap(_isReverseErr, "Error serializing 'isReverse' field")
 	}
 
@@ -167,6 +212,8 @@ func (m *BACnetAction) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

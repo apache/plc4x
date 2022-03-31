@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.test.generator
 
+import org.opentest4j.TestAbortedException
+
 import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo
 import static spock.util.matcher.HamcrestSupport.*
 import spock.lang.Specification
@@ -28,10 +30,21 @@ import java.nio.file.Files
 class ParserSerializerTestsuiteGeneratorSpec extends Specification {
     def "Test main with an example pcap"() {
         given:
+        try {
+            "sh -c 'echo 1'".execute()
+        } catch (e) {
+            throw new TestAbortedException("no sh", e)
+        }
+        try {
+            "tshark --version".execute()
+        } catch (e) {
+            throw new TestAbortedException("no tshark", e)
+        }
+        if (!new File('/bin/sh').canExecute()) throw new TestAbortedException("No bin sh")
         def testSuitePath = Files.createTempFile("parser-serializer-testsuite", ".xml")
         URL pcap = ParserSerializerTestsuiteGeneratorSpec.getResource("/bacnet-stack-services.cap");
         File pcapFile = new File(pcap.toURI());
-        ParserSerializerTestsuiteGenerator.exitFunc = (it)-> println("exiting with $it")
+        ParserSerializerTestsuiteGenerator.exitFunc = (it) -> println("exiting with $it")
 
         when:
         ParserSerializerTestsuiteGenerator.main("-d", "-t TODO: name me", "-l", DummyMessageRootType.class.name, pcapFile.path, testSuitePath.toString())

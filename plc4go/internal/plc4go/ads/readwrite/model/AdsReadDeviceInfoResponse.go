@@ -38,26 +38,80 @@ type AdsReadDeviceInfoResponse struct {
 
 // The corresponding interface
 type IAdsReadDeviceInfoResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAdsData
+	// GetResult returns Result (property field)
+	GetResult() ReturnCode
+	// GetMajorVersion returns MajorVersion (property field)
+	GetMajorVersion() uint8
+	// GetMinorVersion returns MinorVersion (property field)
+	GetMinorVersion() uint8
+	// GetVersion returns Version (property field)
+	GetVersion() uint16
+	// GetDevice returns Device (property field)
+	GetDevice() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsReadDeviceInfoResponse) CommandId() CommandId {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *AdsReadDeviceInfoResponse) GetCommandId() CommandId {
 	return CommandId_ADS_READ_DEVICE_INFO
 }
 
-func (m *AdsReadDeviceInfoResponse) Response() bool {
+func (m *AdsReadDeviceInfoResponse) GetResponse() bool {
 	return bool(true)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *AdsReadDeviceInfoResponse) InitializeParent(parent *AdsData) {}
 
-func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *AdsData {
-	child := &AdsReadDeviceInfoResponse{
+func (m *AdsReadDeviceInfoResponse) GetParent() *AdsData {
+	return m.AdsData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AdsReadDeviceInfoResponse) GetResult() ReturnCode {
+	return m.Result
+}
+
+func (m *AdsReadDeviceInfoResponse) GetMajorVersion() uint8 {
+	return m.MajorVersion
+}
+
+func (m *AdsReadDeviceInfoResponse) GetMinorVersion() uint8 {
+	return m.MinorVersion
+}
+
+func (m *AdsReadDeviceInfoResponse) GetVersion() uint16 {
+	return m.Version
+}
+
+func (m *AdsReadDeviceInfoResponse) GetDevice() []byte {
+	return m.Device
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAdsReadDeviceInfoResponse factory function for AdsReadDeviceInfoResponse
+func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *AdsReadDeviceInfoResponse {
+	_result := &AdsReadDeviceInfoResponse{
 		Result:       result,
 		MajorVersion: majorVersion,
 		MinorVersion: minorVersion,
@@ -65,39 +119,36 @@ func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVe
 		Device:       device,
 		AdsData:      NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsReadDeviceInfoResponse(structType interface{}) *AdsReadDeviceInfoResponse {
-	castFunc := func(typ interface{}) *AdsReadDeviceInfoResponse {
-		if casted, ok := typ.(AdsReadDeviceInfoResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsReadDeviceInfoResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsReadDeviceInfoResponse(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsReadDeviceInfoResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsReadDeviceInfoResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsReadDeviceInfoResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsReadDeviceInfoResponse(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsReadDeviceInfoResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsReadDeviceInfoResponse) GetTypeName() string {
 	return "AdsReadDeviceInfoResponse"
 }
 
-func (m *AdsReadDeviceInfoResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsReadDeviceInfoResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsReadDeviceInfoResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsReadDeviceInfoResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -119,14 +170,16 @@ func (m *AdsReadDeviceInfoResponse) LengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *AdsReadDeviceInfoResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsReadDeviceInfoResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsReadDeviceInfoResponse, error) {
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
@@ -182,7 +235,7 @@ func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer, commandId Comma
 		AdsData:      &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsReadDeviceInfoResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -246,6 +299,8 @@ func (m *AdsReadDeviceInfoResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

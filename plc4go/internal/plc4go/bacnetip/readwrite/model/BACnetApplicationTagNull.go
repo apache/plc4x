@@ -32,73 +32,81 @@ type BACnetApplicationTagNull struct {
 
 // The corresponding interface
 type IBACnetApplicationTagNull interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetApplicationTag
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagNull) ActualTagNumber() uint8 {
-	return 0x0
-}
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
-func (m *BACnetApplicationTagNull) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) {
+func (m *BACnetApplicationTagNull) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader) {
 	m.BACnetApplicationTag.Header = header
-	m.BACnetApplicationTag.ActualTagNumber = actualTagNumber
-	m.BACnetApplicationTag.ActualLength = actualLength
 }
 
-func NewBACnetApplicationTagNull(header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
-	child := &BACnetApplicationTagNull{
-		BACnetApplicationTag: NewBACnetApplicationTag(header, actualTagNumber, actualLength),
+func (m *BACnetApplicationTagNull) GetParent() *BACnetApplicationTag {
+	return m.BACnetApplicationTag
+}
+
+// NewBACnetApplicationTagNull factory function for BACnetApplicationTagNull
+func NewBACnetApplicationTagNull(header *BACnetTagHeader) *BACnetApplicationTagNull {
+	_result := &BACnetApplicationTagNull{
+		BACnetApplicationTag: NewBACnetApplicationTag(header),
 	}
-	child.Child = child
-	return child.BACnetApplicationTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetApplicationTagNull(structType interface{}) *BACnetApplicationTagNull {
-	castFunc := func(typ interface{}) *BACnetApplicationTagNull {
-		if casted, ok := typ.(BACnetApplicationTagNull); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetApplicationTagNull); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagNull(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagNull(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetApplicationTagNull); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetApplicationTagNull); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagNull(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagNull(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetApplicationTagNull) GetTypeName() string {
 	return "BACnetApplicationTagNull"
 }
 
-func (m *BACnetApplicationTagNull) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetApplicationTagNull) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetApplicationTagNull) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetApplicationTagNull) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetApplicationTagNull) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetApplicationTagNull) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagNullParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTag, error) {
+func BACnetApplicationTagNullParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTagNull, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagNull"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagNull"); closeErr != nil {
 		return nil, closeErr
@@ -109,7 +117,7 @@ func BACnetApplicationTagNullParse(readBuffer utils.ReadBuffer) (*BACnetApplicat
 		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
 	_child.BACnetApplicationTag.Child = _child
-	return _child.BACnetApplicationTag, nil
+	return _child, nil
 }
 
 func (m *BACnetApplicationTagNull) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -131,6 +139,8 @@ func (m *BACnetApplicationTagNull) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

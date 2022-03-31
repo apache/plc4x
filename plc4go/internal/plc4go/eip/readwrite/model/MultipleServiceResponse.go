@@ -35,66 +35,120 @@ type MultipleServiceResponse struct {
 	ServiceNb    uint16
 	Offsets      []uint16
 	ServicesData []byte
+
+	// Arguments.
+	ServiceLen uint16
 }
 
 // The corresponding interface
 type IMultipleServiceResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICipService
+	// GetStatus returns Status (property field)
+	GetStatus() uint8
+	// GetExtStatus returns ExtStatus (property field)
+	GetExtStatus() uint8
+	// GetServiceNb returns ServiceNb (property field)
+	GetServiceNb() uint16
+	// GetOffsets returns Offsets (property field)
+	GetOffsets() []uint16
+	// GetServicesData returns ServicesData (property field)
+	GetServicesData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MultipleServiceResponse) Service() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *MultipleServiceResponse) GetService() uint8 {
 	return 0x8A
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *MultipleServiceResponse) InitializeParent(parent *CipService) {}
 
-func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) *CipService {
-	child := &MultipleServiceResponse{
+func (m *MultipleServiceResponse) GetParent() *CipService {
+	return m.CipService
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *MultipleServiceResponse) GetStatus() uint8 {
+	return m.Status
+}
+
+func (m *MultipleServiceResponse) GetExtStatus() uint8 {
+	return m.ExtStatus
+}
+
+func (m *MultipleServiceResponse) GetServiceNb() uint16 {
+	return m.ServiceNb
+}
+
+func (m *MultipleServiceResponse) GetOffsets() []uint16 {
+	return m.Offsets
+}
+
+func (m *MultipleServiceResponse) GetServicesData() []byte {
+	return m.ServicesData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewMultipleServiceResponse factory function for MultipleServiceResponse
+func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte, serviceLen uint16) *MultipleServiceResponse {
+	_result := &MultipleServiceResponse{
 		Status:       status,
 		ExtStatus:    extStatus,
 		ServiceNb:    serviceNb,
 		Offsets:      offsets,
 		ServicesData: servicesData,
-		CipService:   NewCipService(),
+		CipService:   NewCipService(serviceLen),
 	}
-	child.Child = child
-	return child.CipService
+	_result.Child = _result
+	return _result
 }
 
 func CastMultipleServiceResponse(structType interface{}) *MultipleServiceResponse {
-	castFunc := func(typ interface{}) *MultipleServiceResponse {
-		if casted, ok := typ.(MultipleServiceResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MultipleServiceResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(CipService); ok {
-			return CastMultipleServiceResponse(casted.Child)
-		}
-		if casted, ok := typ.(*CipService); ok {
-			return CastMultipleServiceResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MultipleServiceResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MultipleServiceResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(CipService); ok {
+		return CastMultipleServiceResponse(casted.Child)
+	}
+	if casted, ok := structType.(*CipService); ok {
+		return CastMultipleServiceResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *MultipleServiceResponse) GetTypeName() string {
 	return "MultipleServiceResponse"
 }
 
-func (m *MultipleServiceResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *MultipleServiceResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *MultipleServiceResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *MultipleServiceResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -121,14 +175,16 @@ func (m *MultipleServiceResponse) LengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *MultipleServiceResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *MultipleServiceResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {
+func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*MultipleServiceResponse, error) {
 	if pullErr := readBuffer.PullContext("MultipleServiceResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -204,7 +260,7 @@ func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16
 		CipService:   &CipService{},
 	}
 	_child.CipService.Child = _child
-	return _child.CipService, nil
+	return _child, nil
 }
 
 func (m *MultipleServiceResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -280,6 +336,8 @@ func (m *MultipleServiceResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

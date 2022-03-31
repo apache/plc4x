@@ -34,17 +34,29 @@ type CIPEncapsulationReadRequest struct {
 
 // The corresponding interface
 type ICIPEncapsulationReadRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICIPEncapsulationPacket
+	// GetRequest returns Request (property field)
+	GetRequest() *DF1RequestMessage
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CIPEncapsulationReadRequest) CommandType() uint16 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *CIPEncapsulationReadRequest) GetCommandType() uint16 {
 	return 0x0107
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *CIPEncapsulationReadRequest) InitializeParent(parent *CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
 	m.CIPEncapsulationPacket.SessionHandle = sessionHandle
@@ -53,59 +65,76 @@ func (m *CIPEncapsulationReadRequest) InitializeParent(parent *CIPEncapsulationP
 	m.CIPEncapsulationPacket.Options = options
 }
 
-func NewCIPEncapsulationReadRequest(request *DF1RequestMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
-	child := &CIPEncapsulationReadRequest{
+func (m *CIPEncapsulationReadRequest) GetParent() *CIPEncapsulationPacket {
+	return m.CIPEncapsulationPacket
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *CIPEncapsulationReadRequest) GetRequest() *DF1RequestMessage {
+	return m.Request
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewCIPEncapsulationReadRequest factory function for CIPEncapsulationReadRequest
+func NewCIPEncapsulationReadRequest(request *DF1RequestMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationReadRequest {
+	_result := &CIPEncapsulationReadRequest{
 		Request:                request,
 		CIPEncapsulationPacket: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
 	}
-	child.Child = child
-	return child.CIPEncapsulationPacket
+	_result.Child = _result
+	return _result
 }
 
 func CastCIPEncapsulationReadRequest(structType interface{}) *CIPEncapsulationReadRequest {
-	castFunc := func(typ interface{}) *CIPEncapsulationReadRequest {
-		if casted, ok := typ.(CIPEncapsulationReadRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CIPEncapsulationReadRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(CIPEncapsulationPacket); ok {
-			return CastCIPEncapsulationReadRequest(casted.Child)
-		}
-		if casted, ok := typ.(*CIPEncapsulationPacket); ok {
-			return CastCIPEncapsulationReadRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CIPEncapsulationReadRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CIPEncapsulationReadRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(CIPEncapsulationPacket); ok {
+		return CastCIPEncapsulationReadRequest(casted.Child)
+	}
+	if casted, ok := structType.(*CIPEncapsulationPacket); ok {
+		return CastCIPEncapsulationReadRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *CIPEncapsulationReadRequest) GetTypeName() string {
 	return "CIPEncapsulationReadRequest"
 }
 
-func (m *CIPEncapsulationReadRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CIPEncapsulationReadRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CIPEncapsulationReadRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CIPEncapsulationReadRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (request)
-	lengthInBits += m.Request.LengthInBits()
+	lengthInBits += m.Request.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *CIPEncapsulationReadRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CIPEncapsulationReadRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (*CIPEncapsulationPacket, error) {
+func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (*CIPEncapsulationReadRequest, error) {
 	if pullErr := readBuffer.PullContext("CIPEncapsulationReadRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (request)
 	if pullErr := readBuffer.PullContext("request"); pullErr != nil {
@@ -130,7 +159,7 @@ func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (*CIPEncapsul
 		CIPEncapsulationPacket: &CIPEncapsulationPacket{},
 	}
 	_child.CIPEncapsulationPacket.Child = _child
-	return _child.CIPEncapsulationPacket, nil
+	return _child, nil
 }
 
 func (m *CIPEncapsulationReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -164,6 +193,8 @@ func (m *CIPEncapsulationReadRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

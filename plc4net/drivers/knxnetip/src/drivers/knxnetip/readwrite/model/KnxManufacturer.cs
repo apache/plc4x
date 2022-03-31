@@ -602,8 +602,17 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_SUMAMO = 575,
         M_SVIT = 576,
         M_TECGET = 577,
-        M_ABB___RESERVED = 578,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 579,
+        M_XEROPOINT = 578,
+        M_HONEYWELL_BUILDING_TECHNOLOGIES = 579,
+        M_COMFORTCLICK = 580,
+        M_DORBAS_ELECTRIC = 581,
+        M_REMKO_GMBH_AND_CO__KG = 582,
+        M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD = 583,
+        M_ANDAS = 584,
+        M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD = 585,
+        M_LARFE = 586,
+        M_ABB___RESERVED = 587,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 588,
     }
 
     public static class KnxManufacturerInfo
@@ -2209,14 +2218,41 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TECGET: { /* '577' */
                     return 635;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '578' */
-                    return 43954;
+                case KnxManufacturer.M_XEROPOINT: { /* '578' */
+                    return 636;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '579' */
-                    return 43959;
+                case KnxManufacturer.M_HONEYWELL_BUILDING_TECHNOLOGIES: { /* '579' */
+                    return 637;
                 }
                 case KnxManufacturer.M_DAETWYLER: { /* '58' */
                     return 97;
+                }
+                case KnxManufacturer.M_COMFORTCLICK: { /* '580' */
+                    return 638;
+                }
+                case KnxManufacturer.M_DORBAS_ELECTRIC: { /* '581' */
+                    return 639;
+                }
+                case KnxManufacturer.M_REMKO_GMBH_AND_CO__KG: { /* '582' */
+                    return 640;
+                }
+                case KnxManufacturer.M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD: { /* '583' */
+                    return 641;
+                }
+                case KnxManufacturer.M_ANDAS: { /* '584' */
+                    return 642;
+                }
+                case KnxManufacturer.M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD: { /* '585' */
+                    return 643;
+                }
+                case KnxManufacturer.M_LARFE: { /* '586' */
+                    return 644;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '587' */
+                    return 43954;
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '588' */
+                    return 43959;
                 }
                 case KnxManufacturer.M_ELECTRAK: { /* '59' */
                     return 98;
@@ -3959,14 +3995,41 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TECGET: { /* '577' */
                     return "tecget";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '578' */
-                    return "ABB - reserved";
+                case KnxManufacturer.M_XEROPOINT: { /* '578' */
+                    return "Xeropoint";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '579' */
-                    return "Busch-Jaeger Elektro - reserved";
+                case KnxManufacturer.M_HONEYWELL_BUILDING_TECHNOLOGIES: { /* '579' */
+                    return "Honeywell Building Technologies";
                 }
                 case KnxManufacturer.M_DAETWYLER: { /* '58' */
                     return "Dätwyler";
+                }
+                case KnxManufacturer.M_COMFORTCLICK: { /* '580' */
+                    return "ComfortClick";
+                }
+                case KnxManufacturer.M_DORBAS_ELECTRIC: { /* '581' */
+                    return "DORBAS ELECTRIC";
+                }
+                case KnxManufacturer.M_REMKO_GMBH_AND_CO__KG: { /* '582' */
+                    return "REMKO GmbH & Co. KG";
+                }
+                case KnxManufacturer.M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD: { /* '583' */
+                    return "Shenzhen Congxun Intelligent Technology Co., LTD";
+                }
+                case KnxManufacturer.M_ANDAS: { /* '584' */
+                    return "ANDAS";
+                }
+                case KnxManufacturer.M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD: { /* '585' */
+                    return "Hefei Chuang Yue Intelligent Technology Co.,LTD";
+                }
+                case KnxManufacturer.M_LARFE: { /* '586' */
+                    return "Larfe";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '587' */
+                    return "ABB - reserved";
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '588' */
+                    return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_ELECTRAK: { /* '59' */
                     return "Electrak";

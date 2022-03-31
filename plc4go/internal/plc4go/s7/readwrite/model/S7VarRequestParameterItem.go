@@ -33,9 +33,13 @@ type S7VarRequestParameterItem struct {
 
 // The corresponding interface
 type IS7VarRequestParameterItem interface {
-	ItemType() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetItemType returns ItemType (discriminator field)
+	GetItemType() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,40 +51,43 @@ type IS7VarRequestParameterItemParent interface {
 type IS7VarRequestParameterItemChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *S7VarRequestParameterItem)
+	GetParent() *S7VarRequestParameterItem
+
 	GetTypeName() string
 	IS7VarRequestParameterItem
 }
 
+// NewS7VarRequestParameterItem factory function for S7VarRequestParameterItem
 func NewS7VarRequestParameterItem() *S7VarRequestParameterItem {
 	return &S7VarRequestParameterItem{}
 }
 
 func CastS7VarRequestParameterItem(structType interface{}) *S7VarRequestParameterItem {
-	castFunc := func(typ interface{}) *S7VarRequestParameterItem {
-		if casted, ok := typ.(S7VarRequestParameterItem); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7VarRequestParameterItem); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(S7VarRequestParameterItem); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7VarRequestParameterItem); ok {
+		return casted
+	}
+	if casted, ok := structType.(IS7VarRequestParameterItemChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *S7VarRequestParameterItem) GetTypeName() string {
 	return "S7VarRequestParameterItem"
 }
 
-func (m *S7VarRequestParameterItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7VarRequestParameterItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7VarRequestParameterItem) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *S7VarRequestParameterItem) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *S7VarRequestParameterItem) ParentLengthInBits() uint16 {
+func (m *S7VarRequestParameterItem) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (itemType)
 	lengthInBits += 8
@@ -88,14 +95,16 @@ func (m *S7VarRequestParameterItem) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *S7VarRequestParameterItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7VarRequestParameterItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType, _itemTypeErr := readBuffer.ReadUint8("itemType", 8)
@@ -104,11 +113,15 @@ func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (*S7VarRequestP
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *S7VarRequestParameterItem
+	type S7VarRequestParameterItemChild interface {
+		InitializeParent(*S7VarRequestParameterItem)
+		GetParent() *S7VarRequestParameterItem
+	}
+	var _child S7VarRequestParameterItemChild
 	var typeSwitchError error
 	switch {
 	case itemType == 0x12: // S7VarRequestParameterItemAddress
-		_parent, typeSwitchError = S7VarRequestParameterItemAddressParse(readBuffer)
+		_child, typeSwitchError = S7VarRequestParameterItemAddressParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -122,8 +135,8 @@ func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (*S7VarRequestP
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *S7VarRequestParameterItem) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -136,7 +149,7 @@ func (m *S7VarRequestParameterItem) SerializeParent(writeBuffer utils.WriteBuffe
 	}
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
-	itemType := uint8(child.ItemType())
+	itemType := uint8(child.GetItemType())
 	_itemTypeErr := writeBuffer.WriteUint8("itemType", 8, (itemType))
 
 	if _itemTypeErr != nil {
@@ -159,6 +172,8 @@ func (m *S7VarRequestParameterItem) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -35,37 +35,65 @@ type KnxAddress struct {
 
 // The corresponding interface
 type IKnxAddress interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetMainGroup returns MainGroup (property field)
+	GetMainGroup() uint8
+	// GetMiddleGroup returns MiddleGroup (property field)
+	GetMiddleGroup() uint8
+	// GetSubGroup returns SubGroup (property field)
+	GetSubGroup() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *KnxAddress) GetMainGroup() uint8 {
+	return m.MainGroup
+}
+
+func (m *KnxAddress) GetMiddleGroup() uint8 {
+	return m.MiddleGroup
+}
+
+func (m *KnxAddress) GetSubGroup() uint8 {
+	return m.SubGroup
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewKnxAddress factory function for KnxAddress
 func NewKnxAddress(mainGroup uint8, middleGroup uint8, subGroup uint8) *KnxAddress {
 	return &KnxAddress{MainGroup: mainGroup, MiddleGroup: middleGroup, SubGroup: subGroup}
 }
 
 func CastKnxAddress(structType interface{}) *KnxAddress {
-	castFunc := func(typ interface{}) *KnxAddress {
-		if casted, ok := typ.(KnxAddress); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxAddress); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(KnxAddress); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxAddress); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *KnxAddress) GetTypeName() string {
 	return "KnxAddress"
 }
 
-func (m *KnxAddress) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxAddress) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxAddress) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *KnxAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (mainGroup)
@@ -80,14 +108,16 @@ func (m *KnxAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *KnxAddress) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxAddress) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxAddressParse(readBuffer utils.ReadBuffer) (*KnxAddress, error) {
 	if pullErr := readBuffer.PullContext("KnxAddress"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (mainGroup)
 	_mainGroup, _mainGroupErr := readBuffer.ReadUint8("mainGroup", 4)
@@ -155,6 +185,8 @@ func (m *KnxAddress) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

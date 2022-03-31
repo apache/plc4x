@@ -31,81 +31,119 @@ type TunnelingRequest struct {
 	*KnxNetIpMessage
 	TunnelingRequestDataBlock *TunnelingRequestDataBlock
 	Cemi                      *CEMI
+
+	// Arguments.
+	TotalLength uint16
 }
 
 // The corresponding interface
 type ITunnelingRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IKnxNetIpMessage
+	// GetTunnelingRequestDataBlock returns TunnelingRequestDataBlock (property field)
+	GetTunnelingRequestDataBlock() *TunnelingRequestDataBlock
+	// GetCemi returns Cemi (property field)
+	GetCemi() *CEMI
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *TunnelingRequest) MsgType() uint16 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *TunnelingRequest) GetMsgType() uint16 {
 	return 0x0420
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *TunnelingRequest) InitializeParent(parent *KnxNetIpMessage) {}
 
-func NewTunnelingRequest(tunnelingRequestDataBlock *TunnelingRequestDataBlock, cemi *CEMI) *KnxNetIpMessage {
-	child := &TunnelingRequest{
+func (m *TunnelingRequest) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *TunnelingRequest) GetTunnelingRequestDataBlock() *TunnelingRequestDataBlock {
+	return m.TunnelingRequestDataBlock
+}
+
+func (m *TunnelingRequest) GetCemi() *CEMI {
+	return m.Cemi
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewTunnelingRequest factory function for TunnelingRequest
+func NewTunnelingRequest(tunnelingRequestDataBlock *TunnelingRequestDataBlock, cemi *CEMI, totalLength uint16) *TunnelingRequest {
+	_result := &TunnelingRequest{
 		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
 		Cemi:                      cemi,
 		KnxNetIpMessage:           NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastTunnelingRequest(structType interface{}) *TunnelingRequest {
-	castFunc := func(typ interface{}) *TunnelingRequest {
-		if casted, ok := typ.(TunnelingRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*TunnelingRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastTunnelingRequest(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastTunnelingRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(TunnelingRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*TunnelingRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastTunnelingRequest(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastTunnelingRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *TunnelingRequest) GetTypeName() string {
 	return "TunnelingRequest"
 }
 
-func (m *TunnelingRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *TunnelingRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *TunnelingRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *TunnelingRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (tunnelingRequestDataBlock)
-	lengthInBits += m.TunnelingRequestDataBlock.LengthInBits()
+	lengthInBits += m.TunnelingRequestDataBlock.GetLengthInBits()
 
 	// Simple field (cemi)
-	lengthInBits += m.Cemi.LengthInBits()
+	lengthInBits += m.Cemi.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *TunnelingRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *TunnelingRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*TunnelingRequest, error) {
 	if pullErr := readBuffer.PullContext("TunnelingRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (tunnelingRequestDataBlock)
 	if pullErr := readBuffer.PullContext("tunnelingRequestDataBlock"); pullErr != nil {
@@ -124,7 +162,7 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Kn
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
 		return nil, pullErr
 	}
-	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(totalLength)-uint16(uint16(uint16(uint16(6))+uint16(tunnelingRequestDataBlock.LengthInBytes()))))
+	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(uint16(totalLength)-uint16(uint16(uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes())))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}
@@ -144,7 +182,7 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Kn
 		KnxNetIpMessage:           &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *TunnelingRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -190,6 +228,8 @@ func (m *TunnelingRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

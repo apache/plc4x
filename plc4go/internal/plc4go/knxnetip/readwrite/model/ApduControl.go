@@ -33,9 +33,13 @@ type ApduControl struct {
 
 // The corresponding interface
 type IApduControl interface {
-	ControlType() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetControlType returns ControlType (discriminator field)
+	GetControlType() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,40 +51,43 @@ type IApduControlParent interface {
 type IApduControlChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *ApduControl)
+	GetParent() *ApduControl
+
 	GetTypeName() string
 	IApduControl
 }
 
+// NewApduControl factory function for ApduControl
 func NewApduControl() *ApduControl {
 	return &ApduControl{}
 }
 
 func CastApduControl(structType interface{}) *ApduControl {
-	castFunc := func(typ interface{}) *ApduControl {
-		if casted, ok := typ.(ApduControl); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduControl); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ApduControl); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduControl); ok {
+		return casted
+	}
+	if casted, ok := structType.(IApduControlChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *ApduControl) GetTypeName() string {
 	return "ApduControl"
 }
 
-func (m *ApduControl) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduControl) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduControl) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *ApduControl) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *ApduControl) ParentLengthInBits() uint16 {
+func (m *ApduControl) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (controlType)
 	lengthInBits += 2
@@ -88,14 +95,16 @@ func (m *ApduControl) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *ApduControl) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduControl) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduControlParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
 	if pullErr := readBuffer.PullContext("ApduControl"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (controlType) (Used as input to a switch field)
 	controlType, _controlTypeErr := readBuffer.ReadUint8("controlType", 2)
@@ -104,17 +113,21 @@ func ApduControlParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *ApduControl
+	type ApduControlChild interface {
+		InitializeParent(*ApduControl)
+		GetParent() *ApduControl
+	}
+	var _child ApduControlChild
 	var typeSwitchError error
 	switch {
 	case controlType == 0x0: // ApduControlConnect
-		_parent, typeSwitchError = ApduControlConnectParse(readBuffer)
+		_child, typeSwitchError = ApduControlConnectParse(readBuffer)
 	case controlType == 0x1: // ApduControlDisconnect
-		_parent, typeSwitchError = ApduControlDisconnectParse(readBuffer)
+		_child, typeSwitchError = ApduControlDisconnectParse(readBuffer)
 	case controlType == 0x2: // ApduControlAck
-		_parent, typeSwitchError = ApduControlAckParse(readBuffer)
+		_child, typeSwitchError = ApduControlAckParse(readBuffer)
 	case controlType == 0x3: // ApduControlNack
-		_parent, typeSwitchError = ApduControlNackParse(readBuffer)
+		_child, typeSwitchError = ApduControlNackParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -128,8 +141,8 @@ func ApduControlParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *ApduControl) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -142,7 +155,7 @@ func (m *ApduControl) SerializeParent(writeBuffer utils.WriteBuffer, child IApdu
 	}
 
 	// Discriminator Field (controlType) (Used as input to a switch field)
-	controlType := uint8(child.ControlType())
+	controlType := uint8(child.GetControlType())
 	_controlTypeErr := writeBuffer.WriteUint8("controlType", 2, (controlType))
 
 	if _controlTypeErr != nil {
@@ -165,6 +178,8 @@ func (m *ApduControl) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

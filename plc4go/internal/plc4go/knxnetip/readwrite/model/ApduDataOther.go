@@ -30,83 +30,115 @@ import (
 type ApduDataOther struct {
 	*ApduData
 	ExtendedApdu *ApduDataExt
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataOther interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduData
+	// GetExtendedApdu returns ExtendedApdu (property field)
+	GetExtendedApdu() *ApduDataExt
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataOther) ApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataOther) GetApciType() uint8 {
 	return 0xF
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataOther) InitializeParent(parent *ApduData) {}
 
-func NewApduDataOther(extendedApdu *ApduDataExt) *ApduData {
-	child := &ApduDataOther{
+func (m *ApduDataOther) GetParent() *ApduData {
+	return m.ApduData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ApduDataOther) GetExtendedApdu() *ApduDataExt {
+	return m.ExtendedApdu
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewApduDataOther factory function for ApduDataOther
+func NewApduDataOther(extendedApdu *ApduDataExt, dataLength uint8) *ApduDataOther {
+	_result := &ApduDataOther{
 		ExtendedApdu: extendedApdu,
-		ApduData:     NewApduData(),
+		ApduData:     NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataOther(structType interface{}) *ApduDataOther {
-	castFunc := func(typ interface{}) *ApduDataOther {
-		if casted, ok := typ.(ApduDataOther); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataOther); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataOther(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataOther(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataOther); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataOther); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataOther(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataOther(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataOther) GetTypeName() string {
 	return "ApduDataOther"
 }
 
-func (m *ApduDataOther) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataOther) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataOther) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataOther) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (extendedApdu)
-	lengthInBits += m.ExtendedApdu.LengthInBits()
+	lengthInBits += m.ExtendedApdu.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *ApduDataOther) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataOther) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataOtherParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataOtherParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataOther, error) {
 	if pullErr := readBuffer.PullContext("ApduDataOther"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (extendedApdu)
 	if pullErr := readBuffer.PullContext("extendedApdu"); pullErr != nil {
 		return nil, pullErr
 	}
-	_extendedApdu, _extendedApduErr := ApduDataExtParse(readBuffer, dataLength)
+	_extendedApdu, _extendedApduErr := ApduDataExtParse(readBuffer, uint8(dataLength))
 	if _extendedApduErr != nil {
 		return nil, errors.Wrap(_extendedApduErr, "Error parsing 'extendedApdu' field")
 	}
@@ -125,7 +157,7 @@ func ApduDataOtherParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDat
 		ApduData:     &ApduData{},
 	}
 	_child.ApduData.Child = _child
-	return _child.ApduData, nil
+	return _child, nil
 }
 
 func (m *ApduDataOther) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -159,6 +191,8 @@ func (m *ApduDataOther) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

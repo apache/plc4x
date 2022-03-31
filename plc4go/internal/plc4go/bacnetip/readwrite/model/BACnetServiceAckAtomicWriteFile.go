@@ -34,79 +34,108 @@ type BACnetServiceAckAtomicWriteFile struct {
 
 // The corresponding interface
 type IBACnetServiceAckAtomicWriteFile interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetServiceAck
+	// GetFileStartPosition returns FileStartPosition (property field)
+	GetFileStartPosition() *BACnetContextTagSignedInteger
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckAtomicWriteFile) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetServiceAckAtomicWriteFile) GetServiceChoice() uint8 {
 	return 0x07
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *BACnetServiceAckAtomicWriteFile) InitializeParent(parent *BACnetServiceAck) {}
 
-func NewBACnetServiceAckAtomicWriteFile(fileStartPosition *BACnetContextTagSignedInteger) *BACnetServiceAck {
-	child := &BACnetServiceAckAtomicWriteFile{
+func (m *BACnetServiceAckAtomicWriteFile) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetServiceAckAtomicWriteFile) GetFileStartPosition() *BACnetContextTagSignedInteger {
+	return m.FileStartPosition
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetServiceAckAtomicWriteFile factory function for BACnetServiceAckAtomicWriteFile
+func NewBACnetServiceAckAtomicWriteFile(fileStartPosition *BACnetContextTagSignedInteger) *BACnetServiceAckAtomicWriteFile {
+	_result := &BACnetServiceAckAtomicWriteFile{
 		FileStartPosition: fileStartPosition,
 		BACnetServiceAck:  NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckAtomicWriteFile(structType interface{}) *BACnetServiceAckAtomicWriteFile {
-	castFunc := func(typ interface{}) *BACnetServiceAckAtomicWriteFile {
-		if casted, ok := typ.(BACnetServiceAckAtomicWriteFile); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckAtomicWriteFile); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckAtomicWriteFile(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckAtomicWriteFile(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckAtomicWriteFile); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckAtomicWriteFile); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckAtomicWriteFile(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckAtomicWriteFile(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckAtomicWriteFile) GetTypeName() string {
 	return "BACnetServiceAckAtomicWriteFile"
 }
 
-func (m *BACnetServiceAckAtomicWriteFile) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckAtomicWriteFile) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckAtomicWriteFile) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckAtomicWriteFile) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (fileStartPosition)
-	lengthInBits += m.FileStartPosition.LengthInBits()
+	lengthInBits += m.FileStartPosition.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckAtomicWriteFile) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckAtomicWriteFile) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckAtomicWriteFile, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicWriteFile"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (fileStartPosition)
 	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
 		return nil, pullErr
 	}
-	_fileStartPosition, _fileStartPositionErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_SIGNED_INTEGER)
+	_fileStartPosition, _fileStartPositionErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _fileStartPositionErr != nil {
 		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field")
 	}
@@ -125,7 +154,7 @@ func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer) (*BACnetS
 		BACnetServiceAck:  &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckAtomicWriteFile) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -159,6 +188,8 @@ func (m *BACnetServiceAckAtomicWriteFile) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

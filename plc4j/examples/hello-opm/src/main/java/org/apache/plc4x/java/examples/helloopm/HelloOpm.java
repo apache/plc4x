@@ -35,9 +35,6 @@ import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
  *
  * This MT works against Tims S7 in Nürtingen.
  * Thus, parameters have to be tuned possibly to get "good" values.
- *
- * @author julian
- * Created by julian on 31.10.18
  */
 public class HelloOpm {
 

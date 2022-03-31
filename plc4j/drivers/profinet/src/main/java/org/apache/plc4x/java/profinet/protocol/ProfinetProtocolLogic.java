@@ -222,7 +222,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
             return new DceRpc_Packet(
                 DceRpc_PacketType.REQUEST, true, false, false,
                 IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
-                new DceRpc_ObjectUuid(0x0001, 0x0904, 0x002A),
+                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, 0x0904, 0x002A),
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 profinetDriverContext.getDceRpcActivityUuid(),
                 0, 0, DceRpc_Operation.CONNECT,

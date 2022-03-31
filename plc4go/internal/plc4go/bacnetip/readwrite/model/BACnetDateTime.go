@@ -32,72 +32,111 @@ type BACnetDateTime struct {
 	DateValue  *BACnetApplicationTagDate
 	TimeValue  *BACnetApplicationTagTime
 	ClosingTag *BACnetClosingTag
+
+	// Arguments.
+	TagNumber uint8
 }
 
 // The corresponding interface
 type IBACnetDateTime interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetOpeningTag returns OpeningTag (property field)
+	GetOpeningTag() *BACnetOpeningTag
+	// GetDateValue returns DateValue (property field)
+	GetDateValue() *BACnetApplicationTagDate
+	// GetTimeValue returns TimeValue (property field)
+	GetTimeValue() *BACnetApplicationTagTime
+	// GetClosingTag returns ClosingTag (property field)
+	GetClosingTag() *BACnetClosingTag
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewBACnetDateTime(openingTag *BACnetOpeningTag, dateValue *BACnetApplicationTagDate, timeValue *BACnetApplicationTagTime, closingTag *BACnetClosingTag) *BACnetDateTime {
-	return &BACnetDateTime{OpeningTag: openingTag, DateValue: dateValue, TimeValue: timeValue, ClosingTag: closingTag}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetDateTime) GetOpeningTag() *BACnetOpeningTag {
+	return m.OpeningTag
+}
+
+func (m *BACnetDateTime) GetDateValue() *BACnetApplicationTagDate {
+	return m.DateValue
+}
+
+func (m *BACnetDateTime) GetTimeValue() *BACnetApplicationTagTime {
+	return m.TimeValue
+}
+
+func (m *BACnetDateTime) GetClosingTag() *BACnetClosingTag {
+	return m.ClosingTag
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetDateTime factory function for BACnetDateTime
+func NewBACnetDateTime(openingTag *BACnetOpeningTag, dateValue *BACnetApplicationTagDate, timeValue *BACnetApplicationTagTime, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetDateTime {
+	return &BACnetDateTime{OpeningTag: openingTag, DateValue: dateValue, TimeValue: timeValue, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
 func CastBACnetDateTime(structType interface{}) *BACnetDateTime {
-	castFunc := func(typ interface{}) *BACnetDateTime {
-		if casted, ok := typ.(BACnetDateTime); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetDateTime); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetDateTime); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetDateTime); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetDateTime) GetTypeName() string {
 	return "BACnetDateTime"
 }
 
-func (m *BACnetDateTime) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetDateTime) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetDateTime) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetDateTime) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.LengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits()
 
 	// Simple field (dateValue)
-	lengthInBits += m.DateValue.LengthInBits()
+	lengthInBits += m.DateValue.GetLengthInBits()
 
 	// Simple field (timeValue)
-	lengthInBits += m.TimeValue.LengthInBits()
+	lengthInBits += m.TimeValue.GetLengthInBits()
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.LengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetDateTime) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetDateTime) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetDateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetDateTime, error) {
 	if pullErr := readBuffer.PullContext("BACnetDateTime"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, tagNumber, BACnetDataType_OPENING_TAG)
+	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType(BACnetDataType_OPENING_TAG))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
 	}
@@ -136,7 +175,7 @@ func BACnetDateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetD
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, tagNumber, BACnetDataType_CLOSING_TAG)
+	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType(BACnetDataType_CLOSING_TAG))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
 	}
@@ -150,7 +189,7 @@ func BACnetDateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetD
 	}
 
 	// Create the instance
-	return NewBACnetDateTime(openingTag, dateValue, timeValue, closingTag), nil
+	return NewBACnetDateTime(openingTag, dateValue, timeValue, closingTag, tagNumber), nil
 }
 
 func (m *BACnetDateTime) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -217,6 +256,8 @@ func (m *BACnetDateTime) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

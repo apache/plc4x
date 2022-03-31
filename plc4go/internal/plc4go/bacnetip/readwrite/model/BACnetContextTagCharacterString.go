@@ -29,121 +29,131 @@ import (
 // The data-structure of this message
 type BACnetContextTagCharacterString struct {
 	*BACnetContextTag
-	Encoding          BACnetCharacterEncoding
-	Value             string
-	ActualLengthInBit uint16
+	Payload *BACnetTagPayloadCharacterString
+
+	// Arguments.
+	TagNumberArgument        uint8
+	IsNotOpeningOrClosingTag bool
 }
 
 // The corresponding interface
 type IBACnetContextTagCharacterString interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetContextTag
+	// GetPayload returns Payload (property field)
+	GetPayload() *BACnetTagPayloadCharacterString
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagCharacterString) DataType() BACnetDataType {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetContextTagCharacterString) GetDataType() BACnetDataType {
 	return BACnetDataType_CHARACTER_STRING
 }
 
-func (m *BACnetContextTagCharacterString) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+func (m *BACnetContextTagCharacterString) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader) {
 	m.BACnetContextTag.Header = header
-	m.BACnetContextTag.TagNumber = tagNumber
-	m.BACnetContextTag.ActualLength = actualLength
-	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
-func NewBACnetContextTagCharacterString(encoding BACnetCharacterEncoding, value string, actualLengthInBit uint16, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagCharacterString{
-		Encoding:          encoding,
-		Value:             value,
-		ActualLengthInBit: actualLengthInBit,
-		BACnetContextTag:  NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
+func (m *BACnetContextTagCharacterString) GetParent() *BACnetContextTag {
+	return m.BACnetContextTag
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetContextTagCharacterString) GetPayload() *BACnetTagPayloadCharacterString {
+	return m.Payload
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetContextTagCharacterString factory function for BACnetContextTagCharacterString
+func NewBACnetContextTagCharacterString(payload *BACnetTagPayloadCharacterString, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagCharacterString {
+	_result := &BACnetContextTagCharacterString{
+		Payload:          payload,
+		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagCharacterString(structType interface{}) *BACnetContextTagCharacterString {
-	castFunc := func(typ interface{}) *BACnetContextTagCharacterString {
-		if casted, ok := typ.(BACnetContextTagCharacterString); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagCharacterString); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagCharacterString(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagCharacterString(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagCharacterString); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagCharacterString); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagCharacterString(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagCharacterString(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagCharacterString) GetTypeName() string {
 	return "BACnetContextTagCharacterString"
 }
 
-func (m *BACnetContextTagCharacterString) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTagCharacterString) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTagCharacterString) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetContextTagCharacterString) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (encoding)
-	lengthInBits += 8
-
-	// A virtual field doesn't have any in- or output.
-
-	// Simple field (value)
-	lengthInBits += uint16(m.ActualLengthInBit)
+	// Simple field (payload)
+	lengthInBits += m.Payload.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetContextTagCharacterString) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTagCharacterString) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagCharacterStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTag, error) {
+func BACnetContextTagCharacterStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, header *BACnetTagHeader) (*BACnetContextTagCharacterString, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagCharacterString"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {
 		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
 	}
 
-	// Simple Field (encoding)
-	if pullErr := readBuffer.PullContext("encoding"); pullErr != nil {
+	// Simple Field (payload)
+	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, pullErr
 	}
-	_encoding, _encodingErr := BACnetCharacterEncodingParse(readBuffer)
-	if _encodingErr != nil {
-		return nil, errors.Wrap(_encodingErr, "Error parsing 'encoding' field")
+	_payload, _payloadErr := BACnetTagPayloadCharacterStringParse(readBuffer, uint32(header.GetActualLength()))
+	if _payloadErr != nil {
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
 	}
-	encoding := _encoding
-	if closeErr := readBuffer.CloseContext("encoding"); closeErr != nil {
+	payload := CastBACnetTagPayloadCharacterString(_payload)
+	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
 		return nil, closeErr
 	}
-
-	// Virtual field
-	_actualLengthInBit := uint16(uint16(actualLength)*uint16(uint16(8))) - uint16(uint16(8))
-	actualLengthInBit := uint16(_actualLengthInBit)
-
-	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
-	}
-	value := _value
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagCharacterString"); closeErr != nil {
 		return nil, closeErr
@@ -151,13 +161,11 @@ func BACnetContextTagCharacterStringParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &BACnetContextTagCharacterString{
-		Encoding:          encoding,
-		Value:             value,
-		ActualLengthInBit: actualLengthInBit,
-		BACnetContextTag:  &BACnetContextTag{},
+		Payload:          CastBACnetTagPayloadCharacterString(payload),
+		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
-	return _child.BACnetContextTag, nil
+	return _child, nil
 }
 
 func (m *BACnetContextTagCharacterString) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -166,27 +174,16 @@ func (m *BACnetContextTagCharacterString) Serialize(writeBuffer utils.WriteBuffe
 			return pushErr
 		}
 
-		// Simple Field (encoding)
-		if pushErr := writeBuffer.PushContext("encoding"); pushErr != nil {
+		// Simple Field (payload)
+		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
 			return pushErr
 		}
-		_encodingErr := m.Encoding.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("encoding"); popErr != nil {
+		_payloadErr := m.Payload.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 			return popErr
 		}
-		if _encodingErr != nil {
-			return errors.Wrap(_encodingErr, "Error serializing 'encoding' field")
-		}
-		// Virtual field
-		if _actualLengthInBitErr := writeBuffer.WriteVirtual("actualLengthInBit", m.ActualLengthInBit); _actualLengthInBitErr != nil {
-			return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
-		}
-
-		// Simple Field (value)
-		value := string(m.Value)
-		_valueErr := writeBuffer.WriteString("value", uint32(m.ActualLengthInBit), "UTF-8", (value))
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if _payloadErr != nil {
+			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetContextTagCharacterString"); popErr != nil {
@@ -202,6 +199,8 @@ func (m *BACnetContextTagCharacterString) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

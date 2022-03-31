@@ -36,6 +36,7 @@
   <modules>
     <module>ab-eth</module>
     <module>ads</module>
+    <module>c-bus</module>
     <module>bacnetip</module>
     <module>canopen</module>
     <module>df1</module>
@@ -199,28 +200,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-
-      <!--
-        Make the failsafe execute all integration-tests
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <!--
-                Notice the @ instead of the $ as prefix? That's late evaluation.
-          -->
-          <!--argLine>@{failsafeArgLine}</argLine-->
-        </configuration>
       </plugin>
     </plugins>
   </build>

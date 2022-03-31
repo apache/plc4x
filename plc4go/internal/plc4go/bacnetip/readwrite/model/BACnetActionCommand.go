@@ -42,92 +42,158 @@ type BACnetActionCommand struct {
 
 // The corresponding interface
 type IBACnetActionCommand interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetDeviceIdentifier returns DeviceIdentifier (property field)
+	GetDeviceIdentifier() *BACnetContextTagObjectIdentifier
+	// GetObjectIdentifier returns ObjectIdentifier (property field)
+	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
+	// GetPropertyIdentifier returns PropertyIdentifier (property field)
+	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	// GetArrayIndex returns ArrayIndex (property field)
+	GetArrayIndex() *BACnetContextTagUnsignedInteger
+	// GetPropertyValue returns PropertyValue (property field)
+	GetPropertyValue() *BACnetConstructedData
+	// GetPriority returns Priority (property field)
+	GetPriority() *BACnetContextTagUnsignedInteger
+	// GetPostDelay returns PostDelay (property field)
+	GetPostDelay() *BACnetContextTagBoolean
+	// GetQuitOnFailure returns QuitOnFailure (property field)
+	GetQuitOnFailure() *BACnetContextTagBoolean
+	// GetWriteSuccessful returns WriteSuccessful (property field)
+	GetWriteSuccessful() *BACnetContextTagBoolean
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetActionCommand) GetDeviceIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.DeviceIdentifier
+}
+
+func (m *BACnetActionCommand) GetObjectIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.ObjectIdentifier
+}
+
+func (m *BACnetActionCommand) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+	return m.PropertyIdentifier
+}
+
+func (m *BACnetActionCommand) GetArrayIndex() *BACnetContextTagUnsignedInteger {
+	return m.ArrayIndex
+}
+
+func (m *BACnetActionCommand) GetPropertyValue() *BACnetConstructedData {
+	return m.PropertyValue
+}
+
+func (m *BACnetActionCommand) GetPriority() *BACnetContextTagUnsignedInteger {
+	return m.Priority
+}
+
+func (m *BACnetActionCommand) GetPostDelay() *BACnetContextTagBoolean {
+	return m.PostDelay
+}
+
+func (m *BACnetActionCommand) GetQuitOnFailure() *BACnetContextTagBoolean {
+	return m.QuitOnFailure
+}
+
+func (m *BACnetActionCommand) GetWriteSuccessful() *BACnetContextTagBoolean {
+	return m.WriteSuccessful
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetActionCommand factory function for BACnetActionCommand
 func NewBACnetActionCommand(deviceIdentifier *BACnetContextTagObjectIdentifier, objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, priority *BACnetContextTagUnsignedInteger, postDelay *BACnetContextTagBoolean, quitOnFailure *BACnetContextTagBoolean, writeSuccessful *BACnetContextTagBoolean) *BACnetActionCommand {
 	return &BACnetActionCommand{DeviceIdentifier: deviceIdentifier, ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, PostDelay: postDelay, QuitOnFailure: quitOnFailure, WriteSuccessful: writeSuccessful}
 }
 
 func CastBACnetActionCommand(structType interface{}) *BACnetActionCommand {
-	castFunc := func(typ interface{}) *BACnetActionCommand {
-		if casted, ok := typ.(BACnetActionCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetActionCommand); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetActionCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetActionCommand); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetActionCommand) GetTypeName() string {
 	return "BACnetActionCommand"
 }
 
-func (m *BACnetActionCommand) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetActionCommand) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetActionCommand) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetActionCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Optional Field (deviceIdentifier)
 	if m.DeviceIdentifier != nil {
-		lengthInBits += (*m.DeviceIdentifier).LengthInBits()
+		lengthInBits += (*m.DeviceIdentifier).GetLengthInBits()
 	}
 
 	// Simple field (objectIdentifier)
-	lengthInBits += m.ObjectIdentifier.LengthInBits()
+	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
 
 	// Simple field (propertyIdentifier)
-	lengthInBits += m.PropertyIdentifier.LengthInBits()
+	lengthInBits += m.PropertyIdentifier.GetLengthInBits()
 
 	// Optional Field (arrayIndex)
 	if m.ArrayIndex != nil {
-		lengthInBits += (*m.ArrayIndex).LengthInBits()
+		lengthInBits += (*m.ArrayIndex).GetLengthInBits()
 	}
 
 	// Optional Field (propertyValue)
 	if m.PropertyValue != nil {
-		lengthInBits += (*m.PropertyValue).LengthInBits()
+		lengthInBits += (*m.PropertyValue).GetLengthInBits()
 	}
 
 	// Optional Field (priority)
 	if m.Priority != nil {
-		lengthInBits += (*m.Priority).LengthInBits()
+		lengthInBits += (*m.Priority).GetLengthInBits()
 	}
 
 	// Optional Field (postDelay)
 	if m.PostDelay != nil {
-		lengthInBits += (*m.PostDelay).LengthInBits()
+		lengthInBits += (*m.PostDelay).GetLengthInBits()
 	}
 
 	// Simple field (quitOnFailure)
-	lengthInBits += m.QuitOnFailure.LengthInBits()
+	lengthInBits += m.QuitOnFailure.GetLengthInBits()
 
 	// Simple field (writeSuccessful)
-	lengthInBits += m.WriteSuccessful.LengthInBits()
+	lengthInBits += m.WriteSuccessful.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetActionCommand) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetActionCommand) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand, error) {
 	if pullErr := readBuffer.PullContext("BACnetActionCommand"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (deviceIdentifier) (Can be skipped, if a given expression evaluates to false)
 	var deviceIdentifier *BACnetContextTagObjectIdentifier = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -149,7 +215,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field")
 	}
@@ -162,7 +228,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_BACNET_PROPERTY_IDENTIFIER)
+	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
@@ -174,7 +240,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -195,11 +261,11 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	// Optional Field (propertyValue) (Can be skipped, if a given expression evaluates to false)
 	var propertyValue *BACnetConstructedData = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), objectIdentifier.ObjectType, propertyIdentifier)
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), objectIdentifier.GetObjectType(), propertyIdentifier)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
@@ -216,7 +282,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	// Optional Field (priority) (Can be skipped, if a given expression evaluates to false)
 	var priority *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -237,7 +303,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	// Optional Field (postDelay) (Can be skipped, if a given expression evaluates to false)
 	var postDelay *BACnetContextTagBoolean = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("postDelay"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -259,7 +325,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	if pullErr := readBuffer.PullContext("quitOnFailure"); pullErr != nil {
 		return nil, pullErr
 	}
-	_quitOnFailure, _quitOnFailureErr := BACnetContextTagParse(readBuffer, uint8(7), BACnetDataType_BOOLEAN)
+	_quitOnFailure, _quitOnFailureErr := BACnetContextTagParse(readBuffer, uint8(uint8(7)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _quitOnFailureErr != nil {
 		return nil, errors.Wrap(_quitOnFailureErr, "Error parsing 'quitOnFailure' field")
 	}
@@ -272,7 +338,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	if pullErr := readBuffer.PullContext("writeSuccessful"); pullErr != nil {
 		return nil, pullErr
 	}
-	_writeSuccessful, _writeSuccessfulErr := BACnetContextTagParse(readBuffer, uint8(8), BACnetDataType_BOOLEAN)
+	_writeSuccessful, _writeSuccessfulErr := BACnetContextTagParse(readBuffer, uint8(uint8(8)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _writeSuccessfulErr != nil {
 		return nil, errors.Wrap(_writeSuccessfulErr, "Error parsing 'writeSuccessful' field")
 	}
@@ -433,6 +499,8 @@ func (m *BACnetActionCommand) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -211,8 +211,14 @@
             [simple   uint 8    originalInvokeId                        ]
             [optional uint 8    sequenceNumber     'segmentedMessage'   ]
             [optional uint 8    proposedWindowSize 'segmentedMessage'   ]
-            [simple   BACnetServiceAck
-                                serviceAck                              ]
+            [optional BACnetServiceAck
+                                serviceAck         '!segmentedMessage'  ]
+            // TODO: maybe we should put this in the discriminated types below
+            [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
+            [array    byte      segment
+                                length
+                                'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?5:4)):0):0'
+                                                                        ]
         ]
         ['0x4' APDUSegmentAck
             [reserved uint 2    '0x00'                                  ]
@@ -252,8 +258,8 @@
         ]
         ['0x01' BACnetConfirmedServiceRequestConfirmedCOVNotification
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
-            [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
-            [simple   BACnetContextTagBoolean('2', 'BACnetDataType.BOOLEAN')                           issueConfirmed              ]
+            [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier   ]
+            [simple   BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
             [simple   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
             [simple   BACnetPropertyValues('4', 'monitoredObjectIdentifier.objectType')                listOfValues                ]
         ]
@@ -400,9 +406,9 @@
 [type BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(uint 8 tagNumber)
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
                     rawData                         ]
-    [virtual    bit isEnable            'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
-    [virtual    bit isDisable           'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
-    [virtual    bit isDisableInitiation 'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 2']
+    [virtual    bit isEnable            'rawData != null && rawData.payload.actualValue == 0']
+    [virtual    bit isDisable           'rawData != null && rawData.payload.actualValue == 1']
+    [virtual    bit isDisableInitiation 'rawData != null && rawData.payload.actualValue == 2']
 ]
 
 [type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
@@ -442,7 +448,7 @@
         ]
         ['0x02' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
             [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
-            [simple     BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredDeviceIdentifier   ]
+            [simple     BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier   ]
             [simple     BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
             [simple     BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
             [simple     BACnetPropertyValues('4', 'monitoredObjectIdentifier.objectType')                listOfValues                ]
@@ -485,10 +491,10 @@
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
 [type BACnetSegmentation
     [simple BACnetApplicationTagEnumerated          rawData ]
-    [virtual    bit isSegmentedBoth           'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
-    [virtual    bit isSegmentedTransmit       'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
-    [virtual    bit isSegmentedReceive        'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 3']
-    [virtual    bit isNoSegmentation          'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 4']
+    [virtual    bit isSegmentedBoth           'rawData != null && rawData.payload.actualValue == 0']
+    [virtual    bit isSegmentedTransmit       'rawData != null && rawData.payload.actualValue == 1']
+    [virtual    bit isSegmentedReceive        'rawData != null && rawData.payload.actualValue == 3']
+    [virtual    bit isNoSegmentation          'rawData != null && rawData.payload.actualValue == 4']
 ]
 
 [discriminatedType BACnetServiceAck
@@ -578,7 +584,7 @@
             [array  BACnetApplicationTagOctetString
                             fileRecordData
                             count
-                            'returnedRecordCount.actualValue'   ]
+                            'returnedRecordCount.payload.actualValue'   ]
         ]
     ]
     [simple     BACnetClosingTag('peekedTagHeader.actualTagNumber', 'BACnetDataType.CLOSING_TAG')
@@ -937,10 +943,10 @@
     [simple BACnetContextTagBitString('tagNumber', 'BACnetDataType.BIT_STRING')
         rawBits
     ]
-    [virtual    bit inAlarm         'rawBits.data[0]']
-    [virtual    bit fault           'rawBits.data[1]']
-    [virtual    bit overriden       'rawBits.data[2]']
-    [virtual    bit outOfService    'rawBits.data[3]']
+    [virtual    bit inAlarm         'rawBits.payload.data[0]']
+    [virtual    bit fault           'rawBits.payload.data[1]']
+    [virtual    bit overriden       'rawBits.payload.data[2]']
+    [virtual    bit outOfService    'rawBits.payload.data[3]']
 ]
 
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
@@ -948,8 +954,8 @@
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
                 rawData
     ]
-    [virtual    bit isDirect         'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
-    [virtual    bit isReverse        'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
+    [virtual    bit isDirect         'rawData != null && rawData.payload.actualValue == 0']
+    [virtual    bit isReverse        'rawData != null && rawData.payload.actualValue == 1']
 ]
 
 [type BACnetActionCommand
@@ -987,8 +993,8 @@
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
                 rawData
     ]
-    [virtual    bit isInactive         'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
-    [virtual    bit isActive           'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
+    [virtual    bit isInactive         'rawData != null && rawData.payload.actualValue == 0']
+    [virtual    bit isActive           'rawData != null && rawData.payload.actualValue == 1']
 ]
 
 [type BACnetPropertyStates(uint 8 tagNumber)
@@ -1074,17 +1080,17 @@
 ]
 
 [discriminatedType BACnetTagHeader
-    [simple        uint 4   tagNumber                                                                                 ]
-    [simple        TagClass tagClass                                                                                  ]
-    [simple        uint 3   lengthValueType                                                                           ]
-    [optional      uint 8   extTagNumber    'tagNumber == 15'                                                         ]
-    [virtual       uint 8   actualTagNumber 'tagNumber < 15 ? tagNumber : extTagNumber'                               ]
-    [virtual       bit      isBoolean       'tagNumber == 1 && tagClass == TagClass.APPLICATION_TAGS'                 ]
-    [virtual       bit      isConstructed   'tagClass == TagClass.CONTEXT_SPECIFIC_TAGS && lengthValueType == 6'      ]
-    [virtual       bit      isPrimitiveAndNotBoolean '!isConstructed && !isBoolean'                                   ]
-    [optional      uint 8   extLength       'isPrimitiveAndNotBoolean && lengthValueType == 5'                        ]
-    [optional      uint 16  extExtLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254'    ]
-    [optional      uint 32  extExtExtLength 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255'    ]
+    [simple        uint 4   tagNumber                                                                                   ]
+    [simple        TagClass tagClass                                                                                    ]
+    [simple        uint 3   lengthValueType                                                                             ]
+    [optional      uint 8   extTagNumber    'tagNumber == 15'                                                           ]
+    [virtual       uint 8   actualTagNumber 'tagNumber < 15 ? tagNumber : extTagNumber'                                 ]
+    [virtual       bit      isBoolean       'tagNumber == 1 && tagClass == TagClass.APPLICATION_TAGS'                   ]
+    [virtual       bit      isConstructed   'tagClass == TagClass.CONTEXT_SPECIFIC_TAGS && lengthValueType == 6'        ]
+    [virtual       bit      isPrimitiveAndNotBoolean '!isConstructed && !isBoolean'                                     ]
+    [optional      uint 8   extLength       'isPrimitiveAndNotBoolean && lengthValueType == 5'                          ]
+    [optional      uint 16  extExtLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254'      ]
+    [optional      uint 32  extExtExtLength 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255'      ]
     [virtual       uint 32  actualLength    'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType))']
 ]
 
@@ -1092,112 +1098,73 @@
     [simple        BACnetTagHeader
                             header
     ]
-    [validation    'header.tagClass == TagClass.APPLICATION_TAGS'    "should be a application tag"                    ]
-    [virtual       uint 8   actualTagNumber 'header.actualTagNumber'                                                  ]
-    [virtual       uint 32  actualLength    'header.actualLength'                                                     ]
+    [validation    'header.tagClass == TagClass.APPLICATION_TAGS'    "should be a application tag"                      ]
+    [virtual       uint 8   actualTagNumber 'header.actualTagNumber'                                                    ]
+    [virtual       uint 32  actualLength    'header.actualLength'                                                       ]
     [typeSwitch actualTagNumber
         ['0x0' BACnetApplicationTagNull
         ]
-        ['0x1' BACnetApplicationTagBoolean(uint 32 actualLength)
-            [virtual bit value   'actualLength == 1'    ]
-            [virtual bit isTrue  'value'                ]
-            [virtual bit isFalse '!value'               ]
+        ['0x1' BACnetApplicationTagBoolean(BACnetTagHeader header)
+            [simple BACnetTagPayloadBoolean('header.actualLength')
+                                payload                                                                                 ]
+            [virtual    bit     actualValue 'payload.value'                                                             ]
         ]
-        ['0x2' BACnetApplicationTagUnsignedInteger(uint 32 actualLength)
-            [virtual    bit     isUint8     'actualLength == 1' ]
-            [optional   uint  8 valueUint8  'isUint8'           ]
-            [virtual    bit     isUint16    'actualLength == 2' ]
-            [optional   uint 16 valueUint16 'isUint16'          ]
-            [virtual    bit     isUint24    'actualLength == 3' ]
-            [optional   uint 24 valueUint24 'isUint24'          ]
-            [virtual    bit     isUint32    'actualLength == 4' ]
-            [optional   uint 32 valueUint32 'isUint32'          ]
-            // TODO: we only go up to uint32 till we have the BigInteger stuff in java solved
-            [virtual    uint 32 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint24?valueUint24:(isUint32?valueUint32:0)))']
-            /*
-            [virtual    bit     isUint64    'actualLength == 4' ]
-            [optional   uint 64 valueUint64 'isUint64'          ]
-            [virtual    uint 64 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint32?valueUint32:(isUint64?valueUint64:0)))']
-            */
+        ['0x2' BACnetApplicationTagUnsignedInteger(BACnetTagHeader header)
+            [simple BACnetTagPayloadUnsignedInteger('header.actualLength')
+                                payload                                                                                 ]
+            [virtual    uint 64 actualValue   'payload.actualValue'                                                     ]
         ]
-        ['0x3' BACnetApplicationTagSignedInteger(uint 32 actualLength)
-            [virtual    bit     isInt8     'actualLength == 1'  ]
-            [optional   int 8   valueInt8  'isInt8'             ]
-            [virtual    bit     isInt16    'actualLength == 2'  ]
-            [optional   int 16  valueInt16 'isInt16'            ]
-            [virtual    bit     isInt24    'actualLength == 3'  ]
-            [optional   int 24  valueInt24 'isInt24'            ]
-            [virtual    bit     isInt32    'actualLength == 4'  ]
-            [optional   int 32  valueInt32 'isInt32'            ]
-            [virtual    bit     isInt40    'actualLength == 5'  ]
-            [optional   int 40  valueInt40 'isInt40'            ]
-            [virtual    bit     isInt48    'actualLength == 6'  ]
-            [optional   int 48  valueInt48 'isInt48'            ]
-            [virtual    bit     isInt56    'actualLength == 7'  ]
-            [optional   int 56  valueInt56 'isInt56'            ]
-            [virtual    bit     isInt64    'actualLength == 8'  ]
-            [optional   int 64  valueInt64 'isInt64'            ]
-            [virtual    uint 64 actualValue 'isInt8?valueInt8:(isInt16?valueInt16:(isInt24?valueInt24:(isInt32?valueInt32:(isInt40?valueInt40:(isInt48?valueInt48:(isInt56?valueInt56:(isInt64?valueInt64:0)))))))']
+        ['0x3' BACnetApplicationTagSignedInteger(BACnetTagHeader header)
+            [simple BACnetTagPayloadSignedInteger('header.actualLength')
+                                payload                                                                                 ]
+            [virtual    uint 64    actualValue   'payload.actualValue'                                                  ]
         ]
         ['0x4' BACnetApplicationTagReal
-            [simple float 32 value]
+            [simple BACnetTagPayloadReal
+                                payload                                                                                 ]
+
+            [virtual    float 32     actualValue 'payload.value'                                                        ]
         ]
         ['0x5' BACnetApplicationTagDouble
-            [simple float 64 value]
+            [simple BACnetTagPayloadDouble
+                                payload                                                                                 ]
+            [virtual    float 64     actualValue 'payload.value'                                                        ]
         ]
-        ['0x6' BACnetApplicationTagOctetString(uint 32 actualLength)
-            // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
-            [virtual    uint     16                   actualLengthInBit 'actualLength * 8']
-            [simple     vstring 'actualLengthInBit'  value encoding='"ASCII"']
+        ['0x6' BACnetApplicationTagOctetString(BACnetTagHeader header)
+            [simple BACnetTagPayloadOctetString('header.actualLength')
+                                payload                                                                                 ]
+            [virtual vstring     value             'payload.value'                                                      ]
         ]
-        ['0x7' BACnetApplicationTagCharacterString(uint 32 actualLength)
-            [simple     BACnetCharacterEncoding      encoding]
-            // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
-            [virtual    uint     16                  actualLengthInBit 'actualLength * 8 - 8']
-            // TODO: call to string on encoding or add type conversion so we can use the enum above
-            [simple     vstring 'actualLengthInBit'  value encoding='"UTF-8"']
+        ['0x7' BACnetApplicationTagCharacterString(BACnetTagHeader header)
+            [simple BACnetTagPayloadCharacterString('header.actualLength')
+                                payload                                                                                 ]
+            [virtual vstring     value             'payload.value'                                                      ]
         ]
-        ['0x8' BACnetApplicationTagBitString(uint 32 actualLength)
-            [simple     uint 8      unusedBits                                           ]
-            [array      bit         data count '((actualLength - 1) * 8) - unusedBits'   ]
-            [array      bit         unused count 'unusedBits'                            ]
+        ['0x8' BACnetApplicationTagBitString(BACnetTagHeader header)
+            [simple BACnetTagPayloadBitString('header.actualLength')
+                                payload                                                                                 ]
         ]
-        ['0x9' BACnetApplicationTagEnumerated(uint 32 actualLength)
-            [array int 8 data length 'actualLength']
+        ['0x9' BACnetApplicationTagEnumerated(BACnetTagHeader header)
+            [simple BACnetTagPayloadEnumerated('header.actualLength')
+                                payload                                                                                 ]
+            [virtual  uint 32   actualValue 'payload.actualValue'                                                       ]
         ]
         ['0xA' BACnetApplicationTagDate
-            [virtual int  8 wildcard '0xFF'                                 ]
-            [simple  int  8 yearMinus1900                                   ]
-            [virtual bit    yearIsWildcard 'yearMinus1900 == wildcard'      ]
-            [virtual int 16 year 'yearMinus1900 + 1900'                     ]
-            [simple  int  8 month                                           ]
-            [virtual bit    monthIsWildcard 'month == wildcard'             ]
-            [virtual bit    oddMonthWildcard 'month == 13'                  ]
-            [virtual bit    evenMonthWildcard 'month == 14'                 ]
-            [simple  int  8 dayOfMonth                                      ]
-            [virtual bit    dayOfMonthIsWildcard 'dayOfMonth == wildcard'   ]
-            [virtual bit    lastDayOfMonthWildcard 'dayOfMonth == 32'       ]
-            [virtual bit    oddDayOfMonthWildcard 'dayOfMonth == 33'        ]
-            [virtual bit    evenDayOfMonthWildcard 'dayOfMonth == 34'       ]
-            [simple  int  8 dayOfWeek                                       ]
-            [virtual bit    dayOfWeekIsWildcard 'dayOfWeek == wildcard'     ]
+            [simple BACnetTagPayloadDate
+                                payload                                                                                 ]
         ]
         ['0xB' BACnetApplicationTagTime
-            [virtual int  8 wildcard '0xFF'                                 ]
-            [simple  int  8 hour                                            ]
-            [virtual bit    hourIsWildcard 'hour == wildcard'               ]
-            [simple  int  8 minute                                          ]
-            [virtual bit    minuteIsWildcard 'minute == wildcard'           ]
-            [simple  int  8 second                                          ]
-            [virtual bit    secondIsWildcard 'second == wildcard'           ]
-            [simple  int  8 fractional                                      ]
-            [virtual bit    fractionalIsWildcard 'fractional == wildcard'   ]
+            [simple BACnetTagPayloadTime
+                                payload                                                                                 ]
         ]
         ['0xC' BACnetApplicationTagObjectIdentifier
-            [manual     BACnetObjectType    objectType         'STATIC_CALL("readObjectType", readBuffer)' 'STATIC_CALL("writeObjectType", writeBuffer, objectType)' '10']
-            [manual     uint 10             proprietaryValue   'STATIC_CALL("readProprietaryObjectType", readBuffer, objectType)' 'STATIC_CALL("writeProprietaryObjectType", writeBuffer, objectType, proprietaryValue)' '0']
-            [virtual    bit                 isProprietary      'objectType == BACnetObjectType.VENDOR_PROPRIETARY_VALUE']
-            [simple     uint 22             instanceNumber  ]
+            [simple BACnetTagPayloadObjectIdentifier
+                                payload                                                                                 ]
+            [virtual    BACnetObjectType
+                                objectType
+                                               'payload.objectType'                                                     ]
+            [virtual  uint 22   instanceNumber
+                                               'payload.instanceNumber'                                                 ]
         ]
     ]
 ]
@@ -1206,149 +1173,142 @@
     [simple        BACnetTagHeader
                             header
     ]
-    [validation    'header.actualTagNumber == tagNumberArgument'    "tagnumber doesn't match"                         ]
-    [validation    'header.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS'    "should be a context tag"                   ]
-    [virtual       uint 4   tagNumber     'header.tagNumber'                                                          ]
-    [virtual       uint 32  actualLength  'header.actualLength'                                                       ]
-    [virtual       bit      isNotOpeningOrClosingTag    'header.lengthValueType != 6 && header.lengthValueType != 7'  ]
+    [validation    'header.actualTagNumber == tagNumberArgument'    "tagnumber doesn't match"                           ]
+    [validation    'header.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS'    "should be a context tag"                     ]
+    [virtual       uint 4   tagNumber     'header.tagNumber'                                                            ]
+    [virtual       uint 32  actualLength  'header.actualLength'                                                         ]
+    [virtual       bit      isNotOpeningOrClosingTag    'header.lengthValueType != 6 && header.lengthValueType != 7'    ]
     [typeSwitch dataType
-        ['BOOLEAN' BACnetContextTagBoolean(bit isNotOpeningOrClosingTag)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [simple  uint 8 value                          ]
-            [virtual bit    isTrue  'value == 1'           ]
-            [virtual bit    isFalse 'value == 0'           ]
+        ['BOOLEAN' BACnetContextTagBoolean(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [validation 'header.actualLength == 1' "length field should be 1"                                           ]
+            [simple  uint 8 value                                                                                       ]
+            [simple BACnetTagPayloadBoolean('value')
+                            payload                                                                                     ]
+            [virtual bit    actualValue 'payload.value'                                                                 ]
         ]
-        ['UNSIGNED_INTEGER' BACnetContextTagUnsignedInteger(bit isNotOpeningOrClosingTag, uint 32 actualLength)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [virtual    bit     isUint8     'actualLength == 1' ]
-            [optional   uint  8 valueUint8  'isUint8'           ]
-            [virtual    bit     isUint16    'actualLength == 2' ]
-            [optional   uint 16 valueUint16 'isUint16'          ]
-            [virtual    bit     isUint24    'actualLength == 3' ]
-            [optional   uint 24 valueUint24 'isUint24'          ]
-            [virtual    bit     isUint32    'actualLength == 4' ]
-            [optional   uint 32 valueUint32 'isUint32'          ]
-            // TODO: we only go up to uint32 till we have the BigInteger stuff in java solved
-            [virtual    uint 32 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint24?valueUint24:(isUint32?valueUint32:0)))']
-            /*
-            [virtual    bit     isUint64    'actualLength == 4' ]
-            [optional   uint 64 valueUint64 'isUint64'          ]
-            [virtual    uint 64 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint32?valueUint32:(isUint64?valueUint64:0)))']
-            */
+        ['UNSIGNED_INTEGER' BACnetContextTagUnsignedInteger(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [simple BACnetTagPayloadUnsignedInteger('header.actualLength')
+                                payload                                                                                 ]
+            [virtual    uint 64 actualValue 'payload.actualValue'                                                     ]
         ]
-        ['SIGNED_INTEGER' BACnetContextTagSignedInteger(bit isNotOpeningOrClosingTag, uint 32 actualLength)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [virtual    bit     isInt8     'actualLength == 1'  ]
-            [optional   int 8   valueInt8  'isInt8'             ]
-            [virtual    bit     isInt16    'actualLength == 2'  ]
-            [optional   int 16  valueInt16 'isInt16'            ]
-            [virtual    bit     isInt24    'actualLength == 3'  ]
-            [optional   int 24  valueInt24 'isInt24'            ]
-            [virtual    bit     isInt32    'actualLength == 4'  ]
-            [optional   int 32  valueInt32 'isInt32'            ]
-            [virtual    bit     isInt40    'actualLength == 5'  ]
-            [optional   int 40  valueInt40 'isInt40'            ]
-            [virtual    bit     isInt48    'actualLength == 6'  ]
-            [optional   int 48  valueInt48 'isInt48'            ]
-            [virtual    bit     isInt56    'actualLength == 7'  ]
-            [optional   int 56  valueInt56 'isInt56'            ]
-            [virtual    bit     isInt64    'actualLength == 8'  ]
-            [optional   int 64  valueInt64 'isInt64'            ]
-            [virtual    uint 64 actualValue 'isInt8?valueInt8:(isInt16?valueInt16:(isInt24?valueInt24:(isInt32?valueInt32:(isInt40?valueInt40:(isInt48?valueInt48:(isInt56?valueInt56:(isInt64?valueInt64:0)))))))']
+        ['SIGNED_INTEGER' BACnetContextTagSignedInteger(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [simple BACnetTagPayloadSignedInteger('header.actualLength')
+                                payload                                                                                 ]
+            [virtual    uint 64     actualValue 'payload.actualValue'                                                 ]
         ]
-        ['REAL' BACnetContextTagReal(bit isNotOpeningOrClosingTag, uint 32 actualLength)
+        ['REAL' BACnetContextTagReal(bit isNotOpeningOrClosingTag)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [simple     float 32 value]
+            [simple BACnetTagPayloadReal
+                                    payload                                                                             ]
+            [virtual    float 32     actualValue 'payload.value'                                                        ]
         ]
-        ['DOUBLE' BACnetContextTagDouble(bit isNotOpeningOrClosingTag, uint 32 actualLength)
+        ['DOUBLE' BACnetContextTagDouble(bit isNotOpeningOrClosingTag)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [simple     float 64 value]
+            [simple BACnetTagPayloadDouble
+                                payload                                                                                 ]
+
+            [virtual    float 64     actualValue 'payload.value'                                                        ]
         ]
-        ['OCTET_STRING' BACnetContextTagOctetString(bit isNotOpeningOrClosingTag, uint 32 actualLength)
+        ['OCTET_STRING' BACnetContextTagOctetString(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
-            [virtual    uint     16                   actualLengthInBit 'actualLength * 8']
-            [simple     vstring 'actualLengthInBit'  value encoding='"ASCII"']
+            [simple BACnetTagPayloadOctetString('header.actualLength')
+                                payload                                                                                 ]
         ]
-        ['CHARACTER_STRING' BACnetContextTagCharacterString(bit isNotOpeningOrClosingTag, uint 32 actualLength)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [simple     BACnetCharacterEncoding      encoding]
-            // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
-            [virtual    uint     16                  actualLengthInBit 'actualLength * 8 - 8']
-            // TODO: call to string on encoding or add type conversion so we can use the enum above
-            [simple     vstring 'actualLengthInBit'  value encoding='"UTF-8"']
+        ['CHARACTER_STRING' BACnetContextTagCharacterString(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [simple BACnetTagPayloadCharacterString('header.actualLength')
+                                payload                                                                                 ]
         ]
-        ['BIT_STRING' BACnetContextTagBitString(bit isNotOpeningOrClosingTag, uint 32 actualLength)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [simple     uint 8      unusedBits                                           ]
-            [array      bit         data count '((actualLength - 1) * 8) - unusedBits'   ]
-            [array      bit         unused count 'unusedBits'                            ]
+        ['BIT_STRING' BACnetContextTagBitString(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [simple BACnetTagPayloadBitString('header.actualLength')
+                                payload                                                                                 ]
         ]
-        ['ENUMERATED' BACnetContextTagEnumerated(bit isNotOpeningOrClosingTag, uint 32 actualLength)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [array int 8 data length 'actualLength']
+        ['ENUMERATED' BACnetContextTagEnumerated(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [simple BACnetTagPayloadEnumerated('header.actualLength')
+                                payload                                                                                 ]
+            [virtual  uint 32   actualValue 'payload.actualValue'                                                       ]
         ]
         ['DATE' BACnetContextTagDate(bit isNotOpeningOrClosingTag)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [virtual int  8 wildcard '0xFF'                                 ]
-            [simple  int  8 yearMinus1900                                   ]
-            [virtual bit    yearIsWildcard 'yearMinus1900 == wildcard'      ]
-            [simple  int  8 month                                           ]
-            [virtual bit    monthIsWildcard 'month == wildcard'             ]
-            [virtual bit    oddMonthWildcard 'month == 13'                  ]
-            [virtual bit    evenMonthWildcard 'month == 14'                 ]
-            [simple  int  8 dayOfMonth                                      ]
-            [virtual bit    dayOfMonthIsWildcard 'dayOfMonth == wildcard'   ]
-            [virtual bit    lastDayOfMonthWildcard 'dayOfMonth == 32'       ]
-            [virtual bit    oddDayOfMonthWildcard 'dayOfMonth == 33'        ]
-            [virtual bit    evenDayOfMonthWildcard 'dayOfMonth == 34'       ]
-            [simple  int  8 dayOfWeek                                       ]
-            [virtual bit    dayOfWeekIsWildcard 'dayOfWeek == wildcard'     ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [simple BACnetTagPayloadDate
+                                payload                                                                                 ]
         ]
         ['TIME' BACnetContextTagTime(bit isNotOpeningOrClosingTag)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [virtual int  8 wildcard '0xFF'                                 ]
-            [simple  int  8 hour                                            ]
-            [virtual bit    hourIsWildcard 'hour == wildcard'               ]
-            [simple  int  8 minute                                          ]
-            [virtual bit    minuteIsWildcard 'minute == wildcard'           ]
-            [simple  int  8 second                                          ]
-            [virtual bit    secondIsWildcard 'second == wildcard'           ]
-            [simple  int  8 fractional                                      ]
-            [virtual bit    fractionalIsWildcard 'fractional == wildcard'   ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [simple     BACnetTagPayloadTime
+                                payload                                                                                 ]
         ]
         ['BACNET_OBJECT_IDENTIFIER' BACnetContextTagObjectIdentifier(bit isNotOpeningOrClosingTag)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [manual     BACnetObjectType    objectType         'STATIC_CALL("readObjectType", readBuffer)' 'STATIC_CALL("writeObjectType", writeBuffer, objectType)' '10']
-            [manual     uint 10             proprietaryValue   'STATIC_CALL("readProprietaryObjectType", readBuffer, objectType)' 'STATIC_CALL("writeProprietaryObjectType", writeBuffer, objectType, proprietaryValue)' '0']
-            [virtual    bit                 isProprietary      'objectType == BACnetObjectType.VENDOR_PROPRIETARY_VALUE']
-            [simple     uint 22             instanceNumber  ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [simple  BACnetTagPayloadObjectIdentifier
+                                payload                                                                                 ]
+            [virtual BACnetObjectType
+                                objectType 'payload.objectType'                                                         ]
+            [virtual uint 22    instanceNumber
+                                               'payload.instanceNumber'                                                 ]
         ]
         ['BACNET_PROPERTY_IDENTIFIER' BACnetContextTagPropertyIdentifier(bit isNotOpeningOrClosingTag, uint 32 actualLength)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [manual     BACnetPropertyIdentifier   propertyIdentifier 'STATIC_CALL("readPropertyIdentifier", readBuffer, actualLength)' 'STATIC_CALL("writePropertyIdentifier", writeBuffer, propertyIdentifier)' '_value.actualLength*8']
-            [manual     uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryPropertyIdentifier", readBuffer, propertyIdentifier, actualLength)' 'STATIC_CALL("writeProprietaryPropertyIdentifier", writeBuffer, propertyIdentifier, proprietaryValue)' '0']
-            [virtual    bit                        isProprietary      'propertyIdentifier == BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE']
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [manual     BACnetPropertyIdentifier
+                                propertyIdentifier
+                                'STATIC_CALL("readPropertyIdentifier", readBuffer, actualLength)'
+                                'STATIC_CALL("writePropertyIdentifier", writeBuffer, propertyIdentifier)'
+                                '_value.actualLength*8'                                                                 ]
+            [manual     uint 32
+                                proprietaryValue
+                                'STATIC_CALL("readProprietaryPropertyIdentifier", readBuffer, propertyIdentifier, actualLength)'
+                                'STATIC_CALL("writeProprietaryPropertyIdentifier", writeBuffer, propertyIdentifier, proprietaryValue)'
+                                '0'                                                                                     ]
+            [virtual    bit
+                                isProprietary
+                                'propertyIdentifier == BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE'               ]
         ]
         ['EVENT_TYPE' BACnetContextTagEventType(bit isNotOpeningOrClosingTag, uint 32 actualLength)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [manual     BACnetEventType            eventType          'STATIC_CALL("readEventType", readBuffer, actualLength)' 'STATIC_CALL("writeEventType", writeBuffer, eventType)' '_value.actualLength*8']
-            [manual     uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryEventType", readBuffer, eventType, actualLength)' 'STATIC_CALL("writeProprietaryEventType", writeBuffer, eventType, proprietaryValue)' '0']
-            [virtual    bit                        isProprietary      'eventType == BACnetEventType.VENDOR_PROPRIETARY_VALUE']
+            [manual     BACnetEventType
+                                eventType
+                                'STATIC_CALL("readEventType", readBuffer, actualLength)'
+                                'STATIC_CALL("writeEventType", writeBuffer, eventType)'
+                                '_value.actualLength*8'                                                                 ]
+            [manual     uint 32
+                                proprietaryValue
+                                'STATIC_CALL("readProprietaryEventType", readBuffer, eventType, actualLength)'
+                                'STATIC_CALL("writeProprietaryEventType", writeBuffer, eventType, proprietaryValue)'
+                                '0'                                                                                     ]
+            [virtual    bit
+                                isProprietary
+                                'eventType == BACnetEventType.VENDOR_PROPRIETARY_VALUE'                                 ]
         ]
         ['EVENT_STATE' BACnetContextTagEventState(bit isNotOpeningOrClosingTag, uint 32 actualLength)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [manual     BACnetEventState           eventState         'STATIC_CALL("readEventState", readBuffer, actualLength)' 'STATIC_CALL("writeEventState", writeBuffer, eventState)' '_value.actualLength*8']
-            [manual     uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryEventState", readBuffer, eventState, actualLength)' 'STATIC_CALL("writeProprietaryEventState", writeBuffer, eventState, proprietaryValue)' '0']
-            [virtual    bit                        isProprietary      'eventState == BACnetEventState.VENDOR_PROPRIETARY_VALUE']
+            [manual     BACnetEventState
+                                eventState
+                                'STATIC_CALL("readEventState", readBuffer, actualLength)'
+                                'STATIC_CALL("writeEventState", writeBuffer, eventState)'
+                                '_value.actualLength*8'                                                                 ]
+            [manual     uint 32
+                                proprietaryValue
+                                'STATIC_CALL("readProprietaryEventState", readBuffer, eventState, actualLength)'
+                                'STATIC_CALL("writeProprietaryEventState", writeBuffer, eventState, proprietaryValue)'
+                                '0'                                                                                     ]
+            [virtual    bit
+                                isProprietary
+                                'eventState == BACnetEventState.VENDOR_PROPRIETARY_VALUE'                               ]
         ]
         ['NOTIFY_TYPE' BACnetContextTagNotifyType(bit isNotOpeningOrClosingTag, uint 32 actualLength)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [simple  BACnetNotifyType   value]
+            [simple  BACnetNotifyType
+                                value                                                                                   ]
         ]
         ['BACNET_DEVICE_STATE' BACnetContextTagDeviceState(bit isNotOpeningOrClosingTag)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [simple BACnetDeviceState   state]
+            [simple BACnetDeviceState
+                                state                                                                                   ]
         ]
         ['OPENING_TAG' BACnetOpeningTag(uint 32 actualLength)
             [validation 'actualLength == 6' "opening tag should habe a value of 6"]
@@ -1359,6 +1319,122 @@
         [BACnetContextTagEmpty
         ]
     ]
+]
+
+[type BACnetTagPayloadBoolean(uint 32 actualLength)
+    [virtual bit value   'actualLength == 1'    ]
+    [virtual bit isTrue  'value'                ]
+    [virtual bit isFalse '!value'               ]
+]
+
+[type BACnetTagPayloadUnsignedInteger(uint 32 actualLength)
+    [virtual    bit         isUint8         'actualLength == 1'  ]
+    [optional   uint  8     valueUint8      'isUint8'            ]
+    [virtual    bit         isUint16        'actualLength == 2'  ]
+    [optional   uint 16     valueUint16     'isUint16'           ]
+    [virtual    bit         isUint24        'actualLength == 3'  ]
+    [optional   uint 24     valueUint24     'isUint24'           ]
+    [virtual    bit         isUint32        'actualLength == 4'  ]
+    [optional   uint 32     valueUint32     'isUint32'           ]
+    [virtual    bit         isUint40        'actualLength == 5'  ]
+    [optional   uint 40     valueUint40     'isUint40'           ]
+    [virtual    bit         isUint48        'actualLength == 6'  ]
+    [optional   uint 48     valueUint48     'isUint48'           ]
+    [virtual    bit         isUint56        'actualLength == 7'  ]
+    [optional   uint 56     valueUint56     'isUint56'           ]
+    [virtual    bit         isUint64        'actualLength == 8'  ]
+    [optional   uint 64     valueUint64     'isUint64'           ]
+    [virtual    uint 64     actualValue     'isUint8?valueUint8:(isUint16?valueUint16:(isUint24?valueUint24:(isUint32?valueUint32:(isUint40?valueUint40:(isUint48?valueUint48:(isUint56?valueUint56:valueUint64))))))']
+]
+
+[type BACnetTagPayloadSignedInteger(uint 32 actualLength)
+    [virtual    bit         isInt8          'actualLength == 1'  ]
+    [optional   int 8       valueInt8       'isInt8'             ]
+    [virtual    bit         isInt16         'actualLength == 2'  ]
+    [optional   int 16      valueInt16      'isInt16'            ]
+    [virtual    bit         isInt24         'actualLength == 3'  ]
+    [optional   int 24      valueInt24      'isInt24'            ]
+    [virtual    bit         isInt32         'actualLength == 4'  ]
+    [optional   int 32      valueInt32      'isInt32'            ]
+    [virtual    bit         isInt40         'actualLength == 5'  ]
+    [optional   int 40      valueInt40      'isInt40'            ]
+    [virtual    bit         isInt48         'actualLength == 6'  ]
+    [optional   int 48      valueInt48      'isInt48'            ]
+    [virtual    bit         isInt56         'actualLength == 7'  ]
+    [optional   int 56      valueInt56      'isInt56'            ]
+    [virtual    bit         isInt64         'actualLength == 8'  ]
+    [optional   int 64      valueInt64      'isInt64'            ]
+    [virtual    uint 64     actualValue     'isInt8?valueInt8:(isInt16?valueInt16:(isInt24?valueInt24:(isInt32?valueInt32:(isInt40?valueInt40:(isInt48?valueInt48:(isInt56?valueInt56:valueInt64))))))']
+]
+
+[type BACnetTagPayloadReal
+    [simple float 32 value]
+]
+
+[type BACnetTagPayloadDouble
+    [simple float 64 value]
+]
+
+[type BACnetTagPayloadOctetString(uint 32 actualLength)
+    // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
+    [virtual    uint     16                   actualLengthInBit 'actualLength * 8']
+    [simple     vstring 'actualLengthInBit'  value encoding='"ASCII"']
+]
+
+[type BACnetTagPayloadCharacterString(uint 32 actualLength)
+    [simple     BACnetCharacterEncoding      encoding]
+    // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
+    [virtual    uint     16                  actualLengthInBit 'actualLength * 8 - 8']
+    // TODO: call to string on encoding or add type conversion so we can use the enum above
+    [simple     vstring 'actualLengthInBit'  value encoding='"UTF-8"']
+]
+
+[type BACnetTagPayloadBitString(uint 32 actualLength)
+    [simple     uint 8      unusedBits                                           ]
+    [array      bit         data count '((actualLength - 1) * 8) - unusedBits'   ]
+    [array      bit         unused count 'unusedBits'                            ]
+]
+
+[type BACnetTagPayloadEnumerated(uint 32 actualLength)
+    [array   byte       data length 'actualLength']
+    [virtual uint 32    actualValue 'STATIC_CALL("parseVarUint", data)'  ]
+]
+
+[type BACnetTagPayloadDate
+    [virtual uint  8 wildcard '0xFF'                                 ]
+    [simple  uint  8 yearMinus1900                                   ]
+    [virtual bit    yearIsWildcard 'yearMinus1900 == wildcard'      ]
+    [virtual uint 16 year 'yearMinus1900 + 1900'                     ]
+    [simple  uint  8 month                                           ]
+    [virtual bit    monthIsWildcard 'month == wildcard'             ]
+    [virtual bit    oddMonthWildcard 'month == 13'                  ]
+    [virtual bit    evenMonthWildcard 'month == 14'                 ]
+    [simple  uint  8 dayOfMonth                                      ]
+    [virtual bit    dayOfMonthIsWildcard 'dayOfMonth == wildcard'   ]
+    [virtual bit    lastDayOfMonthWildcard 'dayOfMonth == 32'       ]
+    [virtual bit    oddDayOfMonthWildcard 'dayOfMonth == 33'        ]
+    [virtual bit    evenDayOfMonthWildcard 'dayOfMonth == 34'       ]
+    [simple  uint  8 dayOfWeek                                       ]
+    [virtual bit    dayOfWeekIsWildcard 'dayOfWeek == wildcard'     ]
+]
+
+[type BACnetTagPayloadTime
+    [virtual uint  8 wildcard '0xFF'                                 ]
+    [simple  uint  8 hour                                            ]
+    [virtual bit    hourIsWildcard 'hour == wildcard'               ]
+    [simple  uint  8 minute                                          ]
+    [virtual bit    minuteIsWildcard 'minute == wildcard'           ]
+    [simple  uint  8 second                                          ]
+    [virtual bit    secondIsWildcard 'second == wildcard'           ]
+    [simple  uint  8 fractional                                      ]
+    [virtual bit    fractionalIsWildcard 'fractional == wildcard'   ]
+]
+
+[type BACnetTagPayloadObjectIdentifier
+    [manual     BACnetObjectType    objectType         'STATIC_CALL("readObjectType", readBuffer)' 'STATIC_CALL("writeObjectType", writeBuffer, objectType)' '10']
+    [manual     uint 10             proprietaryValue   'STATIC_CALL("readProprietaryObjectType", readBuffer, objectType)' 'STATIC_CALL("writeProprietaryObjectType", writeBuffer, objectType, proprietaryValue)' '0']
+    [virtual    bit                 isProprietary      'objectType == BACnetObjectType.VENDOR_PROPRIETARY_VALUE']
+    [simple     uint 22             instanceNumber  ]
 ]
 
 [type BACnetConstructedData(uint 8 tagNumber, BACnetObjectType objectType, BACnetContextTagPropertyIdentifier propertyIdentifierArgument)

@@ -31,66 +31,102 @@ type COTPPacketTpduError struct {
 	*COTPPacket
 	DestinationReference uint16
 	RejectCause          uint8
+
+	// Arguments.
+	CotpLen uint16
 }
 
 // The corresponding interface
 type ICOTPPacketTpduError interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICOTPPacket
+	// GetDestinationReference returns DestinationReference (property field)
+	GetDestinationReference() uint16
+	// GetRejectCause returns RejectCause (property field)
+	GetRejectCause() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *COTPPacketTpduError) TpduCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *COTPPacketTpduError) GetTpduCode() uint8 {
 	return 0x70
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *COTPPacketTpduError) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
 	m.COTPPacket.Parameters = parameters
 	m.COTPPacket.Payload = payload
 }
 
-func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
-	child := &COTPPacketTpduError{
+func (m *COTPPacketTpduError) GetParent() *COTPPacket {
+	return m.COTPPacket
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *COTPPacketTpduError) GetDestinationReference() uint16 {
+	return m.DestinationReference
+}
+
+func (m *COTPPacketTpduError) GetRejectCause() uint8 {
+	return m.RejectCause
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewCOTPPacketTpduError factory function for COTPPacketTpduError
+func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacketTpduError {
+	_result := &COTPPacketTpduError{
 		DestinationReference: destinationReference,
 		RejectCause:          rejectCause,
-		COTPPacket:           NewCOTPPacket(parameters, payload),
+		COTPPacket:           NewCOTPPacket(parameters, payload, cotpLen),
 	}
-	child.Child = child
-	return child.COTPPacket
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPPacketTpduError(structType interface{}) *COTPPacketTpduError {
-	castFunc := func(typ interface{}) *COTPPacketTpduError {
-		if casted, ok := typ.(COTPPacketTpduError); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPPacketTpduError); ok {
-			return casted
-		}
-		if casted, ok := typ.(COTPPacket); ok {
-			return CastCOTPPacketTpduError(casted.Child)
-		}
-		if casted, ok := typ.(*COTPPacket); ok {
-			return CastCOTPPacketTpduError(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(COTPPacketTpduError); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPPacketTpduError); ok {
+		return casted
+	}
+	if casted, ok := structType.(COTPPacket); ok {
+		return CastCOTPPacketTpduError(casted.Child)
+	}
+	if casted, ok := structType.(*COTPPacket); ok {
+		return CastCOTPPacketTpduError(casted.Child)
+	}
+	return nil
 }
 
 func (m *COTPPacketTpduError) GetTypeName() string {
 	return "COTPPacketTpduError"
 }
 
-func (m *COTPPacketTpduError) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPPacketTpduError) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPPacketTpduError) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *COTPPacketTpduError) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -101,14 +137,16 @@ func (m *COTPPacketTpduError) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *COTPPacketTpduError) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPPacketTpduError) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func COTPPacketTpduErrorParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
+func COTPPacketTpduErrorParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacketTpduError, error) {
 	if pullErr := readBuffer.PullContext("COTPPacketTpduError"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationReference)
 	_destinationReference, _destinationReferenceErr := readBuffer.ReadUint16("destinationReference", 16)
@@ -135,7 +173,7 @@ func COTPPacketTpduErrorParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COT
 		COTPPacket:           &COTPPacket{},
 	}
 	_child.COTPPacket.Child = _child
-	return _child.COTPPacket, nil
+	return _child, nil
 }
 
 func (m *COTPPacketTpduError) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -171,6 +209,8 @@ func (m *COTPPacketTpduError) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

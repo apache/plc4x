@@ -32,72 +32,86 @@ type BACnetErrorReadPropertyMultiple struct {
 
 // The corresponding interface
 type IBACnetErrorReadPropertyMultiple interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetError
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorReadPropertyMultiple) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetErrorReadPropertyMultiple) GetServiceChoice() uint8 {
 	return 0x0E
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetErrorReadPropertyMultiple) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
 	m.BACnetError.ErrorClass = errorClass
 	m.BACnetError.ErrorCode = errorCode
 }
 
-func NewBACnetErrorReadPropertyMultiple(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorReadPropertyMultiple{
+func (m *BACnetErrorReadPropertyMultiple) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
+// NewBACnetErrorReadPropertyMultiple factory function for BACnetErrorReadPropertyMultiple
+func NewBACnetErrorReadPropertyMultiple(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorReadPropertyMultiple {
+	_result := &BACnetErrorReadPropertyMultiple{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorReadPropertyMultiple(structType interface{}) *BACnetErrorReadPropertyMultiple {
-	castFunc := func(typ interface{}) *BACnetErrorReadPropertyMultiple {
-		if casted, ok := typ.(BACnetErrorReadPropertyMultiple); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorReadPropertyMultiple); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorReadPropertyMultiple(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorReadPropertyMultiple(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorReadPropertyMultiple); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorReadPropertyMultiple); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorReadPropertyMultiple(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorReadPropertyMultiple(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorReadPropertyMultiple) GetTypeName() string {
 	return "BACnetErrorReadPropertyMultiple"
 }
 
-func (m *BACnetErrorReadPropertyMultiple) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetErrorReadPropertyMultiple) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetErrorReadPropertyMultiple) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetErrorReadPropertyMultiple) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetErrorReadPropertyMultiple) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetErrorReadPropertyMultiple) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BACnetErrorReadPropertyMultiple, error) {
 	if pullErr := readBuffer.PullContext("BACnetErrorReadPropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorReadPropertyMultiple"); closeErr != nil {
 		return nil, closeErr
@@ -108,7 +122,7 @@ func BACnetErrorReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BACnetE
 		BACnetError: &BACnetError{},
 	}
 	_child.BACnetError.Child = _child
-	return _child.BACnetError, nil
+	return _child, nil
 }
 
 func (m *BACnetErrorReadPropertyMultiple) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -130,6 +144,8 @@ func (m *BACnetErrorReadPropertyMultiple) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

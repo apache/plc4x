@@ -32,99 +32,139 @@ type BACnetConstructedDataEventTimestamps struct {
 	ToOffnormal *BACnetContextTagTime
 	ToFault     *BACnetContextTagUnsignedInteger
 	ToNormal    *BACnetDateTime
+
+	// Arguments.
+	TagNumber                  uint8
+	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
 }
 
 // The corresponding interface
 type IBACnetConstructedDataEventTimestamps interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetConstructedData
+	// GetToOffnormal returns ToOffnormal (property field)
+	GetToOffnormal() *BACnetContextTagTime
+	// GetToFault returns ToFault (property field)
+	GetToFault() *BACnetContextTagUnsignedInteger
+	// GetToNormal returns ToNormal (property field)
+	GetToNormal() *BACnetDateTime
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConstructedDataEventTimestamps) ObjectType() BACnetObjectType {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetConstructedDataEventTimestamps) GetObjectType() BACnetObjectType {
 	return 0
 }
 
-func (m *BACnetConstructedDataEventTimestamps) PropertyIdentifierEnum() BACnetPropertyIdentifier {
-	return BACnetPropertyIdentifier_EVENT_TIME_STAMPS
-}
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataEventTimestamps) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) {
+func (m *BACnetConstructedDataEventTimestamps) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
 	m.BACnetConstructedData.ClosingTag = closingTag
-	m.BACnetConstructedData.PropertyIdentifierEnum = propertyIdentifierEnum
 }
 
-func NewBACnetConstructedDataEventTimestamps(toOffnormal *BACnetContextTagTime, toFault *BACnetContextTagUnsignedInteger, toNormal *BACnetDateTime, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {
-	child := &BACnetConstructedDataEventTimestamps{
+func (m *BACnetConstructedDataEventTimestamps) GetParent() *BACnetConstructedData {
+	return m.BACnetConstructedData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetConstructedDataEventTimestamps) GetToOffnormal() *BACnetContextTagTime {
+	return m.ToOffnormal
+}
+
+func (m *BACnetConstructedDataEventTimestamps) GetToFault() *BACnetContextTagUnsignedInteger {
+	return m.ToFault
+}
+
+func (m *BACnetConstructedDataEventTimestamps) GetToNormal() *BACnetDateTime {
+	return m.ToNormal
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetConstructedDataEventTimestamps factory function for BACnetConstructedDataEventTimestamps
+func NewBACnetConstructedDataEventTimestamps(toOffnormal *BACnetContextTagTime, toFault *BACnetContextTagUnsignedInteger, toNormal *BACnetDateTime, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedDataEventTimestamps {
+	_result := &BACnetConstructedDataEventTimestamps{
 		ToOffnormal:           toOffnormal,
 		ToFault:               toFault,
 		ToNormal:              toNormal,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, propertyIdentifierEnum),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
 	}
-	child.Child = child
-	return child.BACnetConstructedData
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConstructedDataEventTimestamps(structType interface{}) *BACnetConstructedDataEventTimestamps {
-	castFunc := func(typ interface{}) *BACnetConstructedDataEventTimestamps {
-		if casted, ok := typ.(BACnetConstructedDataEventTimestamps); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConstructedDataEventTimestamps); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConstructedData); ok {
-			return CastBACnetConstructedDataEventTimestamps(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConstructedData); ok {
-			return CastBACnetConstructedDataEventTimestamps(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConstructedDataEventTimestamps); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConstructedDataEventTimestamps); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConstructedData); ok {
+		return CastBACnetConstructedDataEventTimestamps(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConstructedData); ok {
+		return CastBACnetConstructedDataEventTimestamps(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConstructedDataEventTimestamps) GetTypeName() string {
 	return "BACnetConstructedDataEventTimestamps"
 }
 
-func (m *BACnetConstructedDataEventTimestamps) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConstructedDataEventTimestamps) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConstructedDataEventTimestamps) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConstructedDataEventTimestamps) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (toOffnormal)
-	lengthInBits += m.ToOffnormal.LengthInBits()
+	lengthInBits += m.ToOffnormal.GetLengthInBits()
 
 	// Simple field (toFault)
-	lengthInBits += m.ToFault.LengthInBits()
+	lengthInBits += m.ToFault.GetLengthInBits()
 
 	// Simple field (toNormal)
-	lengthInBits += m.ToNormal.LengthInBits()
+	lengthInBits += m.ToNormal.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetConstructedDataEventTimestamps) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConstructedDataEventTimestamps) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedData, error) {
+func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataEventTimestamps, error) {
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventTimestamps"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (toOffnormal)
 	if pullErr := readBuffer.PullContext("toOffnormal"); pullErr != nil {
 		return nil, pullErr
 	}
-	_toOffnormal, _toOffnormalErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_TIME)
+	_toOffnormal, _toOffnormalErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_TIME))
 	if _toOffnormalErr != nil {
 		return nil, errors.Wrap(_toOffnormalErr, "Error parsing 'toOffnormal' field")
 	}
@@ -137,7 +177,7 @@ func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("toFault"); pullErr != nil {
 		return nil, pullErr
 	}
-	_toFault, _toFaultErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+	_toFault, _toFaultErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _toFaultErr != nil {
 		return nil, errors.Wrap(_toFaultErr, "Error parsing 'toFault' field")
 	}
@@ -150,7 +190,7 @@ func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("toNormal"); pullErr != nil {
 		return nil, pullErr
 	}
-	_toNormal, _toNormalErr := BACnetDateTimeParse(readBuffer, uint8(2))
+	_toNormal, _toNormalErr := BACnetDateTimeParse(readBuffer, uint8(uint8(2)))
 	if _toNormalErr != nil {
 		return nil, errors.Wrap(_toNormalErr, "Error parsing 'toNormal' field")
 	}
@@ -171,7 +211,7 @@ func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagN
 		BACnetConstructedData: &BACnetConstructedData{},
 	}
 	_child.BACnetConstructedData.Child = _child
-	return _child.BACnetConstructedData, nil
+	return _child, nil
 }
 
 func (m *BACnetConstructedDataEventTimestamps) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -229,6 +269,8 @@ func (m *BACnetConstructedDataEventTimestamps) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

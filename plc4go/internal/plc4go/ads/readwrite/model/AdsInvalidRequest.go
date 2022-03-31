@@ -32,73 +32,87 @@ type AdsInvalidRequest struct {
 
 // The corresponding interface
 type IAdsInvalidRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAdsData
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsInvalidRequest) CommandId() CommandId {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *AdsInvalidRequest) GetCommandId() CommandId {
 	return CommandId_INVALID
 }
 
-func (m *AdsInvalidRequest) Response() bool {
+func (m *AdsInvalidRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *AdsInvalidRequest) InitializeParent(parent *AdsData) {}
 
-func NewAdsInvalidRequest() *AdsData {
-	child := &AdsInvalidRequest{
+func (m *AdsInvalidRequest) GetParent() *AdsData {
+	return m.AdsData
+}
+
+// NewAdsInvalidRequest factory function for AdsInvalidRequest
+func NewAdsInvalidRequest() *AdsInvalidRequest {
+	_result := &AdsInvalidRequest{
 		AdsData: NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsInvalidRequest(structType interface{}) *AdsInvalidRequest {
-	castFunc := func(typ interface{}) *AdsInvalidRequest {
-		if casted, ok := typ.(AdsInvalidRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsInvalidRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsInvalidRequest(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsInvalidRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsInvalidRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsInvalidRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsInvalidRequest(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsInvalidRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsInvalidRequest) GetTypeName() string {
 	return "AdsInvalidRequest"
 }
 
-func (m *AdsInvalidRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsInvalidRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsInvalidRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsInvalidRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *AdsInvalidRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsInvalidRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func AdsInvalidRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsInvalidRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsInvalidRequest, error) {
 	if pullErr := readBuffer.PullContext("AdsInvalidRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("AdsInvalidRequest"); closeErr != nil {
 		return nil, closeErr
@@ -109,7 +123,7 @@ func AdsInvalidRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, re
 		AdsData: &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsInvalidRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -131,6 +145,8 @@ func (m *AdsInvalidRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

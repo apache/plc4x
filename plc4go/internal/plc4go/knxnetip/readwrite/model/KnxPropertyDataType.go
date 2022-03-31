@@ -1030,12 +1030,12 @@ func CastKnxPropertyDataType(structType interface{}) KnxPropertyDataType {
 	return castFunc(structType)
 }
 
-func (m KnxPropertyDataType) LengthInBits() uint16 {
+func (m KnxPropertyDataType) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m KnxPropertyDataType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m KnxPropertyDataType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxPropertyDataTypeParse(readBuffer utils.ReadBuffer) (KnxPropertyDataType, error) {

@@ -35,77 +35,112 @@ type DescriptionResponse struct {
 
 // The corresponding interface
 type IDescriptionResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IKnxNetIpMessage
+	// GetDibDeviceInfo returns DibDeviceInfo (property field)
+	GetDibDeviceInfo() *DIBDeviceInfo
+	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies (property field)
+	GetDibSuppSvcFamilies() *DIBSuppSvcFamilies
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DescriptionResponse) MsgType() uint16 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *DescriptionResponse) GetMsgType() uint16 {
 	return 0x0204
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *DescriptionResponse) InitializeParent(parent *KnxNetIpMessage) {}
 
-func NewDescriptionResponse(dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies) *KnxNetIpMessage {
-	child := &DescriptionResponse{
+func (m *DescriptionResponse) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *DescriptionResponse) GetDibDeviceInfo() *DIBDeviceInfo {
+	return m.DibDeviceInfo
+}
+
+func (m *DescriptionResponse) GetDibSuppSvcFamilies() *DIBSuppSvcFamilies {
+	return m.DibSuppSvcFamilies
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewDescriptionResponse factory function for DescriptionResponse
+func NewDescriptionResponse(dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies) *DescriptionResponse {
+	_result := &DescriptionResponse{
 		DibDeviceInfo:      dibDeviceInfo,
 		DibSuppSvcFamilies: dibSuppSvcFamilies,
 		KnxNetIpMessage:    NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastDescriptionResponse(structType interface{}) *DescriptionResponse {
-	castFunc := func(typ interface{}) *DescriptionResponse {
-		if casted, ok := typ.(DescriptionResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DescriptionResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastDescriptionResponse(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastDescriptionResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DescriptionResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DescriptionResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastDescriptionResponse(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastDescriptionResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *DescriptionResponse) GetTypeName() string {
 	return "DescriptionResponse"
 }
 
-func (m *DescriptionResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DescriptionResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DescriptionResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DescriptionResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (dibDeviceInfo)
-	lengthInBits += m.DibDeviceInfo.LengthInBits()
+	lengthInBits += m.DibDeviceInfo.GetLengthInBits()
 
 	// Simple field (dibSuppSvcFamilies)
-	lengthInBits += m.DibSuppSvcFamilies.LengthInBits()
+	lengthInBits += m.DibSuppSvcFamilies.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *DescriptionResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DescriptionResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*DescriptionResponse, error) {
 	if pullErr := readBuffer.PullContext("DescriptionResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (dibDeviceInfo)
 	if pullErr := readBuffer.PullContext("dibDeviceInfo"); pullErr != nil {
@@ -144,7 +179,7 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, er
 		KnxNetIpMessage:    &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *DescriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -190,6 +225,8 @@ func (m *DescriptionResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

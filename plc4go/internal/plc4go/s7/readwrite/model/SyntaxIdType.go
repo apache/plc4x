@@ -152,12 +152,12 @@ func CastSyntaxIdType(structType interface{}) SyntaxIdType {
 	return castFunc(structType)
 }
 
-func (m SyntaxIdType) LengthInBits() uint16 {
+func (m SyntaxIdType) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m SyntaxIdType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m SyntaxIdType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SyntaxIdTypeParse(readBuffer utils.ReadBuffer) (SyntaxIdType, error) {

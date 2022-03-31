@@ -40,22 +40,82 @@ type S7AddressAny struct {
 
 // The corresponding interface
 type IS7AddressAny interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7Address
+	// GetTransportSize returns TransportSize (property field)
+	GetTransportSize() TransportSize
+	// GetNumberOfElements returns NumberOfElements (property field)
+	GetNumberOfElements() uint16
+	// GetDbNumber returns DbNumber (property field)
+	GetDbNumber() uint16
+	// GetArea returns Area (property field)
+	GetArea() MemoryArea
+	// GetByteAddress returns ByteAddress (property field)
+	GetByteAddress() uint16
+	// GetBitAddress returns BitAddress (property field)
+	GetBitAddress() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7AddressAny) AddressType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7AddressAny) GetAddressType() uint8 {
 	return 0x10
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *S7AddressAny) InitializeParent(parent *S7Address) {}
 
-func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *S7Address {
-	child := &S7AddressAny{
+func (m *S7AddressAny) GetParent() *S7Address {
+	return m.S7Address
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7AddressAny) GetTransportSize() TransportSize {
+	return m.TransportSize
+}
+
+func (m *S7AddressAny) GetNumberOfElements() uint16 {
+	return m.NumberOfElements
+}
+
+func (m *S7AddressAny) GetDbNumber() uint16 {
+	return m.DbNumber
+}
+
+func (m *S7AddressAny) GetArea() MemoryArea {
+	return m.Area
+}
+
+func (m *S7AddressAny) GetByteAddress() uint16 {
+	return m.ByteAddress
+}
+
+func (m *S7AddressAny) GetBitAddress() uint8 {
+	return m.BitAddress
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7AddressAny factory function for S7AddressAny
+func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *S7AddressAny {
+	_result := &S7AddressAny{
 		TransportSize:    transportSize,
 		NumberOfElements: numberOfElements,
 		DbNumber:         dbNumber,
@@ -64,39 +124,36 @@ func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNum
 		BitAddress:       bitAddress,
 		S7Address:        NewS7Address(),
 	}
-	child.Child = child
-	return child.S7Address
+	_result.Child = _result
+	return _result
 }
 
 func CastS7AddressAny(structType interface{}) *S7AddressAny {
-	castFunc := func(typ interface{}) *S7AddressAny {
-		if casted, ok := typ.(S7AddressAny); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7AddressAny); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7Address); ok {
-			return CastS7AddressAny(casted.Child)
-		}
-		if casted, ok := typ.(*S7Address); ok {
-			return CastS7AddressAny(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7AddressAny); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7AddressAny); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7Address); ok {
+		return CastS7AddressAny(casted.Child)
+	}
+	if casted, ok := structType.(*S7Address); ok {
+		return CastS7AddressAny(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7AddressAny) GetTypeName() string {
 	return "S7AddressAny"
 }
 
-func (m *S7AddressAny) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7AddressAny) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7AddressAny) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7AddressAny) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Enum Field (transportSize)
 	lengthInBits += 8
@@ -122,14 +179,16 @@ func (m *S7AddressAny) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *S7AddressAny) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7AddressAny) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
+func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7AddressAny, error) {
 	if pullErr := readBuffer.PullContext("S7AddressAny"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, pullErr
@@ -217,7 +276,7 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 		S7Address:        &S7Address{},
 	}
 	_child.S7Address.Child = _child
-	return _child.S7Address, nil
+	return _child, nil
 }
 
 func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -299,6 +358,8 @@ func (m *S7AddressAny) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

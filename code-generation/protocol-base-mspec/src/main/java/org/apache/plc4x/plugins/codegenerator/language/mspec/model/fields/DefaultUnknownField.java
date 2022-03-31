@@ -19,22 +19,20 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.UnknownField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
 
-public class DefaultUnknownField extends DefaultField implements UnknownField {
+public class DefaultUnknownField extends DefaultTypedField implements UnknownField {
 
-    private final TypeReference type;
-
-    public DefaultUnknownField(Map<String, Term> attributes, TypeReference type) {
+    public DefaultUnknownField(Map<String, Term> attributes, SimpleTypeReference type) {
         super(attributes);
-        this.type = Objects.requireNonNull(type);
+        this.type = type;
     }
 
-    public TypeReference getType() {
-        return type;
+    @Override
+    public String toString() {
+        return "DefaultUnknownField{} " + super.toString();
     }
-
 }

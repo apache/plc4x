@@ -32,73 +32,87 @@ type AdsReadStateRequest struct {
 
 // The corresponding interface
 type IAdsReadStateRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAdsData
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsReadStateRequest) CommandId() CommandId {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *AdsReadStateRequest) GetCommandId() CommandId {
 	return CommandId_ADS_READ_STATE
 }
 
-func (m *AdsReadStateRequest) Response() bool {
+func (m *AdsReadStateRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *AdsReadStateRequest) InitializeParent(parent *AdsData) {}
 
-func NewAdsReadStateRequest() *AdsData {
-	child := &AdsReadStateRequest{
+func (m *AdsReadStateRequest) GetParent() *AdsData {
+	return m.AdsData
+}
+
+// NewAdsReadStateRequest factory function for AdsReadStateRequest
+func NewAdsReadStateRequest() *AdsReadStateRequest {
+	_result := &AdsReadStateRequest{
 		AdsData: NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsReadStateRequest(structType interface{}) *AdsReadStateRequest {
-	castFunc := func(typ interface{}) *AdsReadStateRequest {
-		if casted, ok := typ.(AdsReadStateRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsReadStateRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsReadStateRequest(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsReadStateRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsReadStateRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsReadStateRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsReadStateRequest(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsReadStateRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsReadStateRequest) GetTypeName() string {
 	return "AdsReadStateRequest"
 }
 
-func (m *AdsReadStateRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsReadStateRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsReadStateRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsReadStateRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *AdsReadStateRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsReadStateRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func AdsReadStateRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsReadStateRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsReadStateRequest, error) {
 	if pullErr := readBuffer.PullContext("AdsReadStateRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("AdsReadStateRequest"); closeErr != nil {
 		return nil, closeErr
@@ -109,7 +123,7 @@ func AdsReadStateRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 		AdsData: &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsReadStateRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -131,6 +145,8 @@ func (m *AdsReadStateRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

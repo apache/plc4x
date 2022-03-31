@@ -33,9 +33,13 @@ type AdsMultiRequestItem struct {
 
 // The corresponding interface
 type IAdsMultiRequestItem interface {
-	IndexGroup() uint32
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetIndexGroup returns IndexGroup (discriminator field)
+	GetIndexGroup() uint32
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,64 +51,73 @@ type IAdsMultiRequestItemParent interface {
 type IAdsMultiRequestItemChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *AdsMultiRequestItem)
+	GetParent() *AdsMultiRequestItem
+
 	GetTypeName() string
 	IAdsMultiRequestItem
 }
 
+// NewAdsMultiRequestItem factory function for AdsMultiRequestItem
 func NewAdsMultiRequestItem() *AdsMultiRequestItem {
 	return &AdsMultiRequestItem{}
 }
 
 func CastAdsMultiRequestItem(structType interface{}) *AdsMultiRequestItem {
-	castFunc := func(typ interface{}) *AdsMultiRequestItem {
-		if casted, ok := typ.(AdsMultiRequestItem); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsMultiRequestItem); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AdsMultiRequestItem); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsMultiRequestItem); ok {
+		return casted
+	}
+	if casted, ok := structType.(IAdsMultiRequestItemChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *AdsMultiRequestItem) GetTypeName() string {
 	return "AdsMultiRequestItem"
 }
 
-func (m *AdsMultiRequestItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsMultiRequestItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsMultiRequestItem) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *AdsMultiRequestItem) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *AdsMultiRequestItem) ParentLengthInBits() uint16 {
+func (m *AdsMultiRequestItem) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *AdsMultiRequestItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsMultiRequestItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*AdsMultiRequestItem, error) {
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *AdsMultiRequestItem
+	type AdsMultiRequestItemChild interface {
+		InitializeParent(*AdsMultiRequestItem)
+		GetParent() *AdsMultiRequestItem
+	}
+	var _child AdsMultiRequestItemChild
 	var typeSwitchError error
 	switch {
 	case indexGroup == uint32(61568): // AdsMultiRequestItemRead
-		_parent, typeSwitchError = AdsMultiRequestItemReadParse(readBuffer, indexGroup)
+		_child, typeSwitchError = AdsMultiRequestItemReadParse(readBuffer, indexGroup)
 	case indexGroup == uint32(61569): // AdsMultiRequestItemWrite
-		_parent, typeSwitchError = AdsMultiRequestItemWriteParse(readBuffer, indexGroup)
+		_child, typeSwitchError = AdsMultiRequestItemWriteParse(readBuffer, indexGroup)
 	case indexGroup == uint32(61570): // AdsMultiRequestItemReadWrite
-		_parent, typeSwitchError = AdsMultiRequestItemReadWriteParse(readBuffer, indexGroup)
+		_child, typeSwitchError = AdsMultiRequestItemReadWriteParse(readBuffer, indexGroup)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -118,8 +131,8 @@ func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *AdsMultiRequestItem) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -147,6 +160,8 @@ func (m *AdsMultiRequestItem) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

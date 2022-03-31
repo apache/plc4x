@@ -34,58 +34,85 @@ type KnxNetIpTunneling struct {
 
 // The corresponding interface
 type IKnxNetIpTunneling interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IServiceId
+	// GetVersion returns Version (property field)
+	GetVersion() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxNetIpTunneling) ServiceType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *KnxNetIpTunneling) GetServiceType() uint8 {
 	return 0x04
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *KnxNetIpTunneling) InitializeParent(parent *ServiceId) {}
 
-func NewKnxNetIpTunneling(version uint8) *ServiceId {
-	child := &KnxNetIpTunneling{
+func (m *KnxNetIpTunneling) GetParent() *ServiceId {
+	return m.ServiceId
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *KnxNetIpTunneling) GetVersion() uint8 {
+	return m.Version
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewKnxNetIpTunneling factory function for KnxNetIpTunneling
+func NewKnxNetIpTunneling(version uint8) *KnxNetIpTunneling {
+	_result := &KnxNetIpTunneling{
 		Version:   version,
 		ServiceId: NewServiceId(),
 	}
-	child.Child = child
-	return child.ServiceId
+	_result.Child = _result
+	return _result
 }
 
 func CastKnxNetIpTunneling(structType interface{}) *KnxNetIpTunneling {
-	castFunc := func(typ interface{}) *KnxNetIpTunneling {
-		if casted, ok := typ.(KnxNetIpTunneling); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxNetIpTunneling); ok {
-			return casted
-		}
-		if casted, ok := typ.(ServiceId); ok {
-			return CastKnxNetIpTunneling(casted.Child)
-		}
-		if casted, ok := typ.(*ServiceId); ok {
-			return CastKnxNetIpTunneling(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(KnxNetIpTunneling); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxNetIpTunneling); ok {
+		return casted
+	}
+	if casted, ok := structType.(ServiceId); ok {
+		return CastKnxNetIpTunneling(casted.Child)
+	}
+	if casted, ok := structType.(*ServiceId); ok {
+		return CastKnxNetIpTunneling(casted.Child)
+	}
+	return nil
 }
 
 func (m *KnxNetIpTunneling) GetTypeName() string {
 	return "KnxNetIpTunneling"
 }
 
-func (m *KnxNetIpTunneling) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxNetIpTunneling) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxNetIpTunneling) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *KnxNetIpTunneling) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -93,14 +120,16 @@ func (m *KnxNetIpTunneling) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *KnxNetIpTunneling) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxNetIpTunneling) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func KnxNetIpTunnelingParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetIpTunnelingParse(readBuffer utils.ReadBuffer) (*KnxNetIpTunneling, error) {
 	if pullErr := readBuffer.PullContext("KnxNetIpTunneling"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadUint8("version", 8)
@@ -119,7 +148,7 @@ func KnxNetIpTunnelingParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 		ServiceId: &ServiceId{},
 	}
 	_child.ServiceId.Child = _child
-	return _child.ServiceId, nil
+	return _child, nil
 }
 
 func (m *KnxNetIpTunneling) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,6 +177,8 @@ func (m *KnxNetIpTunneling) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

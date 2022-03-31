@@ -32,67 +32,109 @@ type COTPPacketConnectionResponse struct {
 	DestinationReference uint16
 	SourceReference      uint16
 	ProtocolClass        COTPProtocolClass
+
+	// Arguments.
+	CotpLen uint16
 }
 
 // The corresponding interface
 type ICOTPPacketConnectionResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICOTPPacket
+	// GetDestinationReference returns DestinationReference (property field)
+	GetDestinationReference() uint16
+	// GetSourceReference returns SourceReference (property field)
+	GetSourceReference() uint16
+	// GetProtocolClass returns ProtocolClass (property field)
+	GetProtocolClass() COTPProtocolClass
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *COTPPacketConnectionResponse) TpduCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *COTPPacketConnectionResponse) GetTpduCode() uint8 {
 	return 0xD0
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *COTPPacketConnectionResponse) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
 	m.COTPPacket.Parameters = parameters
 	m.COTPPacket.Payload = payload
 }
 
-func NewCOTPPacketConnectionResponse(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
-	child := &COTPPacketConnectionResponse{
+func (m *COTPPacketConnectionResponse) GetParent() *COTPPacket {
+	return m.COTPPacket
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *COTPPacketConnectionResponse) GetDestinationReference() uint16 {
+	return m.DestinationReference
+}
+
+func (m *COTPPacketConnectionResponse) GetSourceReference() uint16 {
+	return m.SourceReference
+}
+
+func (m *COTPPacketConnectionResponse) GetProtocolClass() COTPProtocolClass {
+	return m.ProtocolClass
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewCOTPPacketConnectionResponse factory function for COTPPacketConnectionResponse
+func NewCOTPPacketConnectionResponse(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacketConnectionResponse {
+	_result := &COTPPacketConnectionResponse{
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 		ProtocolClass:        protocolClass,
-		COTPPacket:           NewCOTPPacket(parameters, payload),
+		COTPPacket:           NewCOTPPacket(parameters, payload, cotpLen),
 	}
-	child.Child = child
-	return child.COTPPacket
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPPacketConnectionResponse(structType interface{}) *COTPPacketConnectionResponse {
-	castFunc := func(typ interface{}) *COTPPacketConnectionResponse {
-		if casted, ok := typ.(COTPPacketConnectionResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPPacketConnectionResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(COTPPacket); ok {
-			return CastCOTPPacketConnectionResponse(casted.Child)
-		}
-		if casted, ok := typ.(*COTPPacket); ok {
-			return CastCOTPPacketConnectionResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(COTPPacketConnectionResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPPacketConnectionResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(COTPPacket); ok {
+		return CastCOTPPacketConnectionResponse(casted.Child)
+	}
+	if casted, ok := structType.(*COTPPacket); ok {
+		return CastCOTPPacketConnectionResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *COTPPacketConnectionResponse) GetTypeName() string {
 	return "COTPPacketConnectionResponse"
 }
 
-func (m *COTPPacketConnectionResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPPacketConnectionResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPPacketConnectionResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *COTPPacketConnectionResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -106,14 +148,16 @@ func (m *COTPPacketConnectionResponse) LengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *COTPPacketConnectionResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPPacketConnectionResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func COTPPacketConnectionResponseParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
+func COTPPacketConnectionResponseParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacketConnectionResponse, error) {
 	if pullErr := readBuffer.PullContext("COTPPacketConnectionResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationReference)
 	_destinationReference, _destinationReferenceErr := readBuffer.ReadUint16("destinationReference", 16)
@@ -154,7 +198,7 @@ func COTPPacketConnectionResponseParse(readBuffer utils.ReadBuffer, cotpLen uint
 		COTPPacket:           &COTPPacket{},
 	}
 	_child.COTPPacket.Child = _child
-	return _child.COTPPacket, nil
+	return _child, nil
 }
 
 func (m *COTPPacketConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -202,6 +246,8 @@ func (m *COTPPacketConnectionResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

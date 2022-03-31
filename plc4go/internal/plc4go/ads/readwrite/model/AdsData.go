@@ -33,10 +33,15 @@ type AdsData struct {
 
 // The corresponding interface
 type IAdsData interface {
-	CommandId() CommandId
-	Response() bool
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetCommandId returns CommandId (discriminator field)
+	GetCommandId() CommandId
+	// GetResponse returns Response (discriminator field)
+	GetResponse() bool
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,98 +53,107 @@ type IAdsDataParent interface {
 type IAdsDataChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *AdsData)
+	GetParent() *AdsData
+
 	GetTypeName() string
 	IAdsData
 }
 
+// NewAdsData factory function for AdsData
 func NewAdsData() *AdsData {
 	return &AdsData{}
 }
 
 func CastAdsData(structType interface{}) *AdsData {
-	castFunc := func(typ interface{}) *AdsData {
-		if casted, ok := typ.(AdsData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AdsData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsData); ok {
+		return casted
+	}
+	if casted, ok := structType.(IAdsDataChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *AdsData) GetTypeName() string {
 	return "AdsData"
 }
 
-func (m *AdsData) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsData) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsData) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *AdsData) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *AdsData) ParentLengthInBits() uint16 {
+func (m *AdsData) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *AdsData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsData) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsDataParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *AdsData
+	type AdsDataChild interface {
+		InitializeParent(*AdsData)
+		GetParent() *AdsData
+	}
+	var _child AdsDataChild
 	var typeSwitchError error
 	switch {
 	case commandId == CommandId_INVALID && response == bool(false): // AdsInvalidRequest
-		_parent, typeSwitchError = AdsInvalidRequestParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsInvalidRequestParse(readBuffer, commandId, response)
 	case commandId == CommandId_INVALID && response == bool(true): // AdsInvalidResponse
-		_parent, typeSwitchError = AdsInvalidResponseParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsInvalidResponseParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(false): // AdsReadDeviceInfoRequest
-		_parent, typeSwitchError = AdsReadDeviceInfoRequestParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsReadDeviceInfoRequestParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(true): // AdsReadDeviceInfoResponse
-		_parent, typeSwitchError = AdsReadDeviceInfoResponseParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsReadDeviceInfoResponseParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_READ && response == bool(false): // AdsReadRequest
-		_parent, typeSwitchError = AdsReadRequestParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsReadRequestParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_READ && response == bool(true): // AdsReadResponse
-		_parent, typeSwitchError = AdsReadResponseParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsReadResponseParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_WRITE && response == bool(false): // AdsWriteRequest
-		_parent, typeSwitchError = AdsWriteRequestParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsWriteRequestParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_WRITE && response == bool(true): // AdsWriteResponse
-		_parent, typeSwitchError = AdsWriteResponseParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsWriteResponseParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_READ_STATE && response == bool(false): // AdsReadStateRequest
-		_parent, typeSwitchError = AdsReadStateRequestParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsReadStateRequestParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_READ_STATE && response == bool(true): // AdsReadStateResponse
-		_parent, typeSwitchError = AdsReadStateResponseParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsReadStateResponseParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_WRITE_CONTROL && response == bool(false): // AdsWriteControlRequest
-		_parent, typeSwitchError = AdsWriteControlRequestParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsWriteControlRequestParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_WRITE_CONTROL && response == bool(true): // AdsWriteControlResponse
-		_parent, typeSwitchError = AdsWriteControlResponseParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsWriteControlResponseParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(false): // AdsAddDeviceNotificationRequest
-		_parent, typeSwitchError = AdsAddDeviceNotificationRequestParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsAddDeviceNotificationRequestParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(true): // AdsAddDeviceNotificationResponse
-		_parent, typeSwitchError = AdsAddDeviceNotificationResponseParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsAddDeviceNotificationResponseParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(false): // AdsDeleteDeviceNotificationRequest
-		_parent, typeSwitchError = AdsDeleteDeviceNotificationRequestParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsDeleteDeviceNotificationRequestParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(true): // AdsDeleteDeviceNotificationResponse
-		_parent, typeSwitchError = AdsDeleteDeviceNotificationResponseParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsDeleteDeviceNotificationResponseParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(false): // AdsDeviceNotificationRequest
-		_parent, typeSwitchError = AdsDeviceNotificationRequestParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsDeviceNotificationRequestParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(true): // AdsDeviceNotificationResponse
-		_parent, typeSwitchError = AdsDeviceNotificationResponseParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsDeviceNotificationResponseParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_READ_WRITE && response == bool(false): // AdsReadWriteRequest
-		_parent, typeSwitchError = AdsReadWriteRequestParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsReadWriteRequestParse(readBuffer, commandId, response)
 	case commandId == CommandId_ADS_READ_WRITE && response == bool(true): // AdsReadWriteResponse
-		_parent, typeSwitchError = AdsReadWriteResponseParse(readBuffer, commandId, response)
+		_child, typeSwitchError = AdsReadWriteResponseParse(readBuffer, commandId, response)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -153,8 +167,8 @@ func AdsDataParse(readBuffer utils.ReadBuffer, commandId CommandId, response boo
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *AdsData) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -182,6 +196,8 @@ func (m *AdsData) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

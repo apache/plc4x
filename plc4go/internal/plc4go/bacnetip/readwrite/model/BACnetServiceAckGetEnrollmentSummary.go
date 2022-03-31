@@ -32,69 +32,83 @@ type BACnetServiceAckGetEnrollmentSummary struct {
 
 // The corresponding interface
 type IBACnetServiceAckGetEnrollmentSummary interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetServiceAck
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckGetEnrollmentSummary) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetServiceAckGetEnrollmentSummary) GetServiceChoice() uint8 {
 	return 0x04
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *BACnetServiceAckGetEnrollmentSummary) InitializeParent(parent *BACnetServiceAck) {}
 
-func NewBACnetServiceAckGetEnrollmentSummary() *BACnetServiceAck {
-	child := &BACnetServiceAckGetEnrollmentSummary{
+func (m *BACnetServiceAckGetEnrollmentSummary) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
+// NewBACnetServiceAckGetEnrollmentSummary factory function for BACnetServiceAckGetEnrollmentSummary
+func NewBACnetServiceAckGetEnrollmentSummary() *BACnetServiceAckGetEnrollmentSummary {
+	_result := &BACnetServiceAckGetEnrollmentSummary{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckGetEnrollmentSummary(structType interface{}) *BACnetServiceAckGetEnrollmentSummary {
-	castFunc := func(typ interface{}) *BACnetServiceAckGetEnrollmentSummary {
-		if casted, ok := typ.(BACnetServiceAckGetEnrollmentSummary); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckGetEnrollmentSummary); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckGetEnrollmentSummary(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckGetEnrollmentSummary(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckGetEnrollmentSummary); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckGetEnrollmentSummary); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckGetEnrollmentSummary(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckGetEnrollmentSummary(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckGetEnrollmentSummary) GetTypeName() string {
 	return "BACnetServiceAckGetEnrollmentSummary"
 }
 
-func (m *BACnetServiceAckGetEnrollmentSummary) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckGetEnrollmentSummary) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckGetEnrollmentSummary) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckGetEnrollmentSummary) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckGetEnrollmentSummary) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckGetEnrollmentSummary) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckGetEnrollmentSummary, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEnrollmentSummary"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckGetEnrollmentSummary"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BA
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *BACnetServiceAckGetEnrollmentSummary) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

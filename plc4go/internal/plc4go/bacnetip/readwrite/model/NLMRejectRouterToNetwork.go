@@ -31,65 +31,101 @@ type NLMRejectRouterToNetwork struct {
 	*NLM
 	RejectReason              NLMRejectRouterToNetworkRejectReason
 	DestinationNetworkAddress uint16
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
 type INLMRejectRouterToNetwork interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	INLM
+	// GetRejectReason returns RejectReason (property field)
+	GetRejectReason() NLMRejectRouterToNetworkRejectReason
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
+	GetDestinationNetworkAddress() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NLMRejectRouterToNetwork) MessageType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *NLMRejectRouterToNetwork) GetMessageType() uint8 {
 	return 0x03
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *NLMRejectRouterToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
 	m.NLM.VendorId = vendorId
 }
 
-func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReason, destinationNetworkAddress uint16, vendorId *uint16) *NLM {
-	child := &NLMRejectRouterToNetwork{
+func (m *NLMRejectRouterToNetwork) GetParent() *NLM {
+	return m.NLM
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *NLMRejectRouterToNetwork) GetRejectReason() NLMRejectRouterToNetworkRejectReason {
+	return m.RejectReason
+}
+
+func (m *NLMRejectRouterToNetwork) GetDestinationNetworkAddress() uint16 {
+	return m.DestinationNetworkAddress
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewNLMRejectRouterToNetwork factory function for NLMRejectRouterToNetwork
+func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReason, destinationNetworkAddress uint16, vendorId *uint16, apduLength uint16) *NLMRejectRouterToNetwork {
+	_result := &NLMRejectRouterToNetwork{
 		RejectReason:              rejectReason,
 		DestinationNetworkAddress: destinationNetworkAddress,
-		NLM:                       NewNLM(vendorId),
+		NLM:                       NewNLM(vendorId, apduLength),
 	}
-	child.Child = child
-	return child.NLM
+	_result.Child = _result
+	return _result
 }
 
 func CastNLMRejectRouterToNetwork(structType interface{}) *NLMRejectRouterToNetwork {
-	castFunc := func(typ interface{}) *NLMRejectRouterToNetwork {
-		if casted, ok := typ.(NLMRejectRouterToNetwork); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NLMRejectRouterToNetwork); ok {
-			return casted
-		}
-		if casted, ok := typ.(NLM); ok {
-			return CastNLMRejectRouterToNetwork(casted.Child)
-		}
-		if casted, ok := typ.(*NLM); ok {
-			return CastNLMRejectRouterToNetwork(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(NLMRejectRouterToNetwork); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NLMRejectRouterToNetwork); ok {
+		return casted
+	}
+	if casted, ok := structType.(NLM); ok {
+		return CastNLMRejectRouterToNetwork(casted.Child)
+	}
+	if casted, ok := structType.(*NLM); ok {
+		return CastNLMRejectRouterToNetwork(casted.Child)
+	}
+	return nil
 }
 
 func (m *NLMRejectRouterToNetwork) GetTypeName() string {
 	return "NLMRejectRouterToNetwork"
 }
 
-func (m *NLMRejectRouterToNetwork) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NLMRejectRouterToNetwork) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NLMRejectRouterToNetwork) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *NLMRejectRouterToNetwork) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (rejectReason)
 	lengthInBits += 8
@@ -100,14 +136,16 @@ func (m *NLMRejectRouterToNetwork) LengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *NLMRejectRouterToNetwork) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NLMRejectRouterToNetwork) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
+func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLMRejectRouterToNetwork, error) {
 	if pullErr := readBuffer.PullContext("NLMRejectRouterToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (rejectReason)
 	if pullErr := readBuffer.PullContext("rejectReason"); pullErr != nil {
@@ -140,7 +178,7 @@ func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint1
 		NLM:                       &NLM{},
 	}
 	_child.NLM.Child = _child
-	return _child.NLM, nil
+	return _child, nil
 }
 
 func (m *NLMRejectRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -181,6 +219,8 @@ func (m *NLMRejectRouterToNetwork) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

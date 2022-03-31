@@ -502,12 +502,12 @@
 [enum int 8 AdsDataType(uint 16 numBytes, vstring dataFormatName)
     ['0x01' BOOL       ['1', '"IEC61131_BOOL"']]
     ['0x02' BIT        ['1', '"IEC61131_BOOL"']]
-    ['0x03' BIT8       ['1', '"IEC61131_BOOL"']]
 
     // -----------------------------------------
     // Bit-strings
     // -----------------------------------------
     // 1 byte
+    ['0x03' BIT8       ['1', '"IEC61131_BYTE"']]
     ['0x04' BYTE       ['1', '"IEC61131_BYTE"']]
     ['0x05' BITARR8    ['1', '"IEC61131_BYTE"']]
     // 2 byte (16 bit)

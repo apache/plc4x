@@ -36,64 +36,103 @@ type AdsDeviceNotificationRequest struct {
 
 // The corresponding interface
 type IAdsDeviceNotificationRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAdsData
+	// GetLength returns Length (property field)
+	GetLength() uint32
+	// GetStamps returns Stamps (property field)
+	GetStamps() uint32
+	// GetAdsStampHeaders returns AdsStampHeaders (property field)
+	GetAdsStampHeaders() []*AdsStampHeader
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsDeviceNotificationRequest) CommandId() CommandId {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *AdsDeviceNotificationRequest) GetCommandId() CommandId {
 	return CommandId_ADS_DEVICE_NOTIFICATION
 }
 
-func (m *AdsDeviceNotificationRequest) Response() bool {
+func (m *AdsDeviceNotificationRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *AdsDeviceNotificationRequest) InitializeParent(parent *AdsData) {}
 
-func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeaders []*AdsStampHeader) *AdsData {
-	child := &AdsDeviceNotificationRequest{
+func (m *AdsDeviceNotificationRequest) GetParent() *AdsData {
+	return m.AdsData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AdsDeviceNotificationRequest) GetLength() uint32 {
+	return m.Length
+}
+
+func (m *AdsDeviceNotificationRequest) GetStamps() uint32 {
+	return m.Stamps
+}
+
+func (m *AdsDeviceNotificationRequest) GetAdsStampHeaders() []*AdsStampHeader {
+	return m.AdsStampHeaders
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAdsDeviceNotificationRequest factory function for AdsDeviceNotificationRequest
+func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeaders []*AdsStampHeader) *AdsDeviceNotificationRequest {
+	_result := &AdsDeviceNotificationRequest{
 		Length:          length,
 		Stamps:          stamps,
 		AdsStampHeaders: adsStampHeaders,
 		AdsData:         NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsDeviceNotificationRequest(structType interface{}) *AdsDeviceNotificationRequest {
-	castFunc := func(typ interface{}) *AdsDeviceNotificationRequest {
-		if casted, ok := typ.(AdsDeviceNotificationRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsDeviceNotificationRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsDeviceNotificationRequest(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsDeviceNotificationRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsDeviceNotificationRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsDeviceNotificationRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsDeviceNotificationRequest(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsDeviceNotificationRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsDeviceNotificationRequest) GetTypeName() string {
 	return "AdsDeviceNotificationRequest"
 }
 
-func (m *AdsDeviceNotificationRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsDeviceNotificationRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsDeviceNotificationRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (length)
 	lengthInBits += 32
@@ -105,21 +144,23 @@ func (m *AdsDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) ui
 	if len(m.AdsStampHeaders) > 0 {
 		for i, element := range m.AdsStampHeaders {
 			last := i == len(m.AdsStampHeaders)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *AdsDeviceNotificationRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsDeviceNotificationRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsDeviceNotificationRequest, error) {
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (length)
 	_length, _lengthErr := readBuffer.ReadUint32("length", 32)
@@ -166,7 +207,7 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId Co
 		AdsData:         &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -218,6 +259,8 @@ func (m *AdsDeviceNotificationRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

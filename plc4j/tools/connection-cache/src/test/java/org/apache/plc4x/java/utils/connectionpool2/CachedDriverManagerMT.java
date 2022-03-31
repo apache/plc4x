@@ -33,12 +33,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 24.02.20
- */
 @Disabled("These should be run manually")
 class CachedDriverManagerMT {
 

@@ -30,63 +30,93 @@ import (
 type BACnetConfirmedServiceRequestConfirmedUnknown struct {
 	*BACnetConfirmedServiceRequest
 	UnknownBytes []byte
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedUnknown interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetConfirmedServiceRequest
+	// GetUnknownBytes returns UnknownBytes (property field)
+	GetUnknownBytes() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestConfirmedUnknown) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetServiceChoice() uint8 {
 	return 0
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetConfirmedServiceRequestConfirmedUnknown) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestConfirmedUnknown(unknownBytes []byte) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestConfirmedUnknown{
+func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetUnknownBytes() []byte {
+	return m.UnknownBytes
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetConfirmedServiceRequestConfirmedUnknown factory function for BACnetConfirmedServiceRequestConfirmedUnknown
+func NewBACnetConfirmedServiceRequestConfirmedUnknown(unknownBytes []byte, len uint16) *BACnetConfirmedServiceRequestConfirmedUnknown {
+	_result := &BACnetConfirmedServiceRequestConfirmedUnknown{
 		UnknownBytes:                  unknownBytes,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestConfirmedUnknown(structType interface{}) *BACnetConfirmedServiceRequestConfirmedUnknown {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestConfirmedUnknown {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestConfirmedUnknown); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestConfirmedUnknown); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestConfirmedUnknown(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestConfirmedUnknown(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedUnknown); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestConfirmedUnknown); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestConfirmedUnknown(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestConfirmedUnknown(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestConfirmedUnknown"
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedUnknown) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedUnknown) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.UnknownBytes) > 0 {
@@ -96,14 +126,16 @@ func (m *BACnetConfirmedServiceRequestConfirmedUnknown) LengthInBitsConditional(
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedUnknown) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestConfirmedUnknown, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedUnknown"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	// Byte Array field (unknownBytes)
 	numberOfBytesunknownBytes := int(utils.InlineIf(bool(bool((len) > (0))), func() interface{} { return uint16(uint16(uint16(len) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
@@ -121,7 +153,7 @@ func BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer utils.ReadBuf
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedUnknown) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -152,6 +184,8 @@ func (m *BACnetConfirmedServiceRequestConfirmedUnknown) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

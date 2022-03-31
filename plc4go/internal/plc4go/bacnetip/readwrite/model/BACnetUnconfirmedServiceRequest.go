@@ -28,14 +28,21 @@ import (
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequest struct {
+
+	// Arguments.
+	Len   uint16
 	Child IBACnetUnconfirmedServiceRequestChild
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequest interface {
-	ServiceChoice() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetServiceChoice returns ServiceChoice (discriminator field)
+	GetServiceChoice() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,40 +54,43 @@ type IBACnetUnconfirmedServiceRequestParent interface {
 type IBACnetUnconfirmedServiceRequestChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetUnconfirmedServiceRequest)
+	GetParent() *BACnetUnconfirmedServiceRequest
+
 	GetTypeName() string
 	IBACnetUnconfirmedServiceRequest
 }
 
-func NewBACnetUnconfirmedServiceRequest() *BACnetUnconfirmedServiceRequest {
-	return &BACnetUnconfirmedServiceRequest{}
+// NewBACnetUnconfirmedServiceRequest factory function for BACnetUnconfirmedServiceRequest
+func NewBACnetUnconfirmedServiceRequest(len uint16) *BACnetUnconfirmedServiceRequest {
+	return &BACnetUnconfirmedServiceRequest{Len: len}
 }
 
 func CastBACnetUnconfirmedServiceRequest(structType interface{}) *BACnetUnconfirmedServiceRequest {
-	castFunc := func(typ interface{}) *BACnetUnconfirmedServiceRequest {
-		if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetUnconfirmedServiceRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetUnconfirmedServiceRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(IBACnetUnconfirmedServiceRequestChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *BACnetUnconfirmedServiceRequest) GetTypeName() string {
 	return "BACnetUnconfirmedServiceRequest"
 }
 
-func (m *BACnetUnconfirmedServiceRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetUnconfirmedServiceRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetUnconfirmedServiceRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetUnconfirmedServiceRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetUnconfirmedServiceRequest) ParentLengthInBits() uint16 {
+func (m *BACnetUnconfirmedServiceRequest) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
@@ -88,14 +98,16 @@ func (m *BACnetUnconfirmedServiceRequest) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetUnconfirmedServiceRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetUnconfirmedServiceRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice, _serviceChoiceErr := readBuffer.ReadUint8("serviceChoice", 8)
@@ -104,35 +116,39 @@ func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, len uint1
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetUnconfirmedServiceRequest
+	type BACnetUnconfirmedServiceRequestChild interface {
+		InitializeParent(*BACnetUnconfirmedServiceRequest)
+		GetParent() *BACnetUnconfirmedServiceRequest
+	}
+	var _child BACnetUnconfirmedServiceRequestChild
 	var typeSwitchError error
 	switch {
 	case serviceChoice == 0x00: // BACnetUnconfirmedServiceRequestIAm
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestIAmParse(readBuffer, len)
+		_child, typeSwitchError = BACnetUnconfirmedServiceRequestIAmParse(readBuffer, len)
 	case serviceChoice == 0x01: // BACnetUnconfirmedServiceRequestIHave
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestIHaveParse(readBuffer, len)
+		_child, typeSwitchError = BACnetUnconfirmedServiceRequestIHaveParse(readBuffer, len)
 	case serviceChoice == 0x02: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer, len)
+		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer, len)
 	case serviceChoice == 0x03: // BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer, len)
+		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer, len)
 	case serviceChoice == 0x04: // BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer, len)
+		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer, len)
 	case serviceChoice == 0x05: // BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer, len)
+		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer, len)
 	case serviceChoice == 0x06: // BACnetUnconfirmedServiceRequestTimeSynchronization
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer, len)
+		_child, typeSwitchError = BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer, len)
 	case serviceChoice == 0x07: // BACnetUnconfirmedServiceRequestWhoHas
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer, len)
+		_child, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer, len)
 	case serviceChoice == 0x08: // BACnetUnconfirmedServiceRequestWhoIs
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer, len)
+		_child, typeSwitchError = BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer, len)
 	case serviceChoice == 0x09: // BACnetUnconfirmedServiceRequestUTCTimeSynchronization
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer, len)
+		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer, len)
 	case serviceChoice == 0x0A: // BACnetUnconfirmedServiceRequestWriteGroup
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer, len)
+		_child, typeSwitchError = BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer, len)
 	case serviceChoice == 0x0B: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(readBuffer, len)
+		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(readBuffer, len)
 	case true: // BACnetUnconfirmedServiceRequestUnconfirmedUnknown
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedUnknownParse(readBuffer, len)
+		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedUnknownParse(readBuffer, len)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -146,8 +162,8 @@ func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, len uint1
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetUnconfirmedServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -160,7 +176,7 @@ func (m *BACnetUnconfirmedServiceRequest) SerializeParent(writeBuffer utils.Writ
 	}
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice := uint8(child.ServiceChoice())
+	serviceChoice := uint8(child.GetServiceChoice())
 	_serviceChoiceErr := writeBuffer.WriteUint8("serviceChoice", 8, (serviceChoice))
 
 	if _serviceChoiceErr != nil {
@@ -183,6 +199,8 @@ func (m *BACnetUnconfirmedServiceRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

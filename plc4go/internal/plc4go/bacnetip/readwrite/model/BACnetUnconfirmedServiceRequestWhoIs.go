@@ -32,91 +32,129 @@ type BACnetUnconfirmedServiceRequestWhoIs struct {
 	*BACnetUnconfirmedServiceRequest
 	DeviceInstanceRangeLowLimit  *BACnetContextTagUnsignedInteger
 	DeviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestWhoIs interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetUnconfirmedServiceRequest
+	// GetDeviceInstanceRangeLowLimit returns DeviceInstanceRangeLowLimit (property field)
+	GetDeviceInstanceRangeLowLimit() *BACnetContextTagUnsignedInteger
+	// GetDeviceInstanceRangeHighLimit returns DeviceInstanceRangeHighLimit (property field)
+	GetDeviceInstanceRangeHighLimit() *BACnetContextTagUnsignedInteger
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetUnconfirmedServiceRequestWhoIs) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetServiceChoice() uint8 {
 	return 0x08
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetUnconfirmedServiceRequestWhoIs) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger) *BACnetUnconfirmedServiceRequest {
-	child := &BACnetUnconfirmedServiceRequestWhoIs{
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetParent() *BACnetUnconfirmedServiceRequest {
+	return m.BACnetUnconfirmedServiceRequest
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetDeviceInstanceRangeLowLimit() *BACnetContextTagUnsignedInteger {
+	return m.DeviceInstanceRangeLowLimit
+}
+
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetDeviceInstanceRangeHighLimit() *BACnetContextTagUnsignedInteger {
+	return m.DeviceInstanceRangeHighLimit
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetUnconfirmedServiceRequestWhoIs factory function for BACnetUnconfirmedServiceRequestWhoIs
+func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger, len uint16) *BACnetUnconfirmedServiceRequestWhoIs {
+	_result := &BACnetUnconfirmedServiceRequestWhoIs{
 		DeviceInstanceRangeLowLimit:     deviceInstanceRangeLowLimit,
 		DeviceInstanceRangeHighLimit:    deviceInstanceRangeHighLimit,
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetUnconfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetUnconfirmedServiceRequestWhoIs(structType interface{}) *BACnetUnconfirmedServiceRequestWhoIs {
-	castFunc := func(typ interface{}) *BACnetUnconfirmedServiceRequestWhoIs {
-		if casted, ok := typ.(BACnetUnconfirmedServiceRequestWhoIs); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetUnconfirmedServiceRequestWhoIs); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
-			return CastBACnetUnconfirmedServiceRequestWhoIs(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
-			return CastBACnetUnconfirmedServiceRequestWhoIs(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetUnconfirmedServiceRequestWhoIs); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetUnconfirmedServiceRequestWhoIs); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetUnconfirmedServiceRequest); ok {
+		return CastBACnetUnconfirmedServiceRequestWhoIs(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetUnconfirmedServiceRequest); ok {
+		return CastBACnetUnconfirmedServiceRequestWhoIs(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestWhoIs) GetTypeName() string {
 	return "BACnetUnconfirmedServiceRequestWhoIs"
 }
 
-func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Optional Field (deviceInstanceRangeLowLimit)
 	if m.DeviceInstanceRangeLowLimit != nil {
-		lengthInBits += (*m.DeviceInstanceRangeLowLimit).LengthInBits()
+		lengthInBits += (*m.DeviceInstanceRangeLowLimit).GetLengthInBits()
 	}
 
 	// Optional Field (deviceInstanceRangeHighLimit)
 	if m.DeviceInstanceRangeHighLimit != nil {
-		lengthInBits += (*m.DeviceInstanceRangeHighLimit).LengthInBits()
+		lengthInBits += (*m.DeviceInstanceRangeHighLimit).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestWhoIs, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoIs"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (deviceInstanceRangeLowLimit) (Can be skipped, if a given expression evaluates to false)
 	var deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeLowLimit"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -137,7 +175,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len 
 	// Optional Field (deviceInstanceRangeHighLimit) (Can be skipped, if a given expression evaluates to false)
 	var deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger = nil
 	if bool((deviceInstanceRangeLowLimit) != (nil)) {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeHighLimit"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -166,7 +204,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len 
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
 	_child.BACnetUnconfirmedServiceRequest.Child = _child
-	return _child.BACnetUnconfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -220,6 +258,8 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

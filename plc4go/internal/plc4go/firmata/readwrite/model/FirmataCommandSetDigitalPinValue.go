@@ -32,63 +32,99 @@ type FirmataCommandSetDigitalPinValue struct {
 	*FirmataCommand
 	Pin uint8
 	On  bool
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
 type IFirmataCommandSetDigitalPinValue interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IFirmataCommand
+	// GetPin returns Pin (property field)
+	GetPin() uint8
+	// GetOn returns On (property field)
+	GetOn() bool
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataCommandSetDigitalPinValue) CommandCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *FirmataCommandSetDigitalPinValue) GetCommandCode() uint8 {
 	return 0x5
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *FirmataCommandSetDigitalPinValue) InitializeParent(parent *FirmataCommand) {}
 
-func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool) *FirmataCommand {
-	child := &FirmataCommandSetDigitalPinValue{
+func (m *FirmataCommandSetDigitalPinValue) GetParent() *FirmataCommand {
+	return m.FirmataCommand
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *FirmataCommandSetDigitalPinValue) GetPin() uint8 {
+	return m.Pin
+}
+
+func (m *FirmataCommandSetDigitalPinValue) GetOn() bool {
+	return m.On
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewFirmataCommandSetDigitalPinValue factory function for FirmataCommandSetDigitalPinValue
+func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *FirmataCommandSetDigitalPinValue {
+	_result := &FirmataCommandSetDigitalPinValue{
 		Pin:            pin,
 		On:             on,
-		FirmataCommand: NewFirmataCommand(),
+		FirmataCommand: NewFirmataCommand(response),
 	}
-	child.Child = child
-	return child.FirmataCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataCommandSetDigitalPinValue(structType interface{}) *FirmataCommandSetDigitalPinValue {
-	castFunc := func(typ interface{}) *FirmataCommandSetDigitalPinValue {
-		if casted, ok := typ.(FirmataCommandSetDigitalPinValue); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataCommandSetDigitalPinValue); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataCommand); ok {
-			return CastFirmataCommandSetDigitalPinValue(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataCommand); ok {
-			return CastFirmataCommandSetDigitalPinValue(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataCommandSetDigitalPinValue); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataCommandSetDigitalPinValue); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataCommand); ok {
+		return CastFirmataCommandSetDigitalPinValue(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataCommand); ok {
+		return CastFirmataCommandSetDigitalPinValue(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataCommandSetDigitalPinValue) GetTypeName() string {
 	return "FirmataCommandSetDigitalPinValue"
 }
 
-func (m *FirmataCommandSetDigitalPinValue) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataCommandSetDigitalPinValue) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataCommandSetDigitalPinValue) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataCommandSetDigitalPinValue) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -102,14 +138,16 @@ func (m *FirmataCommandSetDigitalPinValue) LengthInBitsConditional(lastItem bool
 	return lengthInBits
 }
 
-func (m *FirmataCommandSetDigitalPinValue) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataCommandSetDigitalPinValue) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {
+func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommandSetDigitalPinValue, error) {
 	if pullErr := readBuffer.PullContext("FirmataCommandSetDigitalPinValue"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (pin)
 	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
@@ -150,7 +188,7 @@ func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response
 		FirmataCommand: &FirmataCommand{},
 	}
 	_child.FirmataCommand.Child = _child
-	return _child.FirmataCommand, nil
+	return _child, nil
 }
 
 func (m *FirmataCommandSetDigitalPinValue) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -194,6 +232,8 @@ func (m *FirmataCommandSetDigitalPinValue) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

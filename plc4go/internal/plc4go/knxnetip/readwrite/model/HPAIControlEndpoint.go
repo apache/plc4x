@@ -35,37 +35,65 @@ type HPAIControlEndpoint struct {
 
 // The corresponding interface
 type IHPAIControlEndpoint interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetHostProtocolCode returns HostProtocolCode (property field)
+	GetHostProtocolCode() HostProtocolCode
+	// GetIpAddress returns IpAddress (property field)
+	GetIpAddress() *IPAddress
+	// GetIpPort returns IpPort (property field)
+	GetIpPort() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *HPAIControlEndpoint) GetHostProtocolCode() HostProtocolCode {
+	return m.HostProtocolCode
+}
+
+func (m *HPAIControlEndpoint) GetIpAddress() *IPAddress {
+	return m.IpAddress
+}
+
+func (m *HPAIControlEndpoint) GetIpPort() uint16 {
+	return m.IpPort
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewHPAIControlEndpoint factory function for HPAIControlEndpoint
 func NewHPAIControlEndpoint(hostProtocolCode HostProtocolCode, ipAddress *IPAddress, ipPort uint16) *HPAIControlEndpoint {
 	return &HPAIControlEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
 }
 
 func CastHPAIControlEndpoint(structType interface{}) *HPAIControlEndpoint {
-	castFunc := func(typ interface{}) *HPAIControlEndpoint {
-		if casted, ok := typ.(HPAIControlEndpoint); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*HPAIControlEndpoint); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(HPAIControlEndpoint); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*HPAIControlEndpoint); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *HPAIControlEndpoint) GetTypeName() string {
 	return "HPAIControlEndpoint"
 }
 
-func (m *HPAIControlEndpoint) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *HPAIControlEndpoint) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *HPAIControlEndpoint) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *HPAIControlEndpoint) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -75,7 +103,7 @@ func (m *HPAIControlEndpoint) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (ipAddress)
-	lengthInBits += m.IpAddress.LengthInBits()
+	lengthInBits += m.IpAddress.GetLengthInBits()
 
 	// Simple field (ipPort)
 	lengthInBits += 16
@@ -83,16 +111,18 @@ func (m *HPAIControlEndpoint) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *HPAIControlEndpoint) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *HPAIControlEndpoint) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (*HPAIControlEndpoint, error) {
 	if pullErr := readBuffer.PullContext("HPAIControlEndpoint"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
@@ -146,7 +176,7 @@ func (m *HPAIControlEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.LengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes()))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
@@ -194,6 +224,8 @@ func (m *HPAIControlEndpoint) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

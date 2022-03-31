@@ -33,65 +33,113 @@ type ApduDataExtPropertyValueRead struct {
 	PropertyId  uint8
 	Count       uint8
 	Index       uint16
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtPropertyValueRead interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduDataExt
+	// GetObjectIndex returns ObjectIndex (property field)
+	GetObjectIndex() uint8
+	// GetPropertyId returns PropertyId (property field)
+	GetPropertyId() uint8
+	// GetCount returns Count (property field)
+	GetCount() uint8
+	// GetIndex returns Index (property field)
+	GetIndex() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtPropertyValueRead) ExtApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataExtPropertyValueRead) GetExtApciType() uint8 {
 	return 0x15
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataExtPropertyValueRead) InitializeParent(parent *ApduDataExt) {}
 
-func NewApduDataExtPropertyValueRead(objectIndex uint8, propertyId uint8, count uint8, index uint16) *ApduDataExt {
-	child := &ApduDataExtPropertyValueRead{
+func (m *ApduDataExtPropertyValueRead) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ApduDataExtPropertyValueRead) GetObjectIndex() uint8 {
+	return m.ObjectIndex
+}
+
+func (m *ApduDataExtPropertyValueRead) GetPropertyId() uint8 {
+	return m.PropertyId
+}
+
+func (m *ApduDataExtPropertyValueRead) GetCount() uint8 {
+	return m.Count
+}
+
+func (m *ApduDataExtPropertyValueRead) GetIndex() uint16 {
+	return m.Index
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewApduDataExtPropertyValueRead factory function for ApduDataExtPropertyValueRead
+func NewApduDataExtPropertyValueRead(objectIndex uint8, propertyId uint8, count uint8, index uint16, length uint8) *ApduDataExtPropertyValueRead {
+	_result := &ApduDataExtPropertyValueRead{
 		ObjectIndex: objectIndex,
 		PropertyId:  propertyId,
 		Count:       count,
 		Index:       index,
-		ApduDataExt: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtPropertyValueRead(structType interface{}) *ApduDataExtPropertyValueRead {
-	castFunc := func(typ interface{}) *ApduDataExtPropertyValueRead {
-		if casted, ok := typ.(ApduDataExtPropertyValueRead); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtPropertyValueRead); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtPropertyValueRead(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtPropertyValueRead(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtPropertyValueRead); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtPropertyValueRead); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtPropertyValueRead(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtPropertyValueRead(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtPropertyValueRead) GetTypeName() string {
 	return "ApduDataExtPropertyValueRead"
 }
 
-func (m *ApduDataExtPropertyValueRead) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtPropertyValueRead) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtPropertyValueRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtPropertyValueRead) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -108,14 +156,16 @@ func (m *ApduDataExtPropertyValueRead) LengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *ApduDataExtPropertyValueRead) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtPropertyValueRead) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtPropertyValueReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtPropertyValueReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtPropertyValueRead, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyValueRead"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (objectIndex)
 	_objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
@@ -158,7 +208,7 @@ func ApduDataExtPropertyValueReadParse(readBuffer utils.ReadBuffer, length uint8
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtPropertyValueRead) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -208,6 +258,8 @@ func (m *ApduDataExtPropertyValueRead) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

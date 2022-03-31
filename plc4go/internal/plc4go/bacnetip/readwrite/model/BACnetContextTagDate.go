@@ -29,211 +29,131 @@ import (
 // The data-structure of this message
 type BACnetContextTagDate struct {
 	*BACnetContextTag
-	YearMinus1900          int8
-	Month                  int8
-	DayOfMonth             int8
-	DayOfWeek              int8
-	Wildcard               int8
-	YearIsWildcard         bool
-	MonthIsWildcard        bool
-	OddMonthWildcard       bool
-	EvenMonthWildcard      bool
-	DayOfMonthIsWildcard   bool
-	LastDayOfMonthWildcard bool
-	OddDayOfMonthWildcard  bool
-	EvenDayOfMonthWildcard bool
-	DayOfWeekIsWildcard    bool
+	Payload *BACnetTagPayloadDate
+
+	// Arguments.
+	TagNumberArgument        uint8
+	IsNotOpeningOrClosingTag bool
 }
 
 // The corresponding interface
 type IBACnetContextTagDate interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetContextTag
+	// GetPayload returns Payload (property field)
+	GetPayload() *BACnetTagPayloadDate
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagDate) DataType() BACnetDataType {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetContextTagDate) GetDataType() BACnetDataType {
 	return BACnetDataType_DATE
 }
 
-func (m *BACnetContextTagDate) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+func (m *BACnetContextTagDate) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader) {
 	m.BACnetContextTag.Header = header
-	m.BACnetContextTag.TagNumber = tagNumber
-	m.BACnetContextTag.ActualLength = actualLength
-	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
-func NewBACnetContextTagDate(yearMinus1900 int8, month int8, dayOfMonth int8, dayOfWeek int8, wildcard int8, yearIsWildcard bool, monthIsWildcard bool, oddMonthWildcard bool, evenMonthWildcard bool, dayOfMonthIsWildcard bool, lastDayOfMonthWildcard bool, oddDayOfMonthWildcard bool, evenDayOfMonthWildcard bool, dayOfWeekIsWildcard bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagDate{
-		YearMinus1900:          yearMinus1900,
-		Month:                  month,
-		DayOfMonth:             dayOfMonth,
-		DayOfWeek:              dayOfWeek,
-		Wildcard:               wildcard,
-		YearIsWildcard:         yearIsWildcard,
-		MonthIsWildcard:        monthIsWildcard,
-		OddMonthWildcard:       oddMonthWildcard,
-		EvenMonthWildcard:      evenMonthWildcard,
-		DayOfMonthIsWildcard:   dayOfMonthIsWildcard,
-		LastDayOfMonthWildcard: lastDayOfMonthWildcard,
-		OddDayOfMonthWildcard:  oddDayOfMonthWildcard,
-		EvenDayOfMonthWildcard: evenDayOfMonthWildcard,
-		DayOfWeekIsWildcard:    dayOfWeekIsWildcard,
-		BACnetContextTag:       NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
+func (m *BACnetContextTagDate) GetParent() *BACnetContextTag {
+	return m.BACnetContextTag
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetContextTagDate) GetPayload() *BACnetTagPayloadDate {
+	return m.Payload
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetContextTagDate factory function for BACnetContextTagDate
+func NewBACnetContextTagDate(payload *BACnetTagPayloadDate, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagDate {
+	_result := &BACnetContextTagDate{
+		Payload:          payload,
+		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagDate(structType interface{}) *BACnetContextTagDate {
-	castFunc := func(typ interface{}) *BACnetContextTagDate {
-		if casted, ok := typ.(BACnetContextTagDate); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagDate); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagDate(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagDate(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagDate); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagDate); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagDate(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagDate(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagDate) GetTypeName() string {
 	return "BACnetContextTagDate"
 }
 
-func (m *BACnetContextTagDate) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTagDate) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTagDate) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetContextTagDate) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// A virtual field doesn't have any in- or output.
-
-	// Simple field (yearMinus1900)
-	lengthInBits += 8
-
-	// A virtual field doesn't have any in- or output.
-
-	// Simple field (month)
-	lengthInBits += 8
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// Simple field (dayOfMonth)
-	lengthInBits += 8
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// Simple field (dayOfWeek)
-	lengthInBits += 8
-
-	// A virtual field doesn't have any in- or output.
+	// Simple field (payload)
+	lengthInBits += m.Payload.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetContextTagDate) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTagDate) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagDateParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool) (*BACnetContextTag, error) {
+func BACnetContextTagDateParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool) (*BACnetContextTagDate, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagDate"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {
 		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
 	}
 
-	// Virtual field
-	_wildcard := 0xFF
-	wildcard := int8(_wildcard)
-
-	// Simple Field (yearMinus1900)
-	_yearMinus1900, _yearMinus1900Err := readBuffer.ReadInt8("yearMinus1900", 8)
-	if _yearMinus1900Err != nil {
-		return nil, errors.Wrap(_yearMinus1900Err, "Error parsing 'yearMinus1900' field")
+	// Simple Field (payload)
+	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
+		return nil, pullErr
 	}
-	yearMinus1900 := _yearMinus1900
-
-	// Virtual field
-	_yearIsWildcard := bool((yearMinus1900) == (wildcard))
-	yearIsWildcard := bool(_yearIsWildcard)
-
-	// Simple Field (month)
-	_month, _monthErr := readBuffer.ReadInt8("month", 8)
-	if _monthErr != nil {
-		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
+	_payload, _payloadErr := BACnetTagPayloadDateParse(readBuffer)
+	if _payloadErr != nil {
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
 	}
-	month := _month
-
-	// Virtual field
-	_monthIsWildcard := bool((month) == (wildcard))
-	monthIsWildcard := bool(_monthIsWildcard)
-
-	// Virtual field
-	_oddMonthWildcard := bool((month) == (13))
-	oddMonthWildcard := bool(_oddMonthWildcard)
-
-	// Virtual field
-	_evenMonthWildcard := bool((month) == (14))
-	evenMonthWildcard := bool(_evenMonthWildcard)
-
-	// Simple Field (dayOfMonth)
-	_dayOfMonth, _dayOfMonthErr := readBuffer.ReadInt8("dayOfMonth", 8)
-	if _dayOfMonthErr != nil {
-		return nil, errors.Wrap(_dayOfMonthErr, "Error parsing 'dayOfMonth' field")
+	payload := CastBACnetTagPayloadDate(_payload)
+	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
+		return nil, closeErr
 	}
-	dayOfMonth := _dayOfMonth
-
-	// Virtual field
-	_dayOfMonthIsWildcard := bool((dayOfMonth) == (wildcard))
-	dayOfMonthIsWildcard := bool(_dayOfMonthIsWildcard)
-
-	// Virtual field
-	_lastDayOfMonthWildcard := bool((dayOfMonth) == (32))
-	lastDayOfMonthWildcard := bool(_lastDayOfMonthWildcard)
-
-	// Virtual field
-	_oddDayOfMonthWildcard := bool((dayOfMonth) == (33))
-	oddDayOfMonthWildcard := bool(_oddDayOfMonthWildcard)
-
-	// Virtual field
-	_evenDayOfMonthWildcard := bool((dayOfMonth) == (34))
-	evenDayOfMonthWildcard := bool(_evenDayOfMonthWildcard)
-
-	// Simple Field (dayOfWeek)
-	_dayOfWeek, _dayOfWeekErr := readBuffer.ReadInt8("dayOfWeek", 8)
-	if _dayOfWeekErr != nil {
-		return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
-	}
-	dayOfWeek := _dayOfWeek
-
-	// Virtual field
-	_dayOfWeekIsWildcard := bool((dayOfWeek) == (wildcard))
-	dayOfWeekIsWildcard := bool(_dayOfWeekIsWildcard)
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagDate"); closeErr != nil {
 		return nil, closeErr
@@ -241,24 +161,11 @@ func BACnetContextTagDateParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 
 	// Create a partially initialized instance
 	_child := &BACnetContextTagDate{
-		YearMinus1900:          yearMinus1900,
-		Month:                  month,
-		DayOfMonth:             dayOfMonth,
-		DayOfWeek:              dayOfWeek,
-		Wildcard:               wildcard,
-		YearIsWildcard:         yearIsWildcard,
-		MonthIsWildcard:        monthIsWildcard,
-		OddMonthWildcard:       oddMonthWildcard,
-		EvenMonthWildcard:      evenMonthWildcard,
-		DayOfMonthIsWildcard:   dayOfMonthIsWildcard,
-		LastDayOfMonthWildcard: lastDayOfMonthWildcard,
-		OddDayOfMonthWildcard:  oddDayOfMonthWildcard,
-		EvenDayOfMonthWildcard: evenDayOfMonthWildcard,
-		DayOfWeekIsWildcard:    dayOfWeekIsWildcard,
-		BACnetContextTag:       &BACnetContextTag{},
+		Payload:          CastBACnetTagPayloadDate(payload),
+		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
-	return _child.BACnetContextTag, nil
+	return _child, nil
 }
 
 func (m *BACnetContextTagDate) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -266,73 +173,17 @@ func (m *BACnetContextTagDate) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("BACnetContextTagDate"); pushErr != nil {
 			return pushErr
 		}
-		// Virtual field
-		if _wildcardErr := writeBuffer.WriteVirtual("wildcard", m.Wildcard); _wildcardErr != nil {
-			return errors.Wrap(_wildcardErr, "Error serializing 'wildcard' field")
-		}
 
-		// Simple Field (yearMinus1900)
-		yearMinus1900 := int8(m.YearMinus1900)
-		_yearMinus1900Err := writeBuffer.WriteInt8("yearMinus1900", 8, (yearMinus1900))
-		if _yearMinus1900Err != nil {
-			return errors.Wrap(_yearMinus1900Err, "Error serializing 'yearMinus1900' field")
+		// Simple Field (payload)
+		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
+			return pushErr
 		}
-		// Virtual field
-		if _yearIsWildcardErr := writeBuffer.WriteVirtual("yearIsWildcard", m.YearIsWildcard); _yearIsWildcardErr != nil {
-			return errors.Wrap(_yearIsWildcardErr, "Error serializing 'yearIsWildcard' field")
+		_payloadErr := m.Payload.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
+			return popErr
 		}
-
-		// Simple Field (month)
-		month := int8(m.Month)
-		_monthErr := writeBuffer.WriteInt8("month", 8, (month))
-		if _monthErr != nil {
-			return errors.Wrap(_monthErr, "Error serializing 'month' field")
-		}
-		// Virtual field
-		if _monthIsWildcardErr := writeBuffer.WriteVirtual("monthIsWildcard", m.MonthIsWildcard); _monthIsWildcardErr != nil {
-			return errors.Wrap(_monthIsWildcardErr, "Error serializing 'monthIsWildcard' field")
-		}
-		// Virtual field
-		if _oddMonthWildcardErr := writeBuffer.WriteVirtual("oddMonthWildcard", m.OddMonthWildcard); _oddMonthWildcardErr != nil {
-			return errors.Wrap(_oddMonthWildcardErr, "Error serializing 'oddMonthWildcard' field")
-		}
-		// Virtual field
-		if _evenMonthWildcardErr := writeBuffer.WriteVirtual("evenMonthWildcard", m.EvenMonthWildcard); _evenMonthWildcardErr != nil {
-			return errors.Wrap(_evenMonthWildcardErr, "Error serializing 'evenMonthWildcard' field")
-		}
-
-		// Simple Field (dayOfMonth)
-		dayOfMonth := int8(m.DayOfMonth)
-		_dayOfMonthErr := writeBuffer.WriteInt8("dayOfMonth", 8, (dayOfMonth))
-		if _dayOfMonthErr != nil {
-			return errors.Wrap(_dayOfMonthErr, "Error serializing 'dayOfMonth' field")
-		}
-		// Virtual field
-		if _dayOfMonthIsWildcardErr := writeBuffer.WriteVirtual("dayOfMonthIsWildcard", m.DayOfMonthIsWildcard); _dayOfMonthIsWildcardErr != nil {
-			return errors.Wrap(_dayOfMonthIsWildcardErr, "Error serializing 'dayOfMonthIsWildcard' field")
-		}
-		// Virtual field
-		if _lastDayOfMonthWildcardErr := writeBuffer.WriteVirtual("lastDayOfMonthWildcard", m.LastDayOfMonthWildcard); _lastDayOfMonthWildcardErr != nil {
-			return errors.Wrap(_lastDayOfMonthWildcardErr, "Error serializing 'lastDayOfMonthWildcard' field")
-		}
-		// Virtual field
-		if _oddDayOfMonthWildcardErr := writeBuffer.WriteVirtual("oddDayOfMonthWildcard", m.OddDayOfMonthWildcard); _oddDayOfMonthWildcardErr != nil {
-			return errors.Wrap(_oddDayOfMonthWildcardErr, "Error serializing 'oddDayOfMonthWildcard' field")
-		}
-		// Virtual field
-		if _evenDayOfMonthWildcardErr := writeBuffer.WriteVirtual("evenDayOfMonthWildcard", m.EvenDayOfMonthWildcard); _evenDayOfMonthWildcardErr != nil {
-			return errors.Wrap(_evenDayOfMonthWildcardErr, "Error serializing 'evenDayOfMonthWildcard' field")
-		}
-
-		// Simple Field (dayOfWeek)
-		dayOfWeek := int8(m.DayOfWeek)
-		_dayOfWeekErr := writeBuffer.WriteInt8("dayOfWeek", 8, (dayOfWeek))
-		if _dayOfWeekErr != nil {
-			return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
-		}
-		// Virtual field
-		if _dayOfWeekIsWildcardErr := writeBuffer.WriteVirtual("dayOfWeekIsWildcard", m.DayOfWeekIsWildcard); _dayOfWeekIsWildcardErr != nil {
-			return errors.Wrap(_dayOfWeekIsWildcardErr, "Error serializing 'dayOfWeekIsWildcard' field")
+		if _payloadErr != nil {
+			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetContextTagDate"); popErr != nil {
@@ -348,6 +199,8 @@ func (m *BACnetContextTagDate) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

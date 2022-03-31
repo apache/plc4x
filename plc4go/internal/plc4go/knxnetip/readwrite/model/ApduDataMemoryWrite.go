@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type ApduDataMemoryWrite struct {
 	*ApduData
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataMemoryWrite interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduData
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataMemoryWrite) ApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataMemoryWrite) GetApciType() uint8 {
 	return 0xA
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataMemoryWrite) InitializeParent(parent *ApduData) {}
 
-func NewApduDataMemoryWrite() *ApduData {
-	child := &ApduDataMemoryWrite{
-		ApduData: NewApduData(),
+func (m *ApduDataMemoryWrite) GetParent() *ApduData {
+	return m.ApduData
+}
+
+// NewApduDataMemoryWrite factory function for ApduDataMemoryWrite
+func NewApduDataMemoryWrite(dataLength uint8) *ApduDataMemoryWrite {
+	_result := &ApduDataMemoryWrite{
+		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataMemoryWrite(structType interface{}) *ApduDataMemoryWrite {
-	castFunc := func(typ interface{}) *ApduDataMemoryWrite {
-		if casted, ok := typ.(ApduDataMemoryWrite); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataMemoryWrite); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataMemoryWrite(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataMemoryWrite(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataMemoryWrite); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataMemoryWrite); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataMemoryWrite(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataMemoryWrite(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataMemoryWrite) GetTypeName() string {
 	return "ApduDataMemoryWrite"
 }
 
-func (m *ApduDataMemoryWrite) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataMemoryWrite) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataMemoryWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataMemoryWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataMemoryWrite) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataMemoryWrite) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataMemoryWriteParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataMemoryWriteParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataMemoryWrite, error) {
 	if pullErr := readBuffer.PullContext("ApduDataMemoryWrite"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataMemoryWrite"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func ApduDataMemoryWriteParse(readBuffer utils.ReadBuffer, dataLength uint8) (*A
 		ApduData: &ApduData{},
 	}
 	_child.ApduData.Child = _child
-	return _child.ApduData, nil
+	return _child, nil
 }
 
 func (m *ApduDataMemoryWrite) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *ApduDataMemoryWrite) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

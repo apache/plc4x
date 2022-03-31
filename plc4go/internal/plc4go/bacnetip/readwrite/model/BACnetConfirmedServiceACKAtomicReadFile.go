@@ -32,70 +32,84 @@ type BACnetConfirmedServiceACKAtomicReadFile struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKAtomicReadFile interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetConfirmedServiceACK
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceACKAtomicReadFile) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetConfirmedServiceACKAtomicReadFile) GetServiceChoice() uint8 {
 	return 0x06
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetConfirmedServiceACKAtomicReadFile) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
-func NewBACnetConfirmedServiceACKAtomicReadFile() *BACnetConfirmedServiceACK {
-	child := &BACnetConfirmedServiceACKAtomicReadFile{
+func (m *BACnetConfirmedServiceACKAtomicReadFile) GetParent() *BACnetConfirmedServiceACK {
+	return m.BACnetConfirmedServiceACK
+}
+
+// NewBACnetConfirmedServiceACKAtomicReadFile factory function for BACnetConfirmedServiceACKAtomicReadFile
+func NewBACnetConfirmedServiceACKAtomicReadFile() *BACnetConfirmedServiceACKAtomicReadFile {
+	_result := &BACnetConfirmedServiceACKAtomicReadFile{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceACK
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceACKAtomicReadFile(structType interface{}) *BACnetConfirmedServiceACKAtomicReadFile {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceACKAtomicReadFile {
-		if casted, ok := typ.(BACnetConfirmedServiceACKAtomicReadFile); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACKAtomicReadFile); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKAtomicReadFile(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKAtomicReadFile(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceACKAtomicReadFile); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceACKAtomicReadFile); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKAtomicReadFile(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKAtomicReadFile(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceACKAtomicReadFile) GetTypeName() string {
 	return "BACnetConfirmedServiceACKAtomicReadFile"
 }
 
-func (m *BACnetConfirmedServiceACKAtomicReadFile) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceACKAtomicReadFile) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceACKAtomicReadFile) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceACKAtomicReadFile) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceACKAtomicReadFile) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceACKAtomicReadFile) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKAtomicReadFileParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKAtomicReadFileParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACKAtomicReadFile, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKAtomicReadFile"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceACKAtomicReadFile"); closeErr != nil {
 		return nil, closeErr
@@ -106,7 +120,7 @@ func BACnetConfirmedServiceACKAtomicReadFileParse(readBuffer utils.ReadBuffer) (
 		BACnetConfirmedServiceACK: &BACnetConfirmedServiceACK{},
 	}
 	_child.BACnetConfirmedServiceACK.Child = _child
-	return _child.BACnetConfirmedServiceACK, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceACKAtomicReadFile) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -128,6 +142,8 @@ func (m *BACnetConfirmedServiceACKAtomicReadFile) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

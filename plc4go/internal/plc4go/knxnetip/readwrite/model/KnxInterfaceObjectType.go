@@ -461,12 +461,12 @@ func CastKnxInterfaceObjectType(structType interface{}) KnxInterfaceObjectType {
 	return castFunc(structType)
 }
 
-func (m KnxInterfaceObjectType) LengthInBits() uint16 {
+func (m KnxInterfaceObjectType) GetLengthInBits() uint16 {
 	return 16
 }
 
-func (m KnxInterfaceObjectType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m KnxInterfaceObjectType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxInterfaceObjectTypeParse(readBuffer utils.ReadBuffer) (KnxInterfaceObjectType, error) {

@@ -36,64 +36,103 @@ type AdsWriteControlRequest struct {
 
 // The corresponding interface
 type IAdsWriteControlRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAdsData
+	// GetAdsState returns AdsState (property field)
+	GetAdsState() uint16
+	// GetDeviceState returns DeviceState (property field)
+	GetDeviceState() uint16
+	// GetData returns Data (property field)
+	GetData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsWriteControlRequest) CommandId() CommandId {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *AdsWriteControlRequest) GetCommandId() CommandId {
 	return CommandId_ADS_WRITE_CONTROL
 }
 
-func (m *AdsWriteControlRequest) Response() bool {
+func (m *AdsWriteControlRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *AdsWriteControlRequest) InitializeParent(parent *AdsData) {}
 
-func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte) *AdsData {
-	child := &AdsWriteControlRequest{
+func (m *AdsWriteControlRequest) GetParent() *AdsData {
+	return m.AdsData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AdsWriteControlRequest) GetAdsState() uint16 {
+	return m.AdsState
+}
+
+func (m *AdsWriteControlRequest) GetDeviceState() uint16 {
+	return m.DeviceState
+}
+
+func (m *AdsWriteControlRequest) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAdsWriteControlRequest factory function for AdsWriteControlRequest
+func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte) *AdsWriteControlRequest {
+	_result := &AdsWriteControlRequest{
 		AdsState:    adsState,
 		DeviceState: deviceState,
 		Data:        data,
 		AdsData:     NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsWriteControlRequest(structType interface{}) *AdsWriteControlRequest {
-	castFunc := func(typ interface{}) *AdsWriteControlRequest {
-		if casted, ok := typ.(AdsWriteControlRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsWriteControlRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsWriteControlRequest(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsWriteControlRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsWriteControlRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsWriteControlRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsWriteControlRequest(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsWriteControlRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsWriteControlRequest) GetTypeName() string {
 	return "AdsWriteControlRequest"
 }
 
-func (m *AdsWriteControlRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsWriteControlRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsWriteControlRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsWriteControlRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (adsState)
 	lengthInBits += 16
@@ -112,14 +151,16 @@ func (m *AdsWriteControlRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AdsWriteControlRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsWriteControlRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsWriteControlRequest, error) {
 	if pullErr := readBuffer.PullContext("AdsWriteControlRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (adsState)
 	_adsState, _adsStateErr := readBuffer.ReadUint16("adsState", 16)
@@ -135,7 +176,7 @@ func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandI
 	}
 	deviceState := _deviceState
 
-	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
@@ -160,7 +201,7 @@ func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandI
 		AdsData:     &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsWriteControlRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -184,7 +225,7 @@ func (m *AdsWriteControlRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		length := uint32(uint32(len(m.Data)))
+		length := uint32(uint32(len(m.GetData())))
 		_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
@@ -212,6 +253,8 @@ func (m *AdsWriteControlRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

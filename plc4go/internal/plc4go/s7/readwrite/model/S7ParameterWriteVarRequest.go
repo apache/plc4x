@@ -34,62 +34,89 @@ type S7ParameterWriteVarRequest struct {
 
 // The corresponding interface
 type IS7ParameterWriteVarRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7Parameter
+	// GetItems returns Items (property field)
+	GetItems() []*S7VarRequestParameterItem
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7ParameterWriteVarRequest) ParameterType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7ParameterWriteVarRequest) GetParameterType() uint8 {
 	return 0x05
 }
 
-func (m *S7ParameterWriteVarRequest) MessageType() uint8 {
+func (m *S7ParameterWriteVarRequest) GetMessageType() uint8 {
 	return 0x01
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *S7ParameterWriteVarRequest) InitializeParent(parent *S7Parameter) {}
 
-func NewS7ParameterWriteVarRequest(items []*S7VarRequestParameterItem) *S7Parameter {
-	child := &S7ParameterWriteVarRequest{
+func (m *S7ParameterWriteVarRequest) GetParent() *S7Parameter {
+	return m.S7Parameter
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7ParameterWriteVarRequest) GetItems() []*S7VarRequestParameterItem {
+	return m.Items
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7ParameterWriteVarRequest factory function for S7ParameterWriteVarRequest
+func NewS7ParameterWriteVarRequest(items []*S7VarRequestParameterItem) *S7ParameterWriteVarRequest {
+	_result := &S7ParameterWriteVarRequest{
 		Items:       items,
 		S7Parameter: NewS7Parameter(),
 	}
-	child.Child = child
-	return child.S7Parameter
+	_result.Child = _result
+	return _result
 }
 
 func CastS7ParameterWriteVarRequest(structType interface{}) *S7ParameterWriteVarRequest {
-	castFunc := func(typ interface{}) *S7ParameterWriteVarRequest {
-		if casted, ok := typ.(S7ParameterWriteVarRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7ParameterWriteVarRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7Parameter); ok {
-			return CastS7ParameterWriteVarRequest(casted.Child)
-		}
-		if casted, ok := typ.(*S7Parameter); ok {
-			return CastS7ParameterWriteVarRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7ParameterWriteVarRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7ParameterWriteVarRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7Parameter); ok {
+		return CastS7ParameterWriteVarRequest(casted.Child)
+	}
+	if casted, ok := structType.(*S7Parameter); ok {
+		return CastS7ParameterWriteVarRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7ParameterWriteVarRequest) GetTypeName() string {
 	return "S7ParameterWriteVarRequest"
 }
 
-func (m *S7ParameterWriteVarRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7ParameterWriteVarRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7ParameterWriteVarRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7ParameterWriteVarRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (numItems)
 	lengthInBits += 8
@@ -98,23 +125,25 @@ func (m *S7ParameterWriteVarRequest) LengthInBitsConditional(lastItem bool) uint
 	if len(m.Items) > 0 {
 		for i, element := range m.Items {
 			last := i == len(m.Items)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *S7ParameterWriteVarRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7ParameterWriteVarRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
+func S7ParameterWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7ParameterWriteVarRequest, error) {
 	if pullErr := readBuffer.PullContext("S7ParameterWriteVarRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (numItems) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	numItems, _numItemsErr := readBuffer.ReadUint8("numItems", 8)
 	_ = numItems
 	if _numItemsErr != nil {
@@ -150,7 +179,7 @@ func S7ParameterWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType ui
 		S7Parameter: &S7Parameter{},
 	}
 	_child.S7Parameter.Child = _child
-	return _child.S7Parameter, nil
+	return _child, nil
 }
 
 func (m *S7ParameterWriteVarRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -160,7 +189,7 @@ func (m *S7ParameterWriteVarRequest) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		numItems := uint8(uint8(len(m.Items)))
+		numItems := uint8(uint8(len(m.GetItems())))
 		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, (numItems))
 		if _numItemsErr != nil {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
@@ -195,6 +224,8 @@ func (m *S7ParameterWriteVarRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

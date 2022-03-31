@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type TDataConnectedReq struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type ITDataConnectedReq interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICEMI
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *TDataConnectedReq) MessageCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *TDataConnectedReq) GetMessageCode() uint8 {
 	return 0x41
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *TDataConnectedReq) InitializeParent(parent *CEMI) {}
 
-func NewTDataConnectedReq() *CEMI {
-	child := &TDataConnectedReq{
-		CEMI: NewCEMI(),
+func (m *TDataConnectedReq) GetParent() *CEMI {
+	return m.CEMI
+}
+
+// NewTDataConnectedReq factory function for TDataConnectedReq
+func NewTDataConnectedReq(size uint16) *TDataConnectedReq {
+	_result := &TDataConnectedReq{
+		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastTDataConnectedReq(structType interface{}) *TDataConnectedReq {
-	castFunc := func(typ interface{}) *TDataConnectedReq {
-		if casted, ok := typ.(TDataConnectedReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*TDataConnectedReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastTDataConnectedReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastTDataConnectedReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(TDataConnectedReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*TDataConnectedReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastTDataConnectedReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastTDataConnectedReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *TDataConnectedReq) GetTypeName() string {
 	return "TDataConnectedReq"
 }
 
-func (m *TDataConnectedReq) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *TDataConnectedReq) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *TDataConnectedReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *TDataConnectedReq) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *TDataConnectedReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *TDataConnectedReq) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func TDataConnectedReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func TDataConnectedReqParse(readBuffer utils.ReadBuffer, size uint16) (*TDataConnectedReq, error) {
 	if pullErr := readBuffer.PullContext("TDataConnectedReq"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("TDataConnectedReq"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func TDataConnectedReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, er
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *TDataConnectedReq) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *TDataConnectedReq) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

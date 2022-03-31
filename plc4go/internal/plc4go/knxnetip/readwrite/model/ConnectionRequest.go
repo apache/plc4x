@@ -36,81 +36,122 @@ type ConnectionRequest struct {
 
 // The corresponding interface
 type IConnectionRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IKnxNetIpMessage
+	// GetHpaiDiscoveryEndpoint returns HpaiDiscoveryEndpoint (property field)
+	GetHpaiDiscoveryEndpoint() *HPAIDiscoveryEndpoint
+	// GetHpaiDataEndpoint returns HpaiDataEndpoint (property field)
+	GetHpaiDataEndpoint() *HPAIDataEndpoint
+	// GetConnectionRequestInformation returns ConnectionRequestInformation (property field)
+	GetConnectionRequestInformation() *ConnectionRequestInformation
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ConnectionRequest) MsgType() uint16 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ConnectionRequest) GetMsgType() uint16 {
 	return 0x0205
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ConnectionRequest) InitializeParent(parent *KnxNetIpMessage) {}
 
-func NewConnectionRequest(hpaiDiscoveryEndpoint *HPAIDiscoveryEndpoint, hpaiDataEndpoint *HPAIDataEndpoint, connectionRequestInformation *ConnectionRequestInformation) *KnxNetIpMessage {
-	child := &ConnectionRequest{
+func (m *ConnectionRequest) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ConnectionRequest) GetHpaiDiscoveryEndpoint() *HPAIDiscoveryEndpoint {
+	return m.HpaiDiscoveryEndpoint
+}
+
+func (m *ConnectionRequest) GetHpaiDataEndpoint() *HPAIDataEndpoint {
+	return m.HpaiDataEndpoint
+}
+
+func (m *ConnectionRequest) GetConnectionRequestInformation() *ConnectionRequestInformation {
+	return m.ConnectionRequestInformation
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewConnectionRequest factory function for ConnectionRequest
+func NewConnectionRequest(hpaiDiscoveryEndpoint *HPAIDiscoveryEndpoint, hpaiDataEndpoint *HPAIDataEndpoint, connectionRequestInformation *ConnectionRequestInformation) *ConnectionRequest {
+	_result := &ConnectionRequest{
 		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
 		HpaiDataEndpoint:             hpaiDataEndpoint,
 		ConnectionRequestInformation: connectionRequestInformation,
 		KnxNetIpMessage:              NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastConnectionRequest(structType interface{}) *ConnectionRequest {
-	castFunc := func(typ interface{}) *ConnectionRequest {
-		if casted, ok := typ.(ConnectionRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConnectionRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastConnectionRequest(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastConnectionRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ConnectionRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConnectionRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastConnectionRequest(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastConnectionRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ConnectionRequest) GetTypeName() string {
 	return "ConnectionRequest"
 }
 
-func (m *ConnectionRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ConnectionRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ConnectionRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ConnectionRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (hpaiDiscoveryEndpoint)
-	lengthInBits += m.HpaiDiscoveryEndpoint.LengthInBits()
+	lengthInBits += m.HpaiDiscoveryEndpoint.GetLengthInBits()
 
 	// Simple field (hpaiDataEndpoint)
-	lengthInBits += m.HpaiDataEndpoint.LengthInBits()
+	lengthInBits += m.HpaiDataEndpoint.GetLengthInBits()
 
 	// Simple field (connectionRequestInformation)
-	lengthInBits += m.ConnectionRequestInformation.LengthInBits()
+	lengthInBits += m.ConnectionRequestInformation.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *ConnectionRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ConnectionRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*ConnectionRequest, error) {
 	if pullErr := readBuffer.PullContext("ConnectionRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (hpaiDiscoveryEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiDiscoveryEndpoint"); pullErr != nil {
@@ -163,7 +204,7 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 		KnxNetIpMessage:              &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -221,6 +262,8 @@ func (m *ConnectionRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

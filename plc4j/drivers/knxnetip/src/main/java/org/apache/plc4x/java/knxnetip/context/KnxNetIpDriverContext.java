@@ -48,7 +48,7 @@ public class KnxNetIpDriverContext implements DriverContext, HasConfiguration<Kn
         if (configuration.knxprojFilePath != null) {
             File knxprojFile = new File(configuration.knxprojFilePath);
             if (knxprojFile.exists() && knxprojFile.isFile()) {
-                ets5Model = new Ets5Parser().parse(knxprojFile);
+                ets5Model = new Ets5Parser().parse(knxprojFile, configuration.knxprojPassword);
                 groupAddressType = ets5Model.getGroupAddressType();
             } else {
                 throw new PlcRuntimeException(String.format(

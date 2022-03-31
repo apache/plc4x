@@ -37,64 +37,103 @@ type S7ParameterSetupCommunication struct {
 
 // The corresponding interface
 type IS7ParameterSetupCommunication interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7Parameter
+	// GetMaxAmqCaller returns MaxAmqCaller (property field)
+	GetMaxAmqCaller() uint16
+	// GetMaxAmqCallee returns MaxAmqCallee (property field)
+	GetMaxAmqCallee() uint16
+	// GetPduLength returns PduLength (property field)
+	GetPduLength() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7ParameterSetupCommunication) ParameterType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7ParameterSetupCommunication) GetParameterType() uint8 {
 	return 0xF0
 }
 
-func (m *S7ParameterSetupCommunication) MessageType() uint8 {
+func (m *S7ParameterSetupCommunication) GetMessageType() uint8 {
 	return 0
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *S7ParameterSetupCommunication) InitializeParent(parent *S7Parameter) {}
 
-func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) *S7Parameter {
-	child := &S7ParameterSetupCommunication{
+func (m *S7ParameterSetupCommunication) GetParent() *S7Parameter {
+	return m.S7Parameter
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7ParameterSetupCommunication) GetMaxAmqCaller() uint16 {
+	return m.MaxAmqCaller
+}
+
+func (m *S7ParameterSetupCommunication) GetMaxAmqCallee() uint16 {
+	return m.MaxAmqCallee
+}
+
+func (m *S7ParameterSetupCommunication) GetPduLength() uint16 {
+	return m.PduLength
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7ParameterSetupCommunication factory function for S7ParameterSetupCommunication
+func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) *S7ParameterSetupCommunication {
+	_result := &S7ParameterSetupCommunication{
 		MaxAmqCaller: maxAmqCaller,
 		MaxAmqCallee: maxAmqCallee,
 		PduLength:    pduLength,
 		S7Parameter:  NewS7Parameter(),
 	}
-	child.Child = child
-	return child.S7Parameter
+	_result.Child = _result
+	return _result
 }
 
 func CastS7ParameterSetupCommunication(structType interface{}) *S7ParameterSetupCommunication {
-	castFunc := func(typ interface{}) *S7ParameterSetupCommunication {
-		if casted, ok := typ.(S7ParameterSetupCommunication); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7ParameterSetupCommunication); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7Parameter); ok {
-			return CastS7ParameterSetupCommunication(casted.Child)
-		}
-		if casted, ok := typ.(*S7Parameter); ok {
-			return CastS7ParameterSetupCommunication(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7ParameterSetupCommunication); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7ParameterSetupCommunication); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7Parameter); ok {
+		return CastS7ParameterSetupCommunication(casted.Child)
+	}
+	if casted, ok := structType.(*S7Parameter); ok {
+		return CastS7ParameterSetupCommunication(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7ParameterSetupCommunication) GetTypeName() string {
 	return "S7ParameterSetupCommunication"
 }
 
-func (m *S7ParameterSetupCommunication) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7ParameterSetupCommunication) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7ParameterSetupCommunication) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7ParameterSetupCommunication) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -111,14 +150,16 @@ func (m *S7ParameterSetupCommunication) LengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *S7ParameterSetupCommunication) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7ParameterSetupCommunication) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
+func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7ParameterSetupCommunication, error) {
 	if pullErr := readBuffer.PullContext("S7ParameterSetupCommunication"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -167,7 +208,7 @@ func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType
 		S7Parameter:  &S7Parameter{},
 	}
 	_child.S7Parameter.Child = _child
-	return _child.S7Parameter, nil
+	return _child, nil
 }
 
 func (m *S7ParameterSetupCommunication) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -218,6 +259,8 @@ func (m *S7ParameterSetupCommunication) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

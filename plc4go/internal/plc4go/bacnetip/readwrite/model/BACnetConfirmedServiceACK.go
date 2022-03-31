@@ -33,9 +33,13 @@ type BACnetConfirmedServiceACK struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACK interface {
-	ServiceChoice() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetServiceChoice returns ServiceChoice (discriminator field)
+	GetServiceChoice() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,40 +51,43 @@ type IBACnetConfirmedServiceACKParent interface {
 type IBACnetConfirmedServiceACKChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetConfirmedServiceACK)
+	GetParent() *BACnetConfirmedServiceACK
+
 	GetTypeName() string
 	IBACnetConfirmedServiceACK
 }
 
+// NewBACnetConfirmedServiceACK factory function for BACnetConfirmedServiceACK
 func NewBACnetConfirmedServiceACK() *BACnetConfirmedServiceACK {
 	return &BACnetConfirmedServiceACK{}
 }
 
 func CastBACnetConfirmedServiceACK(structType interface{}) *BACnetConfirmedServiceACK {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceACK {
-		if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceACK); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceACK); ok {
+		return casted
+	}
+	if casted, ok := structType.(IBACnetConfirmedServiceACKChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceACK) GetTypeName() string {
 	return "BACnetConfirmedServiceACK"
 }
 
-func (m *BACnetConfirmedServiceACK) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceACK) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceACK) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetConfirmedServiceACK) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetConfirmedServiceACK) ParentLengthInBits() uint16 {
+func (m *BACnetConfirmedServiceACK) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
@@ -88,14 +95,16 @@ func (m *BACnetConfirmedServiceACK) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceACK) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceACK) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACK"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice, _serviceChoiceErr := readBuffer.ReadUint8("serviceChoice", 8)
@@ -104,39 +113,43 @@ func BACnetConfirmedServiceACKParse(readBuffer utils.ReadBuffer) (*BACnetConfirm
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetConfirmedServiceACK
+	type BACnetConfirmedServiceACKChild interface {
+		InitializeParent(*BACnetConfirmedServiceACK)
+		GetParent() *BACnetConfirmedServiceACK
+	}
+	var _child BACnetConfirmedServiceACKChild
 	var typeSwitchError error
 	switch {
 	case serviceChoice == 0x03: // BACnetConfirmedServiceACKGetAlarmSummary
-		_parent, typeSwitchError = BACnetConfirmedServiceACKGetAlarmSummaryParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKGetAlarmSummaryParse(readBuffer)
 	case serviceChoice == 0x04: // BACnetConfirmedServiceACKGetEnrollmentSummary
-		_parent, typeSwitchError = BACnetConfirmedServiceACKGetEnrollmentSummaryParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKGetEnrollmentSummaryParse(readBuffer)
 	case serviceChoice == 0x1D: // BACnetConfirmedServiceACKGetEventInformation
-		_parent, typeSwitchError = BACnetConfirmedServiceACKGetEventInformationParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKGetEventInformationParse(readBuffer)
 	case serviceChoice == 0x06: // BACnetConfirmedServiceACKAtomicReadFile
-		_parent, typeSwitchError = BACnetConfirmedServiceACKAtomicReadFileParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKAtomicReadFileParse(readBuffer)
 	case serviceChoice == 0x07: // BACnetConfirmedServiceACKAtomicWriteFile
-		_parent, typeSwitchError = BACnetConfirmedServiceACKAtomicWriteFileParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKAtomicWriteFileParse(readBuffer)
 	case serviceChoice == 0x08: // BACnetConfirmedServiceAddListElement
-		_parent, typeSwitchError = BACnetConfirmedServiceAddListElementParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceAddListElementParse(readBuffer)
 	case serviceChoice == 0x0A: // BACnetConfirmedServiceACKCreateObject
-		_parent, typeSwitchError = BACnetConfirmedServiceACKCreateObjectParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKCreateObjectParse(readBuffer)
 	case serviceChoice == 0x0C: // BACnetConfirmedServiceACKReadProperty
-		_parent, typeSwitchError = BACnetConfirmedServiceACKReadPropertyParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKReadPropertyParse(readBuffer)
 	case serviceChoice == 0x0E: // BACnetConfirmedServiceACKReadPropertyMultiple
-		_parent, typeSwitchError = BACnetConfirmedServiceACKReadPropertyMultipleParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKReadPropertyMultipleParse(readBuffer)
 	case serviceChoice == 0x1A: // BACnetConfirmedServiceACKReadRange
-		_parent, typeSwitchError = BACnetConfirmedServiceACKReadRangeParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKReadRangeParse(readBuffer)
 	case serviceChoice == 0x12: // BACnetConfirmedServiceACKConfirmedPrivateTransfer
-		_parent, typeSwitchError = BACnetConfirmedServiceACKConfirmedPrivateTransferParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKConfirmedPrivateTransferParse(readBuffer)
 	case serviceChoice == 0x15: // BACnetConfirmedServiceACKVTOpen
-		_parent, typeSwitchError = BACnetConfirmedServiceACKVTOpenParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKVTOpenParse(readBuffer)
 	case serviceChoice == 0x17: // BACnetConfirmedServiceACKVTData
-		_parent, typeSwitchError = BACnetConfirmedServiceACKVTDataParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKVTDataParse(readBuffer)
 	case serviceChoice == 0x18: // BACnetConfirmedServiceACKRemovedAuthenticate
-		_parent, typeSwitchError = BACnetConfirmedServiceACKRemovedAuthenticateParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKRemovedAuthenticateParse(readBuffer)
 	case serviceChoice == 0x0D: // BACnetConfirmedServiceACKRemovedReadPropertyConditional
-		_parent, typeSwitchError = BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -150,8 +163,8 @@ func BACnetConfirmedServiceACKParse(readBuffer utils.ReadBuffer) (*BACnetConfirm
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetConfirmedServiceACK) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -164,7 +177,7 @@ func (m *BACnetConfirmedServiceACK) SerializeParent(writeBuffer utils.WriteBuffe
 	}
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice := uint8(child.ServiceChoice())
+	serviceChoice := uint8(child.GetServiceChoice())
 	_serviceChoiceErr := writeBuffer.WriteUint8("serviceChoice", 8, (serviceChoice))
 
 	if _serviceChoiceErr != nil {
@@ -187,6 +200,8 @@ func (m *BACnetConfirmedServiceACK) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

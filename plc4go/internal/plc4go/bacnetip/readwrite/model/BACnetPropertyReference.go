@@ -35,64 +35,88 @@ type BACnetPropertyReference struct {
 
 // The corresponding interface
 type IBACnetPropertyReference interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetPropertyIdentifier returns PropertyIdentifier (property field)
+	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	// GetArrayIndex returns ArrayIndex (property field)
+	GetArrayIndex() *BACnetContextTagUnsignedInteger
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetPropertyReference) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+	return m.PropertyIdentifier
+}
+
+func (m *BACnetPropertyReference) GetArrayIndex() *BACnetContextTagUnsignedInteger {
+	return m.ArrayIndex
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetPropertyReference factory function for BACnetPropertyReference
 func NewBACnetPropertyReference(propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger) *BACnetPropertyReference {
 	return &BACnetPropertyReference{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex}
 }
 
 func CastBACnetPropertyReference(structType interface{}) *BACnetPropertyReference {
-	castFunc := func(typ interface{}) *BACnetPropertyReference {
-		if casted, ok := typ.(BACnetPropertyReference); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetPropertyReference); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetPropertyReference); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetPropertyReference); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetPropertyReference) GetTypeName() string {
 	return "BACnetPropertyReference"
 }
 
-func (m *BACnetPropertyReference) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetPropertyReference) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetPropertyReference) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetPropertyReference) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (propertyIdentifier)
-	lengthInBits += m.PropertyIdentifier.LengthInBits()
+	lengthInBits += m.PropertyIdentifier.GetLengthInBits()
 
 	// Optional Field (arrayIndex)
 	if m.ArrayIndex != nil {
-		lengthInBits += (*m.ArrayIndex).LengthInBits()
+		lengthInBits += (*m.ArrayIndex).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetPropertyReference) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetPropertyReference) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BACnetPropertyReference, error) {
 	if pullErr := readBuffer.PullContext("BACnetPropertyReference"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (propertyIdentifier)
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_PROPERTY_IDENTIFIER)
+	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
@@ -104,7 +128,7 @@ func BACnetPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BACnetPropertyR
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -174,6 +198,8 @@ func (m *BACnetPropertyReference) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

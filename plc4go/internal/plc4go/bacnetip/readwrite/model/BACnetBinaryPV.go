@@ -29,49 +29,90 @@ import (
 
 // The data-structure of this message
 type BACnetBinaryPV struct {
-	RawData    *BACnetContextTagEnumerated
-	IsInactive bool
-	IsActive   bool
+	RawData *BACnetContextTagEnumerated
+
+	// Arguments.
+	TagNumber uint8
 }
 
 // The corresponding interface
 type IBACnetBinaryPV interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetRawData returns RawData (property field)
+	GetRawData() *BACnetContextTagEnumerated
+	// GetIsInactive returns IsInactive (virtual field)
+	GetIsInactive() bool
+	// GetIsActive returns IsActive (virtual field)
+	GetIsActive() bool
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewBACnetBinaryPV(rawData *BACnetContextTagEnumerated, isInactive bool, isActive bool) *BACnetBinaryPV {
-	return &BACnetBinaryPV{RawData: rawData, IsInactive: isInactive, IsActive: isActive}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetBinaryPV) GetRawData() *BACnetContextTagEnumerated {
+	return m.RawData
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+func (m *BACnetBinaryPV) GetIsInactive() bool {
+	rawData := m.RawData
+	_ = rawData
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (0))))
+}
+
+func (m *BACnetBinaryPV) GetIsActive() bool {
+	rawData := m.RawData
+	_ = rawData
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (1))))
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetBinaryPV factory function for BACnetBinaryPV
+func NewBACnetBinaryPV(rawData *BACnetContextTagEnumerated, tagNumber uint8) *BACnetBinaryPV {
+	return &BACnetBinaryPV{RawData: rawData, TagNumber: tagNumber}
 }
 
 func CastBACnetBinaryPV(structType interface{}) *BACnetBinaryPV {
-	castFunc := func(typ interface{}) *BACnetBinaryPV {
-		if casted, ok := typ.(BACnetBinaryPV); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetBinaryPV); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetBinaryPV); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetBinaryPV); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetBinaryPV) GetTypeName() string {
 	return "BACnetBinaryPV"
 }
 
-func (m *BACnetBinaryPV) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetBinaryPV) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetBinaryPV) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetBinaryPV) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Optional Field (rawData)
 	if m.RawData != nil {
-		lengthInBits += (*m.RawData).LengthInBits()
+		lengthInBits += (*m.RawData).GetLengthInBits()
 	}
 
 	// A virtual field doesn't have any in- or output.
@@ -81,19 +122,21 @@ func (m *BACnetBinaryPV) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetBinaryPV) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetBinaryPV) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetBinaryPVParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetBinaryPV, error) {
 	if pullErr := readBuffer.PullContext("BACnetBinaryPV"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (rawData) (Can be skipped, if a given expression evaluates to false)
 	var rawData *BACnetContextTagEnumerated = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("rawData"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -112,19 +155,21 @@ func BACnetBinaryPVParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetB
 	}
 
 	// Virtual field
-	_isInactive := bool(bool(bool((rawData) != (nil))) && bool(bool((len((*rawData).Data)) == (1)))) && bool(bool(((*rawData).Data[0]) == (0)))
+	_isInactive := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (0)))
 	isInactive := bool(_isInactive)
+	_ = isInactive
 
 	// Virtual field
-	_isActive := bool(bool(bool((rawData) != (nil))) && bool(bool((len((*rawData).Data)) == (1)))) && bool(bool(((*rawData).Data[0]) == (1)))
+	_isActive := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (1)))
 	isActive := bool(_isActive)
+	_ = isActive
 
 	if closeErr := readBuffer.CloseContext("BACnetBinaryPV"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetBinaryPV(rawData, isInactive, isActive), nil
+	return NewBACnetBinaryPV(rawData, tagNumber), nil
 }
 
 func (m *BACnetBinaryPV) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,11 +193,11 @@ func (m *BACnetBinaryPV) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 	}
 	// Virtual field
-	if _isInactiveErr := writeBuffer.WriteVirtual("isInactive", m.IsInactive); _isInactiveErr != nil {
+	if _isInactiveErr := writeBuffer.WriteVirtual("isInactive", m.GetIsInactive()); _isInactiveErr != nil {
 		return errors.Wrap(_isInactiveErr, "Error serializing 'isInactive' field")
 	}
 	// Virtual field
-	if _isActiveErr := writeBuffer.WriteVirtual("isActive", m.IsActive); _isActiveErr != nil {
+	if _isActiveErr := writeBuffer.WriteVirtual("isActive", m.GetIsActive()); _isActiveErr != nil {
 		return errors.Wrap(_isActiveErr, "Error serializing 'isActive' field")
 	}
 
@@ -167,6 +212,8 @@ func (m *BACnetBinaryPV) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

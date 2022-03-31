@@ -34,74 +34,103 @@ type ConnectionResponseDataBlockTunnelConnection struct {
 
 // The corresponding interface
 type IConnectionResponseDataBlockTunnelConnection interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IConnectionResponseDataBlock
+	// GetKnxAddress returns KnxAddress (property field)
+	GetKnxAddress() *KnxAddress
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ConnectionResponseDataBlockTunnelConnection) ConnectionType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ConnectionResponseDataBlockTunnelConnection) GetConnectionType() uint8 {
 	return 0x04
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *ConnectionResponseDataBlockTunnelConnection) InitializeParent(parent *ConnectionResponseDataBlock) {
 }
 
-func NewConnectionResponseDataBlockTunnelConnection(knxAddress *KnxAddress) *ConnectionResponseDataBlock {
-	child := &ConnectionResponseDataBlockTunnelConnection{
+func (m *ConnectionResponseDataBlockTunnelConnection) GetParent() *ConnectionResponseDataBlock {
+	return m.ConnectionResponseDataBlock
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ConnectionResponseDataBlockTunnelConnection) GetKnxAddress() *KnxAddress {
+	return m.KnxAddress
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewConnectionResponseDataBlockTunnelConnection factory function for ConnectionResponseDataBlockTunnelConnection
+func NewConnectionResponseDataBlockTunnelConnection(knxAddress *KnxAddress) *ConnectionResponseDataBlockTunnelConnection {
+	_result := &ConnectionResponseDataBlockTunnelConnection{
 		KnxAddress:                  knxAddress,
 		ConnectionResponseDataBlock: NewConnectionResponseDataBlock(),
 	}
-	child.Child = child
-	return child.ConnectionResponseDataBlock
+	_result.Child = _result
+	return _result
 }
 
 func CastConnectionResponseDataBlockTunnelConnection(structType interface{}) *ConnectionResponseDataBlockTunnelConnection {
-	castFunc := func(typ interface{}) *ConnectionResponseDataBlockTunnelConnection {
-		if casted, ok := typ.(ConnectionResponseDataBlockTunnelConnection); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConnectionResponseDataBlockTunnelConnection); ok {
-			return casted
-		}
-		if casted, ok := typ.(ConnectionResponseDataBlock); ok {
-			return CastConnectionResponseDataBlockTunnelConnection(casted.Child)
-		}
-		if casted, ok := typ.(*ConnectionResponseDataBlock); ok {
-			return CastConnectionResponseDataBlockTunnelConnection(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ConnectionResponseDataBlockTunnelConnection); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConnectionResponseDataBlockTunnelConnection); ok {
+		return casted
+	}
+	if casted, ok := structType.(ConnectionResponseDataBlock); ok {
+		return CastConnectionResponseDataBlockTunnelConnection(casted.Child)
+	}
+	if casted, ok := structType.(*ConnectionResponseDataBlock); ok {
+		return CastConnectionResponseDataBlockTunnelConnection(casted.Child)
+	}
+	return nil
 }
 
 func (m *ConnectionResponseDataBlockTunnelConnection) GetTypeName() string {
 	return "ConnectionResponseDataBlockTunnelConnection"
 }
 
-func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ConnectionResponseDataBlockTunnelConnection) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ConnectionResponseDataBlockTunnelConnection) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (knxAddress)
-	lengthInBits += m.KnxAddress.LengthInBits()
+	lengthInBits += m.KnxAddress.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ConnectionResponseDataBlockTunnelConnection) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffer) (*ConnectionResponseDataBlockTunnelConnection, error) {
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockTunnelConnection"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (knxAddress)
 	if pullErr := readBuffer.PullContext("knxAddress"); pullErr != nil {
@@ -126,7 +155,7 @@ func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffe
 		ConnectionResponseDataBlock: &ConnectionResponseDataBlock{},
 	}
 	_child.ConnectionResponseDataBlock.Child = _child
-	return _child.ConnectionResponseDataBlock, nil
+	return _child, nil
 }
 
 func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -160,6 +189,8 @@ func (m *ConnectionResponseDataBlockTunnelConnection) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

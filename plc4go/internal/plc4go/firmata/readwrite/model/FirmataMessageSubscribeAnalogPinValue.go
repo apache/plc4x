@@ -32,63 +32,99 @@ type FirmataMessageSubscribeAnalogPinValue struct {
 	*FirmataMessage
 	Pin    uint8
 	Enable bool
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
 type IFirmataMessageSubscribeAnalogPinValue interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IFirmataMessage
+	// GetPin returns Pin (property field)
+	GetPin() uint8
+	// GetEnable returns Enable (property field)
+	GetEnable() bool
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataMessageSubscribeAnalogPinValue) MessageType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *FirmataMessageSubscribeAnalogPinValue) GetMessageType() uint8 {
 	return 0xC
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *FirmataMessageSubscribeAnalogPinValue) InitializeParent(parent *FirmataMessage) {}
 
-func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool) *FirmataMessage {
-	child := &FirmataMessageSubscribeAnalogPinValue{
+func (m *FirmataMessageSubscribeAnalogPinValue) GetParent() *FirmataMessage {
+	return m.FirmataMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *FirmataMessageSubscribeAnalogPinValue) GetPin() uint8 {
+	return m.Pin
+}
+
+func (m *FirmataMessageSubscribeAnalogPinValue) GetEnable() bool {
+	return m.Enable
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewFirmataMessageSubscribeAnalogPinValue factory function for FirmataMessageSubscribeAnalogPinValue
+func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool, response bool) *FirmataMessageSubscribeAnalogPinValue {
+	_result := &FirmataMessageSubscribeAnalogPinValue{
 		Pin:            pin,
 		Enable:         enable,
-		FirmataMessage: NewFirmataMessage(),
+		FirmataMessage: NewFirmataMessage(response),
 	}
-	child.Child = child
-	return child.FirmataMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataMessageSubscribeAnalogPinValue(structType interface{}) *FirmataMessageSubscribeAnalogPinValue {
-	castFunc := func(typ interface{}) *FirmataMessageSubscribeAnalogPinValue {
-		if casted, ok := typ.(FirmataMessageSubscribeAnalogPinValue); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataMessageSubscribeAnalogPinValue); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataMessage); ok {
-			return CastFirmataMessageSubscribeAnalogPinValue(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataMessage); ok {
-			return CastFirmataMessageSubscribeAnalogPinValue(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataMessageSubscribeAnalogPinValue); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataMessageSubscribeAnalogPinValue); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataMessage); ok {
+		return CastFirmataMessageSubscribeAnalogPinValue(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataMessage); ok {
+		return CastFirmataMessageSubscribeAnalogPinValue(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataMessageSubscribeAnalogPinValue) GetTypeName() string {
 	return "FirmataMessageSubscribeAnalogPinValue"
 }
 
-func (m *FirmataMessageSubscribeAnalogPinValue) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataMessageSubscribeAnalogPinValue) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataMessageSubscribeAnalogPinValue) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataMessageSubscribeAnalogPinValue) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 4
@@ -102,14 +138,16 @@ func (m *FirmataMessageSubscribeAnalogPinValue) LengthInBitsConditional(lastItem
 	return lengthInBits
 }
 
-func (m *FirmataMessageSubscribeAnalogPinValue) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataMessageSubscribeAnalogPinValue) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {
+func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessageSubscribeAnalogPinValue, error) {
 	if pullErr := readBuffer.PullContext("FirmataMessageSubscribeAnalogPinValue"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (pin)
 	_pin, _pinErr := readBuffer.ReadUint8("pin", 4)
@@ -150,7 +188,7 @@ func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer, res
 		FirmataMessage: &FirmataMessage{},
 	}
 	_child.FirmataMessage.Child = _child
-	return _child.FirmataMessage, nil
+	return _child, nil
 }
 
 func (m *FirmataMessageSubscribeAnalogPinValue) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -194,6 +232,8 @@ func (m *FirmataMessageSubscribeAnalogPinValue) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

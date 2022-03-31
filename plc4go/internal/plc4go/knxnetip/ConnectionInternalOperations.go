@@ -108,7 +108,7 @@ func (m *Connection) sendGatewayConnectionRequest() (*driverModel.ConnectionResp
 	connectionRequest := driverModel.NewConnectionRequest(
 		driverModel.NewHPAIDiscoveryEndpoint(driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port)),
 		driverModel.NewHPAIDataEndpoint(driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port)),
-		driverModel.NewConnectionRequestInformationTunnelConnection(driverModel.KnxLayer_TUNNEL_LINK_LAYER),
+		driverModel.NewConnectionRequestInformationTunnelConnection(driverModel.KnxLayer_TUNNEL_LINK_LAYER).GetParent(),
 	)
 
 	result := make(chan *driverModel.ConnectionResponse)
@@ -254,14 +254,16 @@ func (m *Connection) sendGroupAddressReadRequest(groupAddress []byte) (*driverMo
 				6,
 				0,
 				m.ClientKnxAddress, groupAddress,
-				driverModel.NewApduDataContainer(driverModel.NewApduDataGroupValueRead(), false, 0),
+				driverModel.NewApduDataContainer(driverModel.NewApduDataGroupValueRead(0).GetParent(), false, 0, 0).GetParent(),
 				true,
 				true,
 				driverModel.CEMIPriority_LOW,
 				false,
 				false,
-			),
-		),
+			).GetParent(),
+			0,
+		).GetParent(),
+		0,
 	)
 
 	result := make(chan *driverModel.ApduDataGroupValueResponse)
@@ -337,14 +339,16 @@ func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAd
 				6,
 				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
-				driverModel.NewApduControlContainer(driverModel.NewApduControlConnect(), false, 0),
+				driverModel.NewApduControlContainer(driverModel.NewApduControlConnect().GetParent(), false, 0, 0).GetParent(),
 				true,
 				true,
 				driverModel.CEMIPriority_SYSTEM,
 				false,
 				false,
-			),
-		),
+			).GetParent(),
+			0,
+		).GetParent(),
+		0,
 	)
 
 	result := make(chan *driverModel.ApduControlConnect)
@@ -427,14 +431,16 @@ func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.Kn
 				6,
 				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
-				driverModel.NewApduControlContainer(driverModel.NewApduControlDisconnect(), false, 0),
+				driverModel.NewApduControlContainer(driverModel.NewApduControlDisconnect().GetParent(), false, 0, 0).GetParent(),
 				true,
 				true,
 				driverModel.CEMIPriority_SYSTEM,
 				false,
 				false,
-			),
-		),
+			).GetParent(),
+			0,
+		).GetParent(),
+		0,
 	)
 
 	result := make(chan *driverModel.ApduControlDisconnect)
@@ -527,18 +533,24 @@ func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddre
 				6,
 				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
-				driverModel.NewApduDataContainer(driverModel.NewApduDataOther(
-					driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, utils.ByteArrayToUint8Array(buildingKey))),
+				driverModel.NewApduDataContainer(
+					driverModel.NewApduDataOther(
+						driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, utils.ByteArrayToUint8Array(buildingKey), 0).GetParent(),
+						0,
+					).GetParent(),
 					true,
 					counter,
-				),
+					0,
+				).GetParent(),
 				true,
 				true,
 				driverModel.CEMIPriority_SYSTEM,
 				false,
 				false,
-			),
-		),
+			).GetParent(),
+			0,
+		).GetParent(),
+		0,
 	)
 
 	result := make(chan *driverModel.ApduDataExtAuthorizeResponse)
@@ -645,14 +657,17 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverM
 				driverModel.NewKnxAddress(0, 0, 0),
 				KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
-					driverModel.NewApduDataDeviceDescriptorRead(0), true, counter),
+					driverModel.NewApduDataDeviceDescriptorRead(0, 0).GetParent(), true, counter, 0,
+				).GetParent(),
 				true,
 				true,
 				driverModel.CEMIPriority_LOW,
 				false,
 				false,
-			),
-		),
+			).GetParent(),
+			0,
+		).GetParent(),
+		0,
 	)
 
 	result := make(chan *driverModel.ApduDataDeviceDescriptorResponse)
@@ -751,18 +766,22 @@ func (m *Connection) sendDevicePropertyReadRequest(targetAddress driverModel.Knx
 				KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtPropertyValueRead(objectId, propertyId, numElements, propertyIndex),
-					),
+						driverModel.NewApduDataExtPropertyValueRead(objectId, propertyId, numElements, propertyIndex, 0).GetParent(),
+						0,
+					).GetParent(),
 					true,
 					counter,
-				),
+					0,
+				).GetParent(),
 				true,
 				true,
 				driverModel.CEMIPriority_LOW,
 				false,
 				false,
-			),
-		),
+			).GetParent(),
+			0,
+		).GetParent(),
+		0,
 	)
 
 	result := make(chan *driverModel.ApduDataExtPropertyValueResponse)
@@ -866,18 +885,22 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(targetAddress driv
 				KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtPropertyDescriptionRead(objectId, propertyId, 1),
-					),
+						driverModel.NewApduDataExtPropertyDescriptionRead(objectId, propertyId, 1, 0).GetParent(),
+						0,
+					).GetParent(),
 					true,
 					counter,
-				),
+					0,
+				).GetParent(),
 				true,
 				true,
 				driverModel.CEMIPriority_LOW,
 				false,
 				false,
-			),
-		),
+			).GetParent(),
+			0,
+		).GetParent(),
+		0,
 	)
 
 	result := make(chan *driverModel.ApduDataExtPropertyDescriptionResponse)
@@ -981,17 +1004,20 @@ func (m *Connection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAd
 				driverModel.NewKnxAddress(0, 0, 0),
 				KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
-					driverModel.NewApduDataMemoryRead(numBytes, address),
+					driverModel.NewApduDataMemoryRead(numBytes, address, 0).GetParent(),
 					true,
 					counter,
-				),
+					0,
+				).GetParent(),
 				true,
 				true,
 				driverModel.CEMIPriority_LOW,
 				false,
 				false,
-			),
-		),
+			).GetParent(),
+			0,
+		).GetParent(),
+		0,
 	)
 
 	result := make(chan *driverModel.ApduDataMemoryResponse)
@@ -1085,14 +1111,16 @@ func (m *Connection) sendDeviceAck(targetAddress driverModel.KnxAddress, counter
 				6,
 				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
-				driverModel.NewApduControlContainer(driverModel.NewApduControlAck(), true, counter),
+				driverModel.NewApduControlContainer(driverModel.NewApduControlAck().GetParent(), true, counter, 0).GetParent(),
 				true,
 				true,
 				driverModel.CEMIPriority_SYSTEM,
 				false,
 				false,
-			),
-		),
+			).GetParent(),
+			0,
+		).GetParent(),
+		0,
 	)
 
 	err := m.messageCodec.SendRequest(

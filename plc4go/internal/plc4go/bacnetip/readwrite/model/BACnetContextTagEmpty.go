@@ -28,78 +28,92 @@ import (
 // The data-structure of this message
 type BACnetContextTagEmpty struct {
 	*BACnetContextTag
+
+	// Arguments.
+	TagNumberArgument uint8
 }
 
 // The corresponding interface
 type IBACnetContextTagEmpty interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetContextTag
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagEmpty) DataType() BACnetDataType {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetContextTagEmpty) GetDataType() BACnetDataType {
 	return 0
 }
 
-func (m *BACnetContextTagEmpty) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+func (m *BACnetContextTagEmpty) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader) {
 	m.BACnetContextTag.Header = header
-	m.BACnetContextTag.TagNumber = tagNumber
-	m.BACnetContextTag.ActualLength = actualLength
-	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
-func NewBACnetContextTagEmpty(header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagEmpty{
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
+func (m *BACnetContextTagEmpty) GetParent() *BACnetContextTag {
+	return m.BACnetContextTag
+}
+
+// NewBACnetContextTagEmpty factory function for BACnetContextTagEmpty
+func NewBACnetContextTagEmpty(header *BACnetTagHeader, tagNumberArgument uint8) *BACnetContextTagEmpty {
+	_result := &BACnetContextTagEmpty{
+		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagEmpty(structType interface{}) *BACnetContextTagEmpty {
-	castFunc := func(typ interface{}) *BACnetContextTagEmpty {
-		if casted, ok := typ.(BACnetContextTagEmpty); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagEmpty); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagEmpty(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagEmpty(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagEmpty); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagEmpty); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagEmpty(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagEmpty(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagEmpty) GetTypeName() string {
 	return "BACnetContextTagEmpty"
 }
 
-func (m *BACnetContextTagEmpty) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTagEmpty) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTagEmpty) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetContextTagEmpty) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetContextTagEmpty) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTagEmpty) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagEmptyParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetContextTag, error) {
+func BACnetContextTagEmptyParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetContextTagEmpty, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagEmpty"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagEmpty"); closeErr != nil {
 		return nil, closeErr
@@ -110,7 +124,7 @@ func BACnetContextTagEmptyParse(readBuffer utils.ReadBuffer, tagNumberArgument u
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
-	return _child.BACnetContextTag, nil
+	return _child, nil
 }
 
 func (m *BACnetContextTagEmpty) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -132,6 +146,8 @@ func (m *BACnetContextTagEmpty) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -146,7 +146,7 @@ public class S7IoTest {
                 "          <parameterLength dataType=\"uint\" bitLength=\"8\">1</parameterLength>\n" +
                 "          <COTPParameterTpduSize>\n" +
                 "            <tpduSize>\n" +
-                "              <COTPTpduSize dataType=\"int\" bitLength=\"8\" stringRepresentation=\"SIZE_4096\">12</COTPTpduSize>\n" +
+                "              <COTPTpduSize dataType=\"uint\" bitLength=\"8\" stringRepresentation=\"SIZE_4096\">12</COTPTpduSize>\n" +
                 "            </tpduSize>\n" +
                 "          </COTPParameterTpduSize>\n" +
                 "        </COTPParameter>\n" +
@@ -301,7 +301,7 @@ public class S7IoTest {
             "                \"tpduSize\": {\n" +
             "                  \"COTPTpduSize\": 12,\n" +
             "                  \"COTPTpduSize__plc4x_bitLength\": 8,\n" +
-            "                  \"COTPTpduSize__plc4x_dataType\": \"int\",\n" +
+            "                  \"COTPTpduSize__plc4x_dataType\": \"uint\",\n" +
             "                  \"COTPTpduSize__plc4x_stringRepresentation\": \"SIZE_4096\"\n" +
             "                }\n" +
             "              },\n" +
@@ -331,7 +331,7 @@ public class S7IoTest {
 
         TPKTPacket tpktPacket = new TPKTPacket(
             new COTPPacketData(
-                Collections.singletonList(new COTPParameterTpduSize(COTPTpduSize.SIZE_4096)),
+                Collections.singletonList(new COTPParameterTpduSize(COTPTpduSize.SIZE_4096,(short)3)),
                 new S7MessageResponseData(
                     11,
                     new S7ParameterReadVarResponse((short) 1),
@@ -342,13 +342,14 @@ public class S7IoTest {
                                 DataTransportSize.BIT,
                                 new byte[]{0x1}
                             )
-                        )
+                        ),new S7ParameterReadVarResponse((short) 1)
                     ),
                     (short) 0,
                     (short) 0
                 ),
                 false,
-                (short) 13
+                (short) 13,
+                26
             )
         );
         // To string

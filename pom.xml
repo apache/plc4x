@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>24</version>
+    <version>25</version>
   </parent>
 
   <groupId>org.apache.plc4x</groupId>
@@ -109,16 +109,13 @@
     <antlr.version>4.9.3</antlr.version>
     <apiguardian.version>1.1.2</apiguardian.version>
     <assertj.version>3.21.0</assertj.version>
-    <awaitility.version>4.1.1</awaitility.version>
+    <awaitility.version>4.2.0</awaitility.version>
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.70</bouncycastle.version>
-    <boost.version>1.78.0</boost.version>
-    <boost.version.underline-short>1_78</boost.version.underline-short>
-    <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.12.6</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
-    <cmake-version>3.18.4</cmake-version>
+    <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.5.0</commons-cli.version>
     <commons-codec.version>1.15</commons-codec.version>
@@ -134,14 +131,14 @@
     <commons-text.version>1.9</commons-text.version>
     <commons-csv.version>1.9.0</commons-csv.version>
     <dom4j.version>2.1.3</dom4j.version>
-    <equalsverifier.version>3.8.1</equalsverifier.version>
+    <equalsverifier.version>3.9</equalsverifier.version>
     <freemarker.version>2.3.31</freemarker.version>
     <groovy.version>3.0.9</groovy.version>
     <gson.version>2.8.9</gson.version>
-    <guava.version>31.0.1-jre</guava.version>
+    <guava.version>31.1-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
     <httpclient.version>4.5.13</httpclient.version>
-    <httpcore.version>4.4.14</httpcore.version>
+    <httpcore.version>4.4.15</httpcore.version>
     <jackson.version>2.13.1</jackson.version>
     <woodstox-core.version>6.2.8</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
@@ -154,21 +151,21 @@
     <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.2.10</logback.version>
     <milo.version>0.6.3</milo.version>
-    <mockito.version>4.2.0</mockito.version>
+    <mockito.version>4.4.0</mockito.version>
     <netty.version>4.1.72.Final</netty.version>
     <owasp-dependency-check.version>6.5.1</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>1.7.32</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
-    <xmlunit.version>2.8.4</xmlunit.version>
+    <xmlunit.version>2.9.0</xmlunit.version>
 
     <!-- Site properties -->
-    <asciidoctor.maven.plugin.version>2.1.0</asciidoctor.maven.plugin.version>
-    <asciidoctorj.version>2.5.1</asciidoctorj.version>
-    <asciidoctorj.diagram.version>2.1.2</asciidoctorj.diagram.version>
+    <asciidoctor.maven.plugin.version>2.2.1</asciidoctor.maven.plugin.version>
+    <asciidoctorj.version>2.5.3</asciidoctorj.version>
+    <asciidoctorj.diagram.version>2.2.1</asciidoctorj.diagram.version>
 
-    <skip-code-generation-tests>false</skip-code-generation-tests>
-    <skip-dependency-cve-scan>false</skip-dependency-cve-scan>
+    <skip-code-generation-tests>true</skip-code-generation-tests>
+    <skip-dependency-cve-scan>true</skip-dependency-cve-scan>
   </properties>
 
   <modules>
@@ -420,6 +417,12 @@
       </dependency>
 
       <dependency>
+        <groupId>net.lingala.zip4j</groupId>
+        <artifactId>zip4j</artifactId>
+        <version>2.9.1</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.fazecast</groupId>
         <artifactId>jSerialComm</artifactId>
         <version>${jserialcom.version}</version>
@@ -559,6 +562,24 @@
         <groupId>nl.jqno.equalsverifier</groupId>
         <artifactId>equalsverifier</artifactId>
         <version>${equalsverifier.version}</version>
+        <!--
+          For some reason these are not available in maven-central,
+          but it doesn't matter if they are not available.
+        -->
+        <exclusions>
+          <exclusion>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier-16</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier-17</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -583,25 +604,36 @@
       <!-- *****************************************************************************
       **********************************************************************************
       **                             Transitive dependencies                          **
+      **                                                                              **
+      ** These updates are reported by the dependency-checker as requiring management **
+      ** When bumping versions of the above artifacts ideally comment out all         **
+      ** artifacts in below section and manage them as suggested by the dependency    **
+      ** plugin.                                                                      **
       **********************************************************************************
       ****************************************************************************** -->
 
       <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>${junit.jupiter.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-resolver</artifactId>
-        <version>${netty.version}</version>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${commons-logging.version}</version>
       </dependency>
 
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>jakarta.activation</artifactId>
+        <version>2.0.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-resolver</artifactId>
+        <version>${netty.version}</version>
       </dependency>
 
       <dependency>
@@ -617,9 +649,15 @@
       </dependency>
 
       <dependency>
-        <groupId>commons-logging</groupId>
-        <artifactId>commons-logging</artifactId>
-        <version>${commons-logging.version}</version>
+        <groupId>net.java.dev.jna</groupId>
+        <artifactId>jna</artifactId>
+        <version>${jna.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apiguardian</groupId>
+        <artifactId>apiguardian-api</artifactId>
+        <version>${apiguardian.version}</version>
       </dependency>
 
       <dependency>
@@ -629,24 +667,27 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apiguardian</groupId>
-        <artifactId>apiguardian-api</artifactId>
-        <version>${apiguardian.version}</version>
+        <groupId>org.jetbrains</groupId>
+        <artifactId>annotations</artifactId>
+        <version>23.0.0</version>
       </dependency>
+
       <dependency>
-        <groupId>net.java.dev.jna</groupId>
-        <artifactId>jna</artifactId>
-        <version>${jna.version}</version>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${junit.jupiter.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.junit.platform</groupId>
         <artifactId>junit-platform-engine</artifactId>
         <version>${junit.platform.version}</version>
       </dependency>
+
       <dependency>
-        <groupId>com.sun.activation</groupId>
-        <artifactId>jakarta.activation</artifactId>
-        <version>2.0.1</version>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>6.0.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -729,6 +770,7 @@
             <exclude>**/.git/**</exclude>
             <exclude>**/.gitignore</exclude>
             <exclude>**/cmake-*/**</exclude>
+            <exclude>**/.cmake/**</exclude>
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
             <!--
@@ -792,11 +834,14 @@
             <exclude>**/CMakeCache.txt</exclude>
             <exclude>**/DartConfiguration.tcl</exclude>
 
+            <!-- .Net stuff -->
+            <exclude>plc4net/plc4net.sln.DotSettings.user</exclude>
+
             <!-- Stuff created during a plc4net build -->
             <exclude>**/obj/**</exclude>
 
             <!-- Temporarily exclude generated code from thrift in python modules -->
-            <exclude>generated/**</exclude>
+            <!--exclude>generated/**</exclude-->
 
             <!-- Temporary Python virtualenv files-->
             <exclude>**/venv/**</exclude>
@@ -823,6 +868,14 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <!--
+            The failsafe plugin would use the java jigsaw module path,
+            this would make loading the test XML files impossible.
+            So we simply disable this.
+          -->
+          <useModulePath>false</useModulePath>
+        </configuration>
       </plugin>
 
       <!-- Generate the legally required text files in the jars -->
@@ -874,7 +927,7 @@
             <exclude>org.apache.plc4x:plc4j-driver-ads</exclude>
             <!--
               CVE-2020-13955 affects Apache Calcite till version 1.26 (excluding)
-              We're using at least 1.26, so this is a false positive.
+              We're using at least 1.28, so this is a false positive.
             -->
             <exclude>org.apache.calcite.avatica:avatica-core</exclude>
           </excludes>
@@ -927,7 +980,12 @@
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.3</version>
+            <version>1.5.1</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-dependency-tree</artifactId>
+            <version>3.1.0</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -1057,19 +1115,19 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
           <!-- With 3.0.0 the dependencyConvergence rule wouldn't work anymore -->
-          <version>3.0.0-M3</version>
+          <version>3.0.0</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>5.1.2</version>
+          <version>5.1.4</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
-          <version>4.3.2</version>
+          <version>4.3.6</version>
         </plugin>
 
         <plugin>
@@ -1096,22 +1154,20 @@
           <version>0.8.7</version>
         </plugin>
 
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.10.0</version>
           <configuration>
-            <source>${java.version}</source>
-            <target>${java.version}</target>
-            <testSource>${java.version}</testSource>
-            <testTarget>${java.version}</testTarget>
+            <release>${java.version}</release>
           </configuration>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.2</version>
+          <version>3.0.0-M5</version>
           <dependencies>
             <dependency>
               <groupId>org.junit.jupiter</groupId>
@@ -1124,7 +1180,8 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.22.2</version>
+          <version>3.0.0-M5</version>
+          <!--version>2.22.2</version-->
           <dependencies>
             <dependency>
               <groupId>org.junit.jupiter</groupId>
@@ -1290,21 +1347,15 @@
         </plugin>
 
         <plugin>
-          <groupId>org.apache.thrift.tools</groupId>
-          <artifactId>maven-thrift-plugin</artifactId>
-          <version>0.1.11</version>
-        </plugin>
-
-        <plugin>
           <groupId>com.googlecode.cmake-maven-project</groupId>
           <artifactId>cmake-maven-plugin</artifactId>
-          <version>3.19.2-b1</version>
+          <version>3.22.1-b1</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>3.0.0-M4</version>
+          <version>3.0.0-M5</version>
           <configuration>
             <!-- Tell the plugin to always release all modules using the same version -->
             <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -1315,7 +1366,21 @@
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.9.0.2155</version>
+          <version>3.9.1.2184</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <!--
+          TODO: somehow the newer version is broken as it reports dependencies which are compile in fact
+          e.g. plc4j-connection-pool:
+          [INFO] - maven-dependency-plugin:3.2.0:analyze-only (check-dependencies) @ plc4j-connection-pool -
+          [WARNING] Non-test scoped test only dependencies found:
+          [WARNING]    org.apache.commons:commons-pool2:jar:2.11.1:compile
+          [WARNING]    org.apache.plc4x:plc4j-api:jar:0.10.0-SNAPSHOT:compile
+          -->
+          <version>3.1.2</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -1511,30 +1576,35 @@
 
     <!-- Profile for linux (Self-Enabling) -->
     <profile>
-      <id>os-unix</id>
+      <id>os-unix-amd64</id>
       <activation>
         <os>
           <family>unix</family>
+          <arch>amd64</arch>
         </os>
       </activation>
       <properties>
         <os.suffix>linux</os.suffix>
         <os.classifier>linux-x86_64</os.classifier>
-        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Linux-x86_64.tar.gz</cmake.url>
-        <cmake.root>${project.build.directory}/cmake-${cmake-version}-Linux-x86_64/bin/</cmake.root>
+        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-linux-x86_64.tar.gz</cmake.url>
+        <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
-        <!--
-        https://boostorg.jfrog.io/artifactory/main/release/1.77.0/source/boost_1_77_0.tar.gz
-        https://boostorg.jfrog.io/native/main/release/1.77.0/source/boost_1_77_0.tar.gz
-        -->
-        <boost.url>https://boostorg.jfrog.io/native/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
-        <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
-        <boost.build.executable>./b2</boost.build.executable>
-        <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
-        <thrift.configure.executable>./configure</thrift.configure.executable>
-        <thrift.make.executable>make</thrift.make.executable>
-        <thrift.compiler.executable>thrift</thrift.compiler.executable>
-        <gradlew.executable>./gradlew</gradlew.executable>
+      </properties>
+    </profile>
+    <profile>
+      <id>os-unix-aarch64</id>
+      <activation>
+        <os>
+          <family>unix</family>
+          <arch>aarch64</arch>
+        </os>
+      </activation>
+      <properties>
+        <os.suffix>linux</os.suffix>
+        <os.classifier>linux-${os.arch}</os.classifier>
+        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-linux-${os.arch}.tar.gz</cmake.url>
+        <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-${os.arch}/bin/</cmake.root>
+        <cmake.generator>Unix Makefiles</cmake.generator>
       </properties>
     </profile>
     <!-- Profile for mac (Self-Enabling) -->
@@ -1548,17 +1618,9 @@
       <properties>
         <os.suffix>mac</os.suffix>
         <os.classifier>mac-x86_64</os.classifier>
-        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Darwin-x86_64.tar.gz</cmake.url>
-        <cmake.root>${project.build.directory}/cmake-${cmake-version}-Darwin-x86_64/CMake.app/Contents/bin</cmake.root>
+        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-macos-universal.tar.gz</cmake.url>
+        <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
-        <boost.url>https://boostorg.jfrog.io/native/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
-        <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
-        <boost.build.executable>./b2</boost.build.executable>
-        <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
-        <thrift.configure.executable>./configure</thrift.configure.executable>
-        <thrift.make.executable>make</thrift.make.executable>
-        <thrift.compiler.executable>thrift</thrift.compiler.executable>
-        <gradlew.executable>./gradlew</gradlew.executable>
       </properties>
     </profile>
     <!-- profile for windows (Self-Enabling) -->
@@ -1572,19 +1634,9 @@
       <properties>
         <os.suffix>win</os.suffix>
         <os.classifier>windows-x86_64</os.classifier>
-        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-win64-x64.zip</cmake.url>
-        <cmake.root>${project.build.directory}/cmake-${cmake-version}-win64-x64/bin</cmake.root>
+        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-windows-x86_64.zip</cmake.url>
+        <cmake.root>${project.build.directory}/cmake-${cmake-version}-windows-x86_64/bin</cmake.root>
         <cmake.generator>MinGW Makefiles</cmake.generator>
-        <boost.url>https://boostorg.jfrog.io/native/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
-        <!--boost.url>https://github.com/boostorg/boost/archive/refs/tags/boost-${boost.version}.tar.gz</boost.url-->
-        <boost.bootstrap.executable>bootstrap.bat</boost.bootstrap.executable>
-        <boost.build.executable>b2</boost.build.executable>
-        <boost.include-directory>libs/libs/boost/include/boost-${boost.version.underline-short}</boost.include-directory>
-        <thrift.bootstrap.executable>bootstrap.sh</thrift.bootstrap.executable>
-        <thrift.configure.executable>configure</thrift.configure.executable>
-        <thrift.make.executable>make</thrift.make.executable>
-        <thrift.compiler.executable>thrift.exe</thrift.compiler.executable>
-        <gradlew.executable>gradlew.bat</gradlew.executable>
       </properties>
     </profile>
 
@@ -1623,6 +1675,18 @@
     -->
     <profile>
       <id>jenkins-build</id>
+      <properties>
+        <skip-code-generation-tests>false</skip-code-generation-tests>
+        <skip-dependency-cve-scan>false</skip-dependency-cve-scan>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>enable-all-checks</id>
+      <properties>
+        <skip-code-generation-tests>false</skip-code-generation-tests>
+        <skip-dependency-cve-scan>false</skip-dependency-cve-scan>
+      </properties>
     </profile>
 
     <!--
@@ -1678,6 +1742,11 @@
     -->
     <profile>
       <id>apache-release</id>
+      <!-- Ensure these are run as part of a release-build -->
+      <properties>
+        <skip-code-generation-tests>false</skip-code-generation-tests>
+        <skip-dependency-cve-scan>false</skip-dependency-cve-scan>
+      </properties>
       <build>
         <plugins>
           <!--

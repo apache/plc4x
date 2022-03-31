@@ -33,37 +33,53 @@ type RelativeTimestamp struct {
 
 // The corresponding interface
 type IRelativeTimestamp interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetTimestamp returns Timestamp (property field)
+	GetTimestamp() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *RelativeTimestamp) GetTimestamp() uint16 {
+	return m.Timestamp
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewRelativeTimestamp factory function for RelativeTimestamp
 func NewRelativeTimestamp(timestamp uint16) *RelativeTimestamp {
 	return &RelativeTimestamp{Timestamp: timestamp}
 }
 
 func CastRelativeTimestamp(structType interface{}) *RelativeTimestamp {
-	castFunc := func(typ interface{}) *RelativeTimestamp {
-		if casted, ok := typ.(RelativeTimestamp); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*RelativeTimestamp); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(RelativeTimestamp); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*RelativeTimestamp); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *RelativeTimestamp) GetTypeName() string {
 	return "RelativeTimestamp"
 }
 
-func (m *RelativeTimestamp) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *RelativeTimestamp) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *RelativeTimestamp) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *RelativeTimestamp) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (timestamp)
@@ -72,14 +88,16 @@ func (m *RelativeTimestamp) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *RelativeTimestamp) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *RelativeTimestamp) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func RelativeTimestampParse(readBuffer utils.ReadBuffer) (*RelativeTimestamp, error) {
 	if pullErr := readBuffer.PullContext("RelativeTimestamp"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (timestamp)
 	_timestamp, _timestampErr := readBuffer.ReadUint16("timestamp", 16)
@@ -119,6 +137,8 @@ func (m *RelativeTimestamp) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

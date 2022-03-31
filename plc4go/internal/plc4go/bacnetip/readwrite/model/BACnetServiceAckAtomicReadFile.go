@@ -35,77 +35,112 @@ type BACnetServiceAckAtomicReadFile struct {
 
 // The corresponding interface
 type IBACnetServiceAckAtomicReadFile interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetServiceAck
+	// GetEndOfFile returns EndOfFile (property field)
+	GetEndOfFile() *BACnetApplicationTagBoolean
+	// GetAccessMethod returns AccessMethod (property field)
+	GetAccessMethod() *BACnetServiceAckAtomicReadFileStreamOrRecord
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckAtomicReadFile) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetServiceAckAtomicReadFile) GetServiceChoice() uint8 {
 	return 0x06
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *BACnetServiceAckAtomicReadFile) InitializeParent(parent *BACnetServiceAck) {}
 
-func NewBACnetServiceAckAtomicReadFile(endOfFile *BACnetApplicationTagBoolean, accessMethod *BACnetServiceAckAtomicReadFileStreamOrRecord) *BACnetServiceAck {
-	child := &BACnetServiceAckAtomicReadFile{
+func (m *BACnetServiceAckAtomicReadFile) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetServiceAckAtomicReadFile) GetEndOfFile() *BACnetApplicationTagBoolean {
+	return m.EndOfFile
+}
+
+func (m *BACnetServiceAckAtomicReadFile) GetAccessMethod() *BACnetServiceAckAtomicReadFileStreamOrRecord {
+	return m.AccessMethod
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetServiceAckAtomicReadFile factory function for BACnetServiceAckAtomicReadFile
+func NewBACnetServiceAckAtomicReadFile(endOfFile *BACnetApplicationTagBoolean, accessMethod *BACnetServiceAckAtomicReadFileStreamOrRecord) *BACnetServiceAckAtomicReadFile {
+	_result := &BACnetServiceAckAtomicReadFile{
 		EndOfFile:        endOfFile,
 		AccessMethod:     accessMethod,
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckAtomicReadFile(structType interface{}) *BACnetServiceAckAtomicReadFile {
-	castFunc := func(typ interface{}) *BACnetServiceAckAtomicReadFile {
-		if casted, ok := typ.(BACnetServiceAckAtomicReadFile); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckAtomicReadFile); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckAtomicReadFile(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckAtomicReadFile(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckAtomicReadFile); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckAtomicReadFile); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckAtomicReadFile(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckAtomicReadFile(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckAtomicReadFile) GetTypeName() string {
 	return "BACnetServiceAckAtomicReadFile"
 }
 
-func (m *BACnetServiceAckAtomicReadFile) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckAtomicReadFile) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckAtomicReadFile) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckAtomicReadFile) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (endOfFile)
-	lengthInBits += m.EndOfFile.LengthInBits()
+	lengthInBits += m.EndOfFile.GetLengthInBits()
 
 	// Simple field (accessMethod)
-	lengthInBits += m.AccessMethod.LengthInBits()
+	lengthInBits += m.AccessMethod.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckAtomicReadFile) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckAtomicReadFile) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckAtomicReadFile, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFile"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (endOfFile)
 	if pullErr := readBuffer.PullContext("endOfFile"); pullErr != nil {
@@ -144,7 +179,7 @@ func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer) (*BACnetSe
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckAtomicReadFile) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -190,6 +225,8 @@ func (m *BACnetServiceAckAtomicReadFile) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

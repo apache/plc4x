@@ -34,37 +34,59 @@ type ModbusPDUReadFileRecordResponseItem struct {
 
 // The corresponding interface
 type IModbusPDUReadFileRecordResponseItem interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetReferenceType returns ReferenceType (property field)
+	GetReferenceType() uint8
+	// GetData returns Data (property field)
+	GetData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ModbusPDUReadFileRecordResponseItem) GetReferenceType() uint8 {
+	return m.ReferenceType
+}
+
+func (m *ModbusPDUReadFileRecordResponseItem) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewModbusPDUReadFileRecordResponseItem factory function for ModbusPDUReadFileRecordResponseItem
 func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []byte) *ModbusPDUReadFileRecordResponseItem {
 	return &ModbusPDUReadFileRecordResponseItem{ReferenceType: referenceType, Data: data}
 }
 
 func CastModbusPDUReadFileRecordResponseItem(structType interface{}) *ModbusPDUReadFileRecordResponseItem {
-	castFunc := func(typ interface{}) *ModbusPDUReadFileRecordResponseItem {
-		if casted, ok := typ.(ModbusPDUReadFileRecordResponseItem); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReadFileRecordResponseItem); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReadFileRecordResponseItem); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReadFileRecordResponseItem); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ModbusPDUReadFileRecordResponseItem) GetTypeName() string {
 	return "ModbusPDUReadFileRecordResponseItem"
 }
 
-func (m *ModbusPDUReadFileRecordResponseItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadFileRecordResponseItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadFileRecordResponseItem) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *ModbusPDUReadFileRecordResponseItem) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (dataLength)
@@ -81,16 +103,18 @@ func (m *ModbusPDUReadFileRecordResponseItem) LengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadFileRecordResponseItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadFileRecordResponseItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUReadFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (*ModbusPDUReadFileRecordResponseItem, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFileRecordResponseItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := readBuffer.ReadUint8("dataLength", 8)
 	_ = dataLength
 	if _dataLengthErr != nil {
@@ -124,7 +148,7 @@ func (m *ModbusPDUReadFileRecordResponseItem) Serialize(writeBuffer utils.WriteB
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength := uint8(uint8(uint8(len(m.Data))) + uint8(uint8(1)))
+	dataLength := uint8(uint8(uint8(len(m.GetData()))) + uint8(uint8(1)))
 	_dataLengthErr := writeBuffer.WriteUint8("dataLength", 8, (dataLength))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
@@ -157,6 +181,8 @@ func (m *ModbusPDUReadFileRecordResponseItem) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

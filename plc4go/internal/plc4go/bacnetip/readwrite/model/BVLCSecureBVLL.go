@@ -32,71 +32,83 @@ type BVLCSecureBVLL struct {
 
 // The corresponding interface
 type IBVLCSecureBVLL interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBVLC
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCSecureBVLL) BvlcFunction() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BVLCSecureBVLL) GetBvlcFunction() uint8 {
 	return 0x0C
 }
 
-func (m *BVLCSecureBVLL) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+func (m *BVLCSecureBVLL) InitializeParent(parent *BVLC) {}
+
+func (m *BVLCSecureBVLL) GetParent() *BVLC {
+	return m.BVLC
 }
 
-func NewBVLCSecureBVLL(bvlcPayloadLength uint16) *BVLC {
-	child := &BVLCSecureBVLL{
-		BVLC: NewBVLC(bvlcPayloadLength),
+// NewBVLCSecureBVLL factory function for BVLCSecureBVLL
+func NewBVLCSecureBVLL() *BVLCSecureBVLL {
+	_result := &BVLCSecureBVLL{
+		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCSecureBVLL(structType interface{}) *BVLCSecureBVLL {
-	castFunc := func(typ interface{}) *BVLCSecureBVLL {
-		if casted, ok := typ.(BVLCSecureBVLL); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCSecureBVLL); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCSecureBVLL(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCSecureBVLL(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCSecureBVLL); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCSecureBVLL); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCSecureBVLL(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCSecureBVLL(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCSecureBVLL) GetTypeName() string {
 	return "BVLCSecureBVLL"
 }
 
-func (m *BVLCSecureBVLL) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCSecureBVLL) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCSecureBVLL) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCSecureBVLL) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BVLCSecureBVLL) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCSecureBVLL) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
+func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer) (*BVLCSecureBVLL, error) {
 	if pullErr := readBuffer.PullContext("BVLCSecureBVLL"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BVLCSecureBVLL"); closeErr != nil {
 		return nil, closeErr
@@ -107,7 +119,7 @@ func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 		BVLC: &BVLC{},
 	}
 	_child.BVLC.Child = _child
-	return _child.BVLC, nil
+	return _child, nil
 }
 
 func (m *BVLCSecureBVLL) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -129,6 +141,8 @@ func (m *BVLCSecureBVLL) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

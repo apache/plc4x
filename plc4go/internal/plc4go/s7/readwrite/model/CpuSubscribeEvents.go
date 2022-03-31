@@ -98,12 +98,12 @@ func CastCpuSubscribeEvents(structType interface{}) CpuSubscribeEvents {
 	return castFunc(structType)
 }
 
-func (m CpuSubscribeEvents) LengthInBits() uint16 {
+func (m CpuSubscribeEvents) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m CpuSubscribeEvents) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m CpuSubscribeEvents) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CpuSubscribeEventsParse(readBuffer utils.ReadBuffer) (CpuSubscribeEvents, error) {

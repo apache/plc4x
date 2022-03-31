@@ -37,37 +37,77 @@ type SzlDataTreeItem struct {
 
 // The corresponding interface
 type ISzlDataTreeItem interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetItemIndex returns ItemIndex (property field)
+	GetItemIndex() uint16
+	// GetMlfb returns Mlfb (property field)
+	GetMlfb() []byte
+	// GetModuleTypeId returns ModuleTypeId (property field)
+	GetModuleTypeId() uint16
+	// GetAusbg returns Ausbg (property field)
+	GetAusbg() uint16
+	// GetAusbe returns Ausbe (property field)
+	GetAusbe() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *SzlDataTreeItem) GetItemIndex() uint16 {
+	return m.ItemIndex
+}
+
+func (m *SzlDataTreeItem) GetMlfb() []byte {
+	return m.Mlfb
+}
+
+func (m *SzlDataTreeItem) GetModuleTypeId() uint16 {
+	return m.ModuleTypeId
+}
+
+func (m *SzlDataTreeItem) GetAusbg() uint16 {
+	return m.Ausbg
+}
+
+func (m *SzlDataTreeItem) GetAusbe() uint16 {
+	return m.Ausbe
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewSzlDataTreeItem factory function for SzlDataTreeItem
 func NewSzlDataTreeItem(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausbg uint16, ausbe uint16) *SzlDataTreeItem {
 	return &SzlDataTreeItem{ItemIndex: itemIndex, Mlfb: mlfb, ModuleTypeId: moduleTypeId, Ausbg: ausbg, Ausbe: ausbe}
 }
 
 func CastSzlDataTreeItem(structType interface{}) *SzlDataTreeItem {
-	castFunc := func(typ interface{}) *SzlDataTreeItem {
-		if casted, ok := typ.(SzlDataTreeItem); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SzlDataTreeItem); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(SzlDataTreeItem); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SzlDataTreeItem); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *SzlDataTreeItem) GetTypeName() string {
 	return "SzlDataTreeItem"
 }
 
-func (m *SzlDataTreeItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SzlDataTreeItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SzlDataTreeItem) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *SzlDataTreeItem) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (itemIndex)
@@ -90,14 +130,16 @@ func (m *SzlDataTreeItem) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *SzlDataTreeItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SzlDataTreeItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SzlDataTreeItemParse(readBuffer utils.ReadBuffer) (*SzlDataTreeItem, error) {
 	if pullErr := readBuffer.PullContext("SzlDataTreeItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (itemIndex)
 	_itemIndex, _itemIndexErr := readBuffer.ReadUint16("itemIndex", 16)
@@ -194,6 +236,8 @@ func (m *SzlDataTreeItem) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

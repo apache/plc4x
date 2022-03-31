@@ -34,58 +34,85 @@ type KnxNetIpCore struct {
 
 // The corresponding interface
 type IKnxNetIpCore interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IServiceId
+	// GetVersion returns Version (property field)
+	GetVersion() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxNetIpCore) ServiceType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *KnxNetIpCore) GetServiceType() uint8 {
 	return 0x02
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *KnxNetIpCore) InitializeParent(parent *ServiceId) {}
 
-func NewKnxNetIpCore(version uint8) *ServiceId {
-	child := &KnxNetIpCore{
+func (m *KnxNetIpCore) GetParent() *ServiceId {
+	return m.ServiceId
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *KnxNetIpCore) GetVersion() uint8 {
+	return m.Version
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewKnxNetIpCore factory function for KnxNetIpCore
+func NewKnxNetIpCore(version uint8) *KnxNetIpCore {
+	_result := &KnxNetIpCore{
 		Version:   version,
 		ServiceId: NewServiceId(),
 	}
-	child.Child = child
-	return child.ServiceId
+	_result.Child = _result
+	return _result
 }
 
 func CastKnxNetIpCore(structType interface{}) *KnxNetIpCore {
-	castFunc := func(typ interface{}) *KnxNetIpCore {
-		if casted, ok := typ.(KnxNetIpCore); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxNetIpCore); ok {
-			return casted
-		}
-		if casted, ok := typ.(ServiceId); ok {
-			return CastKnxNetIpCore(casted.Child)
-		}
-		if casted, ok := typ.(*ServiceId); ok {
-			return CastKnxNetIpCore(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(KnxNetIpCore); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxNetIpCore); ok {
+		return casted
+	}
+	if casted, ok := structType.(ServiceId); ok {
+		return CastKnxNetIpCore(casted.Child)
+	}
+	if casted, ok := structType.(*ServiceId); ok {
+		return CastKnxNetIpCore(casted.Child)
+	}
+	return nil
 }
 
 func (m *KnxNetIpCore) GetTypeName() string {
 	return "KnxNetIpCore"
 }
 
-func (m *KnxNetIpCore) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxNetIpCore) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxNetIpCore) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *KnxNetIpCore) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -93,14 +120,16 @@ func (m *KnxNetIpCore) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *KnxNetIpCore) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxNetIpCore) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func KnxNetIpCoreParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetIpCoreParse(readBuffer utils.ReadBuffer) (*KnxNetIpCore, error) {
 	if pullErr := readBuffer.PullContext("KnxNetIpCore"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadUint8("version", 8)
@@ -119,7 +148,7 @@ func KnxNetIpCoreParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 		ServiceId: &ServiceId{},
 	}
 	_child.ServiceId.Child = _child
-	return _child.ServiceId, nil
+	return _child, nil
 }
 
 func (m *KnxNetIpCore) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,6 +177,8 @@ func (m *KnxNetIpCore) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

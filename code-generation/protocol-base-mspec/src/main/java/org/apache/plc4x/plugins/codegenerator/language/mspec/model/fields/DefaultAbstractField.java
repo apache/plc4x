@@ -27,23 +27,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class DefaultAbstractField extends DefaultField implements AbstractField {
+public class DefaultAbstractField extends DefaultTypedNamedField implements AbstractField {
 
-    private final TypeReference type;
-    private final String name;
-
-    public DefaultAbstractField(Map<String, Term> attributes, TypeReference type, String name) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+    public DefaultAbstractField(Map<String, Term> attributes, String name) {
+        super(attributes, name);
     }
 
-    public TypeReference getType() {
-        return type;
+    @Override
+    public String toString() {
+        return "DefaultAbstractField{} " + super.toString();
     }
-
-    public String getName() {
-        return name;
-    }
-
 }

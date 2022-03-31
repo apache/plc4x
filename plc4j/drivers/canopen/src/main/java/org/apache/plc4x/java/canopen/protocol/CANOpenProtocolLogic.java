@@ -54,7 +54,7 @@ import org.apache.plc4x.java.canopen.readwrite.CANOpenPDO;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenPDOPayload;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenPayload;
 import org.apache.plc4x.java.canopen.readwrite.IndexAddress;
-import org.apache.plc4x.java.canopen.readwrite.io.DataItemIO;
+import org.apache.plc4x.java.canopen.readwrite.DataItem;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
 import org.apache.plc4x.java.canopen.readwrite.NMTState;
 import org.apache.plc4x.java.canopen.readwrite.NMTStateRequest;
@@ -219,14 +219,12 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
 
         try {
             String fieldName = writeRequest.getFieldNames().iterator().next();
-            WriteBufferByteBased buffer = DataItemIO.staticSerialize(writeValue, field.getCanOpenDataType(), writeValue.getLength(), ByteOrder.LITTLE_ENDIAN);
-            if (buffer != null) {
-                final CANOpenPDOPayload payload = new CANOpenPDOPayload(new CANOpenPDO(buffer.getData()));
-                context.sendToWire(new CANOpenFrame((short) field.getNodeId(), field.getService(), payload));
-                response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(fieldName, PlcResponseCode.OK)));
-            } else {
-                response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(fieldName, PlcResponseCode.INVALID_DATA)));
-            }
+
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(writeValue, field.getCanOpenDataType(), writeValue.getLength()), ByteOrder.LITTLE_ENDIAN);
+            DataItem.staticSerialize(writeBuffer, writeValue, field.getCanOpenDataType(), writeValue.getLength(), ByteOrder.LITTLE_ENDIAN);
+            final CANOpenPDOPayload payload = new CANOpenPDOPayload(new CANOpenPDO(writeBuffer.getData()));
+            context.sendToWire(new CANOpenFrame((short) field.getNodeId(), field.getService(), payload));
+            response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(fieldName, PlcResponseCode.OK)));
         } catch (Exception e) {
             response.completeExceptionally(e);
         }
@@ -368,7 +366,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
                         CANOpenPDOField field = (CANOpenPDOField) handle.getField();
                         byte[] data = ((CANOpenPDOPayload) payload).getPdo().getData();
                         try {
-                            PlcValue value = DataItemIO.staticParse(new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN), field.getCanOpenDataType(), data.length);
+                            PlcValue value = DataItem.staticParse(new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN), field.getCanOpenDataType(), data.length);
                             DefaultPlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(
                                 Instant.now(),
                                 Collections.singletonMap(

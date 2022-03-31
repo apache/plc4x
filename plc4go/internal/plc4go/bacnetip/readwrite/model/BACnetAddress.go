@@ -34,37 +34,59 @@ type BACnetAddress struct {
 
 // The corresponding interface
 type IBACnetAddress interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetAddress returns Address (property field)
+	GetAddress() []uint8
+	// GetPort returns Port (property field)
+	GetPort() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetAddress) GetAddress() []uint8 {
+	return m.Address
+}
+
+func (m *BACnetAddress) GetPort() uint16 {
+	return m.Port
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetAddress factory function for BACnetAddress
 func NewBACnetAddress(address []uint8, port uint16) *BACnetAddress {
 	return &BACnetAddress{Address: address, Port: port}
 }
 
 func CastBACnetAddress(structType interface{}) *BACnetAddress {
-	castFunc := func(typ interface{}) *BACnetAddress {
-		if casted, ok := typ.(BACnetAddress); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetAddress); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetAddress); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetAddress); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetAddress) GetTypeName() string {
 	return "BACnetAddress"
 }
 
-func (m *BACnetAddress) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetAddress) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetAddress) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -78,14 +100,16 @@ func (m *BACnetAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetAddress) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetAddress) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetAddressParse(readBuffer utils.ReadBuffer) (*BACnetAddress, error) {
 	if pullErr := readBuffer.PullContext("BACnetAddress"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (address)
 	if pullErr := readBuffer.PullContext("address", utils.WithRenderAsList(true)); pullErr != nil {
@@ -160,6 +184,8 @@ func (m *BACnetAddress) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

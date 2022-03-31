@@ -31,65 +31,101 @@ type NLMInitalizeRoutingTable struct {
 	*NLM
 	NumberOfPorts uint8
 	PortMappings  []*NLMInitalizeRoutingTablePortMapping
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
 type INLMInitalizeRoutingTable interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	INLM
+	// GetNumberOfPorts returns NumberOfPorts (property field)
+	GetNumberOfPorts() uint8
+	// GetPortMappings returns PortMappings (property field)
+	GetPortMappings() []*NLMInitalizeRoutingTablePortMapping
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NLMInitalizeRoutingTable) MessageType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *NLMInitalizeRoutingTable) GetMessageType() uint8 {
 	return 0x06
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *NLMInitalizeRoutingTable) InitializeParent(parent *NLM, vendorId *uint16) {
 	m.NLM.VendorId = vendorId
 }
 
-func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *uint16) *NLM {
-	child := &NLMInitalizeRoutingTable{
+func (m *NLMInitalizeRoutingTable) GetParent() *NLM {
+	return m.NLM
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *NLMInitalizeRoutingTable) GetNumberOfPorts() uint8 {
+	return m.NumberOfPorts
+}
+
+func (m *NLMInitalizeRoutingTable) GetPortMappings() []*NLMInitalizeRoutingTablePortMapping {
+	return m.PortMappings
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewNLMInitalizeRoutingTable factory function for NLMInitalizeRoutingTable
+func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *uint16, apduLength uint16) *NLMInitalizeRoutingTable {
+	_result := &NLMInitalizeRoutingTable{
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
-		NLM:           NewNLM(vendorId),
+		NLM:           NewNLM(vendorId, apduLength),
 	}
-	child.Child = child
-	return child.NLM
+	_result.Child = _result
+	return _result
 }
 
 func CastNLMInitalizeRoutingTable(structType interface{}) *NLMInitalizeRoutingTable {
-	castFunc := func(typ interface{}) *NLMInitalizeRoutingTable {
-		if casted, ok := typ.(NLMInitalizeRoutingTable); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NLMInitalizeRoutingTable); ok {
-			return casted
-		}
-		if casted, ok := typ.(NLM); ok {
-			return CastNLMInitalizeRoutingTable(casted.Child)
-		}
-		if casted, ok := typ.(*NLM); ok {
-			return CastNLMInitalizeRoutingTable(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(NLMInitalizeRoutingTable); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NLMInitalizeRoutingTable); ok {
+		return casted
+	}
+	if casted, ok := structType.(NLM); ok {
+		return CastNLMInitalizeRoutingTable(casted.Child)
+	}
+	if casted, ok := structType.(*NLM); ok {
+		return CastNLMInitalizeRoutingTable(casted.Child)
+	}
+	return nil
 }
 
 func (m *NLMInitalizeRoutingTable) GetTypeName() string {
 	return "NLMInitalizeRoutingTable"
 }
 
-func (m *NLMInitalizeRoutingTable) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NLMInitalizeRoutingTable) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NLMInitalizeRoutingTable) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *NLMInitalizeRoutingTable) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (numberOfPorts)
 	lengthInBits += 8
@@ -98,21 +134,23 @@ func (m *NLMInitalizeRoutingTable) LengthInBitsConditional(lastItem bool) uint16
 	if len(m.PortMappings) > 0 {
 		for i, element := range m.PortMappings {
 			last := i == len(m.PortMappings)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *NLMInitalizeRoutingTable) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NLMInitalizeRoutingTable) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func NLMInitalizeRoutingTableParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
+func NLMInitalizeRoutingTableParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLMInitalizeRoutingTable, error) {
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTable"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (numberOfPorts)
 	_numberOfPorts, _numberOfPortsErr := readBuffer.ReadUint8("numberOfPorts", 8)
@@ -151,7 +189,7 @@ func NLMInitalizeRoutingTableParse(readBuffer utils.ReadBuffer, apduLength uint1
 		NLM:           &NLM{},
 	}
 	_child.NLM.Child = _child
-	return _child.NLM, nil
+	return _child, nil
 }
 
 func (m *NLMInitalizeRoutingTable) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -196,6 +234,8 @@ func (m *NLMInitalizeRoutingTable) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

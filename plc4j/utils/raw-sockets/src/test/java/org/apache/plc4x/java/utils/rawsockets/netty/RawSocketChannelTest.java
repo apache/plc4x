@@ -35,12 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-16
- */
 public class RawSocketChannelTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RawSocketChannelTest.class);

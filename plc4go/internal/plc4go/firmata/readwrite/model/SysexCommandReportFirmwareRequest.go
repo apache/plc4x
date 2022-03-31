@@ -32,73 +32,87 @@ type SysexCommandReportFirmwareRequest struct {
 
 // The corresponding interface
 type ISysexCommandReportFirmwareRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ISysexCommand
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandReportFirmwareRequest) CommandType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *SysexCommandReportFirmwareRequest) GetCommandType() uint8 {
 	return 0x79
 }
 
-func (m *SysexCommandReportFirmwareRequest) Response() bool {
+func (m *SysexCommandReportFirmwareRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *SysexCommandReportFirmwareRequest) InitializeParent(parent *SysexCommand) {}
 
-func NewSysexCommandReportFirmwareRequest() *SysexCommand {
-	child := &SysexCommandReportFirmwareRequest{
+func (m *SysexCommandReportFirmwareRequest) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
+// NewSysexCommandReportFirmwareRequest factory function for SysexCommandReportFirmwareRequest
+func NewSysexCommandReportFirmwareRequest() *SysexCommandReportFirmwareRequest {
+	_result := &SysexCommandReportFirmwareRequest{
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandReportFirmwareRequest(structType interface{}) *SysexCommandReportFirmwareRequest {
-	castFunc := func(typ interface{}) *SysexCommandReportFirmwareRequest {
-		if casted, ok := typ.(SysexCommandReportFirmwareRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandReportFirmwareRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandReportFirmwareRequest(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandReportFirmwareRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandReportFirmwareRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandReportFirmwareRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandReportFirmwareRequest(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandReportFirmwareRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandReportFirmwareRequest) GetTypeName() string {
 	return "SysexCommandReportFirmwareRequest"
 }
 
-func (m *SysexCommandReportFirmwareRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandReportFirmwareRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandReportFirmwareRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandReportFirmwareRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *SysexCommandReportFirmwareRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandReportFirmwareRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandReportFirmwareRequestParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
+func SysexCommandReportFirmwareRequestParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandReportFirmwareRequest, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandReportFirmwareRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandReportFirmwareRequest"); closeErr != nil {
 		return nil, closeErr
@@ -109,7 +123,7 @@ func SysexCommandReportFirmwareRequestParse(readBuffer utils.ReadBuffer, respons
 		SysexCommand: &SysexCommand{},
 	}
 	_child.SysexCommand.Child = _child
-	return _child.SysexCommand, nil
+	return _child, nil
 }
 
 func (m *SysexCommandReportFirmwareRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -131,6 +145,8 @@ func (m *SysexCommandReportFirmwareRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

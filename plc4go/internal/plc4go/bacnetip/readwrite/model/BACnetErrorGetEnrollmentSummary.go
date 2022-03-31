@@ -32,72 +32,86 @@ type BACnetErrorGetEnrollmentSummary struct {
 
 // The corresponding interface
 type IBACnetErrorGetEnrollmentSummary interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetError
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorGetEnrollmentSummary) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetErrorGetEnrollmentSummary) GetServiceChoice() uint8 {
 	return 0x04
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetErrorGetEnrollmentSummary) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
 	m.BACnetError.ErrorClass = errorClass
 	m.BACnetError.ErrorCode = errorCode
 }
 
-func NewBACnetErrorGetEnrollmentSummary(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorGetEnrollmentSummary{
+func (m *BACnetErrorGetEnrollmentSummary) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
+// NewBACnetErrorGetEnrollmentSummary factory function for BACnetErrorGetEnrollmentSummary
+func NewBACnetErrorGetEnrollmentSummary(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorGetEnrollmentSummary {
+	_result := &BACnetErrorGetEnrollmentSummary{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorGetEnrollmentSummary(structType interface{}) *BACnetErrorGetEnrollmentSummary {
-	castFunc := func(typ interface{}) *BACnetErrorGetEnrollmentSummary {
-		if casted, ok := typ.(BACnetErrorGetEnrollmentSummary); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorGetEnrollmentSummary); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorGetEnrollmentSummary(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorGetEnrollmentSummary(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorGetEnrollmentSummary); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorGetEnrollmentSummary); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorGetEnrollmentSummary(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorGetEnrollmentSummary(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorGetEnrollmentSummary) GetTypeName() string {
 	return "BACnetErrorGetEnrollmentSummary"
 }
 
-func (m *BACnetErrorGetEnrollmentSummary) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetErrorGetEnrollmentSummary) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetErrorGetEnrollmentSummary) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetErrorGetEnrollmentSummary) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetErrorGetEnrollmentSummary) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetErrorGetEnrollmentSummary) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BACnetErrorGetEnrollmentSummary, error) {
 	if pullErr := readBuffer.PullContext("BACnetErrorGetEnrollmentSummary"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorGetEnrollmentSummary"); closeErr != nil {
 		return nil, closeErr
@@ -108,7 +122,7 @@ func BACnetErrorGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BACnetE
 		BACnetError: &BACnetError{},
 	}
 	_child.BACnetError.Child = _child
-	return _child.BACnetError, nil
+	return _child, nil
 }
 
 func (m *BACnetErrorGetEnrollmentSummary) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -130,6 +144,8 @@ func (m *BACnetErrorGetEnrollmentSummary) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

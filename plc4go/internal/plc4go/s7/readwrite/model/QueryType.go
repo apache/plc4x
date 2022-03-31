@@ -92,12 +92,12 @@ func CastQueryType(structType interface{}) QueryType {
 	return castFunc(structType)
 }
 
-func (m QueryType) LengthInBits() uint16 {
+func (m QueryType) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m QueryType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m QueryType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func QueryTypeParse(readBuffer utils.ReadBuffer) (QueryType, error) {

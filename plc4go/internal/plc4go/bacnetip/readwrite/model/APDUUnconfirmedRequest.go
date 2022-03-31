@@ -31,80 +31,112 @@ import (
 type APDUUnconfirmedRequest struct {
 	*APDU
 	ServiceRequest *BACnetUnconfirmedServiceRequest
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
 type IAPDUUnconfirmedRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAPDU
+	// GetServiceRequest returns ServiceRequest (property field)
+	GetServiceRequest() *BACnetUnconfirmedServiceRequest
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *APDUUnconfirmedRequest) ApduType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *APDUUnconfirmedRequest) GetApduType() uint8 {
 	return 0x1
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *APDUUnconfirmedRequest) InitializeParent(parent *APDU) {}
 
-func NewAPDUUnconfirmedRequest(serviceRequest *BACnetUnconfirmedServiceRequest) *APDU {
-	child := &APDUUnconfirmedRequest{
+func (m *APDUUnconfirmedRequest) GetParent() *APDU {
+	return m.APDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *APDUUnconfirmedRequest) GetServiceRequest() *BACnetUnconfirmedServiceRequest {
+	return m.ServiceRequest
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAPDUUnconfirmedRequest factory function for APDUUnconfirmedRequest
+func NewAPDUUnconfirmedRequest(serviceRequest *BACnetUnconfirmedServiceRequest, apduLength uint16) *APDUUnconfirmedRequest {
+	_result := &APDUUnconfirmedRequest{
 		ServiceRequest: serviceRequest,
-		APDU:           NewAPDU(),
+		APDU:           NewAPDU(apduLength),
 	}
-	child.Child = child
-	return child.APDU
+	_result.Child = _result
+	return _result
 }
 
 func CastAPDUUnconfirmedRequest(structType interface{}) *APDUUnconfirmedRequest {
-	castFunc := func(typ interface{}) *APDUUnconfirmedRequest {
-		if casted, ok := typ.(APDUUnconfirmedRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*APDUUnconfirmedRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(APDU); ok {
-			return CastAPDUUnconfirmedRequest(casted.Child)
-		}
-		if casted, ok := typ.(*APDU); ok {
-			return CastAPDUUnconfirmedRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(APDUUnconfirmedRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*APDUUnconfirmedRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(APDU); ok {
+		return CastAPDUUnconfirmedRequest(casted.Child)
+	}
+	if casted, ok := structType.(*APDU); ok {
+		return CastAPDUUnconfirmedRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *APDUUnconfirmedRequest) GetTypeName() string {
 	return "APDUUnconfirmedRequest"
 }
 
-func (m *APDUUnconfirmedRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDUUnconfirmedRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDUUnconfirmedRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *APDUUnconfirmedRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
 
 	// Simple field (serviceRequest)
-	lengthInBits += m.ServiceRequest.LengthInBits()
+	lengthInBits += m.ServiceRequest.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *APDUUnconfirmedRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDUUnconfirmedRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUUnconfirmedRequest, error) {
 	if pullErr := readBuffer.PullContext("APDUUnconfirmedRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -124,7 +156,7 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 	if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	_serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(readBuffer, uint16(apduLength)-uint16(uint16(1)))
+	_serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(readBuffer, uint16(uint16(apduLength)-uint16(uint16(1))))
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
 	}
@@ -143,7 +175,7 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 		APDU:           &APDU{},
 	}
 	_child.APDU.Child = _child
-	return _child.APDU, nil
+	return _child, nil
 }
 
 func (m *APDUUnconfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -185,6 +217,8 @@ func (m *APDUUnconfirmedRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

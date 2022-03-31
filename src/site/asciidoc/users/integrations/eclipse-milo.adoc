@@ -66,7 +66,7 @@ name: "Plc4xOPCUAServer"
 disableInsecureEndpoint: true
 devices:
     - name: "ModbusDevice"
-      connectionString: "modbus://127.0.0.1:502"
+      connectionString: "modbus-tcp://127.0.0.1:502"
       tags:
         - alias: "TemporaryBOOLARRAY"
           address: "000001:BOOL[10]"

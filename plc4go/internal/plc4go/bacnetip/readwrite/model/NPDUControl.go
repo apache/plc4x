@@ -38,37 +38,77 @@ type NPDUControl struct {
 
 // The corresponding interface
 type INPDUControl interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetMessageTypeFieldPresent returns MessageTypeFieldPresent (property field)
+	GetMessageTypeFieldPresent() bool
+	// GetDestinationSpecified returns DestinationSpecified (property field)
+	GetDestinationSpecified() bool
+	// GetSourceSpecified returns SourceSpecified (property field)
+	GetSourceSpecified() bool
+	// GetExpectingReply returns ExpectingReply (property field)
+	GetExpectingReply() bool
+	// GetNetworkPriority returns NetworkPriority (property field)
+	GetNetworkPriority() NPDUNetworkPriority
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *NPDUControl) GetMessageTypeFieldPresent() bool {
+	return m.MessageTypeFieldPresent
+}
+
+func (m *NPDUControl) GetDestinationSpecified() bool {
+	return m.DestinationSpecified
+}
+
+func (m *NPDUControl) GetSourceSpecified() bool {
+	return m.SourceSpecified
+}
+
+func (m *NPDUControl) GetExpectingReply() bool {
+	return m.ExpectingReply
+}
+
+func (m *NPDUControl) GetNetworkPriority() NPDUNetworkPriority {
+	return m.NetworkPriority
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewNPDUControl factory function for NPDUControl
 func NewNPDUControl(messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority NPDUNetworkPriority) *NPDUControl {
 	return &NPDUControl{MessageTypeFieldPresent: messageTypeFieldPresent, DestinationSpecified: destinationSpecified, SourceSpecified: sourceSpecified, ExpectingReply: expectingReply, NetworkPriority: networkPriority}
 }
 
 func CastNPDUControl(structType interface{}) *NPDUControl {
-	castFunc := func(typ interface{}) *NPDUControl {
-		if casted, ok := typ.(NPDUControl); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NPDUControl); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(NPDUControl); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NPDUControl); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *NPDUControl) GetTypeName() string {
 	return "NPDUControl"
 }
 
-func (m *NPDUControl) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NPDUControl) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NPDUControl) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *NPDUControl) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (messageTypeFieldPresent)
@@ -95,14 +135,16 @@ func (m *NPDUControl) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *NPDUControl) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NPDUControl) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NPDUControlParse(readBuffer utils.ReadBuffer) (*NPDUControl, error) {
 	if pullErr := readBuffer.PullContext("NPDUControl"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (messageTypeFieldPresent)
 	_messageTypeFieldPresent, _messageTypeFieldPresentErr := readBuffer.ReadBit("messageTypeFieldPresent")
@@ -253,6 +295,8 @@ func (m *NPDUControl) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

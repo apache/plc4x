@@ -110,12 +110,12 @@ func CastDataTransportErrorCode(structType interface{}) DataTransportErrorCode {
 	return castFunc(structType)
 }
 
-func (m DataTransportErrorCode) LengthInBits() uint16 {
+func (m DataTransportErrorCode) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m DataTransportErrorCode) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m DataTransportErrorCode) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DataTransportErrorCodeParse(readBuffer utils.ReadBuffer) (DataTransportErrorCode, error) {

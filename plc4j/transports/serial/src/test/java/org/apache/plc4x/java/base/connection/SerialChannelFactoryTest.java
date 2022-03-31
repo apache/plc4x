@@ -37,12 +37,6 @@ import org.slf4j.LoggerFactory;
 import java.net.UnknownHostException;
 import java.util.List;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-10
- */
 public class SerialChannelFactoryTest {
 
     private static final Logger logger = LoggerFactory.getLogger(SerialChannelFactoryTest.class);

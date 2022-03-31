@@ -32,69 +32,83 @@ type BACnetConfirmedServiceACKCreateObject struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKCreateObject interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetConfirmedServiceACK
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceACKCreateObject) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetConfirmedServiceACKCreateObject) GetServiceChoice() uint8 {
 	return 0x0A
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *BACnetConfirmedServiceACKCreateObject) InitializeParent(parent *BACnetConfirmedServiceACK) {}
 
-func NewBACnetConfirmedServiceACKCreateObject() *BACnetConfirmedServiceACK {
-	child := &BACnetConfirmedServiceACKCreateObject{
+func (m *BACnetConfirmedServiceACKCreateObject) GetParent() *BACnetConfirmedServiceACK {
+	return m.BACnetConfirmedServiceACK
+}
+
+// NewBACnetConfirmedServiceACKCreateObject factory function for BACnetConfirmedServiceACKCreateObject
+func NewBACnetConfirmedServiceACKCreateObject() *BACnetConfirmedServiceACKCreateObject {
+	_result := &BACnetConfirmedServiceACKCreateObject{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceACK
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceACKCreateObject(structType interface{}) *BACnetConfirmedServiceACKCreateObject {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceACKCreateObject {
-		if casted, ok := typ.(BACnetConfirmedServiceACKCreateObject); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACKCreateObject); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKCreateObject(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKCreateObject(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceACKCreateObject); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceACKCreateObject); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKCreateObject(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKCreateObject(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceACKCreateObject) GetTypeName() string {
 	return "BACnetConfirmedServiceACKCreateObject"
 }
 
-func (m *BACnetConfirmedServiceACKCreateObject) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceACKCreateObject) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceACKCreateObject) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceACKCreateObject) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceACKCreateObject) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceACKCreateObject) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKCreateObjectParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKCreateObjectParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACKCreateObject, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKCreateObject"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceACKCreateObject"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func BACnetConfirmedServiceACKCreateObjectParse(readBuffer utils.ReadBuffer) (*B
 		BACnetConfirmedServiceACK: &BACnetConfirmedServiceACK{},
 	}
 	_child.BACnetConfirmedServiceACK.Child = _child
-	return _child.BACnetConfirmedServiceACK, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceACKCreateObject) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *BACnetConfirmedServiceACKCreateObject) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

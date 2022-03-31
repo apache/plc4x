@@ -72,7 +72,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				}
 				return
 			}
-			request := readWriteModel.NewCipReadRequest(getRequestSize(tag), ansi, elements)
+			request := readWriteModel.NewCipReadRequest(getRequestSize(tag), ansi, elements, 0).GetParent()
 			requestItems[i] = request
 		}
 		if len(requestItems) > 1 {
@@ -81,7 +81,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			offset := 2 + nb*2
 			for i := uint16(0); i < nb; i++ {
 				offsets[i] = offset
-				offset += requestItems[i].LengthInBytes()
+				offset += requestItems[i].GetLengthInBytes()
 			}
 
 			serviceArr := make([]*readWriteModel.CipService, nb)
@@ -89,19 +89,22 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				serviceArr[i] = requestItems[i]
 			}
 
-			data := readWriteModel.NewServices(nb, offsets, serviceArr)
+			data := readWriteModel.NewServices(nb, offsets, serviceArr, 0)
 			//Encapsulate the data
 			pkt := readWriteModel.NewCipRRData(
 				readWriteModel.NewCipExchange(
 					readWriteModel.NewCipUnconnectedRequest(
-						readWriteModel.NewMultipleServiceRequest(data),
+						readWriteModel.NewMultipleServiceRequest(data, 0).GetParent(),
 						m.configuration.backplane,
 						m.configuration.slot,
-					),
+						0,
+					).GetParent(),
+					0,
 				),
 				*m.sessionHandle,
 				0,
 				make([]byte, 8),
+				0,
 				0,
 			)
 
@@ -180,11 +183,14 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						requestItems[0],
 						m.configuration.backplane,
 						m.configuration.slot,
-					),
+						0,
+					).GetParent(),
+					0,
 				),
 				*m.sessionHandle,
 				0,
 				make([]byte, 8),
+				0,
 				0,
 			)
 
@@ -407,7 +413,7 @@ func (m *Reader) ToPlc4xReadResponse(response *readWriteModel.CipService, readRe
 				return nil, err
 			}
 		}
-		services := readWriteModel.NewServices(nb, multipleServiceResponse.Offsets, arr)
+		services := readWriteModel.NewServices(nb, multipleServiceResponse.Offsets, arr, 0)
 		for i, fieldName := range readRequest.GetFieldNames() {
 			field := readRequest.GetField(fieldName).(EIPPlcField)
 			if cipReadResponse, ok := services.Services[i].Child.(*readWriteModel.CipReadResponse); ok {

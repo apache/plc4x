@@ -28,18 +28,30 @@ import (
 
 // The data-structure of this message
 type BACnetContextTag struct {
-	Header                   *BACnetTagHeader
-	TagNumber                uint8
-	ActualLength             uint32
-	IsNotOpeningOrClosingTag bool
-	Child                    IBACnetContextTagChild
+	Header *BACnetTagHeader
+
+	// Arguments.
+	TagNumberArgument uint8
+	Child             IBACnetContextTagChild
 }
 
 // The corresponding interface
 type IBACnetContextTag interface {
-	DataType() BACnetDataType
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetDataType returns DataType (discriminator field)
+	GetDataType() BACnetDataType
+	// GetHeader returns Header (property field)
+	GetHeader() *BACnetTagHeader
+	// GetTagNumber returns TagNumber (virtual field)
+	GetTagNumber() uint8
+	// GetActualLength returns ActualLength (virtual field)
+	GetActualLength() uint32
+	// GetIsNotOpeningOrClosingTag returns IsNotOpeningOrClosingTag (virtual field)
+	GetIsNotOpeningOrClosingTag() bool
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,45 +62,81 @@ type IBACnetContextTagParent interface {
 
 type IBACnetContextTagChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool)
+	InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader)
+	GetParent() *BACnetContextTag
+
 	GetTypeName() string
 	IBACnetContextTag
 }
 
-func NewBACnetContextTag(header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	return &BACnetContextTag{Header: header, TagNumber: tagNumber, ActualLength: actualLength, IsNotOpeningOrClosingTag: isNotOpeningOrClosingTag}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetContextTag) GetHeader() *BACnetTagHeader {
+	return m.Header
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+func (m *BACnetContextTag) GetTagNumber() uint8 {
+	return uint8(m.GetHeader().GetTagNumber())
+}
+
+func (m *BACnetContextTag) GetActualLength() uint32 {
+	return uint32(m.GetHeader().GetActualLength())
+}
+
+func (m *BACnetContextTag) GetIsNotOpeningOrClosingTag() bool {
+	return bool(bool(bool((m.GetHeader().GetLengthValueType()) != (6))) && bool(bool((m.GetHeader().GetLengthValueType()) != (7))))
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetContextTag factory function for BACnetContextTag
+func NewBACnetContextTag(header *BACnetTagHeader, tagNumberArgument uint8) *BACnetContextTag {
+	return &BACnetContextTag{Header: header, TagNumberArgument: tagNumberArgument}
 }
 
 func CastBACnetContextTag(structType interface{}) *BACnetContextTag {
-	castFunc := func(typ interface{}) *BACnetContextTag {
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return casted
+	}
+	if casted, ok := structType.(IBACnetContextTagChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *BACnetContextTag) GetTypeName() string {
 	return "BACnetContextTag"
 }
 
-func (m *BACnetContextTag) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTag) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTag) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetContextTag) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetContextTag) ParentLengthInBits() uint16 {
+func (m *BACnetContextTag) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.LengthInBits()
+	lengthInBits += m.Header.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
@@ -99,14 +147,16 @@ func (m *BACnetContextTag) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetContextTag) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTag) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetContextTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTag"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (header)
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
@@ -122,71 +172,78 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	}
 
 	// Validation
-	if !(bool((header.ActualTagNumber) == (tagNumberArgument))) {
+	if !(bool((header.GetActualTagNumber()) == (tagNumberArgument))) {
 		return nil, utils.ParseAssertError{"tagnumber doesn't match"}
 	}
 
 	// Validation
-	if !(bool((header.TagClass) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
+	if !(bool((header.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
 		return nil, utils.ParseAssertError{"should be a context tag"}
 	}
 
 	// Virtual field
-	_tagNumber := header.TagNumber
+	_tagNumber := header.GetTagNumber()
 	tagNumber := uint8(_tagNumber)
+	_ = tagNumber
 
 	// Virtual field
-	_actualLength := header.ActualLength
+	_actualLength := header.GetActualLength()
 	actualLength := uint32(_actualLength)
+	_ = actualLength
 
 	// Virtual field
-	_isNotOpeningOrClosingTag := bool(bool((header.LengthValueType) != (6))) && bool(bool((header.LengthValueType) != (7)))
+	_isNotOpeningOrClosingTag := bool(bool((header.GetLengthValueType()) != (6))) && bool(bool((header.GetLengthValueType()) != (7)))
 	isNotOpeningOrClosingTag := bool(_isNotOpeningOrClosingTag)
+	_ = isNotOpeningOrClosingTag
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetContextTag
+	type BACnetContextTagChild interface {
+		InitializeParent(*BACnetContextTag, *BACnetTagHeader)
+		GetParent() *BACnetContextTag
+	}
+	var _child BACnetContextTagChild
 	var typeSwitchError error
 	switch {
 	case dataType == BACnetDataType_BOOLEAN: // BACnetContextTagBoolean
-		_parent, typeSwitchError = BACnetContextTagBooleanParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
+		_child, typeSwitchError = BACnetContextTagBooleanParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, header)
 	case dataType == BACnetDataType_UNSIGNED_INTEGER: // BACnetContextTagUnsignedInteger
-		_parent, typeSwitchError = BACnetContextTagUnsignedIntegerParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
+		_child, typeSwitchError = BACnetContextTagUnsignedIntegerParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, header)
 	case dataType == BACnetDataType_SIGNED_INTEGER: // BACnetContextTagSignedInteger
-		_parent, typeSwitchError = BACnetContextTagSignedIntegerParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
+		_child, typeSwitchError = BACnetContextTagSignedIntegerParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, header)
 	case dataType == BACnetDataType_REAL: // BACnetContextTagReal
-		_parent, typeSwitchError = BACnetContextTagRealParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
+		_child, typeSwitchError = BACnetContextTagRealParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
 	case dataType == BACnetDataType_DOUBLE: // BACnetContextTagDouble
-		_parent, typeSwitchError = BACnetContextTagDoubleParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
+		_child, typeSwitchError = BACnetContextTagDoubleParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
 	case dataType == BACnetDataType_OCTET_STRING: // BACnetContextTagOctetString
-		_parent, typeSwitchError = BACnetContextTagOctetStringParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
+		_child, typeSwitchError = BACnetContextTagOctetStringParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, header)
 	case dataType == BACnetDataType_CHARACTER_STRING: // BACnetContextTagCharacterString
-		_parent, typeSwitchError = BACnetContextTagCharacterStringParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
+		_child, typeSwitchError = BACnetContextTagCharacterStringParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, header)
 	case dataType == BACnetDataType_BIT_STRING: // BACnetContextTagBitString
-		_parent, typeSwitchError = BACnetContextTagBitStringParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
+		_child, typeSwitchError = BACnetContextTagBitStringParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, header)
 	case dataType == BACnetDataType_ENUMERATED: // BACnetContextTagEnumerated
-		_parent, typeSwitchError = BACnetContextTagEnumeratedParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
+		_child, typeSwitchError = BACnetContextTagEnumeratedParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, header)
 	case dataType == BACnetDataType_DATE: // BACnetContextTagDate
-		_parent, typeSwitchError = BACnetContextTagDateParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
+		_child, typeSwitchError = BACnetContextTagDateParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
 	case dataType == BACnetDataType_TIME: // BACnetContextTagTime
-		_parent, typeSwitchError = BACnetContextTagTimeParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
+		_child, typeSwitchError = BACnetContextTagTimeParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
 	case dataType == BACnetDataType_BACNET_OBJECT_IDENTIFIER: // BACnetContextTagObjectIdentifier
-		_parent, typeSwitchError = BACnetContextTagObjectIdentifierParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
+		_child, typeSwitchError = BACnetContextTagObjectIdentifierParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
 	case dataType == BACnetDataType_BACNET_PROPERTY_IDENTIFIER: // BACnetContextTagPropertyIdentifier
-		_parent, typeSwitchError = BACnetContextTagPropertyIdentifierParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
+		_child, typeSwitchError = BACnetContextTagPropertyIdentifierParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
 	case dataType == BACnetDataType_EVENT_TYPE: // BACnetContextTagEventType
-		_parent, typeSwitchError = BACnetContextTagEventTypeParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
+		_child, typeSwitchError = BACnetContextTagEventTypeParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
 	case dataType == BACnetDataType_EVENT_STATE: // BACnetContextTagEventState
-		_parent, typeSwitchError = BACnetContextTagEventStateParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
+		_child, typeSwitchError = BACnetContextTagEventStateParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
 	case dataType == BACnetDataType_NOTIFY_TYPE: // BACnetContextTagNotifyType
-		_parent, typeSwitchError = BACnetContextTagNotifyTypeParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
+		_child, typeSwitchError = BACnetContextTagNotifyTypeParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
 	case dataType == BACnetDataType_BACNET_DEVICE_STATE: // BACnetContextTagDeviceState
-		_parent, typeSwitchError = BACnetContextTagDeviceStateParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
+		_child, typeSwitchError = BACnetContextTagDeviceStateParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
 	case dataType == BACnetDataType_OPENING_TAG: // BACnetOpeningTag
-		_parent, typeSwitchError = BACnetOpeningTagParse(readBuffer, tagNumberArgument, dataType, actualLength)
+		_child, typeSwitchError = BACnetOpeningTagParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case dataType == BACnetDataType_CLOSING_TAG: // BACnetClosingTag
-		_parent, typeSwitchError = BACnetClosingTagParse(readBuffer, tagNumberArgument, dataType, actualLength)
+		_child, typeSwitchError = BACnetClosingTagParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case true: // BACnetContextTagEmpty
-		_parent, typeSwitchError = BACnetContextTagEmptyParse(readBuffer, tagNumberArgument, dataType)
+		_child, typeSwitchError = BACnetContextTagEmptyParse(readBuffer, tagNumberArgument, dataType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -200,8 +257,8 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, header, tagNumber, actualLength, isNotOpeningOrClosingTag)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), header)
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetContextTag) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -225,15 +282,15 @@ func (m *BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, child 
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 	// Virtual field
-	if _tagNumberErr := writeBuffer.WriteVirtual("tagNumber", m.TagNumber); _tagNumberErr != nil {
+	if _tagNumberErr := writeBuffer.WriteVirtual("tagNumber", m.GetTagNumber()); _tagNumberErr != nil {
 		return errors.Wrap(_tagNumberErr, "Error serializing 'tagNumber' field")
 	}
 	// Virtual field
-	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.ActualLength); _actualLengthErr != nil {
+	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.GetActualLength()); _actualLengthErr != nil {
 		return errors.Wrap(_actualLengthErr, "Error serializing 'actualLength' field")
 	}
 	// Virtual field
-	if _isNotOpeningOrClosingTagErr := writeBuffer.WriteVirtual("isNotOpeningOrClosingTag", m.IsNotOpeningOrClosingTag); _isNotOpeningOrClosingTagErr != nil {
+	if _isNotOpeningOrClosingTagErr := writeBuffer.WriteVirtual("isNotOpeningOrClosingTag", m.GetIsNotOpeningOrClosingTag()); _isNotOpeningOrClosingTagErr != nil {
 		return errors.Wrap(_isNotOpeningOrClosingTagErr, "Error serializing 'isNotOpeningOrClosingTag' field")
 	}
 
@@ -253,6 +310,8 @@ func (m *BACnetContextTag) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

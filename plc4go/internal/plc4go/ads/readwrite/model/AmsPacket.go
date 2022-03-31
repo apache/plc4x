@@ -41,47 +41,111 @@ type AmsPacket struct {
 
 // The corresponding interface
 type IAmsPacket interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetTargetAmsNetId returns TargetAmsNetId (property field)
+	GetTargetAmsNetId() *AmsNetId
+	// GetTargetAmsPort returns TargetAmsPort (property field)
+	GetTargetAmsPort() uint16
+	// GetSourceAmsNetId returns SourceAmsNetId (property field)
+	GetSourceAmsNetId() *AmsNetId
+	// GetSourceAmsPort returns SourceAmsPort (property field)
+	GetSourceAmsPort() uint16
+	// GetCommandId returns CommandId (property field)
+	GetCommandId() CommandId
+	// GetState returns State (property field)
+	GetState() *State
+	// GetErrorCode returns ErrorCode (property field)
+	GetErrorCode() uint32
+	// GetInvokeId returns InvokeId (property field)
+	GetInvokeId() uint32
+	// GetData returns Data (property field)
+	GetData() *AdsData
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AmsPacket) GetTargetAmsNetId() *AmsNetId {
+	return m.TargetAmsNetId
+}
+
+func (m *AmsPacket) GetTargetAmsPort() uint16 {
+	return m.TargetAmsPort
+}
+
+func (m *AmsPacket) GetSourceAmsNetId() *AmsNetId {
+	return m.SourceAmsNetId
+}
+
+func (m *AmsPacket) GetSourceAmsPort() uint16 {
+	return m.SourceAmsPort
+}
+
+func (m *AmsPacket) GetCommandId() CommandId {
+	return m.CommandId
+}
+
+func (m *AmsPacket) GetState() *State {
+	return m.State
+}
+
+func (m *AmsPacket) GetErrorCode() uint32 {
+	return m.ErrorCode
+}
+
+func (m *AmsPacket) GetInvokeId() uint32 {
+	return m.InvokeId
+}
+
+func (m *AmsPacket) GetData() *AdsData {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAmsPacket factory function for AmsPacket
 func NewAmsPacket(targetAmsNetId *AmsNetId, targetAmsPort uint16, sourceAmsNetId *AmsNetId, sourceAmsPort uint16, commandId CommandId, state *State, errorCode uint32, invokeId uint32, data *AdsData) *AmsPacket {
 	return &AmsPacket{TargetAmsNetId: targetAmsNetId, TargetAmsPort: targetAmsPort, SourceAmsNetId: sourceAmsNetId, SourceAmsPort: sourceAmsPort, CommandId: commandId, State: state, ErrorCode: errorCode, InvokeId: invokeId, Data: data}
 }
 
 func CastAmsPacket(structType interface{}) *AmsPacket {
-	castFunc := func(typ interface{}) *AmsPacket {
-		if casted, ok := typ.(AmsPacket); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AmsPacket); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AmsPacket); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AmsPacket); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AmsPacket) GetTypeName() string {
 	return "AmsPacket"
 }
 
-func (m *AmsPacket) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AmsPacket) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AmsPacket) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AmsPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (targetAmsNetId)
-	lengthInBits += m.TargetAmsNetId.LengthInBits()
+	lengthInBits += m.TargetAmsNetId.GetLengthInBits()
 
 	// Simple field (targetAmsPort)
 	lengthInBits += 16
 
 	// Simple field (sourceAmsNetId)
-	lengthInBits += m.SourceAmsNetId.LengthInBits()
+	lengthInBits += m.SourceAmsNetId.GetLengthInBits()
 
 	// Simple field (sourceAmsPort)
 	lengthInBits += 16
@@ -90,7 +154,7 @@ func (m *AmsPacket) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 16
 
 	// Simple field (state)
-	lengthInBits += m.State.LengthInBits()
+	lengthInBits += m.State.GetLengthInBits()
 
 	// Implicit Field (length)
 	lengthInBits += 32
@@ -102,19 +166,21 @@ func (m *AmsPacket) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 32
 
 	// Simple field (data)
-	lengthInBits += m.Data.LengthInBits()
+	lengthInBits += m.Data.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *AmsPacket) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AmsPacket) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	if pullErr := readBuffer.PullContext("AmsPacket"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (targetAmsNetId)
 	if pullErr := readBuffer.PullContext("targetAmsNetId"); pullErr != nil {
@@ -182,7 +248,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, closeErr
 	}
 
-	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
@@ -207,7 +273,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
 		return nil, pullErr
 	}
-	_data, _dataErr := AdsDataParse(readBuffer, commandId, state.Response)
+	_data, _dataErr := AdsDataParse(readBuffer, CommandId(commandId), bool(state.GetResponse()))
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
@@ -292,7 +358,7 @@ func (m *AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length := uint32(m.Data.LengthInBytes())
+	length := uint32(m.GetData().GetLengthInBytes())
 	_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
@@ -335,6 +401,8 @@ func (m *AmsPacket) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

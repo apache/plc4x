@@ -28,14 +28,21 @@ import (
 
 // The data-structure of this message
 type COTPParameter struct {
+
+	// Arguments.
+	Rest  uint8
 	Child ICOTPParameterChild
 }
 
 // The corresponding interface
 type ICOTPParameter interface {
-	ParameterType() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetParameterType returns ParameterType (discriminator field)
+	GetParameterType() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,40 +54,43 @@ type ICOTPParameterParent interface {
 type ICOTPParameterChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *COTPParameter)
+	GetParent() *COTPParameter
+
 	GetTypeName() string
 	ICOTPParameter
 }
 
-func NewCOTPParameter() *COTPParameter {
-	return &COTPParameter{}
+// NewCOTPParameter factory function for COTPParameter
+func NewCOTPParameter(rest uint8) *COTPParameter {
+	return &COTPParameter{Rest: rest}
 }
 
 func CastCOTPParameter(structType interface{}) *COTPParameter {
-	castFunc := func(typ interface{}) *COTPParameter {
-		if casted, ok := typ.(COTPParameter); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPParameter); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(COTPParameter); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPParameter); ok {
+		return casted
+	}
+	if casted, ok := structType.(ICOTPParameterChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *COTPParameter) GetTypeName() string {
 	return "COTPParameter"
 }
 
-func (m *COTPParameter) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPParameter) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPParameter) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *COTPParameter) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *COTPParameter) ParentLengthInBits() uint16 {
+func (m *COTPParameter) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
@@ -91,14 +101,16 @@ func (m *COTPParameter) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *COTPParameter) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPParameter) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
 	if pullErr := readBuffer.PullContext("COTPParameter"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType, _parameterTypeErr := readBuffer.ReadUint8("parameterType", 8)
@@ -106,7 +118,7 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter
 		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field")
 	}
 
-	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	parameterLength, _parameterLengthErr := readBuffer.ReadUint8("parameterLength", 8)
 	_ = parameterLength
 	if _parameterLengthErr != nil {
@@ -114,19 +126,23 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *COTPParameter
+	type COTPParameterChild interface {
+		InitializeParent(*COTPParameter)
+		GetParent() *COTPParameter
+	}
+	var _child COTPParameterChild
 	var typeSwitchError error
 	switch {
 	case parameterType == 0xC0: // COTPParameterTpduSize
-		_parent, typeSwitchError = COTPParameterTpduSizeParse(readBuffer, rest)
+		_child, typeSwitchError = COTPParameterTpduSizeParse(readBuffer, rest)
 	case parameterType == 0xC1: // COTPParameterCallingTsap
-		_parent, typeSwitchError = COTPParameterCallingTsapParse(readBuffer, rest)
+		_child, typeSwitchError = COTPParameterCallingTsapParse(readBuffer, rest)
 	case parameterType == 0xC2: // COTPParameterCalledTsap
-		_parent, typeSwitchError = COTPParameterCalledTsapParse(readBuffer, rest)
+		_child, typeSwitchError = COTPParameterCalledTsapParse(readBuffer, rest)
 	case parameterType == 0xC3: // COTPParameterChecksum
-		_parent, typeSwitchError = COTPParameterChecksumParse(readBuffer, rest)
+		_child, typeSwitchError = COTPParameterChecksumParse(readBuffer, rest)
 	case parameterType == 0xE0: // COTPParameterDisconnectAdditionalInformation
-		_parent, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(readBuffer, rest)
+		_child, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(readBuffer, rest)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -140,8 +156,8 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *COTPParameter) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -154,7 +170,7 @@ func (m *COTPParameter) SerializeParent(writeBuffer utils.WriteBuffer, child ICO
 	}
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
-	parameterType := uint8(child.ParameterType())
+	parameterType := uint8(child.GetParameterType())
 	_parameterTypeErr := writeBuffer.WriteUint8("parameterType", 8, (parameterType))
 
 	if _parameterTypeErr != nil {
@@ -162,7 +178,7 @@ func (m *COTPParameter) SerializeParent(writeBuffer utils.WriteBuffer, child ICO
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	parameterLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
+	parameterLength := uint8(uint8(uint8(m.GetLengthInBytes())) - uint8(uint8(2)))
 	_parameterLengthErr := writeBuffer.WriteUint8("parameterLength", 8, (parameterLength))
 	if _parameterLengthErr != nil {
 		return errors.Wrap(_parameterLengthErr, "Error serializing 'parameterLength' field")
@@ -184,6 +200,8 @@ func (m *COTPParameter) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

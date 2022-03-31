@@ -30,62 +30,92 @@ import (
 type COTPParameterDisconnectAdditionalInformation struct {
 	*COTPParameter
 	Data []byte
+
+	// Arguments.
+	Rest uint8
 }
 
 // The corresponding interface
 type ICOTPParameterDisconnectAdditionalInformation interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICOTPParameter
+	// GetData returns Data (property field)
+	GetData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *COTPParameterDisconnectAdditionalInformation) ParameterType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *COTPParameterDisconnectAdditionalInformation) GetParameterType() uint8 {
 	return 0xE0
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *COTPParameterDisconnectAdditionalInformation) InitializeParent(parent *COTPParameter) {}
 
-func NewCOTPParameterDisconnectAdditionalInformation(data []byte) *COTPParameter {
-	child := &COTPParameterDisconnectAdditionalInformation{
+func (m *COTPParameterDisconnectAdditionalInformation) GetParent() *COTPParameter {
+	return m.COTPParameter
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *COTPParameterDisconnectAdditionalInformation) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewCOTPParameterDisconnectAdditionalInformation factory function for COTPParameterDisconnectAdditionalInformation
+func NewCOTPParameterDisconnectAdditionalInformation(data []byte, rest uint8) *COTPParameterDisconnectAdditionalInformation {
+	_result := &COTPParameterDisconnectAdditionalInformation{
 		Data:          data,
-		COTPParameter: NewCOTPParameter(),
+		COTPParameter: NewCOTPParameter(rest),
 	}
-	child.Child = child
-	return child.COTPParameter
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPParameterDisconnectAdditionalInformation(structType interface{}) *COTPParameterDisconnectAdditionalInformation {
-	castFunc := func(typ interface{}) *COTPParameterDisconnectAdditionalInformation {
-		if casted, ok := typ.(COTPParameterDisconnectAdditionalInformation); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPParameterDisconnectAdditionalInformation); ok {
-			return casted
-		}
-		if casted, ok := typ.(COTPParameter); ok {
-			return CastCOTPParameterDisconnectAdditionalInformation(casted.Child)
-		}
-		if casted, ok := typ.(*COTPParameter); ok {
-			return CastCOTPParameterDisconnectAdditionalInformation(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(COTPParameterDisconnectAdditionalInformation); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPParameterDisconnectAdditionalInformation); ok {
+		return casted
+	}
+	if casted, ok := structType.(COTPParameter); ok {
+		return CastCOTPParameterDisconnectAdditionalInformation(casted.Child)
+	}
+	if casted, ok := structType.(*COTPParameter); ok {
+		return CastCOTPParameterDisconnectAdditionalInformation(casted.Child)
+	}
+	return nil
 }
 
 func (m *COTPParameterDisconnectAdditionalInformation) GetTypeName() string {
 	return "COTPParameterDisconnectAdditionalInformation"
 }
 
-func (m *COTPParameterDisconnectAdditionalInformation) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPParameterDisconnectAdditionalInformation) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPParameterDisconnectAdditionalInformation) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *COTPParameterDisconnectAdditionalInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -95,14 +125,16 @@ func (m *COTPParameterDisconnectAdditionalInformation) LengthInBitsConditional(l
 	return lengthInBits
 }
 
-func (m *COTPParameterDisconnectAdditionalInformation) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPParameterDisconnectAdditionalInformation) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameterDisconnectAdditionalInformation, error) {
 	if pullErr := readBuffer.PullContext("COTPParameterDisconnectAdditionalInformation"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	// Byte Array field (data)
 	numberOfBytesdata := int(rest)
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
@@ -120,7 +152,7 @@ func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuff
 		COTPParameter: &COTPParameter{},
 	}
 	_child.COTPParameter.Child = _child
-	return _child.COTPParameter, nil
+	return _child, nil
 }
 
 func (m *COTPParameterDisconnectAdditionalInformation) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -151,6 +183,8 @@ func (m *COTPParameterDisconnectAdditionalInformation) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

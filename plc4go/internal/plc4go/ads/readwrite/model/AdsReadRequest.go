@@ -36,64 +36,103 @@ type AdsReadRequest struct {
 
 // The corresponding interface
 type IAdsReadRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAdsData
+	// GetIndexGroup returns IndexGroup (property field)
+	GetIndexGroup() uint32
+	// GetIndexOffset returns IndexOffset (property field)
+	GetIndexOffset() uint32
+	// GetLength returns Length (property field)
+	GetLength() uint32
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsReadRequest) CommandId() CommandId {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *AdsReadRequest) GetCommandId() CommandId {
 	return CommandId_ADS_READ
 }
 
-func (m *AdsReadRequest) Response() bool {
+func (m *AdsReadRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *AdsReadRequest) InitializeParent(parent *AdsData) {}
 
-func NewAdsReadRequest(indexGroup uint32, indexOffset uint32, length uint32) *AdsData {
-	child := &AdsReadRequest{
+func (m *AdsReadRequest) GetParent() *AdsData {
+	return m.AdsData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AdsReadRequest) GetIndexGroup() uint32 {
+	return m.IndexGroup
+}
+
+func (m *AdsReadRequest) GetIndexOffset() uint32 {
+	return m.IndexOffset
+}
+
+func (m *AdsReadRequest) GetLength() uint32 {
+	return m.Length
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAdsReadRequest factory function for AdsReadRequest
+func NewAdsReadRequest(indexGroup uint32, indexOffset uint32, length uint32) *AdsReadRequest {
+	_result := &AdsReadRequest{
 		IndexGroup:  indexGroup,
 		IndexOffset: indexOffset,
 		Length:      length,
 		AdsData:     NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsReadRequest(structType interface{}) *AdsReadRequest {
-	castFunc := func(typ interface{}) *AdsReadRequest {
-		if casted, ok := typ.(AdsReadRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsReadRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsReadRequest(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsReadRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsReadRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsReadRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsReadRequest(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsReadRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsReadRequest) GetTypeName() string {
 	return "AdsReadRequest"
 }
 
-func (m *AdsReadRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsReadRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsReadRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsReadRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -107,14 +146,16 @@ func (m *AdsReadRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AdsReadRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsReadRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func AdsReadRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsReadRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsReadRequest, error) {
 	if pullErr := readBuffer.PullContext("AdsReadRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (indexGroup)
 	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
@@ -149,7 +190,7 @@ func AdsReadRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, respo
 		AdsData:     &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -192,6 +233,8 @@ func (m *AdsReadRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

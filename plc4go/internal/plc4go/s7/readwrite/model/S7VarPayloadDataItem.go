@@ -36,37 +36,65 @@ type S7VarPayloadDataItem struct {
 
 // The corresponding interface
 type IS7VarPayloadDataItem interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetReturnCode returns ReturnCode (property field)
+	GetReturnCode() DataTransportErrorCode
+	// GetTransportSize returns TransportSize (property field)
+	GetTransportSize() DataTransportSize
+	// GetData returns Data (property field)
+	GetData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7VarPayloadDataItem) GetReturnCode() DataTransportErrorCode {
+	return m.ReturnCode
+}
+
+func (m *S7VarPayloadDataItem) GetTransportSize() DataTransportSize {
+	return m.TransportSize
+}
+
+func (m *S7VarPayloadDataItem) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7VarPayloadDataItem factory function for S7VarPayloadDataItem
 func NewS7VarPayloadDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, data []byte) *S7VarPayloadDataItem {
 	return &S7VarPayloadDataItem{ReturnCode: returnCode, TransportSize: transportSize, Data: data}
 }
 
 func CastS7VarPayloadDataItem(structType interface{}) *S7VarPayloadDataItem {
-	castFunc := func(typ interface{}) *S7VarPayloadDataItem {
-		if casted, ok := typ.(S7VarPayloadDataItem); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7VarPayloadDataItem); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(S7VarPayloadDataItem); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7VarPayloadDataItem); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *S7VarPayloadDataItem) GetTypeName() string {
 	return "S7VarPayloadDataItem"
 }
 
-func (m *S7VarPayloadDataItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7VarPayloadDataItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7VarPayloadDataItem) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *S7VarPayloadDataItem) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (returnCode)
@@ -84,7 +112,7 @@ func (m *S7VarPayloadDataItem) LengthInBitsConditional(lastItem bool) uint16 {
 	}
 
 	// Padding Field (padding)
-	_timesPadding := uint8(int32(int32(len(m.Data))) % int32(int32(2)))
+	_timesPadding := uint8(int32(int32(len(m.GetData()))) % int32(int32(2)))
 	for ; _timesPadding > 0; _timesPadding-- {
 		lengthInBits += 8
 	}
@@ -92,14 +120,16 @@ func (m *S7VarPayloadDataItem) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *S7VarPayloadDataItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7VarPayloadDataItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataItem, error) {
 	if pullErr := readBuffer.PullContext("S7VarPayloadDataItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
@@ -127,7 +157,7 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataIt
 		return nil, closeErr
 	}
 
-	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := readBuffer.ReadUint16("dataLength", 16)
 	_ = dataLength
 	if _dataLengthErr != nil {
@@ -196,8 +226,8 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(utils.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), func() interface{} { return uint16(uint16(1)) }, func() interface{} {
-		return uint16(uint16(utils.InlineIf(m.TransportSize.SizeInBits(), func() interface{} { return uint16(uint16(8)) }, func() interface{} { return uint16(uint16(1)) }).(uint16)))
+	dataLength := uint16(uint16(uint16(len(m.GetData()))) * uint16(uint16(utils.InlineIf(bool(bool((m.GetTransportSize()) == (DataTransportSize_BIT))), func() interface{} { return uint16(uint16(1)) }, func() interface{} {
+		return uint16(uint16(utils.InlineIf(m.GetTransportSize().SizeInBits(), func() interface{} { return uint16(uint16(8)) }, func() interface{} { return uint16(uint16(1)) }).(uint16)))
 	}).(uint16))))
 	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, (dataLength))
 	if _dataLengthErr != nil {
@@ -218,7 +248,7 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("padding", utils.WithRenderAsList(true)); pushErr != nil {
 			return pushErr
 		}
-		_timesPadding := uint8(int32(int32(len(m.Data))) % int32(int32(2)))
+		_timesPadding := uint8(int32(int32(len(m.GetData()))) % int32(int32(2)))
 		for ; _timesPadding > 0; _timesPadding-- {
 			_paddingValue := uint8(0x00)
 			_paddingErr := writeBuffer.WriteUint8("", 8, (_paddingValue))
@@ -242,6 +272,8 @@ func (m *S7VarPayloadDataItem) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

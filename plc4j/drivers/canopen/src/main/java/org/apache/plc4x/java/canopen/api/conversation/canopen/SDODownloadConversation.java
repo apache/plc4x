@@ -22,13 +22,13 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.canopen.transport.CANOpenAbortException;
-import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.*;
-import org.apache.plc4x.java.canopen.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 
 import java.util.concurrent.CompletableFuture;
+
 import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 
 public class SDODownloadConversation extends CANOpenConversationBase {
 
@@ -42,7 +42,9 @@ public class SDODownloadConversation extends CANOpenConversationBase {
         this.indexAddress = indexAddress;
 
         try {
-            data = DataItemIO.staticSerialize(value, type,  null, ByteOrder.LITTLE_ENDIAN).getData();
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, type, null), ByteOrder.LITTLE_ENDIAN);
+            DataItem.staticSerialize(writeBuffer, value, type, null, ByteOrder.LITTLE_ENDIAN);
+            data = writeBuffer.getData();
         } catch (SerializationException e) {
             throw new PlcRuntimeException("Could not serialize data", e);
         }
@@ -51,7 +53,7 @@ public class SDODownloadConversation extends CANOpenConversationBase {
     public void execute(CompletableFuture<PlcResponseCode> receiver) {
         if (data.length > 4) {
             // segmented
-            SDOInitiateSegmentedUploadResponse size = new SDOInitiateSegmentedUploadResponse(data.length);
+            SDOInitiateSegmentedUploadResponse size = new SDOInitiateSegmentedUploadResponse(data.length, (byte) 0);
             delegate.send(createFrame(new SDOInitiateDownloadRequest(false, true, indexAddress, size)))
                 .check(new NodeIdPredicate(answerNodeId))
                 .onTimeout(receiver::completeExceptionally)
@@ -84,7 +86,7 @@ public class SDODownloadConversation extends CANOpenConversationBase {
         SDOInitiateDownloadRequest rq = new SDOInitiateDownloadRequest(
             true, true,
             indexAddress,
-            new SDOInitiateExpeditedUploadResponse(data)
+            new SDOInitiateExpeditedUploadResponse(data,(byte)0)
         );
 
         delegate.send(createFrame(rq))

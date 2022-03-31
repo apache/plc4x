@@ -20,6 +20,7 @@
 package values
 
 import (
+	"encoding/hex"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
@@ -75,4 +76,8 @@ func (m RawPlcValue) RawHasMore() bool {
 
 func (m RawPlcValue) RawReset() {
 	m.readBuffer.(utils.ReadBufferByteBased).Reset(0)
+}
+
+func (m RawPlcValue) GetString() string {
+	return hex.EncodeToString(m.GetRaw())
 }

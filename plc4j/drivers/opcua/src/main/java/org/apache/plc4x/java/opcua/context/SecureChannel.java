@@ -79,7 +79,7 @@ public class SecureChannel {
     protected static final ExtensionObject NULL_EXTENSION_OBJECT = new ExtensionObject(
         NULL_EXPANDED_NODEID,
         new ExtensionObjectEncodingMask(false, false, false),
-        new NullExtension());               // Body
+        new NullExtension(), false);               // Body
 
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(.(?<transportCode>tcp))?://" +
         "(?<transportHost>[\\w.-]+)(:" +
@@ -188,7 +188,7 @@ public class SecureChannel {
             if (this.isEncrypted) {
                 apu = OpcuaAPU.staticParse(encryptionHandler.encodeMessage(messageRequest, buffer.getData()), false);
             } else {
-                apu = new OpcuaAPU(messageRequest);
+                apu = new OpcuaAPU(messageRequest, false);
             }
         } catch (ParseException e) {
             throw new PlcRuntimeException("Unable to encrypt message before sending");
@@ -251,7 +251,7 @@ public class SecureChannel {
             DEFAULT_MAX_CHUNK_COUNT,
             this.endpoint);
 
-        Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(hello))
+        Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(hello, false))
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
             .check(p -> p.getMessage() instanceof OpcuaAcknowledgeResponse)
             .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
@@ -299,7 +299,8 @@ public class SecureChannel {
         ExtensionObject extObject = new ExtensionObject(
             expandedNodeId,
             null,
-            openSecureChannelRequest);
+            openSecureChannelRequest,
+            false);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
@@ -319,7 +320,7 @@ public class SecureChannel {
             if (this.isEncrypted) {
                 apu = OpcuaAPU.staticParse(encryptionHandler.encodeMessage(openRequest, buffer.getData()), false);
             } else {
-                apu = new OpcuaAPU(openRequest);
+                apu = new OpcuaAPU(openRequest, false);
             }
 
             Consumer<Integer> requestConsumer = t -> context.sendRequest(apu)
@@ -409,7 +410,8 @@ public class SecureChannel {
         ExtensionObject extObject = new ExtensionObject(
             expandedNodeId,
             null,
-            createSessionRequest);
+            createSessionRequest,
+            false);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
@@ -523,7 +525,8 @@ public class SecureChannel {
         ExtensionObject extObject = new ExtensionObject(
             expandedNodeId,
             null,
-            activateSessionRequest);
+            activateSessionRequest,
+            false);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
@@ -614,7 +617,8 @@ public class SecureChannel {
         ExtensionObject extObject = new ExtensionObject(
             expandedNodeId,
             null,
-            closeSessionRequest);
+            closeSessionRequest,
+            false);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
@@ -697,10 +701,11 @@ public class SecureChannel {
             new ExtensionObject(
                 expandedNodeId,
                 null,
-                closeSecureChannelRequest));
+                closeSecureChannelRequest,
+                false));
 
         Consumer<Integer> requestConsumer = t -> {
-            context.sendRequest(new OpcuaAPU(closeRequest))
+            context.sendRequest(new OpcuaAPU(closeRequest, false))
                 .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
                 .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
                 .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
@@ -726,7 +731,7 @@ public class SecureChannel {
             DEFAULT_MAX_CHUNK_COUNT,
             this.endpoint);
 
-        Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(hello))
+        Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(hello, false))
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
             .check(p -> p.getMessage() instanceof OpcuaAcknowledgeResponse)
             .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
@@ -769,7 +774,8 @@ public class SecureChannel {
             new ExtensionObject(
                 expandedNodeId,
                 null,
-                openSecureChannelRequest).serialize(buffer);
+                openSecureChannelRequest,
+                false).serialize(buffer);
 
             OpcuaOpenRequest openRequest = new OpcuaOpenRequest(FINAL_CHUNK,
                 0,
@@ -780,7 +786,7 @@ public class SecureChannel {
                 transactionId,
                 buffer.getData());
 
-            Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(openRequest))
+            Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(openRequest, false))
                 .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
                 .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
                 .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
@@ -851,7 +857,8 @@ public class SecureChannel {
             new ExtensionObject(
                 expandedNodeId,
                 null,
-                endpointsRequest).serialize(buffer);
+                endpointsRequest,
+                false).serialize(buffer);
 
             OpcuaMessageRequest messageRequest = new OpcuaMessageRequest(FINAL_CHUNK,
                 channelId.get(),
@@ -860,7 +867,7 @@ public class SecureChannel {
                 nextRequestId,
                 buffer.getData());
 
-            Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(messageRequest))
+            Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(messageRequest, false))
                 .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
                 .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
                 .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
@@ -932,9 +939,10 @@ public class SecureChannel {
             new ExtensionObject(
                 expandedNodeId,
                 null,
-                closeSecureChannelRequest));
+                closeSecureChannelRequest,
+                false));
 
-        Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(closeRequest))
+        Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(closeRequest, false))
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
             .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
             .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
@@ -996,7 +1004,7 @@ public class SecureChannel {
                     ExtensionObject extObject = new ExtensionObject(
                         expandedNodeId,
                         null,
-                        openSecureChannelRequest);
+                        openSecureChannelRequest, false);
 
                     try {
                         WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
@@ -1016,7 +1024,7 @@ public class SecureChannel {
                         if (this.isEncrypted) {
                             apu = OpcuaAPU.staticParse(encryptionHandler.encodeMessage(openRequest, buffer.getData()), false);
                         } else {
-                            apu = new OpcuaAPU(openRequest);
+                            apu = new OpcuaAPU(openRequest, false);
                         }
 
                         Consumer<Integer> requestConsumer = t -> context.sendRequest(apu)
@@ -1097,6 +1105,7 @@ public class SecureChannel {
     /**
      * Selects the endpoint to use based on the connection string provided.
      * If Discovery is disabled it will use the host address return from the server
+     *
      * @param sessionResponse - The CreateSessionResponse message returned by the server
      * @throws PlcRuntimeException - If no endpoint with a compatible policy is found raise and error.
      */
@@ -1111,8 +1120,8 @@ public class SecureChannel {
         //Determine if the requested security policy is included in the endpoint
         filteredEndpoints.forEach(endpoint -> hasIdentity(
             endpoint.getUserIdentityTokens().stream()
-            .map(p -> (UserTokenPolicy) p)
-            .toArray(UserTokenPolicy[]::new)
+                .map(p -> (UserTokenPolicy) p)
+                .toArray(UserTokenPolicy[]::new)
         ));
 
         if (this.policyId == null) {
@@ -1126,6 +1135,7 @@ public class SecureChannel {
     /**
      * Checks each component of the return endpoint description against the connection string.
      * If all are correct then return true.
+     *
      * @param endpoint - EndpointDescription returned from server
      * @return true if this endpoint matches our configuration
      * @throws PlcRuntimeException - If the returned endpoint string doesn't match the format expected
@@ -1160,6 +1170,7 @@ public class SecureChannel {
     /**
      * Confirms that a policy that matches the connection string is available from
      * the returned endpoints. It sets the policyId and tokenType for the policy to use.
+     *
      * @param policies - A list of policies returned with the endpoint description.
      */
     private void hasIdentity(UserTokenPolicy[] policies) {
@@ -1197,7 +1208,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken));
+                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken), false);
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
                 byte[] passwordBytes = this.password == null ? new byte[0] : this.password.getBytes();
@@ -1226,7 +1237,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken));
+                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken), false);
         }
         return null;
     }

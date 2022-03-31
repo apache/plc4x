@@ -34,58 +34,85 @@ type KnxNetIpDeviceManagement struct {
 
 // The corresponding interface
 type IKnxNetIpDeviceManagement interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IServiceId
+	// GetVersion returns Version (property field)
+	GetVersion() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxNetIpDeviceManagement) ServiceType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *KnxNetIpDeviceManagement) GetServiceType() uint8 {
 	return 0x03
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *KnxNetIpDeviceManagement) InitializeParent(parent *ServiceId) {}
 
-func NewKnxNetIpDeviceManagement(version uint8) *ServiceId {
-	child := &KnxNetIpDeviceManagement{
+func (m *KnxNetIpDeviceManagement) GetParent() *ServiceId {
+	return m.ServiceId
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *KnxNetIpDeviceManagement) GetVersion() uint8 {
+	return m.Version
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewKnxNetIpDeviceManagement factory function for KnxNetIpDeviceManagement
+func NewKnxNetIpDeviceManagement(version uint8) *KnxNetIpDeviceManagement {
+	_result := &KnxNetIpDeviceManagement{
 		Version:   version,
 		ServiceId: NewServiceId(),
 	}
-	child.Child = child
-	return child.ServiceId
+	_result.Child = _result
+	return _result
 }
 
 func CastKnxNetIpDeviceManagement(structType interface{}) *KnxNetIpDeviceManagement {
-	castFunc := func(typ interface{}) *KnxNetIpDeviceManagement {
-		if casted, ok := typ.(KnxNetIpDeviceManagement); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxNetIpDeviceManagement); ok {
-			return casted
-		}
-		if casted, ok := typ.(ServiceId); ok {
-			return CastKnxNetIpDeviceManagement(casted.Child)
-		}
-		if casted, ok := typ.(*ServiceId); ok {
-			return CastKnxNetIpDeviceManagement(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(KnxNetIpDeviceManagement); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxNetIpDeviceManagement); ok {
+		return casted
+	}
+	if casted, ok := structType.(ServiceId); ok {
+		return CastKnxNetIpDeviceManagement(casted.Child)
+	}
+	if casted, ok := structType.(*ServiceId); ok {
+		return CastKnxNetIpDeviceManagement(casted.Child)
+	}
+	return nil
 }
 
 func (m *KnxNetIpDeviceManagement) GetTypeName() string {
 	return "KnxNetIpDeviceManagement"
 }
 
-func (m *KnxNetIpDeviceManagement) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxNetIpDeviceManagement) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxNetIpDeviceManagement) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *KnxNetIpDeviceManagement) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -93,14 +120,16 @@ func (m *KnxNetIpDeviceManagement) LengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *KnxNetIpDeviceManagement) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxNetIpDeviceManagement) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func KnxNetIpDeviceManagementParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetIpDeviceManagementParse(readBuffer utils.ReadBuffer) (*KnxNetIpDeviceManagement, error) {
 	if pullErr := readBuffer.PullContext("KnxNetIpDeviceManagement"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadUint8("version", 8)
@@ -119,7 +148,7 @@ func KnxNetIpDeviceManagementParse(readBuffer utils.ReadBuffer) (*ServiceId, err
 		ServiceId: &ServiceId{},
 	}
 	_child.ServiceId.Child = _child
-	return _child.ServiceId, nil
+	return _child, nil
 }
 
 func (m *KnxNetIpDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,6 +177,8 @@ func (m *KnxNetIpDeviceManagement) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

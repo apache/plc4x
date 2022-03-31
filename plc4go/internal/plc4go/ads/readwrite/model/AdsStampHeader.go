@@ -35,37 +35,65 @@ type AdsStampHeader struct {
 
 // The corresponding interface
 type IAdsStampHeader interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetTimestamp returns Timestamp (property field)
+	GetTimestamp() uint64
+	// GetSamples returns Samples (property field)
+	GetSamples() uint32
+	// GetAdsNotificationSamples returns AdsNotificationSamples (property field)
+	GetAdsNotificationSamples() []*AdsNotificationSample
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AdsStampHeader) GetTimestamp() uint64 {
+	return m.Timestamp
+}
+
+func (m *AdsStampHeader) GetSamples() uint32 {
+	return m.Samples
+}
+
+func (m *AdsStampHeader) GetAdsNotificationSamples() []*AdsNotificationSample {
+	return m.AdsNotificationSamples
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAdsStampHeader factory function for AdsStampHeader
 func NewAdsStampHeader(timestamp uint64, samples uint32, adsNotificationSamples []*AdsNotificationSample) *AdsStampHeader {
 	return &AdsStampHeader{Timestamp: timestamp, Samples: samples, AdsNotificationSamples: adsNotificationSamples}
 }
 
 func CastAdsStampHeader(structType interface{}) *AdsStampHeader {
-	castFunc := func(typ interface{}) *AdsStampHeader {
-		if casted, ok := typ.(AdsStampHeader); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsStampHeader); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AdsStampHeader); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsStampHeader); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AdsStampHeader) GetTypeName() string {
 	return "AdsStampHeader"
 }
 
-func (m *AdsStampHeader) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsStampHeader) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsStampHeader) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AdsStampHeader) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (timestamp)
@@ -78,21 +106,23 @@ func (m *AdsStampHeader) LengthInBitsConditional(lastItem bool) uint16 {
 	if len(m.AdsNotificationSamples) > 0 {
 		for i, element := range m.AdsNotificationSamples {
 			last := i == len(m.AdsNotificationSamples)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *AdsStampHeader) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsStampHeader) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (*AdsStampHeader, error) {
 	if pullErr := readBuffer.PullContext("AdsStampHeader"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (timestamp)
 	_timestamp, _timestampErr := readBuffer.ReadUint64("timestamp", 64)
@@ -181,6 +211,8 @@ func (m *AdsStampHeader) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

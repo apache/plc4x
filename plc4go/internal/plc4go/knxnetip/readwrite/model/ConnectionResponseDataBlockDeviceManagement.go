@@ -32,70 +32,84 @@ type ConnectionResponseDataBlockDeviceManagement struct {
 
 // The corresponding interface
 type IConnectionResponseDataBlockDeviceManagement interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IConnectionResponseDataBlock
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ConnectionResponseDataBlockDeviceManagement) ConnectionType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ConnectionResponseDataBlockDeviceManagement) GetConnectionType() uint8 {
 	return 0x03
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *ConnectionResponseDataBlockDeviceManagement) InitializeParent(parent *ConnectionResponseDataBlock) {
 }
 
-func NewConnectionResponseDataBlockDeviceManagement() *ConnectionResponseDataBlock {
-	child := &ConnectionResponseDataBlockDeviceManagement{
+func (m *ConnectionResponseDataBlockDeviceManagement) GetParent() *ConnectionResponseDataBlock {
+	return m.ConnectionResponseDataBlock
+}
+
+// NewConnectionResponseDataBlockDeviceManagement factory function for ConnectionResponseDataBlockDeviceManagement
+func NewConnectionResponseDataBlockDeviceManagement() *ConnectionResponseDataBlockDeviceManagement {
+	_result := &ConnectionResponseDataBlockDeviceManagement{
 		ConnectionResponseDataBlock: NewConnectionResponseDataBlock(),
 	}
-	child.Child = child
-	return child.ConnectionResponseDataBlock
+	_result.Child = _result
+	return _result
 }
 
 func CastConnectionResponseDataBlockDeviceManagement(structType interface{}) *ConnectionResponseDataBlockDeviceManagement {
-	castFunc := func(typ interface{}) *ConnectionResponseDataBlockDeviceManagement {
-		if casted, ok := typ.(ConnectionResponseDataBlockDeviceManagement); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConnectionResponseDataBlockDeviceManagement); ok {
-			return casted
-		}
-		if casted, ok := typ.(ConnectionResponseDataBlock); ok {
-			return CastConnectionResponseDataBlockDeviceManagement(casted.Child)
-		}
-		if casted, ok := typ.(*ConnectionResponseDataBlock); ok {
-			return CastConnectionResponseDataBlockDeviceManagement(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ConnectionResponseDataBlockDeviceManagement); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConnectionResponseDataBlockDeviceManagement); ok {
+		return casted
+	}
+	if casted, ok := structType.(ConnectionResponseDataBlock); ok {
+		return CastConnectionResponseDataBlockDeviceManagement(casted.Child)
+	}
+	if casted, ok := structType.(*ConnectionResponseDataBlock); ok {
+		return CastConnectionResponseDataBlockDeviceManagement(casted.Child)
+	}
+	return nil
 }
 
 func (m *ConnectionResponseDataBlockDeviceManagement) GetTypeName() string {
 	return "ConnectionResponseDataBlockDeviceManagement"
 }
 
-func (m *ConnectionResponseDataBlockDeviceManagement) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ConnectionResponseDataBlockDeviceManagement) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ConnectionResponseDataBlockDeviceManagement) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ConnectionResponseDataBlockDeviceManagement) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ConnectionResponseDataBlockDeviceManagement) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ConnectionResponseDataBlockDeviceManagement) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffer) (*ConnectionResponseDataBlockDeviceManagement, error) {
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockDeviceManagement"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ConnectionResponseDataBlockDeviceManagement"); closeErr != nil {
 		return nil, closeErr
@@ -106,7 +120,7 @@ func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffe
 		ConnectionResponseDataBlock: &ConnectionResponseDataBlock{},
 	}
 	_child.ConnectionResponseDataBlock.Child = _child
-	return _child.ConnectionResponseDataBlock, nil
+	return _child, nil
 }
 
 func (m *ConnectionResponseDataBlockDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -128,6 +142,8 @@ func (m *ConnectionResponseDataBlockDeviceManagement) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

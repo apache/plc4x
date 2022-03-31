@@ -34,62 +34,89 @@ type SysexCommandExtendedId struct {
 
 // The corresponding interface
 type ISysexCommandExtendedId interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ISysexCommand
+	// GetId returns Id (property field)
+	GetId() []int8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandExtendedId) CommandType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *SysexCommandExtendedId) GetCommandType() uint8 {
 	return 0x00
 }
 
-func (m *SysexCommandExtendedId) Response() bool {
+func (m *SysexCommandExtendedId) GetResponse() bool {
 	return false
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *SysexCommandExtendedId) InitializeParent(parent *SysexCommand) {}
 
-func NewSysexCommandExtendedId(id []int8) *SysexCommand {
-	child := &SysexCommandExtendedId{
+func (m *SysexCommandExtendedId) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *SysexCommandExtendedId) GetId() []int8 {
+	return m.Id
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewSysexCommandExtendedId factory function for SysexCommandExtendedId
+func NewSysexCommandExtendedId(id []int8) *SysexCommandExtendedId {
+	_result := &SysexCommandExtendedId{
 		Id:           id,
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandExtendedId(structType interface{}) *SysexCommandExtendedId {
-	castFunc := func(typ interface{}) *SysexCommandExtendedId {
-		if casted, ok := typ.(SysexCommandExtendedId); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandExtendedId); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandExtendedId(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandExtendedId(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandExtendedId); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandExtendedId); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandExtendedId(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandExtendedId(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandExtendedId) GetTypeName() string {
 	return "SysexCommandExtendedId"
 }
 
-func (m *SysexCommandExtendedId) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandExtendedId) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandExtendedId) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandExtendedId) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.Id) > 0 {
@@ -99,14 +126,16 @@ func (m *SysexCommandExtendedId) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *SysexCommandExtendedId) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandExtendedId) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
+func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandExtendedId, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandExtendedId"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (id)
 	if pullErr := readBuffer.PullContext("id", utils.WithRenderAsList(true)); pullErr != nil {
@@ -137,7 +166,7 @@ func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (*S
 		SysexCommand: &SysexCommand{},
 	}
 	_child.SysexCommand.Child = _child
-	return _child.SysexCommand, nil
+	return _child, nil
 }
 
 func (m *SysexCommandExtendedId) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -175,6 +204,8 @@ func (m *SysexCommandExtendedId) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

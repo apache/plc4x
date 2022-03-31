@@ -33,37 +33,53 @@ type S7VarPayloadStatusItem struct {
 
 // The corresponding interface
 type IS7VarPayloadStatusItem interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetReturnCode returns ReturnCode (property field)
+	GetReturnCode() DataTransportErrorCode
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7VarPayloadStatusItem) GetReturnCode() DataTransportErrorCode {
+	return m.ReturnCode
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7VarPayloadStatusItem factory function for S7VarPayloadStatusItem
 func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) *S7VarPayloadStatusItem {
 	return &S7VarPayloadStatusItem{ReturnCode: returnCode}
 }
 
 func CastS7VarPayloadStatusItem(structType interface{}) *S7VarPayloadStatusItem {
-	castFunc := func(typ interface{}) *S7VarPayloadStatusItem {
-		if casted, ok := typ.(S7VarPayloadStatusItem); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7VarPayloadStatusItem); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(S7VarPayloadStatusItem); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7VarPayloadStatusItem); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *S7VarPayloadStatusItem) GetTypeName() string {
 	return "S7VarPayloadStatusItem"
 }
 
-func (m *S7VarPayloadStatusItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7VarPayloadStatusItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7VarPayloadStatusItem) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *S7VarPayloadStatusItem) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (returnCode)
@@ -72,14 +88,16 @@ func (m *S7VarPayloadStatusItem) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *S7VarPayloadStatusItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7VarPayloadStatusItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7VarPayloadStatusItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadStatusItem, error) {
 	if pullErr := readBuffer.PullContext("S7VarPayloadStatusItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
@@ -130,6 +148,8 @@ func (m *S7VarPayloadStatusItem) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -30,85 +30,115 @@ import (
 type BVLCDistributeBroadcastToNetwork struct {
 	*BVLC
 	Npdu *NPDU
+
+	// Arguments.
+	BvlcPayloadLength uint16
 }
 
 // The corresponding interface
 type IBVLCDistributeBroadcastToNetwork interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBVLC
+	// GetNpdu returns Npdu (property field)
+	GetNpdu() *NPDU
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCDistributeBroadcastToNetwork) BvlcFunction() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BVLCDistributeBroadcastToNetwork) GetBvlcFunction() uint8 {
 	return 0x09
 }
 
-func (m *BVLCDistributeBroadcastToNetwork) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+func (m *BVLCDistributeBroadcastToNetwork) InitializeParent(parent *BVLC) {}
+
+func (m *BVLCDistributeBroadcastToNetwork) GetParent() *BVLC {
+	return m.BVLC
 }
 
-func NewBVLCDistributeBroadcastToNetwork(npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
-	child := &BVLCDistributeBroadcastToNetwork{
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BVLCDistributeBroadcastToNetwork) GetNpdu() *NPDU {
+	return m.Npdu
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBVLCDistributeBroadcastToNetwork factory function for BVLCDistributeBroadcastToNetwork
+func NewBVLCDistributeBroadcastToNetwork(npdu *NPDU, bvlcPayloadLength uint16) *BVLCDistributeBroadcastToNetwork {
+	_result := &BVLCDistributeBroadcastToNetwork{
 		Npdu: npdu,
-		BVLC: NewBVLC(bvlcPayloadLength),
+		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCDistributeBroadcastToNetwork(structType interface{}) *BVLCDistributeBroadcastToNetwork {
-	castFunc := func(typ interface{}) *BVLCDistributeBroadcastToNetwork {
-		if casted, ok := typ.(BVLCDistributeBroadcastToNetwork); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCDistributeBroadcastToNetwork); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCDistributeBroadcastToNetwork(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCDistributeBroadcastToNetwork(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCDistributeBroadcastToNetwork); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCDistributeBroadcastToNetwork); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCDistributeBroadcastToNetwork(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCDistributeBroadcastToNetwork(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCDistributeBroadcastToNetwork) GetTypeName() string {
 	return "BVLCDistributeBroadcastToNetwork"
 }
 
-func (m *BVLCDistributeBroadcastToNetwork) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCDistributeBroadcastToNetwork) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCDistributeBroadcastToNetwork) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCDistributeBroadcastToNetwork) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (npdu)
-	lengthInBits += m.Npdu.LengthInBits()
+	lengthInBits += m.Npdu.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BVLCDistributeBroadcastToNetwork) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCDistributeBroadcastToNetwork) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BVLCDistributeBroadcastToNetworkParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLC, error) {
+func BVLCDistributeBroadcastToNetworkParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLCDistributeBroadcastToNetwork, error) {
 	if pullErr := readBuffer.PullContext("BVLCDistributeBroadcastToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (npdu)
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
 		return nil, pullErr
 	}
-	_npdu, _npduErr := NPDUParse(readBuffer, bvlcPayloadLength)
+	_npdu, _npduErr := NPDUParse(readBuffer, uint16(bvlcPayloadLength))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
@@ -127,7 +157,7 @@ func BVLCDistributeBroadcastToNetworkParse(readBuffer utils.ReadBuffer, bvlcPayl
 		BVLC: &BVLC{},
 	}
 	_child.BVLC.Child = _child
-	return _child.BVLC, nil
+	return _child, nil
 }
 
 func (m *BVLCDistributeBroadcastToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -161,6 +191,8 @@ func (m *BVLCDistributeBroadcastToNetwork) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

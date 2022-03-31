@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type MFuncPropCommandReq struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type IMFuncPropCommandReq interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICEMI
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MFuncPropCommandReq) MessageCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *MFuncPropCommandReq) GetMessageCode() uint8 {
 	return 0xF8
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *MFuncPropCommandReq) InitializeParent(parent *CEMI) {}
 
-func NewMFuncPropCommandReq() *CEMI {
-	child := &MFuncPropCommandReq{
-		CEMI: NewCEMI(),
+func (m *MFuncPropCommandReq) GetParent() *CEMI {
+	return m.CEMI
+}
+
+// NewMFuncPropCommandReq factory function for MFuncPropCommandReq
+func NewMFuncPropCommandReq(size uint16) *MFuncPropCommandReq {
+	_result := &MFuncPropCommandReq{
+		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastMFuncPropCommandReq(structType interface{}) *MFuncPropCommandReq {
-	castFunc := func(typ interface{}) *MFuncPropCommandReq {
-		if casted, ok := typ.(MFuncPropCommandReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MFuncPropCommandReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMFuncPropCommandReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMFuncPropCommandReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MFuncPropCommandReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MFuncPropCommandReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastMFuncPropCommandReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastMFuncPropCommandReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *MFuncPropCommandReq) GetTypeName() string {
 	return "MFuncPropCommandReq"
 }
 
-func (m *MFuncPropCommandReq) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *MFuncPropCommandReq) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *MFuncPropCommandReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *MFuncPropCommandReq) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *MFuncPropCommandReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *MFuncPropCommandReq) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func MFuncPropCommandReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func MFuncPropCommandReqParse(readBuffer utils.ReadBuffer, size uint16) (*MFuncPropCommandReq, error) {
 	if pullErr := readBuffer.PullContext("MFuncPropCommandReq"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("MFuncPropCommandReq"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func MFuncPropCommandReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, 
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *MFuncPropCommandReq) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *MFuncPropCommandReq) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

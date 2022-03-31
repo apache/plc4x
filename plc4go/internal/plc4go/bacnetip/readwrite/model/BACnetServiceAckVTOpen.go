@@ -32,69 +32,83 @@ type BACnetServiceAckVTOpen struct {
 
 // The corresponding interface
 type IBACnetServiceAckVTOpen interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetServiceAck
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckVTOpen) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetServiceAckVTOpen) GetServiceChoice() uint8 {
 	return 0x15
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *BACnetServiceAckVTOpen) InitializeParent(parent *BACnetServiceAck) {}
 
-func NewBACnetServiceAckVTOpen() *BACnetServiceAck {
-	child := &BACnetServiceAckVTOpen{
+func (m *BACnetServiceAckVTOpen) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
+// NewBACnetServiceAckVTOpen factory function for BACnetServiceAckVTOpen
+func NewBACnetServiceAckVTOpen() *BACnetServiceAckVTOpen {
+	_result := &BACnetServiceAckVTOpen{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckVTOpen(structType interface{}) *BACnetServiceAckVTOpen {
-	castFunc := func(typ interface{}) *BACnetServiceAckVTOpen {
-		if casted, ok := typ.(BACnetServiceAckVTOpen); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckVTOpen); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckVTOpen(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckVTOpen(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckVTOpen); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckVTOpen); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckVTOpen(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckVTOpen(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckVTOpen) GetTypeName() string {
 	return "BACnetServiceAckVTOpen"
 }
 
-func (m *BACnetServiceAckVTOpen) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckVTOpen) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckVTOpen) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckVTOpen) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckVTOpen) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckVTOpen) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckVTOpen, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTOpen"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckVTOpen"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckVTOpen) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *BACnetServiceAckVTOpen) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

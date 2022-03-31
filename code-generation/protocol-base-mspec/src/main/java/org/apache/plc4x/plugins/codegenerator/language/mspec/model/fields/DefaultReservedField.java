@@ -19,28 +19,43 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
 
-public class DefaultReservedField extends DefaultField implements ReservedField {
+public class DefaultReservedField extends DefaultTypedField implements ReservedField {
 
-    private final TypeReference type;
     private final Object referenceValue;
 
-    public DefaultReservedField(Map<String, Term> attributes, TypeReference type, Object referenceValue) {
+    public DefaultReservedField(Map<String, Term> attributes, SimpleTypeReference type, Object referenceValue) {
         super(attributes);
-        this.type = Objects.requireNonNull(type);
         this.referenceValue = Objects.requireNonNull(referenceValue);
-    }
-
-    public TypeReference getType() {
-        return type;
+        this.type = type;
     }
 
     public Object getReferenceValue() {
         return referenceValue;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultReservedField{" +
+            "referenceValue=" + referenceValue +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultReservedField that = (DefaultReservedField) o;
+        return Objects.equals(referenceValue, that.referenceValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), referenceValue);
+    }
 }

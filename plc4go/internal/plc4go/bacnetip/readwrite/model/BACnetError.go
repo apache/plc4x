@@ -35,9 +35,17 @@ type BACnetError struct {
 
 // The corresponding interface
 type IBACnetError interface {
-	ServiceChoice() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetServiceChoice returns ServiceChoice (discriminator field)
+	GetServiceChoice() uint8
+	// GetErrorClass returns ErrorClass (property field)
+	GetErrorClass() *BACnetApplicationTagEnumerated
+	// GetErrorCode returns ErrorCode (property field)
+	GetErrorCode() *BACnetApplicationTagEnumerated
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,61 +57,83 @@ type IBACnetErrorParent interface {
 type IBACnetErrorChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated)
+	GetParent() *BACnetError
+
 	GetTypeName() string
 	IBACnetError
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetError) GetErrorClass() *BACnetApplicationTagEnumerated {
+	return m.ErrorClass
+}
+
+func (m *BACnetError) GetErrorCode() *BACnetApplicationTagEnumerated {
+	return m.ErrorCode
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetError factory function for BACnetError
 func NewBACnetError(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	return &BACnetError{ErrorClass: errorClass, ErrorCode: errorCode}
 }
 
 func CastBACnetError(structType interface{}) *BACnetError {
-	castFunc := func(typ interface{}) *BACnetError {
-		if casted, ok := typ.(BACnetError); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetError); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetError); ok {
+		return casted
+	}
+	if casted, ok := structType.(IBACnetErrorChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *BACnetError) GetTypeName() string {
 	return "BACnetError"
 }
 
-func (m *BACnetError) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetError) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetError) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetError) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetError) ParentLengthInBits() uint16 {
+func (m *BACnetError) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
 
 	// Simple field (errorClass)
-	lengthInBits += m.ErrorClass.LengthInBits()
+	lengthInBits += m.ErrorClass.GetLengthInBits()
 
 	// Simple field (errorCode)
-	lengthInBits += m.ErrorCode.LengthInBits()
+	lengthInBits += m.ErrorCode.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetError) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetError) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetErrorParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 	if pullErr := readBuffer.PullContext("BACnetError"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice, _serviceChoiceErr := readBuffer.ReadUint8("serviceChoice", 8)
@@ -112,51 +142,55 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetError
+	type BACnetErrorChild interface {
+		InitializeParent(*BACnetError, *BACnetApplicationTagEnumerated, *BACnetApplicationTagEnumerated)
+		GetParent() *BACnetError
+	}
+	var _child BACnetErrorChild
 	var typeSwitchError error
 	switch {
 	case serviceChoice == 0x00: // BACnetErrorAcknowledgeAlarm
-		_parent, typeSwitchError = BACnetErrorAcknowledgeAlarmParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorAcknowledgeAlarmParse(readBuffer)
 	case serviceChoice == 0x03: // BACnetErrorGetAlarmSummary
-		_parent, typeSwitchError = BACnetErrorGetAlarmSummaryParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorGetAlarmSummaryParse(readBuffer)
 	case serviceChoice == 0x02: // BACnetErrorConfirmedEventNotification
-		_parent, typeSwitchError = BACnetErrorConfirmedEventNotificationParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorConfirmedEventNotificationParse(readBuffer)
 	case serviceChoice == 0x04: // BACnetErrorGetEnrollmentSummary
-		_parent, typeSwitchError = BACnetErrorGetEnrollmentSummaryParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorGetEnrollmentSummaryParse(readBuffer)
 	case serviceChoice == 0x05: // BACnetErrorDeviceCommunicationProtocol
-		_parent, typeSwitchError = BACnetErrorDeviceCommunicationProtocolParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorDeviceCommunicationProtocolParse(readBuffer)
 	case serviceChoice == 0x1D: // BACnetErrorGetEventInformation
-		_parent, typeSwitchError = BACnetErrorGetEventInformationParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorGetEventInformationParse(readBuffer)
 	case serviceChoice == 0x06: // BACnetErrorAtomicReadFile
-		_parent, typeSwitchError = BACnetErrorAtomicReadFileParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorAtomicReadFileParse(readBuffer)
 	case serviceChoice == 0x07: // BACnetErrorAtomicWriteFile
-		_parent, typeSwitchError = BACnetErrorAtomicWriteFileParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorAtomicWriteFileParse(readBuffer)
 	case serviceChoice == 0x0A: // BACnetErrorCreateObject
-		_parent, typeSwitchError = BACnetErrorCreateObjectParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorCreateObjectParse(readBuffer)
 	case serviceChoice == 0x0C: // BACnetErrorReadProperty
-		_parent, typeSwitchError = BACnetErrorReadPropertyParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorReadPropertyParse(readBuffer)
 	case serviceChoice == 0x0E: // BACnetErrorReadPropertyMultiple
-		_parent, typeSwitchError = BACnetErrorReadPropertyMultipleParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorReadPropertyMultipleParse(readBuffer)
 	case serviceChoice == 0x0F: // BACnetErrorWriteProperty
-		_parent, typeSwitchError = BACnetErrorWritePropertyParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorWritePropertyParse(readBuffer)
 	case serviceChoice == 0x1A: // BACnetErrorReadRange
-		_parent, typeSwitchError = BACnetErrorReadRangeParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorReadRangeParse(readBuffer)
 	case serviceChoice == 0x11: // BACnetErrorDeviceCommunicationProtocol
-		_parent, typeSwitchError = BACnetErrorDeviceCommunicationProtocolParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorDeviceCommunicationProtocolParse(readBuffer)
 	case serviceChoice == 0x12: // BACnetErrorConfirmedPrivateTransfer
-		_parent, typeSwitchError = BACnetErrorConfirmedPrivateTransferParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorConfirmedPrivateTransferParse(readBuffer)
 	case serviceChoice == 0x14: // BACnetErrorPasswordFailure
-		_parent, typeSwitchError = BACnetErrorPasswordFailureParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorPasswordFailureParse(readBuffer)
 	case serviceChoice == 0x15: // BACnetErrorVTOpen
-		_parent, typeSwitchError = BACnetErrorVTOpenParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorVTOpenParse(readBuffer)
 	case serviceChoice == 0x17: // BACnetErrorVTData
-		_parent, typeSwitchError = BACnetErrorVTDataParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorVTDataParse(readBuffer)
 	case serviceChoice == 0x18: // BACnetErrorRemovedAuthenticate
-		_parent, typeSwitchError = BACnetErrorRemovedAuthenticateParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorRemovedAuthenticateParse(readBuffer)
 	case serviceChoice == 0x0D: // BACnetErrorRemovedReadPropertyConditional
-		_parent, typeSwitchError = BACnetErrorRemovedReadPropertyConditionalParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorRemovedReadPropertyConditionalParse(readBuffer)
 	case true: // BACnetErrorUnknown
-		_parent, typeSwitchError = BACnetErrorUnknownParse(readBuffer)
+		_child, typeSwitchError = BACnetErrorUnknownParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -196,8 +230,8 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, errorClass, errorCode)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), errorClass, errorCode)
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetError) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -210,7 +244,7 @@ func (m *BACnetError) SerializeParent(writeBuffer utils.WriteBuffer, child IBACn
 	}
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice := uint8(child.ServiceChoice())
+	serviceChoice := uint8(child.GetServiceChoice())
 	_serviceChoiceErr := writeBuffer.WriteUint8("serviceChoice", 8, (serviceChoice))
 
 	if _serviceChoiceErr != nil {
@@ -257,6 +291,8 @@ func (m *BACnetError) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

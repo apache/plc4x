@@ -116,12 +116,12 @@ func CastBVLCResultCode(structType interface{}) BVLCResultCode {
 	return castFunc(structType)
 }
 
-func (m BVLCResultCode) LengthInBits() uint16 {
+func (m BVLCResultCode) GetLengthInBits() uint16 {
 	return 16
 }
 
-func (m BVLCResultCode) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m BVLCResultCode) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BVLCResultCodeParse(readBuffer utils.ReadBuffer) (BVLCResultCode, error) {

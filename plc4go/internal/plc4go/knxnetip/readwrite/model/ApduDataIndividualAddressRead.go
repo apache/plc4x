@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type ApduDataIndividualAddressRead struct {
 	*ApduData
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataIndividualAddressRead interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduData
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataIndividualAddressRead) ApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataIndividualAddressRead) GetApciType() uint8 {
 	return 0x4
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataIndividualAddressRead) InitializeParent(parent *ApduData) {}
 
-func NewApduDataIndividualAddressRead() *ApduData {
-	child := &ApduDataIndividualAddressRead{
-		ApduData: NewApduData(),
+func (m *ApduDataIndividualAddressRead) GetParent() *ApduData {
+	return m.ApduData
+}
+
+// NewApduDataIndividualAddressRead factory function for ApduDataIndividualAddressRead
+func NewApduDataIndividualAddressRead(dataLength uint8) *ApduDataIndividualAddressRead {
+	_result := &ApduDataIndividualAddressRead{
+		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataIndividualAddressRead(structType interface{}) *ApduDataIndividualAddressRead {
-	castFunc := func(typ interface{}) *ApduDataIndividualAddressRead {
-		if casted, ok := typ.(ApduDataIndividualAddressRead); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataIndividualAddressRead); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataIndividualAddressRead(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataIndividualAddressRead(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataIndividualAddressRead); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataIndividualAddressRead); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataIndividualAddressRead(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataIndividualAddressRead(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataIndividualAddressRead) GetTypeName() string {
 	return "ApduDataIndividualAddressRead"
 }
 
-func (m *ApduDataIndividualAddressRead) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataIndividualAddressRead) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataIndividualAddressRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataIndividualAddressRead) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataIndividualAddressRead) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataIndividualAddressRead) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataIndividualAddressReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataIndividualAddressReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataIndividualAddressRead, error) {
 	if pullErr := readBuffer.PullContext("ApduDataIndividualAddressRead"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataIndividualAddressRead"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func ApduDataIndividualAddressReadParse(readBuffer utils.ReadBuffer, dataLength 
 		ApduData: &ApduData{},
 	}
 	_child.ApduData.Child = _child
-	return _child.ApduData, nil
+	return _child, nil
 }
 
 func (m *ApduDataIndividualAddressRead) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *ApduDataIndividualAddressRead) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

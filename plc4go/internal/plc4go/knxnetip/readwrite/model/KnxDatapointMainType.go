@@ -1210,12 +1210,12 @@ func CastKnxDatapointMainType(structType interface{}) KnxDatapointMainType {
 	return castFunc(structType)
 }
 
-func (m KnxDatapointMainType) LengthInBits() uint16 {
+func (m KnxDatapointMainType) GetLengthInBits() uint16 {
 	return 16
 }
 
-func (m KnxDatapointMainType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m KnxDatapointMainType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxDatapointMainTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointMainType, error) {

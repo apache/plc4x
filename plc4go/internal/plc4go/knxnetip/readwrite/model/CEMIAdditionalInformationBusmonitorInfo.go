@@ -43,23 +43,95 @@ type CEMIAdditionalInformationBusmonitorInfo struct {
 
 // The corresponding interface
 type ICEMIAdditionalInformationBusmonitorInfo interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICEMIAdditionalInformation
+	// GetFrameErrorFlag returns FrameErrorFlag (property field)
+	GetFrameErrorFlag() bool
+	// GetBitErrorFlag returns BitErrorFlag (property field)
+	GetBitErrorFlag() bool
+	// GetParityErrorFlag returns ParityErrorFlag (property field)
+	GetParityErrorFlag() bool
+	// GetUnknownFlag returns UnknownFlag (property field)
+	GetUnknownFlag() bool
+	// GetLostFlag returns LostFlag (property field)
+	GetLostFlag() bool
+	// GetSequenceNumber returns SequenceNumber (property field)
+	GetSequenceNumber() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIAdditionalInformationBusmonitorInfo) AdditionalInformationType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetAdditionalInformationType() uint8 {
 	return 0x03
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) InitializeParent(parent *CEMIAdditionalInformation) {
 }
 
-func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) *CEMIAdditionalInformation {
-	child := &CEMIAdditionalInformationBusmonitorInfo{
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetParent() *CEMIAdditionalInformation {
+	return m.CEMIAdditionalInformation
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetFrameErrorFlag() bool {
+	return m.FrameErrorFlag
+}
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetBitErrorFlag() bool {
+	return m.BitErrorFlag
+}
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetParityErrorFlag() bool {
+	return m.ParityErrorFlag
+}
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetUnknownFlag() bool {
+	return m.UnknownFlag
+}
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetLostFlag() bool {
+	return m.LostFlag
+}
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetSequenceNumber() uint8 {
+	return m.SequenceNumber
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for const fields.
+///////////////////////
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetLen() uint8 {
+	return CEMIAdditionalInformationBusmonitorInfo_LEN
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewCEMIAdditionalInformationBusmonitorInfo factory function for CEMIAdditionalInformationBusmonitorInfo
+func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) *CEMIAdditionalInformationBusmonitorInfo {
+	_result := &CEMIAdditionalInformationBusmonitorInfo{
 		FrameErrorFlag:            frameErrorFlag,
 		BitErrorFlag:              bitErrorFlag,
 		ParityErrorFlag:           parityErrorFlag,
@@ -68,39 +140,36 @@ func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFla
 		SequenceNumber:            sequenceNumber,
 		CEMIAdditionalInformation: NewCEMIAdditionalInformation(),
 	}
-	child.Child = child
-	return child.CEMIAdditionalInformation
+	_result.Child = _result
+	return _result
 }
 
 func CastCEMIAdditionalInformationBusmonitorInfo(structType interface{}) *CEMIAdditionalInformationBusmonitorInfo {
-	castFunc := func(typ interface{}) *CEMIAdditionalInformationBusmonitorInfo {
-		if casted, ok := typ.(CEMIAdditionalInformationBusmonitorInfo); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CEMIAdditionalInformationBusmonitorInfo); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMIAdditionalInformation); ok {
-			return CastCEMIAdditionalInformationBusmonitorInfo(casted.Child)
-		}
-		if casted, ok := typ.(*CEMIAdditionalInformation); ok {
-			return CastCEMIAdditionalInformationBusmonitorInfo(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CEMIAdditionalInformationBusmonitorInfo); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CEMIAdditionalInformationBusmonitorInfo); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMIAdditionalInformation); ok {
+		return CastCEMIAdditionalInformationBusmonitorInfo(casted.Child)
+	}
+	if casted, ok := structType.(*CEMIAdditionalInformation); ok {
+		return CastCEMIAdditionalInformationBusmonitorInfo(casted.Child)
+	}
+	return nil
 }
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) GetTypeName() string {
 	return "CEMIAdditionalInformationBusmonitorInfo"
 }
 
-func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (len)
 	lengthInBits += 8
@@ -126,14 +195,16 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBitsConditional(lastIt
 	return lengthInBits
 }
 
-func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
+func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (*CEMIAdditionalInformationBusmonitorInfo, error) {
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationBusmonitorInfo"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (len)
 	len, _lenErr := readBuffer.ReadUint8("len", 8)
@@ -201,7 +272,7 @@ func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (
 		CEMIAdditionalInformation: &CEMIAdditionalInformation{},
 	}
 	_child.CEMIAdditionalInformation.Child = _child
-	return _child.CEMIAdditionalInformation, nil
+	return _child, nil
 }
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -271,6 +342,8 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

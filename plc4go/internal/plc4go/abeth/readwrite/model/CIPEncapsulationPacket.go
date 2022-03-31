@@ -38,9 +38,21 @@ type CIPEncapsulationPacket struct {
 
 // The corresponding interface
 type ICIPEncapsulationPacket interface {
-	CommandType() uint16
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() uint16
+	// GetSessionHandle returns SessionHandle (property field)
+	GetSessionHandle() uint32
+	// GetStatus returns Status (property field)
+	GetStatus() uint32
+	// GetSenderContext returns SenderContext (property field)
+	GetSenderContext() []uint8
+	// GetOptions returns Options (property field)
+	GetOptions() uint32
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -52,40 +64,68 @@ type ICIPEncapsulationPacketParent interface {
 type ICIPEncapsulationPacketChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32)
+	GetParent() *CIPEncapsulationPacket
+
 	GetTypeName() string
 	ICIPEncapsulationPacket
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *CIPEncapsulationPacket) GetSessionHandle() uint32 {
+	return m.SessionHandle
+}
+
+func (m *CIPEncapsulationPacket) GetStatus() uint32 {
+	return m.Status
+}
+
+func (m *CIPEncapsulationPacket) GetSenderContext() []uint8 {
+	return m.SenderContext
+}
+
+func (m *CIPEncapsulationPacket) GetOptions() uint32 {
+	return m.Options
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewCIPEncapsulationPacket factory function for CIPEncapsulationPacket
 func NewCIPEncapsulationPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
 	return &CIPEncapsulationPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
 }
 
 func CastCIPEncapsulationPacket(structType interface{}) *CIPEncapsulationPacket {
-	castFunc := func(typ interface{}) *CIPEncapsulationPacket {
-		if casted, ok := typ.(CIPEncapsulationPacket); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CIPEncapsulationPacket); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CIPEncapsulationPacket); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CIPEncapsulationPacket); ok {
+		return casted
+	}
+	if casted, ok := structType.(ICIPEncapsulationPacketChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *CIPEncapsulationPacket) GetTypeName() string {
 	return "CIPEncapsulationPacket"
 }
 
-func (m *CIPEncapsulationPacket) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CIPEncapsulationPacket) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CIPEncapsulationPacket) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *CIPEncapsulationPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *CIPEncapsulationPacket) ParentLengthInBits() uint16 {
+func (m *CIPEncapsulationPacket) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (commandType)
 	lengthInBits += 16
@@ -113,14 +153,16 @@ func (m *CIPEncapsulationPacket) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *CIPEncapsulationPacket) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CIPEncapsulationPacket) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulationPacket, error) {
 	if pullErr := readBuffer.PullContext("CIPEncapsulationPacket"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
 	commandType, _commandTypeErr := readBuffer.ReadUint16("commandType", 16)
@@ -128,7 +170,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 		return nil, errors.Wrap(_commandTypeErr, "Error parsing 'commandType' field")
 	}
 
-	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	len, _lenErr := readBuffer.ReadUint16("len", 16)
 	_ = len
 	if _lenErr != nil {
@@ -190,17 +232,21 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *CIPEncapsulationPacket
+	type CIPEncapsulationPacketChild interface {
+		InitializeParent(*CIPEncapsulationPacket, uint32, uint32, []uint8, uint32)
+		GetParent() *CIPEncapsulationPacket
+	}
+	var _child CIPEncapsulationPacketChild
 	var typeSwitchError error
 	switch {
 	case commandType == 0x0101: // CIPEncapsulationConnectionRequest
-		_parent, typeSwitchError = CIPEncapsulationConnectionRequestParse(readBuffer)
+		_child, typeSwitchError = CIPEncapsulationConnectionRequestParse(readBuffer)
 	case commandType == 0x0201: // CIPEncapsulationConnectionResponse
-		_parent, typeSwitchError = CIPEncapsulationConnectionResponseParse(readBuffer)
+		_child, typeSwitchError = CIPEncapsulationConnectionResponseParse(readBuffer)
 	case commandType == 0x0107: // CIPEncapsulationReadRequest
-		_parent, typeSwitchError = CIPEncapsulationReadRequestParse(readBuffer)
+		_child, typeSwitchError = CIPEncapsulationReadRequestParse(readBuffer)
 	case commandType == 0x0207: // CIPEncapsulationReadResponse
-		_parent, typeSwitchError = CIPEncapsulationReadResponseParse(readBuffer, len)
+		_child, typeSwitchError = CIPEncapsulationReadResponseParse(readBuffer, len)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -214,8 +260,8 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, sessionHandle, status, senderContext, options)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), sessionHandle, status, senderContext, options)
+	return _child.GetParent(), nil
 }
 
 func (m *CIPEncapsulationPacket) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -228,7 +274,7 @@ func (m *CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer, 
 	}
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
-	commandType := uint16(child.CommandType())
+	commandType := uint16(child.GetCommandType())
 	_commandTypeErr := writeBuffer.WriteUint16("commandType", 16, (commandType))
 
 	if _commandTypeErr != nil {
@@ -236,7 +282,7 @@ func (m *CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer, 
 	}
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	len := uint16(uint16(uint16(m.LengthInBytes())) - uint16(uint16(28)))
+	len := uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(28)))
 	_lenErr := writeBuffer.WriteUint16("len", 16, (len))
 	if _lenErr != nil {
 		return errors.Wrap(_lenErr, "Error serializing 'len' field")
@@ -303,6 +349,8 @@ func (m *CIPEncapsulationPacket) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

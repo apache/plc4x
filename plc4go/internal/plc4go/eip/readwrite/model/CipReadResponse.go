@@ -34,65 +34,113 @@ type CipReadResponse struct {
 	ExtStatus uint8
 	DataType  CIPDataTypeCode
 	Data      []byte
+
+	// Arguments.
+	ServiceLen uint16
 }
 
 // The corresponding interface
 type ICipReadResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICipService
+	// GetStatus returns Status (property field)
+	GetStatus() uint8
+	// GetExtStatus returns ExtStatus (property field)
+	GetExtStatus() uint8
+	// GetDataType returns DataType (property field)
+	GetDataType() CIPDataTypeCode
+	// GetData returns Data (property field)
+	GetData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CipReadResponse) Service() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *CipReadResponse) GetService() uint8 {
 	return 0xCC
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *CipReadResponse) InitializeParent(parent *CipService) {}
 
-func NewCipReadResponse(status uint8, extStatus uint8, dataType CIPDataTypeCode, data []byte) *CipService {
-	child := &CipReadResponse{
+func (m *CipReadResponse) GetParent() *CipService {
+	return m.CipService
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *CipReadResponse) GetStatus() uint8 {
+	return m.Status
+}
+
+func (m *CipReadResponse) GetExtStatus() uint8 {
+	return m.ExtStatus
+}
+
+func (m *CipReadResponse) GetDataType() CIPDataTypeCode {
+	return m.DataType
+}
+
+func (m *CipReadResponse) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewCipReadResponse factory function for CipReadResponse
+func NewCipReadResponse(status uint8, extStatus uint8, dataType CIPDataTypeCode, data []byte, serviceLen uint16) *CipReadResponse {
+	_result := &CipReadResponse{
 		Status:     status,
 		ExtStatus:  extStatus,
 		DataType:   dataType,
 		Data:       data,
-		CipService: NewCipService(),
+		CipService: NewCipService(serviceLen),
 	}
-	child.Child = child
-	return child.CipService
+	_result.Child = _result
+	return _result
 }
 
 func CastCipReadResponse(structType interface{}) *CipReadResponse {
-	castFunc := func(typ interface{}) *CipReadResponse {
-		if casted, ok := typ.(CipReadResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CipReadResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(CipService); ok {
-			return CastCipReadResponse(casted.Child)
-		}
-		if casted, ok := typ.(*CipService); ok {
-			return CastCipReadResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CipReadResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CipReadResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(CipService); ok {
+		return CastCipReadResponse(casted.Child)
+	}
+	if casted, ok := structType.(*CipService); ok {
+		return CastCipReadResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *CipReadResponse) GetTypeName() string {
 	return "CipReadResponse"
 }
 
-func (m *CipReadResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CipReadResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CipReadResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CipReadResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -114,14 +162,16 @@ func (m *CipReadResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *CipReadResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CipReadResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {
+func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipReadResponse, error) {
 	if pullErr := readBuffer.PullContext("CipReadResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -183,7 +233,7 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipS
 		CipService: &CipService{},
 	}
 	_child.CipService.Child = _child
-	return _child.CipService, nil
+	return _child, nil
 }
 
 func (m *CipReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -248,6 +298,8 @@ func (m *CipReadResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -32,63 +32,99 @@ type FirmataMessageSubscribeDigitalPinValue struct {
 	*FirmataMessage
 	Pin    uint8
 	Enable bool
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
 type IFirmataMessageSubscribeDigitalPinValue interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IFirmataMessage
+	// GetPin returns Pin (property field)
+	GetPin() uint8
+	// GetEnable returns Enable (property field)
+	GetEnable() bool
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataMessageSubscribeDigitalPinValue) MessageType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *FirmataMessageSubscribeDigitalPinValue) GetMessageType() uint8 {
 	return 0xD
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *FirmataMessageSubscribeDigitalPinValue) InitializeParent(parent *FirmataMessage) {}
 
-func NewFirmataMessageSubscribeDigitalPinValue(pin uint8, enable bool) *FirmataMessage {
-	child := &FirmataMessageSubscribeDigitalPinValue{
+func (m *FirmataMessageSubscribeDigitalPinValue) GetParent() *FirmataMessage {
+	return m.FirmataMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *FirmataMessageSubscribeDigitalPinValue) GetPin() uint8 {
+	return m.Pin
+}
+
+func (m *FirmataMessageSubscribeDigitalPinValue) GetEnable() bool {
+	return m.Enable
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewFirmataMessageSubscribeDigitalPinValue factory function for FirmataMessageSubscribeDigitalPinValue
+func NewFirmataMessageSubscribeDigitalPinValue(pin uint8, enable bool, response bool) *FirmataMessageSubscribeDigitalPinValue {
+	_result := &FirmataMessageSubscribeDigitalPinValue{
 		Pin:            pin,
 		Enable:         enable,
-		FirmataMessage: NewFirmataMessage(),
+		FirmataMessage: NewFirmataMessage(response),
 	}
-	child.Child = child
-	return child.FirmataMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataMessageSubscribeDigitalPinValue(structType interface{}) *FirmataMessageSubscribeDigitalPinValue {
-	castFunc := func(typ interface{}) *FirmataMessageSubscribeDigitalPinValue {
-		if casted, ok := typ.(FirmataMessageSubscribeDigitalPinValue); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataMessageSubscribeDigitalPinValue); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataMessage); ok {
-			return CastFirmataMessageSubscribeDigitalPinValue(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataMessage); ok {
-			return CastFirmataMessageSubscribeDigitalPinValue(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataMessageSubscribeDigitalPinValue); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataMessageSubscribeDigitalPinValue); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataMessage); ok {
+		return CastFirmataMessageSubscribeDigitalPinValue(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataMessage); ok {
+		return CastFirmataMessageSubscribeDigitalPinValue(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataMessageSubscribeDigitalPinValue) GetTypeName() string {
 	return "FirmataMessageSubscribeDigitalPinValue"
 }
 
-func (m *FirmataMessageSubscribeDigitalPinValue) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataMessageSubscribeDigitalPinValue) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataMessageSubscribeDigitalPinValue) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataMessageSubscribeDigitalPinValue) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 4
@@ -102,14 +138,16 @@ func (m *FirmataMessageSubscribeDigitalPinValue) LengthInBitsConditional(lastIte
 	return lengthInBits
 }
 
-func (m *FirmataMessageSubscribeDigitalPinValue) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataMessageSubscribeDigitalPinValue) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func FirmataMessageSubscribeDigitalPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {
+func FirmataMessageSubscribeDigitalPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessageSubscribeDigitalPinValue, error) {
 	if pullErr := readBuffer.PullContext("FirmataMessageSubscribeDigitalPinValue"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (pin)
 	_pin, _pinErr := readBuffer.ReadUint8("pin", 4)
@@ -150,7 +188,7 @@ func FirmataMessageSubscribeDigitalPinValueParse(readBuffer utils.ReadBuffer, re
 		FirmataMessage: &FirmataMessage{},
 	}
 	_child.FirmataMessage.Child = _child
-	return _child.FirmataMessage, nil
+	return _child, nil
 }
 
 func (m *FirmataMessageSubscribeDigitalPinValue) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -194,6 +232,8 @@ func (m *FirmataMessageSubscribeDigitalPinValue) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -33,77 +33,105 @@ type DF1UnprotectedReadResponse struct {
 
 // The corresponding interface
 type IDF1UnprotectedReadResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IDF1Command
+	// GetData returns Data (property field)
+	GetData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DF1UnprotectedReadResponse) CommandCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *DF1UnprotectedReadResponse) GetCommandCode() uint8 {
 	return 0x41
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *DF1UnprotectedReadResponse) InitializeParent(parent *DF1Command, status uint8, transactionCounter uint16) {
 	m.DF1Command.Status = status
 	m.DF1Command.TransactionCounter = transactionCounter
 }
 
-func NewDF1UnprotectedReadResponse(data []byte, status uint8, transactionCounter uint16) *DF1Command {
-	child := &DF1UnprotectedReadResponse{
+func (m *DF1UnprotectedReadResponse) GetParent() *DF1Command {
+	return m.DF1Command
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *DF1UnprotectedReadResponse) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewDF1UnprotectedReadResponse factory function for DF1UnprotectedReadResponse
+func NewDF1UnprotectedReadResponse(data []byte, status uint8, transactionCounter uint16) *DF1UnprotectedReadResponse {
+	_result := &DF1UnprotectedReadResponse{
 		Data:       data,
 		DF1Command: NewDF1Command(status, transactionCounter),
 	}
-	child.Child = child
-	return child.DF1Command
+	_result.Child = _result
+	return _result
 }
 
 func CastDF1UnprotectedReadResponse(structType interface{}) *DF1UnprotectedReadResponse {
-	castFunc := func(typ interface{}) *DF1UnprotectedReadResponse {
-		if casted, ok := typ.(DF1UnprotectedReadResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1UnprotectedReadResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(DF1Command); ok {
-			return CastDF1UnprotectedReadResponse(casted.Child)
-		}
-		if casted, ok := typ.(*DF1Command); ok {
-			return CastDF1UnprotectedReadResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DF1UnprotectedReadResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1UnprotectedReadResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(DF1Command); ok {
+		return CastDF1UnprotectedReadResponse(casted.Child)
+	}
+	if casted, ok := structType.(*DF1Command); ok {
+		return CastDF1UnprotectedReadResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *DF1UnprotectedReadResponse) GetTypeName() string {
 	return "DF1UnprotectedReadResponse"
 }
 
-func (m *DF1UnprotectedReadResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1UnprotectedReadResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1UnprotectedReadResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DF1UnprotectedReadResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Manual Array Field (data)
-	data := m.Data
-	lengthInBits += DataLength(data) * 8
+	lengthInBits += uint16(DataLength(m.GetData()))
 
 	return lengthInBits
 }
 
-func (m *DF1UnprotectedReadResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1UnprotectedReadResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1Command, error) {
+func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1UnprotectedReadResponse, error) {
 	if pullErr := readBuffer.PullContext("DF1UnprotectedReadResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, pullErr
 	}
@@ -118,10 +146,7 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1Command, 
 
 		}
 	}
-	data := make([]byte, len(_dataList))
-	for i := 0; i < len(_dataList); i++ {
-		data[i] = byte(_dataList[i])
-	}
+	data := _dataList
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
 	}
@@ -136,7 +161,7 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1Command, 
 		DF1Command: &DF1Command{},
 	}
 	_child.DF1Command.Child = _child
-	return _child.DF1Command, nil
+	return _child, nil
 }
 
 func (m *DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -171,6 +196,8 @@ func (m *DF1UnprotectedReadResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

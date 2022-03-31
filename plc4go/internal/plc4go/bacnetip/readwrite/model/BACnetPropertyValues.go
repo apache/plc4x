@@ -31,73 +31,107 @@ type BACnetPropertyValues struct {
 	InnerOpeningTag *BACnetOpeningTag
 	Data            []*BACnetPropertyValue
 	InnerClosingTag *BACnetClosingTag
+
+	// Arguments.
+	TagNumber  uint8
+	ObjectType BACnetObjectType
 }
 
 // The corresponding interface
 type IBACnetPropertyValues interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetInnerOpeningTag returns InnerOpeningTag (property field)
+	GetInnerOpeningTag() *BACnetOpeningTag
+	// GetData returns Data (property field)
+	GetData() []*BACnetPropertyValue
+	// GetInnerClosingTag returns InnerClosingTag (property field)
+	GetInnerClosingTag() *BACnetClosingTag
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewBACnetPropertyValues(innerOpeningTag *BACnetOpeningTag, data []*BACnetPropertyValue, innerClosingTag *BACnetClosingTag) *BACnetPropertyValues {
-	return &BACnetPropertyValues{InnerOpeningTag: innerOpeningTag, Data: data, InnerClosingTag: innerClosingTag}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetPropertyValues) GetInnerOpeningTag() *BACnetOpeningTag {
+	return m.InnerOpeningTag
+}
+
+func (m *BACnetPropertyValues) GetData() []*BACnetPropertyValue {
+	return m.Data
+}
+
+func (m *BACnetPropertyValues) GetInnerClosingTag() *BACnetClosingTag {
+	return m.InnerClosingTag
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetPropertyValues factory function for BACnetPropertyValues
+func NewBACnetPropertyValues(innerOpeningTag *BACnetOpeningTag, data []*BACnetPropertyValue, innerClosingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetPropertyValues {
+	return &BACnetPropertyValues{InnerOpeningTag: innerOpeningTag, Data: data, InnerClosingTag: innerClosingTag, TagNumber: tagNumber, ObjectType: objectType}
 }
 
 func CastBACnetPropertyValues(structType interface{}) *BACnetPropertyValues {
-	castFunc := func(typ interface{}) *BACnetPropertyValues {
-		if casted, ok := typ.(BACnetPropertyValues); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetPropertyValues); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetPropertyValues); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetPropertyValues); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetPropertyValues) GetTypeName() string {
 	return "BACnetPropertyValues"
 }
 
-func (m *BACnetPropertyValues) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetPropertyValues) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetPropertyValues) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetPropertyValues) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.LengthInBits()
+	lengthInBits += m.InnerOpeningTag.GetLengthInBits()
 
 	// Array field
 	if len(m.Data) > 0 {
 		for _, element := range m.Data {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
 	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.LengthInBits()
+	lengthInBits += m.InnerClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetPropertyValues) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetPropertyValues) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType) (*BACnetPropertyValues, error) {
 	if pullErr := readBuffer.PullContext("BACnetPropertyValues"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetContextTagParse(readBuffer, tagNumber, BACnetDataType_OPENING_TAG)
+	_innerOpeningTag, _innerOpeningTagErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType(BACnetDataType_OPENING_TAG))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
 	}
@@ -130,7 +164,7 @@ func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, obj
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetContextTagParse(readBuffer, tagNumber, BACnetDataType_CLOSING_TAG)
+	_innerClosingTag, _innerClosingTagErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType(BACnetDataType_CLOSING_TAG))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
 	}
@@ -144,7 +178,7 @@ func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, obj
 	}
 
 	// Create the instance
-	return NewBACnetPropertyValues(innerOpeningTag, data, innerClosingTag), nil
+	return NewBACnetPropertyValues(innerOpeningTag, data, innerClosingTag, tagNumber, objectType), nil
 }
 
 func (m *BACnetPropertyValues) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -203,6 +237,8 @@ func (m *BACnetPropertyValues) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

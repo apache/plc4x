@@ -36,64 +36,103 @@ type AdsWriteRequest struct {
 
 // The corresponding interface
 type IAdsWriteRequest interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAdsData
+	// GetIndexGroup returns IndexGroup (property field)
+	GetIndexGroup() uint32
+	// GetIndexOffset returns IndexOffset (property field)
+	GetIndexOffset() uint32
+	// GetData returns Data (property field)
+	GetData() []byte
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsWriteRequest) CommandId() CommandId {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *AdsWriteRequest) GetCommandId() CommandId {
 	return CommandId_ADS_WRITE
 }
 
-func (m *AdsWriteRequest) Response() bool {
+func (m *AdsWriteRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *AdsWriteRequest) InitializeParent(parent *AdsData) {}
 
-func NewAdsWriteRequest(indexGroup uint32, indexOffset uint32, data []byte) *AdsData {
-	child := &AdsWriteRequest{
+func (m *AdsWriteRequest) GetParent() *AdsData {
+	return m.AdsData
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AdsWriteRequest) GetIndexGroup() uint32 {
+	return m.IndexGroup
+}
+
+func (m *AdsWriteRequest) GetIndexOffset() uint32 {
+	return m.IndexOffset
+}
+
+func (m *AdsWriteRequest) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAdsWriteRequest factory function for AdsWriteRequest
+func NewAdsWriteRequest(indexGroup uint32, indexOffset uint32, data []byte) *AdsWriteRequest {
+	_result := &AdsWriteRequest{
 		IndexGroup:  indexGroup,
 		IndexOffset: indexOffset,
 		Data:        data,
 		AdsData:     NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsWriteRequest(structType interface{}) *AdsWriteRequest {
-	castFunc := func(typ interface{}) *AdsWriteRequest {
-		if casted, ok := typ.(AdsWriteRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsWriteRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsWriteRequest(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsWriteRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsWriteRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsWriteRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsWriteRequest(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsWriteRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsWriteRequest) GetTypeName() string {
 	return "AdsWriteRequest"
 }
 
-func (m *AdsWriteRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsWriteRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsWriteRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsWriteRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -112,14 +151,16 @@ func (m *AdsWriteRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AdsWriteRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsWriteRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func AdsWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsWriteRequest, error) {
 	if pullErr := readBuffer.PullContext("AdsWriteRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (indexGroup)
 	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
@@ -135,7 +176,7 @@ func AdsWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, resp
 	}
 	indexOffset := _indexOffset
 
-	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
@@ -160,7 +201,7 @@ func AdsWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, resp
 		AdsData:     &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -184,7 +225,7 @@ func (m *AdsWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		length := uint32(uint32(len(m.Data)))
+		length := uint32(uint32(len(m.GetData())))
 		_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
@@ -212,6 +253,8 @@ func (m *AdsWriteRequest) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

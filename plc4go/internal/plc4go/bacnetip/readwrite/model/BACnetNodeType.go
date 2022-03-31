@@ -206,12 +206,12 @@ func CastBACnetNodeType(structType interface{}) BACnetNodeType {
 	return castFunc(structType)
 }
 
-func (m BACnetNodeType) LengthInBits() uint16 {
+func (m BACnetNodeType) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m BACnetNodeType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m BACnetNodeType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetNodeTypeParse(readBuffer utils.ReadBuffer) (BACnetNodeType, error) {

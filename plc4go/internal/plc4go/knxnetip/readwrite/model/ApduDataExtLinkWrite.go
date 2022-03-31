@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type ApduDataExtLinkWrite struct {
 	*ApduDataExt
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtLinkWrite interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduDataExt
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtLinkWrite) ExtApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataExtLinkWrite) GetExtApciType() uint8 {
 	return 0x27
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataExtLinkWrite) InitializeParent(parent *ApduDataExt) {}
 
-func NewApduDataExtLinkWrite() *ApduDataExt {
-	child := &ApduDataExtLinkWrite{
-		ApduDataExt: NewApduDataExt(),
+func (m *ApduDataExtLinkWrite) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
+// NewApduDataExtLinkWrite factory function for ApduDataExtLinkWrite
+func NewApduDataExtLinkWrite(length uint8) *ApduDataExtLinkWrite {
+	_result := &ApduDataExtLinkWrite{
+		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtLinkWrite(structType interface{}) *ApduDataExtLinkWrite {
-	castFunc := func(typ interface{}) *ApduDataExtLinkWrite {
-		if casted, ok := typ.(ApduDataExtLinkWrite); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtLinkWrite); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtLinkWrite(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtLinkWrite(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtLinkWrite); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtLinkWrite); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtLinkWrite(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtLinkWrite(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtLinkWrite) GetTypeName() string {
 	return "ApduDataExtLinkWrite"
 }
 
-func (m *ApduDataExtLinkWrite) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtLinkWrite) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtLinkWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtLinkWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataExtLinkWrite) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtLinkWrite) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtLinkWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtLinkWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtLinkWrite, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtLinkWrite"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtLinkWrite"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func ApduDataExtLinkWriteParse(readBuffer utils.ReadBuffer, length uint8) (*Apdu
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtLinkWrite) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *ApduDataExtLinkWrite) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

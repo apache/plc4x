@@ -31,15 +31,24 @@ type BACnetServiceAckAtomicReadFileStreamOrRecord struct {
 	PeekedTagHeader *BACnetTagHeader
 	OpeningTag      *BACnetOpeningTag
 	ClosingTag      *BACnetClosingTag
-	PeekedTagNumber uint8
 	Child           IBACnetServiceAckAtomicReadFileStreamOrRecordChild
 }
 
 // The corresponding interface
 type IBACnetServiceAckAtomicReadFileStreamOrRecord interface {
-	PeekedTagNumber() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetPeekedTagHeader returns PeekedTagHeader (property field)
+	GetPeekedTagHeader() *BACnetTagHeader
+	// GetOpeningTag returns OpeningTag (property field)
+	GetOpeningTag() *BACnetOpeningTag
+	// GetClosingTag returns ClosingTag (property field)
+	GetClosingTag() *BACnetClosingTag
+	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
+	GetPeekedTagNumber() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,65 +59,103 @@ type IBACnetServiceAckAtomicReadFileStreamOrRecordParent interface {
 
 type IBACnetServiceAckAtomicReadFileStreamOrRecordChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetServiceAckAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8)
+	InitializeParent(parent *BACnetServiceAckAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag)
+	GetParent() *BACnetServiceAckAtomicReadFileStreamOrRecord
+
 	GetTypeName() string
 	IBACnetServiceAckAtomicReadFileStreamOrRecord
 }
 
-func NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetServiceAckAtomicReadFileStreamOrRecord {
-	return &BACnetServiceAckAtomicReadFileStreamOrRecord{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag, PeekedTagNumber: peekedTagNumber}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) GetPeekedTagHeader() *BACnetTagHeader {
+	return m.PeekedTagHeader
+}
+
+func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) GetOpeningTag() *BACnetOpeningTag {
+	return m.OpeningTag
+}
+
+func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) GetClosingTag() *BACnetClosingTag {
+	return m.ClosingTag
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) GetPeekedTagNumber() uint8 {
+	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetServiceAckAtomicReadFileStreamOrRecord factory function for BACnetServiceAckAtomicReadFileStreamOrRecord
+func NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetServiceAckAtomicReadFileStreamOrRecord {
+	return &BACnetServiceAckAtomicReadFileStreamOrRecord{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag}
 }
 
 func CastBACnetServiceAckAtomicReadFileStreamOrRecord(structType interface{}) *BACnetServiceAckAtomicReadFileStreamOrRecord {
-	castFunc := func(typ interface{}) *BACnetServiceAckAtomicReadFileStreamOrRecord {
-		if casted, ok := typ.(BACnetServiceAckAtomicReadFileStreamOrRecord); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckAtomicReadFileStreamOrRecord); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckAtomicReadFileStreamOrRecord); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckAtomicReadFileStreamOrRecord); ok {
+		return casted
+	}
+	if casted, ok := structType.(IBACnetServiceAckAtomicReadFileStreamOrRecordChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) GetTypeName() string {
 	return "BACnetServiceAckAtomicReadFileStreamOrRecord"
 }
 
-func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) ParentLengthInBits() uint16 {
+func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.LengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.LengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckAtomicReadFileStreamOrRecord, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFileStreamOrRecord"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Peek Field (peekedTagHeader)
-	currentPos := readBuffer.GetPos()
+	currentPos = readBuffer.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +166,7 @@ func BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, peekedTagHeader.ActualTagNumber, BACnetDataType_OPENING_TAG)
+	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()), BACnetDataType(BACnetDataType_OPENING_TAG))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
 	}
@@ -129,17 +176,22 @@ func BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuff
 	}
 
 	// Virtual field
-	_peekedTagNumber := peekedTagHeader.ActualTagNumber
+	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
 	peekedTagNumber := uint8(_peekedTagNumber)
+	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetServiceAckAtomicReadFileStreamOrRecord
+	type BACnetServiceAckAtomicReadFileStreamOrRecordChild interface {
+		InitializeParent(*BACnetServiceAckAtomicReadFileStreamOrRecord, *BACnetTagHeader, *BACnetOpeningTag, *BACnetClosingTag)
+		GetParent() *BACnetServiceAckAtomicReadFileStreamOrRecord
+	}
+	var _child BACnetServiceAckAtomicReadFileStreamOrRecordChild
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == 0x0: // BACnetServiceAckAtomicReadFileStream
-		_parent, typeSwitchError = BACnetServiceAckAtomicReadFileStreamParse(readBuffer)
+		_child, typeSwitchError = BACnetServiceAckAtomicReadFileStreamParse(readBuffer)
 	case peekedTagNumber == 0x1: // BACnetServiceAckAtomicReadFileRecord
-		_parent, typeSwitchError = BACnetServiceAckAtomicReadFileRecordParse(readBuffer)
+		_child, typeSwitchError = BACnetServiceAckAtomicReadFileRecordParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -152,7 +204,7 @@ func BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, peekedTagHeader.ActualTagNumber, BACnetDataType_CLOSING_TAG)
+	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()), BACnetDataType(BACnetDataType_CLOSING_TAG))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
 	}
@@ -166,8 +218,8 @@ func BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuff
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, peekedTagHeader, openingTag, closingTag, peekedTagNumber)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), peekedTagHeader, openingTag, closingTag)
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -191,7 +243,7 @@ func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) SerializeParent(writeBuff
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.PeekedTagNumber); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
@@ -223,6 +275,8 @@ func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

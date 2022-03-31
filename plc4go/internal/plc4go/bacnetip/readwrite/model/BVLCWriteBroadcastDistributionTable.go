@@ -30,83 +30,113 @@ import (
 type BVLCWriteBroadcastDistributionTable struct {
 	*BVLC
 	Table []*BVLCWriteBroadcastDistributionTableEntry
+
+	// Arguments.
+	BvlcPayloadLength uint16
 }
 
 // The corresponding interface
 type IBVLCWriteBroadcastDistributionTable interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBVLC
+	// GetTable returns Table (property field)
+	GetTable() []*BVLCWriteBroadcastDistributionTableEntry
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCWriteBroadcastDistributionTable) BvlcFunction() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BVLCWriteBroadcastDistributionTable) GetBvlcFunction() uint8 {
 	return 0x01
 }
 
-func (m *BVLCWriteBroadcastDistributionTable) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+func (m *BVLCWriteBroadcastDistributionTable) InitializeParent(parent *BVLC) {}
+
+func (m *BVLCWriteBroadcastDistributionTable) GetParent() *BVLC {
+	return m.BVLC
 }
 
-func NewBVLCWriteBroadcastDistributionTable(table []*BVLCWriteBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *BVLC {
-	child := &BVLCWriteBroadcastDistributionTable{
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BVLCWriteBroadcastDistributionTable) GetTable() []*BVLCWriteBroadcastDistributionTableEntry {
+	return m.Table
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBVLCWriteBroadcastDistributionTable factory function for BVLCWriteBroadcastDistributionTable
+func NewBVLCWriteBroadcastDistributionTable(table []*BVLCWriteBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *BVLCWriteBroadcastDistributionTable {
+	_result := &BVLCWriteBroadcastDistributionTable{
 		Table: table,
-		BVLC:  NewBVLC(bvlcPayloadLength),
+		BVLC:  NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCWriteBroadcastDistributionTable(structType interface{}) *BVLCWriteBroadcastDistributionTable {
-	castFunc := func(typ interface{}) *BVLCWriteBroadcastDistributionTable {
-		if casted, ok := typ.(BVLCWriteBroadcastDistributionTable); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCWriteBroadcastDistributionTable); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCWriteBroadcastDistributionTable(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCWriteBroadcastDistributionTable(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCWriteBroadcastDistributionTable); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCWriteBroadcastDistributionTable); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCWriteBroadcastDistributionTable(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCWriteBroadcastDistributionTable(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCWriteBroadcastDistributionTable) GetTypeName() string {
 	return "BVLCWriteBroadcastDistributionTable"
 }
 
-func (m *BVLCWriteBroadcastDistributionTable) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCWriteBroadcastDistributionTable) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCWriteBroadcastDistributionTable) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCWriteBroadcastDistributionTable) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.Table) > 0 {
 		for _, element := range m.Table {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *BVLCWriteBroadcastDistributionTable) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCWriteBroadcastDistributionTable) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLC, error) {
+func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLCWriteBroadcastDistributionTable, error) {
 	if pullErr := readBuffer.PullContext("BVLCWriteBroadcastDistributionTable"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (table)
 	if pullErr := readBuffer.PullContext("table", utils.WithRenderAsList(true)); pullErr != nil {
@@ -139,7 +169,7 @@ func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcP
 		BVLC:  &BVLC{},
 	}
 	_child.BVLC.Child = _child
-	return _child.BVLC, nil
+	return _child, nil
 }
 
 func (m *BVLCWriteBroadcastDistributionTable) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -177,6 +207,8 @@ func (m *BVLCWriteBroadcastDistributionTable) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

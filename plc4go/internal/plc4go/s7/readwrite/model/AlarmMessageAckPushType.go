@@ -36,41 +36,75 @@ type AlarmMessageAckPushType struct {
 
 // The corresponding interface
 type IAlarmMessageAckPushType interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetTimeStamp returns TimeStamp (property field)
+	GetTimeStamp() *DateAndTime
+	// GetFunctionId returns FunctionId (property field)
+	GetFunctionId() uint8
+	// GetNumberOfObjects returns NumberOfObjects (property field)
+	GetNumberOfObjects() uint8
+	// GetMessageObjects returns MessageObjects (property field)
+	GetMessageObjects() []*AlarmMessageAckObjectPushType
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AlarmMessageAckPushType) GetTimeStamp() *DateAndTime {
+	return m.TimeStamp
+}
+
+func (m *AlarmMessageAckPushType) GetFunctionId() uint8 {
+	return m.FunctionId
+}
+
+func (m *AlarmMessageAckPushType) GetNumberOfObjects() uint8 {
+	return m.NumberOfObjects
+}
+
+func (m *AlarmMessageAckPushType) GetMessageObjects() []*AlarmMessageAckObjectPushType {
+	return m.MessageObjects
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAlarmMessageAckPushType factory function for AlarmMessageAckPushType
 func NewAlarmMessageAckPushType(TimeStamp *DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []*AlarmMessageAckObjectPushType) *AlarmMessageAckPushType {
 	return &AlarmMessageAckPushType{TimeStamp: TimeStamp, FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
 }
 
 func CastAlarmMessageAckPushType(structType interface{}) *AlarmMessageAckPushType {
-	castFunc := func(typ interface{}) *AlarmMessageAckPushType {
-		if casted, ok := typ.(AlarmMessageAckPushType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AlarmMessageAckPushType); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AlarmMessageAckPushType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AlarmMessageAckPushType); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AlarmMessageAckPushType) GetTypeName() string {
 	return "AlarmMessageAckPushType"
 }
 
-func (m *AlarmMessageAckPushType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AlarmMessageAckPushType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageAckPushType) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AlarmMessageAckPushType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (TimeStamp)
-	lengthInBits += m.TimeStamp.LengthInBits()
+	lengthInBits += m.TimeStamp.GetLengthInBits()
 
 	// Simple field (functionId)
 	lengthInBits += 8
@@ -82,21 +116,23 @@ func (m *AlarmMessageAckPushType) LengthInBitsConditional(lastItem bool) uint16 
 	if len(m.MessageObjects) > 0 {
 		for i, element := range m.MessageObjects {
 			last := i == len(m.MessageObjects)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *AlarmMessageAckPushType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AlarmMessageAckPushType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AlarmMessageAckPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAckPushType, error) {
 	if pullErr := readBuffer.PullContext("AlarmMessageAckPushType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (TimeStamp)
 	if pullErr := readBuffer.PullContext("TimeStamp"); pullErr != nil {
@@ -210,6 +246,8 @@ func (m *AlarmMessageAckPushType) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

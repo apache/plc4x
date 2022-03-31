@@ -40,12 +40,6 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectableChannel;
 import java.util.concurrent.RejectedExecutionException;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-10
- */
 public class SerialChannel extends AbstractNioByteChannel implements DuplexChannel {
 
     private static final Logger logger = LoggerFactory.getLogger(SerialChannel.class);

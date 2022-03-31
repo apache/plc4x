@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type ApduDataExtNetworkParameterResponse struct {
 	*ApduDataExt
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtNetworkParameterResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduDataExt
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtNetworkParameterResponse) ExtApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataExtNetworkParameterResponse) GetExtApciType() uint8 {
 	return 0x1B
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataExtNetworkParameterResponse) InitializeParent(parent *ApduDataExt) {}
 
-func NewApduDataExtNetworkParameterResponse() *ApduDataExt {
-	child := &ApduDataExtNetworkParameterResponse{
-		ApduDataExt: NewApduDataExt(),
+func (m *ApduDataExtNetworkParameterResponse) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
+// NewApduDataExtNetworkParameterResponse factory function for ApduDataExtNetworkParameterResponse
+func NewApduDataExtNetworkParameterResponse(length uint8) *ApduDataExtNetworkParameterResponse {
+	_result := &ApduDataExtNetworkParameterResponse{
+		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtNetworkParameterResponse(structType interface{}) *ApduDataExtNetworkParameterResponse {
-	castFunc := func(typ interface{}) *ApduDataExtNetworkParameterResponse {
-		if casted, ok := typ.(ApduDataExtNetworkParameterResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtNetworkParameterResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtNetworkParameterResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtNetworkParameterResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtNetworkParameterResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtNetworkParameterResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtNetworkParameterResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtNetworkParameterResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtNetworkParameterResponse) GetTypeName() string {
 	return "ApduDataExtNetworkParameterResponse"
 }
 
-func (m *ApduDataExtNetworkParameterResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtNetworkParameterResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtNetworkParameterResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtNetworkParameterResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataExtNetworkParameterResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtNetworkParameterResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtNetworkParameterResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtNetworkParameterResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtNetworkParameterResponse, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtNetworkParameterResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtNetworkParameterResponse"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func ApduDataExtNetworkParameterResponseParse(readBuffer utils.ReadBuffer, lengt
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtNetworkParameterResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *ApduDataExtNetworkParameterResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

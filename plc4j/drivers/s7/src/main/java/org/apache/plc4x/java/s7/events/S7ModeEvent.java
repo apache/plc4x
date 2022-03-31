@@ -33,10 +33,6 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterModeTransition;
 
-/**
- *
- * @author cgarcia
- */
 public class S7ModeEvent  implements S7Event {
 
    

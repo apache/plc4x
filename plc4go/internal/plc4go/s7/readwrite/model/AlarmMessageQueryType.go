@@ -41,37 +41,89 @@ type AlarmMessageQueryType struct {
 
 // The corresponding interface
 type IAlarmMessageQueryType interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetFunctionId returns FunctionId (property field)
+	GetFunctionId() uint8
+	// GetNumberOfObjects returns NumberOfObjects (property field)
+	GetNumberOfObjects() uint8
+	// GetReturnCode returns ReturnCode (property field)
+	GetReturnCode() DataTransportErrorCode
+	// GetTransportSize returns TransportSize (property field)
+	GetTransportSize() DataTransportSize
+	// GetMessageObjects returns MessageObjects (property field)
+	GetMessageObjects() []*AlarmMessageObjectQueryType
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AlarmMessageQueryType) GetFunctionId() uint8 {
+	return m.FunctionId
+}
+
+func (m *AlarmMessageQueryType) GetNumberOfObjects() uint8 {
+	return m.NumberOfObjects
+}
+
+func (m *AlarmMessageQueryType) GetReturnCode() DataTransportErrorCode {
+	return m.ReturnCode
+}
+
+func (m *AlarmMessageQueryType) GetTransportSize() DataTransportSize {
+	return m.TransportSize
+}
+
+func (m *AlarmMessageQueryType) GetMessageObjects() []*AlarmMessageObjectQueryType {
+	return m.MessageObjects
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for const fields.
+///////////////////////
+func (m *AlarmMessageQueryType) GetDataLength() uint16 {
+	return AlarmMessageQueryType_DATALENGTH
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAlarmMessageQueryType factory function for AlarmMessageQueryType
 func NewAlarmMessageQueryType(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, messageObjects []*AlarmMessageObjectQueryType) *AlarmMessageQueryType {
 	return &AlarmMessageQueryType{FunctionId: functionId, NumberOfObjects: numberOfObjects, ReturnCode: returnCode, TransportSize: transportSize, MessageObjects: messageObjects}
 }
 
 func CastAlarmMessageQueryType(structType interface{}) *AlarmMessageQueryType {
-	castFunc := func(typ interface{}) *AlarmMessageQueryType {
-		if casted, ok := typ.(AlarmMessageQueryType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AlarmMessageQueryType); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AlarmMessageQueryType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AlarmMessageQueryType); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AlarmMessageQueryType) GetTypeName() string {
 	return "AlarmMessageQueryType"
 }
 
-func (m *AlarmMessageQueryType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AlarmMessageQueryType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageQueryType) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AlarmMessageQueryType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (functionId)
@@ -93,21 +145,23 @@ func (m *AlarmMessageQueryType) LengthInBitsConditional(lastItem bool) uint16 {
 	if len(m.MessageObjects) > 0 {
 		for i, element := range m.MessageObjects {
 			last := i == len(m.MessageObjects)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *AlarmMessageQueryType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AlarmMessageQueryType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQueryType, error) {
 	if pullErr := readBuffer.PullContext("AlarmMessageQueryType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (functionId)
 	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
@@ -261,6 +315,8 @@ func (m *AlarmMessageQueryType) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -98,12 +98,12 @@ func CastNPDUNetworkPriority(structType interface{}) NPDUNetworkPriority {
 	return castFunc(structType)
 }
 
-func (m NPDUNetworkPriority) LengthInBits() uint16 {
+func (m NPDUNetworkPriority) GetLengthInBits() uint16 {
 	return 2
 }
 
-func (m NPDUNetworkPriority) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m NPDUNetworkPriority) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NPDUNetworkPriorityParse(readBuffer utils.ReadBuffer) (NPDUNetworkPriority, error) {

@@ -41,22 +41,94 @@ type S7ParameterUserDataItemCPUFunctions struct {
 
 // The corresponding interface
 type IS7ParameterUserDataItemCPUFunctions interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IS7ParameterUserDataItem
+	// GetMethod returns Method (property field)
+	GetMethod() uint8
+	// GetCpuFunctionType returns CpuFunctionType (property field)
+	GetCpuFunctionType() uint8
+	// GetCpuFunctionGroup returns CpuFunctionGroup (property field)
+	GetCpuFunctionGroup() uint8
+	// GetCpuSubfunction returns CpuSubfunction (property field)
+	GetCpuSubfunction() uint8
+	// GetSequenceNumber returns SequenceNumber (property field)
+	GetSequenceNumber() uint8
+	// GetDataUnitReferenceNumber returns DataUnitReferenceNumber (property field)
+	GetDataUnitReferenceNumber() *uint8
+	// GetLastDataUnit returns LastDataUnit (property field)
+	GetLastDataUnit() *uint8
+	// GetErrorCode returns ErrorCode (property field)
+	GetErrorCode() *uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7ParameterUserDataItemCPUFunctions) ItemType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *S7ParameterUserDataItemCPUFunctions) GetItemType() uint8 {
 	return 0x12
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *S7ParameterUserDataItemCPUFunctions) InitializeParent(parent *S7ParameterUserDataItem) {}
 
-func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16) *S7ParameterUserDataItem {
-	child := &S7ParameterUserDataItemCPUFunctions{
+func (m *S7ParameterUserDataItemCPUFunctions) GetParent() *S7ParameterUserDataItem {
+	return m.S7ParameterUserDataItem
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *S7ParameterUserDataItemCPUFunctions) GetMethod() uint8 {
+	return m.Method
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetCpuFunctionType() uint8 {
+	return m.CpuFunctionType
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetCpuFunctionGroup() uint8 {
+	return m.CpuFunctionGroup
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetCpuSubfunction() uint8 {
+	return m.CpuSubfunction
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetSequenceNumber() uint8 {
+	return m.SequenceNumber
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetDataUnitReferenceNumber() *uint8 {
+	return m.DataUnitReferenceNumber
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetLastDataUnit() *uint8 {
+	return m.LastDataUnit
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetErrorCode() *uint16 {
+	return m.ErrorCode
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewS7ParameterUserDataItemCPUFunctions factory function for S7ParameterUserDataItemCPUFunctions
+func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16) *S7ParameterUserDataItemCPUFunctions {
+	_result := &S7ParameterUserDataItemCPUFunctions{
 		Method:                  method,
 		CpuFunctionType:         cpuFunctionType,
 		CpuFunctionGroup:        cpuFunctionGroup,
@@ -67,39 +139,36 @@ func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8,
 		ErrorCode:               errorCode,
 		S7ParameterUserDataItem: NewS7ParameterUserDataItem(),
 	}
-	child.Child = child
-	return child.S7ParameterUserDataItem
+	_result.Child = _result
+	return _result
 }
 
 func CastS7ParameterUserDataItemCPUFunctions(structType interface{}) *S7ParameterUserDataItemCPUFunctions {
-	castFunc := func(typ interface{}) *S7ParameterUserDataItemCPUFunctions {
-		if casted, ok := typ.(S7ParameterUserDataItemCPUFunctions); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7ParameterUserDataItemCPUFunctions); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7ParameterUserDataItem); ok {
-			return CastS7ParameterUserDataItemCPUFunctions(casted.Child)
-		}
-		if casted, ok := typ.(*S7ParameterUserDataItem); ok {
-			return CastS7ParameterUserDataItemCPUFunctions(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7ParameterUserDataItemCPUFunctions); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7ParameterUserDataItemCPUFunctions); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7ParameterUserDataItem); ok {
+		return CastS7ParameterUserDataItemCPUFunctions(casted.Child)
+	}
+	if casted, ok := structType.(*S7ParameterUserDataItem); ok {
+		return CastS7ParameterUserDataItemCPUFunctions(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7ParameterUserDataItemCPUFunctions) GetTypeName() string {
 	return "S7ParameterUserDataItemCPUFunctions"
 }
 
-func (m *S7ParameterUserDataItemCPUFunctions) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7ParameterUserDataItemCPUFunctions) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7ParameterUserDataItemCPUFunctions) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7ParameterUserDataItemCPUFunctions) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8
@@ -137,16 +206,18 @@ func (m *S7ParameterUserDataItemCPUFunctions) LengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *S7ParameterUserDataItemCPUFunctions) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7ParameterUserDataItemCPUFunctions) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (*S7ParameterUserDataItem, error) {
+func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (*S7ParameterUserDataItemCPUFunctions, error) {
 	if pullErr := readBuffer.PullContext("S7ParameterUserDataItemCPUFunctions"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	itemLength, _itemLengthErr := readBuffer.ReadUint8("itemLength", 8)
 	_ = itemLength
 	if _itemLengthErr != nil {
@@ -235,7 +306,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (*S7P
 		S7ParameterUserDataItem: &S7ParameterUserDataItem{},
 	}
 	_child.S7ParameterUserDataItem.Child = _child
-	return _child.S7ParameterUserDataItem, nil
+	return _child, nil
 }
 
 func (m *S7ParameterUserDataItemCPUFunctions) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -245,7 +316,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
+		itemLength := uint8(uint8(uint8(m.GetLengthInBytes())) - uint8(uint8(2)))
 		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, (itemLength))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
@@ -329,6 +400,8 @@ func (m *S7ParameterUserDataItemCPUFunctions) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

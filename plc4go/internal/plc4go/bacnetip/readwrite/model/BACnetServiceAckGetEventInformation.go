@@ -32,69 +32,83 @@ type BACnetServiceAckGetEventInformation struct {
 
 // The corresponding interface
 type IBACnetServiceAckGetEventInformation interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetServiceAck
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckGetEventInformation) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetServiceAckGetEventInformation) GetServiceChoice() uint8 {
 	return 0x1D
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *BACnetServiceAckGetEventInformation) InitializeParent(parent *BACnetServiceAck) {}
 
-func NewBACnetServiceAckGetEventInformation() *BACnetServiceAck {
-	child := &BACnetServiceAckGetEventInformation{
+func (m *BACnetServiceAckGetEventInformation) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
+// NewBACnetServiceAckGetEventInformation factory function for BACnetServiceAckGetEventInformation
+func NewBACnetServiceAckGetEventInformation() *BACnetServiceAckGetEventInformation {
+	_result := &BACnetServiceAckGetEventInformation{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckGetEventInformation(structType interface{}) *BACnetServiceAckGetEventInformation {
-	castFunc := func(typ interface{}) *BACnetServiceAckGetEventInformation {
-		if casted, ok := typ.(BACnetServiceAckGetEventInformation); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckGetEventInformation); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckGetEventInformation(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckGetEventInformation(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckGetEventInformation); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckGetEventInformation); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckGetEventInformation(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckGetEventInformation(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckGetEventInformation) GetTypeName() string {
 	return "BACnetServiceAckGetEventInformation"
 }
 
-func (m *BACnetServiceAckGetEventInformation) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckGetEventInformation) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckGetEventInformation) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckGetEventInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckGetEventInformation) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckGetEventInformation) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckGetEventInformation, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEventInformation"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckGetEventInformation"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer) (*BAC
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckGetEventInformation) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *BACnetServiceAckGetEventInformation) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

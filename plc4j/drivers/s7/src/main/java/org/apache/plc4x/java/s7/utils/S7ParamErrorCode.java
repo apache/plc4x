@@ -21,10 +21,6 @@ package org.apache.plc4x.java.s7.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * @author cgarcia
- */
 public enum S7ParamErrorCode {
 
     ERROR_0x0000((short) 0x0000, "No error"),

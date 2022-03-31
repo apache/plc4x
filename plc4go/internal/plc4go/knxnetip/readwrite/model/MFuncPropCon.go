@@ -28,73 +28,90 @@ import (
 // The data-structure of this message
 type MFuncPropCon struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type IMFuncPropCon interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	ICEMI
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MFuncPropCon) MessageCode() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *MFuncPropCon) GetMessageCode() uint8 {
 	return 0xFA
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *MFuncPropCon) InitializeParent(parent *CEMI) {}
 
-func NewMFuncPropCon() *CEMI {
-	child := &MFuncPropCon{
-		CEMI: NewCEMI(),
+func (m *MFuncPropCon) GetParent() *CEMI {
+	return m.CEMI
+}
+
+// NewMFuncPropCon factory function for MFuncPropCon
+func NewMFuncPropCon(size uint16) *MFuncPropCon {
+	_result := &MFuncPropCon{
+		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastMFuncPropCon(structType interface{}) *MFuncPropCon {
-	castFunc := func(typ interface{}) *MFuncPropCon {
-		if casted, ok := typ.(MFuncPropCon); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MFuncPropCon); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMFuncPropCon(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMFuncPropCon(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MFuncPropCon); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MFuncPropCon); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastMFuncPropCon(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastMFuncPropCon(casted.Child)
+	}
+	return nil
 }
 
 func (m *MFuncPropCon) GetTypeName() string {
 	return "MFuncPropCon"
 }
 
-func (m *MFuncPropCon) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *MFuncPropCon) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *MFuncPropCon) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *MFuncPropCon) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *MFuncPropCon) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *MFuncPropCon) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func MFuncPropConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func MFuncPropConParse(readBuffer utils.ReadBuffer, size uint16) (*MFuncPropCon, error) {
 	if pullErr := readBuffer.PullContext("MFuncPropCon"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("MFuncPropCon"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +122,7 @@ func MFuncPropConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) 
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *MFuncPropCon) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +144,8 @@ func (m *MFuncPropCon) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

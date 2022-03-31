@@ -102,11 +102,11 @@ func (e ModbusDataType) DataTypeSize() uint8 {
 	switch e {
 	case 1:
 		{ /* '1' */
-			return 1
+			return 2
 		}
 	case 10:
 		{ /* '10' */
-			return 1
+			return 2
 		}
 	case 11:
 		{ /* '11' */
@@ -146,7 +146,7 @@ func (e ModbusDataType) DataTypeSize() uint8 {
 		}
 	case 2:
 		{ /* '2' */
-			return 1
+			return 2
 		}
 	case 20:
 		{ /* '20' */
@@ -194,7 +194,7 @@ func (e ModbusDataType) DataTypeSize() uint8 {
 		}
 	case 6:
 		{ /* '6' */
-			return 1
+			return 2
 		}
 	case 7:
 		{ /* '7' */
@@ -362,12 +362,12 @@ func CastModbusDataType(structType interface{}) ModbusDataType {
 	return castFunc(structType)
 }
 
-func (m ModbusDataType) LengthInBits() uint16 {
+func (m ModbusDataType) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m ModbusDataType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m ModbusDataType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusDataTypeParse(readBuffer utils.ReadBuffer) (ModbusDataType, error) {

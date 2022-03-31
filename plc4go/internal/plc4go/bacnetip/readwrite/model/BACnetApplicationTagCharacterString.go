@@ -29,115 +29,139 @@ import (
 // The data-structure of this message
 type BACnetApplicationTagCharacterString struct {
 	*BACnetApplicationTag
-	Encoding          BACnetCharacterEncoding
-	Value             string
-	ActualLengthInBit uint16
+	Payload *BACnetTagPayloadCharacterString
 }
 
 // The corresponding interface
 type IBACnetApplicationTagCharacterString interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetApplicationTag
+	// GetPayload returns Payload (property field)
+	GetPayload() *BACnetTagPayloadCharacterString
+	// GetValue returns Value (virtual field)
+	GetValue() string
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagCharacterString) ActualTagNumber() uint8 {
-	return 0x7
-}
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
-func (m *BACnetApplicationTagCharacterString) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) {
+func (m *BACnetApplicationTagCharacterString) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader) {
 	m.BACnetApplicationTag.Header = header
-	m.BACnetApplicationTag.ActualTagNumber = actualTagNumber
-	m.BACnetApplicationTag.ActualLength = actualLength
 }
 
-func NewBACnetApplicationTagCharacterString(encoding BACnetCharacterEncoding, value string, actualLengthInBit uint16, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
-	child := &BACnetApplicationTagCharacterString{
-		Encoding:             encoding,
-		Value:                value,
-		ActualLengthInBit:    actualLengthInBit,
-		BACnetApplicationTag: NewBACnetApplicationTag(header, actualTagNumber, actualLength),
+func (m *BACnetApplicationTagCharacterString) GetParent() *BACnetApplicationTag {
+	return m.BACnetApplicationTag
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetApplicationTagCharacterString) GetPayload() *BACnetTagPayloadCharacterString {
+	return m.Payload
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+func (m *BACnetApplicationTagCharacterString) GetValue() string {
+	return string(m.GetPayload().GetValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetApplicationTagCharacterString factory function for BACnetApplicationTagCharacterString
+func NewBACnetApplicationTagCharacterString(payload *BACnetTagPayloadCharacterString, header *BACnetTagHeader) *BACnetApplicationTagCharacterString {
+	_result := &BACnetApplicationTagCharacterString{
+		Payload:              payload,
+		BACnetApplicationTag: NewBACnetApplicationTag(header),
 	}
-	child.Child = child
-	return child.BACnetApplicationTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetApplicationTagCharacterString(structType interface{}) *BACnetApplicationTagCharacterString {
-	castFunc := func(typ interface{}) *BACnetApplicationTagCharacterString {
-		if casted, ok := typ.(BACnetApplicationTagCharacterString); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetApplicationTagCharacterString); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagCharacterString(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagCharacterString(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetApplicationTagCharacterString); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetApplicationTagCharacterString); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagCharacterString(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagCharacterString(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetApplicationTagCharacterString) GetTypeName() string {
 	return "BACnetApplicationTagCharacterString"
 }
 
-func (m *BACnetApplicationTagCharacterString) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetApplicationTagCharacterString) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetApplicationTagCharacterString) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetApplicationTagCharacterString) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (encoding)
-	lengthInBits += 8
+	// Simple field (payload)
+	lengthInBits += m.Payload.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
-
-	// Simple field (value)
-	lengthInBits += uint16(m.ActualLengthInBit)
 
 	return lengthInBits
 }
 
-func (m *BACnetApplicationTagCharacterString) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetApplicationTagCharacterString) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetApplicationTag, error) {
+func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, header *BACnetTagHeader) (*BACnetApplicationTagCharacterString, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagCharacterString"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
-	// Simple Field (encoding)
-	if pullErr := readBuffer.PullContext("encoding"); pullErr != nil {
+	// Simple Field (payload)
+	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, pullErr
 	}
-	_encoding, _encodingErr := BACnetCharacterEncodingParse(readBuffer)
-	if _encodingErr != nil {
-		return nil, errors.Wrap(_encodingErr, "Error parsing 'encoding' field")
+	_payload, _payloadErr := BACnetTagPayloadCharacterStringParse(readBuffer, uint32(header.GetActualLength()))
+	if _payloadErr != nil {
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
 	}
-	encoding := _encoding
-	if closeErr := readBuffer.CloseContext("encoding"); closeErr != nil {
+	payload := CastBACnetTagPayloadCharacterString(_payload)
+	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Virtual field
-	_actualLengthInBit := uint16(uint16(actualLength)*uint16(uint16(8))) - uint16(uint16(8))
-	actualLengthInBit := uint16(_actualLengthInBit)
-
-	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
-	}
-	value := _value
+	_value := payload.GetValue()
+	value := string(_value)
+	_ = value
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagCharacterString"); closeErr != nil {
 		return nil, closeErr
@@ -145,13 +169,11 @@ func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, actua
 
 	// Create a partially initialized instance
 	_child := &BACnetApplicationTagCharacterString{
-		Encoding:             encoding,
-		Value:                value,
-		ActualLengthInBit:    actualLengthInBit,
+		Payload:              CastBACnetTagPayloadCharacterString(payload),
 		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
 	_child.BACnetApplicationTag.Child = _child
-	return _child.BACnetApplicationTag, nil
+	return _child, nil
 }
 
 func (m *BACnetApplicationTagCharacterString) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -160,26 +182,19 @@ func (m *BACnetApplicationTagCharacterString) Serialize(writeBuffer utils.WriteB
 			return pushErr
 		}
 
-		// Simple Field (encoding)
-		if pushErr := writeBuffer.PushContext("encoding"); pushErr != nil {
+		// Simple Field (payload)
+		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
 			return pushErr
 		}
-		_encodingErr := m.Encoding.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("encoding"); popErr != nil {
+		_payloadErr := m.Payload.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 			return popErr
 		}
-		if _encodingErr != nil {
-			return errors.Wrap(_encodingErr, "Error serializing 'encoding' field")
+		if _payloadErr != nil {
+			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 		// Virtual field
-		if _actualLengthInBitErr := writeBuffer.WriteVirtual("actualLengthInBit", m.ActualLengthInBit); _actualLengthInBitErr != nil {
-			return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
-		}
-
-		// Simple Field (value)
-		value := string(m.Value)
-		_valueErr := writeBuffer.WriteString("value", uint32(m.ActualLengthInBit), "UTF-8", (value))
-		if _valueErr != nil {
+		if _valueErr := writeBuffer.WriteVirtual("value", m.GetValue()); _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
@@ -196,6 +211,8 @@ func (m *BACnetApplicationTagCharacterString) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

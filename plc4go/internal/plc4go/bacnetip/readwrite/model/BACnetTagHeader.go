@@ -28,53 +28,182 @@ import (
 
 // The data-structure of this message
 type BACnetTagHeader struct {
-	TagNumber                uint8
-	TagClass                 TagClass
-	LengthValueType          uint8
-	ExtTagNumber             *uint8
-	ExtLength                *uint8
-	ExtExtLength             *uint16
-	ExtExtExtLength          *uint32
-	ActualTagNumber          uint8
-	IsBoolean                bool
-	IsConstructed            bool
-	IsPrimitiveAndNotBoolean bool
-	ActualLength             uint32
+	TagNumber       uint8
+	TagClass        TagClass
+	LengthValueType uint8
+	ExtTagNumber    *uint8
+	ExtLength       *uint8
+	ExtExtLength    *uint16
+	ExtExtExtLength *uint32
 }
 
 // The corresponding interface
 type IBACnetTagHeader interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetTagNumber returns TagNumber (property field)
+	GetTagNumber() uint8
+	// GetTagClass returns TagClass (property field)
+	GetTagClass() TagClass
+	// GetLengthValueType returns LengthValueType (property field)
+	GetLengthValueType() uint8
+	// GetExtTagNumber returns ExtTagNumber (property field)
+	GetExtTagNumber() *uint8
+	// GetExtLength returns ExtLength (property field)
+	GetExtLength() *uint8
+	// GetExtExtLength returns ExtExtLength (property field)
+	GetExtExtLength() *uint16
+	// GetExtExtExtLength returns ExtExtExtLength (property field)
+	GetExtExtExtLength() *uint32
+	// GetActualTagNumber returns ActualTagNumber (virtual field)
+	GetActualTagNumber() uint8
+	// GetIsBoolean returns IsBoolean (virtual field)
+	GetIsBoolean() bool
+	// GetIsConstructed returns IsConstructed (virtual field)
+	GetIsConstructed() bool
+	// GetIsPrimitiveAndNotBoolean returns IsPrimitiveAndNotBoolean (virtual field)
+	GetIsPrimitiveAndNotBoolean() bool
+	// GetActualLength returns ActualLength (virtual field)
+	GetActualLength() uint32
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewBACnetTagHeader(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetTagHeader {
-	return &BACnetTagHeader{TagNumber: tagNumber, TagClass: tagClass, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, ExtExtLength: extExtLength, ExtExtExtLength: extExtExtLength, ActualTagNumber: actualTagNumber, IsBoolean: isBoolean, IsConstructed: isConstructed, IsPrimitiveAndNotBoolean: isPrimitiveAndNotBoolean, ActualLength: actualLength}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetTagHeader) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+func (m *BACnetTagHeader) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+func (m *BACnetTagHeader) GetLengthValueType() uint8 {
+	return m.LengthValueType
+}
+
+func (m *BACnetTagHeader) GetExtTagNumber() *uint8 {
+	return m.ExtTagNumber
+}
+
+func (m *BACnetTagHeader) GetExtLength() *uint8 {
+	return m.ExtLength
+}
+
+func (m *BACnetTagHeader) GetExtExtLength() *uint16 {
+	return m.ExtExtLength
+}
+
+func (m *BACnetTagHeader) GetExtExtExtLength() *uint32 {
+	return m.ExtExtExtLength
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+func (m *BACnetTagHeader) GetActualTagNumber() uint8 {
+	extTagNumber := m.ExtTagNumber
+	_ = extTagNumber
+	extLength := m.ExtLength
+	_ = extLength
+	extExtLength := m.ExtExtLength
+	_ = extExtLength
+	extExtExtLength := m.ExtExtExtLength
+	_ = extExtExtLength
+	return uint8(utils.InlineIf(bool((m.GetTagNumber()) < (15)), func() interface{} { return uint8(m.GetTagNumber()) }, func() interface{} { return uint8((*m.GetExtTagNumber())) }).(uint8))
+}
+
+func (m *BACnetTagHeader) GetIsBoolean() bool {
+	extTagNumber := m.ExtTagNumber
+	_ = extTagNumber
+	extLength := m.ExtLength
+	_ = extLength
+	extExtLength := m.ExtExtLength
+	_ = extExtLength
+	extExtExtLength := m.ExtExtExtLength
+	_ = extExtExtLength
+	return bool(bool(bool((m.GetTagNumber()) == (1))) && bool(bool((m.GetTagClass()) == (TagClass_APPLICATION_TAGS))))
+}
+
+func (m *BACnetTagHeader) GetIsConstructed() bool {
+	extTagNumber := m.ExtTagNumber
+	_ = extTagNumber
+	extLength := m.ExtLength
+	_ = extLength
+	extExtLength := m.ExtExtLength
+	_ = extExtLength
+	extExtExtLength := m.ExtExtExtLength
+	_ = extExtExtLength
+	return bool(bool(bool((m.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((m.GetLengthValueType()) == (6))))
+}
+
+func (m *BACnetTagHeader) GetIsPrimitiveAndNotBoolean() bool {
+	extTagNumber := m.ExtTagNumber
+	_ = extTagNumber
+	extLength := m.ExtLength
+	_ = extLength
+	extExtLength := m.ExtExtLength
+	_ = extExtLength
+	extExtExtLength := m.ExtExtExtLength
+	_ = extExtExtLength
+	return bool(bool(!(m.GetIsConstructed())) && bool(!(m.GetIsBoolean())))
+}
+
+func (m *BACnetTagHeader) GetActualLength() uint32 {
+	extTagNumber := m.ExtTagNumber
+	_ = extTagNumber
+	extLength := m.ExtLength
+	_ = extLength
+	extExtLength := m.ExtExtLength
+	_ = extExtLength
+	extExtExtLength := m.ExtExtExtLength
+	_ = extExtExtLength
+	return uint32(utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (255))), func() interface{} { return uint32((*m.GetExtExtExtLength())) }, func() interface{} {
+		return uint32(uint32(utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (254))), func() interface{} { return uint32((*m.GetExtExtLength())) }, func() interface{} {
+			return uint32(uint32(utils.InlineIf(bool((m.GetLengthValueType()) == (5)), func() interface{} { return uint32((*m.GetExtLength())) }, func() interface{} { return uint32(m.GetLengthValueType()) }).(uint32)))
+		}).(uint32)))
+	}).(uint32))
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetTagHeader factory function for BACnetTagHeader
+func NewBACnetTagHeader(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTagHeader {
+	return &BACnetTagHeader{TagNumber: tagNumber, TagClass: tagClass, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, ExtExtLength: extExtLength, ExtExtExtLength: extExtExtLength}
 }
 
 func CastBACnetTagHeader(structType interface{}) *BACnetTagHeader {
-	castFunc := func(typ interface{}) *BACnetTagHeader {
-		if casted, ok := typ.(BACnetTagHeader); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTagHeader); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetTagHeader); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTagHeader); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetTagHeader) GetTypeName() string {
 	return "BACnetTagHeader"
 }
 
-func (m *BACnetTagHeader) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetTagHeader) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetTagHeader) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetTagHeader) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (tagNumber)
@@ -119,14 +248,16 @@ func (m *BACnetTagHeader) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetTagHeader) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetTagHeader) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (*BACnetTagHeader, error) {
 	if pullErr := readBuffer.PullContext("BACnetTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (tagNumber)
 	_tagNumber, _tagNumberErr := readBuffer.ReadUint8("tagNumber", 4)
@@ -168,18 +299,22 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (*BACnetTagHeader, error)
 	// Virtual field
 	_actualTagNumber := utils.InlineIf(bool((tagNumber) < (15)), func() interface{} { return uint8(tagNumber) }, func() interface{} { return uint8((*extTagNumber)) }).(uint8)
 	actualTagNumber := uint8(_actualTagNumber)
+	_ = actualTagNumber
 
 	// Virtual field
 	_isBoolean := bool(bool((tagNumber) == (1))) && bool(bool((tagClass) == (TagClass_APPLICATION_TAGS)))
 	isBoolean := bool(_isBoolean)
+	_ = isBoolean
 
 	// Virtual field
 	_isConstructed := bool(bool((tagClass) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((lengthValueType) == (6)))
 	isConstructed := bool(_isConstructed)
+	_ = isConstructed
 
 	// Virtual field
 	_isPrimitiveAndNotBoolean := bool(!(isConstructed)) && bool(!(isBoolean))
 	isPrimitiveAndNotBoolean := bool(_isPrimitiveAndNotBoolean)
+	_ = isPrimitiveAndNotBoolean
 
 	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
 	var extLength *uint8 = nil
@@ -218,13 +353,14 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (*BACnetTagHeader, error)
 		}).(uint32)))
 	}).(uint32)
 	actualLength := uint32(_actualLength)
+	_ = actualLength
 
 	if closeErr := readBuffer.CloseContext("BACnetTagHeader"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength), nil
+	return NewBACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength), nil
 }
 
 func (m *BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -268,19 +404,19 @@ func (m *BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 	}
 	// Virtual field
-	if _actualTagNumberErr := writeBuffer.WriteVirtual("actualTagNumber", m.ActualTagNumber); _actualTagNumberErr != nil {
+	if _actualTagNumberErr := writeBuffer.WriteVirtual("actualTagNumber", m.GetActualTagNumber()); _actualTagNumberErr != nil {
 		return errors.Wrap(_actualTagNumberErr, "Error serializing 'actualTagNumber' field")
 	}
 	// Virtual field
-	if _isBooleanErr := writeBuffer.WriteVirtual("isBoolean", m.IsBoolean); _isBooleanErr != nil {
+	if _isBooleanErr := writeBuffer.WriteVirtual("isBoolean", m.GetIsBoolean()); _isBooleanErr != nil {
 		return errors.Wrap(_isBooleanErr, "Error serializing 'isBoolean' field")
 	}
 	// Virtual field
-	if _isConstructedErr := writeBuffer.WriteVirtual("isConstructed", m.IsConstructed); _isConstructedErr != nil {
+	if _isConstructedErr := writeBuffer.WriteVirtual("isConstructed", m.GetIsConstructed()); _isConstructedErr != nil {
 		return errors.Wrap(_isConstructedErr, "Error serializing 'isConstructed' field")
 	}
 	// Virtual field
-	if _isPrimitiveAndNotBooleanErr := writeBuffer.WriteVirtual("isPrimitiveAndNotBoolean", m.IsPrimitiveAndNotBoolean); _isPrimitiveAndNotBooleanErr != nil {
+	if _isPrimitiveAndNotBooleanErr := writeBuffer.WriteVirtual("isPrimitiveAndNotBoolean", m.GetIsPrimitiveAndNotBoolean()); _isPrimitiveAndNotBooleanErr != nil {
 		return errors.Wrap(_isPrimitiveAndNotBooleanErr, "Error serializing 'isPrimitiveAndNotBoolean' field")
 	}
 
@@ -314,7 +450,7 @@ func (m *BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 	}
 	// Virtual field
-	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.ActualLength); _actualLengthErr != nil {
+	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.GetActualLength()); _actualLengthErr != nil {
 		return errors.Wrap(_actualLengthErr, "Error serializing 'actualLength' field")
 	}
 
@@ -329,6 +465,8 @@ func (m *BACnetTagHeader) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -32,90 +32,128 @@ type BACnetConfirmedServiceRequestReinitializeDevice struct {
 	*BACnetConfirmedServiceRequest
 	ReinitializedStateOfDevice *BACnetContextTagDeviceState
 	Password                   *BACnetContextTagCharacterString
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReinitializeDevice interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetConfirmedServiceRequest
+	// GetReinitializedStateOfDevice returns ReinitializedStateOfDevice (property field)
+	GetReinitializedStateOfDevice() *BACnetContextTagDeviceState
+	// GetPassword returns Password (property field)
+	GetPassword() *BACnetContextTagCharacterString
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestReinitializeDevice) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetServiceChoice() uint8 {
 	return 0x14
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice *BACnetContextTagDeviceState, password *BACnetContextTagCharacterString) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestReinitializeDevice{
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetReinitializedStateOfDevice() *BACnetContextTagDeviceState {
+	return m.ReinitializedStateOfDevice
+}
+
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetPassword() *BACnetContextTagCharacterString {
+	return m.Password
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetConfirmedServiceRequestReinitializeDevice factory function for BACnetConfirmedServiceRequestReinitializeDevice
+func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice *BACnetContextTagDeviceState, password *BACnetContextTagCharacterString, len uint16) *BACnetConfirmedServiceRequestReinitializeDevice {
+	_result := &BACnetConfirmedServiceRequestReinitializeDevice{
 		ReinitializedStateOfDevice:    reinitializedStateOfDevice,
 		Password:                      password,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestReinitializeDevice(structType interface{}) *BACnetConfirmedServiceRequestReinitializeDevice {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestReinitializeDevice {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestReinitializeDevice); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestReinitializeDevice); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestReinitializeDevice(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestReinitializeDevice(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestReinitializeDevice); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestReinitializeDevice); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestReinitializeDevice(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestReinitializeDevice(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestReinitializeDevice"
 }
 
-func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (reinitializedStateOfDevice)
-	lengthInBits += m.ReinitializedStateOfDevice.LengthInBits()
+	lengthInBits += m.ReinitializedStateOfDevice.GetLengthInBits()
 
 	// Optional Field (password)
 	if m.Password != nil {
-		lengthInBits += (*m.Password).LengthInBits()
+		lengthInBits += (*m.Password).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestReinitializeDevice, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReinitializeDevice"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (reinitializedStateOfDevice)
 	if pullErr := readBuffer.PullContext("reinitializedStateOfDevice"); pullErr != nil {
 		return nil, pullErr
 	}
-	_reinitializedStateOfDevice, _reinitializedStateOfDeviceErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_DEVICE_STATE)
+	_reinitializedStateOfDevice, _reinitializedStateOfDeviceErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_DEVICE_STATE))
 	if _reinitializedStateOfDeviceErr != nil {
 		return nil, errors.Wrap(_reinitializedStateOfDeviceErr, "Error parsing 'reinitializedStateOfDevice' field")
 	}
@@ -127,7 +165,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 	// Optional Field (password) (Can be skipped, if a given expression evaluates to false)
 	var password *BACnetContextTagCharacterString = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("password"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -156,7 +194,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -206,6 +244,8 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

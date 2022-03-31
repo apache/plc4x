@@ -19,35 +19,42 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.ConstField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Literal;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
 
-public class DefaultConstField extends DefaultField implements ConstField {
+public class DefaultConstField extends DefaultTypedNamedField implements ConstField {
 
-    private final TypeReference type;
-    private final String name;
     private final Literal referenceValue;
 
-    public DefaultConstField(Map<String, Term> attributes, TypeReference type, String name, Literal referenceValue) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+    public DefaultConstField(Map<String, Term> attributes, String name, Literal referenceValue) {
+        super(attributes, name);
         this.referenceValue = Objects.requireNonNull(referenceValue);
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Literal getReferenceValue() {
         return referenceValue;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultConstField{" +
+            "referenceValue=" + referenceValue +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultConstField that = (DefaultConstField) o;
+        return Objects.equals(referenceValue, that.referenceValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), referenceValue);
+    }
 }

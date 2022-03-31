@@ -40,37 +40,95 @@ type DateAndTime struct {
 
 // The corresponding interface
 type IDateAndTime interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetYear returns Year (property field)
+	GetYear() uint8
+	// GetMonth returns Month (property field)
+	GetMonth() uint8
+	// GetDay returns Day (property field)
+	GetDay() uint8
+	// GetHour returns Hour (property field)
+	GetHour() uint8
+	// GetMinutes returns Minutes (property field)
+	GetMinutes() uint8
+	// GetSeconds returns Seconds (property field)
+	GetSeconds() uint8
+	// GetMsec returns Msec (property field)
+	GetMsec() uint16
+	// GetDow returns Dow (property field)
+	GetDow() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *DateAndTime) GetYear() uint8 {
+	return m.Year
+}
+
+func (m *DateAndTime) GetMonth() uint8 {
+	return m.Month
+}
+
+func (m *DateAndTime) GetDay() uint8 {
+	return m.Day
+}
+
+func (m *DateAndTime) GetHour() uint8 {
+	return m.Hour
+}
+
+func (m *DateAndTime) GetMinutes() uint8 {
+	return m.Minutes
+}
+
+func (m *DateAndTime) GetSeconds() uint8 {
+	return m.Seconds
+}
+
+func (m *DateAndTime) GetMsec() uint16 {
+	return m.Msec
+}
+
+func (m *DateAndTime) GetDow() uint8 {
+	return m.Dow
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewDateAndTime factory function for DateAndTime
 func NewDateAndTime(year uint8, month uint8, day uint8, hour uint8, minutes uint8, seconds uint8, msec uint16, dow uint8) *DateAndTime {
 	return &DateAndTime{Year: year, Month: month, Day: day, Hour: hour, Minutes: minutes, Seconds: seconds, Msec: msec, Dow: dow}
 }
 
 func CastDateAndTime(structType interface{}) *DateAndTime {
-	castFunc := func(typ interface{}) *DateAndTime {
-		if casted, ok := typ.(DateAndTime); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DateAndTime); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DateAndTime); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DateAndTime); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *DateAndTime) GetTypeName() string {
 	return "DateAndTime"
 }
 
-func (m *DateAndTime) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DateAndTime) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DateAndTime) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *DateAndTime) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Manual Field (year)
@@ -100,14 +158,16 @@ func (m *DateAndTime) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *DateAndTime) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DateAndTime) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	if pullErr := readBuffer.PullContext("DateAndTime"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Manual Field (year)
 	year, _yearErr := BcdToInt(readBuffer)
@@ -172,43 +232,43 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Manual Field (year)
-	_yearErr := ByteToBcd(writeBuffer, m.Year)
+	_yearErr := ByteToBcd(writeBuffer, m.GetYear())
 	if _yearErr != nil {
 		return errors.Wrap(_yearErr, "Error serializing 'year' field")
 	}
 
 	// Manual Field (month)
-	_monthErr := ByteToBcd(writeBuffer, m.Month)
+	_monthErr := ByteToBcd(writeBuffer, m.GetMonth())
 	if _monthErr != nil {
 		return errors.Wrap(_monthErr, "Error serializing 'month' field")
 	}
 
 	// Manual Field (day)
-	_dayErr := ByteToBcd(writeBuffer, m.Day)
+	_dayErr := ByteToBcd(writeBuffer, m.GetDay())
 	if _dayErr != nil {
 		return errors.Wrap(_dayErr, "Error serializing 'day' field")
 	}
 
 	// Manual Field (hour)
-	_hourErr := ByteToBcd(writeBuffer, m.Hour)
+	_hourErr := ByteToBcd(writeBuffer, m.GetHour())
 	if _hourErr != nil {
 		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
 	}
 
 	// Manual Field (minutes)
-	_minutesErr := ByteToBcd(writeBuffer, m.Minutes)
+	_minutesErr := ByteToBcd(writeBuffer, m.GetMinutes())
 	if _minutesErr != nil {
 		return errors.Wrap(_minutesErr, "Error serializing 'minutes' field")
 	}
 
 	// Manual Field (seconds)
-	_secondsErr := ByteToBcd(writeBuffer, m.Seconds)
+	_secondsErr := ByteToBcd(writeBuffer, m.GetSeconds())
 	if _secondsErr != nil {
 		return errors.Wrap(_secondsErr, "Error serializing 'seconds' field")
 	}
 
 	// Manual Field (msec)
-	_msecErr := IntToS7msec(writeBuffer, m.Msec)
+	_msecErr := IntToS7msec(writeBuffer, m.GetMsec())
 	if _msecErr != nil {
 		return errors.Wrap(_msecErr, "Error serializing 'msec' field")
 	}
@@ -231,6 +291,8 @@ func (m *DateAndTime) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

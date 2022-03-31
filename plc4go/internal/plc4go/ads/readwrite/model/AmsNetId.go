@@ -38,37 +38,83 @@ type AmsNetId struct {
 
 // The corresponding interface
 type IAmsNetId interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetOctet1 returns Octet1 (property field)
+	GetOctet1() uint8
+	// GetOctet2 returns Octet2 (property field)
+	GetOctet2() uint8
+	// GetOctet3 returns Octet3 (property field)
+	GetOctet3() uint8
+	// GetOctet4 returns Octet4 (property field)
+	GetOctet4() uint8
+	// GetOctet5 returns Octet5 (property field)
+	GetOctet5() uint8
+	// GetOctet6 returns Octet6 (property field)
+	GetOctet6() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AmsNetId) GetOctet1() uint8 {
+	return m.Octet1
+}
+
+func (m *AmsNetId) GetOctet2() uint8 {
+	return m.Octet2
+}
+
+func (m *AmsNetId) GetOctet3() uint8 {
+	return m.Octet3
+}
+
+func (m *AmsNetId) GetOctet4() uint8 {
+	return m.Octet4
+}
+
+func (m *AmsNetId) GetOctet5() uint8 {
+	return m.Octet5
+}
+
+func (m *AmsNetId) GetOctet6() uint8 {
+	return m.Octet6
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAmsNetId factory function for AmsNetId
 func NewAmsNetId(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) *AmsNetId {
 	return &AmsNetId{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4, Octet5: octet5, Octet6: octet6}
 }
 
 func CastAmsNetId(structType interface{}) *AmsNetId {
-	castFunc := func(typ interface{}) *AmsNetId {
-		if casted, ok := typ.(AmsNetId); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AmsNetId); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AmsNetId); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AmsNetId); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AmsNetId) GetTypeName() string {
 	return "AmsNetId"
 }
 
-func (m *AmsNetId) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AmsNetId) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AmsNetId) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AmsNetId) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (octet1)
@@ -92,14 +138,16 @@ func (m *AmsNetId) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AmsNetId) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AmsNetId) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AmsNetIdParse(readBuffer utils.ReadBuffer) (*AmsNetId, error) {
 	if pullErr := readBuffer.PullContext("AmsNetId"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (octet1)
 	_octet1, _octet1Err := readBuffer.ReadUint8("octet1", 8)
@@ -209,6 +257,8 @@ func (m *AmsNetId) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

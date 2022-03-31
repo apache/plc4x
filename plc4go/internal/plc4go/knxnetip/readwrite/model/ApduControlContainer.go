@@ -30,80 +30,112 @@ import (
 type ApduControlContainer struct {
 	*Apdu
 	ControlApdu *ApduControl
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduControlContainer interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApdu
+	// GetControlApdu returns ControlApdu (property field)
+	GetControlApdu() *ApduControl
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduControlContainer) Control() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduControlContainer) GetControl() uint8 {
 	return uint8(1)
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *ApduControlContainer) InitializeParent(parent *Apdu, numbered bool, counter uint8) {
 	m.Apdu.Numbered = numbered
 	m.Apdu.Counter = counter
 }
 
-func NewApduControlContainer(controlApdu *ApduControl, numbered bool, counter uint8) *Apdu {
-	child := &ApduControlContainer{
+func (m *ApduControlContainer) GetParent() *Apdu {
+	return m.Apdu
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ApduControlContainer) GetControlApdu() *ApduControl {
+	return m.ControlApdu
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewApduControlContainer factory function for ApduControlContainer
+func NewApduControlContainer(controlApdu *ApduControl, numbered bool, counter uint8, dataLength uint8) *ApduControlContainer {
+	_result := &ApduControlContainer{
 		ControlApdu: controlApdu,
-		Apdu:        NewApdu(numbered, counter),
+		Apdu:        NewApdu(numbered, counter, dataLength),
 	}
-	child.Child = child
-	return child.Apdu
+	_result.Child = _result
+	return _result
 }
 
 func CastApduControlContainer(structType interface{}) *ApduControlContainer {
-	castFunc := func(typ interface{}) *ApduControlContainer {
-		if casted, ok := typ.(ApduControlContainer); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduControlContainer); ok {
-			return casted
-		}
-		if casted, ok := typ.(Apdu); ok {
-			return CastApduControlContainer(casted.Child)
-		}
-		if casted, ok := typ.(*Apdu); ok {
-			return CastApduControlContainer(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduControlContainer); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduControlContainer); ok {
+		return casted
+	}
+	if casted, ok := structType.(Apdu); ok {
+		return CastApduControlContainer(casted.Child)
+	}
+	if casted, ok := structType.(*Apdu); ok {
+		return CastApduControlContainer(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduControlContainer) GetTypeName() string {
 	return "ApduControlContainer"
 }
 
-func (m *ApduControlContainer) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduControlContainer) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduControlContainer) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduControlContainer) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (controlApdu)
-	lengthInBits += m.ControlApdu.LengthInBits()
+	lengthInBits += m.ControlApdu.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *ApduControlContainer) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduControlContainer) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
+func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduControlContainer, error) {
 	if pullErr := readBuffer.PullContext("ApduControlContainer"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (controlApdu)
 	if pullErr := readBuffer.PullContext("controlApdu"); pullErr != nil {
@@ -128,7 +160,7 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*
 		Apdu:        &Apdu{},
 	}
 	_child.Apdu.Child = _child
-	return _child.Apdu, nil
+	return _child, nil
 }
 
 func (m *ApduControlContainer) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -162,6 +194,8 @@ func (m *ApduControlContainer) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

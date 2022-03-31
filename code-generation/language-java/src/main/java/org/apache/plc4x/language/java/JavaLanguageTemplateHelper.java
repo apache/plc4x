@@ -21,6 +21,7 @@ package org.apache.plc4x.language.java;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultStringLiteral;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer;
@@ -90,8 +91,20 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean allowPrimitive) {
         Objects.requireNonNull(typeReference);
-        if (!(typeReference instanceof SimpleTypeReference)) {
-            return ((ComplexTypeReference) typeReference).getName();
+        if (typeReference instanceof ArrayTypeReference) {
+            final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
+            if (arrayTypeReference.getElementTypeReference().isByteBased()) {
+                return getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), allowPrimitive) + "[]";
+            } else {
+                return "List<" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), false) + ">";
+            }
+        }
+        // DataIo data-types always have properties of type PlcValue
+        if (typeReference.isDataIoTypeReference()) {
+            return "PlcValue";
+        }
+        if (typeReference.isNonSimpleTypeReference()) {
+            return typeReference.asNonSimpleTypeReference().orElseThrow().getName();
         }
         SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
         switch (simpleTypeReference.getBaseType()) {
@@ -355,21 +368,28 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     public String getDataReaderCall(TypeReference typeReference, String resolverMethod) {
-        if (isEnumTypeReference(typeReference)) {
+        if (typeReference.isEnumTypeReference()) {
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
             return "new DataReaderEnumDefault<>(" + languageTypeName + "::" + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
+        } else if (typeReference.isArrayTypeReference()) {
+            final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
+            return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod);
         } else if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataReaderCall(simpleTypeReference);
         } else if (typeReference.isComplexTypeReference()) {
             StringBuilder paramsString = new StringBuilder();
             ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
-            TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
-            Objects.requireNonNull(typeDefinition, "No type found for " + typeReference);
+            ComplexTypeDefinition typeDefinition = complexTypeReference.getTypeDefinition();
             String parserCallString = getLanguageTypeNameForTypeReference(typeReference);
+            // In case of DataIo we actually need to use the type name and not what above returns.
+            // (In this case the mspec type name and the result type name differ)
+            if (typeReference.isDataIoTypeReference()) {
+                parserCallString = typeReference.asDataIoTypeReference().orElseThrow().getName();
+            }
             if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
-                parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().getName();
+                parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().orElseThrow().getName();
             }
             List<Term> paramTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
             for (int i = 0; i < paramTerms.size(); i++) {
@@ -431,6 +451,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataWriterCall(simpleTypeReference);
+        } else if (typeReference.isArrayTypeReference()) {
+            final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
+            return getDataWriterCall(arrayTypeReference.getElementTypeReference(), fieldName);
         } else if (typeReference.isComplexTypeReference()) {
             return "new DataWriterComplexDefault<>(writeBuffer)";
         } else {
@@ -438,8 +461,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
     }
 
-    public String getEnumDataWriterCall(TypeReference typeReference, String fieldName, String attributeName) {
-        if (!isEnumTypeReference(typeReference)) {
+    public String getEnumDataWriterCall(EnumTypeReference typeReference, String fieldName, String attributeName) {
+        if (!typeReference.isEnumTypeReference()) {
             throw new IllegalArgumentException("this method should only be called for enum types");
         }
         final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
@@ -447,7 +470,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         if ("value".equals(attributeName)) {
             outputTypeReference = getEnumBaseTypeReference(typeReference);
         } else {
-            outputTypeReference = getEnumFieldSimpleTypeReference(typeReference, attributeName);
+            outputTypeReference = getEnumFieldSimpleTypeReference(typeReference.asNonSimpleTypeReference().orElseThrow(), attributeName);
         }
         return "new DataWriterEnumDefault<>(" + languageTypeName + "::get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + "::name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
     }
@@ -485,7 +508,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case DATE:
                 return "writeDate(writeBuffer)";
             case DATETIME:
-                return "writeDateTime(readBuffer)";
+                return "writeDateTime(writeBuffer)";
             default:
                 throw new UnsupportedOperationException("Unsupported type " + simpleTypeReference.getBaseType());
         }
@@ -614,7 +637,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         } else if (term instanceof TernaryTerm) {
             return toTernaryTermExpression(field, resultType, (TernaryTerm) term, variableExpressionGenerator, tracer);
         } else {
-            throw new RuntimeException("Unsupported Term type " + term.getClass().getName());
+            throw new RuntimeException("Unsupported Term type " + term.getClass().getName() + ". Actual type " + resultType);
         }
     }
 
@@ -691,20 +714,20 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case "!":
                 tracer = tracer.dive("case !");
                 if ((resultType != getAnyTypeReference()) && !resultType.isBooleanTypeReference()) {
-                    throw new IllegalArgumentException("'!(...)' expression requires boolean type");
+                    throw new IllegalArgumentException("'!(...)' expression requires boolean type. Actual type " + resultType);
                 }
                 return tracer + "!(" + toExpression(field, resultType, a, variableExpressionGenerator) + ")";
             case "-":
                 tracer = tracer.dive("case -");
                 if ((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isFloatTypeReference()) {
-                    throw new IllegalArgumentException("'-(...)' expression requires integer or floating-point type");
+                    throw new IllegalArgumentException("'-(...)' expression requires integer or floating-point type. Actual type " + resultType);
                 }
                 return tracer + "-(" + toExpression(field, resultType, a, variableExpressionGenerator) + ")";
             case "()":
                 tracer = tracer.dive("case ()");
                 return tracer + "(" + toExpression(field, resultType, a, variableExpressionGenerator) + ")";
             default:
-                throw new RuntimeException("Unsupported unary operation type " + unaryTerm.getOperation());
+                throw new RuntimeException("Unsupported unary operation type " + unaryTerm.getOperation() + ". Actual type " + resultType);
         }
     }
 
@@ -717,7 +740,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case "^": {
                 tracer = tracer.dive(operation);
                 if ((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isFloatTypeReference()) {
-                    throw new IllegalArgumentException("'A^B' expression requires numeric result type");
+                    throw new IllegalArgumentException("'A^B' expression requires numeric result type. Actual type " + resultType);
                 }
                 return tracer + "Math.pow((" + toExpression(field, resultType, a, variableExpressionGenerator) + "), (" + toExpression(field, resultType, b, variableExpressionGenerator) + "))";
             }
@@ -728,7 +751,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case "-": {
                 tracer = tracer.dive(operation);
                 if ((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isFloatTypeReference()) {
-                    throw new IllegalArgumentException("'A" + operation + "B' expression requires numeric result type");
+                    throw new IllegalArgumentException("'A" + operation + "B' expression requires numeric result type. Actual type " + resultType);
                 }
                 return tracer + "(" + toExpression(field, resultType, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, resultType, b, variableExpressionGenerator) + ")";
             }
@@ -744,20 +767,20 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case "==":
             case "!=":
                 if ((resultType != getAnyTypeReference()) && !resultType.isBooleanTypeReference()) {
-                    throw new IllegalArgumentException("'A" + operation + "B' expression requires boolean result type");
+                    throw new IllegalArgumentException("'A" + operation + "B' expression requires boolean result type. Actual type " + resultType);
                 }
                 // TODO: Try to infer the types of the arguments in this case
                 return tracer + "(" + toExpression(field, ANY_TYPE_REFERENCE, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, ANY_TYPE_REFERENCE, b, variableExpressionGenerator) + ")";
             case "&&":
             case "||":
                 if ((resultType != getAnyTypeReference()) && !resultType.isBooleanTypeReference()) {
-                    throw new IllegalArgumentException("'A" + operation + "B' expression requires boolean result type");
+                    throw new IllegalArgumentException("'A" + operation + "B' expression requires boolean result type. Actual type " + resultType);
                 }
                 return tracer + "(" + toExpression(field, resultType, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, resultType, b, variableExpressionGenerator) + ")";
             case "&":
             case "|":
                 if ((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isByteTypeReference()) {
-                    throw new IllegalArgumentException("'A" + operation + "B' expression requires boolean result type");
+                    throw new IllegalArgumentException("'A" + operation + "B' expression requires byte or integer result type. Actual type " + resultType);
                 }
                 return tracer + "(" + toExpression(field, resultType, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, resultType, b, variableExpressionGenerator) + ")";
             default:
@@ -778,7 +801,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 toExpression(field, resultType, c, variableExpressionGenerator) + "" +
                 ")";
         } else {
-            throw new IllegalArgumentException("Unsupported ternary operation type " + ternaryTerm.getOperation());
+            throw new IllegalArgumentException("Unsupported ternary operation type " + ternaryTerm.getOperation() + ". Actual type " + resultType);
         }
     }
 
@@ -1207,6 +1230,21 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             sb.append(", WithOption.WithByteOrder(").append(byteOrder).append(")");
         }
         return sb.toString();
+    }
+
+    public boolean isBigIntegerSource(Term term) {
+        boolean isBigInteger = term.asLiteral()
+            .flatMap(LiteralConversions::asVariableLiteral)
+            .flatMap(VariableLiteral::getChild)
+            .map(Term.class::cast)
+            .map(this::isBigIntegerSource)
+            .orElse(false);
+        return isBigInteger || term.asLiteral()
+            .flatMap(LiteralConversions::asVariableLiteral)
+            .map(VariableLiteral::getTypeReference)
+            .flatMap(TypeReferenceConversions::asIntegerTypeReference)
+            .map(integerTypeReference -> integerTypeReference.getSizeInBits() >= 64)
+            .orElse(false);
     }
 
 }

@@ -29,7 +29,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.can.adapter.Plc4xCANProtocolBase;
 import org.apache.plc4x.java.can.generic.field.GenericCANField;
 import org.apache.plc4x.java.can.generic.transport.GenericFrame;
-import org.apache.plc4x.java.genericcan.readwrite.io.DataItemIO;
+import org.apache.plc4x.java.genericcan.readwrite.DataItem;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
@@ -114,17 +114,18 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
     private PlcValue read(ReadBuffer buffer, GenericCANField field) throws ParseException {
         try {
             buffer.pullContext("read-" + field);
-            return DataItemIO.staticParse(buffer, field.getDataType());
+            return DataItem.staticParse(buffer, field.getDataType());
         } finally {
             buffer.closeContext("read-" + field);
         }
     }
 
     private void write(WriteBuffer buffer, GenericCANField field, PlcValue value) throws SerializationException {
-        WriteBufferByteBased data = DataItemIO.staticSerialize(value, field.getDataType());
+        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, field.getDataType()));
+        DataItem.staticSerialize(writeBuffer, value, field.getDataType());
         try {
             buffer.pushContext("write-" + field);
-            buffer.writeByteArray(data.getData());
+            buffer.writeByteArray(writeBuffer.getData());
         } finally {
             buffer.popContext("write-" + field);
         }

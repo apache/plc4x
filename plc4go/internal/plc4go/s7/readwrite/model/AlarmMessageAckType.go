@@ -35,37 +35,65 @@ type AlarmMessageAckType struct {
 
 // The corresponding interface
 type IAlarmMessageAckType interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetFunctionId returns FunctionId (property field)
+	GetFunctionId() uint8
+	// GetNumberOfObjects returns NumberOfObjects (property field)
+	GetNumberOfObjects() uint8
+	// GetMessageObjects returns MessageObjects (property field)
+	GetMessageObjects() []*AlarmMessageObjectAckType
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *AlarmMessageAckType) GetFunctionId() uint8 {
+	return m.FunctionId
+}
+
+func (m *AlarmMessageAckType) GetNumberOfObjects() uint8 {
+	return m.NumberOfObjects
+}
+
+func (m *AlarmMessageAckType) GetMessageObjects() []*AlarmMessageObjectAckType {
+	return m.MessageObjects
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAlarmMessageAckType factory function for AlarmMessageAckType
 func NewAlarmMessageAckType(functionId uint8, numberOfObjects uint8, messageObjects []*AlarmMessageObjectAckType) *AlarmMessageAckType {
 	return &AlarmMessageAckType{FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
 }
 
 func CastAlarmMessageAckType(structType interface{}) *AlarmMessageAckType {
-	castFunc := func(typ interface{}) *AlarmMessageAckType {
-		if casted, ok := typ.(AlarmMessageAckType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AlarmMessageAckType); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AlarmMessageAckType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AlarmMessageAckType); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AlarmMessageAckType) GetTypeName() string {
 	return "AlarmMessageAckType"
 }
 
-func (m *AlarmMessageAckType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AlarmMessageAckType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageAckType) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AlarmMessageAckType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (functionId)
@@ -78,21 +106,23 @@ func (m *AlarmMessageAckType) LengthInBitsConditional(lastItem bool) uint16 {
 	if len(m.MessageObjects) > 0 {
 		for i, element := range m.MessageObjects {
 			last := i == len(m.MessageObjects)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *AlarmMessageAckType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AlarmMessageAckType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AlarmMessageAckTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAckType, error) {
 	if pullErr := readBuffer.PullContext("AlarmMessageAckType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (functionId)
 	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
@@ -181,6 +211,8 @@ func (m *AlarmMessageAckType) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

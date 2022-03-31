@@ -54,4 +54,25 @@ public class DefaultEnumValue implements EnumValue {
         return Optional.ofNullable(constants.get(name));
     }
 
+    @Override
+    public String toString() {
+        return "DefaultEnumValue{" +
+            "value='" + value + '\'' +
+            ", name='" + name + '\'' +
+            ", constants=" + constants +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DefaultEnumValue that = (DefaultEnumValue) o;
+        return Objects.equals(value, that.value) && Objects.equals(name, that.name) && Objects.equals(constants, that.constants);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, name, constants);
+    }
 }

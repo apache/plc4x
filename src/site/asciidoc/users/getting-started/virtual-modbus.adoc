@@ -137,13 +137,13 @@ For Modbus the typical transports are:
 
 If we have setup ModbusPal as described above and are running this on the same computer, the connection string to connect to this should be:
 
-    modbus://localhost
+    modbus-tcp://localhost
 
 If you stated ModbusPal on a port different from Modbus' default port `502` you would have to also provide this port in the connection string.
 
 So assuming you started it on port 1502, then the connection string would look as follows:
 
-    modbus://localhost:1502
+    modbus-tcp://localhost:1502
 
 == Writing code
 
@@ -180,7 +180,7 @@ So as soon as your project has the API and a driver implementation available, yo
 This is done via the `PlcDriverManager` by asking this to create an instance for a given `PLC4X connection string`.
 
 ----
-String connectionString = "modbus://localhost";
+String connectionString = "modbus-tcp://localhost";
 
 try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionString)) {
 

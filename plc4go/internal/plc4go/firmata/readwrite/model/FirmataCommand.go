@@ -28,14 +28,21 @@ import (
 
 // The data-structure of this message
 type FirmataCommand struct {
-	Child IFirmataCommandChild
+
+	// Arguments.
+	Response bool
+	Child    IFirmataCommandChild
 }
 
 // The corresponding interface
 type IFirmataCommand interface {
-	CommandCode() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetCommandCode returns CommandCode (discriminator field)
+	GetCommandCode() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,40 +54,43 @@ type IFirmataCommandParent interface {
 type IFirmataCommandChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *FirmataCommand)
+	GetParent() *FirmataCommand
+
 	GetTypeName() string
 	IFirmataCommand
 }
 
-func NewFirmataCommand() *FirmataCommand {
-	return &FirmataCommand{}
+// NewFirmataCommand factory function for FirmataCommand
+func NewFirmataCommand(response bool) *FirmataCommand {
+	return &FirmataCommand{Response: response}
 }
 
 func CastFirmataCommand(structType interface{}) *FirmataCommand {
-	castFunc := func(typ interface{}) *FirmataCommand {
-		if casted, ok := typ.(FirmataCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataCommand); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(FirmataCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataCommand); ok {
+		return casted
+	}
+	if casted, ok := structType.(IFirmataCommandChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *FirmataCommand) GetTypeName() string {
 	return "FirmataCommand"
 }
 
-func (m *FirmataCommand) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataCommand) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataCommand) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *FirmataCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *FirmataCommand) ParentLengthInBits() uint16 {
+func (m *FirmataCommand) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (commandCode)
 	lengthInBits += 4
@@ -88,14 +98,16 @@ func (m *FirmataCommand) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *FirmataCommand) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataCommand) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func FirmataCommandParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {
 	if pullErr := readBuffer.PullContext("FirmataCommand"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
 	commandCode, _commandCodeErr := readBuffer.ReadUint8("commandCode", 4)
@@ -104,19 +116,23 @@ func FirmataCommandParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCo
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *FirmataCommand
+	type FirmataCommandChild interface {
+		InitializeParent(*FirmataCommand)
+		GetParent() *FirmataCommand
+	}
+	var _child FirmataCommandChild
 	var typeSwitchError error
 	switch {
 	case commandCode == 0x0: // FirmataCommandSysex
-		_parent, typeSwitchError = FirmataCommandSysexParse(readBuffer, response)
+		_child, typeSwitchError = FirmataCommandSysexParse(readBuffer, response)
 	case commandCode == 0x4: // FirmataCommandSetPinMode
-		_parent, typeSwitchError = FirmataCommandSetPinModeParse(readBuffer, response)
+		_child, typeSwitchError = FirmataCommandSetPinModeParse(readBuffer, response)
 	case commandCode == 0x5: // FirmataCommandSetDigitalPinValue
-		_parent, typeSwitchError = FirmataCommandSetDigitalPinValueParse(readBuffer, response)
+		_child, typeSwitchError = FirmataCommandSetDigitalPinValueParse(readBuffer, response)
 	case commandCode == 0x9: // FirmataCommandProtocolVersion
-		_parent, typeSwitchError = FirmataCommandProtocolVersionParse(readBuffer, response)
+		_child, typeSwitchError = FirmataCommandProtocolVersionParse(readBuffer, response)
 	case commandCode == 0xF: // FirmataCommandSystemReset
-		_parent, typeSwitchError = FirmataCommandSystemResetParse(readBuffer, response)
+		_child, typeSwitchError = FirmataCommandSystemResetParse(readBuffer, response)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -130,8 +146,8 @@ func FirmataCommandParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCo
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *FirmataCommand) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -144,7 +160,7 @@ func (m *FirmataCommand) SerializeParent(writeBuffer utils.WriteBuffer, child IF
 	}
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
-	commandCode := uint8(child.CommandCode())
+	commandCode := uint8(child.GetCommandCode())
 	_commandCodeErr := writeBuffer.WriteUint8("commandCode", 4, (commandCode))
 
 	if _commandCodeErr != nil {
@@ -167,6 +183,8 @@ func (m *FirmataCommand) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

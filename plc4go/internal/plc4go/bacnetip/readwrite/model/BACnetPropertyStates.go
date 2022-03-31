@@ -31,15 +31,27 @@ type BACnetPropertyStates struct {
 	OpeningTag      *BACnetOpeningTag
 	PeekedTagHeader *BACnetTagHeader
 	ClosingTag      *BACnetClosingTag
-	PeekedTagNumber uint8
-	Child           IBACnetPropertyStatesChild
+
+	// Arguments.
+	TagNumber uint8
+	Child     IBACnetPropertyStatesChild
 }
 
 // The corresponding interface
 type IBACnetPropertyStates interface {
-	PeekedTagNumber() uint8
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetOpeningTag returns OpeningTag (property field)
+	GetOpeningTag() *BACnetOpeningTag
+	// GetPeekedTagHeader returns PeekedTagHeader (property field)
+	GetPeekedTagHeader() *BACnetTagHeader
+	// GetClosingTag returns ClosingTag (property field)
+	GetClosingTag() *BACnetClosingTag
+	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
+	GetPeekedTagNumber() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,68 +62,106 @@ type IBACnetPropertyStatesParent interface {
 
 type IBACnetPropertyStatesChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8)
+	InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag)
+	GetParent() *BACnetPropertyStates
+
 	GetTypeName() string
 	IBACnetPropertyStates
 }
 
-func NewBACnetPropertyStates(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetPropertyStates {
-	return &BACnetPropertyStates{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, PeekedTagNumber: peekedTagNumber}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetPropertyStates) GetOpeningTag() *BACnetOpeningTag {
+	return m.OpeningTag
+}
+
+func (m *BACnetPropertyStates) GetPeekedTagHeader() *BACnetTagHeader {
+	return m.PeekedTagHeader
+}
+
+func (m *BACnetPropertyStates) GetClosingTag() *BACnetClosingTag {
+	return m.ClosingTag
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+func (m *BACnetPropertyStates) GetPeekedTagNumber() uint8 {
+	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetPropertyStates factory function for BACnetPropertyStates
+func NewBACnetPropertyStates(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStates {
+	return &BACnetPropertyStates{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
 func CastBACnetPropertyStates(structType interface{}) *BACnetPropertyStates {
-	castFunc := func(typ interface{}) *BACnetPropertyStates {
-		if casted, ok := typ.(BACnetPropertyStates); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetPropertyStates); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetPropertyStates); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetPropertyStates); ok {
+		return casted
+	}
+	if casted, ok := structType.(IBACnetPropertyStatesChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *BACnetPropertyStates) GetTypeName() string {
 	return "BACnetPropertyStates"
 }
 
-func (m *BACnetPropertyStates) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetPropertyStates) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetPropertyStates) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetPropertyStates) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetPropertyStates) ParentLengthInBits() uint16 {
+func (m *BACnetPropertyStates) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.LengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.LengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetPropertyStates) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetPropertyStates) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetPropertyStates, error) {
 	if pullErr := readBuffer.PullContext("BACnetPropertyStates"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, tagNumber, BACnetDataType_OPENING_TAG)
+	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType(BACnetDataType_OPENING_TAG))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
 	}
@@ -121,7 +171,7 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	}
 
 	// Peek Field (peekedTagHeader)
-	currentPos := readBuffer.GetPos()
+	currentPos = readBuffer.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -129,19 +179,24 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_peekedTagNumber := peekedTagHeader.ActualTagNumber
+	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
 	peekedTagNumber := uint8(_peekedTagNumber)
+	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetPropertyStates
+	type BACnetPropertyStatesChild interface {
+		InitializeParent(*BACnetPropertyStates, *BACnetOpeningTag, *BACnetTagHeader, *BACnetClosingTag)
+		GetParent() *BACnetPropertyStates
+	}
+	var _child BACnetPropertyStatesChild
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetPropertyStatesBoolean
-		_parent, typeSwitchError = BACnetPropertyStatesBooleanParse(readBuffer, tagNumber, peekedTagNumber)
+		_child, typeSwitchError = BACnetPropertyStatesBooleanParse(readBuffer, tagNumber, peekedTagNumber)
 	case peekedTagNumber == uint8(1): // BACnetPropertyStatesBinaryValue
-		_parent, typeSwitchError = BACnetPropertyStatesBinaryValueParse(readBuffer, tagNumber, peekedTagNumber)
+		_child, typeSwitchError = BACnetPropertyStatesBinaryValueParse(readBuffer, tagNumber, peekedTagNumber)
 	case peekedTagNumber == uint8(16): // BACnetPropertyStatesAction
-		_parent, typeSwitchError = BACnetPropertyStatesActionParse(readBuffer, tagNumber, peekedTagNumber)
+		_child, typeSwitchError = BACnetPropertyStatesActionParse(readBuffer, tagNumber, peekedTagNumber)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -154,7 +209,7 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, tagNumber, BACnetDataType_CLOSING_TAG)
+	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType(BACnetDataType_CLOSING_TAG))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
 	}
@@ -168,8 +223,8 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, openingTag, peekedTagHeader, closingTag, peekedTagNumber)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), openingTag, peekedTagHeader, closingTag)
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetPropertyStates) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -193,7 +248,7 @@ func (m *BACnetPropertyStates) SerializeParent(writeBuffer utils.WriteBuffer, ch
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.PeekedTagNumber); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
@@ -225,6 +280,8 @@ func (m *BACnetPropertyStates) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

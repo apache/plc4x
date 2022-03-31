@@ -33,9 +33,13 @@ type ComObjectTable struct {
 
 // The corresponding interface
 type IComObjectTable interface {
-	FirmwareType() FirmwareType
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetFirmwareType returns FirmwareType (discriminator field)
+	GetFirmwareType() FirmwareType
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,64 +51,73 @@ type IComObjectTableParent interface {
 type IComObjectTableChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *ComObjectTable)
+	GetParent() *ComObjectTable
+
 	GetTypeName() string
 	IComObjectTable
 }
 
+// NewComObjectTable factory function for ComObjectTable
 func NewComObjectTable() *ComObjectTable {
 	return &ComObjectTable{}
 }
 
 func CastComObjectTable(structType interface{}) *ComObjectTable {
-	castFunc := func(typ interface{}) *ComObjectTable {
-		if casted, ok := typ.(ComObjectTable); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ComObjectTable); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ComObjectTable); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ComObjectTable); ok {
+		return casted
+	}
+	if casted, ok := structType.(IComObjectTableChild); ok {
+		return casted.GetParent()
+	}
+	return nil
 }
 
 func (m *ComObjectTable) GetTypeName() string {
 	return "ComObjectTable"
 }
 
-func (m *ComObjectTable) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ComObjectTable) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ComObjectTable) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *ComObjectTable) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *ComObjectTable) ParentLengthInBits() uint16 {
+func (m *ComObjectTable) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *ComObjectTable) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ComObjectTable) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (*ComObjectTable, error) {
 	if pullErr := readBuffer.PullContext("ComObjectTable"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *ComObjectTable
+	type ComObjectTableChild interface {
+		InitializeParent(*ComObjectTable)
+		GetParent() *ComObjectTable
+	}
+	var _child ComObjectTableChild
 	var typeSwitchError error
 	switch {
 	case firmwareType == FirmwareType_SYSTEM_1: // ComObjectTableRealisationType1
-		_parent, typeSwitchError = ComObjectTableRealisationType1Parse(readBuffer, firmwareType)
+		_child, typeSwitchError = ComObjectTableRealisationType1Parse(readBuffer, firmwareType)
 	case firmwareType == FirmwareType_SYSTEM_2: // ComObjectTableRealisationType2
-		_parent, typeSwitchError = ComObjectTableRealisationType2Parse(readBuffer, firmwareType)
+		_child, typeSwitchError = ComObjectTableRealisationType2Parse(readBuffer, firmwareType)
 	case firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
-		_parent, typeSwitchError = ComObjectTableRealisationType6Parse(readBuffer, firmwareType)
+		_child, typeSwitchError = ComObjectTableRealisationType6Parse(readBuffer, firmwareType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -118,8 +131,8 @@ func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType)
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *ComObjectTable) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -147,6 +160,8 @@ func (m *ComObjectTable) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -32,72 +32,86 @@ type BACnetErrorVTOpen struct {
 
 // The corresponding interface
 type IBACnetErrorVTOpen interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetError
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorVTOpen) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetErrorVTOpen) GetServiceChoice() uint8 {
 	return 0x15
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetErrorVTOpen) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
 	m.BACnetError.ErrorClass = errorClass
 	m.BACnetError.ErrorCode = errorCode
 }
 
-func NewBACnetErrorVTOpen(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorVTOpen{
+func (m *BACnetErrorVTOpen) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
+// NewBACnetErrorVTOpen factory function for BACnetErrorVTOpen
+func NewBACnetErrorVTOpen(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorVTOpen {
+	_result := &BACnetErrorVTOpen{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorVTOpen(structType interface{}) *BACnetErrorVTOpen {
-	castFunc := func(typ interface{}) *BACnetErrorVTOpen {
-		if casted, ok := typ.(BACnetErrorVTOpen); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorVTOpen); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorVTOpen(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorVTOpen(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorVTOpen); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorVTOpen); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorVTOpen(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorVTOpen(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorVTOpen) GetTypeName() string {
 	return "BACnetErrorVTOpen"
 }
 
-func (m *BACnetErrorVTOpen) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetErrorVTOpen) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetErrorVTOpen) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetErrorVTOpen) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetErrorVTOpen) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetErrorVTOpen) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorVTOpenParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorVTOpenParse(readBuffer utils.ReadBuffer) (*BACnetErrorVTOpen, error) {
 	if pullErr := readBuffer.PullContext("BACnetErrorVTOpen"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorVTOpen"); closeErr != nil {
 		return nil, closeErr
@@ -108,7 +122,7 @@ func BACnetErrorVTOpenParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 		BACnetError: &BACnetError{},
 	}
 	_child.BACnetError.Child = _child
-	return _child.BACnetError, nil
+	return _child, nil
 }
 
 func (m *BACnetErrorVTOpen) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -130,6 +144,8 @@ func (m *BACnetErrorVTOpen) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -35,59 +35,92 @@ type ConnectionStateResponse struct {
 
 // The corresponding interface
 type IConnectionStateResponse interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IKnxNetIpMessage
+	// GetCommunicationChannelId returns CommunicationChannelId (property field)
+	GetCommunicationChannelId() uint8
+	// GetStatus returns Status (property field)
+	GetStatus() Status
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ConnectionStateResponse) MsgType() uint16 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ConnectionStateResponse) GetMsgType() uint16 {
 	return 0x0208
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ConnectionStateResponse) InitializeParent(parent *KnxNetIpMessage) {}
 
-func NewConnectionStateResponse(communicationChannelId uint8, status Status) *KnxNetIpMessage {
-	child := &ConnectionStateResponse{
+func (m *ConnectionStateResponse) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ConnectionStateResponse) GetCommunicationChannelId() uint8 {
+	return m.CommunicationChannelId
+}
+
+func (m *ConnectionStateResponse) GetStatus() Status {
+	return m.Status
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewConnectionStateResponse factory function for ConnectionStateResponse
+func NewConnectionStateResponse(communicationChannelId uint8, status Status) *ConnectionStateResponse {
+	_result := &ConnectionStateResponse{
 		CommunicationChannelId: communicationChannelId,
 		Status:                 status,
 		KnxNetIpMessage:        NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastConnectionStateResponse(structType interface{}) *ConnectionStateResponse {
-	castFunc := func(typ interface{}) *ConnectionStateResponse {
-		if casted, ok := typ.(ConnectionStateResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConnectionStateResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastConnectionStateResponse(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastConnectionStateResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ConnectionStateResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConnectionStateResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastConnectionStateResponse(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastConnectionStateResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ConnectionStateResponse) GetTypeName() string {
 	return "ConnectionStateResponse"
 }
 
-func (m *ConnectionStateResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ConnectionStateResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ConnectionStateResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ConnectionStateResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -98,14 +131,16 @@ func (m *ConnectionStateResponse) LengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *ConnectionStateResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ConnectionStateResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ConnectionStateResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func ConnectionStateResponseParse(readBuffer utils.ReadBuffer) (*ConnectionStateResponse, error) {
 	if pullErr := readBuffer.PullContext("ConnectionStateResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (communicationChannelId)
 	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
@@ -138,7 +173,7 @@ func ConnectionStateResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage
 		KnxNetIpMessage:        &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *ConnectionStateResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -179,6 +214,8 @@ func (m *ConnectionStateResponse) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

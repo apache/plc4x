@@ -32,69 +32,83 @@ type RoutingIndication struct {
 
 // The corresponding interface
 type IRoutingIndication interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IKnxNetIpMessage
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *RoutingIndication) MsgType() uint16 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *RoutingIndication) GetMsgType() uint16 {
 	return 0x0530
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *RoutingIndication) InitializeParent(parent *KnxNetIpMessage) {}
 
-func NewRoutingIndication() *KnxNetIpMessage {
-	child := &RoutingIndication{
+func (m *RoutingIndication) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
+// NewRoutingIndication factory function for RoutingIndication
+func NewRoutingIndication() *RoutingIndication {
+	_result := &RoutingIndication{
 		KnxNetIpMessage: NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastRoutingIndication(structType interface{}) *RoutingIndication {
-	castFunc := func(typ interface{}) *RoutingIndication {
-		if casted, ok := typ.(RoutingIndication); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*RoutingIndication); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastRoutingIndication(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastRoutingIndication(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(RoutingIndication); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*RoutingIndication); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastRoutingIndication(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastRoutingIndication(casted.Child)
+	}
+	return nil
 }
 
 func (m *RoutingIndication) GetTypeName() string {
 	return "RoutingIndication"
 }
 
-func (m *RoutingIndication) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *RoutingIndication) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *RoutingIndication) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *RoutingIndication) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *RoutingIndication) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *RoutingIndication) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func RoutingIndicationParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func RoutingIndicationParse(readBuffer utils.ReadBuffer) (*RoutingIndication, error) {
 	if pullErr := readBuffer.PullContext("RoutingIndication"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("RoutingIndication"); closeErr != nil {
 		return nil, closeErr
@@ -105,7 +119,7 @@ func RoutingIndicationParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 		KnxNetIpMessage: &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *RoutingIndication) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -127,6 +141,8 @@ func (m *RoutingIndication) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

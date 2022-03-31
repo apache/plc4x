@@ -32,63 +32,99 @@ type APDUSimpleAck struct {
 	*APDU
 	OriginalInvokeId uint8
 	ServiceChoice    uint8
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
 type IAPDUSimpleAck interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IAPDU
+	// GetOriginalInvokeId returns OriginalInvokeId (property field)
+	GetOriginalInvokeId() uint8
+	// GetServiceChoice returns ServiceChoice (property field)
+	GetServiceChoice() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *APDUSimpleAck) ApduType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *APDUSimpleAck) GetApduType() uint8 {
 	return 0x2
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *APDUSimpleAck) InitializeParent(parent *APDU) {}
 
-func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8) *APDU {
-	child := &APDUSimpleAck{
+func (m *APDUSimpleAck) GetParent() *APDU {
+	return m.APDU
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *APDUSimpleAck) GetOriginalInvokeId() uint8 {
+	return m.OriginalInvokeId
+}
+
+func (m *APDUSimpleAck) GetServiceChoice() uint8 {
+	return m.ServiceChoice
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewAPDUSimpleAck factory function for APDUSimpleAck
+func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8, apduLength uint16) *APDUSimpleAck {
+	_result := &APDUSimpleAck{
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
-		APDU:             NewAPDU(),
+		APDU:             NewAPDU(apduLength),
 	}
-	child.Child = child
-	return child.APDU
+	_result.Child = _result
+	return _result
 }
 
 func CastAPDUSimpleAck(structType interface{}) *APDUSimpleAck {
-	castFunc := func(typ interface{}) *APDUSimpleAck {
-		if casted, ok := typ.(APDUSimpleAck); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*APDUSimpleAck); ok {
-			return casted
-		}
-		if casted, ok := typ.(APDU); ok {
-			return CastAPDUSimpleAck(casted.Child)
-		}
-		if casted, ok := typ.(*APDU); ok {
-			return CastAPDUSimpleAck(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(APDUSimpleAck); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*APDUSimpleAck); ok {
+		return casted
+	}
+	if casted, ok := structType.(APDU); ok {
+		return CastAPDUSimpleAck(casted.Child)
+	}
+	if casted, ok := structType.(*APDU); ok {
+		return CastAPDUSimpleAck(casted.Child)
+	}
+	return nil
 }
 
 func (m *APDUSimpleAck) GetTypeName() string {
 	return "APDUSimpleAck"
 }
 
-func (m *APDUSimpleAck) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDUSimpleAck) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDUSimpleAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *APDUSimpleAck) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -102,14 +138,16 @@ func (m *APDUSimpleAck) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *APDUSimpleAck) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDUSimpleAck) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUSimpleAck, error) {
 	if pullErr := readBuffer.PullContext("APDUSimpleAck"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -150,7 +188,7 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, 
 		APDU:             &APDU{},
 	}
 	_child.APDU.Child = _child
-	return _child.APDU, nil
+	return _child, nil
 }
 
 func (m *APDUSimpleAck) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -194,6 +232,8 @@ func (m *APDUSimpleAck) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

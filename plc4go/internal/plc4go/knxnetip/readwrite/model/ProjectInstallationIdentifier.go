@@ -34,37 +34,59 @@ type ProjectInstallationIdentifier struct {
 
 // The corresponding interface
 type IProjectInstallationIdentifier interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetProjectNumber returns ProjectNumber (property field)
+	GetProjectNumber() uint8
+	// GetInstallationNumber returns InstallationNumber (property field)
+	GetInstallationNumber() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ProjectInstallationIdentifier) GetProjectNumber() uint8 {
+	return m.ProjectNumber
+}
+
+func (m *ProjectInstallationIdentifier) GetInstallationNumber() uint8 {
+	return m.InstallationNumber
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewProjectInstallationIdentifier factory function for ProjectInstallationIdentifier
 func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber uint8) *ProjectInstallationIdentifier {
 	return &ProjectInstallationIdentifier{ProjectNumber: projectNumber, InstallationNumber: installationNumber}
 }
 
 func CastProjectInstallationIdentifier(structType interface{}) *ProjectInstallationIdentifier {
-	castFunc := func(typ interface{}) *ProjectInstallationIdentifier {
-		if casted, ok := typ.(ProjectInstallationIdentifier); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ProjectInstallationIdentifier); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ProjectInstallationIdentifier); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ProjectInstallationIdentifier); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ProjectInstallationIdentifier) GetTypeName() string {
 	return "ProjectInstallationIdentifier"
 }
 
-func (m *ProjectInstallationIdentifier) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ProjectInstallationIdentifier) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ProjectInstallationIdentifier) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *ProjectInstallationIdentifier) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (projectNumber)
@@ -76,14 +98,16 @@ func (m *ProjectInstallationIdentifier) LengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *ProjectInstallationIdentifier) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ProjectInstallationIdentifier) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ProjectInstallationIdentifierParse(readBuffer utils.ReadBuffer) (*ProjectInstallationIdentifier, error) {
 	if pullErr := readBuffer.PullContext("ProjectInstallationIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (projectNumber)
 	_projectNumber, _projectNumberErr := readBuffer.ReadUint8("projectNumber", 8)
@@ -137,6 +161,8 @@ func (m *ProjectInstallationIdentifier) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

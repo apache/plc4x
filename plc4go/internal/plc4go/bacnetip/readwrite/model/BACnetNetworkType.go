@@ -140,12 +140,12 @@ func CastBACnetNetworkType(structType interface{}) BACnetNetworkType {
 	return castFunc(structType)
 }
 
-func (m BACnetNetworkType) LengthInBits() uint16 {
+func (m BACnetNetworkType) GetLengthInBits() uint16 {
 	return 4
 }
 
-func (m BACnetNetworkType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m BACnetNetworkType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetNetworkTypeParse(readBuffer utils.ReadBuffer) (BACnetNetworkType, error) {

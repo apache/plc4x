@@ -35,98 +35,154 @@ type BACnetConfirmedServiceRequestAtomicWriteFile struct {
 	FileStartPosition *BACnetApplicationTagSignedInteger
 	FileData          *BACnetApplicationTagOctetString
 	ClosingTag        *BACnetClosingTag
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicWriteFile interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IBACnetConfirmedServiceRequest
+	// GetDeviceIdentifier returns DeviceIdentifier (property field)
+	GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier
+	// GetOpeningTag returns OpeningTag (property field)
+	GetOpeningTag() *BACnetOpeningTag
+	// GetFileStartPosition returns FileStartPosition (property field)
+	GetFileStartPosition() *BACnetApplicationTagSignedInteger
+	// GetFileData returns FileData (property field)
+	GetFileData() *BACnetApplicationTagOctetString
+	// GetClosingTag returns ClosingTag (property field)
+	GetClosingTag() *BACnetClosingTag
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestAtomicWriteFile) ServiceChoice() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetServiceChoice() uint8 {
 	return 0x07
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetConfirmedServiceRequestAtomicWriteFile) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, fileStartPosition *BACnetApplicationTagSignedInteger, fileData *BACnetApplicationTagOctetString, closingTag *BACnetClosingTag) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestAtomicWriteFile{
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier {
+	return m.DeviceIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetOpeningTag() *BACnetOpeningTag {
+	return m.OpeningTag
+}
+
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetFileStartPosition() *BACnetApplicationTagSignedInteger {
+	return m.FileStartPosition
+}
+
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetFileData() *BACnetApplicationTagOctetString {
+	return m.FileData
+}
+
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetClosingTag() *BACnetClosingTag {
+	return m.ClosingTag
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewBACnetConfirmedServiceRequestAtomicWriteFile factory function for BACnetConfirmedServiceRequestAtomicWriteFile
+func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, fileStartPosition *BACnetApplicationTagSignedInteger, fileData *BACnetApplicationTagOctetString, closingTag *BACnetClosingTag, len uint16) *BACnetConfirmedServiceRequestAtomicWriteFile {
+	_result := &BACnetConfirmedServiceRequestAtomicWriteFile{
 		DeviceIdentifier:              deviceIdentifier,
 		OpeningTag:                    openingTag,
 		FileStartPosition:             fileStartPosition,
 		FileData:                      fileData,
 		ClosingTag:                    closingTag,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestAtomicWriteFile(structType interface{}) *BACnetConfirmedServiceRequestAtomicWriteFile {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestAtomicWriteFile {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestAtomicWriteFile); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestAtomicWriteFile); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestAtomicWriteFile(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestAtomicWriteFile(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestAtomicWriteFile); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestAtomicWriteFile); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestAtomicWriteFile(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestAtomicWriteFile(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestAtomicWriteFile"
 }
 
-func (m *BACnetConfirmedServiceRequestAtomicWriteFile) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestAtomicWriteFile) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (deviceIdentifier)
-	lengthInBits += m.DeviceIdentifier.LengthInBits()
+	lengthInBits += m.DeviceIdentifier.GetLengthInBits()
 
 	// Optional Field (openingTag)
 	if m.OpeningTag != nil {
-		lengthInBits += (*m.OpeningTag).LengthInBits()
+		lengthInBits += (*m.OpeningTag).GetLengthInBits()
 	}
 
 	// Simple field (fileStartPosition)
-	lengthInBits += m.FileStartPosition.LengthInBits()
+	lengthInBits += m.FileStartPosition.GetLengthInBits()
 
 	// Simple field (fileData)
-	lengthInBits += m.FileData.LengthInBits()
+	lengthInBits += m.FileData.GetLengthInBits()
 
 	// Optional Field (closingTag)
 	if m.ClosingTag != nil {
-		lengthInBits += (*m.ClosingTag).LengthInBits()
+		lengthInBits += (*m.ClosingTag).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestAtomicWriteFile) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestAtomicWriteFile, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicWriteFile"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (deviceIdentifier)
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
@@ -144,7 +200,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	// Optional Field (openingTag) (Can be skipped, if a given expression evaluates to false)
 	var openingTag *BACnetOpeningTag = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -191,7 +247,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	// Optional Field (closingTag) (Can be skipped, if a given expression evaluates to false)
 	var closingTag *BACnetClosingTag = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -223,7 +279,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestAtomicWriteFile) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -313,6 +369,8 @@ func (m *BACnetConfirmedServiceRequestAtomicWriteFile) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

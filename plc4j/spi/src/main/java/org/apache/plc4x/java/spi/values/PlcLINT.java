@@ -33,7 +33,7 @@ import java.math.BigInteger;
 public class PlcLINT extends PlcIECValue<Long> {
 
     private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
-    static Long minValue = (long) 0;
+    static Long minValue = Long.MIN_VALUE;
     static Long maxValue = Long.MAX_VALUE;
 
     public static PlcLINT of(Object value) {

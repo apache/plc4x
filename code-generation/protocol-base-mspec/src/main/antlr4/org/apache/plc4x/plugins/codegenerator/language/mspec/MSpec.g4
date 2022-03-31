@@ -29,7 +29,7 @@ complexTypeDefinition
 complexType
  : 'type' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList (fieldDefinition|batchSetDefinition)*
  | 'discriminatedType' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList (fieldDefinition|batchSetDefinition)+
- | 'enum' (type=typeReference)? name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList enumValues=enumValueDefinition+
+ | 'enum' (type=dataType)? name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList enumValues=enumValueDefinition+
  | 'dataIo' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? (attributes=attributeList) dataIoTypeSwitch=dataIoDefinition
  ;
 
@@ -49,12 +49,12 @@ dataIoDefinition
 field
  : abstractField
  | arrayField
+ | assertField
  | checksumField
  | constField
  | discriminatorField
  | enumField
  | implicitField
- | assertField
  | manualArrayField
  | manualField
  | optionalField

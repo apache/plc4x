@@ -31,41 +31,72 @@ type Services struct {
 	ServiceNb uint16
 	Offsets   []uint16
 	Services  []*CipService
+
+	// Arguments.
+	ServicesLen uint16
 }
 
 // The corresponding interface
 type IServices interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	// GetServiceNb returns ServiceNb (property field)
+	GetServiceNb() uint16
+	// GetOffsets returns Offsets (property field)
+	GetOffsets() []uint16
+	// GetServices returns Services (property field)
+	GetServices() []*CipService
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewServices(serviceNb uint16, offsets []uint16, services []*CipService) *Services {
-	return &Services{ServiceNb: serviceNb, Offsets: offsets, Services: services}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *Services) GetServiceNb() uint16 {
+	return m.ServiceNb
+}
+
+func (m *Services) GetOffsets() []uint16 {
+	return m.Offsets
+}
+
+func (m *Services) GetServices() []*CipService {
+	return m.Services
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewServices factory function for Services
+func NewServices(serviceNb uint16, offsets []uint16, services []*CipService, servicesLen uint16) *Services {
+	return &Services{ServiceNb: serviceNb, Offsets: offsets, Services: services, ServicesLen: servicesLen}
 }
 
 func CastServices(structType interface{}) *Services {
-	castFunc := func(typ interface{}) *Services {
-		if casted, ok := typ.(Services); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*Services); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(Services); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*Services); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *Services) GetTypeName() string {
 	return "Services"
 }
 
-func (m *Services) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *Services) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *Services) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *Services) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (serviceNb)
@@ -80,21 +111,23 @@ func (m *Services) LengthInBitsConditional(lastItem bool) uint16 {
 	if len(m.Services) > 0 {
 		for i, element := range m.Services {
 			last := i == len(m.Services)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *Services) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *Services) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, error) {
 	if pullErr := readBuffer.PullContext("Services"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (serviceNb)
 	_serviceNb, _serviceNbErr := readBuffer.ReadUint16("serviceNb", 16)
@@ -146,7 +179,7 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, 
 	}
 
 	// Create the instance
-	return NewServices(serviceNb, offsets, services), nil
+	return NewServices(serviceNb, offsets, services, servicesLen), nil
 }
 
 func (m *Services) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -204,6 +237,8 @@ func (m *Services) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

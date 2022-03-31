@@ -32,64 +32,106 @@ type ApduDataExtPropertyDescriptionRead struct {
 	ObjectIndex uint8
 	PropertyId  uint8
 	Index       uint8
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtPropertyDescriptionRead interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
+	IApduDataExt
+	// GetObjectIndex returns ObjectIndex (property field)
+	GetObjectIndex() uint8
+	// GetPropertyId returns PropertyId (property field)
+	GetPropertyId() uint8
+	// GetIndex returns Index (property field)
+	GetIndex() uint8
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtPropertyDescriptionRead) ExtApciType() uint8 {
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+func (m *ApduDataExtPropertyDescriptionRead) GetExtApciType() uint8 {
 	return 0x18
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ApduDataExtPropertyDescriptionRead) InitializeParent(parent *ApduDataExt) {}
 
-func NewApduDataExtPropertyDescriptionRead(objectIndex uint8, propertyId uint8, index uint8) *ApduDataExt {
-	child := &ApduDataExtPropertyDescriptionRead{
+func (m *ApduDataExtPropertyDescriptionRead) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+func (m *ApduDataExtPropertyDescriptionRead) GetObjectIndex() uint8 {
+	return m.ObjectIndex
+}
+
+func (m *ApduDataExtPropertyDescriptionRead) GetPropertyId() uint8 {
+	return m.PropertyId
+}
+
+func (m *ApduDataExtPropertyDescriptionRead) GetIndex() uint8 {
+	return m.Index
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+// NewApduDataExtPropertyDescriptionRead factory function for ApduDataExtPropertyDescriptionRead
+func NewApduDataExtPropertyDescriptionRead(objectIndex uint8, propertyId uint8, index uint8, length uint8) *ApduDataExtPropertyDescriptionRead {
+	_result := &ApduDataExtPropertyDescriptionRead{
 		ObjectIndex: objectIndex,
 		PropertyId:  propertyId,
 		Index:       index,
-		ApduDataExt: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtPropertyDescriptionRead(structType interface{}) *ApduDataExtPropertyDescriptionRead {
-	castFunc := func(typ interface{}) *ApduDataExtPropertyDescriptionRead {
-		if casted, ok := typ.(ApduDataExtPropertyDescriptionRead); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtPropertyDescriptionRead); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtPropertyDescriptionRead(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtPropertyDescriptionRead(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtPropertyDescriptionRead); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtPropertyDescriptionRead); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtPropertyDescriptionRead(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtPropertyDescriptionRead(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtPropertyDescriptionRead) GetTypeName() string {
 	return "ApduDataExtPropertyDescriptionRead"
 }
 
-func (m *ApduDataExtPropertyDescriptionRead) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtPropertyDescriptionRead) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtPropertyDescriptionRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtPropertyDescriptionRead) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -103,14 +145,16 @@ func (m *ApduDataExtPropertyDescriptionRead) LengthInBitsConditional(lastItem bo
 	return lengthInBits
 }
 
-func (m *ApduDataExtPropertyDescriptionRead) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtPropertyDescriptionRead) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtPropertyDescriptionReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtPropertyDescriptionReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtPropertyDescriptionRead, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyDescriptionRead"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (objectIndex)
 	_objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
@@ -145,7 +189,7 @@ func ApduDataExtPropertyDescriptionReadParse(readBuffer utils.ReadBuffer, length
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtPropertyDescriptionRead) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -188,6 +232,8 @@ func (m *ApduDataExtPropertyDescriptionRead) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

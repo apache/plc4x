@@ -37,6 +37,7 @@
     <module>ab-eth</module>
     <module>ads</module>
     <module>bacnet</module>
+    <module>c-bus</module>
     <module>can</module>
     <module>canopen</module>
     <module>eip</module>
@@ -44,9 +45,10 @@
     <module>knxnetip</module>
     <module>mock</module>
     <module>modbus</module>
+    <module>opcua</module>
+    <module>plc4x</module>
     <module>profinet</module>
     <module>s7</module>
-    <module>opcua</module>
     <module>simulated</module>
   </modules>
 

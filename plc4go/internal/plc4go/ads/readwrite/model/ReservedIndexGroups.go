@@ -254,12 +254,12 @@ func CastReservedIndexGroups(structType interface{}) ReservedIndexGroups {
 	return castFunc(structType)
 }
 
-func (m ReservedIndexGroups) LengthInBits() uint16 {
+func (m ReservedIndexGroups) GetLengthInBits() uint16 {
 	return 32
 }
 
-func (m ReservedIndexGroups) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m ReservedIndexGroups) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ReservedIndexGroupsParse(readBuffer utils.ReadBuffer) (ReservedIndexGroups, error) {
