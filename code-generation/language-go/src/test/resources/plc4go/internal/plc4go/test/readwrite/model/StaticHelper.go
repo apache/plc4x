@@ -80,3 +80,11 @@ func Serialize(io utils.WriteBuffer, data byte) {
 func ReadManualField(io utils.ReadBuffer, simpleField uint8) (uint8, error) {
 	return 0, nil
 }
+
+func CrcInt8(num int) (int8, error) {
+	return int8(num), nil
+}
+
+func CrcUint8(num int) (uint8, error) {
+	return uint8(num), nil
+}
