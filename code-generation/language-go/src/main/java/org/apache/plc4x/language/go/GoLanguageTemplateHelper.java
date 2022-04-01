@@ -939,6 +939,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             if (i > 1) {
                 sb.append(", ");
             }
+            if (arg instanceof UnaryTerm) {
+                arg = ((UnaryTerm) arg).getA();
+            }
             if (arg instanceof VariableLiteral) {
                 tracer = tracer.dive("VariableLiteral");
                 VariableLiteral va = (VariableLiteral) arg;

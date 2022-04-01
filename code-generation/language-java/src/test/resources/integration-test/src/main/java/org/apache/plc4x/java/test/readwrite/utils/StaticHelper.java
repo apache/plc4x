@@ -79,4 +79,12 @@ public class StaticHelper {
 
     }
 
+    public static short crcInt8(int num) {
+        return (byte) num;
+    }
+
+    public static short crcUint8(int num) {
+        return (short) num;
+    }
+
 }

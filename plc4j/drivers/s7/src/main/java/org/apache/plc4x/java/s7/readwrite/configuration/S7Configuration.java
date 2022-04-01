@@ -1,5 +1,5 @@
 /* 
-* Licensed to the Apache Software Foundation (ASF) under one
+ * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -161,8 +161,8 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
             ", local-slot=" + localSlot +
             ", local-tsap=" + localTsap +
             ", remote-rack=" + remoteRack +
-            ", remot-slot=" + remoteSlot +
-            ", remot-tsap=" + remoteTsap +
+            ", remote-slot=" + remoteSlot +
+            ", remote-tsap=" + remoteTsap +
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +

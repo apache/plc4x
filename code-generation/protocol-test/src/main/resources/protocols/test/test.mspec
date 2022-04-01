@@ -38,7 +38,7 @@
     [array          uint 8  arrayFieldLength     length     '5'   ]
     [array          uint 8  arrayFieldTerminated terminated 'true']
     [assert         uint 8  assertField          '42'             ]
-    [checksum       uint 8  checksumField        '100'            ]
+    [checksum       uint 8  checksumField        'STATIC_CALL("crcUint8" , -23)']
     [const          uint 8  constField           5                ]
     // Discriminated Field can't be used in simple type
     //[discriminator  uint 8  discriminatorField]
@@ -68,7 +68,7 @@
     //Abstract fields can only be used within discriminated base types.
     //[abstract       unit 8  abstractField]
     [array          uint 8  arrayField        count      '5']
-    [checksum       uint 8  checksumField     '100']
+    [checksum       uint 8  checksumField     'STATIC_CALL("crcUint8" , -23)']
     [const          uint 8  constField        5]
     // Discriminated Field can't be used in simple type
     //[discriminator  uint 8  discriminatorField]
@@ -146,8 +146,8 @@
 
 [type CheckSumTypeTest
     //Bit field cannot be used for a checksum: [checksum bit bitField 'true']
-    [checksum int 8 intField '100']
-    [checksum uint 8 uintField '100']
+    [checksum int 8  intField  'STATIC_CALL("crcInt8" , -23)']
+    [checksum uint 8 uintField 'STATIC_CALL("crcUint8", 42)']
     // Float fields cannot be used as checksums: [checksum float 32 floatField '100.0']
     // Float fields cannot be used as checksums: [checksum float 64 doubleField '100.0']
     // String field cannot be used as a checksum: [checksum vstring '11 * 8' stringField '"HELLO TODDY"']
