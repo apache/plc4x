@@ -18,3 +18,8 @@
 #
 
 __version__ = "0.1.0"
+
+import pluggy  # type: ignore
+
+hookspec = pluggy.HookspecMarker("plc4py")
+hookimpl = pluggy.HookimplMarker("plc4py")

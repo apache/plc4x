@@ -16,16 +16,29 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+
+import sys
 from contextlib import contextmanager
-from typing import Generator
+from dataclasses import dataclass, field
+from typing import Generator, Type
+
+from pluggy import PluginManager  # type: ignore
 
 from plc4py.api.PlcConnection import PlcConnection
+from plc4py.drivers.modbus.ModbusConnection import ModbusConnectionLoader
+from plc4py.spi.PlcDriverClassLoader import PlcDriverClassLoader
 
 
+@dataclass
 class PlcDriverManager:
+    class_loader: PluginManager = field(default_factory=lambda: PluginManager("plc4py"))
+    _driverMap: dict[str, Type[PlcConnection]] = field(default_factory=lambda: {})
 
-    def __init__(self):
-        pass
+    def __post_init__(self):
+        self.class_loader.add_hookspecs(PlcDriverClassLoader)
+        self.class_loader.register(ModbusConnectionLoader)
+        self._driverMap = {key: loader for key, loader in zip(self.class_loader.hook.key(),
+                                                              self.class_loader.hook.get_type())}
 
     @contextmanager
     def connection(self, url: str) -> Generator[PlcConnection, None, None]:
@@ -41,4 +54,6 @@ class PlcDriverManager:
                 conn.close()
 
     def get_connection(self, url: str) -> PlcConnection:
-        return PlcConnection()
+        driver_name = url.split(':', 1)[0]
+        return self._driverMap[driver_name](url)
+

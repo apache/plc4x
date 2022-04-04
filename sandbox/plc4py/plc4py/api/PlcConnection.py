@@ -16,13 +16,12 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from dataclasses import dataclass
 from typing import Generator
 
-
+@dataclass
 class PlcConnection(Generator):
-
-    def __init__(self):
-        print('init method called')
+    url: str = ""
 
     def __enter__(self):
         return self
