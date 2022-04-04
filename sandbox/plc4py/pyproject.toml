@@ -24,6 +24,7 @@ authors = ["Apache PLC4X <dev@plc4x.apache.org>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+mypy = "^0.942"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

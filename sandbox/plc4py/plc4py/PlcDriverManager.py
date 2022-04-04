@@ -17,6 +17,7 @@
 # under the License.
 #
 from contextlib import contextmanager
+from typing import Generator
 
 from plc4py.api.PlcConnection import PlcConnection
 
@@ -27,7 +28,7 @@ class PlcDriverManager:
         pass
 
     @contextmanager
-    def connection(self, url: str) -> PlcConnection:
+    def connection(self, url: str) -> Generator[PlcConnection, None, None]:
         """
         Context manager to handle connection.
         """
@@ -40,4 +41,4 @@ class PlcDriverManager:
                 conn.close()
 
     def get_connection(self, url: str) -> PlcConnection:
-        pass
+        return PlcConnection()

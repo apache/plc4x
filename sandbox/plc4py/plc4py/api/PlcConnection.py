@@ -16,13 +16,22 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from typing import Generator
 
-class PlcConnection:
+
+class PlcConnection(Generator):
+
     def __init__(self):
         print('init method called')
 
     def __enter__(self):
         return self
+
+    def send(self, _value, blah):
+        pass
+
+    def throw(self):
+        pass
 
     def __exit__(self, *args):
         pass
