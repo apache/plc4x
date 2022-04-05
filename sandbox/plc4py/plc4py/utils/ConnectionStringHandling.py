@@ -17,14 +17,16 @@
 # under the License.
 #
 
-__version__ = "0.1.0"
+from urllib.parse import urlparse
 
-import logging
+def get_protocol_code(url: str) -> str:
+    """
+    Get the protocol code section of the connection string
+    e.g. modbus:tcp://127.0.0.1:502 would return modbus
 
-import pluggy  # type: ignore
+    :param url: The connection string
+    :return: The protocol code
+    """
+    parsed = urlparse(url)
+    return parsed.scheme
 
-# Place holder for logging configuration
-logging.basicConfig(level=logging.DEBUG)
-
-hookspec = pluggy.HookspecMarker("plc4py")
-hookimpl = pluggy.HookimplMarker("plc4py")

@@ -24,13 +24,13 @@ authors = ["Apache PLC4X <dev@plc4x.apache.org>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-mypy = "^0.942"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 pre-commit = "^2.6.0"
 pytest-mock = "^3.3.1"
 mock = "^4.0.2"
+mypy = "^0.942"
 
 [build-system]
 requires = ["poetry>=0.12"]

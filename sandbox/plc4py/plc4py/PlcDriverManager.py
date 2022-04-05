@@ -16,8 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
-import sys
+import logging
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Generator, Type
@@ -27,6 +26,7 @@ from pluggy import PluginManager  # type: ignore
 from plc4py.api.PlcConnection import PlcConnection
 from plc4py.drivers.modbus.ModbusConnection import ModbusConnectionLoader
 from plc4py.spi.PlcDriverClassLoader import PlcDriverClassLoader
+from plc4py.utils.ConnectionStringHandling import get_protocol_code
 
 
 @dataclass
@@ -35,7 +35,9 @@ class PlcDriverManager:
     _driverMap: dict[str, Type[PlcConnection]] = field(default_factory=lambda: {})
 
     def __post_init__(self):
+        logging.info(f"Instantiating new PLC Driver Manager with class loader {self.class_loader}")
         self.class_loader.add_hookspecs(PlcDriverClassLoader)
+        logging.info("Registering available drivers...")
         self.class_loader.register(ModbusConnectionLoader)
         self._driverMap = {key: loader for key, loader in zip(self.class_loader.hook.key(),
                                                               self.class_loader.hook.get_type())}
@@ -44,6 +46,9 @@ class PlcDriverManager:
     def connection(self, url: str) -> Generator[PlcConnection, None, None]:
         """
         Context manager to handle connection.
+
+        :param url: plc connection string
+        :return: plc connection generator
         """
         conn = None
         try:
@@ -54,6 +59,34 @@ class PlcDriverManager:
                 conn.close()
 
     def get_connection(self, url: str) -> PlcConnection:
-        driver_name = url.split(':', 1)[0]
-        return self._driverMap[driver_name](url)
+        """
+        Connects to a PLC using the given plc connection string using given authentication credentials.
+        :param url: plc connection string.
+        :return: plc connection
+        """
+        protocol_code = get_protocol_code(url)
+        return self._driverMap[protocol_code](url)
 
+    def list_drivers(self) -> list[str]:
+        """
+        Returns the codes of all of the drivers which are currently registered at the PlcDriverManager
+        :return: Set of driver codes for all drivers registered
+        """
+        return list(self._driverMap.keys())
+
+    def get_driver(self, protocol_code: str) -> Type[PlcConnection]:
+        """
+        Returns suitable driver for protocol or throws an Exception.
+        :param protocol_code: protocolCode protocol code identifying the driver
+        :return: Driver instance for the given protocol
+        """
+        return self._driverMap[protocol_code]
+
+    def get_driver_for_url(self, url: str) -> Type[PlcConnection]:
+        """
+        Returns the driver class that matches that identified within the connection string
+        :param url: The plc connection string
+        :return: the protocol code
+        """
+        protocol_code = get_protocol_code(url)
+        return self._driverMap[protocol_code]
