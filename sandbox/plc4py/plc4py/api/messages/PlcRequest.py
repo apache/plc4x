@@ -17,44 +17,32 @@
 # under the License.
 #
 from abc import abstractmethod
-from dataclasses import dataclass
+from typing import Union
 
-
-from plc4py.api.messages.PlcRequest import ReadRequestBuilder
-from plc4py.api.exceptions.exceptions import PlcConnectionException
+from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.utils.GenericTypes import GenericGenerator
 
 
-@dataclass
-class PlcConnection(GenericGenerator):
-    url: str = ""
+class PlcRequest(PlcMessage):
+    """
+    Base type for all messages sent from the plc4x system to a connected plc.
+    """
 
     @abstractmethod
-    def connect(self) -> None:
-        """
-        Establishes the connection to the remote PLC.
-        """
-        raise PlcConnectionException
+    def execute(self) -> PlcMessage:
+        pass
+
+
+class PlcField:
+    pass
+
+
+class ReadRequestBuilder(GenericGenerator):
 
     @abstractmethod
-    def is_connected(self) -> bool:
-        """
-        Indicates if the connection is established to a remote PLC.
-        :return: True if connection, False otherwise
-        """
+    def build(self) -> PlcRequest:
         pass
 
     @abstractmethod
-    def close(self) -> None:
-        """
-        Closes the connection to the remote PLC.
-        :return:
-        """
-        pass
-
-    @abstractmethod
-    def read_request_builder(self) -> ReadRequestBuilder:
-        """
-        :return: read request builder.
-        """
+    def add_item(self, field_query: Union[str, PlcField]) -> PlcRequest:
         pass

@@ -21,14 +21,15 @@ from unittest.mock import MagicMock
 
 from plc4py.PlcDriverManager import PlcDriverManager
 from plc4py.api.PlcConnection import PlcConnection
+from tests.unit.plc4py.api.test.MockPlcConection import MockPlcConnection
 
 
 def test_connection_context_manager_impl_close_called(mocker) -> None:
     manager: PlcDriverManager = PlcDriverManager()
 
     # getup a plain return value for get_connection
-    connection_mock: MagicMock = mocker.patch.object(manager,"get_connection")
-    connection_mock.return_value = PlcConnection()
+    connection_mock: MagicMock = mocker.patch.object(manager, "get_connection")
+    connection_mock.return_value = MockPlcConnection()
 
     close_mock: Union[MagicMock, None] = None
 

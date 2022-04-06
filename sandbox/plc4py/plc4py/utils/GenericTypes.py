@@ -1,3 +1,4 @@
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,12 +15,21 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import logging
+#
 
+from typing import Generator
 
-class PlcException(Exception):
-    pass;
+#TODO: Figure out what the parameters are and if we need this
+class GenericGenerator(Generator):
 
+    def __enter__(self):
+        return self
 
-class PlcConnectionException(Exception):
-    logging.error(f"Unable to establish a connection to the plc")
+    def send(self, _value, blah):
+        pass
+
+    def throw(self):
+        pass
+
+    def __exit__(self, *args):
+        pass
