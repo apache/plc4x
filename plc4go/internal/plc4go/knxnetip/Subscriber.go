@@ -1,21 +1,22 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package knxnetip
 
 import (
@@ -55,7 +56,7 @@ func (m *Subscriber) Subscribe(subscriptionRequest apiModel.PlcSubscriptionReque
 			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
 		}
 
-		result <- apiModel.PlcSubscriptionRequestResult{
+		result <- &internalModel.DefaultPlcSubscriptionRequestResult{
 			Request:  subscriptionRequest,
 			Response: internalModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes),
 			Err:      nil,
@@ -76,10 +77,10 @@ func (m *Subscriber) Unsubscribe(unsubscriptionRequest apiModel.PlcUnsubscriptio
 /*
  * Callback for incoming value change events from the KNX bus
  */
-func (m *Subscriber) handleValueChange(destinationAddress []int8, payload []int8, changed bool) {
+func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte, changed bool) {
 	// Decode the group-address according to the settings in the driver
 	// Group addresses can be 1, 2 or 3 levels (3 being the default)
-	garb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(destinationAddress))
+	garb := utils.NewReadBufferByteBased(destinationAddress)
 	groupAddress, err := driverModel.KnxGroupAddressParse(garb, m.connection.getGroupAddressNumLevels())
 	if err != nil {
 		return
@@ -91,7 +92,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []int8, payload []int8
 		types := map[string]internalModel.SubscriptionType{}
 		intervals := map[string]time.Duration{}
 		responseCodes := map[string]apiModel.PlcResponseCode{}
-		addresses := map[string][]int8{}
+		addresses := map[string][]byte{}
 		plcValues := map[string]values.PlcValue{}
 
 		// Check if this datagram matches any address in this subscription request
@@ -109,15 +110,15 @@ func (m *Subscriber) handleValueChange(destinationAddress []int8, payload []int8
 				if groupAddressField.matches(groupAddress) {
 					// If this is a CHANGE_OF_STATE field, filter out the events where the value actually hasn't changed.
 					if subscriptionType == internalModel.SubscriptionChangeOfState && changed {
-						rb := utils.NewReadBuffer(utils.Int8ArrayToByteArray(payload))
+						rb := utils.NewReadBufferByteBased(payload)
 						if groupAddressField.GetFieldType() == nil {
 							responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_DATATYPE
 							plcValues[fieldName] = nil
 							continue
 						}
 						// If the size of the field is greater than 6, we have to skip the first byte
-						if groupAddressField.GetFieldType().LengthInBits() > 6 {
-							_, _ = rb.ReadUint8(8)
+						if groupAddressField.GetFieldType().GetLengthInBits() > 6 {
+							_, _ = rb.ReadUint8("groupAddress", 8)
 						}
 						elementType := *groupAddressField.GetFieldType()
 						numElements := groupAddressField.GetQuantity()
@@ -135,7 +136,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []int8, payload []int8
 							if elementType == driverModel.KnxDatapointType_DPT_UNKNOWN {
 								// If this is an unknown 1 byte payload, we need the first byte.
 								if !rb.HasMore(1) {
-									rb.Reset()
+									rb.Reset(0)
 								}
 								plcValue := values2.NewRawPlcValue(rb, NewValueDecoder(rb))
 								plcValueList = append(plcValueList, plcValue)

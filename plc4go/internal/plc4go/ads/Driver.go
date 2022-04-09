@@ -1,57 +1,41 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package ads
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	_default "github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/url"
 )
 
 type Driver struct {
-	fieldHandler spi.PlcFieldHandler
+	_default.DefaultDriver
 }
 
 func NewDriver() plc4go.PlcDriver {
 	return &Driver{
-		fieldHandler: NewFieldHandler(),
+		DefaultDriver: _default.NewDefaultDriver("ads", "Beckhoff TwinCat ADS", "tcp", NewFieldHandler()),
 	}
-}
-
-func (m *Driver) GetProtocolCode() string {
-	return "ads"
-}
-
-func (m *Driver) GetProtocolName() string {
-	return "Beckhoff TwinCat ADS"
-}
-
-func (m *Driver) GetDefaultTransport() string {
-	panic("implement me")
-}
-
-func (m *Driver) CheckQuery(query string) error {
-	panic("implement me")
 }
 
 func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
@@ -62,7 +46,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {
-			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
+			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		}()
 		return ch
 	}
@@ -73,7 +57,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	if err != nil {
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultTcpPort"])
 		ch := make(chan plc4go.PlcConnectionConnectResult)
-		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
+		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		return ch
 	}
 
@@ -81,23 +65,23 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	codec := NewMessageCodec(transportInstance)
 	log.Debug().Msgf("working with codec %#v", codec)
 
+	configuration, err := ParseFromOptions(options)
+	if err != nil {
+		log.Error().Err(err).Msgf("Invalid options")
+		ch := make(chan plc4go.PlcConnectionConnectResult)
+		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "invalid configuration"))
+		return ch
+	}
+
 	// Create the new connection
-	connection, err := NewConnection(codec, options, m.fieldHandler)
+	connection, err := NewConnection(codec, configuration, m.GetPlcFieldHandler(), options)
 	if err != nil {
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {
-			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Wrap(err, "couldn't create connection"))
+			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "couldn't create connection"))
 		}()
 		return ch
 	}
-	log.Info().Stringer("connection", connection).Msg("created connection, connecting now")
+	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.Connect()
-}
-
-func (m *Driver) Discover(_ func(event model.PlcDiscoveryEvent)) error {
-	panic("not available")
-}
-
-func (m *Driver) SupportsDiscovery() bool {
-	return false
 }

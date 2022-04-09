@@ -15,6 +15,10 @@
 //  limitations under the License.
 //
 :imagesdir: ../images/
+++++
+    <meta name="go-import" content="plc4x.apache.org/plc4go git https://github.com/apache/plc4x/plc4go">
+    <meta name="go-source" content="plc4x.apache.org/plc4go https://github.com/apache/plc4x/plc4go https://github.com/apache/plc4x/tree/release/plc4go{/dir} https://github.com/apache/plc4x/tree/release/plc4go{/dir}/{file}#L{line}">
+++++
 
 == About PLC4Go
 
@@ -96,7 +100,7 @@ func HellpPlc4go() {
 	driverManager.RegisterTransport(tcp.NewTcpTransport())
 
 	// Get a connection to a remote PLC
-	crc := driverManager.GetConnection("modbus://192.168.23.30")
+	crc := driverManager.GetConnection("modbus-tcp://192.168.23.30")
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
@@ -118,10 +122,10 @@ func HellpPlc4go() {
 	defer connection.Close()
 
 	// Prepare a read-request
-	rrb := connection.ReadRequestBuilder()
-	rrb.AddItem("field1", "holding-register:1:REAL")
-	rrb.AddItem("field2", "holding-register:3:REAL")
-	readRequest, err := rrb.Build()
+	readRequest, err := connection.ReadRequestBuilder().
+        AddItem("field1", "holding-register:1:REAL").
+	    AddItem("field2", "holding-register:3:REAL").
+	    Build()
 	if err != nil {
 		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
 		return

@@ -204,9 +204,9 @@
 ===============================================================
 
 The files:
-plc4j/utils/raw-sockets/src/main/java/org/apache/plc4x/java/utils/rawsockets/attic/RawEthernetSocket.java
-plc4j/utils/raw-sockets/src/main/java/org/apache/plc4x/java/utils/rawsockets/attic/RawIpSocket.java
-plc4j/utils/raw-sockets/src/main/java/org/apache/plc4x/java/utils/rawsockets/attic/RawSocketListener.java
+plc4j/transports/test/src/main/java/io/netty/channel/embedded/Plc4xEmbeddedChannel.java
+plc4j/transports/test/src/main/java/io/netty/channel/embedded/Plc4xEmbeddedEventLoop.java
+plc4j/utils/pcap-shared/src/main/java/org/apache/plc4x/java/utils/pcap/netty/exception/PcapException.java
 Are copyrighted by the The Netty Project which is distributed under the Apache 2.0 license.
 
 The files:
@@ -217,7 +217,7 @@ Are provided from the Github Project: https://github.com/takari/maven-wrapper
 which is distributed under the Apache 2.0 license.
 
 The file:
-build-utils/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/expression/Expression.g4
+code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/expression/Expression.g4
 is licensed under the Category A: "UNLICENSE" which is available here:
 UNLICENSE file in the licenses directory.
 

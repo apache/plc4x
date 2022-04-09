@@ -1,50 +1,51 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java.canopen.api.conversation.canopen;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.canopen.transport.CANOpenAbortException;
-import org.apache.plc4x.java.canopen.transport.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.*;
-import org.apache.plc4x.java.canopen.readwrite.io.DataItemIO;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenDataType;
-import org.apache.plc4x.java.canopen.readwrite.types.SDOResponseCommand;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
+
 public class SDODownloadConversation extends CANOpenConversationBase {
 
-    private final CANConversation<CANOpenFrame> delegate;
+    private final CANConversation delegate;
     private final IndexAddress indexAddress;
     private final byte[] data;
 
-    public SDODownloadConversation(CANConversation<CANOpenFrame> delegate, int nodeId, int answerNodeId, IndexAddress indexAddress, PlcValue value, CANOpenDataType type) {
+    public SDODownloadConversation(CANConversation delegate, int nodeId, int answerNodeId, IndexAddress indexAddress, PlcValue value, CANOpenDataType type) {
         super(delegate, nodeId, answerNodeId);
         this.delegate = delegate;
         this.indexAddress = indexAddress;
 
         try {
-            data = DataItemIO.staticSerialize(value, type,  null,true).getData();
-        } catch (ParseException e) {
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, type, null), ByteOrder.LITTLE_ENDIAN);
+            DataItem.staticSerialize(writeBuffer, value, type, null, ByteOrder.LITTLE_ENDIAN);
+            data = writeBuffer.getData();
+        } catch (SerializationException e) {
             throw new PlcRuntimeException("Could not serialize data", e);
         }
     }
@@ -52,7 +53,7 @@ public class SDODownloadConversation extends CANOpenConversationBase {
     public void execute(CompletableFuture<PlcResponseCode> receiver) {
         if (data.length > 4) {
             // segmented
-            SDOInitiateSegmentedUploadResponse size = new SDOInitiateSegmentedUploadResponse(data.length);
+            SDOInitiateSegmentedUploadResponse size = new SDOInitiateSegmentedUploadResponse(data.length, (byte) 0);
             delegate.send(createFrame(new SDOInitiateDownloadRequest(false, true, indexAddress, size)))
                 .check(new NodeIdPredicate(answerNodeId))
                 .onTimeout(receiver::completeExceptionally)
@@ -85,7 +86,7 @@ public class SDODownloadConversation extends CANOpenConversationBase {
         SDOInitiateDownloadRequest rq = new SDOInitiateDownloadRequest(
             true, true,
             indexAddress,
-            new SDOInitiateExpeditedUploadResponse(data)
+            new SDOInitiateExpeditedUploadResponse(data,(byte)0)
         );
 
         delegate.send(createFrame(rq))

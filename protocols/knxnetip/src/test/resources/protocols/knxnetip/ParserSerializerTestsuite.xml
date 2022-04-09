@@ -17,9 +17,13 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd" bigEndian="true">
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                byteOrder="BIG_ENDIAN">
 
   <name>KNXNet/IP</name>
+
+  <protocolName>knxnetip</protocolName>
+  <outputFlavor>read-write</outputFlavor>
 
   <!--testcase>
     <name>Causes Failure 1</name>
@@ -49,7 +53,7 @@
         </tunnelingRequestDataBlock>
         <cemi className="org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd">
           <additionalInformationLength>7</additionalInformationLength>
-          <additionalInformation>
+          <additionalInformation isList="true">
             <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo">
               <frameErrorFlag>false</frameErrorFlag>
               <bitErrorFlag>false</bitErrorFlag>
@@ -89,7 +93,7 @@
         </tunnelingRequestDataBlock>
         <cemi className="org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd">
           <additionalInformationLength>7</additionalInformationLength>
-          <additionalInformation>
+          <additionalInformation isList="true">
             <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo">
               <frameErrorFlag>false</frameErrorFlag>
               <bitErrorFlag>false</bitErrorFlag>
@@ -119,70 +123,126 @@
     <raw>06100201000e0801c0a82ac8d6b4</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <SearchRequest className="org.apache.plc4x.java.knxnetip.readwrite.SearchRequest">
-        <hpaiIDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">
-          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
-          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>C0A82AC8</addr>
-          </ipAddress>
-          <ipPort>54964</ipPort>
-        </hpaiIDiscoveryEndpoint>
-      </SearchRequest>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">513</msgType>
+        <totalLength dataType="uint" bitLength="16">14</totalLength>
+        <SearchRequest>
+          <hpaiIDiscoveryEndpoint>
+            <HPAIDiscoveryEndpoint>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
+              </hostProtocolCode>
+              <ipAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0xc0a82ac8</addr>
+                </IPAddress>
+              </ipAddress>
+              <ipPort dataType="uint" bitLength="16">54964</ipPort>
+            </HPAIDiscoveryEndpoint>
+          </hpaiIDiscoveryEndpoint>
+        </SearchRequest>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
   <testcase>
     <name>Search Response</name>
-    <raw>06100202004c0801c0a82a0b0e5736010200ffff000000082d409852e000170c000ab327553647697261204b4e582f49502d5363686e6974747374656c6c6500000000000802020103010401</raw>
+    <raw>
+      06100202004c0801c0a82a0b0e5736010200ffff000000082d409852e000170c000ab327553647697261204b4e582f49502d5363686e6974747374656c6c6500000000000802020103010401
+    </raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <SearchResponse className="org.apache.plc4x.java.knxnetip.readwrite.SearchResponse">
-        <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
-          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
-          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>C0A82A0B</addr>
-          </ipAddress>
-          <ipPort>3671</ipPort>
-        </hpaiControlEndpoint>
-        <dibDeviceInfo className="org.apache.plc4x.java.knxnetip.readwrite.DIBDeviceInfo">
-          <descriptionType>1</descriptionType>
-          <knxMedium>MEDIUM_TP1</knxMedium>
-          <deviceStatus className="org.apache.plc4x.java.knxnetip.readwrite.DeviceStatus">
-            <programMode>false</programMode>
-          </deviceStatus>
-          <knxAddress className="org.apache.plc4x.java.knxnetip.readwrite.KnxAddress">
-            <mainGroup>15</mainGroup>
-            <middleGroup>15</middleGroup>
-            <subGroup>255</subGroup>
-          </knxAddress>
-          <projectInstallationIdentifier className="org.apache.plc4x.java.knxnetip.readwrite.ProjectInstallationIdentifier">
-            <projectNumber>0</projectNumber>
-            <installationNumber>0</installationNumber>
-          </projectInstallationIdentifier>
-          <knxNetIpDeviceSerialNumber>00082D409852</knxNetIpDeviceSerialNumber>
-          <knxNetIpDeviceMulticastAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>E000170C</addr>
-          </knxNetIpDeviceMulticastAddress>
-          <knxNetIpDeviceMacAddress className="org.apache.plc4x.java.knxnetip.readwrite.MACAddress">
-            <addr>000AB3275536</addr>
-          </knxNetIpDeviceMacAddress>
-          <deviceFriendlyName>47697261204B4E582F49502D5363686E6974747374656C6C650000000000</deviceFriendlyName>
-        </dibDeviceInfo>
-        <dibSuppSvcFamilies className="org.apache.plc4x.java.knxnetip.readwrite.DIBSuppSvcFamilies">
-          <descriptionType>2</descriptionType>
-          <serviceIds>
-            <serviceIds className="org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpCore">
-              <version>1</version>
-            </serviceIds>
-            <serviceIds className="org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpDeviceManagement">
-              <version>1</version>
-            </serviceIds>
-            <serviceIds className="org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpTunneling">
-              <version>1</version>
-            </serviceIds>
-          </serviceIds>
-        </dibSuppSvcFamilies>
-      </SearchResponse>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">514</msgType>
+        <totalLength dataType="uint" bitLength="16">76</totalLength>
+        <SearchResponse>
+          <hpaiControlEndpoint>
+            <HPAIControlEndpoint>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
+              </hostProtocolCode>
+              <ipAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0xc0a82a0b</addr>
+                </IPAddress>
+              </ipAddress>
+              <ipPort dataType="uint" bitLength="16">3671</ipPort>
+            </HPAIControlEndpoint>
+          </hpaiControlEndpoint>
+          <dibDeviceInfo>
+            <DIBDeviceInfo>
+              <structureLength dataType="uint" bitLength="8">54</structureLength>
+              <descriptionType dataType="uint" bitLength="8">1</descriptionType>
+              <knxMedium>
+                <KnxMedium dataType="uint" bitLength="8" stringRepresentation="MEDIUM_TP1">2</KnxMedium>
+              </knxMedium>
+              <deviceStatus>
+                <DeviceStatus>
+                  <reserved dataType="uint" bitLength="7">0</reserved>
+                  <programMode dataType="bit" bitLength="1">false</programMode>
+                </DeviceStatus>
+              </deviceStatus>
+              <knxAddress>
+                <KnxAddress>
+                  <mainGroup dataType="uint" bitLength="4">15</mainGroup>
+                  <middleGroup dataType="uint" bitLength="4">15</middleGroup>
+                  <subGroup dataType="uint" bitLength="8">255</subGroup>
+                </KnxAddress>
+              </knxAddress>
+              <projectInstallationIdentifier>
+                <ProjectInstallationIdentifier>
+                  <projectNumber dataType="uint" bitLength="8">0</projectNumber>
+                  <installationNumber dataType="uint" bitLength="8">0</installationNumber>
+                </ProjectInstallationIdentifier>
+              </projectInstallationIdentifier>
+              <knxNetIpDeviceSerialNumber dataType="byte" bitLength="48">0x00082d409852</knxNetIpDeviceSerialNumber>
+              <knxNetIpDeviceMulticastAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0xe000170c</addr>
+                </IPAddress>
+              </knxNetIpDeviceMulticastAddress>
+              <knxNetIpDeviceMacAddress>
+                <MACAddress>
+                  <addr dataType="byte" bitLength="48">0x000ab3275536</addr>
+                </MACAddress>
+              </knxNetIpDeviceMacAddress>
+              <deviceFriendlyName dataType="byte" bitLength="240">0x47697261204b4e582f49502d5363686e6974747374656c6c650000000000</deviceFriendlyName>
+            </DIBDeviceInfo>
+          </dibDeviceInfo>
+          <dibSuppSvcFamilies>
+            <DIBSuppSvcFamilies>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <descriptionType dataType="uint" bitLength="8">2</descriptionType>
+              <serviceIds isList="true">
+                <ServiceId>
+                  <serviceType dataType="uint" bitLength="8">2</serviceType>
+                  <KnxNetIpCore>
+                    <version dataType="uint" bitLength="8">1</version>
+                  </KnxNetIpCore>
+                </ServiceId>
+                <ServiceId>
+                  <serviceType dataType="uint" bitLength="8">3</serviceType>
+                  <KnxNetIpDeviceManagement>
+                    <version dataType="uint" bitLength="8">1</version>
+                  </KnxNetIpDeviceManagement>
+                </ServiceId>
+                <ServiceId>
+                  <serviceType dataType="uint" bitLength="8">4</serviceType>
+                  <KnxNetIpTunneling>
+                    <version dataType="uint" bitLength="8">1</version>
+                  </KnxNetIpTunneling>
+                </ServiceId>
+              </serviceIds>
+            </DIBSuppSvcFamilies>
+          </dibSuppSvcFamilies>
+        </SearchResponse>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
@@ -191,63 +251,112 @@
     <raw>06100203000e0801000000000000</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <DescriptionRequest className="org.apache.plc4x.java.knxnetip.readwrite.DescriptionRequest">
-        <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
-          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
-          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>00000000</addr>
-          </ipAddress>
-          <ipPort>0</ipPort>
-        </hpaiControlEndpoint>
-      </DescriptionRequest>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">515</msgType>
+        <totalLength dataType="uint" bitLength="16">14</totalLength>
+        <DescriptionRequest>
+          <hpaiControlEndpoint>
+            <HPAIControlEndpoint>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
+              </hostProtocolCode>
+              <ipAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0x00000000</addr>
+                </IPAddress>
+              </ipAddress>
+              <ipPort dataType="uint" bitLength="16">0</ipPort>
+            </HPAIControlEndpoint>
+          </hpaiControlEndpoint>
+        </DescriptionRequest>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
   <testcase>
     <name>Description Response</name>
-    <raw>06100204004436010200ffff000000082d409852e000170c000ab327553647697261204b4e582f49502d5363686e6974747374656c6c6500000000000802020103010401</raw>
+    <raw>
+      06100204004436010200ffff000000082d409852e000170c000ab327553647697261204b4e582f49502d5363686e6974747374656c6c6500000000000802020103010401
+    </raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <DescriptionResponse className="org.apache.plc4x.java.knxnetip.readwrite.DescriptionResponse">
-        <dibDeviceInfo className="org.apache.plc4x.java.knxnetip.readwrite.DIBDeviceInfo">
-          <descriptionType>1</descriptionType>
-          <knxMedium>MEDIUM_TP1</knxMedium>
-          <deviceStatus className="org.apache.plc4x.java.knxnetip.readwrite.DeviceStatus">
-            <programMode>false</programMode>
-          </deviceStatus>
-          <knxAddress className="org.apache.plc4x.java.knxnetip.readwrite.KnxAddress">
-            <mainGroup>15</mainGroup>
-            <middleGroup>15</middleGroup>
-            <subGroup>255</subGroup>
-          </knxAddress>
-          <projectInstallationIdentifier className="org.apache.plc4x.java.knxnetip.readwrite.ProjectInstallationIdentifier">
-            <projectNumber>0</projectNumber>
-            <installationNumber>0</installationNumber>
-          </projectInstallationIdentifier>
-          <knxNetIpDeviceSerialNumber>00082D409852</knxNetIpDeviceSerialNumber>
-          <knxNetIpDeviceMulticastAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>E000170C</addr>
-          </knxNetIpDeviceMulticastAddress>
-          <knxNetIpDeviceMacAddress className="org.apache.plc4x.java.knxnetip.readwrite.MACAddress">
-            <addr>000AB3275536</addr>
-          </knxNetIpDeviceMacAddress>
-          <deviceFriendlyName>47697261204B4E582F49502D5363686E6974747374656C6C650000000000</deviceFriendlyName>
-        </dibDeviceInfo>
-        <dibSuppSvcFamilies className="org.apache.plc4x.java.knxnetip.readwrite.DIBSuppSvcFamilies">
-          <descriptionType>2</descriptionType>
-          <serviceIds>
-            <serviceIds className="org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpCore">
-              <version>1</version>
-            </serviceIds>
-            <serviceIds className="org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpDeviceManagement">
-              <version>1</version>
-            </serviceIds>
-            <serviceIds className="org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpTunneling">
-              <version>1</version>
-            </serviceIds>
-          </serviceIds>
-        </dibSuppSvcFamilies>
-      </DescriptionResponse>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">516</msgType>
+        <totalLength dataType="uint" bitLength="16">68</totalLength>
+        <DescriptionResponse>
+          <dibDeviceInfo>
+            <DIBDeviceInfo>
+              <structureLength dataType="uint" bitLength="8">54</structureLength>
+              <descriptionType dataType="uint" bitLength="8">1</descriptionType>
+              <knxMedium>
+                <KnxMedium dataType="uint" bitLength="8" stringRepresentation="MEDIUM_TP1">2</KnxMedium>
+              </knxMedium>
+              <deviceStatus>
+                <DeviceStatus>
+                  <reserved dataType="uint" bitLength="7">0</reserved>
+                  <programMode dataType="bit" bitLength="1">false</programMode>
+                </DeviceStatus>
+              </deviceStatus>
+              <knxAddress>
+                <KnxAddress>
+                  <mainGroup dataType="uint" bitLength="4">15</mainGroup>
+                  <middleGroup dataType="uint" bitLength="4">15</middleGroup>
+                  <subGroup dataType="uint" bitLength="8">255</subGroup>
+                </KnxAddress>
+              </knxAddress>
+              <projectInstallationIdentifier>
+                <ProjectInstallationIdentifier>
+                  <projectNumber dataType="uint" bitLength="8">0</projectNumber>
+                  <installationNumber dataType="uint" bitLength="8">0</installationNumber>
+                </ProjectInstallationIdentifier>
+              </projectInstallationIdentifier>
+              <knxNetIpDeviceSerialNumber dataType="byte" bitLength="48">0x00082d409852</knxNetIpDeviceSerialNumber>
+              <knxNetIpDeviceMulticastAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0xe000170c</addr>
+                </IPAddress>
+              </knxNetIpDeviceMulticastAddress>
+              <knxNetIpDeviceMacAddress>
+                <MACAddress>
+                  <addr dataType="byte" bitLength="48">0x000ab3275536</addr>
+                </MACAddress>
+              </knxNetIpDeviceMacAddress>
+              <deviceFriendlyName dataType="byte" bitLength="240">0x47697261204b4e582f49502d5363686e6974747374656c6c650000000000</deviceFriendlyName>
+            </DIBDeviceInfo>
+          </dibDeviceInfo>
+          <dibSuppSvcFamilies>
+            <DIBSuppSvcFamilies>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <descriptionType dataType="uint" bitLength="8">2</descriptionType>
+              <serviceIds isList="true">
+                <ServiceId>
+                  <serviceType dataType="uint" bitLength="8">2</serviceType>
+                  <KnxNetIpCore>
+                    <version dataType="uint" bitLength="8">1</version>
+                  </KnxNetIpCore>
+                </ServiceId>
+                <ServiceId>
+                  <serviceType dataType="uint" bitLength="8">3</serviceType>
+                  <KnxNetIpDeviceManagement>
+                    <version dataType="uint" bitLength="8">1</version>
+                  </KnxNetIpDeviceManagement>
+                </ServiceId>
+                <ServiceId>
+                  <serviceType dataType="uint" bitLength="8">4</serviceType>
+                  <KnxNetIpTunneling>
+                    <version dataType="uint" bitLength="8">1</version>
+                  </KnxNetIpTunneling>
+                </ServiceId>
+              </serviceIds>
+            </DIBSuppSvcFamilies>
+          </dibSuppSvcFamilies>
+        </DescriptionResponse>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
@@ -257,25 +366,54 @@
     <raw>06100205001a0801c0a82ac8d6b40801c0a82ac8d6b404040200</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <ConnectionRequest className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequest">
-        <hpaiDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">
-          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
-          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>C0A82AC8</addr>
-          </ipAddress>
-          <ipPort>54964</ipPort>
-        </hpaiDiscoveryEndpoint>
-        <hpaiDataEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDataEndpoint">
-          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
-          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>C0A82AC8</addr>
-          </ipAddress>
-          <ipPort>54964</ipPort>
-        </hpaiDataEndpoint>
-        <connectionRequestInformation className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationTunnelConnection">
-          <knxLayer>TUNNEL_LINK_LAYER</knxLayer>
-        </connectionRequestInformation>
-      </ConnectionRequest>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">517</msgType>
+        <totalLength dataType="uint" bitLength="16">26</totalLength>
+        <ConnectionRequest>
+          <hpaiDiscoveryEndpoint>
+            <HPAIDiscoveryEndpoint>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
+              </hostProtocolCode>
+              <ipAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0xc0a82ac8</addr>
+                </IPAddress>
+              </ipAddress>
+              <ipPort dataType="uint" bitLength="16">54964</ipPort>
+            </HPAIDiscoveryEndpoint>
+          </hpaiDiscoveryEndpoint>
+          <hpaiDataEndpoint>
+            <HPAIDataEndpoint>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
+              </hostProtocolCode>
+              <ipAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0xc0a82ac8</addr>
+                </IPAddress>
+              </ipAddress>
+              <ipPort dataType="uint" bitLength="16">54964</ipPort>
+            </HPAIDataEndpoint>
+          </hpaiDataEndpoint>
+          <connectionRequestInformation>
+            <ConnectionRequestInformation>
+              <structureLength dataType="uint" bitLength="8">4</structureLength>
+              <connectionType dataType="uint" bitLength="8">4</connectionType>
+              <ConnectionRequestInformationTunnelConnection>
+                <knxLayer>
+                  <KnxLayer dataType="uint" bitLength="8" stringRepresentation="TUNNEL_LINK_LAYER">2</KnxLayer>
+                </knxLayer>
+                <reserved dataType="uint" bitLength="8">0</reserved>
+              </ConnectionRequestInformationTunnelConnection>
+            </ConnectionRequestInformation>
+          </connectionRequestInformation>
+        </ConnectionRequest>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
@@ -284,24 +422,47 @@
     <raw>06100206001402000801c0a82a0b0e570404fffe</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <ConnectionResponse className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponse">
-        <communicationChannelId>2</communicationChannelId>
-        <status>NO_ERROR</status>
-        <hpaiDataEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDataEndpoint">
-          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
-          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>C0A82A0B</addr>
-          </ipAddress>
-          <ipPort>3671</ipPort>
-        </hpaiDataEndpoint>
-        <connectionResponseDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockTunnelConnection">
-          <knxAddress className="org.apache.plc4x.java.knxnetip.readwrite.KnxAddress">
-            <mainGroup>15</mainGroup>
-            <middleGroup>15</middleGroup>
-            <subGroup>254</subGroup>
-          </knxAddress>
-        </connectionResponseDataBlock>
-      </ConnectionResponse>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">518</msgType>
+        <totalLength dataType="uint" bitLength="16">20</totalLength>
+        <ConnectionResponse>
+          <communicationChannelId dataType="uint" bitLength="8">2</communicationChannelId>
+          <status>
+            <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
+          </status>
+          <hpaiDataEndpoint>
+            <HPAIDataEndpoint>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
+              </hostProtocolCode>
+              <ipAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0xc0a82a0b</addr>
+                </IPAddress>
+              </ipAddress>
+              <ipPort dataType="uint" bitLength="16">3671</ipPort>
+            </HPAIDataEndpoint>
+          </hpaiDataEndpoint>
+          <connectionResponseDataBlock>
+            <ConnectionResponseDataBlock>
+              <structureLength dataType="uint" bitLength="8">4</structureLength>
+              <connectionType dataType="uint" bitLength="8">4</connectionType>
+              <ConnectionResponseDataBlockTunnelConnection>
+                <knxAddress>
+                  <KnxAddress>
+                    <mainGroup dataType="uint" bitLength="4">15</mainGroup>
+                    <middleGroup dataType="uint" bitLength="4">15</middleGroup>
+                    <subGroup dataType="uint" bitLength="8">254</subGroup>
+                  </KnxAddress>
+                </knxAddress>
+              </ConnectionResponseDataBlockTunnelConnection>
+            </ConnectionResponseDataBlock>
+          </connectionResponseDataBlock>
+        </ConnectionResponse>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
@@ -310,16 +471,30 @@
     <raw>06100207001002000801c0a82ac8d6b4</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <ConnectionStateRequest className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionStateRequest">
-        <communicationChannelId>2</communicationChannelId>
-        <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
-          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
-          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>C0A82AC8</addr>
-          </ipAddress>
-          <ipPort>54964</ipPort>
-        </hpaiControlEndpoint>
-      </ConnectionStateRequest>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">519</msgType>
+        <totalLength dataType="uint" bitLength="16">16</totalLength>
+        <ConnectionStateRequest>
+          <communicationChannelId dataType="uint" bitLength="8">2</communicationChannelId>
+          <reserved dataType="uint" bitLength="8">0</reserved>
+          <hpaiControlEndpoint>
+            <HPAIControlEndpoint>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
+              </hostProtocolCode>
+              <ipAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0xc0a82ac8</addr>
+                </IPAddress>
+              </ipAddress>
+              <ipPort dataType="uint" bitLength="16">54964</ipPort>
+            </HPAIControlEndpoint>
+          </hpaiControlEndpoint>
+        </ConnectionStateRequest>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
@@ -328,10 +503,18 @@
     <raw>0610020800080200</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <ConnectionStateResponse className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionStateResponse">
-        <communicationChannelId>2</communicationChannelId>
-        <status>NO_ERROR</status>
-      </ConnectionStateResponse>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">520</msgType>
+        <totalLength dataType="uint" bitLength="16">8</totalLength>
+        <ConnectionStateResponse>
+          <communicationChannelId dataType="uint" bitLength="8">2</communicationChannelId>
+          <status>
+            <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
+          </status>
+        </ConnectionStateResponse>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
@@ -340,19 +523,34 @@
     <raw>06100310001104670000fc000001531001</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <DeviceConfigurationRequest className="org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationRequest">
-        <deviceConfigurationRequestDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationRequestDataBlock">
-          <communicationChannelId>103</communicationChannelId>
-          <sequenceCounter>0</sequenceCounter>
-        </deviceConfigurationRequestDataBlock>
-        <cemi className="org.apache.plc4x.java.knxnetip.readwrite.MPropReadReq">
-          <interfaceObjectType>0</interfaceObjectType>
-          <objectInstance>1</objectInstance>
-          <propertyId>83</propertyId>
-          <numberOfElements>1</numberOfElements>
-          <startIndex>1</startIndex>
-        </cemi>
-      </DeviceConfigurationRequest>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">784</msgType>
+        <totalLength dataType="uint" bitLength="16">17</totalLength>
+        <DeviceConfigurationRequest>
+          <deviceConfigurationRequestDataBlock>
+            <DeviceConfigurationRequestDataBlock>
+              <structureLength dataType="uint" bitLength="8">4</structureLength>
+              <communicationChannelId dataType="uint" bitLength="8">103</communicationChannelId>
+              <sequenceCounter dataType="uint" bitLength="8">0</sequenceCounter>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+            </DeviceConfigurationRequestDataBlock>
+          </deviceConfigurationRequestDataBlock>
+          <cemi>
+            <CEMI>
+              <messageCode dataType="uint" bitLength="8">252</messageCode>
+              <MPropReadReq>
+                <interfaceObjectType dataType="uint" bitLength="16">0</interfaceObjectType>
+                <objectInstance dataType="uint" bitLength="8">1</objectInstance>
+                <propertyId dataType="uint" bitLength="8">83</propertyId>
+                <numberOfElements dataType="uint" bitLength="4">1</numberOfElements>
+                <startIndex dataType="uint" bitLength="12">1</startIndex>
+              </MPropReadReq>
+            </CEMI>
+          </cemi>
+        </DeviceConfigurationRequest>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
@@ -361,13 +559,24 @@
     <raw>06100311000a04670000</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <DeviceConfigurationAck className="org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationAck">
-        <deviceConfigurationAckDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationAckDataBlock">
-          <communicationChannelId>103</communicationChannelId>
-          <sequenceCounter>0</sequenceCounter>
-          <status>NO_ERROR</status>
-        </deviceConfigurationAckDataBlock>
-      </DeviceConfigurationAck>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">785</msgType>
+        <totalLength dataType="uint" bitLength="16">10</totalLength>
+        <DeviceConfigurationAck>
+          <deviceConfigurationAckDataBlock>
+            <DeviceConfigurationAckDataBlock>
+              <structureLength dataType="uint" bitLength="8">4</structureLength>
+              <communicationChannelId dataType="uint" bitLength="8">103</communicationChannelId>
+              <sequenceCounter dataType="uint" bitLength="8">0</sequenceCounter>
+              <status>
+                <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
+              </status>
+            </DeviceConfigurationAckDataBlock>
+          </deviceConfigurationAckDataBlock>
+        </DeviceConfigurationAck>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
@@ -376,16 +585,30 @@
     <raw>06100209001001000801c0a82a0b0e57</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <DisconnectRequest className="org.apache.plc4x.java.knxnetip.readwrite.DisconnectRequest">
-        <communicationChannelId>1</communicationChannelId>
-        <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
-          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
-          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>C0A82A0B</addr>
-          </ipAddress>
-          <ipPort>3671</ipPort>
-        </hpaiControlEndpoint>
-      </DisconnectRequest>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">521</msgType>
+        <totalLength dataType="uint" bitLength="16">16</totalLength>
+        <DisconnectRequest>
+          <communicationChannelId dataType="uint" bitLength="8">1</communicationChannelId>
+          <reserved dataType="uint" bitLength="8">0</reserved>
+          <hpaiControlEndpoint>
+            <HPAIControlEndpoint>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
+              </hostProtocolCode>
+              <ipAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0xc0a82a0b</addr>
+                </IPAddress>
+              </ipAddress>
+              <ipPort dataType="uint" bitLength="16">3671</ipPort>
+            </HPAIControlEndpoint>
+          </hpaiControlEndpoint>
+        </DisconnectRequest>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
@@ -394,10 +617,18 @@
     <raw>0610020a00086600</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <DisconnectResponse className="org.apache.plc4x.java.knxnetip.readwrite.DisconnectResponse">
-        <communicationChannelId>102</communicationChannelId>
-        <status>NO_ERROR</status>
-      </DisconnectResponse>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">522</msgType>
+        <totalLength dataType="uint" bitLength="16">8</totalLength>
+        <DisconnectResponse>
+          <communicationChannelId dataType="uint" bitLength="8">102</communicationChannelId>
+          <status>
+            <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
+          </status>
+        </DisconnectResponse>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
@@ -406,40 +637,77 @@
     <raw>061004200015040200002900bce0220a120c010081</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <TunnelingRequest className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequest">
-        <tunnelingRequestDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequestDataBlock">
-          <communicationChannelId>2</communicationChannelId>
-          <sequenceCounter>0</sequenceCounter>
-        </tunnelingRequestDataBlock>
-        <cemi className="org.apache.plc4x.java.knxnetip.readwrite.LDataInd">
-          <additionalInformationLength>0</additionalInformationLength>
-          <additionalInformation/>
-          <dataFrame className="org.apache.plc4x.java.knxnetip.readwrite.LDataExtended">
-            <frameType>true</frameType>
-            <notRepeated>true</notRepeated>
-            <priority>LOW</priority>
-            <acknowledgeRequested>false</acknowledgeRequested>
-            <errorFlag>false</errorFlag>
-            <groupAddress>true</groupAddress>
-            <hopCount>6</hopCount>
-            <extendedFrameFormat>0</extendedFrameFormat>
-            <sourceAddress className="org.apache.plc4x.java.knxnetip.readwrite.KnxAddress">
-              <mainGroup>2</mainGroup>
-              <middleGroup>2</middleGroup>
-              <subGroup>10</subGroup>
-            </sourceAddress>
-            <destinationAddress>120C</destinationAddress>
-            <apdu className="org.apache.plc4x.java.knxnetip.readwrite.ApduDataContainer">
-              <numbered>false</numbered>
-              <counter>0</counter>
-              <dataApdu className="org.apache.plc4x.java.knxnetip.readwrite.ApduDataGroupValueWrite">
-                <dataFirstByte>1</dataFirstByte>
-                <data></data>
-              </dataApdu>
-            </apdu>
-          </dataFrame>
-        </cemi>
-      </TunnelingRequest>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">1056</msgType>
+        <totalLength dataType="uint" bitLength="16">21</totalLength>
+        <TunnelingRequest>
+          <tunnelingRequestDataBlock>
+            <TunnelingRequestDataBlock>
+              <structureLength dataType="uint" bitLength="8">4</structureLength>
+              <communicationChannelId dataType="uint" bitLength="8">2</communicationChannelId>
+              <sequenceCounter dataType="uint" bitLength="8">0</sequenceCounter>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+            </TunnelingRequestDataBlock>
+          </tunnelingRequestDataBlock>
+          <cemi>
+            <CEMI>
+              <messageCode dataType="uint" bitLength="8">41</messageCode>
+              <LDataInd>
+                <additionalInformationLength dataType="uint" bitLength="8">0</additionalInformationLength>
+                <additionalInformation isList="true">
+                </additionalInformation>
+                <dataFrame>
+                  <LDataFrame>
+                    <frameType dataType="bit" bitLength="1">true</frameType>
+                    <polling dataType="bit" bitLength="1">false</polling>
+                    <notRepeated dataType="bit" bitLength="1">true</notRepeated>
+                    <notAckFrame dataType="bit" bitLength="1">true</notAckFrame>
+                    <priority>
+                      <CEMIPriority dataType="uint" bitLength="2" stringRepresentation="LOW">3</CEMIPriority>
+                    </priority>
+                    <acknowledgeRequested dataType="bit" bitLength="1">false</acknowledgeRequested>
+                    <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                    <LDataExtended>
+                      <groupAddress dataType="bit" bitLength="1">true</groupAddress>
+                      <hopCount dataType="uint" bitLength="3">6</hopCount>
+                      <extendedFrameFormat dataType="uint" bitLength="4">0</extendedFrameFormat>
+                      <sourceAddress>
+                        <KnxAddress>
+                          <mainGroup dataType="uint" bitLength="4">2</mainGroup>
+                          <middleGroup dataType="uint" bitLength="4">2</middleGroup>
+                          <subGroup dataType="uint" bitLength="8">10</subGroup>
+                        </KnxAddress>
+                      </sourceAddress>
+                      <destinationAddress dataType="byte" bitLength="16">0x120c</destinationAddress>
+                      <dataLength dataType="uint" bitLength="8">1</dataLength>
+                      <apdu>
+                        <Apdu>
+                          <control dataType="uint" bitLength="1">0</control>
+                          <numbered dataType="bit" bitLength="1">false</numbered>
+                          <counter dataType="uint" bitLength="4">0</counter>
+                          <ApduDataContainer>
+                            <dataApdu>
+                              <ApduData>
+                                <apciType dataType="uint" bitLength="4">2</apciType>
+                                <ApduDataGroupValueWrite>
+                                  <dataFirstByte dataType="int" bitLength="6">1</dataFirstByte>
+                                  <data dataType="byte" bitLength="0">0x</data>
+                                </ApduDataGroupValueWrite>
+                              </ApduData>
+                            </dataApdu>
+                          </ApduDataContainer>
+                        </Apdu>
+                      </apdu>
+                    </LDataExtended>
+                  </LDataFrame>
+                </dataFrame>
+              </LDataInd>
+            </CEMI>
+          </cemi>
+        </TunnelingRequest>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
@@ -452,52 +720,99 @@
     -->
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <TunnelingRequest className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequest">
-        <tunnelingRequestDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequestDataBlock">
-          <communicationChannelId>107</communicationChannelId>
-          <sequenceCounter>0</sequenceCounter>
-        </tunnelingRequestDataBlock>
-        <cemi className="org.apache.plc4x.java.knxnetip.readwrite.LBusmonInd">
-          <additionalInformationLength>7</additionalInformationLength>
-          <additionalInformation>
-            <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo">
-              <frameErrorFlag>false</frameErrorFlag>
-              <bitErrorFlag>false</bitErrorFlag>
-              <parityErrorFlag>false</parityErrorFlag>
-              <unknownFlag>false</unknownFlag>
-              <lostFlag>false</lostFlag>
-              <sequenceNumber>5</sequenceNumber>
-            </additionalInformation>
-            <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationRelativeTimestamp">
-              <relativeTimestamp className="org.apache.plc4x.java.knxnetip.readwrite.RelativeTimestamp">
-                <timestamp>17666</timestamp>
-              </relativeTimestamp>
-            </additionalInformation>
-          </additionalInformation>
-          <dataFrame className="org.apache.plc4x.java.knxnetip.readwrite.LDataExtended">
-            <frameType>true</frameType>
-            <notRepeated>true</notRepeated>
-            <priority>LOW</priority>
-            <acknowledgeRequested>false</acknowledgeRequested>
-            <errorFlag>false</errorFlag>
-            <groupAddress>false</groupAddress>
-            <hopCount>3</hopCount>
-            <extendedFrameFormat>6</extendedFrameFormat>
-            <sourceAddress className="org.apache.plc4x.java.knxnetip.readwrite.KnxAddress">
-              <mainGroup>0</mainGroup>
-              <middleGroup>10</middleGroup>
-              <subGroup>30</subGroup>
-            </sourceAddress>
-            <destinationAddress>0CE1</destinationAddress>
-            <apdu className="org.apache.plc4x.java.knxnetip.readwrite.ApduControlContainer">
-              <numbered>false</numbered>
-              <counter>0</counter>
-              <controlApdu className="org.apache.plc4x.java.knxnetip.readwrite.ApduControlDisconnect"/>
-            </apdu>
-          </dataFrame>
-          <crc>13</crc>
-        </cemi>
-      </TunnelingRequest>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">1056</msgType>
+        <totalLength dataType="uint" bitLength="16">28</totalLength>
+        <TunnelingRequest>
+          <tunnelingRequestDataBlock>
+            <TunnelingRequestDataBlock>
+              <structureLength dataType="uint" bitLength="8">4</structureLength>
+              <communicationChannelId dataType="uint" bitLength="8">107</communicationChannelId>
+              <sequenceCounter dataType="uint" bitLength="8">0</sequenceCounter>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+            </TunnelingRequestDataBlock>
+          </tunnelingRequestDataBlock>
+          <cemi>
+            <CEMI>
+              <messageCode dataType="uint" bitLength="8">43</messageCode>
+              <LBusmonInd>
+                <additionalInformationLength dataType="uint" bitLength="8">7</additionalInformationLength>
+                <additionalInformation isList="true">
+                  <CEMIAdditionalInformation>
+                    <additionalInformationType dataType="uint" bitLength="8">3</additionalInformationType>
+                    <CEMIAdditionalInformationBusmonitorInfo>
+                      <len dataType="uint" bitLength="8">1</len>
+                      <frameErrorFlag dataType="bit" bitLength="1">false</frameErrorFlag>
+                      <bitErrorFlag dataType="bit" bitLength="1">false</bitErrorFlag>
+                      <parityErrorFlag dataType="bit" bitLength="1">false</parityErrorFlag>
+                      <unknownFlag dataType="bit" bitLength="1">false</unknownFlag>
+                      <lostFlag dataType="bit" bitLength="1">false</lostFlag>
+                      <sequenceNumber dataType="uint" bitLength="3">5</sequenceNumber>
+                    </CEMIAdditionalInformationBusmonitorInfo>
+                  </CEMIAdditionalInformation>
+                  <CEMIAdditionalInformation>
+                    <additionalInformationType dataType="uint" bitLength="8">4</additionalInformationType>
+                    <CEMIAdditionalInformationRelativeTimestamp>
+                      <len dataType="uint" bitLength="8">2</len>
+                      <relativeTimestamp>
+                        <RelativeTimestamp>
+                          <timestamp dataType="uint" bitLength="16">17666</timestamp>
+                        </RelativeTimestamp>
+                      </relativeTimestamp>
+                    </CEMIAdditionalInformationRelativeTimestamp>
+                  </CEMIAdditionalInformation>
+                </additionalInformation>
+                <dataFrame>
+                  <LDataFrame>
+                    <frameType dataType="bit" bitLength="1">true</frameType>
+                    <polling dataType="bit" bitLength="1">false</polling>
+                    <notRepeated dataType="bit" bitLength="1">true</notRepeated>
+                    <notAckFrame dataType="bit" bitLength="1">true</notAckFrame>
+                    <priority>
+                      <CEMIPriority dataType="uint" bitLength="2" stringRepresentation="LOW">3</CEMIPriority>
+                    </priority>
+                    <acknowledgeRequested dataType="bit" bitLength="1">false</acknowledgeRequested>
+                    <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                    <LDataExtended>
+                      <groupAddress dataType="bit" bitLength="1">false</groupAddress>
+                      <hopCount dataType="uint" bitLength="3">3</hopCount>
+                      <extendedFrameFormat dataType="uint" bitLength="4">6</extendedFrameFormat>
+                      <sourceAddress>
+                        <KnxAddress>
+                          <mainGroup dataType="uint" bitLength="4">0</mainGroup>
+                          <middleGroup dataType="uint" bitLength="4">10</middleGroup>
+                          <subGroup dataType="uint" bitLength="8">30</subGroup>
+                        </KnxAddress>
+                      </sourceAddress>
+                      <destinationAddress dataType="byte" bitLength="16">0x0ce1</destinationAddress>
+                      <dataLength dataType="uint" bitLength="8">0</dataLength>
+                      <apdu>
+                        <Apdu>
+                          <control dataType="uint" bitLength="1">1</control>
+                          <numbered dataType="bit" bitLength="1">false</numbered>
+                          <counter dataType="uint" bitLength="4">0</counter>
+                          <ApduControlContainer>
+                            <controlApdu>
+                              <ApduControl>
+                                <controlType dataType="uint" bitLength="2">1</controlType>
+                                <ApduControlDisconnect>
+                                </ApduControlDisconnect>
+                              </ApduControl>
+                            </controlApdu>
+                          </ApduControlContainer>
+                        </Apdu>
+                      </apdu>
+                    </LDataExtended>
+                  </LDataFrame>
+                </dataFrame>
+                <crc dataType="uint" bitLength="8">13</crc>
+              </LBusmonInd>
+            </CEMI>
+          </cemi>
+        </TunnelingRequest>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
@@ -506,13 +821,24 @@
     <raw>06100421000a046b0000</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <TunnelingResponse className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingResponse">
-        <tunnelingResponseDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingResponseDataBlock">
-          <communicationChannelId>107</communicationChannelId>
-          <sequenceCounter>0</sequenceCounter>
-          <status>NO_ERROR</status>
-        </tunnelingResponseDataBlock>
-      </TunnelingResponse>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">1057</msgType>
+        <totalLength dataType="uint" bitLength="16">10</totalLength>
+        <TunnelingResponse>
+          <tunnelingResponseDataBlock>
+            <TunnelingResponseDataBlock>
+              <structureLength dataType="uint" bitLength="8">4</structureLength>
+              <communicationChannelId dataType="uint" bitLength="8">107</communicationChannelId>
+              <sequenceCounter dataType="uint" bitLength="8">0</sequenceCounter>
+              <status>
+                <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
+              </status>
+            </TunnelingResponseDataBlock>
+          </tunnelingResponseDataBlock>
+        </TunnelingResponse>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 
@@ -521,23 +847,50 @@
     <raw>0610020500180801c0a82a46c4090801c0a82a46c40a0203</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
-      <ConnectionRequest className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequest">
-        <hpaiDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">
-          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
-          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>C0A82A46</addr>
-          </ipAddress>
-          <ipPort>50185</ipPort>
-        </hpaiDiscoveryEndpoint>
-        <hpaiDataEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDataEndpoint">
-          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
-          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>C0A82A46</addr>
-          </ipAddress>
-          <ipPort>50186</ipPort>
-        </hpaiDataEndpoint>
-        <connectionRequestInformation className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationDeviceManagement"/>
-      </ConnectionRequest>
+      <KnxNetIpMessage>
+        <headerLength dataType="uint" bitLength="8">6</headerLength>
+        <protocolVersion dataType="uint" bitLength="8">16</protocolVersion>
+        <msgType dataType="uint" bitLength="16">517</msgType>
+        <totalLength dataType="uint" bitLength="16">24</totalLength>
+        <ConnectionRequest>
+          <hpaiDiscoveryEndpoint>
+            <HPAIDiscoveryEndpoint>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
+              </hostProtocolCode>
+              <ipAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0xc0a82a46</addr>
+                </IPAddress>
+              </ipAddress>
+              <ipPort dataType="uint" bitLength="16">50185</ipPort>
+            </HPAIDiscoveryEndpoint>
+          </hpaiDiscoveryEndpoint>
+          <hpaiDataEndpoint>
+            <HPAIDataEndpoint>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
+              </hostProtocolCode>
+              <ipAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0xc0a82a46</addr>
+                </IPAddress>
+              </ipAddress>
+              <ipPort dataType="uint" bitLength="16">50186</ipPort>
+            </HPAIDataEndpoint>
+          </hpaiDataEndpoint>
+          <connectionRequestInformation>
+            <ConnectionRequestInformation>
+              <structureLength dataType="uint" bitLength="8">2</structureLength>
+              <connectionType dataType="uint" bitLength="8">3</connectionType>
+              <ConnectionRequestInformationDeviceManagement>
+              </ConnectionRequestInformationDeviceManagement>
+            </ConnectionRequestInformation>
+          </connectionRequestInformation>
+        </ConnectionRequest>
+      </KnxNetIpMessage>
     </xml>
   </testcase>
 

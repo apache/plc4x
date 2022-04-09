@@ -1,21 +1,22 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package ads
 
 import (
@@ -71,7 +72,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 
 func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
 	if len(readRequest.GetFieldNames()) != 1 {
-		result <- model.PlcReadRequestResult{
+		result <- &plc4goModel.DefaultPlcReadRequestResult{
 			Request:  readRequest,
 			Response: nil,
 			Err:      errors.New("ads only supports single-item requests"),
@@ -85,7 +86,7 @@ func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.
 	if needsResolving(field) {
 		adsField, err := castToSymbolicPlcFieldFromPlcField(field)
 		if err != nil {
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "invalid field item type"),
@@ -95,7 +96,7 @@ func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.
 		}
 		field, err = m.resolveField(adsField)
 		if err != nil {
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "invalid field item type"),
@@ -106,7 +107,7 @@ func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.
 	}
 	adsField, err := castToDirectAdsFieldFromPlcField(field)
 	if err != nil {
-		result <- model.PlcReadRequestResult{
+		result <- &plc4goModel.DefaultPlcReadRequestResult{
 			Request:  readRequest,
 			Response: nil,
 			Err:      errors.Wrap(err, "invalid field item type"),
@@ -145,7 +146,7 @@ func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.
 	default:
 		readLength = uint32(adsField.Datatype.NumBytes())
 	}
-	userdata.Data = readWriteModel.NewAdsReadRequest(adsField.IndexGroup, adsField.IndexOffset, readLength)
+	userdata.Data = readWriteModel.NewAdsReadRequest(adsField.IndexGroup, adsField.IndexOffset, readLength).GetParent()
 
 	m.sendOverTheWire(userdata, readRequest, result)
 }
@@ -157,7 +158,7 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 	for _, fieldName := range readRequest.GetFieldNames() {
 		field, err := castToAdsFieldFromPlcField(readRequest.GetField(fieldName))
 		if err != nil {
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "error casting field"),
@@ -205,7 +206,7 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 		if needsResolving(field) {
 			adsField, err := castToSymbolicPlcFieldFromPlcField(field)
 			if err != nil {
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "invalid field item type"),
@@ -215,7 +216,7 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 			}
 			field, err = m.resolveField(adsField)
 			if err != nil {
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "invalid field item type"),
@@ -226,7 +227,7 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 		}
 		adsField, err := castToDirectAdsFieldFromPlcField(field)
 		if err != nil {
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "invalid field item type"),
@@ -235,9 +236,9 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 			return
 		}
 		// With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
-		items[i] = readWriteModel.NewAdsMultiRequestItemRead(adsField.IndexGroup, adsField.IndexOffset, uint32(adsField.GetDatatype().NumBytes())*adsField.NumberOfElements)
+		items[i] = readWriteModel.NewAdsMultiRequestItemRead(adsField.IndexGroup, adsField.IndexOffset, uint32(adsField.GetDatatype().NumBytes())*adsField.NumberOfElements).GetParent()
 	}
-	userdata.Data = readWriteModel.NewAdsReadWriteRequest(uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ), uint32(len(readRequest.GetFieldNames())), expectedResponseDataSize, items, nil)
+	userdata.Data = readWriteModel.NewAdsReadWriteRequest(uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ), uint32(len(readRequest.GetFieldNames())), expectedResponseDataSize, items, nil).GetParent()
 
 	m.sendOverTheWire(userdata, readRequest, result)
 }
@@ -275,28 +276,28 @@ func (m *Reader) sendOverTheWire(userdata readWriteModel.AmsPacket, readRequest 
 			readResponse, err := m.ToPlc4xReadResponse(*amsTcpPaket, readRequest)
 
 			if err != nil {
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request: readRequest,
 					Err:     errors.Wrap(err, "Error decoding response"),
 				}
 				// TODO: should we return the error here?
 				return nil
 			}
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: readResponse,
 			}
 			return nil
 		},
 		func(err error) error {
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request: readRequest,
 				Err:     errors.Wrap(err, "got timeout while waiting for response"),
 			}
 			return nil
 		},
 		time.Second*1); err != nil {
-		result <- model.PlcReadRequestResult{
+		result <- &plc4goModel.DefaultPlcReadRequestResult{
 			Request:  readRequest,
 			Response: nil,
 			Err:      errors.Wrap(err, "error sending message"),
@@ -330,8 +331,8 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 		0,
 		4,
 		nil,
-		utils.ByteArrayToInt8Array([]byte(symbolicField.SymbolicAddress+"\000")),
-	)
+		[]byte(symbolicField.SymbolicAddress+"\000"),
+	).GetParent()
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
 		dummyRequest := plc4goModel.NewDefaultPlcReadRequest(map[string]model.PlcField{"dummy": DirectPlcField{PlcField: PlcField{Datatype: readWriteModel.AdsDataType_UINT32}}}, []string{"dummy"}, nil, nil)
@@ -339,14 +340,14 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 	}()
 	// We wait synchronous for the resolution response before we can continue
 	response := <-result
-	if response.Err != nil {
-		log.Debug().Err(response.Err).Msg("Error during resolve")
-		return DirectPlcField{}, response.Err
+	if response.GetErr() != nil {
+		log.Debug().Err(response.GetErr()).Msg("Error during resolve")
+		return DirectPlcField{}, response.GetErr()
 	}
-	if response.Response.GetResponseCode("dummy") != model.PlcResponseCode_OK {
-		return DirectPlcField{}, errors.Errorf("Got a response error %#v", response.Response.GetResponseCode("dummy"))
+	if response.GetResponse().GetResponseCode("dummy") != model.PlcResponseCode_OK {
+		return DirectPlcField{}, errors.Errorf("Got a response error %#v", response.GetResponse().GetResponseCode("dummy"))
 	}
-	handle := response.Response.GetValue("dummy").GetUint32()
+	handle := response.GetResponse().GetValue("dummy").GetUint32()
 	log.Debug().Uint32("handle", handle).Str("symbolicAddress", symbolicField.SymbolicAddress).Msg("Resolved symbolic address")
 	directPlcField := DirectPlcField{
 		IndexGroup:  uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_VALBYHND),
@@ -364,20 +365,20 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 }
 
 func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
-	var rb *utils.ReadBuffer
+	var rb utils.ReadBuffer
 	responseCodes := map[string]model.PlcResponseCode{}
 	switch amsTcpPaket.Userdata.Data.Child.(type) {
 	case *readWriteModel.AdsReadResponse:
 		readResponse := readWriteModel.CastAdsReadResponse(amsTcpPaket.Userdata.Data)
-		data := utils.Int8ArrayToUint8Array(readResponse.Data)
-		rb = utils.NewLittleEndianReadBuffer(data)
+		data := readResponse.Data
+		rb = utils.NewLittleEndianReadBufferByteBased(data)
 		for _, fieldName := range readRequest.GetFieldNames() {
 			responseCodes[fieldName] = model.PlcResponseCode_OK
 		}
 	case *readWriteModel.AdsReadWriteResponse:
 		readResponse := readWriteModel.CastAdsReadWriteResponse(amsTcpPaket.Userdata.Data)
-		data := utils.Int8ArrayToUint8Array(readResponse.Data)
-		rb = utils.NewLittleEndianReadBuffer(data)
+		data := readResponse.Data
+		rb = utils.NewLittleEndianReadBufferByteBased(data)
 		// When parsing a multi-item response, the error codes of each items come
 		// in sequence and then come the values.
 		for _, fieldName := range readRequest.GetFieldNames() {
@@ -385,7 +386,7 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 				// TODO: the comment above seems strange as there is no such spec for response codes per field so maybe this is a speciality
 				break
 			}
-			responseCode, err := rb.ReadUint32(32)
+			responseCode, err := rb.ReadUint32("responseCode", 32)
 			if err != nil {
 				log.Error().Err(err).Str("fieldName", fieldName).Msgf("Error parsing field %s", fieldName)
 				responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
@@ -407,7 +408,7 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	plcValues := map[string]values.PlcValue{}
 	// Get the field from the request
 	for _, fieldName := range readRequest.GetFieldNames() {
-		log.Trace().Msg("get a field from request")
+		log.Debug().Msgf("get a field from request with name %s", fieldName)
 		field, err := castToAdsFieldFromPlcField(readRequest.GetField(fieldName))
 		if err != nil {
 			return nil, errors.Wrap(err, "error casting to ads-field")

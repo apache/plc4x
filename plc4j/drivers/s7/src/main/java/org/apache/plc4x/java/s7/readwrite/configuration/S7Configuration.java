@@ -1,4 +1,4 @@
-/*
+/* 
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.s7.readwrite.configuration;
 
 import org.apache.plc4x.java.s7.readwrite.S7Driver;
@@ -34,6 +33,10 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @ConfigurationParameter("local-slot")
     @IntDefaultValue(1)
     public int localSlot = 1;
+    
+    @ConfigurationParameter("local-tsap")
+    @IntDefaultValue(0)
+    public int localTsap = 0;
 
     @ConfigurationParameter("remote-rack")
     @IntDefaultValue(0)
@@ -42,6 +45,10 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @ConfigurationParameter("remote-slot")
     @IntDefaultValue(0)
     public int remoteSlot = 0;
+
+    @ConfigurationParameter("remote-tsap")
+    @IntDefaultValue(0)
+    public int remoteTsap = 0;
 
     @ConfigurationParameter("pdu-size")
     @IntDefaultValue(1024)
@@ -74,6 +81,14 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
         this.localSlot = localSlot;
     }
 
+    public int getLocalTsap() {
+        return localTsap;
+    }
+
+    public void setLocalTsap(int localTsap) {
+        this.localTsap = localTsap;
+    }
+    
     public int getRemoteRack() {
         return remoteRack;
     }
@@ -90,6 +105,14 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
         this.remoteSlot = remoteSlot;
     }
 
+    public int getRemoteTsap() {
+        return remoteTsap;
+    }
+
+    public void setRemoteTsap(int remoteTsap) {
+        this.remoteTsap = remoteTsap;
+    }
+    
     public int getPduSize() {
         return pduSize;
     }
@@ -136,8 +159,10 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
         return "Configuration{" +
             "local-rack=" + localRack +
             ", local-slot=" + localSlot +
+            ", local-tsap=" + localTsap +
             ", remote-rack=" + remoteRack +
-            ", remot-slot=" + remoteSlot +
+            ", remote-slot=" + remoteSlot +
+            ", remote-tsap=" + remoteTsap +
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +

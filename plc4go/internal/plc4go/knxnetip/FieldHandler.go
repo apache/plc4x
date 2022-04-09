@@ -1,21 +1,22 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package knxnetip
 
 import (
@@ -27,21 +28,6 @@ import (
 	"regexp"
 	"strconv"
 )
-
-type FieldType uint8
-
-const (
-	FieldCoil FieldType = 0x00
-)
-
-func (m FieldType) GetName() string {
-	switch m {
-	case FieldCoil:
-		// TODO: these looked like copy paste from modbus before change this name might be therefore completly wrong
-		return "KNXNETIPFIELDCOIL"
-	}
-	return ""
-}
 
 type FieldHandler struct {
 	groupAddress3Level             *regexp.Regexp
@@ -92,20 +78,20 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		return NewDeviceQueryField(
 			match["mainGroup"], match["middleGroup"], match["subGroup"]), nil
 	} else if match := utils.GetSubgroupMatches(m.devicePropertyAddress, query); match != nil {
-		mainGroup, _ := strconv.Atoi(match["mainGroup"])
-		middleGroup, _ := strconv.Atoi(match["middleGroup"])
-		subGroup, _ := strconv.Atoi(match["subGroup"])
-		objectId, _ := strconv.Atoi(match["objectId"])
-		propertyId, _ := strconv.Atoi(match["propertyId"])
-		propertyIndex := 1
+		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
+		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)
+		subGroup, _ := strconv.ParseUint(match["subGroup"], 10, 8)
+		objectId, _ := strconv.ParseUint(match["objectId"], 10, 8)
+		propertyId, _ := strconv.ParseUint(match["propertyId"], 10, 8)
+		propertyIndex := uint64(1)
 		propertyInd, ok := match["propertyIndex"]
 		if ok && len(propertyInd) > 0 {
-			propertyIndex, _ = strconv.Atoi(propertyInd)
+			propertyIndex, _ = strconv.ParseUint(propertyInd, 10, 16)
 		}
-		numberOfElements := 1
+		numberOfElements := uint64(1)
 		numElements, ok := match["numElements"]
 		if ok && len(numElements) > 0 {
-			numberOfElements, _ = strconv.Atoi(numElements)
+			numberOfElements, _ = strconv.ParseUint(numElements, 10, 8)
 		}
 		return NewDevicePropertyAddressPlcField(
 			uint8(mainGroup), uint8(middleGroup), uint8(subGroup), uint8(objectId), uint8(propertyId),
@@ -117,9 +103,9 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		if ok && len(fieldTypeName) > 0 {
 			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
 		}
-		mainGroup, _ := strconv.Atoi(match["mainGroup"])
-		middleGroup, _ := strconv.Atoi(match["middleGroup"])
-		subGroup, _ := strconv.Atoi(match["subGroup"])
+		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
+		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)
+		subGroup, _ := strconv.ParseUint(match["subGroup"], 10, 8)
 		addressData, _ := hex.DecodeString(match["address"])
 		var address uint16
 		if len(addressData) == 2 {
@@ -129,16 +115,16 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		} else {
 			return nil, errors.New("invalid address: " + match["address"])
 		}
-		numberOfElements := 1
+		numberOfElements := uint64(1)
 		numElements, ok := match["numElements"]
 		if ok && len(numElements) > 0 {
-			numberOfElements, _ = strconv.Atoi(numElements)
+			numberOfElements, _ = strconv.ParseUint(numElements, 10, 8)
 		}
 		return NewDeviceMemoryAddressPlcField(uint8(mainGroup), uint8(middleGroup), uint8(subGroup), address, uint8(numberOfElements), &fieldType), nil
 	} else if match := utils.GetSubgroupMatches(m.deviceCommunicationObjectQuery, query); match != nil {
-		mainGroup, _ := strconv.Atoi(match["mainGroup"])
-		middleGroup, _ := strconv.Atoi(match["middleGroup"])
-		subGroup, _ := strconv.Atoi(match["subGroup"])
+		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
+		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)
+		subGroup, _ := strconv.ParseUint(match["subGroup"], 10, 8)
 		return NewCommunicationObjectQueryField(
 			uint8(mainGroup), uint8(middleGroup), uint8(subGroup)), nil
 	}

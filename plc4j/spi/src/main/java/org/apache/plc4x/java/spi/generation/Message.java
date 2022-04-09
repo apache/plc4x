@@ -16,15 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.generation;
 
-public interface Message {
+import org.apache.plc4x.java.spi.utils.Serializable;
+
+public interface Message extends Serializable {
 
     int getLengthInBytes();
 
     int getLengthInBits();
-
-    MessageIO<? extends Message, ? extends Message> getMessageIO();
 
 }

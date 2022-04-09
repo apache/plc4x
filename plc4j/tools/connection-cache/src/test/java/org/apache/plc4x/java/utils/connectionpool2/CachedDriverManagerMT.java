@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.utils.connectionpool2;
 
 import org.apache.plc4x.java.PlcDriverManager;
@@ -34,16 +33,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 24.02.20
- */
 @Disabled("These should be run manually")
 class CachedDriverManagerMT {
 
-    private static final Logger logger = LoggerFactory.getLogger(CachedDriverManagerMT.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CachedDriverManagerMT.class);
 
     public static final String PLC_IP = "s7://192.168.167.210/1/1";
 //    public static final String PLC_IP = "s7://127.0.0.1/1/1";
@@ -61,7 +54,7 @@ class CachedDriverManagerMT {
                         System.out.println("Close...");
                         connection.close();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.warn("error", e);
                     }
                 }, 1, TimeUnit.SECONDS);
                 return connection;

@@ -1,21 +1,21 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java.abeth.protocol;
 
 import io.netty.buffer.ByteBuf;
@@ -39,9 +39,7 @@ import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Deprecated
@@ -50,8 +48,8 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
     private static final Logger logger = LoggerFactory.getLogger(Plc4xAbEthProtocol.class);
 
     private static final AtomicInteger transactionCounterGenerator = new AtomicInteger(10);
-    private static final short[] emptySenderContext = new short[] {(short) 0x00 ,(short) 0x00 ,(short) 0x00,
-        (short) 0x00,(short) 0x00,(short) 0x00, (short) 0x00,(short) 0x00};
+    private static final List<Short> emptySenderContext = Arrays.asList((short) 0x00 ,(short) 0x00 ,(short) 0x00,
+            (short) 0x00,(short) 0x00,(short) 0x00, (short) 0x00,(short) 0x00);
 
     private long sessionHandle;
     private Map<Integer, PlcRequestContainer> requests;
@@ -176,9 +174,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                         case INTEGER: // output as single bytes
                             if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
-                                short[] data = df1PTLR.getData();
-                                if(data.length == 1) {
-                                    plcValue = new PlcINT(data[0]);
+                                List<Short> data = df1PTLR.getData();
+                                if(data.size() == 1) {
+                                    plcValue = new PlcINT(data.get(0));
                                 } else {
                                     plcValue = IEC61131ValueHandler.of(data);
                                 }
@@ -187,33 +185,33 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                         case WORD:
                             if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
-                                short[] data = df1PTLR.getData();
-                                if (((data[1]>> 7) & 1) == 0)  {
-                                    plcValue = IEC61131ValueHandler.of((data[1] << 8) + data[0]);  // positive number
+                                List<Short> data = df1PTLR.getData();
+                                if (((data.get(1)>> 7) & 1) == 0)  {
+                                    plcValue = IEC61131ValueHandler.of((data.get(1) << 8) + data.get(0));  // positive number
                                 } else {
-                                    plcValue = IEC61131ValueHandler.of((((~data[1] & 0b01111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
+                                    plcValue = IEC61131ValueHandler.of((((~data.get(1) & 0b01111111) << 8) + (~(data.get(0)-1) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
                         case DWORD:
                             if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
-                                short[] data = df1PTLR.getData();
-                                if (((data[3]>> 7) & 1) == 0)  {
-                                    plcValue = IEC61131ValueHandler.of((data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0]);  // positive number
+                                List<Short> data = df1PTLR.getData();
+                                if (((data.get(3)>> 7) & 1) == 0)  {
+                                    plcValue = IEC61131ValueHandler.of((data.get(3) << 24) + (data.get(2) << 16) + (data.get(1) << 8) + data.get(0));  // positive number
                                 } else {
-                                    plcValue = IEC61131ValueHandler.of((((~data[3] & 0b01111111) << 24) + ((~(data[2]-1) & 0b11111111) << 16)+ ((~(data[1]-1) & 0b11111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
+                                    plcValue = IEC61131ValueHandler.of((((~data.get(3) & 0b01111111) << 24) + ((~(data.get(2)-1) & 0b11111111) << 16)+ ((~(data.get(1)-1) & 0b11111111) << 8) + (~(data.get(0)-1) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
                         case SINGLEBIT:
                             if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
-                                short[] data = df1PTLR.getData();
+                                List<Short> data = df1PTLR.getData();
                                 if (field.getBitNumber() < 8) {
-                                    plcValue = IEC61131ValueHandler.of((data[0] & (1 <<  field.getBitNumber())) != 0);         // read from first byte
+                                    plcValue = IEC61131ValueHandler.of((data.get(0) & (1 <<  field.getBitNumber())) != 0);         // read from first byte
                                 } else {
-                                    plcValue = IEC61131ValueHandler.of((data[1] & (1 << (field.getBitNumber() - 8) )) != 0);   // read from second byte
+                                    plcValue = IEC61131ValueHandler.of((data.get(1) & (1 << (field.getBitNumber() - 8) )) != 0);   // read from second byte
                                 }
                             }
                             break;

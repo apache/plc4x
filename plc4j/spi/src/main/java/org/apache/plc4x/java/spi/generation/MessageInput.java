@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
+@FunctionalInterface
 public interface MessageInput<PARSER_TYPE> {
 
     PARSER_TYPE parse(ReadBuffer io, Object... args) throws ParseException;

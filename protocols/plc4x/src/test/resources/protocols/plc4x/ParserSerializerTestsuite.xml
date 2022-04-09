@@ -1,0 +1,734 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                byteOrder="BIG_ENDIAN">
+
+  <name>PLC4X (Proxy-Protocol)</name>
+
+  <protocolName>plc4x</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
+  <testcase>
+    <name>Connection Request</name>
+    <raw>01001c0001011573696d756c617465643a2f2f6c6f63616c686f7374</raw>
+    <root-type>Plc4xMessage</root-type>
+    <xml>
+      <Plc4xMessage>
+        <version dataType="uint" bitLength="8">1</version>
+        <packetLength dataType="uint" bitLength="16">28</packetLength>
+        <requestId dataType="uint" bitLength="16">1</requestId>
+        <requestType>
+          <Plc4xRequestType dataType="uint" bitLength="8" stringRepresentation="CONNECT_REQUEST">1</Plc4xRequestType>
+        </requestType>
+        <Plc4xConnectRequest>
+          <connectionStringLen dataType="uint" bitLength="8">21</connectionStringLen>
+          <connectionString dataType="string" bitLength="168" encoding="UTF-8">simulated://localhost</connectionString>
+        </Plc4xConnectRequest>
+      </Plc4xMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Connection Response</name>
+    <raw>010009000102000101</raw>
+    <root-type>Plc4xMessage</root-type>
+    <xml>
+      <Plc4xMessage>
+        <version dataType="uint" bitLength="8">1</version>
+        <packetLength dataType="uint" bitLength="16">9</packetLength>
+        <requestId dataType="uint" bitLength="16">1</requestId>
+        <requestType>
+          <Plc4xRequestType dataType="uint" bitLength="8" stringRepresentation="CONNECT_RESPONSE">2</Plc4xRequestType>
+        </requestType>
+        <Plc4xConnectResponse>
+          <connectionId dataType="uint" bitLength="16">1</connectionId>
+          <responseCode>
+            <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+          </responseCode>
+        </Plc4xConnectResponse>
+      </Plc4xMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Read Request (Single Item)</name>
+    <raw>01001f000205000101066c616c616c610e52414e444f4d2f666f6f3a494e54</raw>
+    <root-type>Plc4xMessage</root-type>
+    <xml>
+      <Plc4xMessage>
+        <version dataType="uint" bitLength="8">1</version>
+        <packetLength dataType="uint" bitLength="16">31</packetLength>
+        <requestId dataType="uint" bitLength="16">2</requestId>
+        <requestType>
+          <Plc4xRequestType dataType="uint" bitLength="8" stringRepresentation="READ_REQUEST">5</Plc4xRequestType>
+        </requestType>
+        <Plc4xReadRequest>
+          <connectionId dataType="uint" bitLength="16">1</connectionId>
+          <numFields dataType="uint" bitLength="8">1</numFields>
+          <fields isList="true">
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">6</nameLen>
+                  <name dataType="string" bitLength="48" encoding="UTF-8">lalala</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">14</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="112" encoding="UTF-8">RANDOM/foo:INT</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+          </fields>
+        </Plc4xReadRequest>
+      </Plc4xMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Read Response (Single Item)</name>
+    <raw>01002400020600010101066c616c616c610e52414e444f4d2f666f6f3a494e5401223ceb</raw>
+    <root-type>Plc4xMessage</root-type>
+    <xml>
+      <Plc4xMessage>
+        <version dataType="uint" bitLength="8">1</version>
+        <packetLength dataType="uint" bitLength="16">36</packetLength>
+        <requestId dataType="uint" bitLength="16">2</requestId>
+        <requestType>
+          <Plc4xRequestType dataType="uint" bitLength="8" stringRepresentation="READ_RESPONSE">6</Plc4xRequestType>
+        </requestType>
+        <Plc4xReadResponse>
+          <connectionId dataType="uint" bitLength="16">1</connectionId>
+          <responseCode>
+            <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+          </responseCode>
+          <numFields dataType="uint" bitLength="8">1</numFields>
+          <fields isList="true">
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">6</nameLen>
+                  <name dataType="string" bitLength="48" encoding="UTF-8">lalala</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">14</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="112" encoding="UTF-8">RANDOM/foo:INT</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="INT">34</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="int" bitLength="16">15595</value>
+              </value>
+            </Plc4xFieldValueResponse>
+          </fields>
+        </Plc4xReadResponse>
+      </Plc4xMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Read Request (Multiple Items)</name>
+    <raw>0101b300020500011009746573742d424f4f4c0f52414e444f4d2f666f6f3a424f4f4c09746573742d425954450f52414e444f4d2f666f6f3a4259544509746573742d574f52440f52414e444f4d2f666f6f3a574f52440a746573742d44574f52441052414e444f4d2f666f6f3a44574f52440a746573742d5553494e541052414e444f4d2f666f6f3a5553494e5409746573742d55494e540f52414e444f4d2f666f6f3a55494e540a746573742d5544494e541052414e444f4d2f666f6f3a5544494e540a746573742d554c494e541052414e444f4d2f666f6f3a554c494e5409746573742d53494e540f52414e444f4d2f666f6f3a53494e5408746573742d494e540e52414e444f4d2f666f6f3a494e5409746573742d44494e540f52414e444f4d2f666f6f3a44494e5409746573742d4c494e540f52414e444f4d2f666f6f3a4c494e5409746573742d5245414c0f52414e444f4d2f666f6f3a5245414c0a746573742d4c5245414c1052414e444f4d2f666f6f3a4c5245414c09746573742d434841520f52414e444f4d2f666f6f3a434841520a746573742d57434841521052414e444f4d2f666f6f3a5743484152</raw>
+    <root-type>Plc4xMessage</root-type>
+    <xml>
+      <Plc4xMessage>
+        <version dataType="uint" bitLength="8">1</version>
+        <packetLength dataType="uint" bitLength="16">435</packetLength>
+        <requestId dataType="uint" bitLength="16">2</requestId>
+        <requestType>
+          <Plc4xRequestType dataType="uint" bitLength="8" stringRepresentation="READ_REQUEST">5</Plc4xRequestType>
+        </requestType>
+        <Plc4xReadRequest>
+          <connectionId dataType="uint" bitLength="16">1</connectionId>
+          <numFields dataType="uint" bitLength="8">16</numFields>
+          <fields isList="true">
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-BOOL</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:BOOL</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-BYTE</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:BYTE</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-WORD</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:WORD</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">10</nameLen>
+                  <name dataType="string" bitLength="80" encoding="UTF-8">test-DWORD</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:DWORD</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">10</nameLen>
+                  <name dataType="string" bitLength="80" encoding="UTF-8">test-USINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:USINT</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-UINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:UINT</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">10</nameLen>
+                  <name dataType="string" bitLength="80" encoding="UTF-8">test-UDINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:UDINT</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">10</nameLen>
+                  <name dataType="string" bitLength="80" encoding="UTF-8">test-ULINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:ULINT</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-SINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:SINT</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">8</nameLen>
+                  <name dataType="string" bitLength="64" encoding="UTF-8">test-INT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">14</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="112" encoding="UTF-8">RANDOM/foo:INT</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-DINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:DINT</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-LINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:LINT</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-REAL</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:REAL</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">10</nameLen>
+                  <name dataType="string" bitLength="80" encoding="UTF-8">test-LREAL</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:LREAL</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-CHAR</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:CHAR</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+            <Plc4xFieldRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">10</nameLen>
+                  <name dataType="string" bitLength="80" encoding="UTF-8">test-WCHAR</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:WCHAR</fieldQuery>
+                </Plc4xField>
+              </field>
+            </Plc4xFieldRequest>
+          </fields>
+        </Plc4xReadRequest>
+      </Plc4xMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Read Response (Multiple Items)</name>
+    <raw>0102090002060001011009746573742d424f4f4c0f52414e444f4d2f666f6f3a424f4f4c01010009746573742d425954450f52414e444f4d2f666f6f3a425954450102bf09746573742d574f52440f52414e444f4d2f666f6f3a574f52440103291f0a746573742d44574f52441052414e444f4d2f666f6f3a44574f52440104782399390a746573742d5553494e541052414e444f4d2f666f6f3a5553494e540111af09746573742d55494e540f52414e444f4d2f666f6f3a55494e540112aae80a746573742d5544494e541052414e444f4d2f666f6f3a5544494e540113d18a89d40a746573742d554c494e541052414e444f4d2f666f6f3a554c494e540114973ddb08e6b65fad09746573742d53494e540f52414e444f4d2f666f6f3a53494e5401216008746573742d494e540e52414e444f4d2f666f6f3a494e540122e68009746573742d44494e540f52414e444f4d2f666f6f3a44494e540123388236ae09746573742d4c494e540f52414e444f4d2f666f6f3a4c494e540124e3a2e56fd4ab3acf09746573742d5245414c0f52414e444f4d2f666f6f3a5245414c0131f380ff420a746573742d4c5245414c1052414e444f4d2f666f6f3a4c5245414c013217510d3033219c2509746573742d434841520f52414e444f4d2f666f6f3a434841520141500a746573742d57434841521052414e444f4d2f666f6f3a5743484152014203e0</raw>
+    <root-type>Plc4xMessage</root-type>
+    <xml>
+      <Plc4xMessage>
+        <version dataType="uint" bitLength="8">1</version>
+        <packetLength dataType="uint" bitLength="16">521</packetLength>
+        <requestId dataType="uint" bitLength="16">2</requestId>
+        <requestType>
+          <Plc4xRequestType dataType="uint" bitLength="8" stringRepresentation="READ_RESPONSE">6</Plc4xRequestType>
+        </requestType>
+        <Plc4xReadResponse>
+          <connectionId dataType="uint" bitLength="16">1</connectionId>
+          <responseCode>
+            <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+          </responseCode>
+          <numFields dataType="uint" bitLength="8">16</numFields>
+          <fields isList="true">
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-BOOL</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:BOOL</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="BOOL">1</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="uint" bitLength="7">0</value>
+                <value dataType="bit" bitLength="1">false</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-BYTE</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:BYTE</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="BYTE">2</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="uint" bitLength="8">191</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-WORD</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:WORD</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="WORD">3</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="uint" bitLength="16">10527</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">10</nameLen>
+                  <name dataType="string" bitLength="80" encoding="UTF-8">test-DWORD</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:DWORD</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="DWORD">4</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="uint" bitLength="32">2015598905</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">10</nameLen>
+                  <name dataType="string" bitLength="80" encoding="UTF-8">test-USINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:USINT</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="USINT">17</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="uint" bitLength="8">175</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-UINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:UINT</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="UINT">18</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="uint" bitLength="16">43752</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">10</nameLen>
+                  <name dataType="string" bitLength="80" encoding="UTF-8">test-UDINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:UDINT</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="UDINT">19</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="uint" bitLength="32">3515517396</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">10</nameLen>
+                  <name dataType="string" bitLength="80" encoding="UTF-8">test-ULINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:ULINT</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="ULINT">20</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="uint" bitLength="64">10898107504583401389</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-SINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:SINT</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="SINT">33</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="int" bitLength="8">96</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">8</nameLen>
+                  <name dataType="string" bitLength="64" encoding="UTF-8">test-INT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">14</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="112" encoding="UTF-8">RANDOM/foo:INT</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="INT">34</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="int" bitLength="16">-6528</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-DINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:DINT</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="DINT">35</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="int" bitLength="32">948057774</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-LINT</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:LINT</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="LINT">36</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="int" bitLength="64">-2043819012400661809</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-REAL</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:REAL</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="REAL">49</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="float" bitLength="32">-2.0440407E31</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">10</nameLen>
+                  <name dataType="string" bitLength="80" encoding="UTF-8">test-LREAL</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:LREAL</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="LREAL">50</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="float" bitLength="64">2.281108017618101E-196</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">9</nameLen>
+                  <name dataType="string" bitLength="72" encoding="UTF-8">test-CHAR</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:CHAR</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="CHAR">65</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="string" bitLength="8" encoding="UTF-8">P</value>
+              </value>
+            </Plc4xFieldValueResponse>
+            <Plc4xFieldValueResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">10</nameLen>
+                  <name dataType="string" bitLength="80" encoding="UTF-8">test-WCHAR</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:WCHAR</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="WCHAR">66</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="string" bitLength="16" encoding="UTF-16">Ϡ</value>
+              </value>
+            </Plc4xFieldValueResponse>
+          </fields>
+        </Plc4xReadResponse>
+      </Plc4xMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Write Request</name>
+    <raw>010022000207000101066c616c616c610e5354444f55542f666f6f3a494e54220017</raw>
+    <root-type>Plc4xMessage</root-type>
+    <xml>
+      <Plc4xMessage>
+        <version dataType="uint" bitLength="8">1</version>
+        <packetLength dataType="uint" bitLength="16">34</packetLength>
+        <requestId dataType="uint" bitLength="16">2</requestId>
+        <requestType>
+          <Plc4xRequestType dataType="uint" bitLength="8" stringRepresentation="WRITE_REQUEST">7</Plc4xRequestType>
+        </requestType>
+        <Plc4xWriteRequest>
+          <connectionId dataType="uint" bitLength="16">1</connectionId>
+          <numFields dataType="uint" bitLength="8">1</numFields>
+          <fields isList="true">
+            <Plc4xFieldValueRequest>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">6</nameLen>
+                  <name dataType="string" bitLength="48" encoding="UTF-8">lalala</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">14</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="112" encoding="UTF-8">STDOUT/foo:INT</fieldQuery>
+                </Plc4xField>
+              </field>
+              <valueType>
+                <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="INT">34</Plc4xValueType>
+              </valueType>
+              <value>
+                <value dataType="int" bitLength="16">23</value>
+              </value>
+            </Plc4xFieldValueRequest>
+          </fields>
+        </Plc4xWriteRequest>
+      </Plc4xMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Write Response</name>
+    <raw>01002100020800010101066c616c616c610e5354444f55542f666f6f3a494e5401</raw>
+    <root-type>Plc4xMessage</root-type>
+    <xml>
+      <Plc4xMessage>
+        <version dataType="uint" bitLength="8">1</version>
+        <packetLength dataType="uint" bitLength="16">33</packetLength>
+        <requestId dataType="uint" bitLength="16">2</requestId>
+        <requestType>
+          <Plc4xRequestType dataType="uint" bitLength="8" stringRepresentation="WRITE_RESPONSE">8</Plc4xRequestType>
+        </requestType>
+        <Plc4xWriteResponse>
+          <connectionId dataType="uint" bitLength="16">1</connectionId>
+          <responseCode>
+            <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+          </responseCode>
+          <numFields dataType="uint" bitLength="8">1</numFields>
+          <fields isList="true">
+            <Plc4xFieldResponse>
+              <field>
+                <Plc4xField>
+                  <nameLen dataType="uint" bitLength="8">6</nameLen>
+                  <name dataType="string" bitLength="48" encoding="UTF-8">lalala</name>
+                  <fieldQueryLen dataType="uint" bitLength="8">14</fieldQueryLen>
+                  <fieldQuery dataType="string" bitLength="112" encoding="UTF-8">STDOUT/foo:INT</fieldQuery>
+                </Plc4xField>
+              </field>
+              <responseCode>
+                <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
+              </responseCode>
+            </Plc4xFieldResponse>
+          </fields>
+        </Plc4xWriteResponse>
+      </Plc4xMessage>
+    </xml>
+  </testcase>
+
+</test:testsuite>

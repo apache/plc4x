@@ -18,54 +18,75 @@
   under the License.
   -->
 <test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
-                bigEndian="false">
+                byteOrder="LITTLE_ENDIAN">
 
   <name>Beckhoff ADS/AMS</name>
+
+  <protocolName>ads</protocolName>
+  <outputFlavor>read-write</outputFlavor>
 
   <testcase>
     <name>Ams-Single-Item-Read-Request</name>
     <raw>00002c000000c0a8171401015303c0a817c801015303020004000c000000000000000200000005f000000000801a01000000</raw>
     <root-type>AmsTCPPacket</root-type>
     <xml>
-      <AmsTCPPacket className="org.apache.plc4x.java.ads.readwrite.AmsTCPPacket">
-        <userdata className="org.apache.plc4x.java.ads.readwrite.AmsPacket">
-          <targetAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>20</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </targetAmsNetId>
-          <targetAmsPort>851</targetAmsPort>
-          <sourceAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>200</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </sourceAmsNetId>
-          <sourceAmsPort>851</sourceAmsPort>
-          <commandId>ADS_READ</commandId>
-          <state className="org.apache.plc4x.java.ads.readwrite.State">
-            <initCommand>false</initCommand>
-            <updCommand>false</updCommand>
-            <timestampAdded>false</timestampAdded>
-            <highPriorityCommand>false</highPriorityCommand>
-            <systemCommand>false</systemCommand>
-            <adsCommand>true</adsCommand>
-            <noReturn>false</noReturn>
-            <response>false</response>
-            <broadcast>false</broadcast>
-          </state>
-          <errorCode>0</errorCode>
-          <invokeId>2</invokeId>
-          <data className="org.apache.plc4x.java.ads.readwrite.AdsReadRequest">
-            <indexGroup>61445</indexGroup>
-            <indexOffset>444596224</indexOffset>
-            <length>1</length>
-          </data>
+      <AmsTCPPacket>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <length dataType="uint" bitLength="32">44</length>
+        <userdata>
+          <AmsPacket>
+            <targetAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">20</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </targetAmsNetId>
+            <targetAmsPort dataType="uint" bitLength="16">851</targetAmsPort>
+            <sourceAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">200</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </sourceAmsNetId>
+            <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
+            <commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
+            </commandId>
+            <state>
+              <State>
+                <initCommand dataType="bit" bitLength="1">false</initCommand>
+                <updCommand dataType="bit" bitLength="1">false</updCommand>
+                <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+                <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+                <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+                <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+                <noReturn dataType="bit" bitLength="1">false</noReturn>
+                <response dataType="bit" bitLength="1">false</response>
+                <broadcast dataType="bit" bitLength="1">false</broadcast>
+                <reserved dataType="int" bitLength="7">0</reserved>
+              </State>
+            </state>
+            <length dataType="uint" bitLength="32">12</length>
+            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <invokeId dataType="uint" bitLength="32">2</invokeId>
+            <data>
+              <AdsData>
+                <AdsReadRequest>
+                  <indexGroup dataType="uint" bitLength="32">61445</indexGroup>
+                  <indexOffset dataType="uint" bitLength="32">444596224</indexOffset>
+                  <length dataType="uint" bitLength="32">1</length>
+                </AdsReadRequest>
+              </AdsData>
+            </data>
+          </AmsPacket>
         </userdata>
       </AmsTCPPacket>
     </xml>
@@ -76,44 +97,65 @@
     <raw>000029000000c0a817c801015303c0a817140101530302000500090000000000000002000000000000000100000001</raw>
     <root-type>AmsTCPPacket</root-type>
     <xml>
-      <AmsTCPPacket className="org.apache.plc4x.java.ads.readwrite.AmsTCPPacket">
-        <userdata className="org.apache.plc4x.java.ads.readwrite.AmsPacket">
-          <targetAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>200</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </targetAmsNetId>
-          <targetAmsPort>851</targetAmsPort>
-          <sourceAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>20</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </sourceAmsNetId>
-          <sourceAmsPort>851</sourceAmsPort>
-          <commandId>ADS_READ</commandId>
-          <state className="org.apache.plc4x.java.ads.readwrite.State">
-            <initCommand>false</initCommand>
-            <updCommand>false</updCommand>
-            <timestampAdded>false</timestampAdded>
-            <highPriorityCommand>false</highPriorityCommand>
-            <systemCommand>false</systemCommand>
-            <adsCommand>true</adsCommand>
-            <noReturn>false</noReturn>
-            <response>true</response>
-            <broadcast>false</broadcast>
-          </state>
-          <errorCode>0</errorCode>
-          <invokeId>2</invokeId>
-          <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
-            <result>OK</result>
-            <data>01</data>
-          </data>
+      <AmsTCPPacket>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <length dataType="uint" bitLength="32">41</length>
+        <userdata>
+          <AmsPacket>
+            <targetAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">200</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </targetAmsNetId>
+            <targetAmsPort dataType="uint" bitLength="16">851</targetAmsPort>
+            <sourceAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">20</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </sourceAmsNetId>
+            <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
+            <commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
+            </commandId>
+            <state>
+              <State>
+                <initCommand dataType="bit" bitLength="1">false</initCommand>
+                <updCommand dataType="bit" bitLength="1">false</updCommand>
+                <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+                <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+                <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+                <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+                <noReturn dataType="bit" bitLength="1">false</noReturn>
+                <response dataType="bit" bitLength="1">true</response>
+                <broadcast dataType="bit" bitLength="1">false</broadcast>
+                <reserved dataType="int" bitLength="7">0</reserved>
+              </State>
+            </state>
+            <length dataType="uint" bitLength="32">9</length>
+            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <invokeId dataType="uint" bitLength="32">2</invokeId>
+            <data>
+              <AdsData>
+                <AdsReadResponse>
+                  <result>
+                    <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+                  </result>
+                  <length dataType="uint" bitLength="32">1</length>
+                  <data dataType="byte" bitLength="8">0x01</data>
+                </AdsReadResponse>
+              </AdsData>
+            </data>
+          </AmsPacket>
         </userdata>
       </AmsTCPPacket>
     </xml>
@@ -124,47 +166,67 @@
     <raw>00004a000000c0a8171401015303c0a817cd0101feff090004002a000000000000000100000003f0000000000000040000001a0000006d61696e2e665f74726967446174656947656c6573656e2e4d00</raw>
     <root-type>AmsTCPPacket</root-type>
     <xml>
-      <AmsTCPPacket className="org.apache.plc4x.java.ads.readwrite.AmsTCPPacket">
-        <userdata className="org.apache.plc4x.java.ads.readwrite.AmsPacket">
-          <targetAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>20</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </targetAmsNetId>
-          <targetAmsPort>851</targetAmsPort>
-          <sourceAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>205</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </sourceAmsNetId>
-          <sourceAmsPort>65534</sourceAmsPort>
-          <commandId>ADS_READ_WRITE</commandId>
-          <state className="org.apache.plc4x.java.ads.readwrite.State">
-            <initCommand>false</initCommand>
-            <updCommand>false</updCommand>
-            <timestampAdded>false</timestampAdded>
-            <highPriorityCommand>false</highPriorityCommand>
-            <systemCommand>false</systemCommand>
-            <adsCommand>true</adsCommand>
-            <noReturn>false</noReturn>
-            <response>false</response>
-            <broadcast>false</broadcast>
-          </state>
-          <errorCode>0</errorCode>
-          <invokeId>1</invokeId>
-          <data className="org.apache.plc4x.java.ads.readwrite.AdsReadWriteRequest">
-            <indexGroup>61443</indexGroup>
-            <indexOffset>0</indexOffset>
-            <readLength>4</readLength>
-            <items/>
-            <data>6D61696E2E665F74726967446174656947656C6573656E2E4D00</data>
-          </data>
+      <AmsTCPPacket>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <length dataType="uint" bitLength="32">74</length>
+        <userdata>
+          <AmsPacket>
+            <targetAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">20</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </targetAmsNetId>
+            <targetAmsPort dataType="uint" bitLength="16">851</targetAmsPort>
+            <sourceAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">205</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </sourceAmsNetId>
+            <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
+            <commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
+            </commandId>
+            <state>
+              <State>
+                <initCommand dataType="bit" bitLength="1">false</initCommand>
+                <updCommand dataType="bit" bitLength="1">false</updCommand>
+                <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+                <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+                <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+                <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+                <noReturn dataType="bit" bitLength="1">false</noReturn>
+                <response dataType="bit" bitLength="1">false</response>
+                <broadcast dataType="bit" bitLength="1">false</broadcast>
+                <reserved dataType="int" bitLength="7">0</reserved>
+              </State>
+            </state>
+            <length dataType="uint" bitLength="32">42</length>
+            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <invokeId dataType="uint" bitLength="32">1</invokeId>
+            <data>
+              <AdsData>
+                <AdsReadWriteRequest>
+                  <indexGroup dataType="uint" bitLength="32">61443</indexGroup>
+                  <indexOffset dataType="uint" bitLength="32">0</indexOffset>
+                  <readLength dataType="uint" bitLength="32">4</readLength>
+                  <writeLength dataType="uint" bitLength="32">26</writeLength>
+                  <items isList="true">
+                  </items>
+                  <data dataType="byte" bitLength="208">0x6d61696e2e665f74726967446174656947656c6573656e2e4d00</data>
+                </AdsReadWriteRequest>
+              </AdsData>
+            </data>
+          </AmsPacket>
         </userdata>
       </AmsTCPPacket>
     </xml>
@@ -175,44 +237,65 @@
     <raw>00002c000000c0a817cd0101feffc0a8171401015303090005000c000000000000000100000000000000040000000100801b</raw>
     <root-type>AmsTCPPacket</root-type>
     <xml>
-      <AmsTCPPacket className="org.apache.plc4x.java.ads.readwrite.AmsTCPPacket">
-        <userdata className="org.apache.plc4x.java.ads.readwrite.AmsPacket">
-          <targetAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>205</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </targetAmsNetId>
-          <targetAmsPort>65534</targetAmsPort>
-          <sourceAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>20</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </sourceAmsNetId>
-          <sourceAmsPort>851</sourceAmsPort>
-          <commandId>ADS_READ_WRITE</commandId>
-          <state className="org.apache.plc4x.java.ads.readwrite.State">
-            <initCommand>false</initCommand>
-            <updCommand>false</updCommand>
-            <timestampAdded>false</timestampAdded>
-            <highPriorityCommand>false</highPriorityCommand>
-            <systemCommand>false</systemCommand>
-            <adsCommand>true</adsCommand>
-            <noReturn>false</noReturn>
-            <response>true</response>
-            <broadcast>false</broadcast>
-          </state>
-          <errorCode>0</errorCode>
-          <invokeId>1</invokeId>
-          <data className="org.apache.plc4x.java.ads.readwrite.AdsReadWriteResponse">
-            <result>OK</result>
-            <data>0100801B</data>
-          </data>
+      <AmsTCPPacket>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <length dataType="uint" bitLength="32">44</length>
+        <userdata>
+          <AmsPacket>
+            <targetAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">205</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </targetAmsNetId>
+            <targetAmsPort dataType="uint" bitLength="16">65534</targetAmsPort>
+            <sourceAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">20</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </sourceAmsNetId>
+            <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
+            <commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
+            </commandId>
+            <state>
+              <State>
+                <initCommand dataType="bit" bitLength="1">false</initCommand>
+                <updCommand dataType="bit" bitLength="1">false</updCommand>
+                <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+                <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+                <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+                <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+                <noReturn dataType="bit" bitLength="1">false</noReturn>
+                <response dataType="bit" bitLength="1">true</response>
+                <broadcast dataType="bit" bitLength="1">false</broadcast>
+                <reserved dataType="int" bitLength="7">0</reserved>
+              </State>
+            </state>
+            <length dataType="uint" bitLength="32">12</length>
+            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <invokeId dataType="uint" bitLength="32">1</invokeId>
+            <data>
+              <AdsData>
+                <AdsReadWriteResponse>
+                  <result>
+                    <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+                  </result>
+                  <length dataType="uint" bitLength="32">4</length>
+                  <data dataType="byte" bitLength="32">0x0100801b</data>
+                </AdsReadWriteResponse>
+              </AdsData>
+            </data>
+          </AmsPacket>
         </userdata>
       </AmsTCPPacket>
     </xml>
@@ -223,45 +306,63 @@
     <raw>00002c000000c0a8171401015303c0a817cd0101feff020004000c000000000000000100000005f000000100801b04000000</raw>
     <root-type>AmsTCPPacket</root-type>
     <xml>
-      <AmsTCPPacket className="org.apache.plc4x.java.ads.readwrite.AmsTCPPacket">
-        <userdata className="org.apache.plc4x.java.ads.readwrite.AmsPacket">
-          <targetAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>20</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </targetAmsNetId>
-          <targetAmsPort>851</targetAmsPort>
-          <sourceAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>205</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </sourceAmsNetId>
-          <sourceAmsPort>65534</sourceAmsPort>
-          <commandId>ADS_READ</commandId>
-          <state className="org.apache.plc4x.java.ads.readwrite.State">
-            <initCommand>false</initCommand>
-            <updCommand>false</updCommand>
-            <timestampAdded>false</timestampAdded>
-            <highPriorityCommand>false</highPriorityCommand>
-            <systemCommand>false</systemCommand>
-            <adsCommand>true</adsCommand>
-            <noReturn>false</noReturn>
-            <response>false</response>
-            <broadcast>false</broadcast>
-          </state>
-          <errorCode>0</errorCode>
-          <invokeId>1</invokeId>
-          <data className="org.apache.plc4x.java.ads.readwrite.AdsReadRequest">
-            <indexGroup>61445</indexGroup>
-            <indexOffset>461373441</indexOffset>
-            <length>4</length>
-          </data>
+      <AmsTCPPacket>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <length dataType="uint" bitLength="32">44</length>
+        <userdata>
+          <AmsPacket>
+            <targetAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">20</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </targetAmsNetId>
+            <targetAmsPort dataType="uint" bitLength="16">851</targetAmsPort>
+            <sourceAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">205</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </sourceAmsNetId>
+            <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
+            <commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
+            </commandId>
+            <state>
+              <State>
+                <initCommand dataType="bit" bitLength="1">false</initCommand>
+                <updCommand dataType="bit" bitLength="1">false</updCommand>
+                <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+                <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+                <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+                <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+                <noReturn dataType="bit" bitLength="1">false</noReturn>
+                <response dataType="bit" bitLength="1">false</response>
+                <broadcast dataType="bit" bitLength="1">false</broadcast>
+                <reserved dataType="int" bitLength="7">0</reserved>
+              </State>
+            </state>
+            <length dataType="uint" bitLength="32">12</length>
+            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <invokeId dataType="uint" bitLength="32">1</invokeId>
+            <data>
+              <AdsData>
+                <AdsReadRequest>
+                  <indexGroup dataType="uint" bitLength="32">61445</indexGroup>
+                  <indexOffset dataType="uint" bitLength="32">461373441</indexOffset>
+                  <length dataType="uint" bitLength="32">4</length>
+                </AdsReadRequest>
+              </AdsData>
+            </data>
+          </AmsPacket>
         </userdata>
       </AmsTCPPacket>
     </xml>
@@ -272,44 +373,65 @@
     <raw>000029000000c0a817cd0101feffc0a817140101530302000500090000000000000001000000000000000100000001</raw>
     <root-type>AmsTCPPacket</root-type>
     <xml>
-      <AmsTCPPacket className="org.apache.plc4x.java.ads.readwrite.AmsTCPPacket">
-        <userdata className="org.apache.plc4x.java.ads.readwrite.AmsPacket">
-          <targetAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>205</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </targetAmsNetId>
-          <targetAmsPort>65534</targetAmsPort>
-          <sourceAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>20</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </sourceAmsNetId>
-          <sourceAmsPort>851</sourceAmsPort>
-          <commandId>ADS_READ</commandId>
-          <state className="org.apache.plc4x.java.ads.readwrite.State">
-            <initCommand>false</initCommand>
-            <updCommand>false</updCommand>
-            <timestampAdded>false</timestampAdded>
-            <highPriorityCommand>false</highPriorityCommand>
-            <systemCommand>false</systemCommand>
-            <adsCommand>true</adsCommand>
-            <noReturn>false</noReturn>
-            <response>true</response>
-            <broadcast>false</broadcast>
-          </state>
-          <errorCode>0</errorCode>
-          <invokeId>1</invokeId>
-          <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
-            <result>OK</result>
-            <data>01</data>
-          </data>
+      <AmsTCPPacket>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <length dataType="uint" bitLength="32">41</length>
+        <userdata>
+          <AmsPacket>
+            <targetAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">205</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </targetAmsNetId>
+            <targetAmsPort dataType="uint" bitLength="16">65534</targetAmsPort>
+            <sourceAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">20</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </sourceAmsNetId>
+            <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
+            <commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
+            </commandId>
+            <state>
+              <State>
+                <initCommand dataType="bit" bitLength="1">false</initCommand>
+                <updCommand dataType="bit" bitLength="1">false</updCommand>
+                <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+                <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+                <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+                <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+                <noReturn dataType="bit" bitLength="1">false</noReturn>
+                <response dataType="bit" bitLength="1">true</response>
+                <broadcast dataType="bit" bitLength="1">false</broadcast>
+                <reserved dataType="int" bitLength="7">0</reserved>
+              </State>
+            </state>
+            <length dataType="uint" bitLength="32">9</length>
+            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <invokeId dataType="uint" bitLength="32">1</invokeId>
+            <data>
+              <AdsData>
+                <AdsReadResponse>
+                  <result>
+                    <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+                  </result>
+                  <length dataType="uint" bitLength="32">1</length>
+                  <data dataType="byte" bitLength="8">0x01</data>
+                </AdsReadResponse>
+              </AdsData>
+            </data>
+          </AmsPacket>
         </userdata>
       </AmsTCPPacket>
     </xml>
@@ -320,45 +442,64 @@
     <raw>000030000000c0a8171401015303c0a817cd0101feff0300040010000000000000000100000006f0000000000000040000000100801b</raw>
     <root-type>AmsTCPPacket</root-type>
     <xml>
-      <AmsTCPPacket className="org.apache.plc4x.java.ads.readwrite.AmsTCPPacket">
-        <userdata className="org.apache.plc4x.java.ads.readwrite.AmsPacket">
-          <targetAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>20</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </targetAmsNetId>
-          <targetAmsPort>851</targetAmsPort>
-          <sourceAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>205</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </sourceAmsNetId>
-          <sourceAmsPort>65534</sourceAmsPort>
-          <commandId>ADS_WRITE</commandId>
-          <state className="org.apache.plc4x.java.ads.readwrite.State">
-            <initCommand>false</initCommand>
-            <updCommand>false</updCommand>
-            <timestampAdded>false</timestampAdded>
-            <highPriorityCommand>false</highPriorityCommand>
-            <systemCommand>false</systemCommand>
-            <adsCommand>true</adsCommand>
-            <noReturn>false</noReturn>
-            <response>false</response>
-            <broadcast>false</broadcast>
-          </state>
-          <errorCode>0</errorCode>
-          <invokeId>1</invokeId>
-          <data className="org.apache.plc4x.java.ads.readwrite.AdsWriteRequest">
-            <indexGroup>61446</indexGroup>
-            <indexOffset>0</indexOffset>
-            <data>0100801B</data>
-          </data>
+      <AmsTCPPacket>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <length dataType="uint" bitLength="32">48</length>
+        <userdata>
+          <AmsPacket>
+            <targetAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">20</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </targetAmsNetId>
+            <targetAmsPort dataType="uint" bitLength="16">851</targetAmsPort>
+            <sourceAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">205</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </sourceAmsNetId>
+            <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
+            <commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_WRITE">3</CommandId>
+            </commandId>
+            <state>
+              <State>
+                <initCommand dataType="bit" bitLength="1">false</initCommand>
+                <updCommand dataType="bit" bitLength="1">false</updCommand>
+                <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+                <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+                <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+                <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+                <noReturn dataType="bit" bitLength="1">false</noReturn>
+                <response dataType="bit" bitLength="1">false</response>
+                <broadcast dataType="bit" bitLength="1">false</broadcast>
+                <reserved dataType="int" bitLength="7">0</reserved>
+              </State>
+            </state>
+            <length dataType="uint" bitLength="32">16</length>
+            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <invokeId dataType="uint" bitLength="32">1</invokeId>
+            <data>
+              <AdsData>
+                <AdsWriteRequest>
+                  <indexGroup dataType="uint" bitLength="32">61446</indexGroup>
+                  <indexOffset dataType="uint" bitLength="32">0</indexOffset>
+                  <length dataType="uint" bitLength="32">4</length>
+                  <data dataType="byte" bitLength="32">0x0100801b</data>
+                </AdsWriteRequest>
+              </AdsData>
+            </data>
+          </AmsPacket>
         </userdata>
       </AmsTCPPacket>
     </xml>
@@ -369,43 +510,63 @@
     <raw>000024000000c0a817cd0101feffc0a81714010153030300050004000000000000000100000000000000</raw>
     <root-type>AmsTCPPacket</root-type>
     <xml>
-      <AmsTCPPacket className="org.apache.plc4x.java.ads.readwrite.AmsTCPPacket">
-        <userdata className="org.apache.plc4x.java.ads.readwrite.AmsPacket">
-          <targetAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>205</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </targetAmsNetId>
-          <targetAmsPort>65534</targetAmsPort>
-          <sourceAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
-            <octet1>192</octet1>
-            <octet2>168</octet2>
-            <octet3>23</octet3>
-            <octet4>20</octet4>
-            <octet5>1</octet5>
-            <octet6>1</octet6>
-          </sourceAmsNetId>
-          <sourceAmsPort>851</sourceAmsPort>
-          <commandId>ADS_WRITE</commandId>
-          <state className="org.apache.plc4x.java.ads.readwrite.State">
-            <initCommand>false</initCommand>
-            <updCommand>false</updCommand>
-            <timestampAdded>false</timestampAdded>
-            <highPriorityCommand>false</highPriorityCommand>
-            <systemCommand>false</systemCommand>
-            <adsCommand>true</adsCommand>
-            <noReturn>false</noReturn>
-            <response>true</response>
-            <broadcast>false</broadcast>
-          </state>
-          <errorCode>0</errorCode>
-          <invokeId>1</invokeId>
-          <data className="org.apache.plc4x.java.ads.readwrite.AdsWriteResponse">
-            <result>OK</result>
-          </data>
+      <AmsTCPPacket>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <length dataType="uint" bitLength="32">36</length>
+        <userdata>
+          <AmsPacket>
+            <targetAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">205</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </targetAmsNetId>
+            <targetAmsPort dataType="uint" bitLength="16">65534</targetAmsPort>
+            <sourceAmsNetId>
+              <AmsNetId>
+                <octet1 dataType="uint" bitLength="8">192</octet1>
+                <octet2 dataType="uint" bitLength="8">168</octet2>
+                <octet3 dataType="uint" bitLength="8">23</octet3>
+                <octet4 dataType="uint" bitLength="8">20</octet4>
+                <octet5 dataType="uint" bitLength="8">1</octet5>
+                <octet6 dataType="uint" bitLength="8">1</octet6>
+              </AmsNetId>
+            </sourceAmsNetId>
+            <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
+            <commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_WRITE">3</CommandId>
+            </commandId>
+            <state>
+              <State>
+                <initCommand dataType="bit" bitLength="1">false</initCommand>
+                <updCommand dataType="bit" bitLength="1">false</updCommand>
+                <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+                <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+                <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+                <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+                <noReturn dataType="bit" bitLength="1">false</noReturn>
+                <response dataType="bit" bitLength="1">true</response>
+                <broadcast dataType="bit" bitLength="1">false</broadcast>
+                <reserved dataType="int" bitLength="7">0</reserved>
+              </State>
+            </state>
+            <length dataType="uint" bitLength="32">4</length>
+            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <invokeId dataType="uint" bitLength="32">1</invokeId>
+            <data>
+              <AdsData>
+                <AdsWriteResponse>
+                  <result>
+                    <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+                  </result>
+                </AdsWriteResponse>
+              </AdsData>
+            </data>
+          </AmsPacket>
         </userdata>
       </AmsTCPPacket>
     </xml>

@@ -16,13 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.values;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+
+import java.nio.charset.StandardCharsets;
 
 public abstract class PlcIECValue<T> extends PlcValueAdapter {
 
@@ -79,11 +80,9 @@ public abstract class PlcIECValue<T> extends PlcValueAdapter {
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element plcValueElement = doc.createElement(getClass().getSimpleName());
-        plcValueElement.appendChild(doc.createTextNode(this.value.toString()));
-        parent.appendChild(plcValueElement);
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        String valueString = value.toString();
+        writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
     }
 
 }

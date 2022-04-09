@@ -1,22 +1,21 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-
 package org.apache.plc4x.protocol.knxnetip;
 
 import org.apache.commons.io.FileUtils;
@@ -35,26 +34,26 @@ import java.util.*;
 
 public class KnxDefinitionsGenerator {
 
-    public static final String HEADER = "//\n" +
-        "// Licensed to the Apache Software Foundation (ASF) under one\n" +
-        "// or more contributor license agreements. See the NOTICE file\n" +
-        "// distributed with this work for additional information\n" +
-        "// regarding copyright ownership. The ASF licenses this file\n" +
-        "// to you under the Apache License, Version 2.0 (the\n" +
-        "// \"License\"); you may not use this file except in compliance\n" +
-        "// with the License. You may obtain a copy of the License at\n" +
-        "//\n" +
-        "// http://www.apache.org/licenses/LICENSE-2.0\n" +
-        "//\n" +
-        "// Unless required by applicable law or agreed to in writing,\n" +
-        "// software distributed under the License is distributed on an\n" +
-        "// \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n" +
-        "// KIND, either express or implied. See the License for the\n" +
-        "// specific language governing permissions and limitations\n" +
-        "// under the License.\n" +
-        "//\n" +
+    public static final String HEADER = "/*\n" +
+        " * Licensed to the Apache Software Foundation (ASF) under one\n" +
+        " * or more contributor license agreements.  See the NOTICE file\n" +
+        " * distributed with this work for additional information\n" +
+        " * regarding copyright ownership.  The ASF licenses this file\n" +
+        " * to you under the Apache License, Version 2.0 (the\n" +
+        " * \"License\"); you may not use this file except in compliance\n" +
+        " * with the License.  You may obtain a copy of the License at\n" +
+        " *\n" +
+        " *   http://www.apache.org/licenses/LICENSE-2.0\n" +
+        " *\n" +
+        " * Unless required by applicable law or agreed to in writing,\n" +
+        " * software distributed under the License is distributed on an\n" +
+        " * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n" +
+        " * KIND, either express or implied.  See the License for the\n" +
+        " * specific language governing permissions and limitations\n" +
+        " * under the License.\n" +
+        " */\n\n" +
         "\n" +
-        "[enum uint 16 'DeviceInformation' [uint 16 'deviceDescriptor', string 'name', uint 16 'comObjectTableAddress']\n";
+        "[enum uint 16 DeviceInformation(uint 16 'deviceDescriptor', string 'name', uint 16 'comObjectTableAddress')\n";
 
     public static final String FOOTER = "]\n";
 
@@ -132,6 +131,20 @@ public class KnxDefinitionsGenerator {
                             System.out.printf("    ['%4d' DEV%04X%04X%02X               ['0x%04X'                       ]]\n",
                                 deviceCounter++, manufacturerId, applicationId, applicationVersion,
                                 handler.getComObjectTableAddress());
+                        }
+                        if (handler.getReplacesVersions() != null) {
+                            for (String replacesVersion : handler.getReplacesVersions()) {
+                                if(replacesVersion.length() == 1) {
+                                    replacesVersion = "0" + replacesVersion;
+                                }
+                                String replacedProductCode = String.format("M-%04X_A-%04X-%S", manufacturerId, applicationId, replacesVersion);
+                                if(!processedIds.contains(replacedProductCode)) {
+                                    System.out.printf("    ['%4d' DEV%04X%04X%S               ['0x%04X'                       ]] //replaces '%s'\n",
+                                        deviceCounter++, manufacturerId, applicationId, replacesVersion,
+                                        handler.getComObjectTableAddress(), replacesVersion);
+                                    processedIds.add(replacedProductCode);
+                                }
+                            }
                         }
                     }
                 }

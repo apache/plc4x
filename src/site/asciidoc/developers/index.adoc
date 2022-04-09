@@ -27,7 +27,7 @@ We have tried to make the PLC4X build experience as smooth as possible and have 
 
 The full PLC4X build however builds not only `Java` libraries, but also `C++`, `Python` and `C#` libraries as well as builds `Docker` images on `Linux`, `Mac` and `Windows`.
 
-As a start, you will basically need a `Java VM` of at least `Java 1.8`.
+As a start, you will basically need a `Java VM` of at least `Java 11`.
 
 Using the `Maven-Wrapper` you don't even need a `Maven` installation. The build will automatically fetch the right version for you.
 

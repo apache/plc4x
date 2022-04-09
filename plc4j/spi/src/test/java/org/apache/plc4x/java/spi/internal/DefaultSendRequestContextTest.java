@@ -1,22 +1,21 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-
 package org.apache.plc4x.java.spi.internal;
 
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -36,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 @ExtendWith(MockitoExtension.class)
 class DefaultSendRequestContextTest {
 
@@ -49,7 +49,7 @@ class DefaultSendRequestContextTest {
 
     @BeforeEach
     void setUp() {
-        SUT = new DefaultSendRequestContext<>(finisher, null, context);
+        SUT = new DefaultSendRequestContext(finisher, null, context);
     }
 
     @Test
@@ -71,18 +71,18 @@ class DefaultSendRequestContextTest {
     @Test
     void handle() {
         assertThat(SUT.packetConsumer, nullValue());
-        SUT.handle(o -> o.notify());
+        SUT.handle(Object::notify);
         assertThat(SUT.commands, hasSize(0));
         assertThat(SUT.packetConsumer, notNullValue());
-        assertThrows(ConversationContext.PlcWiringException.class, () -> SUT.handle(o -> o.notify()));
+        assertThrows(ConversationContext.PlcWiringException.class, () -> SUT.handle(Object::notify));
     }
 
     @Test
     void onTimeout() {
-        SUT.onTimeout(e -> e.printStackTrace());
+        SUT.onTimeout(Throwable::printStackTrace);
         assertThat(SUT.commands, hasSize(0));
         assertThat(SUT.onTimeoutConsumer, notNullValue());
-        assertThrows(ConversationContext.PlcWiringException.class, () -> SUT.onTimeout(e -> e.printStackTrace()));
+        assertThrows(ConversationContext.PlcWiringException.class, () -> SUT.onTimeout(Throwable::printStackTrace));
     }
 
     @Test
@@ -97,10 +97,10 @@ class DefaultSendRequestContextTest {
     void unwrap() {
         assertThat(SUT.expectClazz, nullValue());
         assertThat(SUT.onTimeoutConsumer, nullValue());
-        assertThrows(ConversationContext.PlcWiringException.class, () -> SUT.unwrap(o -> o.toString()));
+        assertThrows(ConversationContext.PlcWiringException.class, () -> SUT.unwrap(Object::toString));
         SUT.expectResponse(Object.class, null);
-        SUT.onTimeout(e -> e.printStackTrace());
-        ConversationContext.SendRequestContext<String> unwrap = SUT.unwrap(o -> o.toString());
+        SUT.onTimeout(Throwable::printStackTrace);
+        ConversationContext.SendRequestContext<String> unwrap = SUT.unwrap(Object::toString);
         assertThat(unwrap, notNullValue());
         assertThat(SUT.commands, hasSize(2));
         assertThat(SUT.expectClazz, notNullValue());

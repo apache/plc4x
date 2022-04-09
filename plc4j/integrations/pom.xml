@@ -16,14 +16,15 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-  --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-integrations</artifactId>
@@ -40,14 +41,5 @@
     <module>apache-calcite</module>
     <module>opcua-server</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>with-logstash</id>
-      <modules>
-        <module>logstash-plugin</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>
