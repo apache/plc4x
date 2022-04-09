@@ -17,7 +17,8 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -30,13 +31,15 @@
   <artifactId>plc4py</artifactId>
   <packaging>pom</packaging>
 
-  <name>Sandbox: PLC4PY</name>
-  <description>Implementation of the protocol adapters for usage as Python module.</description>
+  <name>Sandbox: PLC4Py</name>
+  <description>Implementation of the protocol adapters for usage as Python library.</description>
 
-  <!-- Disabled for now as Python support is currently not installed in Apache SonarQube -->
-  <!--properties>
-    <sonar.language>py</sonar.language>
-  </properties-->
+  <properties>
+    <unity.version>2.5.0</unity.version>
+    <!-- Tell Sonar where to find the python sources -->
+    <sonar.sources>plc4py</sonar.sources>
+    <option.with-proxies>OFF</option.with-proxies>
+  </properties>
 
   <build>
     <sourceDirectory>src/main/python</sourceDirectory>
@@ -76,40 +79,24 @@
         <artifactId>exec-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>python-build</id>
-            <phase>compile</phase>
+            <id>python-test</id>
+            <phase>test</phase>
             <goals>
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>python</executable>
-              <workingDirectory>${project.build.directory}/python</workingDirectory>
+              <executable>poetry</executable>
               <arguments>
-                <argument>${project.basedir}/setup.py</argument>
-                <argument>build</argument>
-                <argument>--build-base=${project.build.directory}/python</argument>
-              </arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>python-package</id>
-            <phase>package</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>python</executable>
-              <workingDirectory>${project.build.directory}/python</workingDirectory>
-              <arguments>
-                <argument>${project.basedir}/setup.py</argument>
-                <argument>sdist</argument>
-                <argument>--dist-dir=${project.build.directory}/python</argument>
+                <argument>run</argument>
+                <argument>pytest</argument>
+                <argument>-v</argument>
+                <argument>tests</argument>
               </arguments>
             </configuration>
           </execution>
         </executions>
       </plugin>
-    </plugins>
+      </plugins>
   </build>
 
 </project>

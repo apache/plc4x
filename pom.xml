@@ -770,6 +770,7 @@
             <exclude>**/.git/**</exclude>
             <exclude>**/.gitignore</exclude>
             <exclude>**/cmake-*/**</exclude>
+            <exclude>**/.lock/**</exclude>
             <exclude>**/.cmake/**</exclude>
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
@@ -845,6 +846,10 @@
 
             <!-- Temporary Python virtualenv files-->
             <exclude>**/venv/**</exclude>
+
+            <!-- Temporary pytest and mypy folders -->
+            <exclude>**/.mypy_cache/**</exclude>
+            <exclude>**/.pytest_cache/**</exclude>
 
             <!-- Exclude a temp file needed by Docker -->
             <exclude>project_version</exclude>
