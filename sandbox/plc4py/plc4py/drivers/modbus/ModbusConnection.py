@@ -2,7 +2,9 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Type
 
-from plc4py import hookimpl
+import pluggy
+
+import plc4py
 from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder
 
@@ -41,12 +43,12 @@ class ModbusConnection(PlcConnection):
 class ModbusConnectionLoader:
 
     @staticmethod
-    @hookimpl
-    def get_type() -> Type[ModbusConnection]:
+    @plc4py.hookimpl
+    def get_connection() -> Type[ModbusConnection]:
         return ModbusConnection
 
     @staticmethod
-    @hookimpl
+    @plc4py.hookimpl
     def key() -> str:
         return "modbus"
 

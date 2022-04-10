@@ -31,7 +31,11 @@ pre-commit = "^2.6.0"
 pytest-mock = "^3.3.1"
 mock = "^4.0.2"
 mypy = "^0.942"
+flake8 = "^4.0.1"
 
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+
+[tool.poetry.plugins."plc4py.drivers"]
+"modbus" = "plc4py.drivers.modbus.ModbusConnection:ModbusConnectionLoader"

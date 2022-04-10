@@ -26,5 +26,4 @@ import pluggy  # type: ignore
 # Place holder for logging configuration
 logging.basicConfig(level=logging.DEBUG)
 
-hookspec = pluggy.HookspecMarker("plc4py")
 hookimpl = pluggy.HookimplMarker("plc4py")

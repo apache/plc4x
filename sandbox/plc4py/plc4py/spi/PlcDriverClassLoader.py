@@ -17,9 +17,11 @@
 # under the License.
 from typing import Type
 
-from plc4py import hookspec
+import pluggy
+
 from plc4py.api.PlcConnection import PlcConnection
 
+hookspec = pluggy.HookspecMarker("plc4py")
 
 class PlcDriverClassLoader:
     """A hook specification namespace."""

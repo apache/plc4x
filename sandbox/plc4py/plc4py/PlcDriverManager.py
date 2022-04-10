@@ -17,6 +17,7 @@
 # under the License.
 #
 import logging
+import sys
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Generator, Type
@@ -24,7 +25,6 @@ from typing import Generator, Type
 from pluggy import PluginManager  # type: ignore
 
 from plc4py.api.PlcConnection import PlcConnection
-from plc4py.drivers.modbus.ModbusConnection import ModbusConnectionLoader
 from plc4py.spi.PlcDriverClassLoader import PlcDriverClassLoader
 from plc4py.utils.ConnectionStringHandling import get_protocol_code
 
@@ -38,9 +38,13 @@ class PlcDriverManager:
         logging.info(f"Instantiating new PLC Driver Manager with class loader {self.class_loader}")
         self.class_loader.add_hookspecs(PlcDriverClassLoader)
         logging.info("Registering available drivers...")
-        self.class_loader.register(ModbusConnectionLoader)
+
+        import plc4py.drivers
+        self.class_loader.register(plc4py.drivers)
+        self.class_loader.load_setuptools_entrypoints("plc4py.drivers")
         self._driverMap = {key: loader for key, loader in zip(self.class_loader.hook.key(),
-                                                              self.class_loader.hook.get_type())}
+                                                              self.class_loader.hook.get_connection())}
+        self.class_loader.check_pending()
 
     @contextmanager
     def connection(self, url: str) -> Generator[PlcConnection, None, None]:
