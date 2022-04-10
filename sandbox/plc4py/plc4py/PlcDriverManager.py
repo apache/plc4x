@@ -21,7 +21,6 @@ import sys
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Generator, Type
-
 from pluggy import PluginManager  # type: ignore
 
 from plc4py.api.PlcConnection import PlcConnection
@@ -44,7 +43,10 @@ class PlcDriverManager:
         self.class_loader.load_setuptools_entrypoints("plc4py.drivers")
         self._driverMap = {key: loader for key, loader in zip(self.class_loader.hook.key(),
                                                               self.class_loader.hook.get_connection())}
+        for driver in self._driverMap:
+            logging.info(f"... {driver} .. OK")
         self.class_loader.check_pending()
+
 
     @contextmanager
     def connection(self, url: str) -> Generator[PlcConnection, None, None]:
