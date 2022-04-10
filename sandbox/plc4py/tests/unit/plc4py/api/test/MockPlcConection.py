@@ -53,5 +53,3 @@ class MockPlcConnection(PlcConnection):
         :return: read request builder.
         """
         return MockReadRequestBuilder()
-
-

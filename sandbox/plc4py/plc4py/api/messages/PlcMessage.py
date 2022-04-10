@@ -17,5 +17,6 @@
 # under the License.
 #
 
+
 class PlcMessage:
     pass

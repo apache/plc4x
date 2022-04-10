@@ -19,9 +19,9 @@
 
 from typing import Generator
 
-#TODO: Figure out what the parameters are and if we need this
-class GenericGenerator(Generator):
 
+# TODO: Figure out what the parameters are and if we need this
+class GenericGenerator(Generator):
     def __enter__(self):
         return self
 

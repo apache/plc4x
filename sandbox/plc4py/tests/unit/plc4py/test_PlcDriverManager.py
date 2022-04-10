@@ -16,11 +16,9 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from typing import Union
 from unittest.mock import MagicMock
 
 from plc4py.PlcDriverManager import PlcDriverManager
-from plc4py.api.PlcConnection import PlcConnection
 from tests.unit.plc4py.api.test.MockPlcConection import MockPlcConnection
 
 
@@ -31,12 +29,10 @@ def test_connection_context_manager_impl_close_called(mocker) -> None:
     connection_mock: MagicMock = mocker.patch.object(manager, "get_connection")
     connection_mock.return_value = MockPlcConnection()
 
-    close_mock: Union[MagicMock, None] = None
-
     # the connection function is supposed to support context manager
     # so using it in a with statement should result in close being called on the connection
     with manager.connection("foo://bar") as conn:
-        close_mock = mocker.patch.object(conn, "close")
+        close_mock: MagicMock = mocker.patch.object(conn, "close")
         print(conn.__doc__)
 
     # verify that close was called by the context manager

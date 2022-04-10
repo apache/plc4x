@@ -18,8 +18,8 @@ import logging
 
 
 class PlcException(Exception):
-    pass;
+    pass
 
 
 class PlcConnectionException(Exception):
-    logging.error(f"Unable to establish a connection to the plc")
+    logging.error("Unable to establish a connection to the plc")

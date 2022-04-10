@@ -16,7 +16,6 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from dataclasses import dataclass
 from typing import Type
 
 import plc4py
@@ -25,9 +24,11 @@ from plc4py.api.messages.PlcRequest import ReadRequestBuilder
 from plc4py.drivers.PlcConnectionLoader import PlcConnectionLoader
 
 
-@dataclass
 class ModbusConnection(PlcConnection):
     """A hook implementation namespace."""
+
+    def __init__(self, url: str):
+        super().__init__(url)
 
     def connect(self):
         """
@@ -57,7 +58,6 @@ class ModbusConnection(PlcConnection):
 
 
 class ModbusConnectionLoader(PlcConnectionLoader):
-
     @staticmethod
     @plc4py.hookimpl
     def get_connection() -> Type[ModbusConnection]:
@@ -67,4 +67,3 @@ class ModbusConnectionLoader(PlcConnectionLoader):
     @plc4py.hookimpl
     def key() -> str:
         return "modbus"
-

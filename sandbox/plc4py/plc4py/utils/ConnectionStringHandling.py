@@ -19,6 +19,7 @@
 
 from urllib.parse import urlparse
 
+
 def get_protocol_code(url: str) -> str:
     """
     Get the protocol code section of the connection string
@@ -29,4 +30,3 @@ def get_protocol_code(url: str) -> str:
     """
     parsed = urlparse(url)
     return parsed.scheme
-

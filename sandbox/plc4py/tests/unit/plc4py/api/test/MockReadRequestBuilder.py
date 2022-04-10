@@ -16,8 +16,14 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from plc4py.api.messages.PlcRequest import ReadRequestBuilder
+from typing import Union
+
+from plc4py.api.messages.PlcRequest import ReadRequestBuilder, PlcRequest, PlcField
 
 
 class MockReadRequestBuilder(ReadRequestBuilder):
-    pass
+    def build(self) -> PlcRequest:
+        pass
+
+    def add_item(self, field_query: Union[str, PlcField]) -> PlcRequest:
+        pass

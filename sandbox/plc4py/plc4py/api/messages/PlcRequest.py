@@ -38,7 +38,6 @@ class PlcField:
 
 
 class ReadRequestBuilder(GenericGenerator):
-
     @abstractmethod
     def build(self) -> PlcRequest:
         pass

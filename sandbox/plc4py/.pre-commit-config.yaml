@@ -38,6 +38,7 @@ repos:
     rev: 3.9.2
     hooks:
     -   id: flake8
+        args: ['--max-line-length','120']
         types: [python]
 -   repo: https://github.com/psf/black
     rev: 22.3.0 # Replace by any tag/version: https://github.com/psf/black/tags

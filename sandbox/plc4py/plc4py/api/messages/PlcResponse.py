@@ -18,7 +18,6 @@ from plc4py.api.messages.PlcRequest import PlcMessage
 
 
 class PlcResponse(PlcMessage):
-
     @abstractmethod
     def get_request(self) -> PlcMessage:
         pass

@@ -17,17 +17,15 @@
 # under the License.
 #
 from abc import abstractmethod
-from dataclasses import dataclass
-
 
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder
 from plc4py.api.exceptions.exceptions import PlcConnectionException
 from plc4py.utils.GenericTypes import GenericGenerator
 
 
-@dataclass
 class PlcConnection(GenericGenerator):
-    url: str = ""
+    def __init__(self, url: str):
+        self.url = url
 
     @abstractmethod
     def connect(self) -> None:

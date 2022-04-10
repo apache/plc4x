@@ -22,7 +22,6 @@ import pluggy
 from plc4py.api.PlcConnection import PlcConnection
 
 
-
 class PlcDriverClassLoader:
     """Hook spec for PLC4PY Driver Loaders"""
 
