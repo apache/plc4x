@@ -179,20 +179,6 @@
                                        </div>
                                    </div>
                                </div>
-                               <div class="carousel-item">
-                                   <div class="col-md-12 col-lg-4">
-                                       <div class="card h-100 p-5 justify-content-center"
-                                            onclick="location.href='https://www.elastic.co/products/logstash';"
-                                            style="cursor:pointer;">
-                                           <div class="d-flex align-items-center justify-content-center h-100">
-                                               <img src="images/integrations/elastic_logstash_logo.png" alt="Card image cap">
-                                           </div>
-                                           <div class="card-body">
-                                               <h5 class="card-title"><b>Elastic Logstash</b></h5>
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
                            </div>
                            <a class="carousel-control-prev" href="#integrationCarousel" role="button" data-slide="prev">
                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>

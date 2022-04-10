@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+
 import logging
 import sys
 from contextlib import contextmanager
@@ -96,3 +97,4 @@ class PlcDriverManager:
         """
         protocol_code = get_protocol_code(url)
         return self._driverMap[protocol_code]
+

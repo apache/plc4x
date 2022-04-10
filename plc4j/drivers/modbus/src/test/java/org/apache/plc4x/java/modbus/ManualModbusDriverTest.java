@@ -1,27 +1,29 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java.modbus;
 
 import org.apache.plc4x.test.manual.ManualTest;
+import org.junit.jupiter.api.Disabled;
 
 import java.util.Arrays;
 
+@Disabled("Manual Test")
 public class ManualModbusDriverTest extends ManualTest {
 
     /*
@@ -68,13 +70,13 @@ public class ManualModbusDriverTest extends ManualTest {
     }
 
     public static void main(String[] args) throws Exception {
-        ManualModbusDriverTest test = new ManualModbusDriverTest("modbus:tcp://192.168.23.30");
+        ManualModbusDriverTest test = new ManualModbusDriverTest("modbus-tcp://192.168.23.30");
         test.addTestCase("holding-register:1:BOOL", true); // 0001
         test.addTestCase("holding-register:2:BYTE", Arrays.asList(false, false, true, false, true, false, true, false)); // 002A
         test.addTestCase("holding-register:3:WORD", Arrays.asList(true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false)); // A5B8
         test.addTestCase("holding-register:4:DWORD", Arrays.asList(true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false)); // FCDE 88B8
         test.addTestCase("holding-register:6:LWORD", Arrays.asList(true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false, true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false)); // FCDE 88B8 FCDE 88B8
-        test.addTestCase("holding-register:10:SINT", -42); // FFD6
+        test.addTestCase("holding-register:10:SINT", -42); // 00D6
         test.addTestCase("holding-register:11:USINT", 42); // 002A
         test.addTestCase("holding-register:12:INT", -2424); // F688
         test.addTestCase("holding-register:13:UINT", 42424); // A5B8

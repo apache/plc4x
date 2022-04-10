@@ -16,26 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.values;
 
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 public class IEC61131ValueHandler implements PlcValueHandler {
 
 
     public PlcValue newPlcValue(Object value) {
-        return of(new Object[] {value});
+        return of(new Object[]{value});
     }
 
     public PlcValue newPlcValue(Object[] values) {
@@ -43,7 +44,7 @@ public class IEC61131ValueHandler implements PlcValueHandler {
     }
 
     public PlcValue newPlcValue(PlcField field, Object value) {
-        return of(field, new Object[] {value});
+        return of(field, new Object[]{value});
     }
 
     public PlcValue newPlcValue(PlcField field, Object[] values) {
@@ -51,63 +52,82 @@ public class IEC61131ValueHandler implements PlcValueHandler {
     }
 
     public static PlcValue of(Object value) {
-        return of(new Object[] {value});
+        return of(new Object[]{value});
+    }
+
+    public static PlcValue of(List<?> value) {
+        return of(value.toArray());
     }
 
     public static PlcValue of(Object[] values) {
-        if (values.length == 1) {
-            Object value = values[0];
-            if (value instanceof Boolean) {
-                return PlcBOOL.of(value);
-            } else if (value instanceof Byte) {
-                return PlcSINT.of(value);
-            } else if (value instanceof Short) {
-                return PlcINT.of(value);
-            } else if (value instanceof Integer) {
-                return PlcDINT.of(value);
-            } else if (value instanceof Long) {
-                return PlcLINT.of(value);
-            } else if (value instanceof BigInteger) {
-                return new PlcBigInteger((BigInteger) value);
-            } else if (value instanceof Float) {
-                return PlcREAL.of(value);
-            } else if (value instanceof Double) {
-                return PlcLREAL.of(value);
-            } else if (value instanceof BigDecimal) {
-                return new PlcBigDecimal((BigDecimal) value);
-            } else if (value instanceof Duration) {
-                return new PlcTIME((Duration) value);
-            } else if (value instanceof LocalTime) {
-                return new PlcTIME_OF_DAY((LocalTime) value);
-            } else if (value instanceof LocalDate) {
-                return new PlcDATE((LocalDate) value);
-            } else if (value instanceof LocalDateTime) {
-                return new PlcDATE_AND_TIME((LocalDateTime) value);
-            } else if (value instanceof String) {
-                return new PlcSTRING((String) value);
-            } else if (value instanceof PlcValue) {
-                return (PlcValue) value;
-            } else {
-                throw new PlcUnsupportedDataTypeException("Data Type " + value.getClass()
-                    + " Is not supported");
-            }
-        } else {
+        if (values.length != 1) {
             PlcList list = new PlcList();
             for (Object value : values) {
-                list.add(of(new Object[] {value}));
+                list.add(of(new Object[]{value}));
             }
             return list;
         }
+        Object value = values[0];
+        if (value instanceof Boolean) {
+            return PlcBOOL.of(value);
+        }
+        if (value instanceof Byte) {
+            return PlcSINT.of(value);
+        }
+        if (value instanceof byte[]) {
+            return PlcByteArray.of(value);
+        }
+        if (value instanceof Short) {
+            return PlcINT.of(value);
+        }
+        if (value instanceof Integer) {
+            return PlcDINT.of(value);
+        }
+        if (value instanceof Long) {
+            return PlcLINT.of(value);
+        }
+        if (value instanceof BigInteger) {
+            return new PlcBigInteger((BigInteger) value);
+        }
+        if (value instanceof Float) {
+            return PlcREAL.of(value);
+        }
+        if (value instanceof Double) {
+            return PlcLREAL.of(value);
+        }
+        if (value instanceof BigDecimal) {
+            return new PlcBigDecimal((BigDecimal) value);
+        }
+        if (value instanceof Duration) {
+            return new PlcTIME((Duration) value);
+        }
+        if (value instanceof LocalTime) {
+            return new PlcTIME_OF_DAY((LocalTime) value);
+        }
+        if (value instanceof LocalDate) {
+            return new PlcDATE((LocalDate) value);
+        }
+        if (value instanceof LocalDateTime) {
+            return new PlcDATE_AND_TIME((LocalDateTime) value);
+        }
+        if (value instanceof String) {
+            return new PlcSTRING((String) value);
+        }
+        if (value instanceof PlcValue) {
+            return (PlcValue) value;
+        }
+        throw new PlcUnsupportedDataTypeException("Data Type " + value.getClass()
+            + " Is not supported");
     }
 
 
     public static PlcValue of(PlcField field, Object value) {
-        return of(field, new Object[] {value});
+        return of(field, new Object[]{value});
     }
 
 
     public static PlcValue of(PlcField field, Object[] values) {
-        if(values.length == 1) {
+        if (values.length == 1) {
             Object value = values[0];
             switch (field.getPlcDataType().toUpperCase()) {
                 case "BOOL":
@@ -115,7 +135,18 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                     return PlcBOOL.of(value);
                 case "BYTE":
                 case "BITARR8":
-                    return PlcBYTE.of(value);
+                    if(value instanceof Short) {
+                        return new PlcBitString((short) value);
+                    } else if(value instanceof Integer) {
+                        return new PlcBitString(((Integer) value).shortValue());
+                    } else if(value instanceof Long) {
+                        return new PlcBitString(((Long) value).shortValue());
+                    } else if(value instanceof BigInteger) {
+                        return new PlcBitString(((BigInteger) value).shortValue());
+                    } else if(value instanceof boolean[]) {
+                        return new PlcBitString((boolean[]) value);
+                    }
+                    throw new PlcRuntimeException("BYTE requires short or boolean[8]");
                 case "SINT":
                 case "INT8":
                     return PlcSINT.of(value);
@@ -131,7 +162,18 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                     return PlcUINT.of(value);
                 case "WORD":
                 case "BITARR16":
-                    return PlcWORD.of(value);
+                    if(value instanceof Short) {
+                        return new PlcBitString((int) value);
+                    } else if(value instanceof Integer) {
+                        return new PlcBitString((int) value);
+                    } else if(value instanceof Long) {
+                        return new PlcBitString(((Long) value).intValue());
+                    } else if(value instanceof BigInteger) {
+                        return new PlcBitString(((BigInteger) value).intValue());
+                    } else if(value instanceof boolean[]) {
+                        return new PlcBitString((boolean[]) value);
+                    }
+                    throw new PlcRuntimeException("WORD requires int or boolean[16]");
                 case "DINT":
                 case "INT32":
                     return PlcDINT.of(value);
@@ -140,7 +182,18 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                     return PlcUDINT.of(value);
                 case "DWORD":
                 case "BITARR32":
-                    return PlcDWORD.of(value);
+                    if(value instanceof Short) {
+                        return new PlcBitString((long) value);
+                    } else if(value instanceof Integer) {
+                        return new PlcBitString((long) value);
+                    } else if(value instanceof Long) {
+                        return new PlcBitString((long) value);
+                    } else if(value instanceof BigInteger) {
+                        return new PlcBitString(((BigInteger) value).longValue());
+                    } else if(value instanceof boolean[]) {
+                        return new PlcBitString((boolean[]) value);
+                    }
+                    throw new PlcRuntimeException("DWORD requires long or boolean[32]");
                 case "LINT":
                 case "INT64":
                     return PlcLINT.of(value);
@@ -149,7 +202,18 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                     return PlcULINT.of(value);
                 case "LWORD":
                 case "BITARR64":
-                    return PlcLWORD.of(value);
+                    if(value instanceof Short) {
+                        return new PlcBitString(BigInteger.valueOf((long) value));
+                    } else if(value instanceof Integer) {
+                        return new PlcBitString(BigInteger.valueOf((long) value));
+                    } else if(value instanceof Long) {
+                        return new PlcBitString(BigInteger.valueOf((long) value));
+                    } else if(value instanceof BigInteger) {
+                        return new PlcBitString((BigInteger) value);
+                    } else if(value instanceof boolean[]) {
+                        return new PlcBitString((boolean[]) value);
+                    }
+                    throw new PlcRuntimeException("LWORD requires BigInteger or boolean[64]");
                 case "REAL":
                 case "FLOAT":
                     return PlcREAL.of(value);
@@ -174,18 +238,18 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                 case "DATE_AND_TIME":
                     return PlcDATE_AND_TIME.of(value);
                 default:
-                    return customDataType(field, new Object[] {value});
+                    return customDataType(new Object[]{value});
             }
         } else {
             PlcList list = new PlcList();
             for (Object value : values) {
-                list.add(of(field, new Object[] {value}));
+                list.add(of(field, new Object[]{value}));
             }
             return list;
         }
     }
 
-    public static PlcValue customDataType(PlcField field, Object[] values) {
+    public static PlcValue customDataType(Object[] values) {
         return of(values);
     }
 }

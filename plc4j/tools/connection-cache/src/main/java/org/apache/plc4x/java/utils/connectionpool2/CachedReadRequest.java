@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.utils.connectionpool2;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -27,12 +26,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 24.02.20
- */
 public class CachedReadRequest implements PlcReadRequest {
 
     private final CachedPlcConnection parent;

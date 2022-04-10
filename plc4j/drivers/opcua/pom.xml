@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-driver-opcua</artifactId>
@@ -103,8 +103,10 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4x-build-utils-language-java</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
             <usedDependency>org.apache.plc4x:plc4x-protocols-opcua</usedDependency>
+            <usedDependency>org.bouncycastle:bcpkix-jdk15on</usedDependency>
+            <usedDependency>org.bouncycastle:bcprov-jdk15on</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -113,36 +115,59 @@
 
   <dependencies>
     <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-buffer</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transport-tcp</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
+
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-test-utils</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.vavr</groupId>
+      <artifactId>vavr</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>sdk-client</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>stack-core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>stack-client</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.vavr</groupId>
-      <artifactId>vavr</artifactId>
     </dependency>
 
     <dependency>
@@ -152,29 +177,40 @@
     </dependency>
 
     <dependency>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-build-utils-language-java</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
-    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-    <scope>provided</scope>
-  </dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-language-java</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
 
-  <dependency>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-protocols-opcua</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
-    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-    <scope>provided</scope>
-  </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-opcua</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
 
-  <dependency>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-protocols-opcua</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
-    <classifier>tests</classifier>
-    <type>test-jar</type>
-    <scope>test</scope>
-  </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-opcua</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -183,17 +219,19 @@
         <groupId>org.eclipse.milo</groupId>
         <artifactId>sdk-client</artifactId>
         <version>${milo.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.milo</groupId>
         <artifactId>stack-core</artifactId>
         <version>${milo.version}</version>
-        <scope>provided</scope>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.milo</groupId>
         <artifactId>stack-client</artifactId>
         <version>${milo.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.milo</groupId>
@@ -201,7 +239,6 @@
         <version>${milo.version}</version>
         <scope>test</scope>
       </dependency>
-
 
     </dependencies>
   </dependencyManagement>

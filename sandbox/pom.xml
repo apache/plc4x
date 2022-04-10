@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.plc4x.sandbox</groupId>
@@ -39,15 +39,7 @@
     <module>discovery</module>
     <module>plc-simulator</module>
 
-    <module>test-java-bacnetip-driver</module>
     <module>test-java-df1-driver</module>
-
-    <module>test-streampipes-plc4x-adapters</module>
-    <module>test-streampipes-plc4x-processors</module>
-    <module>test-streampipes-plc4x-shared</module>
-
-    <!-- Examples -->
-    <module>hello-influx-data-collection</module>
   </modules>
 
   <build>
@@ -90,27 +82,11 @@
   </dependencies>
 
   <profiles>
-    <!-- Build PLC4X including the C modules -->
-    <profile>
-      <id>with-c</id>
-      <modules>
-        <module>plc4c</module>
-      </modules>
-    </profile>
-
     <!-- Build PLC4X including the C++ modules -->
     <profile>
       <id>with-cpp</id>
       <modules>
         <module>plc4cpp</module>
-      </modules>
-    </profile>
-
-    <!-- Build PLC4X including the .Net modules -->
-    <profile>
-      <id>with-dotnet</id>
-      <modules>
-        <module>plc4net</module>
       </modules>
     </profile>
 

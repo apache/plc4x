@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.transport.serial;
 
 import io.netty.buffer.ByteBuf;
@@ -41,12 +40,6 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectableChannel;
 import java.util.concurrent.RejectedExecutionException;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-10
- */
 public class SerialChannel extends AbstractNioByteChannel implements DuplexChannel {
 
     private static final Logger logger = LoggerFactory.getLogger(SerialChannel.class);
@@ -183,7 +176,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
                 return false;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("exception caught", e);
             this.active = false;
             return false;
         }
@@ -386,14 +379,14 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
 
                         pipeline().fireChannelRegistered();
                     } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        e.printStackTrace();
+                        logger.warn("Exception caught", e);
                     }
                 });
 
                 // Return promise
                 promise.setSuccess();
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClosedChannelException | NoSuchFieldException e) {
-                e.printStackTrace();
+                logger.warn("Exception caught", e);
                 throw new NotImplementedException("Should register channel to event loop!!!");
             }
         }

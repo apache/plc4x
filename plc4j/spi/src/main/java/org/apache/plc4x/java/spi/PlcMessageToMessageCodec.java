@@ -34,10 +34,10 @@ public abstract class PlcMessageToMessageCodec<INBOUND_IN, OUTBOUND_IN>
 
     private ChannelHandler prevChannelHandler = null;
 
-    public PlcMessageToMessageCodec() {
+    protected PlcMessageToMessageCodec() {
     }
 
-    public PlcMessageToMessageCodec(Class<? extends INBOUND_IN> inboundMessageType,
+    protected PlcMessageToMessageCodec(Class<? extends INBOUND_IN> inboundMessageType,
                                     Class<? extends OUTBOUND_IN> outboundMessageType) {
         super(inboundMessageType, outboundMessageType);
     }

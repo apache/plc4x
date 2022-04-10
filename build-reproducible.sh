@@ -21,7 +21,7 @@
 # Run a standard build
 function build() {
   echo "Building ..."
-  mvn -U -P apache-release,with-boost,with-dotnet,with-cpp,with-python,with-proxies,with-sandbox,with-logstash -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy
+  mvn -U -P apache-release,with-boost,with-dotnet,with-cpp,with-python,with-proxies,with-sandbox -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy
   echo "Done"
 }
 

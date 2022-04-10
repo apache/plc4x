@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4x-code-generation</artifactId>
+    <version>@project.version@</version>
+    <relativePath>../../../..</relativePath>
+  </parent>
+
+  <artifactId>plc4j-java-mspec-test</artifactId>
+
+  <name>PLC4J: Driver: Java Mspec Test</name>
+  <description></description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.plc4x.plugins</groupId>
+        <artifactId>plc4x-maven-plugin</artifactId>
+        <version>${plc4x-code-generation.version}</version>
+        <executions>
+          <execution>
+            <id>generate-driver</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>test</protocolName>
+              <languageName>java</languageName>
+              <outputFlavor>read-write</outputFlavor>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.karaf.tooling</groupId>
+        <artifactId>karaf-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-feature-xml</id>
+            <phase>compile</phase>
+            <goals>
+              <!-- Generate the feature.xml -->
+              <goal>features-generate-descriptor</goal>
+              <!-- Check the feature.xml -->
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <enableGeneration>true</enableGeneration>
+              <aggregateFeatures>true</aggregateFeatures>
+            </configuration>
+          </execution>
+          <execution>
+            <id>build-kar</id>
+            <phase>package</phase>
+            <goals>
+              <!--
+                Build a kar archive (Jar containing the feature.xml
+                as well as the module content and it's dependencies.
+              -->
+              <goal>kar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
+            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.protocol.test
+            </Export-Service>
+            <Import-Package>
+              com.fasterxml.jackson.annotation;resolution:=optional,
+              *
+            </Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4x-code-generation-protocol-test</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
+
+      <!--
+          Make the failsafe execute all integration-tests
+        -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!--
+                Notice the @ instead of the $ as prefix? That's late evaluation.
+          -->
+          <!--argLine>@{failsafeArgLine}</argLine-->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+<dependencies>
+  <dependency>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4j-api</artifactId>
+    <version>@project.version@</version>
+  </dependency>
+
+  <dependency>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4j-spi</artifactId>
+    <version>@project.version@</version>
+  </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transport-tcp</artifactId>
+      <version>@project.version@</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-buffer</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-test-utils</artifactId>
+      <version>@project.version@</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-language-java</artifactId>
+      <version>@project.version@</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-protocol-test</artifactId>
+      <version>@project.version@</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-protocol-test</artifactId>
+      <version>@project.version@</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+</project>
+

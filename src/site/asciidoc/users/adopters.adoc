@@ -34,7 +34,7 @@ a|image::users/companies/logo-industryfusion.png[if, 200, 200] |https://www.indu
 
 a|image::users/companies/logo_unistuttgart_isw.png[isw, 200, 200] |https://www.isw.uni-stuttgart.de/en/[ISW University of Stuttgart^,opts=nofollow] |IIoT / Industry 4.0 / Research |We use PLC4X for our research projects because of its great potential for retrofitting scenarios, the simplicity of the API, an active community for broad platform support and the open source flexibility.
 
-a|image::users/companies/logo-lebbing-automation-drives.png[re, 200, 200]|https://www.lebbing.com/[Lebbing engineering & consulting GmbH^,opts=nofollow] https://in2lutions.com/in2lutions/[In2Lutions]| Automation / Drives / Industry 4.0 |We used PLC4X to developed a solution to synchronize data between PLCs and customers systems. Our Solution is used for new products as well as for industry 4.0 upgrades to older machines.
+a|image::users/companies/logo-lebbing-automation-drives.png[re, 200, 200]|https://www.lebbing.com/[Lebbing automation & drives GmbH^,opts=nofollow] https://in2lutions.com/in2lutions/[In2Lutions]| Automation / Drives / Industry 4.0 |We used PLC4X to developed a solution to synchronize data between PLCs and customers systems. Our Solution is used for new products as well as for industry 4.0 upgrades to older machines.
 
 a|image::users/companies/logo-pietrorimoldi.jpg[pietrorimoldi, 200, 200] |https://www.rimoldi.it[PIETRORIMOLDI&C s.r.l.^,opts=nofollow] |IIoT / Analytics |We started a project which deals with long term data analysis; the data are gathered from machines controlled in real time by PLC. Failure prediction and behavioral working condition monitoring are the main goals. PLC4x library is a fundamental part of the process.
 

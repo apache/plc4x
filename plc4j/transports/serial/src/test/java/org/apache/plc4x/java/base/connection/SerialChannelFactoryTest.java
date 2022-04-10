@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.base.connection;
 
 import com.fazecast.jSerialComm.SerialPort;
@@ -38,12 +37,6 @@ import org.slf4j.LoggerFactory;
 import java.net.UnknownHostException;
 import java.util.List;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-10
- */
 public class SerialChannelFactoryTest {
 
     private static final Logger logger = LoggerFactory.getLogger(SerialChannelFactoryTest.class);

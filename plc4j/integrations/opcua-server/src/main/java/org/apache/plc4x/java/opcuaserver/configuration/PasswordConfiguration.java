@@ -16,12 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.opcuaserver.configuration;
 
 import org.eclipse.jetty.util.security.Password;
 
-import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.File;
@@ -34,8 +32,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.slf4j.LoggerFactory;
 
 public class PasswordConfiguration {
 

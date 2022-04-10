@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.values;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -163,8 +163,8 @@ public class PlcBigInteger extends PlcSimpleValue<BigInteger> {
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        // TODO: Implement
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        writeBuffer.writeBigInteger(getClass().getSimpleName(), value.bitLength(), value);
     }
 
 }

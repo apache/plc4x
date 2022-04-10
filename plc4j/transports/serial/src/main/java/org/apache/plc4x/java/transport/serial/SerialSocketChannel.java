@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.transport.serial;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -32,12 +31,6 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Set;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-10
- */
 class SerialSocketChannel extends SocketChannel {
 
     private static final Logger logger = LoggerFactory.getLogger(SerialSocketChannel.class);

@@ -20,76 +20,85 @@
 
 The `MSpec` format (Message Specification) was a result of a brainstorming session after evaluating a lot of other options.
 
-We simply sat down and started to write some imaginary format (`imaginary` was even the initial Name we used) and created parses for this afterwards and fine tuned spec and parsers as part of the process of implementing first protocols and language templates.
+We simply sat down and started to write some imaginary format (`imaginary` was even the initial Name we used) and created parses for this afterwards and fine-tuned spec and parsers as part of the process of implementing first protocols and language templates.
 
 It's a text-based format.
 
-At the root level of these specs are a set of `type` or `discriminatedType` blocks.
+At the root level of these specs are a set of `type`, `discriminatedType`, `dataIo` and `enum` blocks.
 
-`type` elements are objects that are independent from the input.
+`type` elements are objects who's content is independent of the input.
 
 An example would be the `TPKTPacket` of the S7 format:
 
 ....
-[type 'TPKTPacket'
-    [const    uint 8     'protocolId' '0x03']
+[type TPKTPacket
+    [const    uint 8     protocolId 0x03]
     [reserved uint 8     '0x00']
-    [implicit uint 16    'len'        'payload.lengthInBytes + 4']
+    [implicit uint 16    len        'payload.lengthInBytes + 4']
     [field    COTPPacket 'payload']
 ]
 ....
 
-A `discriminatedType` type is in contrast an object who's content is dependent in the input.
+A `discriminatedType` type, in contrast, is an object who's content and structure is influenced by the input.
 
-Every discriminated type can contain at most one `discriminator` field and exactly one `typeSwitch` element.
+Every discriminated type can contain an arbitrary number of `discriminator` fields and exactly one `typeSwitch` element.
 
 For example part of the spec for the S7 format looks like this:
 
 ....
-[discriminatedType 'S7Message'
-    [const         uint 8  'protocolId'      '0x32']
-    [discriminator uint 8  'messageType']
+[discriminatedType S7Message
+    [const         uint 8  protocolId      0x32]
+    [discriminator uint 8  messageType]
     [reserved      uint 16 '0x0000']
-    [field         uint 16 'tpduReference']
-    [implicit      uint 16 'parameterLength' 'parameter.lengthInBytes']
-    [implicit      uint 16 'payloadLength'   'payload.lengthInBytes']
+    [simple        uint 16 tpduReference]
+    [implicit      uint 16 parameterLength 'parameter.lengthInBytes']
+    [implicit      uint 16 payloadLength   'payload.lengthInBytes']
     [typeSwitch 'messageType'
         ['0x01' S7MessageRequest
         ]
         ['0x03' S7MessageResponse
-            [field uint 8 'errorClass']
-            [field uint 8 'errorCode']
+            [simple uint 8 errorClass]
+            [simple uint 8 errorCode ]
         ]
         ['0x07' S7MessageUserData
         ]
     ]
-    [field S7Parameter 'parameter' ['messageType']]
-    [field S7Payload   'payload'   ['messageType', 'parameter']]
+    [simple S7Parameter('messageType')            parameter]
+    [simple S7Payload('messageType', 'parameter') payload  ]
 ]
 ....
 
-An types start is declared by an opening square bracket `[` and ended with a closing one `]`.
+A types start is declared by an opening square bracket `[` and ended with a closing one `]`.
 
-Also to both provide a name as first argument.
+Also, to both provide a name as first argument.
 
 Every type definition contains a list of fields that can have different types.
 
 The list of available types are:
 
-- const: expects a given value
-- reserved: expects a given value, but only warns if condition is not meet
-- field: simple or complex typed object
-- array: array of simple or complex typed objects
-- optional: simple or complex typed object, that is only present in some conditions
-- implicit: a field required for parsing, but is usually defined though other data
-- discriminator: special type of simple typed field which is used to determine the concrete type of an object (max one per type and always has to be accompanied with a `switch` field) (reserved for `discriminatedType`)
-- typeSwitch: not a real field, but indicates the existence of sub-types, which are declared inline (reserved for `discriminatedType`)
+- abstract: used in the parent type declaration do declare a field that has to be defined with the identical type in all sub-types (reserved for `discriminatedType`).
+- array: array of simple or complex typed objects.
+- checksum: used for calculating and verifying checksum values.
+- const: expects a given value and causes a hard exception if the value doesn't match.
+- discriminator: special type of simple typed field which is used to determine the concrete type of object (reserved for `discriminatedType`).
+- enum: special form of field, used if an enum types property is to be used instead of it's primary value.
+- implicit: a field required for parsing, but is usually defined though other data, so it's not stored in the object, but calculated on serialization.
+- assert: generally similar to `constant` fields, however do they throw `AssertionExceptions` instead of hard `ParseExceptions`. They are used in combination with optional fields.
+- manualArray: like an array field, however the logic for serializing, parsing, number of elements and size have to be provided manually.
+- manual: simple field, where the logic for parsing, serializing and size have to be provided manually.
+- optional: simple or complex typed object, that is only present if an optional condition expression evaluates to `true` and no `AssertionException` is thrown when parsing the referenced type.
+- padding: field used to add padding data to make datastructures aligned.
+- reserved: expects a given value, but only warns if condition is not meet.
+- simple: simple or complex typed object.
+- typeSwitch: not a real field, but indicates the existence of sub-types, which are declared inline (reserved for `discriminatedType`).
+- unknown: field used to declare parts of a message that still has to be defined. Generally used when reverse-engineering a protocol. Messages with `unknown` fields can only be parsed and not serialized.
+- virtual: generates a field in the message, that is generally only used for simplification. It's not used for parsing or serializing.
 
 The full syntax and explanations of these type follow in the following chapters.
 
 Another thing we have to explain are how types are specified.
 
-In general we distinguish between two types of types used in field definitions:
+In general, we distinguish between two types of types used in field definitions:
 
 - simple types
 - complex types
@@ -102,17 +111,21 @@ Simple types are usually raw data the format is:
 
 The base types available are currently:
 
-- *bit*: Simple boolean value
-- *uint*: The input is treated as unsigned integer value
-- *int*: The input is treated as signed integer value
-- *float*: The input is treated as floating point number
-- *string*: The input is treated as string
+- *bit*: Simple boolean value or bit.
+- *byte*: Special value fixed to 8 bit, which defaults to either signed or unsigned depending on the programming language (Java it defaults to signed integer values and in C and Go it defaults to unsigned integers).
+- *uint*: The input is treated as unsigned integer value.
+- *int*: The input is treated as signed integer value.
+- *float*: The input is treated as floating point number.
+- *string*: The input is treated as string.
 
-The size value then provides how many `bits` should be read.
-
-In case of `string` types, it refers to the number of characters.
+All above types take a `size` value which provides how many `bits` should be read.
+All except the `bit` type, which is fixed to one single bit.
 
 So reading an unsigned byte would be: `uint 8`.
+
+There is currently one special type, reserved for string values, whose length is determined by an expression instead of a fixed number of bits. It is considered a variable length string:
+
+- *vstring*: The input is treated as a variable length string and requires an expression tp provide the number of bits to read.
 
 === Complex Types
 
@@ -162,7 +175,7 @@ See also:
 
 A const field simply reads a given simple type and compares to a given reference value.
 
-    [const {simple-type} {size} '{name}' '{reference}']
+    [const {simple-type} {size} '{name}' {reference}]
 
 When parsing it makes the parser throw an Exception if the parsed value does not match.
 
@@ -329,7 +342,7 @@ Some times it is necessary to pass along additional parameters.
 If a complex type requires parameters, these are declared in the header of that type.
 
 ....
-[discriminatedType 'S7Payload' [uint 8 'messageType', S7Parameter 'parameter']
+[discriminatedType S7Payload(uint 8 'messageType', S7Parameter 'parameter')
     [typeSwitch 'parameter.discriminatorValues[0]', 'messageType'
         ['0xF0' S7PayloadSetupCommunication]
         ['0x04','0x01' S7PayloadReadVarRequest]

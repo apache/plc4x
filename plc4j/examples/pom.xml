@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.plc4x.examples</groupId>
@@ -39,21 +39,23 @@
   </properties>
 
   <modules>
-    <!--module>dummy-driver</module-->
     <module>hello-cloud-azure</module>
     <module>hello-cloud-google</module>
     <module>hello-connectivity-kafka</module>
+    <module>hello-discovery</module>
     <module>hello-connectivity-mqtt</module>
+    <module>hello-influx-data-collection</module>
     <module>hello-integration-edgent</module>
     <module>hello-integration-iotdb</module>
     <module>hello-opm</module>
-    <module>hello-storage-elasticsearch</module>
     <module>hello-webapp</module>
     <module>hello-webservice</module>
+    <module>hello-world-kotlin</module>
     <module>hello-world-plc4x</module>
     <module>hello-world-plc4x-subscription</module>
     <module>hello-world-plc4x-write</module>
     <module>poll-loop</module>
+    <module>plc4j-s7event</module>
   </modules>
 
   <build>
@@ -64,6 +66,14 @@
         <artifactId>maven-enforcer-plugin</artifactId>
         <configuration>
           <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+        <configuration>
+          <!-- Don't fail the examples on CVSS errors -->
+          <failBuildOnCVSS>11</failBuildOnCVSS>
         </configuration>
       </plugin>
       <!-- Build a fat jar containing all dependencies -->
@@ -101,6 +111,7 @@
             <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-profinet</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
           </usedDependencies>
@@ -122,6 +133,7 @@
     </pluginManagement>
   </build>
 
+  <!-- Change the default scope to "compile" to include logback in all examples -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -144,61 +156,67 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ab-eth</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-canopen</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-firmata</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-profinet</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>

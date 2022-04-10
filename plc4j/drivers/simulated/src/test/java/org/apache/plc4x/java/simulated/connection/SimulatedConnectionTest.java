@@ -1,22 +1,21 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-
 package org.apache.plc4x.java.simulated.connection;
 
 import org.apache.plc4x.java.api.messages.*;
@@ -29,6 +28,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.Collection;
@@ -43,6 +44,8 @@ import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class SimulatedConnectionTest implements WithAssertions {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimulatedConnectionTest.class);
 
     SimulatedConnection SUT;
 
@@ -133,6 +136,7 @@ class SimulatedConnectionTest implements WithAssertions {
     class Registration {
         @Test
         void register() {
+            @SuppressWarnings("unchecked")
             PlcConsumerRegistration register = SUT.register(mock(Consumer.class), Collections.emptyList());
             assertThat(register).isNotNull();
         }
@@ -152,6 +156,7 @@ class SimulatedConnectionTest implements WithAssertions {
 
         @Test
         void subscription() throws Exception {
+            LOGGER.trace("initialize");
             // Initialize the addresses
             PlcWriteRequest plcWriteRequest = SUT.writeRequestBuilder()
                 .addItem("cyclic", "STATE/cyclic:STRING", "initialcyclic")
@@ -159,7 +164,9 @@ class SimulatedConnectionTest implements WithAssertions {
                 .addItem("event", "STATE/event:STRING", "initialevent")
                 .build();
             SUT.write(plcWriteRequest).get(1, TimeUnit.SECONDS);
+            // Note: as we don't have a subscription yet, no callback will be executed
 
+            LOGGER.trace("subscribe");
             // Subscribe for the addresses
             PlcSubscriptionRequest plcSubscriptionRequest = SUT.subscriptionRequestBuilder()
                 .addCyclicField("cyclic", "STATE/cyclic:String", Duration.ofSeconds(1))
@@ -168,6 +175,7 @@ class SimulatedConnectionTest implements WithAssertions {
                 .build();
             PlcSubscriptionResponse plcSubscriptionResponse = SUT.subscribe(plcSubscriptionRequest).get(1, TimeUnit.SECONDS);
 
+            LOGGER.trace("register handler");
             // Register some handlers for the subscriptions that simply put the messages in a queue.
             Queue<PlcSubscriptionEvent> cyclicQueue = new ConcurrentLinkedQueue<>();
             PlcConsumerRegistration cyclicRegistration = plcSubscriptionResponse.getSubscriptionHandle("cyclic").register(cyclicQueue::add);
@@ -177,22 +185,30 @@ class SimulatedConnectionTest implements WithAssertions {
             PlcConsumerRegistration eventRegistration = plcSubscriptionResponse.getSubscriptionHandle("event").register(eventQueue::add);
             assertThat(plcSubscriptionResponse.getFieldNames()).isNotEmpty();
 
+            LOGGER.trace("giving time");
             // Give the system some time to do stuff
-            TimeUnit.SECONDS.sleep(10);
+            TimeUnit.SECONDS.sleep(2);
 
+            LOGGER.trace("write some addresses");
             // Write something to the addresses in order to trigger a value-change event
             PlcWriteRequest plcWriteRequest2 = SUT.writeRequestBuilder()
                 .addItem("cyclic", "STATE/cyclic:STRING", "changedcyclic")
                 .addItem("state", "STATE/state:STRING", "changedstate")
                 .addItem("event", "STATE/event:STRING", "changedevent")
                 .build();
-            SUT.write(plcWriteRequest2).get(1, TimeUnit.SECONDS);
+            SUT.write(plcWriteRequest2).get(10, TimeUnit.SECONDS);
 
+            LOGGER.trace("giving time again");
+            // Give the system some time to do stuff
+            TimeUnit.SECONDS.sleep(2);
+
+            LOGGER.trace("unregister");
             // Unregister all consumers
             cyclicRegistration.unregister();
             stateRegistration.unregister();
             eventRegistration.unregister();
 
+            LOGGER.trace("assertions");
             // The cyclic queue should not be empty as it had 10 seconds to get a value once per second
             assertThat(cyclicQueue).isNotEmpty();
             cyclicQueue.forEach(

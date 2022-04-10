@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.utils.connectionpool2;
 
 import org.apache.plc4x.java.api.PlcConnection;
@@ -44,11 +43,6 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- *
- * @author julian
- * Created by julian on 24.02.20
- */
 @Disabled("disabled due to conccurency issues with occasionally failing tests")
 class CachedDriverManagerTest implements WithAssertions {
 

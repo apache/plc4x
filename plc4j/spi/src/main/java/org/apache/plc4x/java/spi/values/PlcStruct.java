@@ -16,17 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.values;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.util.Collections;
 import java.util.Map;
@@ -86,20 +86,19 @@ public class PlcStruct extends PlcValueAdapter {
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element plcValueElement = doc.createElement("PlcStruct");
-        parent.appendChild(plcValueElement);
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        writeBuffer.pushContext("PlcStruct");
         for (Map.Entry<String, PlcValue> entry : map.entrySet()) {
             String fieldName = entry.getKey();
-            Element fieldElement = doc.createElement(fieldName);
-            plcValueElement.appendChild(fieldElement);
+            writeBuffer.pushContext(fieldName);
             PlcValue fieldValue = entry.getValue();
-            if(!(fieldValue instanceof XmlSerializable)) {
-                throw new RuntimeException("Error serializing. List item doesn't implement XmlSerializable");
+            if (!(fieldValue instanceof Serializable)) {
+                throw new PlcRuntimeException("Error serializing. List item doesn't implement XmlSerializable");
             }
-            ((XmlSerializable) fieldValue).xmlSerialize(fieldElement);
+            ((Serializable) fieldValue).serialize(writeBuffer);
+            writeBuffer.pushContext(fieldName);
         }
+        writeBuffer.popContext("PlcStruct");
     }
 
 }

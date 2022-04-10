@@ -1,47 +1,49 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package org.apache.plc4x.java.canopen;
 
-import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.canopen.transport.CANOpenFrame;
-import org.apache.plc4x.java.canopen.transport.socketcan.io.CANOpenSocketCANFrameIO;
+import org.apache.plc4x.java.can.adapter.CANDriverAdapter;
 import org.apache.plc4x.java.canopen.configuration.CANOpenConfiguration;
 import org.apache.plc4x.java.canopen.context.CANOpenDriverContext;
 import org.apache.plc4x.java.canopen.field.CANOpenFieldHandler;
 import org.apache.plc4x.java.canopen.protocol.CANOpenProtocolLogic;
+import org.apache.plc4x.java.canopen.transport.CANOpenFrameDataHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
+import org.apache.plc4x.java.spi.connection.CustomProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
+import org.apache.plc4x.java.spi.transport.Transport;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
-
-import java.util.function.ToIntFunction;
+import org.apache.plc4x.java.transport.can.CANTransport;
 
 /**
  */
-public class CANOpenPlcDriver extends GeneratedDriverBase<CANOpenFrame> {
+public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
 
     @Override
     public String getProtocolCode() {
@@ -111,23 +113,30 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<CANOpenFrame> {
     }
 
     @Override
-    protected ProtocolStackConfigurer<CANOpenFrame> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(CANOpenFrame.class, CANOpenSocketCANFrameIO.class)
-            .withProtocol(CANOpenProtocolLogic.class)
-            .withDriverContext(CANOpenDriverContext.class)
-            .withPacketSizeEstimator(CANEstimator.class)
-            .littleEndian()
-            .build();
+    protected ProtocolStackConfigurer<Message> getStackConfigurer() {
+        throw new PlcRuntimeException("CANopen driver requires access to transport layer.");
     }
 
-    public static class CANEstimator implements ToIntFunction<ByteBuf> {
-        @Override
-        public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 5) {
-                return 16; // socketcan transport always returns 16 bytes padded with zeros;
-            }
-            return -1; //discard
+    @Override
+    protected ProtocolStackConfigurer<Message> getStackConfigurer(Transport transport) {
+        if (!(transport instanceof CANTransport)) {
+            throw new PlcRuntimeException("CANopen driver requires a CAN transport instance");
         }
+
+        final CANTransport<Message> canTransport = (CANTransport<Message>) transport;
+        return CustomProtocolStackConfigurer.builder(canTransport.getMessageType(), canTransport::getMessageInput)
+            .withProtocol(cfg -> {
+                CANOpenProtocolLogic protocolLogic = new CANOpenProtocolLogic();
+                ConfigurationFactory.configure(cfg, protocolLogic);
+                return new CANDriverAdapter<>(protocolLogic,
+                    canTransport.getMessageType(), canTransport.adapter(),
+                    new CANOpenFrameDataHandler(canTransport::getTransportFrameBuilder)
+                );
+            })
+            .withDriverContext(cfg -> new CANOpenDriverContext())
+            .withPacketSizeEstimator(configuration1 -> canTransport.getEstimator())
+            .littleEndian()
+            .build();
     }
 
 }

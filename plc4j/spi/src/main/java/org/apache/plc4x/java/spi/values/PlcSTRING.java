@@ -16,17 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.values;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcSTRING extends PlcSimpleValue<String> {
@@ -36,9 +37,8 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     public static PlcSTRING of(Object value) {
         if (value instanceof String) {
             return new PlcSTRING((String) value);
-        } else {
-            return new PlcSTRING((String) value);
         }
+        return new PlcSTRING(String.valueOf(value));
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -46,7 +46,7 @@ public class PlcSTRING extends PlcSimpleValue<String> {
         super(value, true);
         if (value.length() > maxLength) {
             throw new IllegalArgumentException(
-                "String length " + value.length() + " exceeds allowed maximum for type String (max " + maxLength + ")");
+                String.format("String length %d exceeds allowed maximum for type String (max %d)", value.length(), maxLength));
         }
     }
 
@@ -231,8 +231,9 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        // TODO: Implement
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        String valueString = value.toString();
+        writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
     }
 
 }

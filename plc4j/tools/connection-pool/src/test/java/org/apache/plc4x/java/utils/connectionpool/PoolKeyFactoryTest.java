@@ -1,22 +1,21 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-
 package org.apache.plc4x.java.utils.connectionpool;
 
 import org.assertj.core.api.WithAssertions;
@@ -77,19 +76,19 @@ class PoolKeyFactoryTest implements WithAssertions {
     class Modbus {
         @Test
         void getPoolKey_TCP() throws Exception {
-            PoolKey poolKey = SUT.getPoolKey("modbus:tcp://10.10.64.40?someRandomOption=true", PooledPlcDriverManager.noPlcAuthentication);
-            assertThat(poolKey.getUrl()).isEqualTo("modbus:tcp://10.10.64.40?someRandomOption=true");
+            PoolKey poolKey = SUT.getPoolKey("modbus-tcp://10.10.64.40?someRandomOption=true", PooledPlcDriverManager.noPlcAuthentication);
+            assertThat(poolKey.getUrl()).isEqualTo("modbus-tcp://10.10.64.40?someRandomOption=true");
             assertThat(poolKey.getPlcAuthentication()).isEqualTo(PooledPlcDriverManager.noPlcAuthentication);
-            assertThat(poolKey.getPoolableKey()).isEqualTo("modbus:tcp://10.10.64.40");
+            assertThat(poolKey.getPoolableKey()).isEqualTo("modbus-tcp://10.10.64.40");
         }
 
         @Disabled("Modbus serial pooling doesn't work right now as intended")
         @Test
         void getPoolKey_SERIAL() throws Exception {
-            PoolKey poolKey = SUT.getPoolKey("modbus:serial:///dev/ttys003?someRandomOption=true", PooledPlcDriverManager.noPlcAuthentication);
-            assertThat(poolKey.getUrl()).isEqualTo("modbus:serial:///dev/ttys003?someRandomOption=true");
+            PoolKey poolKey = SUT.getPoolKey("modbus-adu:///dev/ttys003?someRandomOption=true", PooledPlcDriverManager.noPlcAuthentication);
+            assertThat(poolKey.getUrl()).isEqualTo("modbus-adu:///dev/ttys003?someRandomOption=true");
             assertThat(poolKey.getPlcAuthentication()).isEqualTo(PooledPlcDriverManager.noPlcAuthentication);
-            assertThat(poolKey.getPoolableKey()).isEqualTo("modbus:serial:///dev/ttys003");
+            assertThat(poolKey.getPoolableKey()).isEqualTo("modbus-adu:///dev/ttys003");
         }
     }
 

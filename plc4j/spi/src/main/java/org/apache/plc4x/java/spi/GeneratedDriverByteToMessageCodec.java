@@ -22,10 +22,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,24 +32,34 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneratedDriverByteToMessageCodec.class);
 
-    private final boolean bigEndian;
+    private final ByteOrder byteOrder;
     private final Object[] parserArgs;
-    private final MessageIO<T, T> io;
+    private final MessageInput<T> messageInput;
+    private final MessageOutput<T> messageOutput;
 
-    public GeneratedDriverByteToMessageCodec(MessageIO<T, T> io, Class<T> clazz, boolean bigEndian, Object[] parserArgs) {
-        super(clazz);
-        this.io = io;
-        this.bigEndian = bigEndian;
+    protected GeneratedDriverByteToMessageCodec(MessageInput<T> messageInput, MessageOutput<T> messageOutput,
+                                                Class<T> outboundMessageType, ByteOrder byteOrder, Object[] parserArgs) {
+        super(outboundMessageType);
+        this.messageInput = messageInput;
+        this.messageOutput = messageOutput;
+        this.byteOrder = byteOrder;
         this.parserArgs = parserArgs;
     }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, T packet, ByteBuf byteBuf) {
         try {
-            WriteBuffer buffer = new WriteBuffer(packet.getLengthInBytes(), !bigEndian);
-            io.serialize(buffer, packet);
+            WriteBufferByteBased buffer;
+            if(messageOutput != null) {
+                buffer = messageOutput.serialize(packet);
+            } else {
+                buffer = new WriteBufferByteBased(packet.getLengthInBytes(), byteOrder);
+                packet.serialize(buffer);
+            }
             byteBuf.writeBytes(buffer.getData());
-            LOGGER.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
+            }
         } catch (Exception e) {
             LOGGER.warn("Error encoding package [{}]: {}", packet, e.getMessage(), e);
         }
@@ -62,33 +69,33 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) {
         LOGGER.trace("Receiving bytes, trying to decode Message...");
         // As long as there is data available, continue checking the content.
-        while(byteBuf.readableBytes() > 0) {
+        while (byteBuf.readableBytes() > 0) {
             byte[] bytes = null;
             try {
                 // Check if enough data is present to process the entire package.
                 int packetSize = getPacketSize(byteBuf);
-                if(packetSize == -1 || packetSize > byteBuf.readableBytes()) {
+                if (packetSize == -1 || packetSize > byteBuf.readableBytes()) {
                     return;
                 }
 
                 // Read the packet data into a new ReadBuffer
                 bytes = new byte[packetSize];
                 byteBuf.readBytes(bytes);
-                ReadBuffer readBuffer = new ReadBuffer(bytes, !bigEndian);
+                ReadBuffer readBuffer = new ReadBufferByteBased(bytes, byteOrder);
 
                 // Parse the packet.
-                T packet = io.parse(readBuffer, parserArgs);
+                T packet = messageInput.parse(readBuffer, parserArgs);
 
                 // Pass the packet to the pipeline.
                 out.add(packet);
 
                 // It seems that one batch of 16 messages is the maximum, so we have to give up
                 // and process the rest next time.
-                if(out.size() >= 16) {
+                if (out.size() >= 16) {
                     return;
                 }
             } catch (Exception e) {
-                if(bytes != null) {
+                if (bytes != null) {
                     LOGGER.warn("Error decoding package with content [{}]: {}",
                         Hex.encodeHexString(bytes), e.getMessage(), e);
                 }

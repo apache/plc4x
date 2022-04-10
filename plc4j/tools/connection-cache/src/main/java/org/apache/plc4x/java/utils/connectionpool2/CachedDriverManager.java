@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.utils.connectionpool2;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -44,9 +43,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * PlcDriverManager cached = new CachedDriverManager(url, () -&gt; manager.getConnection(url));
  * </code>
  * Now you can use "cached" everywhere you need the corresponding connection.
- *
- * @author julian
- * Created by julian on 24.02.20
  */
 public class CachedDriverManager extends PlcDriverManager implements CachedDriverManagerMBean {
 
@@ -160,6 +156,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
         if (!this.url.equals(url)) {
             throw new IllegalArgumentException("This Cached Driver Manager only supports the Connection " + url);
         }
+        CompletableFuture<PlcConnection> future;
         synchronized (this) {
             logger.trace("current queue size before check {}", queue.size());
             if (queue.isEmpty() && isConnectionAvailable()) {
@@ -173,9 +170,8 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
                 } catch (Exception ignore) {
                 }
             }
-        }
-        CompletableFuture<PlcConnection> future = new CompletableFuture<>();
-        synchronized (this) {
+
+            future = new CompletableFuture<>();
             logger.trace("current queue size before add {}", queue.size());
             queue.add(future);
         }
