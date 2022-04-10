@@ -76,11 +76,11 @@
 
 Modbus has the following connection string format:-
 ----
-modbus:{transport}://{ip-address}:{port}?{options}
+modbus-tcp:{transport}://{ip-address}:{port}?{options}
 ----
 An example connection string would look like:-
 ----
-modbus:tcp://127.0.0.1:502
+modbus-tcp:tcp://127.0.0.1:502
 ----
 Note the transport, port and option fields are optional.
 

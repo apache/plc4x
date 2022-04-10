@@ -24,19 +24,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.messages.utils.FieldValueItem;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -47,7 +48,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcWriteRequest implements PlcWriteRequest, XmlSerializable {
+public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
 
     private final PlcWriter writer;
     private final LinkedHashMap<String, FieldValueItem> fields;
@@ -134,7 +135,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, XmlSerializable 
     @JsonIgnore
     public int getNumberOfValues(String name) {
         final PlcValue value = fields.get(name).getValue();
-        if(value instanceof PlcList) {
+        if (value instanceof PlcList) {
             PlcList list = (PlcList) value;
             return list.getLength();
         }
@@ -142,36 +143,35 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, XmlSerializable 
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement("PlcWriteRequest");
-        Element fieldsElement = doc.createElement("fields");
-        messageElement.appendChild(fieldsElement);
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        writeBuffer.pushContext("PlcWriteRequest");
+
+        writeBuffer.pushContext("fields");
         for (Map.Entry<String, FieldValueItem> fieldEntry : fields.entrySet()) {
             FieldValueItem fieldValueItem = fieldEntry.getValue();
             String fieldName = fieldEntry.getKey();
-            Element fieldNameElement = doc.createElement(fieldName);
-            fieldsElement.appendChild(fieldNameElement);
+            writeBuffer.pushContext(fieldName);
             PlcField field = fieldValueItem.getField();
-            if(!(field instanceof XmlSerializable)) {
+            if (!(field instanceof Serializable)) {
                 throw new RuntimeException("Error serializing. Field doesn't implement XmlSerializable");
             }
-            ((XmlSerializable) field).xmlSerialize(fieldNameElement);
+            ((Serializable) field).serialize(writeBuffer);
             final PlcValue value = fieldValueItem.getValue();
-            if(value instanceof PlcList) {
+            if (value instanceof PlcList) {
                 PlcList list = (PlcList) value;
                 for (PlcValue plcValue : list.getList()) {
-                    Element fieldValueElement = doc.createElement("value");
-                    fieldValueElement.setTextContent(plcValue.getString());
-                    fieldNameElement.appendChild(fieldValueElement);
+                    String plcValueString = plcValue.getString();
+                    writeBuffer.writeString("value", plcValueString.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), plcValueString);
                 }
             } else {
-                Element fieldValueElement = doc.createElement("value");
-                fieldValueElement.setTextContent(value.getString());
-                fieldNameElement.appendChild(fieldValueElement);
+                String plcValueString = value.getString();
+                writeBuffer.writeString("value", plcValueString.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), plcValueString);
             }
+            writeBuffer.popContext(fieldName);
         }
-        parent.appendChild(messageElement);
+        writeBuffer.popContext("fields");
+
+        writeBuffer.popContext("PlcWriteRequest");
     }
 
     public static class Builder implements PlcWriteRequest.Builder {

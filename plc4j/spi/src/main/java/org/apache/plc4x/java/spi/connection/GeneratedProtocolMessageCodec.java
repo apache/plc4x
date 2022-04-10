@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.connection;
 
 import io.netty.buffer.ByteBuf;
@@ -33,12 +32,25 @@ public class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> ex
 
     public GeneratedProtocolMessageCodec(
         Class<BASE_PACKET_CLASS> basePacketClass,
-        MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS> messageIO,
-        boolean bigEndian,
+        MessageInput<BASE_PACKET_CLASS> messageInput,
+        ByteOrder byteOrder,
         Object[] parserArgs,
         ToIntFunction<ByteBuf> packetSizeEstimator,
         Consumer<ByteBuf> corruptPackageRemover) {
-        super(messageIO, basePacketClass, bigEndian, parserArgs);
+        super(messageInput, null, basePacketClass, byteOrder, parserArgs);
+        this.packetSizeEstimator = packetSizeEstimator;
+        this.corruptPackageRemover = corruptPackageRemover;
+    }
+
+    public GeneratedProtocolMessageCodec(
+        Class<BASE_PACKET_CLASS> basePacketClass,
+        MessageInput<BASE_PACKET_CLASS> messageInput,
+        MessageOutput<BASE_PACKET_CLASS> messageOutput,
+        ByteOrder byteOrder,
+        Object[] parserArgs,
+        ToIntFunction<ByteBuf> packetSizeEstimator,
+        Consumer<ByteBuf> corruptPackageRemover) {
+        super(messageInput, messageOutput, basePacketClass, byteOrder, parserArgs);
         this.packetSizeEstimator = packetSizeEstimator;
         this.corruptPackageRemover = corruptPackageRemover;
     }

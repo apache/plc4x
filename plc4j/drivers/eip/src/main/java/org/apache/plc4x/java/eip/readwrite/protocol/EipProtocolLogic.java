@@ -20,6 +20,7 @@ package org.apache.plc4x.java.eip.readwrite.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -27,13 +28,12 @@ import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.eip.readwrite.*;
 import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.readwrite.field.EipField;
-import org.apache.plc4x.java.eip.readwrite.io.CipServiceIO;
-import org.apache.plc4x.java.eip.readwrite.types.CIPDataTypeCode;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
@@ -54,9 +54,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     private static final Logger logger = LoggerFactory.getLogger(EipProtocolLogic.class);
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
 
-    private static final short[] emptySenderContext = new short[]{(short) 0x00, (short) 0x00, (short) 0x00,
-        (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00};
-    private short[] senderContext;
+    private static final List<Short> emptySenderContext = Arrays.asList((short) 0x00, (short) 0x00, (short) 0x00,
+        (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00);
+    private List<Short> senderContext;
     private EIPConfiguration configuration;
 
     private final AtomicInteger transactionCounterGenerator = new AtomicInteger(10);
@@ -103,7 +103,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             if (plcField.getElementNb() > 1) {
                 elements = plcField.getElementNb();
             }
-            CipReadRequest req = new CipReadRequest(getRequestSize(tag), toAnsi(tag), elements);
+            CipReadRequest req = new CipReadRequest(getRequestSize(tag), toAnsi(tag), elements, -1);
             requests.add(req);
         }
         return toPlcReadResponse(readRequest, readInternal(requests));
@@ -150,11 +150,11 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         boolean isPadded = tagFinal.length() % 2 != 0;
         int dataSegLength = 2 + tagFinal.length()
             + (isPadded ? 1 : 0)
-            + (isArray ? 2 : 0 );
-            
-        if(isStruct){
-            for (String subStr : tag.substring(tag.indexOf(".")+1).split("\\.", -1) ) {
-                dataSegLength+= 2 + subStr.length() + subStr.length()%2;
+            + (isArray ? 2 : 0);
+
+        if (isStruct) {
+            for (String subStr : tag.substring(tag.indexOf(".") + 1).split("\\.", -1)) {
+                dataSegLength += 2 + subStr.length() + subStr.length() % 2;
             }
         }
 
@@ -196,26 +196,32 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         if (request.size() > 1) {
 
             short nb = (short) request.size();
-            int[] offsets = new int[nb];
+            List<Integer> offsets = new ArrayList<>(nb);
             int offset = 2 + nb * 2;
             for (int i = 0; i < nb; i++) {
-                offsets[i] = offset;
+                offsets.add(offset);
                 offset += request.get(i).getLengthInBytes();
             }
 
-            CipService[] serviceArr = new CipService[nb];
+            List<CipService> serviceArr = new ArrayList<>(nb);
             for (int i = 0; i < nb; i++) {
-                serviceArr[i] = request.get(i);
+                serviceArr.add(request.get(i));
             }
-            Services data = new Services(nb, offsets, serviceArr);
+            Services data = new Services(nb, offsets, serviceArr, -1);
             //Encapsulate the data
 
             CipRRData pkt = new CipRRData(sessionHandle, 0L, emptySenderContext, 0L,
                 new CipExchange(
                     new CipUnconnectedRequest(
-                        new MultipleServiceRequest(data),
+                        new MultipleServiceRequest(data, -1),
                         (byte) configuration.getBackplane(),
-                        (byte) configuration.getSlot())));
+                        (byte) configuration.getSlot(),
+                        -1
+                    ),
+                    -1
+                ),
+                -1
+            );
 
 
             transaction.submit(() -> context.sendRequest(pkt)
@@ -235,8 +241,13 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     transaction.endRequest();
                 }));
         } else if (request.size() == 1) {
-            CipExchange exchange = new CipExchange(new CipUnconnectedRequest(request.get(0), (byte) configuration.getBackplane(), (byte) configuration.getSlot()));
-            CipRRData pkt = new CipRRData(sessionHandle, 0L, emptySenderContext, 0L, exchange);
+            CipExchange exchange = new CipExchange(
+                new CipUnconnectedRequest(
+                    request.get(0), (byte) configuration.getBackplane(), (byte) configuration.getSlot(), -1
+                ),
+                -1
+            );
+            CipRRData pkt = new CipRRData(sessionHandle, 0L, emptySenderContext, 0L, exchange, -1);
             transaction.submit(() -> context.sendRequest(pkt)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
@@ -277,34 +288,34 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         else if (p instanceof MultipleServiceResponse) {
             MultipleServiceResponse responses = (MultipleServiceResponse) p;
             int nb = responses.getServiceNb();
-            CipService[] arr = new CipService[nb];
-            ReadBuffer read = new ReadBuffer(responses.getServicesData(), true);
+            List<CipService> arr = new ArrayList<>(nb);
+            ReadBufferByteBased read = new ReadBufferByteBased(responses.getServicesData(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
             int total = (int) read.getTotalBytes();
             for (int i = 0; i < nb; i++) {
                 int length = 0;
-                int offset = responses.getOffsets()[i] - responses.getOffsets()[0]; //Substract first offset as we only have the service in the buffer (not servicesNb and offsets)
+                int offset = responses.getOffsets().get(i) - responses.getOffsets().get(0); //Substract first offset as we only have the service in the buffer (not servicesNb and offsets)
                 if (i == nb - 1) {
                     length = total - offset; //Get the rest if last
                 } else {
-                    length = responses.getOffsets()[i + 1] - offset - responses.getOffsets()[0]; //Calculate length with offsets (substracting first offset)
+                    length = responses.getOffsets().get(i + 1) - offset - responses.getOffsets().get(0); //Calculate length with offsets (substracting first offset)
                 }
-                ReadBuffer serviceBuf = new ReadBuffer(read.getBytes(offset, offset + length), true);
+                ReadBuffer serviceBuf = new ReadBufferByteBased(read.getBytes(offset, offset + length), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
                 CipService service = null;
                 try {
-                    service = CipServiceIO.staticParse(read, length);
-                    arr[i] = service;
+                    service = CipService.staticParse(read, length);
+                    arr.add(service);
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    throw new PlcRuntimeException(e);
                 }
             }
-            Services services = new Services(nb, responses.getOffsets(), arr);
+            Services services = new Services(nb, responses.getOffsets(), arr, -1);
             Iterator<String> it = readRequest.getFieldNames().iterator();
             for (int i = 0; i < nb && it.hasNext(); i++) {
                 String fieldName = it.next();
                 EipField field = (EipField) readRequest.getField(fieldName);
                 PlcValue plcValue = null;
-                if (services.getServices()[i] instanceof CipReadResponse) {
-                    CipReadResponse readResponse = (CipReadResponse) services.getServices()[i];
+                if (services.getServices().get(i) instanceof CipReadResponse) {
+                    CipReadResponse readResponse = (CipReadResponse) services.getServices().get(i);
                     PlcResponseCode code;
                     if (readResponse.getStatus() == 0) {
                         code = PlcResponseCode.OK;
@@ -407,7 +418,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             int dataLength = (tagIsolated.length() + 2 + (tagIsolated.length() % 2) + (isArray ? 2 : 0));
             byte requestPathSize = (byte) (dataLength / 2);
             byte[] data = encodeValue(value, field.getType(), (short) elements);
-            CipWriteRequest writeReq = new CipWriteRequest(requestPathSize, toAnsi(tag), field.getType(), elements, data);
+            CipWriteRequest writeReq = new CipWriteRequest(requestPathSize, toAnsi(tag), field.getType(), elements, data, -1);
             items.add(writeReq);
         }
 
@@ -416,7 +427,13 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             tm.startRequest();
             CipRRData rrdata = new CipRRData(sessionHandle, 0L, senderContext, 0L,
                 new CipExchange(
-                    new CipUnconnectedRequest(items.get(0), (byte) configuration.getBackplane(), (byte) configuration.getSlot())));
+                    new CipUnconnectedRequest(
+                        items.get(0), (byte) configuration.getBackplane(), (byte) configuration.getSlot(), -1
+                    ),
+                    -1
+                ),
+                -1
+            );
             transaction.submit(() -> context.sendRequest(rrdata)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
@@ -434,26 +451,32 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         } else {
             tm.startRequest();
             short nb = (short) items.size();
-            int[] offsets = new int[nb];
+            List<Integer> offsets = new ArrayList<>(nb);
             int offset = 2 + nb * 2;
             for (int i = 0; i < nb; i++) {
-                offsets[i] = offset;
+                offsets.add(offset);
                 offset += items.get(i).getLengthInBytes();
             }
 
-            CipService[] serviceArr = new CipService[nb];
+            List<CipService> serviceArr = new ArrayList<>(nb);
             for (int i = 0; i < nb; i++) {
-                serviceArr[i] = items.get(i);
+                serviceArr.add(items.get(i));
             }
-            Services data = new Services(nb, offsets, serviceArr);
+            Services data = new Services(nb, offsets, serviceArr, -1);
             //Encapsulate the data
 
             CipRRData pkt = new CipRRData(sessionHandle, 0L, emptySenderContext, 0L,
                 new CipExchange(
                     new CipUnconnectedRequest(
-                        new MultipleServiceRequest(data),
+                        new MultipleServiceRequest(data, -1),
                         (byte) configuration.getBackplane(),
-                        (byte) configuration.getSlot())));
+                        (byte) configuration.getSlot(),
+                        -1
+                    ),
+                    -1
+                ),
+                -1
+            );
 
 
             transaction.submit(() -> context.sendRequest(pkt)
@@ -488,34 +511,34 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         } else if (p instanceof MultipleServiceResponse) {
             MultipleServiceResponse resp = (MultipleServiceResponse) p;
             int nb = resp.getServiceNb();
-            CipService[] arr = new CipService[nb];
-            ReadBuffer read = new ReadBuffer(resp.getServicesData());
+            List<CipService> arr = new ArrayList<>(nb);
+            ReadBufferByteBased read = new ReadBufferByteBased(resp.getServicesData());
             int total = (int) read.getTotalBytes();
             for (int i = 0; i < nb; i++) {
                 int length = 0;
-                int offset = resp.getOffsets()[i];
+                int offset = resp.getOffsets().get(i);
                 if (offset == nb - 1) {
                     length = total - offset; //Get the rest if last
                 } else {
-                    length = resp.getOffsets()[i + 1] - offset; //Calculate length with offsets
+                    length = resp.getOffsets().get(i + 1) - offset; //Calculate length with offsets
                 }
-                ReadBuffer serviceBuf = new ReadBuffer(read.getBytes(offset, length), true);
+                ReadBuffer serviceBuf = new ReadBufferByteBased(read.getBytes(offset, length), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
                 CipService service = null;
                 try {
-                    service = CipServiceIO.staticParse(read, length);
-                    arr[i] = service;
+                    service = CipService.staticParse(read, length);
+                    arr.add(service);
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    throw new PlcRuntimeException(e);
                 }
             }
-            Services services = new Services(nb, resp.getOffsets(), arr);
+            Services services = new Services(nb, resp.getOffsets(), arr, -1);
             Iterator<String> it = writeRequest.getFieldNames().iterator();
             for (int i = 0; i < nb && it.hasNext(); i++) {
                 String fieldName = it.next();
                 EipField field = (EipField) writeRequest.getField(fieldName);
                 PlcValue plcValue = null;
-                if (services.getServices()[i] instanceof CipWriteResponse) {
-                    CipWriteResponse writeResponse = (CipWriteResponse) services.getServices()[i];
+                if (services.getServices().get(i) instanceof CipWriteResponse) {
+                    CipWriteResponse writeResponse = (CipWriteResponse) services.getServices().get(i);
                     PlcResponseCode code = decodeResponseCode(writeResponse.getStatus());
                     responses.put(fieldName, code);
                 }

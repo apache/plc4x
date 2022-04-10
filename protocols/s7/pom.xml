@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-protocols</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-protocols-s7</artifactId>
@@ -35,8 +35,8 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-build-utils-protocol-base-mspec</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

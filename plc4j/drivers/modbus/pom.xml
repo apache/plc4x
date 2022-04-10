@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-driver-modbus</artifactId>
@@ -89,7 +89,7 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
-            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.modbus.ModbusDriver</Export-Service>
+            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.modbus.tcp.ModbusTcpDriver</Export-Service>
             <Import-Package>
               com.fasterxml.jackson.annotation;resolution:=optional,
               *
@@ -104,7 +104,7 @@
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-transport-serial</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-transport-raw-socket</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4x-build-utils-language-java</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
             <usedDependency>org.apache.plc4x:plc4x-protocols-modbus</usedDependency>
           </usedDependencies>
         </configuration>
@@ -116,28 +116,33 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-tcp</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-serial</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-raw-socket</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-raw-sockets</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -152,11 +157,19 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.pcap4j</groupId>
+      <artifactId>pcap4j-core</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -168,8 +181,8 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-build-utils-language-java</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <artifactId>plc4x-code-generation-language-java</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -177,14 +190,14 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>

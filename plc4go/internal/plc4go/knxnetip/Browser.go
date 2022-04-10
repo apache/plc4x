@@ -1,37 +1,39 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package knxnetip
 
 import (
 	"encoding/hex"
-	"errors"
 	"fmt"
+	"strconv"
+	"strings"
+	"time"
+
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"strconv"
-	"strings"
-	"time"
 )
 
 type Browser struct {
@@ -57,7 +59,7 @@ func (m Browser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan apiModel
 func (m Browser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool) <-chan apiModel.PlcBrowseRequestResult {
 	result := make(chan apiModel.PlcBrowseRequestResult)
 	sendResult := func(browseResponse apiModel.PlcBrowseResponse, err error) {
-		result <- apiModel.PlcBrowseRequestResult{
+		result <- &model.DefaultPlcBrowseRequestResult{
 			Request:  browseRequest,
 			Response: browseResponse,
 			Err:      err,
@@ -115,13 +117,17 @@ func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiMod
 	// Parse each of these expanded addresses and handle them accordingly.
 	for _, knxAddress := range knxAddresses {
 		// Send a connection request to the device
+		connectTtlTimer := time.NewTimer(m.connection.defaultTtl)
 		deviceConnections := m.connection.DeviceConnect(knxAddress)
 		select {
 		case deviceConnection := <-deviceConnections:
+			if !connectTtlTimer.Stop() {
+				<-connectTtlTimer.C
+			}
 			// If the request returned a connection, process it,
 			// otherwise just ignore it.
 			if deviceConnection.connection != nil {
-				queryResult := apiModel.PlcBrowseQueryResult{
+				queryResult := &model.DefaultPlcBrowseQueryResult{
 					Field: NewDeviceQueryField(
 						strconv.Itoa(int(knxAddress.MainGroup)),
 						strconv.Itoa(int(knxAddress.MiddleGroup)),
@@ -133,10 +139,10 @@ func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiMod
 				// Pass it to the callback
 				add := true
 				if interceptor != nil {
-					add = interceptor(apiModel.PlcBrowseEvent{
+					add = interceptor(&model.DefaultPlcBrowseEvent{
 						Request:   browseRequest,
 						QueryName: queryName,
-						Result:    &queryResult,
+						Result:    queryResult,
 						Err:       nil,
 					})
 				}
@@ -146,14 +152,20 @@ func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiMod
 					queryResults = append(queryResults, queryResult)
 				}
 
+				disconnectTtlTimer := time.NewTimer(m.connection.defaultTtl * 10)
 				deviceDisconnections := m.connection.DeviceDisconnect(knxAddress)
 				select {
 				case _ = <-deviceDisconnections:
-				case <-time.After(m.connection.defaultTtl * 10):
+					if !disconnectTtlTimer.Stop() {
+						<-disconnectTtlTimer.C
+					}
+				case <-disconnectTtlTimer.C:
+					disconnectTtlTimer.Stop()
 					// Just ignore this case ...
 				}
 			}
-		case <-time.After(m.connection.defaultTtl):
+		case <-connectTtlTimer.C:
+			connectTtlTimer.Stop()
 			// In this case the remote was just not responding.
 		}
 		// Just to slow things down a bit (This way we can't exceed the max number of requests per minute)
@@ -178,23 +190,23 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 	// Group Address Table reading
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	// First of all, request the starting address of the group address table
+	// First, request the starting address of the group address table
 	readRequestBuilder := m.connection.ReadRequestBuilder()
 	readRequestBuilder.AddQuery("groupAddressTableAddress", knxAddressString+"#1/7")
 	readRequest, err := readRequestBuilder.Build()
 	if err != nil {
-		return nil, errors.New("error creating read request: " + err.Error())
+		return nil, errors.Wrap(err, "error creating read request")
 	}
 	rrr := readRequest.Execute()
 	readResult := <-rrr
-	if readResult.Err != nil {
-		return nil, errors.New("error reading the group address table starting address: " + readResult.Err.Error())
+	if readResult.GetErr() != nil {
+		return nil, errors.Wrap(readResult.GetErr(), "error reading the group address table starting address:")
 	}
-	if readResult.Response.GetResponseCode("groupAddressTableAddress") != apiModel.PlcResponseCode_OK {
-		return nil, errors.New("error reading group address table starting address: " +
-			readResult.Response.GetResponseCode("groupAddressTableAddress").GetName())
+	if readResult.GetResponse().GetResponseCode("groupAddressTableAddress") != apiModel.PlcResponseCode_OK {
+		return nil, errors.Errorf("error reading group address table starting address: %s",
+			readResult.GetResponse().GetResponseCode("groupAddressTableAddress").GetName())
 	}
-	groupAddressTableStartAddress := readResult.Response.GetValue("groupAddressTableAddress").GetUint32()
+	groupAddressTableStartAddress := readResult.GetResponse().GetValue("groupAddressTableAddress").GetUint32()
 
 	// Then read one byte at the given location.
 	// This will return the number of entries in the group address table (each 2 bytes)
@@ -210,18 +222,18 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 	}
 	readRequest, err = readRequestBuilder.Build()
 	if err != nil {
-		return nil, errors.New("error creating read request: " + err.Error())
+		return nil, errors.Wrap(err, "error creating read request")
 	}
 	rrr = readRequest.Execute()
 	readResult = <-rrr
-	if readResult.Err != nil {
-		return nil, errors.New("error reading the number of group address table entries: " + readResult.Err.Error())
+	if readResult.GetErr() != nil {
+		return nil, errors.Wrap(readResult.GetErr(), "error reading the number of group address table entries")
 	}
-	if readResult.Response.GetResponseCode("numberOfAddressTableEntries") != apiModel.PlcResponseCode_OK {
-		return nil, errors.New("error reading the number of group address table entries: " +
-			readResult.Response.GetResponseCode("numberOfAddressTableEntries").GetName())
+	if readResult.GetResponse().GetResponseCode("numberOfAddressTableEntries") != apiModel.PlcResponseCode_OK {
+		return nil, errors.Errorf("error reading the number of group address table entries: %s",
+			readResult.GetResponse().GetResponseCode("numberOfAddressTableEntries").GetName())
 	}
-	numGroupAddresses := readResult.Response.GetValue("numberOfAddressTableEntries").GetUint16()
+	numGroupAddresses := readResult.GetResponse().GetValue("numberOfAddressTableEntries").GetUint16()
 
 	if m.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		groupAddressTableStartAddress += 2
@@ -236,31 +248,31 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 	}
 
 	// Read the data in the group address table
-	readRequestBuilder = m.connection.ReadRequestBuilder()
-	readRequestBuilder.AddQuery("groupAddressTable",
-		fmt.Sprintf("%s#%X:UINT[%d]", knxAddressString, groupAddressTableStartAddress, numGroupAddresses))
-	readRequest, err = readRequestBuilder.Build()
+	readRequest, err = m.connection.ReadRequestBuilder().
+		AddQuery("groupAddressTable",
+			fmt.Sprintf("%s#%X:UINT[%d]", knxAddressString, groupAddressTableStartAddress, numGroupAddresses)).
+		Build()
 	if err != nil {
-		return nil, errors.New("error creating read request: " + err.Error())
+		return nil, errors.Wrap(err, "error creating read request")
 	}
 	rrr = readRequest.Execute()
 	readResult = <-rrr
-	if readResult.Err != nil {
-		return nil, errors.New("error reading the group address table content: " + readResult.Err.Error())
+	if readResult.GetErr() != nil {
+		return nil, errors.Wrap(readResult.GetErr(), "error reading the group address table content")
 	}
-	if (readResult.Response == nil) ||
-		(readResult.Response.GetResponseCode("groupAddressTable") != apiModel.PlcResponseCode_OK) {
-		return nil, errors.New("error reading the group address table content: " +
-			readResult.Response.GetResponseCode("groupAddressTable").GetName())
+	if (readResult.GetResponse() == nil) ||
+		(readResult.GetResponse().GetResponseCode("groupAddressTable") != apiModel.PlcResponseCode_OK) {
+		return nil, errors.Errorf("error reading the group address table content: %s",
+			readResult.GetResponse().GetResponseCode("groupAddressTable").GetName())
 	}
 	var knxGroupAddresses []*driverModel.KnxGroupAddress
-	if readResult.Response.GetValue("groupAddressTable").IsList() {
-		for _, groupAddress := range readResult.Response.GetValue("groupAddressTable").GetList() {
+	if readResult.GetResponse().GetValue("groupAddressTable").IsList() {
+		for _, groupAddress := range readResult.GetResponse().GetValue("groupAddressTable").GetList() {
 			groupAddress := Uint16ToKnxGroupAddress(groupAddress.GetUint16(), 3)
 			knxGroupAddresses = append(knxGroupAddresses, groupAddress)
 		}
 	} else {
-		groupAddress := Uint16ToKnxGroupAddress(readResult.Response.GetValue("groupAddressTable").GetUint16(), 3)
+		groupAddress := Uint16ToKnxGroupAddress(readResult.GetResponse().GetValue("groupAddressTable").GetUint16(), 3)
 		knxGroupAddresses = append(knxGroupAddresses, groupAddress)
 	}
 
@@ -274,19 +286,19 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 		fmt.Sprintf("%s#2/7", knxAddressString))
 	readRequest, err = readRequestBuilder.Build()
 	if err != nil {
-		return nil, errors.New("error creating read request: " + err.Error())
+		return nil, errors.Wrap(err, "error creating read request")
 	}
 	rrr = readRequest.Execute()
 	readResult = <-rrr
-	if readResult.Err != nil {
-		return nil, errors.New("error reading the group address association table address: " + readResult.Err.Error())
+	if readResult.GetErr() != nil {
+		return nil, errors.Wrap(readResult.GetErr(), "error reading the group address association table address")
 	}
-	if (readResult.Response != nil) &&
-		(readResult.Response.GetResponseCode("groupAddressAssociationTableAddress") != apiModel.PlcResponseCode_OK) {
-		return nil, errors.New("error reading the group address association table address: " +
-			readResult.Response.GetResponseCode("groupAddressAssociationTableAddress").GetName())
+	if (readResult.GetResponse() != nil) &&
+		(readResult.GetResponse().GetResponseCode("groupAddressAssociationTableAddress") != apiModel.PlcResponseCode_OK) {
+		return nil, errors.Errorf("error reading the group address association table address: %s",
+			readResult.GetResponse().GetResponseCode("groupAddressAssociationTableAddress").GetName())
 	}
-	groupAddressAssociationTableAddress := readResult.Response.GetValue("groupAddressAssociationTableAddress").GetUint16()
+	groupAddressAssociationTableAddress := readResult.GetResponse().GetValue("groupAddressAssociationTableAddress").GetUint16()
 
 	// Then read one uint16 at the given location.
 	// This will return the number of entries in the group address table (each 2 bytes)
@@ -300,19 +312,19 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 	}
 	readRequest, err = readRequestBuilder.Build()
 	if err != nil {
-		return nil, errors.New("error creating read request: " + err.Error())
+		return nil, errors.Wrap(err, "error creating read request")
 	}
 	rrr = readRequest.Execute()
 	readResult = <-rrr
-	if readResult.Err != nil {
-		return nil, errors.New("error reading the number of group address association table entries: " + readResult.Err.Error())
+	if readResult.GetErr() != nil {
+		return nil, errors.Wrap(readResult.GetErr(), "error reading the number of group address association table entries")
 	}
-	if (readResult.Response != nil) &&
-		(readResult.Response.GetResponseCode("numberOfGroupAddressAssociationTableEntries") != apiModel.PlcResponseCode_OK) {
-		return nil, errors.New("error reading the number of group address association table entries: " +
-			readResult.Response.GetResponseCode("numberOfGroupAddressAssociationTableEntries").GetName())
+	if (readResult.GetResponse() != nil) &&
+		(readResult.GetResponse().GetResponseCode("numberOfGroupAddressAssociationTableEntries") != apiModel.PlcResponseCode_OK) {
+		return nil, errors.Errorf("error reading the number of group address association table entries: %s",
+			readResult.GetResponse().GetResponseCode("numberOfGroupAddressAssociationTableEntries").GetName())
 	}
-	numberOfGroupAddressAssociationTableEntries := readResult.Response.GetValue("numberOfGroupAddressAssociationTableEntries").GetUint16()
+	numberOfGroupAddressAssociationTableEntries := readResult.GetResponse().GetValue("numberOfGroupAddressAssociationTableEntries").GetUint16()
 
 	// Read the data in the group address table
 	readRequestBuilder = m.connection.ReadRequestBuilder()
@@ -329,22 +341,22 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 	}
 	readRequest, err = readRequestBuilder.Build()
 	if err != nil {
-		return nil, errors.New("error creating read request: " + err.Error())
+		return nil, errors.Wrap(err, "error creating read request")
 	}
 	rrr = readRequest.Execute()
 	readResult = <-rrr
-	if readResult.Err != nil {
-		return nil, errors.New("error reading the group address association table content: " + readResult.Err.Error())
+	if readResult.GetErr() != nil {
+		return nil, errors.Wrap(readResult.GetErr(), "error reading the group address association table content")
 	}
-	if (readResult.Response != nil) &&
-		(readResult.Response.GetResponseCode("groupAddressAssociationTable") != apiModel.PlcResponseCode_OK) {
-		return nil, errors.New("error reading the group address association table content: " +
-			readResult.Response.GetResponseCode("groupAddressAssociationTable").GetName())
+	if (readResult.GetResponse() != nil) &&
+		(readResult.GetResponse().GetResponseCode("groupAddressAssociationTable") != apiModel.PlcResponseCode_OK) {
+		return nil, errors.Errorf("error reading the group address association table content: %s",
+			readResult.GetResponse().GetResponseCode("groupAddressAssociationTable").GetName())
 	}
 	// Output the group addresses
 	groupAddressComObjectNumberMapping := map[*driverModel.KnxGroupAddress]uint16{}
-	if readResult.Response.GetValue("groupAddressAssociationTable").IsList() {
-		for _, groupAddressAssociation := range readResult.Response.GetValue("groupAddressAssociationTable").GetList() {
+	if readResult.GetResponse().GetValue("groupAddressAssociationTable").IsList() {
+		for _, groupAddressAssociation := range readResult.GetResponse().GetValue("groupAddressAssociationTable").GetList() {
 			groupAddress, comObjectNumber := m.parseAssociationTable(m.connection.DeviceConnections[*knxAddress].deviceDescriptor,
 				knxGroupAddresses, groupAddressAssociation)
 			if groupAddress != nil {
@@ -353,7 +365,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 		}
 	} else {
 		groupAddress, comObjectNumber := m.parseAssociationTable(m.connection.DeviceConnections[*knxAddress].deviceDescriptor,
-			knxGroupAddresses, readResult.Response.GetValue("groupAddressAssociationTable"))
+			knxGroupAddresses, readResult.GetResponse().GetValue("groupAddressAssociationTable"))
 		if groupAddress != nil {
 			groupAddressComObjectNumberMapping[groupAddress] = comObjectNumber
 		}
@@ -375,72 +387,73 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 		}
 		readRequest, err = readRequestBuilder.Build()
 		if err != nil {
-			return nil, errors.New("error creating read request: " + err.Error())
+			return nil, errors.Wrap(err, "error creating read request")
 		}
 		rrr = readRequest.Execute()
 		readResult = <-rrr
 		for groupAddress, comObjectNumber := range groupAddressComObjectNumberMapping {
-			if readResult.Response.GetResponseCode(strconv.Itoa(int(comObjectNumber))) == apiModel.PlcResponseCode_OK {
-				comObjectSettings := readResult.Response.GetValue(strconv.Itoa(int(comObjectNumber))).GetUint16()
-				data := []uint8{uint8((comObjectSettings >> 8) & 0xFF), uint8(comObjectSettings & 0xFF)}
-				rb := utils.NewReadBuffer(data)
-				descriptor, err := driverModel.GroupObjectDescriptorRealisationTypeBParse(rb)
-				if err != nil {
-					log.Info().Err(err).Msg("error parsing com object descriptor")
-					continue
-				}
-
-				// Assemble a PlcBrowseQueryResult
-				var field apiModel.PlcField
-				readable := descriptor.CommunicationEnable && descriptor.ReadEnable
-				writable := descriptor.CommunicationEnable && descriptor.WriteEnable
-				subscribable := descriptor.CommunicationEnable && descriptor.TransmitEnable
-				// Find a matching datatype for the given value-type.
-				fieldType := m.getFieldTypeForValueType(descriptor.ValueType)
-				switch groupAddress.Child.(type) {
-				case *driverModel.KnxGroupAddress3Level:
-					address3Level := driverModel.CastKnxGroupAddress3Level(groupAddress)
-					field = NewGroupAddress3LevelPlcField(strconv.Itoa(int(address3Level.MainGroup)),
-						strconv.Itoa(int(address3Level.MiddleGroup)), strconv.Itoa(int(address3Level.SubGroup)),
-						&fieldType)
-				case *driverModel.KnxGroupAddress2Level:
-					address2Level := driverModel.CastKnxGroupAddress2Level(groupAddress)
-					field = NewGroupAddress2LevelPlcField(strconv.Itoa(int(address2Level.MainGroup)),
-						strconv.Itoa(int(address2Level.SubGroup)),
-						&fieldType)
-				case *driverModel.KnxGroupAddressFreeLevel:
-					address1Level := driverModel.CastKnxGroupAddressFreeLevel(groupAddress)
-					field = NewGroupAddress1LevelPlcField(strconv.Itoa(int(address1Level.SubGroup)),
-						&fieldType)
-				}
-
-				results = append(results, apiModel.PlcBrowseQueryResult{
-					Field:             field,
-					Name:              fmt.Sprintf("#%d", comObjectNumber),
-					Readable:          readable,
-					Writable:          writable,
-					Subscribable:      subscribable,
-					PossibleDataTypes: nil,
-				})
+			if readResult.GetResponse().GetResponseCode(strconv.Itoa(int(comObjectNumber))) != apiModel.PlcResponseCode_OK {
+				continue
 			}
+			comObjectSettings := readResult.GetResponse().GetValue(strconv.Itoa(int(comObjectNumber))).GetUint16()
+			data := []uint8{uint8((comObjectSettings >> 8) & 0xFF), uint8(comObjectSettings & 0xFF)}
+			rb := utils.NewReadBufferByteBased(data)
+			descriptor, err := driverModel.GroupObjectDescriptorRealisationTypeBParse(rb)
+			if err != nil {
+				log.Info().Err(err).Msg("error parsing com object descriptor")
+				continue
+			}
+
+			// Assemble a PlcBrowseQueryResult
+			var field apiModel.PlcField
+			readable := descriptor.CommunicationEnable && descriptor.ReadEnable
+			writable := descriptor.CommunicationEnable && descriptor.WriteEnable
+			subscribable := descriptor.CommunicationEnable && descriptor.TransmitEnable
+			// Find a matching datatype for the given value-type.
+			fieldType := m.getFieldTypeForValueType(descriptor.ValueType)
+			switch groupAddress.Child.(type) {
+			case *driverModel.KnxGroupAddress3Level:
+				address3Level := driverModel.CastKnxGroupAddress3Level(groupAddress)
+				field = NewGroupAddress3LevelPlcField(strconv.Itoa(int(address3Level.MainGroup)),
+					strconv.Itoa(int(address3Level.MiddleGroup)), strconv.Itoa(int(address3Level.SubGroup)),
+					&fieldType)
+			case *driverModel.KnxGroupAddress2Level:
+				address2Level := driverModel.CastKnxGroupAddress2Level(groupAddress)
+				field = NewGroupAddress2LevelPlcField(strconv.Itoa(int(address2Level.MainGroup)),
+					strconv.Itoa(int(address2Level.SubGroup)),
+					&fieldType)
+			case *driverModel.KnxGroupAddressFreeLevel:
+				address1Level := driverModel.CastKnxGroupAddressFreeLevel(groupAddress)
+				field = NewGroupAddress1LevelPlcField(strconv.Itoa(int(address1Level.SubGroup)),
+					&fieldType)
+			}
+
+			results = append(results, &model.DefaultPlcBrowseQueryResult{
+				Field:             field,
+				Name:              fmt.Sprintf("#%d", comObjectNumber),
+				Readable:          readable,
+				Writable:          writable,
+				Subscribable:      subscribable,
+				PossibleDataTypes: nil,
+			})
 		}
 	} else if (m.connection.DeviceConnections[*knxAddress].deviceDescriptor & 0xFFF0) == uint16(0x0700) /* System7 */ {
 		// For System 7 Devices we unfortunately can't access the information of where the memory address for the
-		// Com Object Table is programmatically, so we have to lookup the address which is extracted from the XML data
+		// Com Object Table is programmatically, so we have to look up the address which is extracted from the XML data
 		// Provided by the manufacturer. Unfortunately in order to be able to do this, we need to get the application
 		// version from the device first.
 
-		readRequestBuilder := m.connection.ReadRequestBuilder()
+		readRequestBuilder = m.connection.ReadRequestBuilder()
 		readRequestBuilder.AddQuery("applicationProgramVersion", knxAddressString+"#3/13")
 		readRequestBuilder.AddQuery("interfaceProgramVersion", knxAddressString+"#4/13")
-		readRequest, err := readRequestBuilder.Build()
+		readRequest, err = readRequestBuilder.Build()
 		if err != nil {
-			return nil, errors.New("error creating read request: " + err.Error())
+			return nil, errors.Wrap(err, "error creating read request")
 		}
 
-		rrr := readRequest.Execute()
+		rrr = readRequest.Execute()
 		readRequestResult := <-rrr
-		readResponse := readRequestResult.Response
+		readResponse := readRequestResult.GetResponse()
 		var programVersionData []byte
 		if readResponse.GetResponseCode("applicationProgramVersion") == apiModel.PlcResponseCode_OK {
 			programVersionData = utils.PlcValueUint8ListToByteArray(readResponse.GetValue("applicationProgramVersion"))
@@ -452,7 +465,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 		// Lookup the com object table address
 		comObjectTableAddresses := driverModel.ComObjectTableAddressesByName("DEV" + strings.ToUpper(applicationId))
 		if comObjectTableAddresses == 0 {
-			return nil, errors.New("error getting com address table address. No table entry for application id: " + applicationId)
+			return nil, errors.Errorf("error getting com address table address. No table entry for application id: %s", applicationId)
 		}
 
 		readRequestBuilder = m.connection.ReadRequestBuilder()
@@ -469,21 +482,21 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 		}
 		readRequest, err = readRequestBuilder.Build()
 		if err != nil {
-			return nil, errors.New("error creating read request: " + err.Error())
+			return nil, errors.Wrap(err, "error creating read request")
 		}
 		rrr = readRequest.Execute()
 		readResult = <-rrr
 
-		for _, fieldName := range readResult.Response.GetFieldNames() {
-			array := utils.PlcValueUint8ListToByteArray(readResult.Response.GetValue(fieldName))
-			rb := utils.NewReadBuffer(array)
+		for _, fieldName := range readResult.GetResponse().GetFieldNames() {
+			array := utils.PlcValueUint8ListToByteArray(readResult.GetResponse().GetValue(fieldName))
+			rb := utils.NewReadBufferByteBased(array)
 			descriptor, err := driverModel.GroupObjectDescriptorRealisationType7Parse(rb)
 			if err != nil {
-				return nil, errors.New("error creating read request: " + err.Error())
+				return nil, errors.Wrap(err, "error creating read request")
 			}
 
 			// We saved the com object number in the field name.
-			comObjectNumber, _ := strconv.Atoi(fieldName)
+			comObjectNumber, _ := strconv.ParseUint(fieldName, 10, 16)
 			groupAddresses := groupAddressMap[uint16(comObjectNumber)]
 			readable := descriptor.CommunicationEnable && descriptor.ReadEnable
 			writable := descriptor.CommunicationEnable && descriptor.WriteEnable
@@ -495,7 +508,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 			for _, groupAddress := range groupAddresses {
 				field := m.getFieldForGroupAddress(groupAddress, fieldType)
 
-				results = append(results, apiModel.PlcBrowseQueryResult{
+				results = append(results, &model.DefaultPlcBrowseQueryResult{
 					Field:             field,
 					Name:              fmt.Sprintf("#%d", comObjectNumber),
 					Readable:          readable,
@@ -510,12 +523,12 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 		readRequestBuilder.AddQuery("comObjectTableAddress", fmt.Sprintf("%s#3/7", knxAddressString))
 		readRequest, err = readRequestBuilder.Build()
 		if err != nil {
-			return nil, errors.New("error creating read request: " + err.Error())
+			return nil, errors.Wrap(err, "error creating read request")
 		}
 		rrr = readRequest.Execute()
 		readResult = <-rrr
-		if readResult.Response.GetResponseCode("comObjectTableAddress") == apiModel.PlcResponseCode_OK {
-			comObjectTableAddress := readResult.Response.GetValue("comObjectTableAddress").GetUint16()
+		if readResult.GetResponse().GetResponseCode("comObjectTableAddress") == apiModel.PlcResponseCode_OK {
+			comObjectTableAddress := readResult.GetResponse().GetValue("comObjectTableAddress").GetUint16()
 			log.Info().Msgf("Com Object Table Address: %x", comObjectTableAddress)
 		}
 	}
@@ -567,11 +580,11 @@ func (m Browser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, 
 		for _, segment := range strings.Split(segment, ",") {
 			if strings.Contains(segment, "-") {
 				split := strings.Split(segment, "-")
-				localMin, err := strconv.Atoi(split[0])
+				localMin, err := strconv.ParseUint(split[0], 10, 8)
 				if err != nil {
 					return nil, err
 				}
-				localMax, err := strconv.Atoi(split[1])
+				localMax, err := strconv.ParseUint(split[1], 10, 8)
 				if err != nil {
 					return nil, err
 				}
@@ -579,7 +592,7 @@ func (m Browser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, 
 					options = append(options, uint8(i))
 				}
 			} else {
-				option, err := strconv.Atoi(segment)
+				option, err := strconv.ParseUint(segment, 10, 8)
 				if err != nil {
 					return nil, err
 				}
@@ -587,7 +600,7 @@ func (m Browser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, 
 			}
 		}
 	} else {
-		value, err := strconv.Atoi(segment)
+		value, err := strconv.ParseUint(segment, 10, 8)
 		if err != nil {
 			return nil, err
 		}

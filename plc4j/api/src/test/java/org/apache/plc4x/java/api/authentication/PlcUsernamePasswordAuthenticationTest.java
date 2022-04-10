@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.api.authentication;
 
-
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

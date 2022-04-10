@@ -18,7 +18,7 @@
 # ----------------------------------------------------------------------------
 ---
 sources:
-  LABJACK_PI: modbus:tcp://192.168.167.149:502
+  LABJACK_PI: modbus-tcp://192.168.167.149:502
 
 jobs:
   - name: scheduled-demo-job1

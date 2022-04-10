@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.transaction;
 
 import org.slf4j.Logger;
@@ -149,7 +148,7 @@ public class RequestTransactionManager {
         }
 
         public void start() {
-
+            // TODO: what is this start method used for?
         }
 
         public void failRequest(Throwable t) {

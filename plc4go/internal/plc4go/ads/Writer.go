@@ -1,21 +1,22 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package ads
 
 import (
@@ -58,7 +59,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 	go func() {
 		// If we are requesting only one field, use a
 		if len(writeRequest.GetFieldNames()) != 1 {
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.New("ads only supports single-item requests"),
@@ -72,7 +73,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 		if needsResolving(field) {
 			adsField, err := castToSymbolicPlcFieldFromPlcField(field)
 			if err != nil {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "invalid field item type"),
@@ -82,7 +83,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 			}
 			field, err = m.reader.resolveField(adsField)
 			if err != nil {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "invalid field item type"),
@@ -93,7 +94,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 		}
 		adsField, err := castToDirectAdsFieldFromPlcField(field)
 		if err != nil {
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "invalid field item type"),
@@ -103,16 +104,16 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(fieldName)
-		io := utils.NewLittleEndianWriteBuffer()
+		io := utils.NewLittleEndianWriteBufferByteBased()
 		if err := readWriteModel.DataItemSerialize(io, value, adsField.Datatype.DataFormatName(), adsField.StringLength); err != nil {
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "error serializing value"),
 			}
 			return
 		}
-		data := utils.Uint8ArrayToInt8Array(io.GetBytes())
+		data := io.GetBytes()
 
 		userdata := readWriteModel.AmsPacket{
 			TargetAmsNetId: &m.targetAmsNetId,
@@ -127,14 +128,14 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 		}
 		switch adsField.FieldType {
 		case DirectAdsStringField:
-			userdata.Data = readWriteModel.NewAdsWriteRequest(adsField.IndexGroup, adsField.IndexOffset, data)
+			userdata.Data = readWriteModel.NewAdsWriteRequest(adsField.IndexGroup, adsField.IndexOffset, data).GetParent()
 			panic("implement me")
 		case DirectAdsField:
 			panic("implement me")
 		case SymbolicAdsStringField, SymbolicAdsField:
 			panic("we should never reach this point as symbols are resolved before")
 		default:
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.New("unsupported field type"),
@@ -143,6 +144,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 		}
 
 		// Calculate a new unit identifier
+		// TODO: this is not threadsafe as the whole operation is not atomic
 		transactionIdentifier := atomic.AddUint32(&m.transactionIdentifier, 1)
 		if transactionIdentifier > math.MaxUint8 {
 			transactionIdentifier = 0
@@ -170,12 +172,12 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 				readResponse, err := m.ToPlc4xWriteResponse(amsTcpPaket, *responseAmsTcpPaket, writeRequest)
 
 				if err != nil {
-					result <- model.PlcWriteRequestResult{
+					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request: writeRequest,
 						Err:     errors.Wrap(err, "Error decoding response"),
 					}
 				} else {
-					result <- model.PlcWriteRequestResult{
+					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request:  writeRequest,
 						Response: readResponse,
 					}
@@ -183,7 +185,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 				return nil
 			},
 			func(err error) error {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request: writeRequest,
 					Err:     errors.New("got timeout while waiting for response"),
 				}

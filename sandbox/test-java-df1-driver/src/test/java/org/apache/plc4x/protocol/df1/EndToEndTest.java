@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.protocol.df1;
 
 import org.apache.plc4x.java.PlcDriverManager;
@@ -28,12 +27,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-07
- */
 public class EndToEndTest {
 
     @Test

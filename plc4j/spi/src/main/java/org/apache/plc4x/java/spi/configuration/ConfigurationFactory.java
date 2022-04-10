@@ -16,15 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.configuration;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.annotations.*;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -47,6 +48,8 @@ import static java.util.stream.Collectors.toList;
  * - (optional) path parameters
  */
 public class ConfigurationFactory {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationFactory.class);
 
     // TODO Respect Path Params
     public <T extends Configuration> T createConfiguration(Class<T> pClazz, String configurationString) {
@@ -88,24 +91,16 @@ public class ConfigurationFactory {
                 final Field field = fields.get(configName);
                 if (paramStringValues.containsKey(configName)) {
                     String stringValue = paramStringValues.get(configName).get(0);
-                    try {
-                        // As the arguments might be URL encoded, be sure it's decoded.
-                        stringValue = URLDecoder.decode(stringValue, "utf-8");
-                        BeanUtils.setProperty(instance, field.getName(), toFieldValue(field, stringValue));
-                        missingFieldNames.remove(configName);
-                    } catch (InvocationTargetException | UnsupportedEncodingException e) {
-                        throw new IllegalArgumentException("Error setting property of bean: " + field.getName(), e);
-                    }
+                    // As the arguments might be URL encoded, be sure it's decoded.
+                    stringValue = URLDecoder.decode(stringValue, "UTF-8");
+                    FieldUtils.writeField(instance, field.getName(), toFieldValue(field, stringValue), true);
+                    missingFieldNames.remove(configName);
                 } else {
                     Object defaultValue = getDefaultValueFromAnnotation(field);
                     // TODO: Check if the default values type matches.
                     if (defaultValue != null) {
-                        try {
-                            BeanUtils.setProperty(instance, field.getName(), defaultValue);
-                            missingFieldNames.remove(configName);
-                        } catch (InvocationTargetException e) {
-                            throw new IllegalArgumentException("Error setting property of bean: " + field.getName(), e);
-                        }
+                        FieldUtils.writeField(instance, field.getName(), defaultValue, true);
+                        missingFieldNames.remove(configName);
                     }
                 }
             }
@@ -116,6 +111,8 @@ public class ConfigurationFactory {
             }
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException("Unable to access all fields from Configuration Class '" + pClazz.getSimpleName() + "'", e);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("Unsupported encoding");
         }
         return instance;
     }
@@ -127,17 +124,22 @@ public class ConfigurationFactory {
             // compatible with the given configuration type.
             Optional<ParameterizedType> typeOptional = Arrays.stream(obj.getClass().getGenericInterfaces())
                 // Check if the interface has a type parameter
-                .filter(type -> type instanceof ParameterizedType)
-                .map(type -> ((ParameterizedType) type))
+                .filter(ParameterizedType.class::isInstance)
+                .map(ParameterizedType.class::cast)
                 .filter(type -> type.getRawType().equals(HasConfiguration.class))
                 .findAny();
             if (typeOptional.isPresent()) {
                 final ParameterizedType parameterizedType = typeOptional.get();
                 final Type configType = parameterizedType.getActualTypeArguments()[0];
-                if(configType instanceof Class) {
+                if (configType instanceof Class) {
                     Class<?> configClass = (Class<?>) configType;
-                    if(configClass.isAssignableFrom(configuration.getClass())) {
-                        ((HasConfiguration) obj).setConfiguration(configuration);
+                    if (configClass.isAssignableFrom(configuration.getClass())) {
+                        try {
+                            ((HasConfiguration) obj).setConfiguration(configuration);
+                        } catch(Throwable t) {
+                            LOGGER.error("Error setting the configuration", t);
+                            throw new PlcRuntimeException("Error setting the configuration", t);
+                        }
                     }
                 }
             }
@@ -149,6 +151,7 @@ public class ConfigurationFactory {
     /**
      * Get the configuration parameter name for configuration parameters.
      * If an explicit name is provided in the annotation, use that else use the name of the field itself.
+     *
      * @param field name of the field.
      * @return name of the configuration (either from the annotation or from the field itself)
      */
@@ -162,7 +165,8 @@ public class ConfigurationFactory {
 
     /**
      * Convert the string value from the parameter string into the type the field requires.
-     * @param field field that should be set
+     *
+     * @param field       field that should be set
      * @param valueString string representation of the value
      * @return parsed value of the field in the type the field requires
      */
@@ -251,7 +255,7 @@ public class ConfigurationFactory {
             // Build a map of "key & List<value>" where the values of elements with equal "key" are
             // added to a list of values.
             .collect(Collectors.groupingBy(AbstractMap.SimpleImmutableEntry::getKey, LinkedHashMap::new,
-                    mapping(Map.Entry::getValue, toList())));
+                mapping(Map.Entry::getValue, toList())));
     }
 
     private static AbstractMap.SimpleImmutableEntry<String, String> splitQueryParameter(String it) {

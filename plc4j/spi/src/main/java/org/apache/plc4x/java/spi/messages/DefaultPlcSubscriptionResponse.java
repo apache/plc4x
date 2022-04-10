@@ -30,8 +30,11 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.apache.plc4x.java.spi.utils.Serializable;
 import org.w3c.dom.Element;
 
 import java.util.Collection;
@@ -39,7 +42,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, PlcResponse, XmlSerializable {
+public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, PlcResponse, Serializable {
 
     private final PlcSubscriptionRequest request;
 
@@ -103,8 +106,23 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        // TODO: Implement
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        writeBuffer.pushContext("PlcSubscriptionResponse");
+
+        if(request instanceof Serializable) {
+            ((Serializable) request).serialize(writeBuffer);
+        }
+        writeBuffer.pushContext("values");
+        for (Map.Entry<String, ResponseItem<PlcSubscriptionHandle>> valueEntry : values.entrySet()) {
+            String fieldName = valueEntry.getKey();
+            writeBuffer.pushContext(fieldName);
+            ResponseItem<PlcSubscriptionHandle> valueResponse = valueEntry.getValue();
+            valueResponse.serialize(writeBuffer);
+            writeBuffer.pushContext(fieldName);
+        }
+        writeBuffer.popContext("values");
+
+        writeBuffer.popContext("PlcSubscriptionResponse");
     }
 
 }

@@ -20,7 +20,7 @@ import java.util.Properties;
 
 public class MavenWrapperDownloader {
 
-    private static final String WRAPPER_VERSION = "0.5.2";
+    private static final String WRAPPER_VERSION = "0.5.6";
     /**
      * Default URL to download the maven-wrapper.jar from, if no 'downloadUrl' is provided.
      */
@@ -32,13 +32,13 @@ public class MavenWrapperDownloader {
      * use instead of the default one.
      */
     private static final String MAVEN_WRAPPER_PROPERTIES_PATH =
-        ".mvn/wrapper/maven-wrapper.properties";
+            ".mvn/wrapper/maven-wrapper.properties";
 
     /**
      * Path where the maven-wrapper.jar will be saved to.
      */
     private static final String MAVEN_WRAPPER_JAR_PATH =
-        ".mvn/wrapper/maven-wrapper.jar";
+            ".mvn/wrapper/maven-wrapper.jar";
 
     /**
      * Name of the property which should be used to override the default download url for the wrapper.
@@ -79,7 +79,7 @@ public class MavenWrapperDownloader {
         if(!outputFile.getParentFile().exists()) {
             if(!outputFile.getParentFile().mkdirs()) {
                 System.out.println(
-                    "- ERROR creating output directory '" + outputFile.getParentFile().getAbsolutePath() + "'");
+                        "- ERROR creating output directory '" + outputFile.getParentFile().getAbsolutePath() + "'");
             }
         }
         System.out.println("- Downloading to: " + outputFile.getAbsolutePath());

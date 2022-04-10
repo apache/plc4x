@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<project name="PLC4X">
+
+  <skin>
+    <groupId>io.github.devacfr.maven.skins</groupId>
+    <artifactId>reflow-maven-skin</artifactId>
+    <version>${reflow.skin.version}</version>
+  </skin>
+
+  <!-- Hide the publish date as this will cause changes on every generated page every day -->
+  <publishDate position="none"/>
+  <!-- Hide the version as we are usually deploying the develop version -->
+  <version position="none" />
+
+  <!--
+      Details on how to configure the reflow skin:
+      http://andriusvelykis.github.io/reflow-maven-skin/skin/
+  -->
+  <custom>
+    <reflowSkin>
+      <localResources>true</localResources>
+      <absoluteResourceURL>https://plc4x.apache.org/</absoluteResourceURL>
+      <titleTemplate>Apache PLC4X® - %2$s</titleTemplate>
+      <slogan position="bannerLeft">The industrial IoT adapter</slogan>
+      <showApacheEvents>true</showApacheEvents>
+      <toc>top</toc>
+      <bottomNav maxSpan="12">
+        <column>reports</column>
+        <column>Apache</column>
+        <column>modules</column>
+        <column>Protocols</column>
+      </bottomNav>
+      <brand>
+        <name>Apache PLC4X</name>
+        <href>https://plc4x.apache.org/</href>
+      </brand>
+      <breadcrumbs>true</breadcrumbs>
+      <highlightJs>true</highlightJs>
+      <pages>
+        <developer-info>
+          <toc>sidebar</toc>
+        </developer-info>
+      </pages>
+    </reflowSkin>
+  </custom>
+
+  <poweredBy>
+    <logo name="Apache Software Foundation" img="https://www.apache.org/images/asf_logo.png" href="https://www.apache.org/"/>
+  </poweredBy>
+
+  <bannerLeft>
+      <name>Apache PLC4X</name>
+      <src>https://plc4x.apache.org/images/apache_plc4x_logo.png</src>
+      <href>https://plc4x.apache.org/</href>
+  </bannerLeft>
+
+  <bannerRight>
+    <name>Apache Software Foundation</name>
+    <src>https://plc4x.apache.org/images/apache_logo.png</src>
+    <!--src>./images/apache_logo.png</src-->
+    <href>http://www.apache.org/</href>
+  </bannerRight>
+
+  <body>
+    <head>
+      <![CDATA[
+        <script>
+          document.addEventListener("DOMContentLoaded", function(event) {
+            /* Add an image for promoting Apache events below the right banner */
+            $("#bannerRight").append('<p id="apacheEvents"><a href="//www.apache.org/events/current-event.html"><img src="//www.apache.org/events/current-event-234x60.png"/></a></p>');
+            /* Append the trademarks info to the copyright section */
+            $(".copyright").append('<p>Apache PLC4X, PLC4X, Apache, the Apache feather logo, and the Apache PLC4X project logo are either registered trademarks or trademarks of The Apache Software Foundation in the United States and other countries. All other marks mentioned may be trademarks or registered trademarks of their respective owners.</p>');
+          });
+        </script>
+      ]]>
+    </head>
+
+    <menu name="Users">
+      <item name="Download" href="users/download.html"/>
+      <item name="Getting Started" href="users/gettingstarted.html"/>
+      <item name="Object PLC Mapping (OPM)" href="users/opm.html"/>
+      <item name="Industry 4.0 with Apache" href="users/industry40.html"/>
+      <item name="Security" href="users/security.html"/>
+    </menu>
+    <menu name="Developers">
+      <item name="Bug &amp; Issue Tracker" href="developers/issues.html"/>
+      <item name="Building PLC4X" href="developers/building.html"/>
+      <item name="Code Analysis" href="developers/sonar.html"/>
+      <item name="Code Generation" href="developers/code-gen/index.html">
+        <item name="Protocol: MSpec Format" href="developers/code-gen/protocol/mspec.html"/>
+        <item name="Language: Apache Freemarker" href="developers/code-gen/language/freemarker.html"/>
+        <item name="Example: DF1 MSpec" href="developers/code-gen/protocol/df1.html"/>
+      </item>
+      <item name="Continuous Integration" href="developers/ci.html"/>
+      <item name="Contributing" href="developers/contributing.html"/>
+      <item name="Decision Making" href="developers/decisions.html"/>
+      <!--item name="JQassistant" href="developers/jqassistant.html"/-->
+      <item name="Maturity" href="developers/maturity.html"/>
+      <item name="Preparing your Computer" href="developers/preparing.html"/>
+      <item name="Releasing" href="developers/release.html"/>
+      <item name="Team" href="developers/team.html"/>
+      <item name="VM Access" href="developers/vm.html"/>
+      <item name="VPN Access" href="developers/vpn.html"/>
+      <item name="Website" href="developers/website.html"/>
+      <item name="Wiki" href="developers/wiki.html"/>
+    </menu>
+    <menu name="Protocols">
+      <item name="Features" href="protocols/features.html"/>
+      <item name="ADS" href="protocols/ads/index.html"/>
+      <item name="DeltaV" href="protocols/delta-v/index.html"/>
+      <item name="EtherNet/IP" href="protocols/ethernet-ip/index.html"/>
+      <item name="Modbus" href="protocols/modbus/index.html"/>
+      <item name="OPC-UA" href="protocols/opc-ua/index.html"/>
+      <item name="S7" href="protocols/s7/index.html"/>
+    </menu>
+    <menu name="Reports" ref="reports" inherit="bottom"/>
+    <menu name="Apache" inherit="bottom">
+      <item name="Apache Software Foundation" href="http://www.apache.org/"/>
+      <item name="How Apache Works" href="https://www.apache.org/foundation/how-it-works.html"/>
+      <item name="License" href="http://www.apache.org/licenses/"/>
+      <item name="Sponsoring Apache" href="http://www.apache.org/foundation/sponsorship.html"/>
+      <item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
+    </menu>
+    <menu ref="modules" inherit="bottom"/>
+  </body>
+
+</project>

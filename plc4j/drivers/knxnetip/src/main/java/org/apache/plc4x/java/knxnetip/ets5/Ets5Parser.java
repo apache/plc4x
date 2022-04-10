@@ -1,50 +1,60 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java.knxnetip.ets5;
 
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipFile;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.FileHeader;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.knxnetip.ets5.model.AddressType;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.Function;
 import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
-import org.apache.plc4x.java.knxnetip.readwrite.types.KnxDatapointType;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxDatapointType;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Ets5Parser {
 
-    public Ets5Model parse(File knxprojFile) {
+    public Ets5Model parse(File knxprojFile, String password) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             DocumentBuilder builder = factory.newDocumentBuilder();
             XPathFactory xPathFactory = XPathFactory.newInstance();
             XPath xPath = xPathFactory.newXPath();
@@ -54,11 +64,42 @@ public class Ets5Parser {
                 ////////////////////////////////////////////////////////////////////////////////
                 // File containing the information on the type of encoding used for group addresses.
                 ////////////////////////////////////////////////////////////////////////////////
-                ZipArchiveEntry projectHeaderFile = zipFile.getEntry("P-05CD/project.xml");
-                if (projectHeaderFile == null) {
-                    throw new RuntimeException("Error accessing project header file.");
+                Document projectHeaderDoc;
+                Document projectDoc;
+                String projectNumber = this.getProjectNumber(zipFile);
+                FileHeader projectFileHeader = zipFile.getFileHeader(projectNumber + "/project.xml");
+                if (projectFileHeader == null) {
+                    // This is the case of a knxproj file which is password-protected
+                    final FileHeader encryptedProjectFileHeader = zipFile.getFileHeader(projectNumber + ".zip");
+                    if(encryptedProjectFileHeader == null) {
+                        throw new PlcRuntimeException(String.format("Error accessing project header file. Project file '%s/project.xml' and '%s.zip' don't exist.", projectNumber, projectNumber));
+                    }
+                    // Dump the encrypted zip to a temp file.
+                    Path tempDir = Files.createTempDirectory(null);
+                    zipFile.extractFile(projectNumber + ".zip", tempDir.toFile().getAbsolutePath());
+                    File tempFile = new File(tempDir.toFile(), projectNumber + ".zip");
+
+                    // Unzip the archive inside the archive.
+                    try (ZipFile projectZipFile = new ZipFile(tempFile, password.toCharArray())) {
+                        final FileHeader compressedProjectFileHeader = projectZipFile.getFileHeader("project.xml");
+                        if (compressedProjectFileHeader == null) {
+                            throw new PlcRuntimeException(String.format("Error accessing project header file: Project file 'project.xml' inside '%s.zip'.", projectNumber));
+                        }
+                        projectHeaderDoc = builder.parse(projectZipFile.getInputStream(compressedProjectFileHeader));
+                        FileHeader projectFileFileHeader = projectZipFile.getFileHeader("0.xml");
+                        if (projectFileFileHeader == null) {
+                            throw new PlcRuntimeException("Error accessing project file.");
+                        }
+                        projectDoc = builder.parse(projectZipFile.getInputStream(projectFileFileHeader));
+                    }
+                } else {
+                    projectHeaderDoc = builder.parse(zipFile.getInputStream(projectFileHeader));
+                    FileHeader projectFileFileHeader = zipFile.getFileHeader(projectNumber + "/0.xml");
+                    if (projectFileFileHeader == null) {
+                        throw new PlcRuntimeException("Error accessing project file.");
+                    }
+                    projectDoc = builder.parse(zipFile.getInputStream(projectFileFileHeader));
                 }
-                Document projectHeaderDoc = builder.parse(zipFile.getInputStream(projectHeaderFile));
                 final XPathExpression xpathGroupAddressStyle = xPath.compile("/KNX/Project/ProjectInformation/@GroupAddressStyle");
                 Attr groupAddressStyle = (Attr) xpathGroupAddressStyle.evaluate(projectHeaderDoc, XPathConstants.NODE);
                 byte groupAddressStyleCode = getGroupAddressLevel(groupAddressStyle.getTextContent());
@@ -66,18 +107,18 @@ public class Ets5Parser {
                 ////////////////////////////////////////////////////////////////////////////////
                 // General information on the type of encoding and the value ranges.
                 ////////////////////////////////////////////////////////////////////////////////
-                ZipArchiveEntry knxMasterDataFile = zipFile.getEntry("knx_master.xml");
-                if (knxMasterDataFile == null) {
-                    throw new RuntimeException("Error accessing KNX master file.");
+                FileHeader knxMasterDataFileFileHeader = zipFile.getFileHeader("knx_master.xml");
+                if (knxMasterDataFileFileHeader == null) {
+                    throw new PlcRuntimeException("Error accessing KNX master file.");
                 }
-                Document knxMasterDoc = builder.parse(zipFile.getInputStream(knxMasterDataFile));
+                Document knxMasterDoc = builder.parse(zipFile.getInputStream(knxMasterDataFileFileHeader));
                 final XPathExpression xpathDatapointSubtype = xPath.compile("//DatapointSubtype");
                 NodeList datapointSubtypeNodes = (NodeList) xpathDatapointSubtype.evaluate(knxMasterDoc, XPathConstants.NODESET);
 
                 // Build an index of the internal data-types.
-                Map<String, KnxDatapointType> knxDatapointTypeMap = new HashMap<>();
+                Map<String, KnxDatapointType> knxDatapointTypeMap = new TreeMap<>();
                 for (KnxDatapointType value : KnxDatapointType.values()) {
-                    knxDatapointTypeMap.put(value.getDatapointMainType().getValue() + "#" + value.getValue(), value);
+                    knxDatapointTypeMap.put(value.getDatapointMainType().getNumber() + "#" + value.getNumber(), value);
                 }
 
                 Map<String, AddressType> addressTypes = new HashMap<>();
@@ -94,12 +135,6 @@ public class Ets5Parser {
                 ////////////////////////////////////////////////////////////////////////////////
                 // File containing all the information about group addresses used, their names, types etc.
                 ////////////////////////////////////////////////////////////////////////////////
-                ZipArchiveEntry projectFile = zipFile.getEntry("P-05CD/0.xml");
-                if (projectFile == null) {
-                    throw new RuntimeException("Error accessing project file.");
-                }
-                Document projectDoc = builder.parse(zipFile.getInputStream(projectFile));
-
                 final Map<String, String> topologyNames = new HashMap<>();
                 final XPathExpression topology = xPath.compile("//Topology");
                 final Element topologyElement = (Element) topology.evaluate(projectDoc, XPathConstants.NODE);
@@ -110,7 +145,7 @@ public class Ets5Parser {
                     topologyNames.put(curAreaAddress, areaNode.getAttribute("Name"));
 
                     final NodeList lines = areaNode.getElementsByTagName("Line");
-                    for(int l = 0; l < lines.getLength(); l++) {
+                    for (int l = 0; l < lines.getLength(); l++) {
                         final Element lineNode = (Element) lines.item(l);
                         final String curLineAddress = curAreaAddress + "/" + lineNode.getAttribute("Address");
                         topologyNames.put(curLineAddress, lineNode.getAttribute("Name"));
@@ -151,7 +186,7 @@ public class Ets5Parser {
                     final String typeString = groupAddressNode.getAttribute("DatapointType");
                     final AddressType addressType = addressTypes.get(typeString);
 
-                    if(addressType != null) {
+                    if (addressType != null) {
                         // Lookup the driver internal data-type.
                         final KnxDatapointType datapointType = knxDatapointTypeMap.get(
                             addressType.getMainType() + "#" + addressType.getSubType());
@@ -162,31 +197,37 @@ public class Ets5Parser {
                 }
                 return new Ets5Model(groupAddressStyleCode, groupAddresses, topologyNames);
             }
-        } catch (IOException e) {
+        } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
             // Zip and Xml Stuff
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            // XML Stuff
-            e.printStackTrace();
-        } catch (SAXException e) {
-            // XML Stuff
-            e.printStackTrace();
-        } catch (XPathExpressionException e) {
-            // XML Stuff
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         }
-        return null;
     }
 
     private byte getGroupAddressLevel(String knxprojValue) {
-        if("ThreeLevel".equals(knxprojValue)) {
+        if ("ThreeLevel".equals(knxprojValue)) {
             return (byte) 3;
-        } else if("TwoLevel".equals(knxprojValue)) {
+        } else if ("TwoLevel".equals(knxprojValue)) {
             return (byte) 2;
-        } else if("Free".equals(knxprojValue)) {
+        } else if ("Free".equals(knxprojValue)) {
             return (byte) 1;
         }
-        throw new RuntimeException("Unsupported GroupAddressStyle=" + knxprojValue);
+        throw new PlcRuntimeException("Unsupported GroupAddressStyle=" + knxprojValue);
+    }
+
+    private String getProjectNumber(ZipFile zipFile) throws ZipException
+    {
+        // The following is defined within the KNX spec: Project Scheme 2.1 public documentation
+        //
+        // P-iiii/project.xml Created by user; contains the global data for project iiii (internal project ID, formatted as 4 hex digits).
+        Pattern pattern = Pattern.compile( "^P-[0-9A-F]{4}", Pattern.CASE_INSENSITIVE);
+        for (FileHeader fileHeader : zipFile.getFileHeaders ( ) ) {
+            Matcher matcher = pattern.matcher(fileHeader.getFileName());
+            if (matcher.find()) {
+                return matcher.group();
+            }
+        }
+        
+        throw new PlcRuntimeException("Error determining project number.");
     }
 
 }

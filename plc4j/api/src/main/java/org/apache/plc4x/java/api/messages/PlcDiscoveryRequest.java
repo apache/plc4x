@@ -24,6 +24,8 @@ public interface PlcDiscoveryRequest extends PlcRequest {
 
     CompletableFuture<? extends PlcDiscoveryResponse> execute();
 
+    CompletableFuture<? extends PlcDiscoveryResponse> executeWithHandler(PlcDiscoveryItemHandler handler);
+
     interface Builder extends PlcRequestBuilder {
 
         @Override

@@ -16,18 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.utils.connectionpool2;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 24.02.20
- */
 public class CachedReadRequestBuilder implements PlcReadRequest.Builder {
 
     private final CachedPlcConnection parent;

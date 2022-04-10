@@ -25,13 +25,13 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.values.PlcStruct;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -41,7 +41,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcReadResponse implements PlcReadResponse, XmlSerializable {
+public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
 
     private final PlcReadRequest request;
     private final Map<String, ResponseItem<PlcValue>> values;
@@ -719,24 +719,24 @@ public class DefaultPlcReadResponse implements PlcReadResponse, XmlSerializable 
         return field;
     }
 
-
     @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement("PlcReadResponse");
-        if(request instanceof XmlSerializable) {
-            ((XmlSerializable) request).xmlSerialize(messageElement);
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        writeBuffer.pushContext("PlcReadResponse");
+
+        if(request instanceof Serializable) {
+            ((Serializable) request).serialize(writeBuffer);
         }
-        Element valuesElement = doc.createElement("values");
-        messageElement.appendChild(valuesElement);
+        writeBuffer.pushContext("values");
         for (Map.Entry<String, ResponseItem<PlcValue>> valueEntry : values.entrySet()) {
             String fieldName = valueEntry.getKey();
-            Element fieldNameElement = doc.createElement(fieldName);
-            valuesElement.appendChild(fieldNameElement);
+            writeBuffer.pushContext(fieldName);
             ResponseItem<PlcValue> valueResponse = valueEntry.getValue();
-            valueResponse.xmlSerialize(fieldNameElement);
+            valueResponse.serialize(writeBuffer);
+            writeBuffer.popContext(fieldName);
         }
-        parent.appendChild(messageElement);
+        writeBuffer.popContext("values");
+
+        writeBuffer.popContext("PlcReadResponse");
     }
 
 }

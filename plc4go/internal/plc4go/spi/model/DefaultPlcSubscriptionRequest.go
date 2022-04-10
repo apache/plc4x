@@ -1,26 +1,27 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package model
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"time"
@@ -60,46 +61,53 @@ func NewDefaultPlcSubscriptionRequestBuilder(fieldHandler spi.PlcFieldHandler, v
 	}
 }
 
-func (m *DefaultPlcSubscriptionRequestBuilder) AddCyclicQuery(name string, query string, interval time.Duration) {
+func (m *DefaultPlcSubscriptionRequestBuilder) AddCyclicQuery(name string, query string, interval time.Duration) model.PlcSubscriptionRequestBuilder {
 	m.queryNames = append(m.queryNames, name)
 	m.queries[name] = query
 	m.types[name] = SubscriptionCyclic
 	m.intervals[name] = interval
+	return m
 }
 
-func (m *DefaultPlcSubscriptionRequestBuilder) AddCyclicField(name string, field model.PlcField, interval time.Duration) {
+func (m *DefaultPlcSubscriptionRequestBuilder) AddCyclicField(name string, field model.PlcField, interval time.Duration) model.PlcSubscriptionRequestBuilder {
 	m.fieldNames = append(m.fieldNames, name)
 	m.fields[name] = field
 	m.types[name] = SubscriptionCyclic
 	m.intervals[name] = interval
+	return m
 }
 
-func (m *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateQuery(name string, query string) {
+func (m *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateQuery(name string, query string) model.PlcSubscriptionRequestBuilder {
 	m.queryNames = append(m.queryNames, name)
 	m.queries[name] = query
 	m.types[name] = SubscriptionChangeOfState
+	return m
 }
 
-func (m *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateField(name string, field model.PlcField) {
+func (m *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateField(name string, field model.PlcField) model.PlcSubscriptionRequestBuilder {
 	m.fieldNames = append(m.fieldNames, name)
 	m.fields[name] = field
 	m.types[name] = SubscriptionChangeOfState
+	return m
 }
 
-func (m *DefaultPlcSubscriptionRequestBuilder) AddEventQuery(name string, query string) {
+func (m *DefaultPlcSubscriptionRequestBuilder) AddEventQuery(name string, query string) model.PlcSubscriptionRequestBuilder {
 	m.queryNames = append(m.queryNames, name)
 	m.queries[name] = query
 	m.types[name] = SubscriptionEvent
+	return m
 }
 
-func (m *DefaultPlcSubscriptionRequestBuilder) AddEventField(name string, field model.PlcField) {
+func (m *DefaultPlcSubscriptionRequestBuilder) AddEventField(name string, field model.PlcField) model.PlcSubscriptionRequestBuilder {
 	m.fieldNames = append(m.fieldNames, name)
 	m.fields[name] = field
 	m.types[name] = SubscriptionEvent
+	return m
 }
 
-func (m *DefaultPlcSubscriptionRequestBuilder) AddItemHandler(eventHandler model.PlcSubscriptionEventHandler) {
+func (m *DefaultPlcSubscriptionRequestBuilder) AddItemHandler(eventHandler model.PlcSubscriptionEventHandler) model.PlcSubscriptionRequestBuilder {
 	m.eventHandler = eventHandler
+	return m
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) Build() (model.PlcSubscriptionRequest, error) {
@@ -112,35 +120,23 @@ func (m *DefaultPlcSubscriptionRequestBuilder) Build() (model.PlcSubscriptionReq
 		m.fieldNames = append(m.fieldNames, name)
 		m.fields[name] = field
 	}
-	return DefaultPlcSubscriptionRequest{
-		fields:       m.fields,
-		fieldNames:   m.fieldNames,
-		types:        m.types,
-		intervals:    m.intervals,
-		subscriber:   m.subscriber,
-		eventHandler: m.eventHandler,
-	}, nil
+	return NewDefaultPlcSubscriptionRequest(m.fields, m.fieldNames, m.types, m.intervals, m.subscriber, m.eventHandler), nil
 }
 
 type DefaultPlcSubscriptionRequest struct {
-	fields       map[string]model.PlcField
-	fieldNames   []string
+	DefaultRequest
 	types        map[string]SubscriptionType
 	intervals    map[string]time.Duration
-	eventHandler model.PlcSubscriptionEventHandler
 	subscriber   spi.PlcSubscriber
+	eventHandler model.PlcSubscriptionEventHandler
+}
+
+func NewDefaultPlcSubscriptionRequest(fields map[string]model.PlcField, fieldNames []string, types map[string]SubscriptionType, intervals map[string]time.Duration, subscriber spi.PlcSubscriber, eventHandler model.PlcSubscriptionEventHandler) model.PlcSubscriptionRequest {
+	return DefaultPlcSubscriptionRequest{NewDefaultRequest(fields, fieldNames), types, intervals, subscriber, eventHandler}
 }
 
 func (m DefaultPlcSubscriptionRequest) Execute() <-chan model.PlcSubscriptionRequestResult {
 	return m.subscriber.Subscribe(m)
-}
-
-func (m DefaultPlcSubscriptionRequest) GetFieldNames() []string {
-	return m.fieldNames
-}
-
-func (m DefaultPlcSubscriptionRequest) GetField(name string) model.PlcField {
-	return m.fields[name]
 }
 
 func (m DefaultPlcSubscriptionRequest) GetEventHandler() model.PlcSubscriptionEventHandler {
@@ -155,31 +151,34 @@ func (m DefaultPlcSubscriptionRequest) GetInterval(name string) time.Duration {
 	return m.intervals[name]
 }
 
-func (m DefaultPlcSubscriptionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcSubscriptionRequest"}}); err != nil {
+func (m DefaultPlcSubscriptionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcSubscriptionRequest"); err != nil {
 		return err
 	}
 
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
+	if err := writeBuffer.PushContext("fields"); err != nil {
 		return err
 	}
-	for _, fieldName := range m.fieldNames {
-		field := m.fields[fieldName]
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
+	for _, fieldName := range m.GetFieldNames() {
+		if err := writeBuffer.PushContext(fieldName); err != nil {
 			return err
 		}
-		if err := e.EncodeElement(field, xml.StartElement{Name: xml.Name{Local: "field"}}); err != nil {
-			return err
+		field := m.GetField(fieldName)
+		if serializableField, ok := field.(utils.Serializable); ok {
+			if err := serializableField.Serialize(writeBuffer); err != nil {
+				return err
+			}
+		} else {
+			return errors.New("Error serializing. Field doesn't implement Serializable")
 		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {
+		if err := writeBuffer.PopContext(fieldName); err != nil {
 			return err
 		}
 	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fields"}}); err != nil {
+	if err := writeBuffer.PopContext("fields"); err != nil {
 		return err
 	}
-
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcSubscriptionRequest"}}); err != nil {
+	if err := writeBuffer.PopContext("PlcSubscriptionRequest"); err != nil {
 		return err
 	}
 	return nil

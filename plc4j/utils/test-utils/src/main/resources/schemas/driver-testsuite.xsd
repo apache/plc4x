@@ -18,31 +18,31 @@
   under the License.
   -->
 <xs:schema targetNamespace="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
     <xs:element name="driver-testsuite">
         <xs:complexType>
             <xs:sequence>
                 <!-- Name of the tessuite -->
                 <xs:element name="name" type="xs:string"/>
+                <!-- The protocolName(id) of the protocol -->
+                <xs:element name="protocolName" type="xs:string"/>
+                <!-- The outputFlavor of the protocol-->
+                <xs:element name="outputFlavor" type="xs:string"/>
+
+                <xs:element name="options" minOccurs="0" maxOccurs="1" type="parameterList">
+                    <xs:annotation>
+                        <xs:documentation>
+                            List of options which are specific to execution of test or environment.
+                            This might be used ie. to influence test framework lookup strategies.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
 
                 <!-- The name of the driver we want to test (as it's used in the connection-string) -->
                 <xs:element name="driver-name" type="xs:string"/>
                 <!-- Additional parameters passed to the driver in the connection-string -->
-                <xs:element name="driver-parameters" minOccurs="0" maxOccurs="1">
-                    <xs:complexType>
-                        <xs:sequence minOccurs="1" maxOccurs="unbounded">
-                            <xs:element name="parameter">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="name" type="xs:string"/>
-                                        <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="1"/>
-                                    </xs:sequence>
-                                </xs:complexType>
-                            </xs:element>
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
+                <xs:element name="driver-parameters" minOccurs="0" maxOccurs="1" type="parameterList" />
 
                 <!-- Interaction which is performed to initiate the driver connection -->
                 <xs:element name="setup" minOccurs="0" maxOccurs="1">
@@ -109,7 +109,7 @@
                 </xs:element>
             </xs:sequence>
 
-            <xs:attribute name="bigEndian" type="xs:boolean"/>
+            <xs:attribute name="byteOrder" type="byteOrder"/>
         </xs:complexType>
     </xs:element>
 
@@ -128,5 +128,25 @@
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
+
+    <xs:complexType name="parameterList">
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="parameter">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string" />
+                        <xs:element name="value" type="xs:string" minOccurs="0" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="byteOrder" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="BIG_ENDIAN"/>
+            <xs:enumeration value="LITTLE_ENDIAN"/>
+        </xs:restriction>
+    </xs:simpleType>
 
 </xs:schema>

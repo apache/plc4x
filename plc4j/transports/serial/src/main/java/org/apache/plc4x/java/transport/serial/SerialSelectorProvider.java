@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.transport.serial;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -27,12 +26,6 @@ import java.nio.channels.*;
 import java.nio.channels.spi.AbstractSelector;
 import java.nio.channels.spi.SelectorProvider;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-10
- */
 class SerialSelectorProvider extends SelectorProvider {
 
     @Override

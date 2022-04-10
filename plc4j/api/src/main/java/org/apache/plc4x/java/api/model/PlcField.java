@@ -41,7 +41,7 @@ public interface PlcField {
      * I.e., a call to getXXX for the ResponseItem should succeed.
      *
      * The contract is not to return the exact type which is internally hold by PLC4X but to
-     * return a "casteable" type, i.e., a type whiches getXXX method succeeds.
+     * return a "casteable" type, i.e., a type for which the getXXX method succeeds.
      * So for example if a type is internally a short, but the getInt() method is implemented, it
      * is allowed to return Integer.class by this method.
      *

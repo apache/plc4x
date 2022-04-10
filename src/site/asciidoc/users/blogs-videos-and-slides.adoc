@@ -25,6 +25,8 @@
 
 === Videos & Webinars
 
+- https://youtu.be/1vf3zw7HQws[High Security Iiot Communication With Apache Plc4X, Apache Asia Con, August 2021]
+- https://youtu.be/ogsFTnQhtIU[Apache Plc4X For Can Bus And Canopen, Apache Asia Con, August 2021]
 - https://youtu.be/xguPoy6ebV4[Eclipse IoT Meetup, December 2020]
 - https://youtu.be/5n27Ybqrot4[Librecon - Open Industry 4.0, 2020]
 - https://youtu.be/SzWu7ab1gCI[Analyzing IIoT data with PLC4X and StreamPipes]
