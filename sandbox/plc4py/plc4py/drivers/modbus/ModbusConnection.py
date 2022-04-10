@@ -16,12 +16,8 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
-from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Type
-
-import pluggy
 
 import plc4py
 from plc4py.api.PlcConnection import PlcConnection
@@ -60,7 +56,7 @@ class ModbusConnection(PlcConnection):
         pass
 
 
-class ModbusConnectionLoader(PlcConnectionLoader):    
+class ModbusConnectionLoader(PlcConnectionLoader):
 
     @staticmethod
     @plc4py.hookimpl

@@ -21,17 +21,19 @@ import pluggy
 
 from plc4py.api.PlcConnection import PlcConnection
 
-hookspec = pluggy.HookspecMarker("plc4py")
+
 
 class PlcDriverClassLoader:
-    """A hook specification namespace."""
+    """Hook spec for PLC4PY Driver Loaders"""
+
+    hookspec = pluggy.HookspecMarker("plc4py")
 
     @staticmethod
     @hookspec
     def get_connection() -> Type[PlcConnection]:
-        """My special little hook that you can customize."""
+        """Returns the PlcConnection class that is used to instantiate the driver"""
 
     @staticmethod
     @hookspec
     def key() -> str:
-        """My special little hook that you can customize."""
+        """Unique key to identify the driver"""
