@@ -17,21 +17,19 @@
 # under the License.
 #
 
-from plc4py import __version__
-from plc4py.PlcDriverManager import PlcDriverManager
-from plc4py.api.PlcConnection import PlcConnection
-from plc4py.drivers.modbus.ModbusConnection import ModbusConnection
+from typing import Generator
 
+#TODO: Figure out what the parameters are and if we need this
+class GenericGenerator(Generator):
 
-def test_version():
-    assert __version__ == "0.1.0"
+    def __enter__(self):
+        return self
 
-def test_plc_driver_manager_init():
-    driver_manager = PlcDriverManager()
-    with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
-        assert isinstance(connection, PlcConnection)
+    def send(self, _value, blah):
+        pass
 
-def test_plc_driver_manager_init_modbus():
-    driver_manager = PlcDriverManager()
-    with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
-        assert isinstance(connection, ModbusConnection)
+    def throw(self):
+        pass
+
+    def __exit__(self, *args):
+        pass

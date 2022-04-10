@@ -771,7 +771,7 @@
             <exclude>**/.gitignore</exclude>
             <exclude>**/cmake-*/**</exclude>
             <exclude>**/.lock/**</exclude>
-            <exclude>**/.cmake/**</exclude>
+
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
             <!--
@@ -786,6 +786,10 @@
             <!-- Maven related files -->
             <exclude>**/target/**</exclude>
             <exclude>target/**</exclude>
+
+            <!-- Python related files -->
+            <exclude>**/.pytest_cache/**</exclude>
+            <exclude>**/.mypy_cache/**</exclude>
 
             <!-- Eclipse related files -->
             <exclude>**/.project</exclude>

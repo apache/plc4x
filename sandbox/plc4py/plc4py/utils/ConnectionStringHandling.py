@@ -17,21 +17,16 @@
 # under the License.
 #
 
-from plc4py import __version__
-from plc4py.PlcDriverManager import PlcDriverManager
-from plc4py.api.PlcConnection import PlcConnection
-from plc4py.drivers.modbus.ModbusConnection import ModbusConnection
+from urllib.parse import urlparse
 
+def get_protocol_code(url: str) -> str:
+    """
+    Get the protocol code section of the connection string
+    e.g. modbus:tcp://127.0.0.1:502 would return modbus
 
-def test_version():
-    assert __version__ == "0.1.0"
+    :param url: The connection string
+    :return: The protocol code
+    """
+    parsed = urlparse(url)
+    return parsed.scheme
 
-def test_plc_driver_manager_init():
-    driver_manager = PlcDriverManager()
-    with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
-        assert isinstance(connection, PlcConnection)
-
-def test_plc_driver_manager_init_modbus():
-    driver_manager = PlcDriverManager()
-    with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
-        assert isinstance(connection, ModbusConnection)

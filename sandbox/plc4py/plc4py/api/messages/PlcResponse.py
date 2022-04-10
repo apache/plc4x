@@ -1,6 +1,3 @@
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
 # regarding copyright ownership.  The ASF licenses this file
 # to you under the Apache License, Version 2.0 (the
 # "License"); you may not use this file except in compliance
@@ -14,12 +11,14 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import logging
+#
+from abc import abstractmethod
+
+from plc4py.api.messages.PlcRequest import PlcMessage
 
 
-class PlcException(Exception):
-    pass;
+class PlcResponse(PlcMessage):
 
-
-class PlcConnectionException(Exception):
-    logging.error(f"Unable to establish a connection to the plc")
+    @abstractmethod
+    def get_request(self) -> PlcMessage:
+        pass

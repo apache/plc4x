@@ -16,27 +16,25 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from abc import abstractmethod
 from dataclasses import dataclass
+from typing import Type
 
-
+import plc4py
+from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder
-from plc4py.api.exceptions.exceptions import PlcConnectionException
-from plc4py.utils.GenericTypes import GenericGenerator
+from plc4py.drivers.PlcConnectionLoader import PlcConnectionLoader
 
 
 @dataclass
-class PlcConnection(GenericGenerator):
-    url: str = ""
+class ModbusConnection(PlcConnection):
+    """A hook implementation namespace."""
 
-    @abstractmethod
-    def connect(self) -> None:
+    def connect(self):
         """
         Establishes the connection to the remote PLC.
         """
-        raise PlcConnectionException
+        pass
 
-    @abstractmethod
     def is_connected(self) -> bool:
         """
         Indicates if the connection is established to a remote PLC.
@@ -44,7 +42,6 @@ class PlcConnection(GenericGenerator):
         """
         pass
 
-    @abstractmethod
     def close(self) -> None:
         """
         Closes the connection to the remote PLC.
@@ -52,9 +49,22 @@ class PlcConnection(GenericGenerator):
         """
         pass
 
-    @abstractmethod
     def read_request_builder(self) -> ReadRequestBuilder:
         """
         :return: read request builder.
         """
         pass
+
+
+class ModbusConnectionLoader(PlcConnectionLoader):
+
+    @staticmethod
+    @plc4py.hookimpl
+    def get_connection() -> Type[ModbusConnection]:
+        return ModbusConnection
+
+    @staticmethod
+    @plc4py.hookimpl
+    def key() -> str:
+        return "modbus"
+

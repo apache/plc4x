@@ -16,45 +16,42 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from abc import abstractmethod
 from dataclasses import dataclass
 
-
+from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder
-from plc4py.api.exceptions.exceptions import PlcConnectionException
-from plc4py.utils.GenericTypes import GenericGenerator
+from tests.unit.plc4py.api.test.MockReadRequestBuilder import MockReadRequestBuilder
 
 
 @dataclass
-class PlcConnection(GenericGenerator):
-    url: str = ""
+class MockPlcConnection(PlcConnection):
+    _is_connected: bool = False
 
-    @abstractmethod
-    def connect(self) -> None:
+    def connect(self):
         """
-        Establishes the connection to the remote PLC.
+        Connect the Mock PLC connection
+        :return:
         """
-        raise PlcConnectionException
+        self._is_connected = True
 
-    @abstractmethod
     def is_connected(self) -> bool:
         """
-        Indicates if the connection is established to a remote PLC.
-        :return: True if connection, False otherwise
+        Return the current status of the Mock PLC Connection
+        :return bool: True is connected
         """
-        pass
+        return self._is_connected
 
-    @abstractmethod
     def close(self) -> None:
         """
         Closes the connection to the remote PLC.
         :return:
         """
-        pass
+        self._is_connected = False
 
-    @abstractmethod
     def read_request_builder(self) -> ReadRequestBuilder:
         """
         :return: read request builder.
         """
-        pass
+        return MockReadRequestBuilder()
+
+

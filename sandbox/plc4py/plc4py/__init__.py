@@ -18,3 +18,12 @@
 #
 
 __version__ = "0.1.0"
+
+import logging
+
+import pluggy  # type: ignore
+
+# Place holder for logging configuration
+logging.basicConfig(level=logging.DEBUG)
+
+hookimpl = pluggy.HookimplMarker("plc4py")

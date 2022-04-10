@@ -17,44 +17,29 @@
 # under the License.
 #
 from abc import abstractmethod
-from dataclasses import dataclass
+from typing import Type
+
+from plc4py.api.PlcConnection import PlcConnection
 
 
-from plc4py.api.messages.PlcRequest import ReadRequestBuilder
-from plc4py.api.exceptions.exceptions import PlcConnectionException
-from plc4py.utils.GenericTypes import GenericGenerator
+class PlcConnectionLoader:
+    """
+    Abstract class for Plc Driver Loaders.
+    Each method should use the @hookimpl decorator to indicate it is a driver loader
+    """
 
-
-@dataclass
-class PlcConnection(GenericGenerator):
-    url: str = ""
-
+    @staticmethod
     @abstractmethod
-    def connect(self) -> None:
+    def get_connection() -> Type[PlcConnection]:
         """
-        Establishes the connection to the remote PLC.
-        """
-        raise PlcConnectionException
-
-    @abstractmethod
-    def is_connected(self) -> bool:
-        """
-        Indicates if the connection is established to a remote PLC.
-        :return: True if connection, False otherwise
+        :return Type[PlcConnection]: Returns the PlcConnection class that is used to instantiate the driver
         """
         pass
 
+    @staticmethod
     @abstractmethod
-    def close(self) -> None:
+    def key() -> str:
         """
-        Closes the connection to the remote PLC.
-        :return:
-        """
-        pass
-
-    @abstractmethod
-    def read_request_builder(self) -> ReadRequestBuilder:
-        """
-        :return: read request builder.
+        :return str: Unique key to identify the driver
         """
         pass

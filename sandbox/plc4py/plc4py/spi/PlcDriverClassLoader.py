@@ -15,23 +15,25 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#
+from typing import Type
 
-from plc4py import __version__
-from plc4py.PlcDriverManager import PlcDriverManager
+import pluggy
+
 from plc4py.api.PlcConnection import PlcConnection
-from plc4py.drivers.modbus.ModbusConnection import ModbusConnection
 
 
-def test_version():
-    assert __version__ == "0.1.0"
 
-def test_plc_driver_manager_init():
-    driver_manager = PlcDriverManager()
-    with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
-        assert isinstance(connection, PlcConnection)
+class PlcDriverClassLoader:
+    """Hook spec for PLC4PY Driver Loaders"""
 
-def test_plc_driver_manager_init_modbus():
-    driver_manager = PlcDriverManager()
-    with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
-        assert isinstance(connection, ModbusConnection)
+    hookspec = pluggy.HookspecMarker("plc4py")
+
+    @staticmethod
+    @hookspec
+    def get_connection() -> Type[PlcConnection]:
+        """Returns the PlcConnection class that is used to instantiate the driver"""
+
+    @staticmethod
+    @hookspec
+    def key() -> str:
+        """Unique key to identify the driver"""
