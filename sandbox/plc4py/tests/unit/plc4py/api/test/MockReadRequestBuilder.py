@@ -17,39 +17,46 @@
 # under the License.
 #
 import asyncio
+from asyncio import Future
 from dataclasses import dataclass, field
-from typing import Union, Awaitable
+from typing import Union, TypeVar, cast
 
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.api.messages.PlcRequest import (
     ReadRequestBuilder,
-    PlcRequest,
     PlcField,
+    PlcReadRequest,
 )
-from plc4py.api.messages.PlcResponse import PlcResponse
+from plc4py.api.messages.PlcResponse import PlcReadResponse
 
 
-class MockPlcReadResponse(PlcResponse):
+class MockPlcReadResponse(PlcReadResponse):
     def get_request(self) -> PlcMessage:
         return PlcMessage()
 
 
-class MockPlcReadRequest(PlcRequest):
+T = TypeVar("T", bound=PlcReadResponse)
+
+
+class MockPlcReadRequest(PlcReadRequest[T]):
     def __init__(self, fields: list[PlcField] = []):
         super().__init__(fields)
 
-    async def _execute(self) -> PlcResponse:
-        return MockPlcReadResponse()
+    async def _execute(self, future: Future[T]):
+        future.set_result(cast(T, MockPlcReadResponse()))
 
-    def execute(self) -> Awaitable[PlcResponse]:
-        return asyncio.create_task(self._execute())
+    def execute(self) -> Future[T]:
+        loop = asyncio.get_running_loop()
+        future = loop.create_future()
+        loop.create_task(self._execute(future))
+        return future
 
 
 @dataclass
 class MockReadRequestBuilder(ReadRequestBuilder):
     items: list[PlcField] = field(default_factory=lambda: [])
 
-    def build(self) -> PlcRequest:
+    def build(self) -> PlcReadRequest:
         return MockPlcReadRequest(self.items)
 
     def add_item(self, field_query: Union[str, PlcField]) -> None:

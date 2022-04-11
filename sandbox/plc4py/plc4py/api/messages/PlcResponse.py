@@ -14,10 +14,18 @@
 #
 from abc import abstractmethod
 
-from plc4py.api.messages.PlcRequest import PlcMessage
+from plc4py.api.messages.PlcMessage import PlcMessage
 
 
 class PlcResponse(PlcMessage):
     @abstractmethod
     def get_request(self) -> PlcMessage:
         pass
+
+
+class PlcFieldResponse(PlcResponse):
+    pass
+
+
+class PlcReadResponse(PlcFieldResponse):
+    pass
