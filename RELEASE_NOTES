@@ -2,8 +2,18 @@
 (Unreleased) Apache PLC4X 0.10.0-SNAPSHOT
 ==============================================================
 
+A lot of the work in this version went into refactoring and
+cleaning up our code generation. The code generation itself is
+now a lot cleaner and simpler as well as the code generated
+for Java. We also added a number of new field-types to allow
+implementing more sophisticated protocols. PLC4C now should
+also support all of the constructs mspec has to offer.
+
 New Features
 ------------
+
+- Implemented a `PLC4X-Server` and `PLC4X-Driver` that allows
+  using the server as a proxy for communicating with PLCs.
 
 - The Modbus driver is now also available in the variants:
   "modbus-rtu" and "modbus-ascii" (Both using Serial
