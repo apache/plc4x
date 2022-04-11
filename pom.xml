@@ -841,9 +841,6 @@
             <exclude>**/CMakeCache.txt</exclude>
             <exclude>**/DartConfiguration.tcl</exclude>
 
-            <!-- Python stuff -->
-            <exclude>**/poetry.lock</exclude>
-
             <!-- .Net stuff -->
             <exclude>plc4net/plc4net.sln.DotSettings.user</exclude>
 
