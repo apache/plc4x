@@ -698,6 +698,7 @@
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
+        <inherited>false</inherited>
         <executions>
           <!-- Do some pre-build checks and report any findings to the user -->
           <execution>
@@ -839,6 +840,9 @@
             <exclude>**/CMakeFiles/**</exclude>
             <exclude>**/CMakeCache.txt</exclude>
             <exclude>**/DartConfiguration.tcl</exclude>
+
+            <!-- Python stuff -->
+            <exclude>**/poetry.lock</exclude>
 
             <!-- .Net stuff -->
             <exclude>plc4net/plc4net.sln.DotSettings.user</exclude>
