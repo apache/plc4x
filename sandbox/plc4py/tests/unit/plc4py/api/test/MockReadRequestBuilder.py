@@ -16,14 +16,44 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from typing import Union
+import asyncio
+from dataclasses import dataclass, field
+from typing import Union, Awaitable
 
-from plc4py.api.messages.PlcRequest import ReadRequestBuilder, PlcRequest, PlcField
+from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.api.messages.PlcRequest import (
+    ReadRequestBuilder,
+    PlcRequest,
+    PlcField,
+)
+from plc4py.api.messages.PlcResponse import PlcResponse
 
 
+class MockPlcReadResponse(PlcResponse):
+    def get_request(self) -> PlcMessage:
+        return PlcMessage()
+
+
+class MockPlcReadRequest(PlcRequest):
+    def __init__(self, fields: list[PlcField] = []):
+        super().__init__(fields)
+
+    async def _execute(self) -> PlcResponse:
+        return MockPlcReadResponse()
+
+    def execute(self) -> Awaitable[PlcResponse]:
+        return asyncio.create_task(self._execute())
+
+
+@dataclass
 class MockReadRequestBuilder(ReadRequestBuilder):
-    def build(self) -> PlcRequest:
-        pass
+    items: list[PlcField] = field(default_factory=lambda: [])
 
-    def add_item(self, field_query: Union[str, PlcField]) -> PlcRequest:
-        pass
+    def build(self) -> PlcRequest:
+        return MockPlcReadRequest(self.items)
+
+    def add_item(self, field_query: Union[str, PlcField]) -> None:
+        field_temp: PlcField = (
+            PlcField(field_query) if isinstance(field_query, str) else field_query
+        )
+        self.items.append(field_temp)

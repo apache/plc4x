@@ -17,24 +17,34 @@
 # under the License.
 #
 from abc import abstractmethod
-from typing import Union
+from typing import Union, Awaitable
 
+from plc4py.api.messages.PlcField import PlcField
 from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.api.messages.PlcResponse import PlcResponse
 from plc4py.utils.GenericTypes import GenericGenerator
 
 
-class PlcRequest(PlcMessage):
+class PlcFieldRequest(PlcMessage):
+    def __init__(self, fields: list[PlcField] = []):
+        self.fields = fields
+
+    @property
+    def field_names(self):
+        return [field.name for field in self.fields]
+
+
+class PlcRequest(PlcFieldRequest):
     """
     Base type for all messages sent from the plc4x system to a connected plc.
     """
 
+    def __init__(self, fields: list[PlcField] = []):
+        super().__init__(fields)
+
     @abstractmethod
-    def execute(self) -> PlcMessage:
+    def execute(self) -> Awaitable[PlcResponse]:
         pass
-
-
-class PlcField:
-    pass
 
 
 class ReadRequestBuilder(GenericGenerator):
@@ -43,5 +53,5 @@ class ReadRequestBuilder(GenericGenerator):
         pass
 
     @abstractmethod
-    def add_item(self, field_query: Union[str, PlcField]) -> PlcRequest:
+    def add_item(self, field_query: Union[str, PlcField]) -> None:
         pass
