@@ -55,7 +55,7 @@ class PlcReadResponse(PlcFieldResponse):
         pass
 
     def number_of_values(self, name: str) -> int:
-        return len(self.values)
+        return len(self.values[name])
 
     def is_boolean(self, name: str, index: int = 0):
         return isinstance(self.values[name][index], bool)
