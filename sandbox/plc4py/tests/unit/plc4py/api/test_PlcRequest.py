@@ -16,7 +16,6 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import pytest
 
 from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.messages.PlcRequest import (
@@ -25,8 +24,7 @@ from plc4py.api.messages.PlcRequest import (
 from tests.unit.plc4py.api.test.MockPlcConection import MockPlcConnection
 
 
-@pytest.mark.asyncio
-async def test_read_request_builder_empty_request(mocker) -> None:
+def test_read_request_builder_empty_request(mocker) -> None:
     connection: PlcConnection = MockPlcConnection()
 
     # the connection function is supposed to support context manager
@@ -36,8 +34,7 @@ async def test_read_request_builder_empty_request(mocker) -> None:
     assert len(request.field_names) == 0
 
 
-@pytest.mark.asyncio
-async def test_read_request_builder_non_empty_request(mocker) -> None:
+def test_read_request_builder_non_empty_request(mocker) -> None:
     connection: PlcConnection = MockPlcConnection()
 
     # the connection function is supposed to support context manager

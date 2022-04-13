@@ -12,14 +12,13 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from dataclasses import field, dataclass
+from dataclasses import dataclass
+from typing import cast
 
 from plc4py.api.messages.PlcField import PlcField
 from plc4py.api.messages.PlcMessage import PlcMessage
-
-
-class PlcResponseCode:
-    pass
+from plc4py.api.value.PlcValue import PlcValue, PlcResponseCode
+from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 
 
 class PlcResponse(PlcMessage):
@@ -33,19 +32,33 @@ class PlcResponse(PlcMessage):
 
 @dataclass
 class PlcFieldResponse(PlcResponse):
-    fields: list[PlcField] = field(default_factory=lambda: [])
+    fields: list[PlcField]
 
     @property
     def field_names(self):
-        return [field.name for field in self.fields]
+        return [fld.name for fld in self.fields]
 
     def response_code(self, name: str) -> PlcResponseCode:
         pass
 
 
+@dataclass
 class PlcReadResponse(PlcFieldResponse):
     """
     Response to a {@link PlcReadRequest}.
     """
 
-    pass
+    code: PlcResponseCode
+    values: dict[str, list[ResponseItem[PlcValue]]]
+
+    def get_plc_value(self, name: str) -> PlcValue:
+        pass
+
+    def number_of_values(self, name: str) -> int:
+        return len(self.values)
+
+    def is_boolean(self, name: str, index: int = 0):
+        return isinstance(self.values[name][index], bool)
+
+    def get_boolean(self, name: str, index: int = 0):
+        return cast(bool, self.values[name][index])
