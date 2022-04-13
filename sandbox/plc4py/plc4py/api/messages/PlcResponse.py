@@ -51,14 +51,20 @@ class PlcReadResponse(PlcFieldResponse):
     code: PlcResponseCode
     values: dict[str, list[ResponseItem[PlcValue]]]
 
-    def get_plc_value(self, name: str) -> PlcValue:
-        pass
+    def get_plc_value(self, name: str, index: int = 0) -> PlcValue:
+        return self.values[name][index].value
 
     def number_of_values(self, name: str) -> int:
         return len(self.values[name])
 
     def is_boolean(self, name: str, index: int = 0):
-        return isinstance(self.values[name][index], bool)
+        return isinstance(self.values[name][index].value.value, bool)
 
-    def get_boolean(self, name: str, index: int = 0):
-        return cast(bool, self.values[name][index])
+    def get_boolean(self, name: str, index: int = 0) -> bool:
+        return cast(bool, self.values[name][index].value.value)
+
+    def is_int(self, name: str, index: int = 0):
+        return isinstance(self.values[name][index].value.value, int)
+
+    def get_int(self, name: str, index: int = 0) -> int:
+        return cast(int, self.values[name][index].value.value)

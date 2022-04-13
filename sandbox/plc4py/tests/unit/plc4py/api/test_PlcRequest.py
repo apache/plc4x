@@ -18,9 +18,15 @@
 #
 
 from plc4py.api.PlcConnection import PlcConnection
+from plc4py.api.messages.PlcField import PlcField
 from plc4py.api.messages.PlcRequest import (
     PlcFieldRequest,
 )
+from plc4py.api.messages.PlcResponse import PlcReadResponse
+from plc4py.api.value.PlcValue import PlcResponseCode
+from plc4py.spi.messages.utils.ResponseItem import ResponseItem
+from plc4py.spi.values.PlcBOOL import PlcBOOL
+from plc4py.spi.values.PlcINT import PlcINT
 from tests.unit.plc4py.api.test.MockPlcConection import MockPlcConnection
 
 
@@ -46,3 +52,23 @@ def test_read_request_builder_non_empty_request(mocker) -> None:
     # verify that request has one field
     assert request.field_names == ["1:BOOL"]
     assert len(request.field_names) == 1
+
+
+def test_read_response_boolean_response(mocker) -> None:
+    response = PlcReadResponse(
+        [PlcField("1:BOOL")],
+        PlcResponseCode.OK,
+        {"1:BOOL": [ResponseItem(PlcResponseCode.OK, PlcBOOL(True))]},
+    )
+    assert response.get_boolean("1:BOOL")
+    assert isinstance(response.get_plc_value("1:BOOL"), PlcBOOL)
+
+
+def test_read_response_int_response(mocker) -> None:
+    response = PlcReadResponse(
+        [PlcField("1:INT")],
+        PlcResponseCode.OK,
+        {"1:INT": [ResponseItem(PlcResponseCode.OK, PlcINT(10))]},
+    )
+    assert response.get_int("1:INT") == 10
+    assert isinstance(response.get_plc_value("1:INT"), PlcINT)

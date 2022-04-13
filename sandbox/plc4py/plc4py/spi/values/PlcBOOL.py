@@ -12,28 +12,12 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from abc import ABC
 from dataclasses import dataclass
-from enum import auto, Enum
-from typing import TypeVar, Generic
 
-T = TypeVar("T")
+from plc4py.api.value.PlcValue import PlcValue
 
 
 @dataclass
-class PlcValue(Generic[T], ABC):
-    value: T
-
-
-class PlcResponseCode(Enum):
-    OK = auto()
-    NOT_FOUND = auto()
-    ACCESS_DENIED = auto()
-    INVALID_ADDRESS = auto()
-    INVALID_DATATYPE = auto()
-    INVALID_DATA = auto()
-    INTERNAL_ERROR = auto()
-    REMOTE_BUSY = auto()
-    REMOTE_ERROR = auto()
-    UNSUPPORTED = auto()
-    RESPONSE_PENDING = auto()
+class PlcBOOL(PlcValue[bool]):
+    def get_bool(self):
+        return self.value
