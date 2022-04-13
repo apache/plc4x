@@ -16,10 +16,9 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import asyncio
-from asyncio import Future
+
 from dataclasses import dataclass, field
-from typing import Union, TypeVar, cast
+from typing import Union
 
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.api.messages.PlcRequest import (
@@ -35,21 +34,9 @@ class MockPlcReadResponse(PlcReadResponse):
         return PlcMessage()
 
 
-T = TypeVar("T", bound=PlcReadResponse)
-
-
-class MockPlcReadRequest(PlcReadRequest[T]):
+class MockPlcReadRequest(PlcReadRequest):
     def __init__(self, fields: list[PlcField] = []):
         super().__init__(fields)
-
-    async def _execute(self, future: Future[T]):
-        future.set_result(cast(T, MockPlcReadResponse()))
-
-    def execute(self) -> Future[T]:
-        loop = asyncio.get_running_loop()
-        future = loop.create_future()
-        loop.create_task(self._execute(future))
-        return future
 
 
 @dataclass

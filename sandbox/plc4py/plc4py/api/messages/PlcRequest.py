@@ -16,61 +16,35 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from abc import abstractmethod, ABCMeta
-from asyncio import Future
-from typing import Union, TypeVar, Generic
+from abc import abstractmethod
+from dataclasses import dataclass, field
+from typing import Union
 
 from plc4py.api.messages.PlcField import PlcField
-from plc4py.api.messages.PlcResponse import (
-    PlcResponse,
-    PlcFieldResponse,
-    PlcReadResponse,
-)
+from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.utils.GenericTypes import GenericGenerator
 
-T = TypeVar("T", bound=PlcResponse)
 
-
-class PlcRequest(Generic[T], metaclass=ABCMeta):
+class PlcRequest(PlcMessage):
     """
     Base type for all messages sent from the plc4x system to a connected plc.
     """
 
-    @abstractmethod
-    def execute(self) -> Future[T]:
-        pass
 
-
-U = TypeVar("U", bound=PlcFieldResponse)
-
-
-class PlcFieldRequest(PlcRequest[U]):
-    def __init__(self, fields: list[PlcField] = []):
-        self.fields = fields
-
-    @abstractmethod
-    def execute(self) -> Future[U]:
-        pass
+@dataclass
+class PlcFieldRequest(PlcRequest):
+    fields: list[PlcField] = field(default_factory=lambda: [])
 
     @property
     def field_names(self):
         return [field.name for field in self.fields]
 
 
-V = TypeVar("V", bound=PlcReadResponse)
-
-
-class PlcReadRequest(PlcFieldRequest[V]):
+@dataclass
+class PlcReadRequest(PlcFieldRequest):
     """
     Base type for all messages sent from the plc4x system to a connected plc.
     """
-
-    def __init__(self, fields: list[PlcField] = []):
-        super().__init__(fields)
-
-    @abstractmethod
-    def execute(self) -> Future[V]:
-        pass
 
 
 class ReadRequestBuilder(GenericGenerator):

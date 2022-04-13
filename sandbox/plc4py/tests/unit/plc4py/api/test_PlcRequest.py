@@ -20,7 +20,7 @@ import pytest
 
 from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.messages.PlcRequest import (
-    PlcRequest,
+    PlcFieldRequest,
 )
 from tests.unit.plc4py.api.test.MockPlcConection import MockPlcConnection
 
@@ -32,8 +32,8 @@ async def test_read_request_builder_empty_request(mocker) -> None:
     # the connection function is supposed to support context manager
     # so using it in a with statement should result in close being called on the connection
     with connection.read_request_builder() as builder:
-        request: PlcRequest = builder.build()
-        await request.execute()
+        request: PlcFieldRequest = builder.build()
+    assert len(request.field_names) == 0
 
 
 @pytest.mark.asyncio
@@ -44,8 +44,8 @@ async def test_read_request_builder_non_empty_request(mocker) -> None:
     # so using it in a with statement should result in close being called on the connection
     with connection.read_request_builder() as builder:
         builder.add_item("1:BOOL")
-        request: PlcRequest = builder.build()
-        await request.execute()
+        request: PlcFieldRequest = builder.build()
 
     # verify that request has one field
     assert request.field_names == ["1:BOOL"]
+    assert len(request.field_names) == 1
