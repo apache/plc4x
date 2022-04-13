@@ -9,7 +9,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <properties>
-    <kotlin.version>1.6.10</kotlin.version>
+    <kotlin.version>1.6.20</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     <junit-jupiter.version>5.8.2</junit-jupiter.version>
     <plc4j.version>0.9.1</plc4j.version>
