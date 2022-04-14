@@ -389,7 +389,7 @@ public class StaticHelper {
     }
 
     public static BACnetApplicationTagObjectIdentifier createBACnetApplicationTagObjectIdentifier(int objectType, long instance) {
-        BACnetTagHeader header = new BACnetTagHeader((byte) 0xC, TagClass.APPLICATION_TAGS, (byte) 4, null, null, null, null);
+        BACnetTagHeader header = new BACnetTagHeader((byte) 0xC, TagClass.APPLICATION_TAGS, (byte) requiredLength(objectType), null, null, null, null);
         BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
         if (objectType >= 128 || !BACnetObjectType.isDefined(objectType)) {
             objectTypeEnum = BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
@@ -399,7 +399,7 @@ public class StaticHelper {
     }
 
     public static BACnetContextTagObjectIdentifier createBACnetContextTagObjectIdentifier(byte tagNum, int objectType, long instance) {
-        BACnetTagHeader header = new BACnetTagHeader(tagNum, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) 4, null, null, null, null);
+        BACnetTagHeader header = new BACnetTagHeader(tagNum, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) requiredLength(objectType), null, null, null, null);
         BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
         if (objectType >= 128 || !BACnetObjectType.isDefined(objectType)) {
             objectTypeEnum = BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
@@ -409,11 +409,11 @@ public class StaticHelper {
     }
 
     public static BACnetContextTagPropertyIdentifier createBACnetContextTagPropertyIdentifier(byte tagNum, int propertyType) {
-        BACnetTagHeader header = new BACnetTagHeader(tagNum, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) 4, null, null, null, null);
         BACnetPropertyIdentifier propertyIdentifier = BACnetPropertyIdentifier.enumForValue(propertyType);
         if (!BACnetPropertyIdentifier.isDefined(propertyType)) {
             propertyIdentifier = BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE;
         }
+        BACnetTagHeader header = new BACnetTagHeader(tagNum, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) requiredLength(propertyType), null, null, null, null);
         return new BACnetContextTagPropertyIdentifier(header, propertyIdentifier, propertyType, (short) tagNum, true, 0L);
     }
 
@@ -430,15 +430,7 @@ public class StaticHelper {
     }
 
     public static Pair<Long, BACnetTagPayloadEnumerated> CreateEnumeratedPayload(long value) {
-        long length;
-        if (value < 0x100)
-            length = 1;
-        else if (value < 0x10000)
-            length = 2;
-        else if (value < 0x1000000)
-            length = 3;
-        else
-            length = 4;
+        long length = requiredLength(value);
         byte[] data = writeVarUint(value);
         BACnetTagPayloadEnumerated payload = new BACnetTagPayloadEnumerated(data, length);
         return Pair.of(length, payload);
@@ -518,4 +510,16 @@ public class StaticHelper {
         return Pair.of(length, payload);
     }
 
+    private static long requiredLength(long value) {
+        long length;
+        if (value < 0x100)
+            length = 1;
+        else if (value < 0x10000)
+            length = 2;
+        else if (value < 0x1000000)
+            length = 3;
+        else
+            length = 4;
+        return length;
+    }
 }

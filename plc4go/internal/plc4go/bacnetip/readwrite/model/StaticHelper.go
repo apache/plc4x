@@ -349,7 +349,7 @@ func CreateBACnetTagHeaderBalanced(isContext bool, id uint8, value uint32) *BACn
 }
 
 func CreateBACnetApplicationTagObjectIdentifier(objectType uint16, instance uint32) *BACnetApplicationTagObjectIdentifier {
-	header := NewBACnetTagHeader(0xC, TagClass_APPLICATION_TAGS, 4, nil, nil, nil, nil)
+	header := NewBACnetTagHeader(0xC, TagClass_APPLICATION_TAGS, uint8(requiredLength(uint(objectType))), nil, nil, nil, nil)
 	objectTypeEnum := BACnetObjectTypeByValue(objectType)
 	if objectType >= 128 || !BACnetObjectTypeKnows(objectType) {
 		objectTypeEnum = BACnetObjectType_VENDOR_PROPRIETARY_VALUE
@@ -360,7 +360,7 @@ func CreateBACnetApplicationTagObjectIdentifier(objectType uint16, instance uint
 }
 
 func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, instance uint32) *BACnetContextTagObjectIdentifier {
-	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, 4, nil, nil, nil, nil)
+	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(requiredLength(uint(objectType))), nil, nil, nil, nil)
 	objectTypeEnum := BACnetObjectTypeByValue(objectType)
 	if objectType >= 128 {
 		objectTypeEnum = BACnetObjectType_VENDOR_PROPRIETARY_VALUE
@@ -371,7 +371,7 @@ func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, ins
 }
 
 func CreateBACnetContextTagPropertyIdentifier(tagNum uint8, propertyType uint32) *BACnetContextTagPropertyIdentifier {
-	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, 4, nil, nil, nil, nil)
+	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(requiredLength(uint(propertyType))), nil, nil, nil, nil)
 	propertyTypeEnum := BACnetPropertyIdentifierByValue(propertyType)
 	if !BACnetPropertyIdentifierKnows(propertyType) {
 		propertyTypeEnum = BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE
@@ -395,17 +395,7 @@ func CreateBACnetContextTagEnumerated(tagNumber uint8, value uint32) *BACnetCont
 }
 
 func CreateEnumeratedPayload(value uint32) (uint32, *BACnetTagPayloadEnumerated) {
-	var length uint32
-	switch {
-	case value < 0x100:
-		length = 1
-	case value < 0x10000:
-		length = 2
-	case value < 0x1000000:
-		length = 3
-	default:
-		length = 4
-	}
+	length := requiredLength(uint(value))
 	data := WriteVarUint(value)
 	payload := NewBACnetTagPayloadEnumerated(data, length)
 	return length, payload
@@ -495,4 +485,19 @@ func CreateSignedPayload(value int32) (uint32, *BACnetTagPayloadSignedInteger) {
 	}
 	payload := NewBACnetTagPayloadSignedInteger(valueInt8, valueInt16, valueInt24, valueInt32, nil, nil, nil, nil, length)
 	return length, payload
+}
+
+func requiredLength(value uint) uint32 {
+	var length uint32
+	switch {
+	case value < 0x100:
+		length = 1
+	case value < 0x10000:
+		length = 2
+	case value < 0x1000000:
+		length = 3
+	default:
+		length = 4
+	}
+	return length
 }

@@ -4694,6 +4694,74 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map["Struct"] = values.NewPlcUSINT(buildingMode)
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcStruct(_map), nil
+	case datapointType == KnxDatapointType_DPT_StatusLightingActuator: // Struct
+		// Struct
+		_map := map[string]api.PlcValue{}
+
+		// Simple Field (validactualvalue)
+		validactualvalue, _validactualvalueErr := readBuffer.ReadBit("validactualvalue")
+		if _validactualvalueErr != nil {
+			return nil, errors.Wrap(_validactualvalueErr, "Error parsing 'validactualvalue' field")
+		}
+		_map["Struct"] = values.NewPlcBOOL(validactualvalue)
+
+		// Simple Field (locked)
+		locked, _lockedErr := readBuffer.ReadBit("locked")
+		if _lockedErr != nil {
+			return nil, errors.Wrap(_lockedErr, "Error parsing 'locked' field")
+		}
+		_map["Struct"] = values.NewPlcBOOL(locked)
+
+		// Simple Field (forced)
+		forced, _forcedErr := readBuffer.ReadBit("forced")
+		if _forcedErr != nil {
+			return nil, errors.Wrap(_forcedErr, "Error parsing 'forced' field")
+		}
+		_map["Struct"] = values.NewPlcBOOL(forced)
+
+		// Simple Field (nightmodeactive)
+		nightmodeactive, _nightmodeactiveErr := readBuffer.ReadBit("nightmodeactive")
+		if _nightmodeactiveErr != nil {
+			return nil, errors.Wrap(_nightmodeactiveErr, "Error parsing 'nightmodeactive' field")
+		}
+		_map["Struct"] = values.NewPlcBOOL(nightmodeactive)
+
+		// Simple Field (staircaselightingFunction)
+		staircaselightingFunction, _staircaselightingFunctionErr := readBuffer.ReadBit("staircaselightingFunction")
+		if _staircaselightingFunctionErr != nil {
+			return nil, errors.Wrap(_staircaselightingFunctionErr, "Error parsing 'staircaselightingFunction' field")
+		}
+		_map["Struct"] = values.NewPlcBOOL(staircaselightingFunction)
+
+		// Simple Field (dimming)
+		dimming, _dimmingErr := readBuffer.ReadBit("dimming")
+		if _dimmingErr != nil {
+			return nil, errors.Wrap(_dimmingErr, "Error parsing 'dimming' field")
+		}
+		_map["Struct"] = values.NewPlcBOOL(dimming)
+
+		// Simple Field (localoverride)
+		localoverride, _localoverrideErr := readBuffer.ReadBit("localoverride")
+		if _localoverrideErr != nil {
+			return nil, errors.Wrap(_localoverrideErr, "Error parsing 'localoverride' field")
+		}
+		_map["Struct"] = values.NewPlcBOOL(localoverride)
+
+		// Simple Field (failure)
+		failure, _failureErr := readBuffer.ReadBit("failure")
+		if _failureErr != nil {
+			return nil, errors.Wrap(_failureErr, "Error parsing 'failure' field")
+		}
+		_map["Struct"] = values.NewPlcBOOL(failure)
+
+		// Simple Field (actualvalue)
+		actualvalue, _actualvalueErr := readBuffer.ReadUint8("actualvalue", 8)
+		if _actualvalueErr != nil {
+			return nil, errors.Wrap(_actualvalueErr, "Error parsing 'actualvalue' field")
+		}
+		_map["Struct"] = values.NewPlcUSINT(actualvalue)
+		readBuffer.CloseContext("KnxDatapoint")
+		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Version: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
@@ -9080,6 +9148,51 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 		// Simple Field (buildingMode)
 		if _err := writeBuffer.WriteUint8("buildingMode", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'buildingMode' field")
+		}
+	case datapointType == KnxDatapointType_DPT_StatusLightingActuator: // Struct
+		// Simple Field (validactualvalue)
+		if _err := writeBuffer.WriteBit("validactualvalue", value.GetBool()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'validactualvalue' field")
+		}
+
+		// Simple Field (locked)
+		if _err := writeBuffer.WriteBit("locked", value.GetBool()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'locked' field")
+		}
+
+		// Simple Field (forced)
+		if _err := writeBuffer.WriteBit("forced", value.GetBool()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'forced' field")
+		}
+
+		// Simple Field (nightmodeactive)
+		if _err := writeBuffer.WriteBit("nightmodeactive", value.GetBool()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'nightmodeactive' field")
+		}
+
+		// Simple Field (staircaselightingFunction)
+		if _err := writeBuffer.WriteBit("staircaselightingFunction", value.GetBool()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'staircaselightingFunction' field")
+		}
+
+		// Simple Field (dimming)
+		if _err := writeBuffer.WriteBit("dimming", value.GetBool()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'dimming' field")
+		}
+
+		// Simple Field (localoverride)
+		if _err := writeBuffer.WriteBit("localoverride", value.GetBool()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'localoverride' field")
+		}
+
+		// Simple Field (failure)
+		if _err := writeBuffer.WriteBit("failure", value.GetBool()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'failure' field")
+		}
+
+		// Simple Field (actualvalue)
+		if _err := writeBuffer.WriteUint8("actualvalue", 8, value.GetUint8()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'actualvalue' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Version: // Struct
 		// Simple Field (magicNumber)

@@ -356,34 +356,35 @@ const (
 	KnxDatapointType_DPT_DHWModeNext                              KnxDatapointType = 317
 	KnxDatapointType_DPT_OccModeNext                              KnxDatapointType = 318
 	KnxDatapointType_DPT_BuildingModeNext                         KnxDatapointType = 319
-	KnxDatapointType_DPT_Version                                  KnxDatapointType = 320
-	KnxDatapointType_DPT_AlarmInfo                                KnxDatapointType = 321
-	KnxDatapointType_DPT_TempRoomSetpSetF16_3                     KnxDatapointType = 322
-	KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3                KnxDatapointType = 323
-	KnxDatapointType_DPT_Scaling_Speed                            KnxDatapointType = 324
-	KnxDatapointType_DPT_Scaling_Step_Time                        KnxDatapointType = 325
-	KnxDatapointType_DPT_MeteringValue                            KnxDatapointType = 326
-	KnxDatapointType_DPT_MBus_Address                             KnxDatapointType = 327
-	KnxDatapointType_DPT_Colour_RGB                               KnxDatapointType = 328
-	KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII                 KnxDatapointType = 329
-	KnxDatapointType_DPT_Tariff_ActiveEnergy                      KnxDatapointType = 330
-	KnxDatapointType_DPT_Prioritised_Mode_Control                 KnxDatapointType = 331
-	KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic             KnxDatapointType = 332
-	KnxDatapointType_DPT_DALI_Diagnostics                         KnxDatapointType = 333
-	KnxDatapointType_DPT_CombinedPosition                         KnxDatapointType = 334
-	KnxDatapointType_DPT_StatusSAB                                KnxDatapointType = 335
-	KnxDatapointType_DPT_Colour_xyY                               KnxDatapointType = 336
-	KnxDatapointType_DPT_Converter_Status                         KnxDatapointType = 337
-	KnxDatapointType_DPT_Converter_Test_Result                    KnxDatapointType = 338
-	KnxDatapointType_DPT_Battery_Info                             KnxDatapointType = 339
-	KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition KnxDatapointType = 340
-	KnxDatapointType_DPT_Brightness_Colour_Temperature_Control    KnxDatapointType = 341
-	KnxDatapointType_DPT_Colour_RGBW                              KnxDatapointType = 342
-	KnxDatapointType_DPT_Relative_Control_RGBW                    KnxDatapointType = 343
-	KnxDatapointType_DPT_Relative_Control_RGB                     KnxDatapointType = 344
-	KnxDatapointType_DPT_GeographicalLocation                     KnxDatapointType = 345
-	KnxDatapointType_DPT_TempRoomSetpSetF16_4                     KnxDatapointType = 346
-	KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4                KnxDatapointType = 347
+	KnxDatapointType_DPT_StatusLightingActuator                   KnxDatapointType = 320
+	KnxDatapointType_DPT_Version                                  KnxDatapointType = 321
+	KnxDatapointType_DPT_AlarmInfo                                KnxDatapointType = 322
+	KnxDatapointType_DPT_TempRoomSetpSetF16_3                     KnxDatapointType = 323
+	KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3                KnxDatapointType = 324
+	KnxDatapointType_DPT_Scaling_Speed                            KnxDatapointType = 325
+	KnxDatapointType_DPT_Scaling_Step_Time                        KnxDatapointType = 326
+	KnxDatapointType_DPT_MeteringValue                            KnxDatapointType = 327
+	KnxDatapointType_DPT_MBus_Address                             KnxDatapointType = 328
+	KnxDatapointType_DPT_Colour_RGB                               KnxDatapointType = 329
+	KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII                 KnxDatapointType = 330
+	KnxDatapointType_DPT_Tariff_ActiveEnergy                      KnxDatapointType = 331
+	KnxDatapointType_DPT_Prioritised_Mode_Control                 KnxDatapointType = 332
+	KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic             KnxDatapointType = 333
+	KnxDatapointType_DPT_DALI_Diagnostics                         KnxDatapointType = 334
+	KnxDatapointType_DPT_CombinedPosition                         KnxDatapointType = 335
+	KnxDatapointType_DPT_StatusSAB                                KnxDatapointType = 336
+	KnxDatapointType_DPT_Colour_xyY                               KnxDatapointType = 337
+	KnxDatapointType_DPT_Converter_Status                         KnxDatapointType = 338
+	KnxDatapointType_DPT_Converter_Test_Result                    KnxDatapointType = 339
+	KnxDatapointType_DPT_Battery_Info                             KnxDatapointType = 340
+	KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition KnxDatapointType = 341
+	KnxDatapointType_DPT_Brightness_Colour_Temperature_Control    KnxDatapointType = 342
+	KnxDatapointType_DPT_Colour_RGBW                              KnxDatapointType = 343
+	KnxDatapointType_DPT_Relative_Control_RGBW                    KnxDatapointType = 344
+	KnxDatapointType_DPT_Relative_Control_RGB                     KnxDatapointType = 345
+	KnxDatapointType_DPT_GeographicalLocation                     KnxDatapointType = 346
+	KnxDatapointType_DPT_TempRoomSetpSetF16_4                     KnxDatapointType = 347
+	KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4                KnxDatapointType = 348
 )
 
 var KnxDatapointTypeValues []KnxDatapointType
@@ -711,6 +712,7 @@ func init() {
 		KnxDatapointType_DPT_DHWModeNext,
 		KnxDatapointType_DPT_OccModeNext,
 		KnxDatapointType_DPT_BuildingModeNext,
+		KnxDatapointType_DPT_StatusLightingActuator,
 		KnxDatapointType_DPT_Version,
 		KnxDatapointType_DPT_AlarmInfo,
 		KnxDatapointType_DPT_TempRoomSetpSetF16_3,
@@ -1734,7 +1736,7 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 320:
 		{ /* '320' */
-			return 1
+			return 600
 		}
 	case 321:
 		{ /* '321' */
@@ -1742,35 +1744,35 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 322:
 		{ /* '322' */
-			return 100
+			return 1
 		}
 	case 323:
 		{ /* '323' */
-			return 101
+			return 100
 		}
 	case 324:
 		{ /* '324' */
-			return 1
+			return 101
 		}
 	case 325:
 		{ /* '325' */
-			return 2
+			return 1
 		}
 	case 326:
 		{ /* '326' */
-			return 1
+			return 2
 		}
 	case 327:
 		{ /* '327' */
-			return 1000
+			return 1
 		}
 	case 328:
 		{ /* '328' */
-			return 600
+			return 1000
 		}
 	case 329:
 		{ /* '329' */
-			return 1
+			return 600
 		}
 	case 33:
 		{ /* '33' */
@@ -1786,7 +1788,7 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 332:
 		{ /* '332' */
-			return 600
+			return 1
 		}
 	case 333:
 		{ /* '333' */
@@ -1794,7 +1796,7 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 334:
 		{ /* '334' */
-			return 800
+			return 600
 		}
 	case 335:
 		{ /* '335' */
@@ -1802,7 +1804,7 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 336:
 		{ /* '336' */
-			return 600
+			return 800
 		}
 	case 337:
 		{ /* '337' */
@@ -1842,14 +1844,18 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 345:
 		{ /* '345' */
-			return 1
+			return 600
 		}
 	case 346:
 		{ /* '346' */
-			return 100
+			return 1
 		}
 	case 347:
 		{ /* '347' */
+			return 100
+		}
+	case 348:
+		{ /* '348' */
 			return 101
 		}
 	case 35:
@@ -3144,43 +3150,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 320:
 		{ /* '320' */
-			return "DPT version"
+			return "Status Lighting Actuator"
 		}
 	case 321:
 		{ /* '321' */
-			return "alarm info"
+			return "DPT version"
 		}
 	case 322:
 		{ /* '322' */
-			return "room temperature setpoint"
+			return "alarm info"
 		}
 	case 323:
 		{ /* '323' */
-			return "room temperature setpoint shift"
+			return "room temperature setpoint"
 		}
 	case 324:
 		{ /* '324' */
-			return "scaling speed"
+			return "room temperature setpoint shift"
 		}
 	case 325:
 		{ /* '325' */
-			return "scaling step time"
+			return "scaling speed"
 		}
 	case 326:
 		{ /* '326' */
-			return "metering value (value,encoding,cmd)"
+			return "scaling step time"
 		}
 	case 327:
 		{ /* '327' */
-			return "MBus address"
+			return "metering value (value,encoding,cmd)"
 		}
 	case 328:
 		{ /* '328' */
-			return "RGB value 3x(0..255)"
+			return "MBus address"
 		}
 	case 329:
 		{ /* '329' */
-			return "language code (ASCII)"
+			return "RGB value 3x(0..255)"
 		}
 	case 33:
 		{ /* '33' */
@@ -3188,15 +3194,15 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 330:
 		{ /* '330' */
-			return "electrical energy with tariff"
+			return "language code (ASCII)"
 		}
 	case 331:
 		{ /* '331' */
-			return "priority control"
+			return "electrical energy with tariff"
 		}
 	case 332:
 		{ /* '332' */
-			return "diagnostic value"
+			return "priority control"
 		}
 	case 333:
 		{ /* '333' */
@@ -3204,27 +3210,27 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 334:
 		{ /* '334' */
-			return "combined position"
+			return "diagnostic value"
 		}
 	case 335:
 		{ /* '335' */
-			return "status sunblind & shutter actuator"
+			return "combined position"
 		}
 	case 336:
 		{ /* '336' */
-			return "colour xyY"
+			return "status sunblind & shutter actuator"
 		}
 	case 337:
 		{ /* '337' */
-			return "DALI converter status"
+			return "colour xyY"
 		}
 	case 338:
 		{ /* '338' */
-			return "DALI converter test result"
+			return "DALI converter status"
 		}
 	case 339:
 		{ /* '339' */
-			return "Battery Information"
+			return "DALI converter test result"
 		}
 	case 34:
 		{ /* '34' */
@@ -3232,34 +3238,38 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 340:
 		{ /* '340' */
-			return "brightness colour temperature transition"
+			return "Battery Information"
 		}
 	case 341:
 		{ /* '341' */
-			return "brightness colour temperature control"
+			return "brightness colour temperature transition"
 		}
 	case 342:
 		{ /* '342' */
-			return "RGBW value 4x(0..100%)"
+			return "brightness colour temperature control"
 		}
 	case 343:
 		{ /* '343' */
-			return "RGBW relative control"
+			return "RGBW value 4x(0..100%)"
 		}
 	case 344:
 		{ /* '344' */
-			return "RGB relative control"
+			return "RGBW relative control"
 		}
 	case 345:
 		{ /* '345' */
-			return "geographical location (longitude and latitude) expressed in degrees"
+			return "RGB relative control"
 		}
 	case 346:
 		{ /* '346' */
-			return "Temperature setpoint setting for 4 HVAC Modes"
+			return "geographical location (longitude and latitude) expressed in degrees"
 		}
 	case 347:
 		{ /* '347' */
+			return "Temperature setpoint setting for 4 HVAC Modes"
+		}
+	case 348:
+		{ /* '348' */
 			return "Temperature setpoint shift setting for 4 HVAC Modes"
 		}
 	case 35:
@@ -4554,15 +4564,15 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 320:
 		{ /* '320' */
-			return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION
+			return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
 		}
 	case 321:
 		{ /* '321' */
-			return KnxDatapointMainType_DPT_ALARM_INFO
+			return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION
 		}
 	case 322:
 		{ /* '322' */
-			return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE
+			return KnxDatapointMainType_DPT_ALARM_INFO
 		}
 	case 323:
 		{ /* '323' */
@@ -4570,7 +4580,7 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 324:
 		{ /* '324' */
-			return KnxDatapointMainType_DPT_SCALING_SPEED
+			return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE
 		}
 	case 325:
 		{ /* '325' */
@@ -4578,19 +4588,19 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 326:
 		{ /* '326' */
-			return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
+			return KnxDatapointMainType_DPT_SCALING_SPEED
 		}
 	case 327:
 		{ /* '327' */
-			return KnxDatapointMainType_DPT_MBUS_ADDRESS
+			return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
 		}
 	case 328:
 		{ /* '328' */
-			return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB
+			return KnxDatapointMainType_DPT_MBUS_ADDRESS
 		}
 	case 329:
 		{ /* '329' */
-			return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1
+			return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB
 		}
 	case 33:
 		{ /* '33' */
@@ -4598,43 +4608,43 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 330:
 		{ /* '330' */
-			return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
+			return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1
 		}
 	case 331:
 		{ /* '331' */
-			return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL
+			return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
 		}
 	case 332:
 		{ /* '332' */
-			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
+			return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL
 		}
 	case 333:
 		{ /* '333' */
-			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
+			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
 		}
 	case 334:
 		{ /* '334' */
-			return KnxDatapointMainType_DPT_POSITIONS
+			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
 		}
 	case 335:
 		{ /* '335' */
-			return KnxDatapointMainType_DPT_STATUS_32_BIT
+			return KnxDatapointMainType_DPT_POSITIONS
 		}
 	case 336:
 		{ /* '336' */
-			return KnxDatapointMainType_DPT_STATUS_48_BIT
+			return KnxDatapointMainType_DPT_STATUS_32_BIT
 		}
 	case 337:
 		{ /* '337' */
-			return KnxDatapointMainType_DPT_CONVERTER_STATUS
+			return KnxDatapointMainType_DPT_STATUS_48_BIT
 		}
 	case 338:
 		{ /* '338' */
-			return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT
+			return KnxDatapointMainType_DPT_CONVERTER_STATUS
 		}
 	case 339:
 		{ /* '339' */
-			return KnxDatapointMainType_DPT_BATTERY_INFORMATION
+			return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT
 		}
 	case 34:
 		{ /* '34' */
@@ -4642,34 +4652,38 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 340:
 		{ /* '340' */
-			return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
+			return KnxDatapointMainType_DPT_BATTERY_INFORMATION
 		}
 	case 341:
 		{ /* '341' */
-			return KnxDatapointMainType_DPT_STATUS_24_BIT
+			return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
 		}
 	case 342:
 		{ /* '342' */
-			return KnxDatapointMainType_DPT_COLOUR_RGBW
+			return KnxDatapointMainType_DPT_STATUS_24_BIT
 		}
 	case 343:
 		{ /* '343' */
-			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW
+			return KnxDatapointMainType_DPT_COLOUR_RGBW
 		}
 	case 344:
 		{ /* '344' */
-			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB
+			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW
 		}
 	case 345:
 		{ /* '345' */
-			return KnxDatapointMainType_DPT_F32F32
+			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB
 		}
 	case 346:
 		{ /* '346' */
-			return KnxDatapointMainType_DPT_F16F16F16F16
+			return KnxDatapointMainType_DPT_F32F32
 		}
 	case 347:
 		{ /* '347' */
+			return KnxDatapointMainType_DPT_F16F16F16F16
+		}
+	case 348:
+		{ /* '348' */
 			return KnxDatapointMainType_DPT_F16F16F16F16
 		}
 	case 35:
@@ -5468,64 +5482,66 @@ func KnxDatapointTypeByValue(value uint32) KnxDatapointType {
 	case 32:
 		return KnxDatapointType_DPT_BinaryValue
 	case 320:
-		return KnxDatapointType_DPT_Version
+		return KnxDatapointType_DPT_StatusLightingActuator
 	case 321:
-		return KnxDatapointType_DPT_AlarmInfo
+		return KnxDatapointType_DPT_Version
 	case 322:
-		return KnxDatapointType_DPT_TempRoomSetpSetF16_3
+		return KnxDatapointType_DPT_AlarmInfo
 	case 323:
-		return KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3
+		return KnxDatapointType_DPT_TempRoomSetpSetF16_3
 	case 324:
-		return KnxDatapointType_DPT_Scaling_Speed
+		return KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3
 	case 325:
-		return KnxDatapointType_DPT_Scaling_Step_Time
+		return KnxDatapointType_DPT_Scaling_Speed
 	case 326:
-		return KnxDatapointType_DPT_MeteringValue
+		return KnxDatapointType_DPT_Scaling_Step_Time
 	case 327:
-		return KnxDatapointType_DPT_MBus_Address
+		return KnxDatapointType_DPT_MeteringValue
 	case 328:
-		return KnxDatapointType_DPT_Colour_RGB
+		return KnxDatapointType_DPT_MBus_Address
 	case 329:
-		return KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII
+		return KnxDatapointType_DPT_Colour_RGB
 	case 33:
 		return KnxDatapointType_DPT_Step
 	case 330:
-		return KnxDatapointType_DPT_Tariff_ActiveEnergy
+		return KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII
 	case 331:
-		return KnxDatapointType_DPT_Prioritised_Mode_Control
+		return KnxDatapointType_DPT_Tariff_ActiveEnergy
 	case 332:
-		return KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic
+		return KnxDatapointType_DPT_Prioritised_Mode_Control
 	case 333:
-		return KnxDatapointType_DPT_DALI_Diagnostics
+		return KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic
 	case 334:
-		return KnxDatapointType_DPT_CombinedPosition
+		return KnxDatapointType_DPT_DALI_Diagnostics
 	case 335:
-		return KnxDatapointType_DPT_StatusSAB
+		return KnxDatapointType_DPT_CombinedPosition
 	case 336:
-		return KnxDatapointType_DPT_Colour_xyY
+		return KnxDatapointType_DPT_StatusSAB
 	case 337:
-		return KnxDatapointType_DPT_Converter_Status
+		return KnxDatapointType_DPT_Colour_xyY
 	case 338:
-		return KnxDatapointType_DPT_Converter_Test_Result
+		return KnxDatapointType_DPT_Converter_Status
 	case 339:
-		return KnxDatapointType_DPT_Battery_Info
+		return KnxDatapointType_DPT_Converter_Test_Result
 	case 34:
 		return KnxDatapointType_DPT_UpDown
 	case 340:
-		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition
+		return KnxDatapointType_DPT_Battery_Info
 	case 341:
-		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Control
+		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition
 	case 342:
-		return KnxDatapointType_DPT_Colour_RGBW
+		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Control
 	case 343:
-		return KnxDatapointType_DPT_Relative_Control_RGBW
+		return KnxDatapointType_DPT_Colour_RGBW
 	case 344:
-		return KnxDatapointType_DPT_Relative_Control_RGB
+		return KnxDatapointType_DPT_Relative_Control_RGBW
 	case 345:
-		return KnxDatapointType_DPT_GeographicalLocation
+		return KnxDatapointType_DPT_Relative_Control_RGB
 	case 346:
-		return KnxDatapointType_DPT_TempRoomSetpSetF16_4
+		return KnxDatapointType_DPT_GeographicalLocation
 	case 347:
+		return KnxDatapointType_DPT_TempRoomSetpSetF16_4
+	case 348:
 		return KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4
 	case 35:
 		return KnxDatapointType_DPT_OpenClose
@@ -6169,6 +6185,8 @@ func KnxDatapointTypeByName(value string) KnxDatapointType {
 		return KnxDatapointType_DPT_BuildingModeNext
 	case "DPT_BinaryValue":
 		return KnxDatapointType_DPT_BinaryValue
+	case "DPT_StatusLightingActuator":
+		return KnxDatapointType_DPT_StatusLightingActuator
 	case "DPT_Version":
 		return KnxDatapointType_DPT_Version
 	case "DPT_AlarmInfo":
@@ -6187,10 +6205,10 @@ func KnxDatapointTypeByName(value string) KnxDatapointType {
 		return KnxDatapointType_DPT_MBus_Address
 	case "DPT_Colour_RGB":
 		return KnxDatapointType_DPT_Colour_RGB
-	case "DPT_LanguageCodeAlpha2_ASCII":
-		return KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII
 	case "DPT_Step":
 		return KnxDatapointType_DPT_Step
+	case "DPT_LanguageCodeAlpha2_ASCII":
+		return KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII
 	case "DPT_Tariff_ActiveEnergy":
 		return KnxDatapointType_DPT_Tariff_ActiveEnergy
 	case "DPT_Prioritised_Mode_Control":
@@ -6209,10 +6227,10 @@ func KnxDatapointTypeByName(value string) KnxDatapointType {
 		return KnxDatapointType_DPT_Converter_Status
 	case "DPT_Converter_Test_Result":
 		return KnxDatapointType_DPT_Converter_Test_Result
-	case "DPT_Battery_Info":
-		return KnxDatapointType_DPT_Battery_Info
 	case "DPT_UpDown":
 		return KnxDatapointType_DPT_UpDown
+	case "DPT_Battery_Info":
+		return KnxDatapointType_DPT_Battery_Info
 	case "DPT_Brightness_Colour_Temperature_Transition":
 		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition
 	case "DPT_Brightness_Colour_Temperature_Control":
@@ -6910,6 +6928,8 @@ func (e KnxDatapointType) name() string {
 		return "DPT_BuildingModeNext"
 	case KnxDatapointType_DPT_BinaryValue:
 		return "DPT_BinaryValue"
+	case KnxDatapointType_DPT_StatusLightingActuator:
+		return "DPT_StatusLightingActuator"
 	case KnxDatapointType_DPT_Version:
 		return "DPT_Version"
 	case KnxDatapointType_DPT_AlarmInfo:
@@ -6928,10 +6948,10 @@ func (e KnxDatapointType) name() string {
 		return "DPT_MBus_Address"
 	case KnxDatapointType_DPT_Colour_RGB:
 		return "DPT_Colour_RGB"
-	case KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII:
-		return "DPT_LanguageCodeAlpha2_ASCII"
 	case KnxDatapointType_DPT_Step:
 		return "DPT_Step"
+	case KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII:
+		return "DPT_LanguageCodeAlpha2_ASCII"
 	case KnxDatapointType_DPT_Tariff_ActiveEnergy:
 		return "DPT_Tariff_ActiveEnergy"
 	case KnxDatapointType_DPT_Prioritised_Mode_Control:
@@ -6950,10 +6970,10 @@ func (e KnxDatapointType) name() string {
 		return "DPT_Converter_Status"
 	case KnxDatapointType_DPT_Converter_Test_Result:
 		return "DPT_Converter_Test_Result"
-	case KnxDatapointType_DPT_Battery_Info:
-		return "DPT_Battery_Info"
 	case KnxDatapointType_DPT_UpDown:
 		return "DPT_UpDown"
+	case KnxDatapointType_DPT_Battery_Info:
+		return "DPT_Battery_Info"
 	case KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition:
 		return "DPT_Brightness_Colour_Temperature_Transition"
 	case KnxDatapointType_DPT_Brightness_Colour_Temperature_Control:
