@@ -389,7 +389,7 @@ public class StaticHelper {
     }
 
     public static BACnetApplicationTagObjectIdentifier createBACnetApplicationTagObjectIdentifier(int objectType, long instance) {
-        BACnetTagHeader header = new BACnetTagHeader((byte) 0xC, TagClass.APPLICATION_TAGS, (byte) requiredLength(objectType), null, null, null, null);
+        BACnetTagHeader header = new BACnetTagHeader((byte) 0xC, TagClass.APPLICATION_TAGS, (byte) 4, null, null, null, null);
         BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
         if (objectType >= 128 || !BACnetObjectType.isDefined(objectType)) {
             objectTypeEnum = BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
@@ -399,7 +399,7 @@ public class StaticHelper {
     }
 
     public static BACnetContextTagObjectIdentifier createBACnetContextTagObjectIdentifier(byte tagNum, int objectType, long instance) {
-        BACnetTagHeader header = new BACnetTagHeader(tagNum, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) requiredLength(objectType), null, null, null, null);
+        BACnetTagHeader header = new BACnetTagHeader(tagNum, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) 4, null, null, null, null);
         BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
         if (objectType >= 128 || !BACnetObjectType.isDefined(objectType)) {
             objectTypeEnum = BACnetObjectType.VENDOR_PROPRIETARY_VALUE;

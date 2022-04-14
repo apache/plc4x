@@ -349,7 +349,7 @@ func CreateBACnetTagHeaderBalanced(isContext bool, id uint8, value uint32) *BACn
 }
 
 func CreateBACnetApplicationTagObjectIdentifier(objectType uint16, instance uint32) *BACnetApplicationTagObjectIdentifier {
-	header := NewBACnetTagHeader(0xC, TagClass_APPLICATION_TAGS, uint8(requiredLength(uint(objectType))), nil, nil, nil, nil)
+	header := NewBACnetTagHeader(0xC, TagClass_APPLICATION_TAGS, uint8(4), nil, nil, nil, nil)
 	objectTypeEnum := BACnetObjectTypeByValue(objectType)
 	if objectType >= 128 || !BACnetObjectTypeKnows(objectType) {
 		objectTypeEnum = BACnetObjectType_VENDOR_PROPRIETARY_VALUE
@@ -360,7 +360,7 @@ func CreateBACnetApplicationTagObjectIdentifier(objectType uint16, instance uint
 }
 
 func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, instance uint32) *BACnetContextTagObjectIdentifier {
-	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(requiredLength(uint(objectType))), nil, nil, nil, nil)
+	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(4), nil, nil, nil, nil)
 	objectTypeEnum := BACnetObjectTypeByValue(objectType)
 	if objectType >= 128 {
 		objectTypeEnum = BACnetObjectType_VENDOR_PROPRIETARY_VALUE
