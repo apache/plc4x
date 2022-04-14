@@ -408,6 +408,15 @@ public class StaticHelper {
         return new BACnetContextTagObjectIdentifier(header, payload, (short) tagNum, true);
     }
 
+    public static BACnetContextTagPropertyIdentifier createBACnetContextTagPropertyIdentifier(byte tagNum, int propertyType) {
+        BACnetTagHeader header = new BACnetTagHeader(tagNum, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) 4, null, null, null, null);
+        BACnetPropertyIdentifier propertyIdentifier = BACnetPropertyIdentifier.enumForValue(propertyType);
+        if (!BACnetPropertyIdentifier.isDefined(propertyType)) {
+            propertyIdentifier = BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE;
+        }
+        return new BACnetContextTagPropertyIdentifier(header, propertyIdentifier, propertyType, (short) tagNum, true, 0L);
+    }
+
     public static BACnetApplicationTagEnumerated createBACnetApplicationTagEnumerated(long value) {
         Pair<Long, BACnetTagPayloadEnumerated> lengthPayload = CreateEnumeratedPayload(value);
         BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 0x9, lengthPayload.getLeft());

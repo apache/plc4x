@@ -370,6 +370,16 @@ func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, ins
 	return CastBACnetContextTagObjectIdentifier(result)
 }
 
+func CreateBACnetContextTagPropertyIdentifier(tagNum uint8, propertyType uint32) *BACnetContextTagPropertyIdentifier {
+	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, 4, nil, nil, nil, nil)
+	propertyTypeEnum := BACnetPropertyIdentifierByValue(propertyType)
+	if !BACnetPropertyIdentifierKnows(propertyType) {
+		propertyTypeEnum = BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE
+	}
+	result := NewBACnetContextTagPropertyIdentifier(propertyTypeEnum, propertyType, header, tagNum, true, 0)
+	return CastBACnetContextTagPropertyIdentifier(result)
+}
+
 func CreateBACnetApplicationTagEnumerated(value uint32) *BACnetApplicationTagEnumerated {
 	length, payload := CreateEnumeratedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(false, 0x9, length)
