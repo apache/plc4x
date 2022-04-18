@@ -333,6 +333,37 @@ def checkPython() {
     }
 }
 
+def checkPoetry(boolean isWin) {
+    print "Detecting Poetry version:  "
+    try {
+        def process
+        if (isWin) {
+            process = ("poetry.bat --version").execute()
+        } else {
+            process = ("poetry --version").execute()
+        }
+
+        def stdOut = new StringBuilder()
+        def stdErr = new StringBuilder()
+        process.consumeProcessOutput(stdOut, stdErr)
+        process.waitForOrKill(500)
+        Matcher matcher = extractVersion(stdOut + stdErr)
+        if (matcher.size() > 0) {
+            def curVersion = matcher[0][1]
+            def result = checkVersionAtLeast(curVersion, "1.0.0")
+            if (!result) {
+                allConditionsMet = false
+            }
+        } else {
+            println "missing (Please install at least version 3.6.0)"
+            allConditionsMet = false
+        }
+    } catch (Exception e) {
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
 def checkSetupTools() {
     print "Detecting setuptools:      "
     try {
@@ -513,7 +544,7 @@ println ""
 
 // - Windows:
 //     - Check the length of the path of the base dir as we're having issues with the length of paths being too long.
-if (os == "win") {
+if (os == "windows") {
     File pomFile = project.model.pomFile
     if (pomFile.absolutePath.length() > 100) {
         println "On Windows we encounter problems with maximum path lengths. " +
@@ -562,11 +593,12 @@ if (cppEnabled) {
 
 if (pythonEnabled) {
     checkPython()
+    checkPoetry(os == "windows")
     checkSetupTools()
 }
 
 // Boost needs the visual-studio `cl` compiler to compile the boostrap.
-if (boostEnabled && (os == "win")) {
+if (boostEnabled && (os == "windows")) {
     // TODO: checkVisualStudio()
 }
 
@@ -588,7 +620,7 @@ if (apacheReleaseEnabled) {
     // TODO: Check libpcap is installed
 }
 
-if (cppEnabled && (os == "win")) {
+if (cppEnabled && (os == "windows")) {
     print "Unfortunately currently we don't support building the 'with-cpp' profile on windows. This will definitely change in the future."
     allConditionsMet = false
 }
