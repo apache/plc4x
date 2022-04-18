@@ -59,7 +59,7 @@ typedef enum plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist;
 // Get an empty NULL-struct
 plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_null();
 
-plc4c_return_code plc4c_s7_read_write_szl_sublist_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_szl_sublist** message);
+plc4c_return_code plc4c_s7_read_write_szl_sublist_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_szl_sublist* message);
 
 plc4c_return_code plc4c_s7_read_write_szl_sublist_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_szl_sublist* message);
 

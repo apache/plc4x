@@ -31,16 +31,10 @@ plc4c_modbus_read_write_driver_type plc4c_modbus_read_write_driver_type_null() {
 }
 
 // Parse function.
-plc4c_return_code plc4c_modbus_read_write_driver_type_parse(plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_driver_type** _message) {
+plc4c_return_code plc4c_modbus_read_write_driver_type_parse(plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_driver_type* _message) {
     plc4c_return_code _res = OK;
 
-    // Allocate enough memory to contain this data structure.
-    (*_message) = malloc(sizeof(plc4c_modbus_read_write_driver_type));
-    if(*_message == NULL) {
-        return NO_MEMORY;
-    }
-
-    _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) *_message);
+    _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) _message);
 
     return _res;
 }

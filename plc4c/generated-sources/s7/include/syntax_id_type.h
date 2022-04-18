@@ -53,7 +53,7 @@ typedef enum plc4c_s7_read_write_syntax_id_type plc4c_s7_read_write_syntax_id_ty
 // Get an empty NULL-struct
 plc4c_s7_read_write_syntax_id_type plc4c_s7_read_write_syntax_id_type_null();
 
-plc4c_return_code plc4c_s7_read_write_syntax_id_type_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_syntax_id_type** message);
+plc4c_return_code plc4c_s7_read_write_syntax_id_type_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_syntax_id_type* message);
 
 plc4c_return_code plc4c_s7_read_write_syntax_id_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_syntax_id_type* message);
 

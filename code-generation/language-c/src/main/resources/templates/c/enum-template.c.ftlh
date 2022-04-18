@@ -62,16 +62,10 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
 }
 
 // Parse function.
-plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, ${helper.getCTypeName(type.name)}** _message) {
+plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, ${helper.getCTypeName(type.name)}* _message) {
     plc4c_return_code _res = OK;
 
-    // Allocate enough memory to contain this data structure.
-    (*_message) = malloc(sizeof(${helper.getCTypeName(type.name)}));
-    if(*_message == NULL) {
-        return NO_MEMORY;
-    }
-
-    _res = ${helper.getReadBufferReadMethodCall(type.type.orElseThrow().asSimpleTypeReference().orElseThrow(), "*_message", null)?no_esc};
+    _res = ${helper.getReadBufferReadMethodCall(type.type.orElseThrow().asSimpleTypeReference().orElseThrow(), "_message", null)?no_esc};
 
     return _res;
 }

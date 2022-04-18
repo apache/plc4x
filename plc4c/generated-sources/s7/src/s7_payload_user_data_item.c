@@ -121,20 +121,20 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
   }
 
   // Simple Field (returnCode)
-  plc4c_s7_read_write_data_transport_error_code* returnCode;
+  plc4c_s7_read_write_data_transport_error_code returnCode;
   _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->return_code = *returnCode;
+  (*_message)->return_code = returnCode;
 
   // Simple Field (transportSize)
-  plc4c_s7_read_write_data_transport_size* transportSize;
+  plc4c_s7_read_write_data_transport_size transportSize;
   _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->transport_size = *transportSize;
+  (*_message)->transport_size = transportSize;
 
   // Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint16_t dataLength = 0;
@@ -477,12 +477,12 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x02 ) && ( dataLength ==
 
 
   // Simple Field (alarmType)
-  plc4c_s7_read_write_alarm_type* alarmType;
+  plc4c_s7_read_write_alarm_type alarmType;
   _res = plc4c_s7_read_write_alarm_type_parse(readBuffer, (void*) &alarmType);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type = *alarmType;
+  (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type = alarmType;
 
 
   // Simple Field (reserved02)
@@ -636,12 +636,12 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
 
 
   // Simple Field (syntaxId)
-  plc4c_s7_read_write_syntax_id_type* syntaxId;
+  plc4c_s7_read_write_syntax_id_type syntaxId;
   _res = plc4c_s7_read_write_syntax_id_type_parse(readBuffer, (void*) &syntaxId);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id = *syntaxId;
+  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id = syntaxId;
 
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -658,12 +658,12 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
 
 
   // Simple Field (queryType)
-  plc4c_s7_read_write_query_type* queryType;
+  plc4c_s7_read_write_query_type queryType;
   _res = plc4c_s7_read_write_query_type_parse(readBuffer, (void*) &queryType);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_query_type = *queryType;
+  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_query_type = queryType;
 
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -680,12 +680,12 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
 
 
   // Simple Field (alarmType)
-  plc4c_s7_read_write_alarm_type* alarmType;
+  plc4c_s7_read_write_alarm_type alarmType;
   _res = plc4c_s7_read_write_alarm_type_parse(readBuffer, (void*) &alarmType);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type = *alarmType;
+  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type = alarmType;
   } else 
 if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUserDataItemCpuFunctionAlarmQueryResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_response;
@@ -715,21 +715,21 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
 
 
   // Simple Field (pudicfReturnCode)
-  plc4c_s7_read_write_data_transport_error_code* pudicfReturnCode;
+  plc4c_s7_read_write_data_transport_error_code pudicfReturnCode;
   _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &pudicfReturnCode);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code = *pudicfReturnCode;
+  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code = pudicfReturnCode;
 
 
   // Simple Field (pudicftransportSize)
-  plc4c_s7_read_write_data_transport_size* pudicftransportSize;
+  plc4c_s7_read_write_data_transport_size pudicftransportSize;
   _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &pudicftransportSize);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size = *pudicftransportSize;
+  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size = pudicftransportSize;
 
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)

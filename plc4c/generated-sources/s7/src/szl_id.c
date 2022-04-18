@@ -36,12 +36,12 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* readBu
   }
 
   // Simple Field (typeClass)
-  plc4c_s7_read_write_szl_module_type_class* typeClass;
+  plc4c_s7_read_write_szl_module_type_class typeClass;
   _res = plc4c_s7_read_write_szl_module_type_class_parse(readBuffer, (void*) &typeClass);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->type_class = *typeClass;
+  (*_message)->type_class = typeClass;
 
   // Simple Field (sublistExtract)
   uint8_t sublistExtract = 0;
@@ -52,12 +52,12 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* readBu
   (*_message)->sublist_extract = sublistExtract;
 
   // Simple Field (sublistList)
-  plc4c_s7_read_write_szl_sublist* sublistList;
+  plc4c_s7_read_write_szl_sublist sublistList;
   _res = plc4c_s7_read_write_szl_sublist_parse(readBuffer, (void*) &sublistList);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->sublist_list = *sublistList;
+  (*_message)->sublist_list = sublistList;
 
   return OK;
 }

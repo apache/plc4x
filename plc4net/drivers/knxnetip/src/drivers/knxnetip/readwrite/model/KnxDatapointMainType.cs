@@ -59,31 +59,32 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         DPT_ELECTRICAL_ENERGY = 32,
         DPT_24_TIMES_CHANNEL_ACTIVATION = 33,
         DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM = 34,
-        DPT_DATAPOINT_TYPE_VERSION = 35,
-        DPT_ALARM_INFO = 36,
-        DPT_3X_2_BYTE_FLOAT_VALUE = 37,
-        DPT_SCALING_SPEED = 38,
-        DPT_4_1_1_BYTE_COMBINED_INFORMATION = 39,
-        DPT_MBUS_ADDRESS = 40,
-        DPT_3_BYTE_COLOUR_RGB = 41,
-        DPT_LANGUAGE_CODE_ISO_639_1 = 42,
-        DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY = 43,
-        DPT_PRIORITISED_MODE_CONTROL = 44,
-        DPT_CONFIGURATION_DIAGNOSTICS_16_BIT = 45,
-        DPT_CONFIGURATION_DIAGNOSTICS_8_BIT = 46,
-        DPT_POSITIONS = 47,
-        DPT_STATUS_32_BIT = 48,
-        DPT_STATUS_48_BIT = 49,
-        DPT_CONVERTER_STATUS = 50,
-        DPT_CONVERTER_TEST_RESULT = 51,
-        DPT_BATTERY_INFORMATION = 52,
-        DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION = 53,
-        DPT_STATUS_24_BIT = 54,
-        DPT_COLOUR_RGBW = 55,
-        DPT_RELATIVE_CONTROL_RGBW = 56,
-        DPT_RELATIVE_CONTROL_RGB = 57,
-        DPT_F32F32 = 58,
-        DPT_F16F16F16F16 = 59,
+        DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM = 35,
+        DPT_DATAPOINT_TYPE_VERSION = 36,
+        DPT_ALARM_INFO = 37,
+        DPT_3X_2_BYTE_FLOAT_VALUE = 38,
+        DPT_SCALING_SPEED = 39,
+        DPT_4_1_1_BYTE_COMBINED_INFORMATION = 40,
+        DPT_MBUS_ADDRESS = 41,
+        DPT_3_BYTE_COLOUR_RGB = 42,
+        DPT_LANGUAGE_CODE_ISO_639_1 = 43,
+        DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY = 44,
+        DPT_PRIORITISED_MODE_CONTROL = 45,
+        DPT_CONFIGURATION_DIAGNOSTICS_16_BIT = 46,
+        DPT_CONFIGURATION_DIAGNOSTICS_8_BIT = 47,
+        DPT_POSITIONS = 48,
+        DPT_STATUS_32_BIT = 49,
+        DPT_STATUS_48_BIT = 50,
+        DPT_CONVERTER_STATUS = 51,
+        DPT_CONVERTER_TEST_RESULT = 52,
+        DPT_BATTERY_INFORMATION = 53,
+        DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION = 54,
+        DPT_STATUS_24_BIT = 55,
+        DPT_COLOUR_RGBW = 56,
+        DPT_RELATIVE_CONTROL_RGBW = 57,
+        DPT_RELATIVE_CONTROL_RGB = 58,
+        DPT_F32F32 = 59,
+        DPT_F16F16F16F16 = 60,
     }
 
     public static class KnxDatapointMainTypeInfo
@@ -180,89 +181,92 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointMainType.DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM: { /* '34' */
                     return 206;
                 }
-                case KnxDatapointMainType.DPT_DATAPOINT_TYPE_VERSION: { /* '35' */
+                case KnxDatapointMainType.DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM: { /* '35' */
+                    return 207;
+                }
+                case KnxDatapointMainType.DPT_DATAPOINT_TYPE_VERSION: { /* '36' */
                     return 217;
                 }
-                case KnxDatapointMainType.DPT_ALARM_INFO: { /* '36' */
+                case KnxDatapointMainType.DPT_ALARM_INFO: { /* '37' */
                     return 219;
                 }
-                case KnxDatapointMainType.DPT_3X_2_BYTE_FLOAT_VALUE: { /* '37' */
+                case KnxDatapointMainType.DPT_3X_2_BYTE_FLOAT_VALUE: { /* '38' */
                     return 222;
                 }
-                case KnxDatapointMainType.DPT_SCALING_SPEED: { /* '38' */
+                case KnxDatapointMainType.DPT_SCALING_SPEED: { /* '39' */
                     return 225;
-                }
-                case KnxDatapointMainType.DPT_4_1_1_BYTE_COMBINED_INFORMATION: { /* '39' */
-                    return 229;
                 }
                 case KnxDatapointMainType.DPT_12_BYTE_SIGNED_VALUE: { /* '4' */
                     return 0;
                 }
-                case KnxDatapointMainType.DPT_MBUS_ADDRESS: { /* '40' */
+                case KnxDatapointMainType.DPT_4_1_1_BYTE_COMBINED_INFORMATION: { /* '40' */
+                    return 229;
+                }
+                case KnxDatapointMainType.DPT_MBUS_ADDRESS: { /* '41' */
                     return 230;
                 }
-                case KnxDatapointMainType.DPT_3_BYTE_COLOUR_RGB: { /* '41' */
+                case KnxDatapointMainType.DPT_3_BYTE_COLOUR_RGB: { /* '42' */
                     return 232;
                 }
-                case KnxDatapointMainType.DPT_LANGUAGE_CODE_ISO_639_1: { /* '42' */
+                case KnxDatapointMainType.DPT_LANGUAGE_CODE_ISO_639_1: { /* '43' */
                     return 234;
                 }
-                case KnxDatapointMainType.DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY: { /* '43' */
+                case KnxDatapointMainType.DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY: { /* '44' */
                     return 235;
                 }
-                case KnxDatapointMainType.DPT_PRIORITISED_MODE_CONTROL: { /* '44' */
+                case KnxDatapointMainType.DPT_PRIORITISED_MODE_CONTROL: { /* '45' */
                     return 236;
                 }
-                case KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_16_BIT: { /* '45' */
+                case KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_16_BIT: { /* '46' */
                     return 237;
                 }
-                case KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_8_BIT: { /* '46' */
+                case KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_8_BIT: { /* '47' */
                     return 238;
                 }
-                case KnxDatapointMainType.DPT_POSITIONS: { /* '47' */
+                case KnxDatapointMainType.DPT_POSITIONS: { /* '48' */
                     return 240;
                 }
-                case KnxDatapointMainType.DPT_STATUS_32_BIT: { /* '48' */
+                case KnxDatapointMainType.DPT_STATUS_32_BIT: { /* '49' */
                     return 241;
-                }
-                case KnxDatapointMainType.DPT_STATUS_48_BIT: { /* '49' */
-                    return 242;
                 }
                 case KnxDatapointMainType.DPT_8_BYTE_FLOAT_VALUE: { /* '5' */
                     return 0;
                 }
-                case KnxDatapointMainType.DPT_CONVERTER_STATUS: { /* '50' */
+                case KnxDatapointMainType.DPT_STATUS_48_BIT: { /* '50' */
+                    return 242;
+                }
+                case KnxDatapointMainType.DPT_CONVERTER_STATUS: { /* '51' */
                     return 244;
                 }
-                case KnxDatapointMainType.DPT_CONVERTER_TEST_RESULT: { /* '51' */
+                case KnxDatapointMainType.DPT_CONVERTER_TEST_RESULT: { /* '52' */
                     return 245;
                 }
-                case KnxDatapointMainType.DPT_BATTERY_INFORMATION: { /* '52' */
+                case KnxDatapointMainType.DPT_BATTERY_INFORMATION: { /* '53' */
                     return 246;
                 }
-                case KnxDatapointMainType.DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION: { /* '53' */
+                case KnxDatapointMainType.DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION: { /* '54' */
                     return 249;
                 }
-                case KnxDatapointMainType.DPT_STATUS_24_BIT: { /* '54' */
+                case KnxDatapointMainType.DPT_STATUS_24_BIT: { /* '55' */
                     return 250;
                 }
-                case KnxDatapointMainType.DPT_COLOUR_RGBW: { /* '55' */
+                case KnxDatapointMainType.DPT_COLOUR_RGBW: { /* '56' */
                     return 251;
                 }
-                case KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGBW: { /* '56' */
+                case KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGBW: { /* '57' */
                     return 252;
                 }
-                case KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGB: { /* '57' */
+                case KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGB: { /* '58' */
                     return 254;
                 }
-                case KnxDatapointMainType.DPT_F32F32: { /* '58' */
+                case KnxDatapointMainType.DPT_F32F32: { /* '59' */
                     return 255;
-                }
-                case KnxDatapointMainType.DPT_F16F16F16F16: { /* '59' */
-                    return 275;
                 }
                 case KnxDatapointMainType.DPT_1_BIT: { /* '6' */
                     return 1;
+                }
+                case KnxDatapointMainType.DPT_F16F16F16F16: { /* '60' */
+                    return 275;
                 }
                 case KnxDatapointMainType.DPT_1_BIT_CONTROLLED: { /* '7' */
                     return 2;
@@ -370,89 +374,92 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointMainType.DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM: { /* '34' */
                     return "16-bit unsigned value & 8-bit enum";
                 }
-                case KnxDatapointMainType.DPT_DATAPOINT_TYPE_VERSION: { /* '35' */
+                case KnxDatapointMainType.DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM: { /* '35' */
+                    return "8-bit unsigned value & 8-bit enum";
+                }
+                case KnxDatapointMainType.DPT_DATAPOINT_TYPE_VERSION: { /* '36' */
                     return "datapoint type version";
                 }
-                case KnxDatapointMainType.DPT_ALARM_INFO: { /* '36' */
+                case KnxDatapointMainType.DPT_ALARM_INFO: { /* '37' */
                     return "alarm info";
                 }
-                case KnxDatapointMainType.DPT_3X_2_BYTE_FLOAT_VALUE: { /* '37' */
+                case KnxDatapointMainType.DPT_3X_2_BYTE_FLOAT_VALUE: { /* '38' */
                     return "3x 2-byte float value";
                 }
-                case KnxDatapointMainType.DPT_SCALING_SPEED: { /* '38' */
+                case KnxDatapointMainType.DPT_SCALING_SPEED: { /* '39' */
                     return "scaling speed";
-                }
-                case KnxDatapointMainType.DPT_4_1_1_BYTE_COMBINED_INFORMATION: { /* '39' */
-                    return "4-1-1 byte combined information";
                 }
                 case KnxDatapointMainType.DPT_12_BYTE_SIGNED_VALUE: { /* '4' */
                     return "Unknown Datapoint Type";
                 }
-                case KnxDatapointMainType.DPT_MBUS_ADDRESS: { /* '40' */
+                case KnxDatapointMainType.DPT_4_1_1_BYTE_COMBINED_INFORMATION: { /* '40' */
+                    return "4-1-1 byte combined information";
+                }
+                case KnxDatapointMainType.DPT_MBUS_ADDRESS: { /* '41' */
                     return "MBus address";
                 }
-                case KnxDatapointMainType.DPT_3_BYTE_COLOUR_RGB: { /* '41' */
+                case KnxDatapointMainType.DPT_3_BYTE_COLOUR_RGB: { /* '42' */
                     return "3-byte colour RGB";
                 }
-                case KnxDatapointMainType.DPT_LANGUAGE_CODE_ISO_639_1: { /* '42' */
+                case KnxDatapointMainType.DPT_LANGUAGE_CODE_ISO_639_1: { /* '43' */
                     return "language code ISO 639-1";
                 }
-                case KnxDatapointMainType.DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY: { /* '43' */
+                case KnxDatapointMainType.DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY: { /* '44' */
                     return "Signed value with classification and validity";
                 }
-                case KnxDatapointMainType.DPT_PRIORITISED_MODE_CONTROL: { /* '44' */
+                case KnxDatapointMainType.DPT_PRIORITISED_MODE_CONTROL: { /* '45' */
                     return "Prioritised Mode Control";
                 }
-                case KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_16_BIT: { /* '45' */
+                case KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_16_BIT: { /* '46' */
                     return "configuration/ diagnostics";
                 }
-                case KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_8_BIT: { /* '46' */
+                case KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_8_BIT: { /* '47' */
                     return "configuration/ diagnostics";
                 }
-                case KnxDatapointMainType.DPT_POSITIONS: { /* '47' */
+                case KnxDatapointMainType.DPT_POSITIONS: { /* '48' */
                     return "positions";
                 }
-                case KnxDatapointMainType.DPT_STATUS_32_BIT: { /* '48' */
-                    return "status";
-                }
-                case KnxDatapointMainType.DPT_STATUS_48_BIT: { /* '49' */
+                case KnxDatapointMainType.DPT_STATUS_32_BIT: { /* '49' */
                     return "status";
                 }
                 case KnxDatapointMainType.DPT_8_BYTE_FLOAT_VALUE: { /* '5' */
                     return "Unknown Datapoint Type";
                 }
-                case KnxDatapointMainType.DPT_CONVERTER_STATUS: { /* '50' */
-                    return "Converter Status";
-                }
-                case KnxDatapointMainType.DPT_CONVERTER_TEST_RESULT: { /* '51' */
-                    return "Converter test result";
-                }
-                case KnxDatapointMainType.DPT_BATTERY_INFORMATION: { /* '52' */
-                    return "Battery Information";
-                }
-                case KnxDatapointMainType.DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION: { /* '53' */
-                    return "brightness colour temperature transition";
-                }
-                case KnxDatapointMainType.DPT_STATUS_24_BIT: { /* '54' */
+                case KnxDatapointMainType.DPT_STATUS_48_BIT: { /* '50' */
                     return "status";
                 }
-                case KnxDatapointMainType.DPT_COLOUR_RGBW: { /* '55' */
+                case KnxDatapointMainType.DPT_CONVERTER_STATUS: { /* '51' */
+                    return "Converter Status";
+                }
+                case KnxDatapointMainType.DPT_CONVERTER_TEST_RESULT: { /* '52' */
+                    return "Converter test result";
+                }
+                case KnxDatapointMainType.DPT_BATTERY_INFORMATION: { /* '53' */
+                    return "Battery Information";
+                }
+                case KnxDatapointMainType.DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION: { /* '54' */
+                    return "brightness colour temperature transition";
+                }
+                case KnxDatapointMainType.DPT_STATUS_24_BIT: { /* '55' */
+                    return "status";
+                }
+                case KnxDatapointMainType.DPT_COLOUR_RGBW: { /* '56' */
                     return "Colour RGBW";
                 }
-                case KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGBW: { /* '56' */
+                case KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGBW: { /* '57' */
                     return "Relative Control RGBW";
                 }
-                case KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGB: { /* '57' */
+                case KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGB: { /* '58' */
                     return "Relative Control RGB";
                 }
-                case KnxDatapointMainType.DPT_F32F32: { /* '58' */
+                case KnxDatapointMainType.DPT_F32F32: { /* '59' */
                     return "F32F32";
-                }
-                case KnxDatapointMainType.DPT_F16F16F16F16: { /* '59' */
-                    return "F16F16F16F16";
                 }
                 case KnxDatapointMainType.DPT_1_BIT: { /* '6' */
                     return "1-bit";
+                }
+                case KnxDatapointMainType.DPT_F16F16F16F16: { /* '60' */
+                    return "F16F16F16F16";
                 }
                 case KnxDatapointMainType.DPT_1_BIT_CONTROLLED: { /* '7' */
                     return "1-bit controlled";
@@ -560,89 +567,92 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxDatapointMainType.DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM: { /* '34' */
                     return 24;
                 }
-                case KnxDatapointMainType.DPT_DATAPOINT_TYPE_VERSION: { /* '35' */
+                case KnxDatapointMainType.DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM: { /* '35' */
                     return 16;
                 }
-                case KnxDatapointMainType.DPT_ALARM_INFO: { /* '36' */
+                case KnxDatapointMainType.DPT_DATAPOINT_TYPE_VERSION: { /* '36' */
+                    return 16;
+                }
+                case KnxDatapointMainType.DPT_ALARM_INFO: { /* '37' */
                     return 48;
                 }
-                case KnxDatapointMainType.DPT_3X_2_BYTE_FLOAT_VALUE: { /* '37' */
+                case KnxDatapointMainType.DPT_3X_2_BYTE_FLOAT_VALUE: { /* '38' */
                     return 48;
                 }
-                case KnxDatapointMainType.DPT_SCALING_SPEED: { /* '38' */
+                case KnxDatapointMainType.DPT_SCALING_SPEED: { /* '39' */
                     return 24;
-                }
-                case KnxDatapointMainType.DPT_4_1_1_BYTE_COMBINED_INFORMATION: { /* '39' */
-                    return 48;
                 }
                 case KnxDatapointMainType.DPT_12_BYTE_SIGNED_VALUE: { /* '4' */
                     return 96;
                 }
-                case KnxDatapointMainType.DPT_MBUS_ADDRESS: { /* '40' */
+                case KnxDatapointMainType.DPT_4_1_1_BYTE_COMBINED_INFORMATION: { /* '40' */
+                    return 48;
+                }
+                case KnxDatapointMainType.DPT_MBUS_ADDRESS: { /* '41' */
                     return 64;
                 }
-                case KnxDatapointMainType.DPT_3_BYTE_COLOUR_RGB: { /* '41' */
+                case KnxDatapointMainType.DPT_3_BYTE_COLOUR_RGB: { /* '42' */
                     return 24;
                 }
-                case KnxDatapointMainType.DPT_LANGUAGE_CODE_ISO_639_1: { /* '42' */
+                case KnxDatapointMainType.DPT_LANGUAGE_CODE_ISO_639_1: { /* '43' */
                     return 16;
                 }
-                case KnxDatapointMainType.DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY: { /* '43' */
+                case KnxDatapointMainType.DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY: { /* '44' */
                     return 48;
                 }
-                case KnxDatapointMainType.DPT_PRIORITISED_MODE_CONTROL: { /* '44' */
+                case KnxDatapointMainType.DPT_PRIORITISED_MODE_CONTROL: { /* '45' */
                     return 8;
                 }
-                case KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_16_BIT: { /* '45' */
+                case KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_16_BIT: { /* '46' */
                     return 16;
                 }
-                case KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_8_BIT: { /* '46' */
+                case KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_8_BIT: { /* '47' */
                     return 8;
                 }
-                case KnxDatapointMainType.DPT_POSITIONS: { /* '47' */
+                case KnxDatapointMainType.DPT_POSITIONS: { /* '48' */
                     return 24;
                 }
-                case KnxDatapointMainType.DPT_STATUS_32_BIT: { /* '48' */
+                case KnxDatapointMainType.DPT_STATUS_32_BIT: { /* '49' */
                     return 32;
-                }
-                case KnxDatapointMainType.DPT_STATUS_48_BIT: { /* '49' */
-                    return 48;
                 }
                 case KnxDatapointMainType.DPT_8_BYTE_FLOAT_VALUE: { /* '5' */
                     return 64;
                 }
-                case KnxDatapointMainType.DPT_CONVERTER_STATUS: { /* '50' */
-                    return 16;
-                }
-                case KnxDatapointMainType.DPT_CONVERTER_TEST_RESULT: { /* '51' */
+                case KnxDatapointMainType.DPT_STATUS_48_BIT: { /* '50' */
                     return 48;
                 }
-                case KnxDatapointMainType.DPT_BATTERY_INFORMATION: { /* '52' */
+                case KnxDatapointMainType.DPT_CONVERTER_STATUS: { /* '51' */
                     return 16;
                 }
-                case KnxDatapointMainType.DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION: { /* '53' */
+                case KnxDatapointMainType.DPT_CONVERTER_TEST_RESULT: { /* '52' */
                     return 48;
                 }
-                case KnxDatapointMainType.DPT_STATUS_24_BIT: { /* '54' */
+                case KnxDatapointMainType.DPT_BATTERY_INFORMATION: { /* '53' */
+                    return 16;
+                }
+                case KnxDatapointMainType.DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION: { /* '54' */
+                    return 48;
+                }
+                case KnxDatapointMainType.DPT_STATUS_24_BIT: { /* '55' */
                     return 24;
                 }
-                case KnxDatapointMainType.DPT_COLOUR_RGBW: { /* '55' */
+                case KnxDatapointMainType.DPT_COLOUR_RGBW: { /* '56' */
                     return 48;
                 }
-                case KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGBW: { /* '56' */
+                case KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGBW: { /* '57' */
                     return 40;
                 }
-                case KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGB: { /* '57' */
+                case KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGB: { /* '58' */
                     return 24;
                 }
-                case KnxDatapointMainType.DPT_F32F32: { /* '58' */
-                    return 64;
-                }
-                case KnxDatapointMainType.DPT_F16F16F16F16: { /* '59' */
+                case KnxDatapointMainType.DPT_F32F32: { /* '59' */
                     return 64;
                 }
                 case KnxDatapointMainType.DPT_1_BIT: { /* '6' */
                     return 1;
+                }
+                case KnxDatapointMainType.DPT_F16F16F16F16: { /* '60' */
+                    return 64;
                 }
                 case KnxDatapointMainType.DPT_1_BIT_CONTROLLED: { /* '7' */
                     return 2;

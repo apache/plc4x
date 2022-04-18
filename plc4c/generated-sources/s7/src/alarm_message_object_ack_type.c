@@ -68,12 +68,12 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_object_ack_type_parse(plc4c_
   }
 
   // Simple Field (syntaxId)
-  plc4c_s7_read_write_syntax_id_type* syntaxId;
+  plc4c_s7_read_write_syntax_id_type syntaxId;
   _res = plc4c_s7_read_write_syntax_id_type_parse(readBuffer, (void*) &syntaxId);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->syntax_id = *syntaxId;
+  (*_message)->syntax_id = syntaxId;
 
   // Simple Field (numberOfValues)
   uint8_t numberOfValues = 0;

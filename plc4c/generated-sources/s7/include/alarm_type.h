@@ -43,7 +43,7 @@ typedef enum plc4c_s7_read_write_alarm_type plc4c_s7_read_write_alarm_type;
 // Get an empty NULL-struct
 plc4c_s7_read_write_alarm_type plc4c_s7_read_write_alarm_type_null();
 
-plc4c_return_code plc4c_s7_read_write_alarm_type_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_alarm_type** message);
+plc4c_return_code plc4c_s7_read_write_alarm_type_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_alarm_type* message);
 
 plc4c_return_code plc4c_s7_read_write_alarm_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_alarm_type* message);
 

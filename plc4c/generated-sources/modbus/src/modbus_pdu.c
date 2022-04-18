@@ -163,12 +163,12 @@ if( errorFlag == true ) { /* ModbusPDUError */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_error;
 
   // Simple Field (exceptionCode)
-  plc4c_modbus_read_write_modbus_error_code* exceptionCode;
+  plc4c_modbus_read_write_modbus_error_code exceptionCode;
   _res = plc4c_modbus_read_write_modbus_error_code_parse(readBuffer, (void*) &exceptionCode);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->modbus_pdu_error_exception_code = *exceptionCode;
+  (*_message)->modbus_pdu_error_exception_code = exceptionCode;
   } else 
 if( ( errorFlag == false ) && ( functionFlag == 0x02 ) && ( response == false ) ) { /* ModbusPDUReadDiscreteInputsRequest */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_discrete_inputs_request;
@@ -1125,12 +1125,12 @@ if( ( errorFlag == false ) && ( functionFlag == 0x2B ) && ( response == false ) 
 
 
   // Simple Field (level)
-  plc4c_modbus_read_write_modbus_device_information_level* level;
+  plc4c_modbus_read_write_modbus_device_information_level level;
   _res = plc4c_modbus_read_write_modbus_device_information_level_parse(readBuffer, (void*) &level);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->modbus_pdu_read_device_identification_request_level = *level;
+  (*_message)->modbus_pdu_read_device_identification_request_level = level;
 
 
   // Simple Field (objectId)
@@ -1157,12 +1157,12 @@ if( ( errorFlag == false ) && ( functionFlag == 0x2B ) && ( response == true ) )
 
 
   // Simple Field (level)
-  plc4c_modbus_read_write_modbus_device_information_level* level;
+  plc4c_modbus_read_write_modbus_device_information_level level;
   _res = plc4c_modbus_read_write_modbus_device_information_level_parse(readBuffer, (void*) &level);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->modbus_pdu_read_device_identification_response_level = *level;
+  (*_message)->modbus_pdu_read_device_identification_response_level = level;
 
 
   // Simple Field (individualAccess)
@@ -1175,21 +1175,21 @@ if( ( errorFlag == false ) && ( functionFlag == 0x2B ) && ( response == true ) )
 
 
   // Simple Field (conformityLevel)
-  plc4c_modbus_read_write_modbus_device_information_conformity_level* conformityLevel;
+  plc4c_modbus_read_write_modbus_device_information_conformity_level conformityLevel;
   _res = plc4c_modbus_read_write_modbus_device_information_conformity_level_parse(readBuffer, (void*) &conformityLevel);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->modbus_pdu_read_device_identification_response_conformity_level = *conformityLevel;
+  (*_message)->modbus_pdu_read_device_identification_response_conformity_level = conformityLevel;
 
 
   // Simple Field (moreFollows)
-  plc4c_modbus_read_write_modbus_device_information_more_follows* moreFollows;
+  plc4c_modbus_read_write_modbus_device_information_more_follows moreFollows;
   _res = plc4c_modbus_read_write_modbus_device_information_more_follows_parse(readBuffer, (void*) &moreFollows);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->modbus_pdu_read_device_identification_response_more_follows = *moreFollows;
+  (*_message)->modbus_pdu_read_device_identification_response_more_follows = moreFollows;
 
 
   // Simple Field (nextObjectId)

@@ -127,12 +127,12 @@ if( cpuFunctionType == 0x04 ) { /* S7MessageObjectRequest */
 
 
   // Simple Field (syntaxId)
-  plc4c_s7_read_write_syntax_id_type* syntaxId;
+  plc4c_s7_read_write_syntax_id_type syntaxId;
   _res = plc4c_s7_read_write_syntax_id_type_parse(readBuffer, (void*) &syntaxId);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_message_object_request_syntax_id = *syntaxId;
+  (*_message)->s7_message_object_request_syntax_id = syntaxId;
 
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -149,12 +149,12 @@ if( cpuFunctionType == 0x04 ) { /* S7MessageObjectRequest */
 
 
   // Simple Field (queryType)
-  plc4c_s7_read_write_query_type* queryType;
+  plc4c_s7_read_write_query_type queryType;
   _res = plc4c_s7_read_write_query_type_parse(readBuffer, (void*) &queryType);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_message_object_request_query_type = *queryType;
+  (*_message)->s7_message_object_request_query_type = queryType;
 
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -171,32 +171,32 @@ if( cpuFunctionType == 0x04 ) { /* S7MessageObjectRequest */
 
 
   // Simple Field (alarmType)
-  plc4c_s7_read_write_alarm_type* alarmType;
+  plc4c_s7_read_write_alarm_type alarmType;
   _res = plc4c_s7_read_write_alarm_type_parse(readBuffer, (void*) &alarmType);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_message_object_request_alarm_type = *alarmType;
+  (*_message)->s7_message_object_request_alarm_type = alarmType;
   } else 
 if( cpuFunctionType == 0x08 ) { /* S7MessageObjectResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_response;
 
   // Simple Field (returnCode)
-  plc4c_s7_read_write_data_transport_error_code* returnCode;
+  plc4c_s7_read_write_data_transport_error_code returnCode;
   _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_message_object_response_return_code = *returnCode;
+  (*_message)->s7_message_object_response_return_code = returnCode;
 
 
   // Simple Field (transportSize)
-  plc4c_s7_read_write_data_transport_size* transportSize;
+  plc4c_s7_read_write_data_transport_size transportSize;
   _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_message_object_response_transport_size = *transportSize;
+  (*_message)->s7_message_object_response_transport_size = transportSize;
 
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)

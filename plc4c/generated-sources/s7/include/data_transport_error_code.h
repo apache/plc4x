@@ -46,7 +46,7 @@ typedef enum plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_d
 // Get an empty NULL-struct
 plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport_error_code_null();
 
-plc4c_return_code plc4c_s7_read_write_data_transport_error_code_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_data_transport_error_code** message);
+plc4c_return_code plc4c_s7_read_write_data_transport_error_code_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_data_transport_error_code* message);
 
 plc4c_return_code plc4c_s7_read_write_data_transport_error_code_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_data_transport_error_code* message);
 

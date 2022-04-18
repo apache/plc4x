@@ -36,20 +36,20 @@ plc4c_return_code plc4c_s7_read_write_associated_value_type_parse(plc4c_spi_read
   }
 
   // Simple Field (returnCode)
-  plc4c_s7_read_write_data_transport_error_code* returnCode;
+  plc4c_s7_read_write_data_transport_error_code returnCode;
   _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->return_code = *returnCode;
+  (*_message)->return_code = returnCode;
 
   // Simple Field (transportSize)
-  plc4c_s7_read_write_data_transport_size* transportSize;
+  plc4c_s7_read_write_data_transport_size transportSize;
   _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->transport_size = *transportSize;
+  (*_message)->transport_size = transportSize;
 
   // Manual Field (valueLength)
   uint16_t valueLength = (uint16_t) (plc4c_s7_read_write_right_shift3(readBuffer));

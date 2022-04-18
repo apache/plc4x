@@ -124,12 +124,12 @@ if( tpduCode == 0xE0 ) { /* COTPPacketConnectionRequest */
 
 
   // Simple Field (protocolClass)
-  plc4c_s7_read_write_cotp_protocol_class* protocolClass;
+  plc4c_s7_read_write_cotp_protocol_class protocolClass;
   _res = plc4c_s7_read_write_cotp_protocol_class_parse(readBuffer, (void*) &protocolClass);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->cotp_packet_connection_request_protocol_class = *protocolClass;
+  (*_message)->cotp_packet_connection_request_protocol_class = protocolClass;
   } else 
 if( tpduCode == 0xD0 ) { /* COTPPacketConnectionResponse */
     (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_connection_response;
@@ -153,12 +153,12 @@ if( tpduCode == 0xD0 ) { /* COTPPacketConnectionResponse */
 
 
   // Simple Field (protocolClass)
-  plc4c_s7_read_write_cotp_protocol_class* protocolClass;
+  plc4c_s7_read_write_cotp_protocol_class protocolClass;
   _res = plc4c_s7_read_write_cotp_protocol_class_parse(readBuffer, (void*) &protocolClass);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->cotp_packet_connection_response_protocol_class = *protocolClass;
+  (*_message)->cotp_packet_connection_response_protocol_class = protocolClass;
   } else 
 if( tpduCode == 0x80 ) { /* COTPPacketDisconnectRequest */
     (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_disconnect_request;
@@ -182,12 +182,12 @@ if( tpduCode == 0x80 ) { /* COTPPacketDisconnectRequest */
 
 
   // Simple Field (protocolClass)
-  plc4c_s7_read_write_cotp_protocol_class* protocolClass;
+  plc4c_s7_read_write_cotp_protocol_class protocolClass;
   _res = plc4c_s7_read_write_cotp_protocol_class_parse(readBuffer, (void*) &protocolClass);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->cotp_packet_disconnect_request_protocol_class = *protocolClass;
+  (*_message)->cotp_packet_disconnect_request_protocol_class = protocolClass;
   } else 
 if( tpduCode == 0xC0 ) { /* COTPPacketDisconnectResponse */
     (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_disconnect_response;

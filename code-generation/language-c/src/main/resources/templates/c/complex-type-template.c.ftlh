@@ -376,6 +376,11 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                 <#assign simpleTypeReference = simpleField.type.asSimpleTypeReference().orElseThrow()>
   ${helper.getLanguageTypeNameForField(field)} ${simpleField.name} = ${helper.getNullValueForTypeReference(simpleTypeReference)};
   _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "&" + simpleField.name, simpleField)};
+            <#elseif simpleField.type.isEnumTypeReference()>
+                <#assign enumTypeReference = simpleField.type.asEnumTypeReference().orElseThrow()>
+            <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
+  ${helper.getLanguageTypeNameForField(field)} ${simpleField.name};
+  _res = ${helper.getCTypeName(enumTypeReference.name)}_parse(readBuffer, (void*) &${simpleField.name});
             <#else>
                 <#assign nonSimpleTypeReference = simpleField.type.asNonSimpleTypeReference().orElseThrow()>
             <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
@@ -385,7 +390,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
   if(_res != OK) {
     return _res;
   }
-  (*_message)-><@fieldName baseType=baseType field=simpleField/> = <#if simpleField.type.isEnumTypeReference()>*</#if>${simpleField.name};
+  (*_message)-><@fieldName baseType=baseType field=simpleField/> = ${simpleField.name};
             <#break>
         <#case "switch">
             <#assign switchField = field.asSwitchField().orElseThrow()>
