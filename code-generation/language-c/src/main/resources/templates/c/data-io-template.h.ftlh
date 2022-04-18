@@ -51,7 +51,6 @@ ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <plc4c/driver_${protocolName}_static.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>
@@ -68,9 +67,9 @@ ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase
 
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.parserArguments.orElseThrow()></#if>
-#ifdef __cplusplus
+<#--#ifdef __cplusplus
 extern "C" {
-#endif
+#endif-->
 
 <#--
     Define the parse-method for elements of this tpye
@@ -86,8 +85,8 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bytes(plc4c_data* data_item
 
 uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(plc4c_data* data_item);
 
-#ifdef __cplusplus
+<#--#ifdef __cplusplus
 }
-#endif
+#endif-->
 #endif  // ${helper.getCTypeName(type.name)?upper_case}_H_
 </#outputformat>

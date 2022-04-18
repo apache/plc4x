@@ -16,10 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+#include <unity.h>
 
-#ifndef PLC4C_DRIVER_S7_STATIC_HELPER_H
-#define PLC4C_DRIVER_S7_STATIC_HELPER_H
+void parser_serializer_test_plc4x_read_write();
 
+void setUp(void) {}
 
+void tearDown(void) {}
 
-#endif  // PLC4C_DRIVER_S7_STATIC_HELPER_H
+int main(void) {
+  UNITY_BEGIN();
+
+  // Execute the auto-generated serializer/parser tests.
+  // TODO: Disabled for now ...
+  //parser_serializer_test_plc4x_read_write();
+
+  return UNITY_END();
+}

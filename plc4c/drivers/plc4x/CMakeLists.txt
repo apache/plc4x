@@ -31,12 +31,12 @@ add_library(plc4c-driver-plc4x
         src/driver_plc4x_sm_disconnect.c
         src/driver_plc4x_sm_read.c
         src/driver_plc4x_sm_write.c
+        src/driver_plc4x_static.c
         ${generatedSources})
 
 target_link_libraries(plc4c-driver-plc4x
         plc4c-spi)
 
-#[[
 if (BUILD_PHASE STREQUAL test-compile)
     add_executable(plc4c-driver-plc4x-test
             test/plc4x_test.c
@@ -58,4 +58,3 @@ if (BUILD_PHASE STREQUAL test-compile)
     ENDIF()
     add_test(NAME plc4c-driver-plc4x-test COMMAND plc4c-driver-plc4x-test)
 endif ()
-]]

@@ -31,7 +31,7 @@ add_library(plc4c-driver-modbus
         src/driver_modbus_sm_disconnect.c
         src/driver_modbus_sm_read.c
         src/driver_modbus_sm_write.c
-        src/driver_modbus_static_helper.c
-        ${generatedSources} include/plc4c/driver_modbus_static.h include/plc4c/driver_modbus_static_helper.h src/driver_modbus_static_helper.c)
+        src/driver_modbus_static.c
+        ${generatedSources})
 
 target_link_libraries(plc4c-driver-modbus plc4c-spi ${CMAKE_DL_LIBS})

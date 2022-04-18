@@ -100,7 +100,7 @@ plc4c_return_code plc4c_driver_modbus_receive_packet(
 
   return_code =
       plc4c_modbus_read_write_modbus_adu_parse(
-          read_buffer,&driver_type, true, packet);
+          read_buffer,driver_type, true, packet);
   if (return_code != OK) {
     return return_code;
   }

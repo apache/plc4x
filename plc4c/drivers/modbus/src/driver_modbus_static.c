@@ -17,7 +17,7 @@
  * under the License.
  */
 
-#import "plc4c/driver_modbus_static_helper.h"
+#include "plc4c/driver_modbus_static.h"
 
 uint16_t plc4c_modbus_read_write_rtu_crc_check(uint8_t address, plc4c_modbus_read_write_modbus_pdu* pdu) {
   return 0;

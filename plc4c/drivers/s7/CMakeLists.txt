@@ -40,6 +40,8 @@ if (BUILD_PHASE STREQUAL test-compile)
     add_executable(plc4c-driver-s7-test
             test/s7_address_parser_test.c
             test/s7_test.c
+            ../../spi/test/utils/test_utils.c
+            ../../generated-sources/s7/test/ParserSerializerTestsuite.c
             )
 
     IF (NOT WIN32)

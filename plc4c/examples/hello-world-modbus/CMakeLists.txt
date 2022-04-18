@@ -20,7 +20,7 @@
 include_directories("../../api/include"
         "../../spi/include"
         "../../drivers/modbus/include"
-        "../../transports/tcp/include" )
+        "../../transports/tcp/include")
 
 add_executable(plc4c-examples-hello-world-modbus
         src/hello_world_modbus.c

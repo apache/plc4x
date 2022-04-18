@@ -17,9 +17,16 @@
  * under the License.
  */
 
+#include <string.h>
+#include "plc4c/driver_plc4x_static.h"
+
 /*
  *
  *   Static functions
  *
  */
+
+uint8_t plc4c_spi_evaluation_helper_str_len(char* str) {
+    return strlen(str);
+}
 

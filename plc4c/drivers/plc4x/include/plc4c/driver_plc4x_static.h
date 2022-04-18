@@ -19,10 +19,14 @@
 
 #ifndef PLC4C_DRIVER_PLC4X_STATIC_H
 #define PLC4C_DRIVER_PLC4X_STATIC_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <time.h>
+#include <stdint.h>
 
 /*
  *
@@ -30,4 +34,9 @@
  *
  */
 
+uint8_t plc4c_spi_evaluation_helper_str_len(char* str);
+
+#ifdef __cplusplus
+}
+#endif
 #endif  // PLC4C_DRIVER_PLC4X_STATIC_H

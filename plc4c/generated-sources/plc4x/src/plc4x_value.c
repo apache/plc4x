@@ -23,6 +23,7 @@
 #include <plc4c/data.h>
 #include <plc4c/utils/list.h>
 #include <plc4c/spi/evaluation_helper.h>
+#include <plc4c/driver_plc4x_static.h>
 
 #include "plc4x_value.h"
 

@@ -44,7 +44,6 @@ ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <plc4c/driver_${protocolName}_static.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 
@@ -59,9 +58,9 @@ ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase
     </#list>
 </#if>
 
-#ifdef __cplusplus
+<#--#ifdef __cplusplus
 extern "C" {
-#endif
+#endif-->
 
 <#--
     First output the enum itself together with it's constants
@@ -109,8 +108,8 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bytes(${helper.getCTypeName
 
 uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(type.name)}* message);
 
-#ifdef __cplusplus
+<#--#ifdef __cplusplus
 }
-#endif
+#endif-->
 
 #endif  // ${helper.getCTypeName(type.name)?upper_case}_H_

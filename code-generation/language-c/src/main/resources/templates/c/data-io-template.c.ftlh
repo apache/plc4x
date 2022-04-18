@@ -51,6 +51,7 @@ ${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(t
 #include <plc4c/data.h>
 #include <plc4c/utils/list.h>
 #include <plc4c/spi/evaluation_helper.h>
+#include <plc4c/driver_${protocolName}_static.h>
 
 #include "${helper.camelCaseToSnakeCase(type.name)}.h"
 

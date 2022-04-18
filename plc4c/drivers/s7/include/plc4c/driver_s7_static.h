@@ -19,6 +19,9 @@
 
 #ifndef PLC4C_DRIVER_S7_STATIC_H
 #define PLC4C_DRIVER_S7_STATIC_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
@@ -60,4 +63,7 @@ time_t plc4c_s7_read_write_parse_tia_time_of_day(plc4c_spi_read_buffer* io);
 
 time_t plc4c_s7_read_write_parse_tia_date_time(plc4c_spi_read_buffer* io);
 
+#ifdef __cplusplus
+}
+#endif
 #endif  // PLC4C_DRIVER_S7_STATIC_H
