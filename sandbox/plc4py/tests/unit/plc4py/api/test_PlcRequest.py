@@ -32,6 +32,11 @@ from tests.unit.plc4py.api.test.MockPlcConection import MockPlcConnection
 
 
 def test_read_request_builder_empty_request(mocker) -> None:
+    """
+    Create an empty Plc Request and confirm that it gets created without any Fields
+    :param mocker:
+    :return:
+    """
     connection: PlcConnection = MockPlcConnection()
 
     # the connection function is supposed to support context manager
@@ -42,6 +47,11 @@ def test_read_request_builder_empty_request(mocker) -> None:
 
 
 def test_read_request_builder_non_empty_request(mocker) -> None:
+    """
+    Add a field to the reuqest and confirm that field gets added
+    :param mocker:
+    :return:
+    """
     connection: PlcConnection = MockPlcConnection()
 
     # the connection function is supposed to support context manager
@@ -57,6 +67,11 @@ def test_read_request_builder_non_empty_request(mocker) -> None:
 
 @pytest.mark.asyncio
 async def test_read_request_builder_non_empty_request_not_connected(mocker) -> None:
+    """
+    Create a request with a field and then confirm an empty response gets returned with a NOT_CONNECTED code
+    :param mocker:
+    :return:
+    """
     connection: PlcConnection = MockPlcConnection()
 
     # the connection function is supposed to support context manager
@@ -71,6 +86,11 @@ async def test_read_request_builder_non_empty_request_not_connected(mocker) -> N
 
 
 def test_read_response_boolean_response(mocker) -> None:
+    """
+    Create a Plc Response with a boolean field, confirm that a boolean gets returned
+    :param mocker:
+    :return:
+    """
     response = PlcReadResponse(
         PlcResponseCode.OK,
         [PlcField("1:BOOL")],
@@ -81,6 +101,11 @@ def test_read_response_boolean_response(mocker) -> None:
 
 
 def test_read_response_int_response(mocker) -> None:
+    """
+    Create a Plc Response with an int field, confirm that an int gets returned
+    :param mocker:
+    :return:
+    """
     response = PlcReadResponse(
         PlcResponseCode.OK,
         [PlcField("1:INT")],
