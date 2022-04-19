@@ -416,6 +416,15 @@
         ['WCHAR' List
             [array uint 16 value count 'numberOfValues']
         ]
+        ['STRING','1' STRING
+            [simple vstring '8' value encoding='"UTF-8"']
+        ]
+        ['STRING' List
+            [simple vstring '8 * numberOfValues' value encoding='"UTF-8"']
+        ]
+        ['WSTRING' List
+            [simple vstring '16 * numberOfValues' value encoding='"UTF-16"']
+        ]
     ]
 ]
 
