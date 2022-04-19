@@ -91,7 +91,7 @@ Checking:
 
 If you get any successful output, you probably don't need to do anything.
 
-Microsoft has documented what is needed to install `.Net SDK` https://dotnet.microsoft.com/download/linux-package-manager/rhel/sdk-2.2.203[here]
+Microsoft has documented what is needed to install `.Net SDK` https://dotnet.microsoft.com/en-us/download[here]
 
 For Ubuntu this would be:
 
