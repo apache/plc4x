@@ -380,7 +380,7 @@ func CreateBACnetContextTagPropertyIdentifier(tagNum uint8, propertyType uint32)
 	proprietaryValue := uint32(0)
 	if !BACnetPropertyIdentifierKnows(propertyType) {
 		propertyTypeEnum = BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE
-		proprietaryValue = uint32(0)
+		proprietaryValue = propertyType
 	}
 	result := NewBACnetContextTagPropertyIdentifier(propertyTypeEnum, proprietaryValue, header, tagNum, true, 0)
 	return CastBACnetContextTagPropertyIdentifier(result)
