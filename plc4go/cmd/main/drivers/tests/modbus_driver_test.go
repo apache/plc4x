@@ -33,5 +33,5 @@ func TestModbusDriver(t *testing.T) {
 	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
 		return modbusModel.ModbusTcpADUParse(readBufferByteBased, modbusModel.DriverType_MODBUS_TCP, false)
 	})}
-	testutils.RunDriverTestsuiteWithOptions(t, modbus.NewModbusTcpDriver(), "assets/testing/protocols/modbus/DriverTestsuite.xml", modbusIO.ModbusXmlParserHelper{}, options)
+	testutils.RunDriverTestsuiteWithOptions(t, modbus.NewModbusTcpDriver(), "assets/testing/protocols/modbus/tcp/DriverTestsuite.xml", modbusIO.ModbusXmlParserHelper{}, options)
 }

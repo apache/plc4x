@@ -408,6 +408,15 @@ public class StaticHelper {
         return new BACnetContextTagObjectIdentifier(header, payload, (short) tagNum, true);
     }
 
+    public static BACnetContextTagPropertyIdentifier createBACnetContextTagPropertyIdentifier(byte tagNum, int propertyType) {
+        BACnetPropertyIdentifier propertyIdentifier = BACnetPropertyIdentifier.enumForValue(propertyType);
+        if (!BACnetPropertyIdentifier.isDefined(propertyType)) {
+            propertyIdentifier = BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE;
+        }
+        BACnetTagHeader header = new BACnetTagHeader(tagNum, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) requiredLength(propertyType), null, null, null, null);
+        return new BACnetContextTagPropertyIdentifier(header, propertyIdentifier, propertyType, (short) tagNum, true, 0L);
+    }
+
     public static BACnetApplicationTagEnumerated createBACnetApplicationTagEnumerated(long value) {
         Pair<Long, BACnetTagPayloadEnumerated> lengthPayload = CreateEnumeratedPayload(value);
         BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 0x9, lengthPayload.getLeft());
@@ -421,15 +430,7 @@ public class StaticHelper {
     }
 
     public static Pair<Long, BACnetTagPayloadEnumerated> CreateEnumeratedPayload(long value) {
-        long length;
-        if (value < 0x100)
-            length = 1;
-        else if (value < 0x10000)
-            length = 2;
-        else if (value < 0x1000000)
-            length = 3;
-        else
-            length = 4;
+        long length = requiredLength(value);
         byte[] data = writeVarUint(value);
         BACnetTagPayloadEnumerated payload = new BACnetTagPayloadEnumerated(data, length);
         return Pair.of(length, payload);
@@ -509,4 +510,16 @@ public class StaticHelper {
         return Pair.of(length, payload);
     }
 
+    private static long requiredLength(long value) {
+        long length;
+        if (value < 0x100)
+            length = 1;
+        else if (value < 0x10000)
+            length = 2;
+        else if (value < 0x1000000)
+            length = 3;
+        else
+            length = 4;
+        return length;
+    }
 }

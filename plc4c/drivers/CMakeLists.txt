@@ -18,5 +18,6 @@
 ]]
 
 add_subdirectory(modbus)
+add_subdirectory(plc4x)
 add_subdirectory(s7)
 add_subdirectory(simulated)

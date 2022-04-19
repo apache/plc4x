@@ -3297,6 +3297,38 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var _map = new Dictionary<string, IPlcValue>();
 
                 return new PlcStruct(_map);
+            } else if( datapointType == KnxDatapointType.DPT_StatusLightingActuator ) { // Struct
+
+                // Simple Field (validactualvalue)
+                var validactualvalue = readBuffer.ReadBit("");
+
+                // Simple Field (locked)
+                var locked = readBuffer.ReadBit("");
+
+                // Simple Field (forced)
+                var forced = readBuffer.ReadBit("");
+
+                // Simple Field (nightmodeactive)
+                var nightmodeactive = readBuffer.ReadBit("");
+
+                // Simple Field (staircaselightingFunction)
+                var staircaselightingFunction = readBuffer.ReadBit("");
+
+                // Simple Field (dimming)
+                var dimming = readBuffer.ReadBit("");
+
+                // Simple Field (localoverride)
+                var localoverride = readBuffer.ReadBit("");
+
+                // Simple Field (failure)
+                var failure = readBuffer.ReadBit("");
+
+                // Simple Field (actualvalue)
+                var actualvalue = readBuffer.ReadByte("", 8);
+
+                var _map = new Dictionary<string, IPlcValue>();
+
+                return new PlcStruct(_map);
             } else if( datapointType == KnxDatapointType.DPT_Version ) { // Struct
 
                 // Simple Field (magicNumber)
@@ -7137,6 +7169,37 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (buildingMode)
                 var buildingMode = (byte) _value.GetStruct()["buildingMode"].GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (buildingMode));
+            return writeBuffer;
+        } else if( datapointType == KnxDatapointType.DPT_StatusLightingActuator ) { // Struct
+                var writeBuffer = new WriteBuffer();
+
+                // Simple Field (validactualvalue)
+                var validactualvalue = (bool) _value.GetStruct()["validactualvalue"].GetBool();
+                writeBuffer.WriteBit("", (validactualvalue));
+                // Simple Field (locked)
+                var locked = (bool) _value.GetStruct()["locked"].GetBool();
+                writeBuffer.WriteBit("", (locked));
+                // Simple Field (forced)
+                var forced = (bool) _value.GetStruct()["forced"].GetBool();
+                writeBuffer.WriteBit("", (forced));
+                // Simple Field (nightmodeactive)
+                var nightmodeactive = (bool) _value.GetStruct()["nightmodeactive"].GetBool();
+                writeBuffer.WriteBit("", (nightmodeactive));
+                // Simple Field (staircaselightingFunction)
+                var staircaselightingFunction = (bool) _value.GetStruct()["staircaselightingFunction"].GetBool();
+                writeBuffer.WriteBit("", (staircaselightingFunction));
+                // Simple Field (dimming)
+                var dimming = (bool) _value.GetStruct()["dimming"].GetBool();
+                writeBuffer.WriteBit("", (dimming));
+                // Simple Field (localoverride)
+                var localoverride = (bool) _value.GetStruct()["localoverride"].GetBool();
+                writeBuffer.WriteBit("", (localoverride));
+                // Simple Field (failure)
+                var failure = (bool) _value.GetStruct()["failure"].GetBool();
+                writeBuffer.WriteBit("", (failure));
+                // Simple Field (actualvalue)
+                var actualvalue = (byte) _value.GetStruct()["actualvalue"].GetByte();
+                writeBuffer.WriteByte("", 8, (byte) (actualvalue));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.DPT_Version ) { // Struct
                 var writeBuffer = new WriteBuffer();

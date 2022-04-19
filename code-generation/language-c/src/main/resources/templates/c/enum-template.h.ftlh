@@ -80,7 +80,7 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null();
 <#--
     Define the parse-method for elements of this tpye
 -->
-plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, ${helper.getCTypeName(type.name)}** message);
+plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, ${helper.getCTypeName(type.name)}* message);
 
 <#--
     Define the serialize-method for elements of this tpye

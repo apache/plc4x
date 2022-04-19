@@ -219,6 +219,12 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 
                 <#if case.name == "BitString">
                 *data_item = plc4c_data_create_${helper.getLanguageTypeNameForField(field)}_bit_string_data(${simpleField.name});
+                <#elseif case.name == "STRING">
+                    <#if simpleField.type.isVstringTypeReference()>
+                *data_item = plc4c_data_create_string_data(stringLength, ${simpleField.name});
+                    <#else>
+                *data_item = plc4c_data_create_string_data(${simpleField.type.asStringTypeReference().orElseThrow().sizeInBits}, ${simpleField.name});
+                    </#if>
                 <#else>
                 *data_item = plc4c_data_create_${helper.getLanguageTypeNameForField(field)}_data(${simpleField.name});
                 </#if>

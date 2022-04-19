@@ -58,20 +58,20 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_parse(plc4c_spi_r
   (*_message)->number_of_objects = numberOfObjects;
 
   // Simple Field (returnCode)
-  plc4c_s7_read_write_data_transport_error_code* returnCode;
+  plc4c_s7_read_write_data_transport_error_code returnCode;
   _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->return_code = *returnCode;
+  (*_message)->return_code = returnCode;
 
   // Simple Field (transportSize)
-  plc4c_s7_read_write_data_transport_size* transportSize;
+  plc4c_s7_read_write_data_transport_size transportSize;
   _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->transport_size = *transportSize;
+  (*_message)->transport_size = transportSize;
 
   // Const Field (DataLength)
   uint16_t DataLength = 0;

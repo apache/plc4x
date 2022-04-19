@@ -234,6 +234,20 @@
             </configuration>
           </execution>
           <execution>
+            <id>generate-driver-plc4x</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>plc4x</protocolName>
+              <protocolVersion>0</protocolVersion>
+              <languageName>c</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/generated-sources</outputDir>
+            </configuration>
+          </execution>
+          <execution>
             <id>generate-driver-s7</id>
             <phase>generate-sources</phase>
             <goals>
@@ -382,6 +396,13 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-plc4x</artifactId>
       <version>0.10.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>

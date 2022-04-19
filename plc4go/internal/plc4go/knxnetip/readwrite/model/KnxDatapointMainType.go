@@ -71,31 +71,32 @@ const (
 	KnxDatapointMainType_DPT_ELECTRICAL_ENERGY                             KnxDatapointMainType = 32
 	KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION                   KnxDatapointMainType = 33
 	KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM          KnxDatapointMainType = 34
-	KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION                        KnxDatapointMainType = 35
-	KnxDatapointMainType_DPT_ALARM_INFO                                    KnxDatapointMainType = 36
-	KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE                         KnxDatapointMainType = 37
-	KnxDatapointMainType_DPT_SCALING_SPEED                                 KnxDatapointMainType = 38
-	KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION               KnxDatapointMainType = 39
-	KnxDatapointMainType_DPT_MBUS_ADDRESS                                  KnxDatapointMainType = 40
-	KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB                             KnxDatapointMainType = 41
-	KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1                       KnxDatapointMainType = 42
-	KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY KnxDatapointMainType = 43
-	KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL                      KnxDatapointMainType = 44
-	KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT              KnxDatapointMainType = 45
-	KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT               KnxDatapointMainType = 46
-	KnxDatapointMainType_DPT_POSITIONS                                     KnxDatapointMainType = 47
-	KnxDatapointMainType_DPT_STATUS_32_BIT                                 KnxDatapointMainType = 48
-	KnxDatapointMainType_DPT_STATUS_48_BIT                                 KnxDatapointMainType = 49
-	KnxDatapointMainType_DPT_CONVERTER_STATUS                              KnxDatapointMainType = 50
-	KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT                         KnxDatapointMainType = 51
-	KnxDatapointMainType_DPT_BATTERY_INFORMATION                           KnxDatapointMainType = 52
-	KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION      KnxDatapointMainType = 53
-	KnxDatapointMainType_DPT_STATUS_24_BIT                                 KnxDatapointMainType = 54
-	KnxDatapointMainType_DPT_COLOUR_RGBW                                   KnxDatapointMainType = 55
-	KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW                         KnxDatapointMainType = 56
-	KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB                          KnxDatapointMainType = 57
-	KnxDatapointMainType_DPT_F32F32                                        KnxDatapointMainType = 58
-	KnxDatapointMainType_DPT_F16F16F16F16                                  KnxDatapointMainType = 59
+	KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM           KnxDatapointMainType = 35
+	KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION                        KnxDatapointMainType = 36
+	KnxDatapointMainType_DPT_ALARM_INFO                                    KnxDatapointMainType = 37
+	KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE                         KnxDatapointMainType = 38
+	KnxDatapointMainType_DPT_SCALING_SPEED                                 KnxDatapointMainType = 39
+	KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION               KnxDatapointMainType = 40
+	KnxDatapointMainType_DPT_MBUS_ADDRESS                                  KnxDatapointMainType = 41
+	KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB                             KnxDatapointMainType = 42
+	KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1                       KnxDatapointMainType = 43
+	KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY KnxDatapointMainType = 44
+	KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL                      KnxDatapointMainType = 45
+	KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT              KnxDatapointMainType = 46
+	KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT               KnxDatapointMainType = 47
+	KnxDatapointMainType_DPT_POSITIONS                                     KnxDatapointMainType = 48
+	KnxDatapointMainType_DPT_STATUS_32_BIT                                 KnxDatapointMainType = 49
+	KnxDatapointMainType_DPT_STATUS_48_BIT                                 KnxDatapointMainType = 50
+	KnxDatapointMainType_DPT_CONVERTER_STATUS                              KnxDatapointMainType = 51
+	KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT                         KnxDatapointMainType = 52
+	KnxDatapointMainType_DPT_BATTERY_INFORMATION                           KnxDatapointMainType = 53
+	KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION      KnxDatapointMainType = 54
+	KnxDatapointMainType_DPT_STATUS_24_BIT                                 KnxDatapointMainType = 55
+	KnxDatapointMainType_DPT_COLOUR_RGBW                                   KnxDatapointMainType = 56
+	KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW                         KnxDatapointMainType = 57
+	KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB                          KnxDatapointMainType = 58
+	KnxDatapointMainType_DPT_F32F32                                        KnxDatapointMainType = 59
+	KnxDatapointMainType_DPT_F16F16F16F16                                  KnxDatapointMainType = 60
 )
 
 var KnxDatapointMainTypeValues []KnxDatapointMainType
@@ -138,6 +139,7 @@ func init() {
 		KnxDatapointMainType_DPT_ELECTRICAL_ENERGY,
 		KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION,
 		KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM,
+		KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM,
 		KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION,
 		KnxDatapointMainType_DPT_ALARM_INFO,
 		KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE,
@@ -286,23 +288,23 @@ func (e KnxDatapointMainType) Number() uint16 {
 		}
 	case 35:
 		{ /* '35' */
-			return 217
+			return 207
 		}
 	case 36:
 		{ /* '36' */
-			return 219
+			return 217
 		}
 	case 37:
 		{ /* '37' */
-			return 222
+			return 219
 		}
 	case 38:
 		{ /* '38' */
-			return 225
+			return 222
 		}
 	case 39:
 		{ /* '39' */
-			return 229
+			return 225
 		}
 	case 4:
 		{ /* '4' */
@@ -310,43 +312,43 @@ func (e KnxDatapointMainType) Number() uint16 {
 		}
 	case 40:
 		{ /* '40' */
-			return 230
+			return 229
 		}
 	case 41:
 		{ /* '41' */
-			return 232
+			return 230
 		}
 	case 42:
 		{ /* '42' */
-			return 234
+			return 232
 		}
 	case 43:
 		{ /* '43' */
-			return 235
+			return 234
 		}
 	case 44:
 		{ /* '44' */
-			return 236
+			return 235
 		}
 	case 45:
 		{ /* '45' */
-			return 237
+			return 236
 		}
 	case 46:
 		{ /* '46' */
-			return 238
+			return 237
 		}
 	case 47:
 		{ /* '47' */
-			return 240
+			return 238
 		}
 	case 48:
 		{ /* '48' */
-			return 241
+			return 240
 		}
 	case 49:
 		{ /* '49' */
-			return 242
+			return 241
 		}
 	case 5:
 		{ /* '5' */
@@ -354,47 +356,51 @@ func (e KnxDatapointMainType) Number() uint16 {
 		}
 	case 50:
 		{ /* '50' */
-			return 244
+			return 242
 		}
 	case 51:
 		{ /* '51' */
-			return 245
+			return 244
 		}
 	case 52:
 		{ /* '52' */
-			return 246
+			return 245
 		}
 	case 53:
 		{ /* '53' */
-			return 249
+			return 246
 		}
 	case 54:
 		{ /* '54' */
-			return 250
+			return 249
 		}
 	case 55:
 		{ /* '55' */
-			return 251
+			return 250
 		}
 	case 56:
 		{ /* '56' */
-			return 252
+			return 251
 		}
 	case 57:
 		{ /* '57' */
-			return 254
+			return 252
 		}
 	case 58:
 		{ /* '58' */
-			return 255
+			return 254
 		}
 	case 59:
 		{ /* '59' */
-			return 275
+			return 255
 		}
 	case 6:
 		{ /* '6' */
 			return 1
+		}
+	case 60:
+		{ /* '60' */
+			return 275
 		}
 	case 7:
 		{ /* '7' */
@@ -544,23 +550,23 @@ func (e KnxDatapointMainType) Name() string {
 		}
 	case 35:
 		{ /* '35' */
-			return "datapoint type version"
+			return "8-bit unsigned value & 8-bit enum"
 		}
 	case 36:
 		{ /* '36' */
-			return "alarm info"
+			return "datapoint type version"
 		}
 	case 37:
 		{ /* '37' */
-			return "3x 2-byte float value"
+			return "alarm info"
 		}
 	case 38:
 		{ /* '38' */
-			return "scaling speed"
+			return "3x 2-byte float value"
 		}
 	case 39:
 		{ /* '39' */
-			return "4-1-1 byte combined information"
+			return "scaling speed"
 		}
 	case 4:
 		{ /* '4' */
@@ -568,27 +574,27 @@ func (e KnxDatapointMainType) Name() string {
 		}
 	case 40:
 		{ /* '40' */
-			return "MBus address"
+			return "4-1-1 byte combined information"
 		}
 	case 41:
 		{ /* '41' */
-			return "3-byte colour RGB"
+			return "MBus address"
 		}
 	case 42:
 		{ /* '42' */
-			return "language code ISO 639-1"
+			return "3-byte colour RGB"
 		}
 	case 43:
 		{ /* '43' */
-			return "Signed value with classification and validity"
+			return "language code ISO 639-1"
 		}
 	case 44:
 		{ /* '44' */
-			return "Prioritised Mode Control"
+			return "Signed value with classification and validity"
 		}
 	case 45:
 		{ /* '45' */
-			return "configuration/ diagnostics"
+			return "Prioritised Mode Control"
 		}
 	case 46:
 		{ /* '46' */
@@ -596,11 +602,11 @@ func (e KnxDatapointMainType) Name() string {
 		}
 	case 47:
 		{ /* '47' */
-			return "positions"
+			return "configuration/ diagnostics"
 		}
 	case 48:
 		{ /* '48' */
-			return "status"
+			return "positions"
 		}
 	case 49:
 		{ /* '49' */
@@ -612,47 +618,51 @@ func (e KnxDatapointMainType) Name() string {
 		}
 	case 50:
 		{ /* '50' */
-			return "Converter Status"
+			return "status"
 		}
 	case 51:
 		{ /* '51' */
-			return "Converter test result"
+			return "Converter Status"
 		}
 	case 52:
 		{ /* '52' */
-			return "Battery Information"
+			return "Converter test result"
 		}
 	case 53:
 		{ /* '53' */
-			return "brightness colour temperature transition"
+			return "Battery Information"
 		}
 	case 54:
 		{ /* '54' */
-			return "status"
+			return "brightness colour temperature transition"
 		}
 	case 55:
 		{ /* '55' */
-			return "Colour RGBW"
+			return "status"
 		}
 	case 56:
 		{ /* '56' */
-			return "Relative Control RGBW"
+			return "Colour RGBW"
 		}
 	case 57:
 		{ /* '57' */
-			return "Relative Control RGB"
+			return "Relative Control RGBW"
 		}
 	case 58:
 		{ /* '58' */
-			return "F32F32"
+			return "Relative Control RGB"
 		}
 	case 59:
 		{ /* '59' */
-			return "F16F16F16F16"
+			return "F32F32"
 		}
 	case 6:
 		{ /* '6' */
 			return "1-bit"
+		}
+	case 60:
+		{ /* '60' */
+			return "F16F16F16F16"
 		}
 	case 7:
 		{ /* '7' */
@@ -806,7 +816,7 @@ func (e KnxDatapointMainType) SizeInBits() uint8 {
 		}
 	case 36:
 		{ /* '36' */
-			return 48
+			return 16
 		}
 	case 37:
 		{ /* '37' */
@@ -814,11 +824,11 @@ func (e KnxDatapointMainType) SizeInBits() uint8 {
 		}
 	case 38:
 		{ /* '38' */
-			return 24
+			return 48
 		}
 	case 39:
 		{ /* '39' */
-			return 48
+			return 24
 		}
 	case 4:
 		{ /* '4' */
@@ -826,43 +836,43 @@ func (e KnxDatapointMainType) SizeInBits() uint8 {
 		}
 	case 40:
 		{ /* '40' */
-			return 64
+			return 48
 		}
 	case 41:
 		{ /* '41' */
-			return 24
+			return 64
 		}
 	case 42:
 		{ /* '42' */
-			return 16
+			return 24
 		}
 	case 43:
 		{ /* '43' */
-			return 48
+			return 16
 		}
 	case 44:
 		{ /* '44' */
-			return 8
+			return 48
 		}
 	case 45:
 		{ /* '45' */
-			return 16
+			return 8
 		}
 	case 46:
 		{ /* '46' */
-			return 8
+			return 16
 		}
 	case 47:
 		{ /* '47' */
-			return 24
+			return 8
 		}
 	case 48:
 		{ /* '48' */
-			return 32
+			return 24
 		}
 	case 49:
 		{ /* '49' */
-			return 48
+			return 32
 		}
 	case 5:
 		{ /* '5' */
@@ -870,39 +880,39 @@ func (e KnxDatapointMainType) SizeInBits() uint8 {
 		}
 	case 50:
 		{ /* '50' */
-			return 16
+			return 48
 		}
 	case 51:
 		{ /* '51' */
-			return 48
+			return 16
 		}
 	case 52:
 		{ /* '52' */
-			return 16
+			return 48
 		}
 	case 53:
 		{ /* '53' */
-			return 48
+			return 16
 		}
 	case 54:
 		{ /* '54' */
-			return 24
+			return 48
 		}
 	case 55:
 		{ /* '55' */
-			return 48
+			return 24
 		}
 	case 56:
 		{ /* '56' */
-			return 40
+			return 48
 		}
 	case 57:
 		{ /* '57' */
-			return 24
+			return 40
 		}
 	case 58:
 		{ /* '58' */
-			return 64
+			return 24
 		}
 	case 59:
 		{ /* '59' */
@@ -911,6 +921,10 @@ func (e KnxDatapointMainType) SizeInBits() uint8 {
 	case 6:
 		{ /* '6' */
 			return 1
+		}
+	case 60:
+		{ /* '60' */
+			return 64
 		}
 	case 7:
 		{ /* '7' */
@@ -1000,61 +1014,63 @@ func KnxDatapointMainTypeByValue(value uint16) KnxDatapointMainType {
 	case 34:
 		return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
 	case 35:
-		return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION
+		return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
 	case 36:
-		return KnxDatapointMainType_DPT_ALARM_INFO
+		return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION
 	case 37:
-		return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE
+		return KnxDatapointMainType_DPT_ALARM_INFO
 	case 38:
-		return KnxDatapointMainType_DPT_SCALING_SPEED
+		return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE
 	case 39:
-		return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
+		return KnxDatapointMainType_DPT_SCALING_SPEED
 	case 4:
 		return KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE
 	case 40:
-		return KnxDatapointMainType_DPT_MBUS_ADDRESS
+		return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
 	case 41:
-		return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB
+		return KnxDatapointMainType_DPT_MBUS_ADDRESS
 	case 42:
-		return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1
+		return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB
 	case 43:
-		return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
+		return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1
 	case 44:
-		return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL
+		return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
 	case 45:
-		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
+		return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL
 	case 46:
-		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
+		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
 	case 47:
-		return KnxDatapointMainType_DPT_POSITIONS
+		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
 	case 48:
-		return KnxDatapointMainType_DPT_STATUS_32_BIT
+		return KnxDatapointMainType_DPT_POSITIONS
 	case 49:
-		return KnxDatapointMainType_DPT_STATUS_48_BIT
+		return KnxDatapointMainType_DPT_STATUS_32_BIT
 	case 5:
 		return KnxDatapointMainType_DPT_8_BYTE_FLOAT_VALUE
 	case 50:
-		return KnxDatapointMainType_DPT_CONVERTER_STATUS
+		return KnxDatapointMainType_DPT_STATUS_48_BIT
 	case 51:
-		return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT
+		return KnxDatapointMainType_DPT_CONVERTER_STATUS
 	case 52:
-		return KnxDatapointMainType_DPT_BATTERY_INFORMATION
+		return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT
 	case 53:
-		return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
+		return KnxDatapointMainType_DPT_BATTERY_INFORMATION
 	case 54:
-		return KnxDatapointMainType_DPT_STATUS_24_BIT
+		return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
 	case 55:
-		return KnxDatapointMainType_DPT_COLOUR_RGBW
+		return KnxDatapointMainType_DPT_STATUS_24_BIT
 	case 56:
-		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW
+		return KnxDatapointMainType_DPT_COLOUR_RGBW
 	case 57:
-		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB
+		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW
 	case 58:
-		return KnxDatapointMainType_DPT_F32F32
+		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB
 	case 59:
-		return KnxDatapointMainType_DPT_F16F16F16F16
+		return KnxDatapointMainType_DPT_F32F32
 	case 6:
 		return KnxDatapointMainType_DPT_1_BIT
+	case 60:
+		return KnxDatapointMainType_DPT_F16F16F16F16
 	case 7:
 		return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
 	case 8:
@@ -1125,6 +1141,8 @@ func KnxDatapointMainTypeByName(value string) KnxDatapointMainType {
 		return KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION
 	case "DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM":
 		return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+	case "DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM":
+		return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
 	case "DPT_DATAPOINT_TYPE_VERSION":
 		return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION
 	case "DPT_ALARM_INFO":
@@ -1133,10 +1151,10 @@ func KnxDatapointMainTypeByName(value string) KnxDatapointMainType {
 		return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE
 	case "DPT_SCALING_SPEED":
 		return KnxDatapointMainType_DPT_SCALING_SPEED
-	case "DPT_4_1_1_BYTE_COMBINED_INFORMATION":
-		return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
 	case "DPT_12_BYTE_SIGNED_VALUE":
 		return KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE
+	case "DPT_4_1_1_BYTE_COMBINED_INFORMATION":
+		return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
 	case "DPT_MBUS_ADDRESS":
 		return KnxDatapointMainType_DPT_MBUS_ADDRESS
 	case "DPT_3_BYTE_COLOUR_RGB":
@@ -1155,10 +1173,10 @@ func KnxDatapointMainTypeByName(value string) KnxDatapointMainType {
 		return KnxDatapointMainType_DPT_POSITIONS
 	case "DPT_STATUS_32_BIT":
 		return KnxDatapointMainType_DPT_STATUS_32_BIT
-	case "DPT_STATUS_48_BIT":
-		return KnxDatapointMainType_DPT_STATUS_48_BIT
 	case "DPT_8_BYTE_FLOAT_VALUE":
 		return KnxDatapointMainType_DPT_8_BYTE_FLOAT_VALUE
+	case "DPT_STATUS_48_BIT":
+		return KnxDatapointMainType_DPT_STATUS_48_BIT
 	case "DPT_CONVERTER_STATUS":
 		return KnxDatapointMainType_DPT_CONVERTER_STATUS
 	case "DPT_CONVERTER_TEST_RESULT":
@@ -1177,10 +1195,10 @@ func KnxDatapointMainTypeByName(value string) KnxDatapointMainType {
 		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB
 	case "DPT_F32F32":
 		return KnxDatapointMainType_DPT_F32F32
-	case "DPT_F16F16F16F16":
-		return KnxDatapointMainType_DPT_F16F16F16F16
 	case "DPT_1_BIT":
 		return KnxDatapointMainType_DPT_1_BIT
+	case "DPT_F16F16F16F16":
+		return KnxDatapointMainType_DPT_F16F16F16F16
 	case "DPT_1_BIT_CONTROLLED":
 		return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
 	case "DPT_3_BIT_CONTROLLED":
@@ -1290,6 +1308,8 @@ func (e KnxDatapointMainType) name() string {
 		return "DPT_24_TIMES_CHANNEL_ACTIVATION"
 	case KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM:
 		return "DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM"
+	case KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM:
+		return "DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM"
 	case KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION:
 		return "DPT_DATAPOINT_TYPE_VERSION"
 	case KnxDatapointMainType_DPT_ALARM_INFO:
@@ -1298,10 +1318,10 @@ func (e KnxDatapointMainType) name() string {
 		return "DPT_3X_2_BYTE_FLOAT_VALUE"
 	case KnxDatapointMainType_DPT_SCALING_SPEED:
 		return "DPT_SCALING_SPEED"
-	case KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION:
-		return "DPT_4_1_1_BYTE_COMBINED_INFORMATION"
 	case KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE:
 		return "DPT_12_BYTE_SIGNED_VALUE"
+	case KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION:
+		return "DPT_4_1_1_BYTE_COMBINED_INFORMATION"
 	case KnxDatapointMainType_DPT_MBUS_ADDRESS:
 		return "DPT_MBUS_ADDRESS"
 	case KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB:
@@ -1320,10 +1340,10 @@ func (e KnxDatapointMainType) name() string {
 		return "DPT_POSITIONS"
 	case KnxDatapointMainType_DPT_STATUS_32_BIT:
 		return "DPT_STATUS_32_BIT"
-	case KnxDatapointMainType_DPT_STATUS_48_BIT:
-		return "DPT_STATUS_48_BIT"
 	case KnxDatapointMainType_DPT_8_BYTE_FLOAT_VALUE:
 		return "DPT_8_BYTE_FLOAT_VALUE"
+	case KnxDatapointMainType_DPT_STATUS_48_BIT:
+		return "DPT_STATUS_48_BIT"
 	case KnxDatapointMainType_DPT_CONVERTER_STATUS:
 		return "DPT_CONVERTER_STATUS"
 	case KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT:
@@ -1342,10 +1362,10 @@ func (e KnxDatapointMainType) name() string {
 		return "DPT_RELATIVE_CONTROL_RGB"
 	case KnxDatapointMainType_DPT_F32F32:
 		return "DPT_F32F32"
-	case KnxDatapointMainType_DPT_F16F16F16F16:
-		return "DPT_F16F16F16F16"
 	case KnxDatapointMainType_DPT_1_BIT:
 		return "DPT_1_BIT"
+	case KnxDatapointMainType_DPT_F16F16F16F16:
+		return "DPT_F16F16F16F16"
 	case KnxDatapointMainType_DPT_1_BIT_CONTROLLED:
 		return "DPT_1_BIT_CONTROLLED"
 	case KnxDatapointMainType_DPT_3_BIT_CONTROLLED:

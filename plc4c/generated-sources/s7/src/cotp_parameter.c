@@ -84,12 +84,12 @@ if( parameterType == 0xC0 ) { /* COTPParameterTpduSize */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size;
 
   // Simple Field (tpduSize)
-  plc4c_s7_read_write_cotp_tpdu_size* tpduSize;
+  plc4c_s7_read_write_cotp_tpdu_size tpduSize;
   _res = plc4c_s7_read_write_cotp_tpdu_size_parse(readBuffer, (void*) &tpduSize);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->cotp_parameter_tpdu_size_tpdu_size = *tpduSize;
+  (*_message)->cotp_parameter_tpdu_size_tpdu_size = tpduSize;
   } else 
 if( parameterType == 0xC1 ) { /* COTPParameterCallingTsap */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_calling_tsap;

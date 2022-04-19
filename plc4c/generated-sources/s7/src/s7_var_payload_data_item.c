@@ -36,20 +36,20 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   }
 
   // Simple Field (returnCode)
-  plc4c_s7_read_write_data_transport_error_code* returnCode;
+  plc4c_s7_read_write_data_transport_error_code returnCode;
   _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->return_code = *returnCode;
+  (*_message)->return_code = returnCode;
 
   // Simple Field (transportSize)
-  plc4c_s7_read_write_data_transport_size* transportSize;
+  plc4c_s7_read_write_data_transport_size transportSize;
   _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->transport_size = *transportSize;
+  (*_message)->transport_size = transportSize;
 
   // Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint16_t dataLength = 0;
@@ -66,7 +66,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   }
   {
     // Count array
-    uint16_t itemCount = (uint16_t) ((plc4c_s7_read_write_data_transport_size_get_size_in_bits(*transportSize)) ? plc4c_spi_evaluation_helper_ceil((dataLength) / (8.0)) : dataLength);
+    uint16_t itemCount = (uint16_t) ((plc4c_s7_read_write_data_transport_size_get_size_in_bits(transportSize)) ? plc4c_spi_evaluation_helper_ceil((dataLength) / (8.0)) : dataLength);
     for(int curItem = 0; curItem < itemCount; curItem++) {
       
       char* _value = malloc(sizeof(char));

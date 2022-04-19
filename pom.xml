@@ -698,6 +698,7 @@
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
+        <inherited>false</inherited>
         <executions>
           <!-- Do some pre-build checks and report any findings to the user -->
           <execution>

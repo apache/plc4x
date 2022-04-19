@@ -121,7 +121,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         TypedField typedField = field.asTypedField().orElseThrow();
         TypeReference typeReference = typedField.getType();
         if (typeReference.isDataIoTypeReference()) {
-            return "plc4c_data*";
+            return "plc4c_data";
         }
         // If we reference a complex type subtype, we need to return a reference
         // to the parent as in C the subtypes don't actually exist.
@@ -664,7 +664,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
             return tracer + getCTypeName(lengthType.getName()) + "_length_in_bytes(" + lengthExpression + ")";
         } else if (variableLiteral.getName().equals("lastItem")) {
-            tracer = tracer.dive("lastitem");
+            tracer = tracer.dive("lastItem");
             return tracer + "lastItem";
             // If this literal references an Enum type, then we have to output it differently.
         } else if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
@@ -769,7 +769,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         else if (propertyTypeDefinition instanceof EnumTypeDefinition) {
             return getCTypeName(propertyTypeDefinition.getName()) +
                 "_get_" + camelCaseToSnakeCase(variableLiteral.getChild().get().getName()) +
-                "(*" + variableLiteral.getName() + ")";
+                "(" + variableLiteral.getName() + ")";
         }
         // Else ... generate a simple access path.
         StringBuilder sb = new StringBuilder(variableLiteral.getName());

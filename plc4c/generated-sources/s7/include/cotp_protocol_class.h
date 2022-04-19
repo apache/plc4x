@@ -45,7 +45,7 @@ typedef enum plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_pr
 // Get an empty NULL-struct
 plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_null();
 
-plc4c_return_code plc4c_s7_read_write_cotp_protocol_class_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_cotp_protocol_class** message);
+plc4c_return_code plc4c_s7_read_write_cotp_protocol_class_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_cotp_protocol_class* message);
 
 plc4c_return_code plc4c_s7_read_write_cotp_protocol_class_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_cotp_protocol_class* message);
 

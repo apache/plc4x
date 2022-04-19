@@ -100,12 +100,12 @@ if( addressType == 0x10 ) { /* S7AddressAny */
 
 
   // Simple Field (area)
-  plc4c_s7_read_write_memory_area* area;
+  plc4c_s7_read_write_memory_area area;
   _res = plc4c_s7_read_write_memory_area_parse(readBuffer, (void*) &area);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_address_any_area = *area;
+  (*_message)->s7_address_any_area = area;
 
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)

@@ -26,5 +26,7 @@ import (
 )
 
 func TestModbusParserSerializer(t *testing.T) {
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/modbus/ParserSerializerTestsuite.xml")
+	//testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/modbus/ascii/ParserSerializerTestsuite.xml")
+	//testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/modbus/rtu/ParserSerializerTestsuite.xml")
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/modbus/tcp/ParserSerializerTestsuite.xml")
 }

@@ -67,7 +67,7 @@ typedef enum plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_si
 // Get an empty NULL-struct
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_null();
 
-plc4c_return_code plc4c_s7_read_write_transport_size_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_transport_size** message);
+plc4c_return_code plc4c_s7_read_write_transport_size_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_transport_size* message);
 
 plc4c_return_code plc4c_s7_read_write_transport_size_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_transport_size* message);
 
