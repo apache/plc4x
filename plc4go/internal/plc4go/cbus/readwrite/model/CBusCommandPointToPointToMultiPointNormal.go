@@ -31,7 +31,7 @@ import (
 // Constant values.
 const CBusCommandPointToPointToMultiPointNormal_CR byte = 0xD
 
-// The data-structure of this message
+// CBusCommandPointToPointToMultiPointNormal is the data-structure of this message
 type CBusCommandPointToPointToMultiPointNormal struct {
 	*CBusPointToPointToMultipointCommand
 	Application ApplicationIdContainer
@@ -44,7 +44,7 @@ type CBusCommandPointToPointToMultiPointNormal struct {
 	Srchk bool
 }
 
-// The corresponding interface
+// ICBusCommandPointToPointToMultiPointNormal is the corresponding interface of CBusCommandPointToPointToMultiPointNormal
 type ICBusCommandPointToPointToMultiPointNormal interface {
 	ICBusPointToPointToMultipointCommand
 	// GetApplication returns Application (property field)
@@ -69,6 +69,7 @@ type ICBusCommandPointToPointToMultiPointNormal interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,6 +89,7 @@ func (m *CBusCommandPointToPointToMultiPointNormal) GetParent() *CBusPointToPoin
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *CBusCommandPointToPointToMultiPointNormal) GetApplication() ApplicationIdContainer {
 	return m.Application
 }
@@ -116,6 +118,7 @@ func (m *CBusCommandPointToPointToMultiPointNormal) GetAlpha() *Alpha {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *CBusCommandPointToPointToMultiPointNormal) GetCr() byte {
 	return CBusCommandPointToPointToMultiPointNormal_CR
 }

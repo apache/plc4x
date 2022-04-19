@@ -30,12 +30,12 @@ import (
 // Constant values.
 const DF1Symbol_MESSAGESTART uint8 = 0x10
 
-// The data-structure of this message
+// DF1Symbol is the data-structure of this message
 type DF1Symbol struct {
 	Child IDF1SymbolChild
 }
 
-// The corresponding interface
+// IDF1Symbol is the corresponding interface of DF1Symbol
 type IDF1Symbol interface {
 	// GetSymbolType returns SymbolType (discriminator field)
 	GetSymbolType() uint8
@@ -65,6 +65,7 @@ type IDF1SymbolChild interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *DF1Symbol) GetMessageStart() uint8 {
 	return DF1Symbol_MESSAGESTART
 }

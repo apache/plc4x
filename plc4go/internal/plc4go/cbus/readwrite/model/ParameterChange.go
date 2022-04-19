@@ -33,11 +33,11 @@ const ParameterChange_SPECIALCHAR2 byte = 0x3D
 const ParameterChange_CR byte = 0x0D
 const ParameterChange_LF byte = 0x0A
 
-// The data-structure of this message
+// ParameterChange is the data-structure of this message
 type ParameterChange struct {
 }
 
-// The corresponding interface
+// IParameterChange is the corresponding interface of ParameterChange
 type IParameterChange interface {
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -51,6 +51,7 @@ type IParameterChange interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *ParameterChange) GetSpecialChar1() byte {
 	return ParameterChange_SPECIALCHAR1
 }

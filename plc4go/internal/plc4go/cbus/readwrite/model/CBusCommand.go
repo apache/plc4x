@@ -30,7 +30,7 @@ import (
 // Constant values.
 const CBusCommand_INITIATOR byte = 0x5C
 
-// The data-structure of this message
+// CBusCommand is the data-structure of this message
 type CBusCommand struct {
 	Header *CBusHeader
 
@@ -39,7 +39,7 @@ type CBusCommand struct {
 	Child ICBusCommandChild
 }
 
-// The corresponding interface
+// ICBusCommand is the corresponding interface of CBusCommand
 type ICBusCommand interface {
 	// GetHeader returns Header (property field)
 	GetHeader() *CBusHeader
@@ -71,6 +71,7 @@ type ICBusCommandChild interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *CBusCommand) GetHeader() *CBusHeader {
 	return m.Header
 }
@@ -83,6 +84,7 @@ func (m *CBusCommand) GetHeader() *CBusHeader {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
+
 func (m *CBusCommand) GetDestinationAddressType() DestinationAddressType {
 	return DestinationAddressType(m.GetHeader().GetDestinationAddressType())
 }
@@ -95,6 +97,7 @@ func (m *CBusCommand) GetDestinationAddressType() DestinationAddressType {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *CBusCommand) GetInitiator() byte {
 	return CBusCommand_INITIATOR
 }

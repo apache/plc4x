@@ -31,14 +31,14 @@ import (
 const CALReply_CR byte = 0x0D
 const CALReply_LF byte = 0x0A
 
-// The data-structure of this message
+// CALReply is the data-structure of this message
 type CALReply struct {
 	CalType byte
 	CalData *CALData
 	Child   ICALReplyChild
 }
 
-// The corresponding interface
+// ICALReply is the corresponding interface of CALReply
 type ICALReply interface {
 	// GetCalType returns CalType (property field)
 	GetCalType() byte
@@ -70,6 +70,7 @@ type ICALReplyChild interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *CALReply) GetCalType() byte {
 	return m.CalType
 }
@@ -86,6 +87,7 @@ func (m *CALReply) GetCalData() *CALData {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *CALReply) GetCr() byte {
 	return CALReply_CR
 }

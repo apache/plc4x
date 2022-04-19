@@ -31,14 +31,14 @@ import (
 const IdentifyReplyCommandNetworkVoltage_DOT byte = 0x2C
 const IdentifyReplyCommandNetworkVoltage_V byte = 0x56
 
-// The data-structure of this message
+// IdentifyReplyCommandNetworkVoltage is the data-structure of this message
 type IdentifyReplyCommandNetworkVoltage struct {
 	*IdentifyReplyCommand
 	Volts             string
 	VoltsDecimalPlace string
 }
 
-// The corresponding interface
+// IIdentifyReplyCommandNetworkVoltage is the corresponding interface of IdentifyReplyCommandNetworkVoltage
 type IIdentifyReplyCommandNetworkVoltage interface {
 	IIdentifyReplyCommand
 	// GetVolts returns Volts (property field)
@@ -57,6 +57,7 @@ type IIdentifyReplyCommandNetworkVoltage interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
+
 func (m *IdentifyReplyCommandNetworkVoltage) GetAttribute() Attribute {
 	return Attribute_NetworkVoltage
 }
@@ -76,6 +77,7 @@ func (m *IdentifyReplyCommandNetworkVoltage) GetParent() *IdentifyReplyCommand {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *IdentifyReplyCommandNetworkVoltage) GetVolts() string {
 	return m.Volts
 }
@@ -92,6 +94,7 @@ func (m *IdentifyReplyCommandNetworkVoltage) GetVoltsDecimalPlace() string {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *IdentifyReplyCommandNetworkVoltage) GetDot() byte {
 	return IdentifyReplyCommandNetworkVoltage_DOT
 }

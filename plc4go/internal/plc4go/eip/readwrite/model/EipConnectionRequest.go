@@ -31,12 +31,12 @@ import (
 const EipConnectionRequest_PROTOCOLVERSION uint16 = 0x01
 const EipConnectionRequest_FLAGS uint16 = 0x00
 
-// The data-structure of this message
+// EipConnectionRequest is the data-structure of this message
 type EipConnectionRequest struct {
 	*EipPacket
 }
 
-// The corresponding interface
+// IEipConnectionRequest is the corresponding interface of EipConnectionRequest
 type IEipConnectionRequest interface {
 	IEipPacket
 	// GetLengthInBytes returns the length in bytes
@@ -51,6 +51,7 @@ type IEipConnectionRequest interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
+
 func (m *EipConnectionRequest) GetCommand() uint16 {
 	return 0x0065
 }
@@ -75,6 +76,7 @@ func (m *EipConnectionRequest) GetParent() *EipPacket {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *EipConnectionRequest) GetProtocolVersion() uint16 {
 	return EipConnectionRequest_PROTOCOLVERSION
 }

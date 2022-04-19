@@ -32,7 +32,7 @@ import (
 // Constant values.
 const CBusPointToMultiPointCommandStatus_CR byte = 0xD
 
-// The data-structure of this message
+// CBusPointToMultiPointCommandStatus is the data-structure of this message
 type CBusPointToMultiPointCommandStatus struct {
 	*CBusPointToMultiPointCommand
 	StatusRequest *StatusRequest
@@ -44,7 +44,7 @@ type CBusPointToMultiPointCommandStatus struct {
 	Srchk bool
 }
 
-// The corresponding interface
+// ICBusPointToMultiPointCommandStatus is the corresponding interface of CBusPointToMultiPointCommandStatus
 type ICBusPointToMultiPointCommandStatus interface {
 	ICBusPointToMultiPointCommand
 	// GetStatusRequest returns StatusRequest (property field)
@@ -67,6 +67,7 @@ type ICBusPointToMultiPointCommandStatus interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
@@ -84,6 +85,7 @@ func (m *CBusPointToMultiPointCommandStatus) GetParent() *CBusPointToMultiPointC
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *CBusPointToMultiPointCommandStatus) GetStatusRequest() *StatusRequest {
 	return m.StatusRequest
 }
@@ -108,6 +110,7 @@ func (m *CBusPointToMultiPointCommandStatus) GetAlpha() *Alpha {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *CBusPointToMultiPointCommandStatus) GetCr() byte {
 	return CBusPointToMultiPointCommandStatus_CR
 }

@@ -32,7 +32,7 @@ import (
 // Constant values.
 const S7Message_PROTOCOLID uint8 = 0x32
 
-// The data-structure of this message
+// S7Message is the data-structure of this message
 type S7Message struct {
 	TpduReference uint16
 	Parameter     *S7Parameter
@@ -40,7 +40,7 @@ type S7Message struct {
 	Child         IS7MessageChild
 }
 
-// The corresponding interface
+// IS7Message is the corresponding interface of S7Message
 type IS7Message interface {
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
@@ -76,6 +76,7 @@ type IS7MessageChild interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *S7Message) GetTpduReference() uint16 {
 	return m.TpduReference
 }
@@ -96,6 +97,7 @@ func (m *S7Message) GetPayload() *S7Payload {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *S7Message) GetProtocolId() uint8 {
 	return S7Message_PROTOCOLID
 }

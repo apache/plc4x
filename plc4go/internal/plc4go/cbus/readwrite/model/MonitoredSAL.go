@@ -32,14 +32,14 @@ import (
 const MonitoredSAL_CR byte = 0x0D
 const MonitoredSAL_LF byte = 0x0A
 
-// The data-structure of this message
+// MonitoredSAL is the data-structure of this message
 type MonitoredSAL struct {
 	SalType byte
 	SalData *SALData
 	Child   IMonitoredSALChild
 }
 
-// The corresponding interface
+// IMonitoredSAL is the corresponding interface of MonitoredSAL
 type IMonitoredSAL interface {
 	// GetSalType returns SalType (property field)
 	GetSalType() byte
@@ -71,6 +71,7 @@ type IMonitoredSALChild interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *MonitoredSAL) GetSalType() byte {
 	return m.SalType
 }
@@ -87,6 +88,7 @@ func (m *MonitoredSAL) GetSalData() *SALData {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *MonitoredSAL) GetCr() byte {
 	return MonitoredSAL_CR
 }

@@ -30,14 +30,14 @@ import (
 // Constant values.
 const ModbusPDUReadDeviceIdentificationRequest_MEITYPE uint8 = 0x0E
 
-// The data-structure of this message
+// ModbusPDUReadDeviceIdentificationRequest is the data-structure of this message
 type ModbusPDUReadDeviceIdentificationRequest struct {
 	*ModbusPDU
 	Level    ModbusDeviceInformationLevel
 	ObjectId uint8
 }
 
-// The corresponding interface
+// IModbusPDUReadDeviceIdentificationRequest is the corresponding interface of ModbusPDUReadDeviceIdentificationRequest
 type IModbusPDUReadDeviceIdentificationRequest interface {
 	IModbusPDU
 	// GetLevel returns Level (property field)
@@ -56,6 +56,7 @@ type IModbusPDUReadDeviceIdentificationRequest interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
+
 func (m *ModbusPDUReadDeviceIdentificationRequest) GetErrorFlag() bool {
 	return bool(false)
 }
@@ -83,6 +84,7 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) GetParent() *ModbusPDU {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *ModbusPDUReadDeviceIdentificationRequest) GetLevel() ModbusDeviceInformationLevel {
 	return m.Level
 }
@@ -99,6 +101,7 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) GetObjectId() uint8 {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *ModbusPDUReadDeviceIdentificationRequest) GetMeiType() uint8 {
 	return ModbusPDUReadDeviceIdentificationRequest_MEITYPE
 }

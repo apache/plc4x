@@ -31,7 +31,7 @@ import (
 const ExtendedFormatStatusReply_CR byte = 0x0D
 const ExtendedFormatStatusReply_LF byte = 0x0A
 
-// The data-structure of this message
+// ExtendedFormatStatusReply is the data-structure of this message
 type ExtendedFormatStatusReply struct {
 	StatusHeader *ExtendedStatusHeader
 	Coding       StatusCoding
@@ -41,7 +41,7 @@ type ExtendedFormatStatusReply struct {
 	Crc          *Checksum
 }
 
-// The corresponding interface
+// IExtendedFormatStatusReply is the corresponding interface of ExtendedFormatStatusReply
 type IExtendedFormatStatusReply interface {
 	// GetStatusHeader returns StatusHeader (property field)
 	GetStatusHeader() *ExtendedStatusHeader
@@ -67,6 +67,7 @@ type IExtendedFormatStatusReply interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *ExtendedFormatStatusReply) GetStatusHeader() *ExtendedStatusHeader {
 	return m.StatusHeader
 }
@@ -99,6 +100,7 @@ func (m *ExtendedFormatStatusReply) GetCrc() *Checksum {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *ExtendedFormatStatusReply) GetCr() byte {
 	return ExtendedFormatStatusReply_CR
 }

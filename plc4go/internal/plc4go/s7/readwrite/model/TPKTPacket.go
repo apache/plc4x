@@ -31,12 +31,12 @@ import (
 // Constant values.
 const TPKTPacket_PROTOCOLID uint8 = 0x03
 
-// The data-structure of this message
+// TPKTPacket is the data-structure of this message
 type TPKTPacket struct {
 	Payload *COTPPacket
 }
 
-// The corresponding interface
+// ITPKTPacket is the corresponding interface of TPKTPacket
 type ITPKTPacket interface {
 	// GetPayload returns Payload (property field)
 	GetPayload() *COTPPacket
@@ -52,6 +52,7 @@ type ITPKTPacket interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *TPKTPacket) GetPayload() *COTPPacket {
 	return m.Payload
 }
@@ -64,6 +65,7 @@ func (m *TPKTPacket) GetPayload() *COTPPacket {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *TPKTPacket) GetProtocolId() uint8 {
 	return TPKTPacket_PROTOCOLID
 }

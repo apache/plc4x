@@ -32,7 +32,7 @@ const CipExchange_ITEMCOUNT uint16 = 0x02
 const CipExchange_NULLPTR uint32 = 0x0
 const CipExchange_UNCONNECTEDDATA uint16 = 0x00B2
 
-// The data-structure of this message
+// CipExchange is the data-structure of this message
 type CipExchange struct {
 	Service *CipService
 
@@ -40,7 +40,7 @@ type CipExchange struct {
 	ExchangeLen uint16
 }
 
-// The corresponding interface
+// ICipExchange is the corresponding interface of CipExchange
 type ICipExchange interface {
 	// GetService returns Service (property field)
 	GetService() *CipService
@@ -56,6 +56,7 @@ type ICipExchange interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *CipExchange) GetService() *CipService {
 	return m.Service
 }
@@ -68,6 +69,7 @@ func (m *CipExchange) GetService() *CipService {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *CipExchange) GetItemCount() uint16 {
 	return CipExchange_ITEMCOUNT
 }

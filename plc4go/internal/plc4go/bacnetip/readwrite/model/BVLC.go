@@ -30,12 +30,12 @@ import (
 // Constant values.
 const BVLC_BACNETTYPE uint8 = 0x81
 
-// The data-structure of this message
+// BVLC is the data-structure of this message
 type BVLC struct {
 	Child IBVLCChild
 }
 
-// The corresponding interface
+// IBVLC is the corresponding interface of BVLC
 type IBVLC interface {
 	// GetBvlcFunction returns BvlcFunction (discriminator field)
 	GetBvlcFunction() uint8
@@ -67,6 +67,7 @@ type IBVLCChild interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
+
 func (m *BVLC) GetBvlcPayloadLength() uint16 {
 	return uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(4)))
 }
@@ -79,6 +80,7 @@ func (m *BVLC) GetBvlcPayloadLength() uint16 {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *BVLC) GetBacnetType() uint8 {
 	return BVLC_BACNETTYPE
 }

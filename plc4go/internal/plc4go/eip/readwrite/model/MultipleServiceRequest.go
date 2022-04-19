@@ -31,7 +31,7 @@ import (
 const MultipleServiceRequest_REQUESTPATHSIZE int8 = 0x02
 const MultipleServiceRequest_REQUESTPATH uint32 = 0x01240220
 
-// The data-structure of this message
+// MultipleServiceRequest is the data-structure of this message
 type MultipleServiceRequest struct {
 	*CipService
 	Data *Services
@@ -40,7 +40,7 @@ type MultipleServiceRequest struct {
 	ServiceLen uint16
 }
 
-// The corresponding interface
+// IMultipleServiceRequest is the corresponding interface of MultipleServiceRequest
 type IMultipleServiceRequest interface {
 	ICipService
 	// GetData returns Data (property field)
@@ -57,6 +57,7 @@ type IMultipleServiceRequest interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
+
 func (m *MultipleServiceRequest) GetService() uint8 {
 	return 0x0A
 }
@@ -76,6 +77,7 @@ func (m *MultipleServiceRequest) GetParent() *CipService {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *MultipleServiceRequest) GetData() *Services {
 	return m.Data
 }
@@ -88,6 +90,7 @@ func (m *MultipleServiceRequest) GetData() *Services {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *MultipleServiceRequest) GetRequestPathSize() int8 {
 	return MultipleServiceRequest_REQUESTPATHSIZE
 }

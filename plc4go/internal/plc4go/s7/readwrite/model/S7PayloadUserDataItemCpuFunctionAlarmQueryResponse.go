@@ -32,14 +32,14 @@ import (
 const S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_FUNCTIONID uint8 = 0x00
 const S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_NUMBERMESSAGEOBJ uint8 = 0x01
 
-// The data-structure of this message
+// S7PayloadUserDataItemCpuFunctionAlarmQueryResponse is the data-structure of this message
 type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse struct {
 	*S7PayloadUserDataItem
 	PudicfReturnCode    DataTransportErrorCode
 	PudicftransportSize DataTransportSize
 }
 
-// The corresponding interface
+// IS7PayloadUserDataItemCpuFunctionAlarmQueryResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
 type IS7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
 	IS7PayloadUserDataItem
 	// GetPudicfReturnCode returns PudicfReturnCode (property field)
@@ -58,6 +58,7 @@ type IS7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
+
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetCpuFunctionType() uint8 {
 	return 0x08
 }
@@ -88,6 +89,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetParent() *S7Payl
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetPudicfReturnCode() DataTransportErrorCode {
 	return m.PudicfReturnCode
 }
@@ -104,6 +106,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetPudicftransportS
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetFunctionId() uint8 {
 	return S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_FUNCTIONID
 }

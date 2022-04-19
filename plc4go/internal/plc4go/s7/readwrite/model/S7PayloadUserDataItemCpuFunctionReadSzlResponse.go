@@ -30,7 +30,7 @@ import (
 // Constant values.
 const S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH uint16 = uint16(28)
 
-// The data-structure of this message
+// S7PayloadUserDataItemCpuFunctionReadSzlResponse is the data-structure of this message
 type S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
 	*S7PayloadUserDataItem
 	SzlId    *SzlId
@@ -38,7 +38,7 @@ type S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
 	Items    []*SzlDataTreeItem
 }
 
-// The corresponding interface
+// IS7PayloadUserDataItemCpuFunctionReadSzlResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionReadSzlResponse
 type IS7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
 	IS7PayloadUserDataItem
 	// GetSzlId returns SzlId (property field)
@@ -59,6 +59,7 @@ type IS7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
+
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetCpuFunctionType() uint8 {
 	return 0x08
 }
@@ -89,6 +90,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetParent() *S7Payload
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetSzlId() *SzlId {
 	return m.SzlId
 }
@@ -109,6 +111,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetItems() []*SzlDataT
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetSzlItemLength() uint16 {
 	return S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH
 }

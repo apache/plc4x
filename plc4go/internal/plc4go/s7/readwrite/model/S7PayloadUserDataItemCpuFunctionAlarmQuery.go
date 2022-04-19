@@ -34,7 +34,7 @@ const S7PayloadUserDataItemCpuFunctionAlarmQuery_NUMBERMESSAGEOBJ uint8 = 0x01
 const S7PayloadUserDataItemCpuFunctionAlarmQuery_VARIABLESPEC uint8 = 0x12
 const S7PayloadUserDataItemCpuFunctionAlarmQuery_LENGTH uint8 = 0x08
 
-// The data-structure of this message
+// S7PayloadUserDataItemCpuFunctionAlarmQuery is the data-structure of this message
 type S7PayloadUserDataItemCpuFunctionAlarmQuery struct {
 	*S7PayloadUserDataItem
 	SyntaxId  SyntaxIdType
@@ -42,7 +42,7 @@ type S7PayloadUserDataItemCpuFunctionAlarmQuery struct {
 	AlarmType AlarmType
 }
 
-// The corresponding interface
+// IS7PayloadUserDataItemCpuFunctionAlarmQuery is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmQuery
 type IS7PayloadUserDataItemCpuFunctionAlarmQuery interface {
 	IS7PayloadUserDataItem
 	// GetSyntaxId returns SyntaxId (property field)
@@ -63,6 +63,7 @@ type IS7PayloadUserDataItemCpuFunctionAlarmQuery interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
+
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetCpuFunctionType() uint8 {
 	return 0x04
 }
@@ -93,6 +94,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetParent() *S7PayloadUserD
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetSyntaxId() SyntaxIdType {
 	return m.SyntaxId
 }
@@ -113,6 +115,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetAlarmType() AlarmType {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetFunctionId() uint8 {
 	return S7PayloadUserDataItemCpuFunctionAlarmQuery_FUNCTIONID
 }

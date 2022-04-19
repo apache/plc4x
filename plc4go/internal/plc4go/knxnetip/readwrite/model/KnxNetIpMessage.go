@@ -30,12 +30,12 @@ import (
 // Constant values.
 const KnxNetIpMessage_PROTOCOLVERSION uint8 = 0x10
 
-// The data-structure of this message
+// KnxNetIpMessage is the data-structure of this message
 type KnxNetIpMessage struct {
 	Child IKnxNetIpMessageChild
 }
 
-// The corresponding interface
+// IKnxNetIpMessage is the corresponding interface of KnxNetIpMessage
 type IKnxNetIpMessage interface {
 	// GetMsgType returns MsgType (discriminator field)
 	GetMsgType() uint16
@@ -65,6 +65,7 @@ type IKnxNetIpMessageChild interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *KnxNetIpMessage) GetProtocolVersion() uint8 {
 	return KnxNetIpMessage_PROTOCOLVERSION
 }

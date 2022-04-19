@@ -31,7 +31,7 @@ import (
 const AlarmMessageObjectAckType_VARIABLESPEC uint8 = 0x12
 const AlarmMessageObjectAckType_LENGTH uint8 = 0x08
 
-// The data-structure of this message
+// AlarmMessageObjectAckType is the data-structure of this message
 type AlarmMessageObjectAckType struct {
 	SyntaxId       SyntaxIdType
 	NumberOfValues uint8
@@ -40,7 +40,7 @@ type AlarmMessageObjectAckType struct {
 	AckStateComing *State
 }
 
-// The corresponding interface
+// IAlarmMessageObjectAckType is the corresponding interface of AlarmMessageObjectAckType
 type IAlarmMessageObjectAckType interface {
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
@@ -64,6 +64,7 @@ type IAlarmMessageObjectAckType interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *AlarmMessageObjectAckType) GetSyntaxId() SyntaxIdType {
 	return m.SyntaxId
 }
@@ -92,6 +93,7 @@ func (m *AlarmMessageObjectAckType) GetAckStateComing() *State {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *AlarmMessageObjectAckType) GetVariableSpec() uint8 {
 	return AlarmMessageObjectAckType_VARIABLESPEC
 }

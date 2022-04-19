@@ -30,13 +30,13 @@ import (
 // Constant values.
 const CEMIAdditionalInformationRelativeTimestamp_LEN uint8 = uint8(2)
 
-// The data-structure of this message
+// CEMIAdditionalInformationRelativeTimestamp is the data-structure of this message
 type CEMIAdditionalInformationRelativeTimestamp struct {
 	*CEMIAdditionalInformation
 	RelativeTimestamp *RelativeTimestamp
 }
 
-// The corresponding interface
+// ICEMIAdditionalInformationRelativeTimestamp is the corresponding interface of CEMIAdditionalInformationRelativeTimestamp
 type ICEMIAdditionalInformationRelativeTimestamp interface {
 	ICEMIAdditionalInformation
 	// GetRelativeTimestamp returns RelativeTimestamp (property field)
@@ -53,6 +53,7 @@ type ICEMIAdditionalInformationRelativeTimestamp interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
+
 func (m *CEMIAdditionalInformationRelativeTimestamp) GetAdditionalInformationType() uint8 {
 	return 0x04
 }
@@ -73,6 +74,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) GetParent() *CEMIAdditional
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *CEMIAdditionalInformationRelativeTimestamp) GetRelativeTimestamp() *RelativeTimestamp {
 	return m.RelativeTimestamp
 }
@@ -85,6 +87,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) GetRelativeTimestamp() *Rel
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *CEMIAdditionalInformationRelativeTimestamp) GetLen() uint8 {
 	return CEMIAdditionalInformationRelativeTimestamp_LEN
 }

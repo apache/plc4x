@@ -80,7 +80,7 @@ const ${type.name}_${field.name?upper_case} ${helper.getLanguageTypeNameForField
 	</#list>
 </#if>
 
-// The data-structure of this message
+// ${type.name} is the data-structure of this message
 type ${type.name} struct {
 <#if type.parentType.isPresent()>
 	*${type.parentType.orElseThrow().name}
@@ -106,7 +106,7 @@ type ${type.name} struct {
 </#if>
 }
 
-// The corresponding interface
+// I${type.name} is the corresponding interface of ${type.name}
 type I${type.name} interface {
 <#if type.isDiscriminatedChildTypeDefinition()>
 	I${type.parentType.orElseThrow().name?cap_first}
@@ -144,6 +144,7 @@ type I${type.name} interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
+
 	<#list discriminatedChildType.getDiscriminatorMap() as discriminatorName, discriminatorTerm>
 		<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
@@ -237,6 +238,7 @@ func(m *${type.name}) GetParent() *${type.parentType.orElseThrow().name} {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 	<#list type.propertyFields as field>
     	<#assign typeRef=field.asTypedField().orElseThrow().type>
 func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
@@ -254,6 +256,7 @@ func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAcce
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
+
 	<#list type.virtualFields as field>
 		<#assign typeRef=field.asTypedField().orElseThrow().type>
 func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
@@ -275,6 +278,7 @@ func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAcce
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 	<#list type.constFields as field>
 		<#assign typeRef=field.asTypedField().orElseThrow().type>
 func (m *${type.name}) Get${field.name?cap_first}() ${helper.getLanguageTypeNameForTypeReference(typeRef)} {

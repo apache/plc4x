@@ -31,12 +31,12 @@ import (
 const S7DataAlarmMessage_FUNCTIONID uint8 = 0x00
 const S7DataAlarmMessage_NUMBERMESSAGEOBJ uint8 = 0x01
 
-// The data-structure of this message
+// S7DataAlarmMessage is the data-structure of this message
 type S7DataAlarmMessage struct {
 	Child IS7DataAlarmMessageChild
 }
 
-// The corresponding interface
+// IS7DataAlarmMessage is the corresponding interface of S7DataAlarmMessage
 type IS7DataAlarmMessage interface {
 	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
 	GetCpuFunctionType() uint8
@@ -66,6 +66,7 @@ type IS7DataAlarmMessageChild interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *S7DataAlarmMessage) GetFunctionId() uint8 {
 	return S7DataAlarmMessage_FUNCTIONID
 }

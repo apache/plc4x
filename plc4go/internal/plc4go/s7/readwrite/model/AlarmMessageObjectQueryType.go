@@ -31,7 +31,7 @@ import (
 // Constant values.
 const AlarmMessageObjectQueryType_VARIABLESPEC uint8 = 0x12
 
-// The data-structure of this message
+// AlarmMessageObjectQueryType is the data-structure of this message
 type AlarmMessageObjectQueryType struct {
 	LengthDataset  uint8
 	EventState     *State
@@ -43,7 +43,7 @@ type AlarmMessageObjectQueryType struct {
 	ValueGoing     *AssociatedValueType
 }
 
-// The corresponding interface
+// IAlarmMessageObjectQueryType is the corresponding interface of AlarmMessageObjectQueryType
 type IAlarmMessageObjectQueryType interface {
 	// GetLengthDataset returns LengthDataset (property field)
 	GetLengthDataset() uint8
@@ -73,6 +73,7 @@ type IAlarmMessageObjectQueryType interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *AlarmMessageObjectQueryType) GetLengthDataset() uint8 {
 	return m.LengthDataset
 }
@@ -113,6 +114,7 @@ func (m *AlarmMessageObjectQueryType) GetValueGoing() *AssociatedValueType {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *AlarmMessageObjectQueryType) GetVariableSpec() uint8 {
 	return AlarmMessageObjectQueryType_VARIABLESPEC
 }

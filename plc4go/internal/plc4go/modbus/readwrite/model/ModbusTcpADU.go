@@ -30,7 +30,7 @@ import (
 // Constant values.
 const ModbusTcpADU_PROTOCOLIDENTIFIER uint16 = 0x0000
 
-// The data-structure of this message
+// ModbusTcpADU is the data-structure of this message
 type ModbusTcpADU struct {
 	*ModbusADU
 	TransactionIdentifier uint16
@@ -41,7 +41,7 @@ type ModbusTcpADU struct {
 	Response bool
 }
 
-// The corresponding interface
+// IModbusTcpADU is the corresponding interface of ModbusTcpADU
 type IModbusTcpADU interface {
 	IModbusADU
 	// GetTransactionIdentifier returns TransactionIdentifier (property field)
@@ -62,6 +62,7 @@ type IModbusTcpADU interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
+
 func (m *ModbusTcpADU) GetDriverType() DriverType {
 	return DriverType_MODBUS_TCP
 }
@@ -81,6 +82,7 @@ func (m *ModbusTcpADU) GetParent() *ModbusADU {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *ModbusTcpADU) GetTransactionIdentifier() uint16 {
 	return m.TransactionIdentifier
 }
@@ -101,6 +103,7 @@ func (m *ModbusTcpADU) GetPdu() *ModbusPDU {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *ModbusTcpADU) GetProtocolIdentifier() uint16 {
 	return ModbusTcpADU_PROTOCOLIDENTIFIER
 }

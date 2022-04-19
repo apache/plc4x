@@ -30,7 +30,7 @@ import (
 // Constant values.
 const CEMIAdditionalInformationBusmonitorInfo_LEN uint8 = uint8(1)
 
-// The data-structure of this message
+// CEMIAdditionalInformationBusmonitorInfo is the data-structure of this message
 type CEMIAdditionalInformationBusmonitorInfo struct {
 	*CEMIAdditionalInformation
 	FrameErrorFlag  bool
@@ -41,7 +41,7 @@ type CEMIAdditionalInformationBusmonitorInfo struct {
 	SequenceNumber  uint8
 }
 
-// The corresponding interface
+// ICEMIAdditionalInformationBusmonitorInfo is the corresponding interface of CEMIAdditionalInformationBusmonitorInfo
 type ICEMIAdditionalInformationBusmonitorInfo interface {
 	ICEMIAdditionalInformation
 	// GetFrameErrorFlag returns FrameErrorFlag (property field)
@@ -68,6 +68,7 @@ type ICEMIAdditionalInformationBusmonitorInfo interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
+
 func (m *CEMIAdditionalInformationBusmonitorInfo) GetAdditionalInformationType() uint8 {
 	return 0x03
 }
@@ -88,6 +89,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) GetParent() *CEMIAdditionalInf
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *CEMIAdditionalInformationBusmonitorInfo) GetFrameErrorFlag() bool {
 	return m.FrameErrorFlag
 }
@@ -120,6 +122,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) GetSequenceNumber() uint8 {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *CEMIAdditionalInformationBusmonitorInfo) GetLen() uint8 {
 	return CEMIAdditionalInformationBusmonitorInfo_LEN
 }

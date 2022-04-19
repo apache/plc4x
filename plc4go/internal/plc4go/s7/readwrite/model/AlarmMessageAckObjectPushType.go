@@ -30,7 +30,7 @@ import (
 // Constant values.
 const AlarmMessageAckObjectPushType_VARIABLESPEC uint8 = 0x12
 
-// The data-structure of this message
+// AlarmMessageAckObjectPushType is the data-structure of this message
 type AlarmMessageAckObjectPushType struct {
 	LengthSpec     uint8
 	SyntaxId       SyntaxIdType
@@ -40,7 +40,7 @@ type AlarmMessageAckObjectPushType struct {
 	AckStateComing *State
 }
 
-// The corresponding interface
+// IAlarmMessageAckObjectPushType is the corresponding interface of AlarmMessageAckObjectPushType
 type IAlarmMessageAckObjectPushType interface {
 	// GetLengthSpec returns LengthSpec (property field)
 	GetLengthSpec() uint8
@@ -66,6 +66,7 @@ type IAlarmMessageAckObjectPushType interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
 func (m *AlarmMessageAckObjectPushType) GetLengthSpec() uint8 {
 	return m.LengthSpec
 }
@@ -98,6 +99,7 @@ func (m *AlarmMessageAckObjectPushType) GetAckStateComing() *State {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
+
 func (m *AlarmMessageAckObjectPushType) GetVariableSpec() uint8 {
 	return AlarmMessageAckObjectPushType_VARIABLESPEC
 }
