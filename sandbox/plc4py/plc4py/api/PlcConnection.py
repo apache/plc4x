@@ -17,7 +17,9 @@
 # under the License.
 #
 from abc import abstractmethod
+from typing import Awaitable
 
+from plc4py.api.messages.PlcResponse import PlcResponse
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder
 from plc4py.api.exceptions.exceptions import PlcConnectionException
 from plc4py.utils.GenericTypes import GenericGenerator
@@ -54,5 +56,14 @@ class PlcConnection(GenericGenerator):
     def read_request_builder(self) -> ReadRequestBuilder:
         """
         :return: read request builder.
+        """
+        pass
+
+    @abstractmethod
+    def execute(self, PlcRequest) -> Awaitable[PlcResponse]:
+        """
+        Executes a PlcRequest as long as it's already connected
+        :param PlcRequest: Plc Request to execute
+        :return: The response from the Plc/Device
         """
         pass

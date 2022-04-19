@@ -16,3 +16,12 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from dataclasses import dataclass
+
+from plc4py.api.value.PlcValue import PlcValue
+
+
+@dataclass
+class PlcBOOL(PlcValue[bool]):
+    def get_bool(self):
+        return self.value

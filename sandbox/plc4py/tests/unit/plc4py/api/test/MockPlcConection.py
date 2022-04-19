@@ -16,10 +16,14 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+import asyncio
 from dataclasses import dataclass
+from typing import Awaitable
 
 from plc4py.api.PlcConnection import PlcConnection
-from plc4py.api.messages.PlcRequest import ReadRequestBuilder
+from plc4py.api.messages.PlcRequest import ReadRequestBuilder, PlcReadRequest
+from plc4py.api.messages.PlcResponse import PlcReadResponse, PlcResponse
+from plc4py.api.value.PlcValue import PlcResponseCode
 from tests.unit.plc4py.api.test.MockReadRequestBuilder import MockReadRequestBuilder
 
 
@@ -53,3 +57,27 @@ class MockPlcConnection(PlcConnection):
         :return: read request builder.
         """
         return MockReadRequestBuilder()
+
+    def _default_failed_request(
+        self, code: PlcResponseCode
+    ) -> Awaitable[PlcReadResponse]:
+        """
+        Returns a default PlcResponse, mainly used in case of a failed request
+        :param code: The response code to return
+        :return: The PlcResponse
+        """
+        loop = asyncio.get_running_loop()
+        fut = loop.create_future()
+        fut.set_result(PlcResponse(code))
+        return fut
+
+    def execute(self, request: PlcReadRequest) -> Awaitable[PlcReadResponse]:
+        """
+        Executes a PlcRequest as long as it's already connected
+        :param PlcRequest: Plc Request to execute
+        :return: The response from the Plc/Device
+        """
+        if not self.is_connected():
+            return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
+
+        return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)

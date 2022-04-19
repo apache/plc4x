@@ -16,14 +16,38 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+
+from dataclasses import dataclass, field
 from typing import Union
 
-from plc4py.api.messages.PlcRequest import ReadRequestBuilder, PlcRequest, PlcField
+from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.api.messages.PlcRequest import (
+    ReadRequestBuilder,
+    PlcField,
+    PlcReadRequest,
+)
+from plc4py.api.messages.PlcResponse import PlcReadResponse
 
 
+class MockPlcReadResponse(PlcReadResponse):
+    def get_request(self) -> PlcMessage:
+        return PlcMessage()
+
+
+class MockPlcReadRequest(PlcReadRequest):
+    def __init__(self, fields: list[PlcField] = []):
+        super().__init__(fields)
+
+
+@dataclass
 class MockReadRequestBuilder(ReadRequestBuilder):
-    def build(self) -> PlcRequest:
-        pass
+    items: list[PlcField] = field(default_factory=lambda: [])
 
-    def add_item(self, field_query: Union[str, PlcField]) -> PlcRequest:
-        pass
+    def build(self) -> PlcReadRequest:
+        return MockPlcReadRequest(self.items)
+
+    def add_item(self, field_query: Union[str, PlcField]) -> None:
+        field_temp: PlcField = (
+            PlcField(field_query) if isinstance(field_query, str) else field_query
+        )
+        self.items.append(field_temp)

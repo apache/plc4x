@@ -16,3 +16,17 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from abc import ABC
+from dataclasses import dataclass
+from typing import Generic, TypeVar
+
+from plc4py.api.messages.PlcResponse import PlcResponseCode
+from plc4py.api.value.PlcValue import PlcValue
+
+T = TypeVar("T", bound=PlcValue)
+
+
+@dataclass
+class ResponseItem(Generic[T], ABC):
+    code: PlcResponseCode
+    value: T

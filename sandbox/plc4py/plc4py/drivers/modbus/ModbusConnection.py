@@ -16,10 +16,11 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from typing import Type
+from typing import Type, Awaitable
 
 import plc4py
 from plc4py.api.PlcConnection import PlcConnection
+from plc4py.api.messages.PlcResponse import PlcResponse
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder
 from plc4py.drivers.PlcConnectionLoader import PlcConnectionLoader
 
@@ -53,6 +54,14 @@ class ModbusConnection(PlcConnection):
     def read_request_builder(self) -> ReadRequestBuilder:
         """
         :return: read request builder.
+        """
+        pass
+
+    def execute(self, PlcRequest) -> Awaitable[PlcResponse]:
+        """
+        Executes a PlcRequest as long as it's already connected
+        :param PlcRequest: Plc Request to execute
+        :return: The response from the Plc/Device
         """
         pass
 

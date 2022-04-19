@@ -16,3 +16,12 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from dataclasses import dataclass
+
+from plc4py.api.value.PlcValue import PlcValue
+
+
+@dataclass
+class PlcINT(PlcValue[int]):
+    def get_int(self):
+        return self.value
