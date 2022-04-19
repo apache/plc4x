@@ -24,7 +24,6 @@ authors = ["Apache PLC4X <dev@plc4x.apache.org>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-pytest-asyncio = "^0.18.3"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.6.0"
