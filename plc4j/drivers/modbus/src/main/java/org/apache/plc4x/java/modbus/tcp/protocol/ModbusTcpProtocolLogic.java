@@ -27,9 +27,9 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.base.field.ModbusField;
+import org.apache.plc4x.java.modbus.base.field.ModbusFieldBase;
 import org.apache.plc4x.java.modbus.base.protocol.ModbusProtocolLogic;
 import org.apache.plc4x.java.modbus.readwrite.*;
-import org.apache.plc4x.java.modbus.rtu.config.ModbusRtuConfiguration;
 import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpConfiguration;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -101,7 +101,7 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
                         responseCode = getErrorCode(errorResponse);
                     } else {
                         try {
-                            plcValue = toPlcValue(requestPdu, responsePdu, field.getDataType());
+                            plcValue = toPlcValue(requestPdu, responsePdu, field);
                             responseCode = PlcResponseCode.OK;
                         } catch (ParseException e) {
                             // Add an error response code ...

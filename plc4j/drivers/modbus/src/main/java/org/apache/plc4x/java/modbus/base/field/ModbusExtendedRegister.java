@@ -24,11 +24,11 @@ import org.apache.plc4x.java.modbus.readwrite.ModbusDataType;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ModbusExtendedRegister extends ModbusField {
+public class ModbusExtendedRegister extends ModbusFieldBase {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("extended-register:" + ModbusField.ADDRESS_PATTERN);
-    public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("6" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
-    public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("6x" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("extended-register:" + ModbusFieldBase.ADDRESS_PATTERN);
+    public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("6" + ModbusFieldBase.FIXED_DIGIT_MODBUS_PATTERN);
+    public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("6x" + ModbusFieldBase.FIXED_DIGIT_MODBUS_PATTERN);
 
     protected static final int REGISTER_MAXADDRESS = 655359999;
 

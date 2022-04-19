@@ -36,6 +36,8 @@ public class ModbusFieldHandler implements PlcFieldHandler {
             return ModbusFieldCoil.of(fieldQuery);
         } else if (ModbusExtendedRegister.matches(fieldQuery)) {
             return ModbusExtendedRegister.of(fieldQuery);
+        } else if (ModbusIdentificationRegister.matches(fieldQuery)) {
+            return ModbusIdentificationRegister.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
     }

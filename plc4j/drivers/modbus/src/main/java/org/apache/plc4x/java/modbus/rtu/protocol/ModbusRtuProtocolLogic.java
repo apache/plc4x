@@ -26,11 +26,10 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.modbus.base.field.ModbusField;
+import org.apache.plc4x.java.modbus.base.field.ModbusFieldBase;
 import org.apache.plc4x.java.modbus.base.protocol.ModbusProtocolLogic;
 import org.apache.plc4x.java.modbus.readwrite.*;
 import org.apache.plc4x.java.modbus.rtu.config.ModbusRtuConfiguration;
-import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpConfiguration;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
@@ -74,7 +73,7 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
         // Example for sending a request ...
         if (request.getFieldNames().size() == 1) {
             String fieldName = request.getFieldNames().iterator().next();
-            ModbusField field = (ModbusField) request.getField(fieldName);
+            ModbusFieldBase field = (ModbusFieldBase) request.getField(fieldName);
             final ModbusPDU requestPdu = getReadRequestPdu(field);
 
             ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitIdentifier, requestPdu, false);
@@ -94,7 +93,7 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
                         responseCode = getErrorCode(errorResponse);
                     } else {
                         try {
-                            plcValue = toPlcValue(requestPdu, responsePdu, field.getDataType());
+                            plcValue = toPlcValue(requestPdu, responsePdu, field);
                             responseCode = PlcResponseCode.OK;
                         } catch (ParseException e) {
                             // Add an error response code ...
