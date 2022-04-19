@@ -351,10 +351,12 @@ func CreateBACnetTagHeaderBalanced(isContext bool, id uint8, value uint32) *BACn
 func CreateBACnetApplicationTagObjectIdentifier(objectType uint16, instance uint32) *BACnetApplicationTagObjectIdentifier {
 	header := NewBACnetTagHeader(0xC, TagClass_APPLICATION_TAGS, uint8(4), nil, nil, nil, nil)
 	objectTypeEnum := BACnetObjectTypeByValue(objectType)
+	proprietaryValue := uint16(0)
 	if objectType >= 128 || !BACnetObjectTypeKnows(objectType) {
 		objectTypeEnum = BACnetObjectType_VENDOR_PROPRIETARY_VALUE
+		proprietaryValue = objectType
 	}
-	payload := NewBACnetTagPayloadObjectIdentifier(objectTypeEnum, objectType, instance)
+	payload := NewBACnetTagPayloadObjectIdentifier(objectTypeEnum, proprietaryValue, instance)
 	result := NewBACnetApplicationTagObjectIdentifier(payload, header)
 	return CastBACnetApplicationTagObjectIdentifier(result)
 }
@@ -362,10 +364,12 @@ func CreateBACnetApplicationTagObjectIdentifier(objectType uint16, instance uint
 func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, instance uint32) *BACnetContextTagObjectIdentifier {
 	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(4), nil, nil, nil, nil)
 	objectTypeEnum := BACnetObjectTypeByValue(objectType)
+	proprietaryValue := uint16(0)
 	if objectType >= 128 {
 		objectTypeEnum = BACnetObjectType_VENDOR_PROPRIETARY_VALUE
+		proprietaryValue = objectType
 	}
-	payload := NewBACnetTagPayloadObjectIdentifier(objectTypeEnum, objectType, instance)
+	payload := NewBACnetTagPayloadObjectIdentifier(objectTypeEnum, proprietaryValue, instance)
 	result := NewBACnetContextTagObjectIdentifier(payload, header, tagNum, true)
 	return CastBACnetContextTagObjectIdentifier(result)
 }
@@ -373,10 +377,12 @@ func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, ins
 func CreateBACnetContextTagPropertyIdentifier(tagNum uint8, propertyType uint32) *BACnetContextTagPropertyIdentifier {
 	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(requiredLength(uint(propertyType))), nil, nil, nil, nil)
 	propertyTypeEnum := BACnetPropertyIdentifierByValue(propertyType)
+	proprietaryValue := uint32(0)
 	if !BACnetPropertyIdentifierKnows(propertyType) {
 		propertyTypeEnum = BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE
+		proprietaryValue = uint32(0)
 	}
-	result := NewBACnetContextTagPropertyIdentifier(propertyTypeEnum, propertyType, header, tagNum, true, 0)
+	result := NewBACnetContextTagPropertyIdentifier(propertyTypeEnum, proprietaryValue, header, tagNum, true, 0)
 	return CastBACnetContextTagPropertyIdentifier(result)
 }
 
