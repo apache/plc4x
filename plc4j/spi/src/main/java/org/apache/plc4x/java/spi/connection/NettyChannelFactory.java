@@ -95,7 +95,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
         try {
             Bootstrap bootstrap = createBootstrap();
 
-            final EventLoopGroup workerGroup = getEventLoopGroup();
+            EventLoopGroup workerGroup = getEventLoopGroup();
             if (workerGroup != null) {
                 bootstrap.group(workerGroup);
             }
@@ -117,6 +117,9 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             });
 
             final Channel channel = f.channel();
+            
+            // Shutdowm the workerGroup when channel closing to avoid open too many files
+            channel.closeFuture().addListener(future -> workerGroup.shutdownGracefully());
 
             // Add to event-loop group
             if (workerGroup != null) {
