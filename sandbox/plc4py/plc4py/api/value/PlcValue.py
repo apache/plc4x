@@ -41,3 +41,4 @@ class PlcResponseCode(Enum):
     REMOTE_ERROR = auto()
     UNSUPPORTED = auto()
     RESPONSE_PENDING = auto()
+    NOT_CONNECTED = auto()

@@ -25,13 +25,14 @@ from plc4py.api.value.PlcValue import PlcValue, PlcResponseCode
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 
 
+@dataclass
 class PlcResponse(PlcMessage):
     """
     Base type for all response messages sent as response for a prior request
     from a plc to the plc4x system.
     """
 
-    pass
+    code: PlcResponseCode
 
 
 @dataclass
@@ -52,7 +53,6 @@ class PlcReadResponse(PlcFieldResponse):
     Response to a {@link PlcReadRequest}.
     """
 
-    code: PlcResponseCode
     values: dict[str, list[ResponseItem[PlcValue]]]
 
     def get_plc_value(self, name: str, index: int = 0) -> PlcValue:

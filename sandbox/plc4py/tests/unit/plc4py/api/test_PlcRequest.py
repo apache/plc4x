@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+import pytest
 
 from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.messages.PlcField import PlcField
@@ -54,10 +55,25 @@ def test_read_request_builder_non_empty_request(mocker) -> None:
     assert len(request.field_names) == 1
 
 
+@pytest.mark.asyncio
+async def test_read_request_builder_non_empty_request_not_connected(mocker) -> None:
+    connection: PlcConnection = MockPlcConnection()
+
+    # the connection function is supposed to support context manager
+    # so using it in a with statement should result in close being called on the connection
+    with connection.read_request_builder() as builder:
+        builder.add_item("1:BOOL")
+        request: PlcFieldRequest = builder.build()
+        response = await connection.execute(request)
+
+    # verify that request has one field
+    assert response.code == PlcResponseCode.NOT_CONNECTED
+
+
 def test_read_response_boolean_response(mocker) -> None:
     response = PlcReadResponse(
-        [PlcField("1:BOOL")],
         PlcResponseCode.OK,
+        [PlcField("1:BOOL")],
         {"1:BOOL": [ResponseItem(PlcResponseCode.OK, PlcBOOL(True))]},
     )
     assert response.get_boolean("1:BOOL")
@@ -66,8 +82,8 @@ def test_read_response_boolean_response(mocker) -> None:
 
 def test_read_response_int_response(mocker) -> None:
     response = PlcReadResponse(
-        [PlcField("1:INT")],
         PlcResponseCode.OK,
+        [PlcField("1:INT")],
         {"1:INT": [ResponseItem(PlcResponseCode.OK, PlcINT(10))]},
     )
     assert response.get_int("1:INT") == 10
