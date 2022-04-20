@@ -390,6 +390,16 @@ public class StaticHelper {
         return new BACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength);
     }
 
+    public static BACnetApplicationTagNull createBACnetApplicationTagNull() {
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.NULL.getValue(), 0);
+        return new BACnetApplicationTagNull(header);
+    }
+
+    public static BACnetContextTagNull createBACnetContextTagNull(byte tagNumber) {
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNumber, 0);
+        return new BACnetContextTagNull(header, (short) tagNumber, true);
+    }
+
     public static BACnetOpeningTag createBACnetOpeningTag(short tagNum) {
         byte tagNumber;
         Short extTagNumber = null;

@@ -206,6 +206,8 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	var _child BACnetContextTagChild
 	var typeSwitchError error
 	switch {
+	case dataType == BACnetDataType_NULL: // BACnetContextTagNull
+		_child, typeSwitchError = BACnetContextTagNullParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, header)
 	case dataType == BACnetDataType_BOOLEAN: // BACnetContextTagBoolean
 		_child, typeSwitchError = BACnetContextTagBooleanParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, header)
 	case dataType == BACnetDataType_UNSIGNED_INTEGER: // BACnetContextTagUnsignedInteger

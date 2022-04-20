@@ -348,6 +348,16 @@ func CreateBACnetTagHeaderBalanced(isContext bool, id uint8, value uint32) *BACn
 	return NewBACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength)
 }
 
+func CreateBACnetApplicationTagNull() *BACnetApplicationTagNull {
+	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_NULL), 0)
+	return NewBACnetApplicationTagNull(header)
+}
+
+func CreateBACnetContextTagNull(tagNumber uint8) *BACnetContextTagNull {
+	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 0)
+	return NewBACnetContextTagNull(header, tagNumber, true)
+}
+
 func CreateBACnetOpeningTag(tagNum uint8) *BACnetOpeningTag {
 	var tagNumber uint8
 	var extTagNumber *uint8

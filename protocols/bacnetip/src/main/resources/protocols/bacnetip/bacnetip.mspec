@@ -1179,6 +1179,10 @@
     [virtual       uint 32  actualLength  'header.actualLength'                                                         ]
     [virtual       bit      isNotOpeningOrClosingTag    'header.lengthValueType != 6 && header.lengthValueType != 7'    ]
     [typeSwitch dataType
+        ['NULL' BACnetContextTagNull(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [validation 'header.actualLength == 0' "length field should be 0"                                           ]
+        ]
         ['BOOLEAN' BACnetContextTagBoolean(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
             [validation 'header.actualLength == 1' "length field should be 1"                                           ]
