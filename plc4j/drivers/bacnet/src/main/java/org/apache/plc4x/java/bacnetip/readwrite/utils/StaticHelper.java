@@ -389,13 +389,29 @@ public class StaticHelper {
     }
 
     public static BACnetOpeningTag createBACnetOpeningTag(short tagNum) {
-        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNum, 0x6L);
-        return new BACnetOpeningTag(header, tagNum, 6L);
+        byte tagNumber;
+        Short extTagNumber = null;
+        if (tagNum <= 14) {
+            tagNumber = (byte) tagNum;
+        } else {
+            tagNumber = 0xF;
+            extTagNumber = tagNum;
+        }
+        BACnetTagHeader header = new BACnetTagHeader(tagNumber, TagClass.APPLICATION_TAGS, (byte) 0x6, extTagNumber, null, null, null);
+        return new BACnetOpeningTag(header, tagNum, 0x6L);
     }
 
     public static BACnetClosingTag createBACnetClosingTag(short tagNum) {
-        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNum, 0x7L);
-        return new BACnetClosingTag(header, tagNum, 7L);
+        byte tagNumber;
+        Short extTagNumber = null;
+        if (tagNum <= 14) {
+            tagNumber = (byte) tagNum;
+        } else {
+            tagNumber = 0xF;
+            extTagNumber = tagNum;
+        }
+        BACnetTagHeader header = new BACnetTagHeader(tagNumber, TagClass.APPLICATION_TAGS, (byte) 0x7, extTagNumber, null, null, null);
+        return new BACnetClosingTag(header, tagNum, 0x7L);
     }
 
     public static BACnetApplicationTagObjectIdentifier createBACnetApplicationTagObjectIdentifier(int objectType, long instance) {
