@@ -550,6 +550,26 @@ func CreateBACnetContextTagDouble(tagNumber uint8, value float64) *BACnetContext
 	return NewBACnetContextTagDouble(NewBACnetTagPayloadDouble(value), header, tagNumber, true)
 }
 
+func CreateBACnetApplicationTagOctetString(value string) *BACnetApplicationTagOctetString {
+	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_OCTET_STRING), uint32(len(value)))
+	return NewBACnetApplicationTagOctetString(NewBACnetTagPayloadOctetString(value, uint32(len(value))), header)
+}
+
+func CreateBACnetContextTagOctetString(tagNumber uint8, value string) *BACnetContextTagOctetString {
+	header := CreateBACnetTagHeaderBalanced(true, tagNumber, uint32(len(value)))
+	return NewBACnetContextTagOctetString(NewBACnetTagPayloadOctetString(value, uint32(len(value))), header, tagNumber, true)
+}
+
+func CreateBACnetApplicationTagCharacterString(baCnetCharacterEncoding BACnetCharacterEncoding, value string) *BACnetApplicationTagCharacterString {
+	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_CHARACTER_STRING), uint32(len(value)))
+	return NewBACnetApplicationTagCharacterString(NewBACnetTagPayloadCharacterString(baCnetCharacterEncoding, value, uint32(len(value))), header)
+}
+
+func CreateBACnetContextTagCharacterString(tagNumber uint8, baCnetCharacterEncoding BACnetCharacterEncoding, value string) *BACnetContextTagCharacterString {
+	header := CreateBACnetTagHeaderBalanced(true, tagNumber, uint32(len(value)))
+	return NewBACnetContextTagCharacterString(NewBACnetTagPayloadCharacterString(baCnetCharacterEncoding, value, uint32(len(value))), header, tagNumber, true)
+}
+
 func requiredLength(value uint) uint32 {
 	var length uint32
 	switch {
