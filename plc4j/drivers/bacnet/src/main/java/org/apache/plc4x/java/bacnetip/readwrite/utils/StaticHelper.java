@@ -543,7 +543,7 @@ public class StaticHelper {
     }
 
     public static BACnetApplicationTagBoolean createBACnetApplicationTagBoolean(boolean value) {
-        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.BOOLEAN.getValue(), 1);
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.BOOLEAN.getValue(), value ? 1L : 0L);
         return new BACnetApplicationTagBoolean(header, new BACnetTagPayloadBoolean(value ? 1L : 0L));
     }
 

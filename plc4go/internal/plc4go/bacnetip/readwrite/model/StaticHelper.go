@@ -513,11 +513,11 @@ func CreateSignedPayload(value int32) (uint32, *BACnetTagPayloadSignedInteger) {
 }
 
 func CreateBACnetApplicationTagBoolean(value bool) *BACnetApplicationTagBoolean {
-	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_BOOLEAN), 1)
 	_value := uint32(0)
 	if value {
 		_value = 1
 	}
+	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_BOOLEAN), _value)
 	return NewBACnetApplicationTagBoolean(NewBACnetTagPayloadBoolean(_value), header)
 }
 
