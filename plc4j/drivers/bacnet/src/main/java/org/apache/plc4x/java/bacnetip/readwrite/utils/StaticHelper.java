@@ -573,23 +573,23 @@ public class StaticHelper {
     }
 
     public static BACnetApplicationTagOctetString createBACnetApplicationTagOctetString(String value) {
-        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.OCTET_STRING.getValue(), value.length());
-        return new BACnetApplicationTagOctetString(header, new BACnetTagPayloadOctetString(value, (long) value.length()));
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.OCTET_STRING.getValue(), value.length() + 1);
+        return new BACnetApplicationTagOctetString(header, new BACnetTagPayloadOctetString(value, (long) value.length() + 1));
     }
 
     public static BACnetContextTagOctetString createBACnetContextTagOctetString(byte tagNumber, String value) {
-        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNumber, value.length());
-        return new BACnetContextTagOctetString(header, new BACnetTagPayloadOctetString(value, (long) value.length()), (short) tagNumber, true);
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNumber, value.length() + 1);
+        return new BACnetContextTagOctetString(header, new BACnetTagPayloadOctetString(value, (long) value.length() + 1), (short) tagNumber, true);
     }
 
     public static BACnetApplicationTagCharacterString createBACnetApplicationTagCharacterString(BACnetCharacterEncoding baCnetCharacterEncoding, String value) {
-        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.CHARACTER_STRING.getValue(), value.length());
-        return new BACnetApplicationTagCharacterString(header, new BACnetTagPayloadCharacterString(baCnetCharacterEncoding, value, (long) value.length()));
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.CHARACTER_STRING.getValue(), value.length() + 1);
+        return new BACnetApplicationTagCharacterString(header, new BACnetTagPayloadCharacterString(baCnetCharacterEncoding, value, (long) value.length() + 1));
     }
 
     public static BACnetContextTagCharacterString createBACnetContextTagCharacterString(byte tagNumber, BACnetCharacterEncoding baCnetCharacterEncoding, String value) {
-        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNumber, value.length());
-        return new BACnetContextTagCharacterString(header, new BACnetTagPayloadCharacterString(baCnetCharacterEncoding, value, (long) value.length()), (short) tagNumber, true);
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNumber, value.length() + 1);
+        return new BACnetContextTagCharacterString(header, new BACnetTagPayloadCharacterString(baCnetCharacterEncoding, value, (long) value.length() + 1), (short) tagNumber, true);
     }
 
     private static long requiredLength(long value) {
