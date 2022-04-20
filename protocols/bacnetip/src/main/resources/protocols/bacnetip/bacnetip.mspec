@@ -1311,10 +1311,10 @@
                                 state                                                                                   ]
         ]
         ['OPENING_TAG' BACnetOpeningTag(uint 32 actualLength)
-            [validation 'actualLength == 6' "opening tag should habe a value of 6"]
+            [validation 'actualLength == 6' "opening tag should have a value of 6"]
         ]
         ['CLOSING_TAG' BACnetClosingTag(uint 32 actualLength)
-            [validation 'actualLength == 7' "closing tag should habe a value of 7"]
+            [validation 'actualLength == 7' "closing tag should have a value of 7"]
         ]
         [BACnetContextTagEmpty
         ]

@@ -388,6 +388,16 @@ public class StaticHelper {
         return new BACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength);
     }
 
+    public static BACnetOpeningTag createBACnetOpeningTag(short tagNum) {
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNum, 0x6L);
+        return new BACnetOpeningTag(header, tagNum, 6L);
+    }
+
+    public static BACnetClosingTag createBACnetClosingTag(short tagNum) {
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNum, 0x7L);
+        return new BACnetClosingTag(header, tagNum, 7L);
+    }
+
     public static BACnetApplicationTagObjectIdentifier createBACnetApplicationTagObjectIdentifier(int objectType, long instance) {
         BACnetTagHeader header = new BACnetTagHeader((byte) 0xC, TagClass.APPLICATION_TAGS, (byte) 4, null, null, null, null);
         BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
