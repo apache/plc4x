@@ -419,27 +419,6 @@ func CreateBACnetContextTagPropertyIdentifier(tagNum uint8, propertyType uint32)
 	return NewBACnetContextTagPropertyIdentifier(propertyTypeEnum, proprietaryValue, header, tagNum, true, 0)
 }
 
-func CreateBACnetApplicationTagEnumerated(value uint32) *BACnetApplicationTagEnumerated {
-	length, payload := CreateEnumeratedPayload(value)
-	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_ENUMERATED), length)
-	result := NewBACnetApplicationTagEnumerated(payload, header)
-	return CastBACnetApplicationTagEnumerated(result)
-}
-
-func CreateBACnetContextTagEnumerated(tagNumber uint8, value uint32) *BACnetContextTagEnumerated {
-	length, payload := CreateEnumeratedPayload(value)
-	header := CreateBACnetTagHeaderBalanced(true, tagNumber, length)
-	result := NewBACnetContextTagEnumerated(payload, header, tagNumber, true)
-	return CastBACnetContextTagEnumerated(result)
-}
-
-func CreateEnumeratedPayload(value uint32) (uint32, *BACnetTagPayloadEnumerated) {
-	length := requiredLength(uint(value))
-	data := WriteVarUint(value)
-	payload := NewBACnetTagPayloadEnumerated(data, length)
-	return length, payload
-}
-
 func CreateBACnetApplicationTagUnsignedInteger(value uint32) *BACnetApplicationTagUnsignedInteger {
 	length, payload := CreateUnsignedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_UNSIGNED_INTEGER), length)
@@ -598,6 +577,55 @@ func CreateBACnetContextTagBitString(tagNumber uint8, value []bool) *BACnetConte
 	}
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, uint32(numberOfBytesNeeded+1))
 	return NewBACnetContextTagBitString(NewBACnetTagPayloadBitString(uint8(unusedBits), value, make([]bool, unusedBits), uint32(numberOfBytesNeeded+1)), header, tagNumber, true)
+}
+
+func CreateBACnetApplicationTagEnumerated(value uint32) *BACnetApplicationTagEnumerated {
+	length, payload := CreateEnumeratedPayload(value)
+	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_ENUMERATED), length)
+	result := NewBACnetApplicationTagEnumerated(payload, header)
+	return CastBACnetApplicationTagEnumerated(result)
+}
+
+func CreateBACnetContextTagEnumerated(tagNumber uint8, value uint32) *BACnetContextTagEnumerated {
+	length, payload := CreateEnumeratedPayload(value)
+	header := CreateBACnetTagHeaderBalanced(true, tagNumber, length)
+	result := NewBACnetContextTagEnumerated(payload, header, tagNumber, true)
+	return CastBACnetContextTagEnumerated(result)
+}
+
+func CreateEnumeratedPayload(value uint32) (uint32, *BACnetTagPayloadEnumerated) {
+	length := requiredLength(uint(value))
+	data := WriteVarUint(value)
+	payload := NewBACnetTagPayloadEnumerated(data, length)
+	return length, payload
+}
+
+func CreateBACnetApplicationTagDate(year uint16, month, dayOfMonth, dayOfWeek uint8) *BACnetApplicationTagDate {
+	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_DATE), 4)
+	yearMinus1900 := uint8(year - 1900)
+	if year == 0xFF {
+		yearMinus1900 = 0xFF
+	}
+	return NewBACnetApplicationTagDate(NewBACnetTagPayloadDate(yearMinus1900, month, dayOfMonth, dayOfWeek), header)
+}
+
+func CreateBACnetContextTagDate(tagNumber uint8, year uint16, month, dayOfMonth, dayOfWeek uint8) *BACnetContextTagDate {
+	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 4)
+	yearMinus1900 := uint8(year - 1900)
+	if year == 0xFF {
+		yearMinus1900 = 0xFF
+	}
+	return NewBACnetContextTagDate(NewBACnetTagPayloadDate(yearMinus1900, month, dayOfMonth, dayOfWeek), header, tagNumber, true)
+}
+
+func CreateBACnetApplicationTagTime(hour, minute, second, fractional uint8) *BACnetApplicationTagTime {
+	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_TIME), 4)
+	return NewBACnetApplicationTagTime(NewBACnetTagPayloadTime(hour, minute, second, fractional), header)
+}
+
+func CreateBACnetContextTagTime(tagNumber uint8, hour, minute, second, fractional uint8) *BACnetContextTagTime {
+	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 4)
+	return NewBACnetContextTagTime(NewBACnetTagPayloadTime(hour, minute, second, fractional), header, tagNumber, true)
 }
 
 func requiredLength(value uint) uint32 {
