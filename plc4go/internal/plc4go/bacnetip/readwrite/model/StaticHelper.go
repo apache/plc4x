@@ -357,7 +357,7 @@ func CreateBACnetOpeningTag(tagNum uint8) *BACnetOpeningTag {
 		tagNumber = 0xF
 		extTagNumber = &tagNum
 	}
-	header := NewBACnetTagHeader(tagNumber, TagClass_APPLICATION_TAGS, 0x6, extTagNumber, nil, nil, nil)
+	header := NewBACnetTagHeader(tagNumber, TagClass_CONTEXT_SPECIFIC_TAGS, 0x6, extTagNumber, nil, nil, nil)
 	return NewBACnetOpeningTag(header, tagNum, 6)
 }
 
@@ -370,7 +370,7 @@ func CreateBACnetClosingTag(tagNum uint8) *BACnetClosingTag {
 		tagNumber = 0xF
 		extTagNumber = &tagNum
 	}
-	header := NewBACnetTagHeader(tagNumber, TagClass_APPLICATION_TAGS, 0x7, extTagNumber, nil, nil, nil)
+	header := NewBACnetTagHeader(tagNumber, TagClass_CONTEXT_SPECIFIC_TAGS, 0x7, extTagNumber, nil, nil, nil)
 	return NewBACnetClosingTag(header, tagNum, 7)
 }
 

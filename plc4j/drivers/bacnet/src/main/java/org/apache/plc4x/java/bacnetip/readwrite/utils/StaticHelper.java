@@ -397,7 +397,7 @@ public class StaticHelper {
             tagNumber = 0xF;
             extTagNumber = tagNum;
         }
-        BACnetTagHeader header = new BACnetTagHeader(tagNumber, TagClass.APPLICATION_TAGS, (byte) 0x6, extTagNumber, null, null, null);
+        BACnetTagHeader header = new BACnetTagHeader(tagNumber, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) 0x6, extTagNumber, null, null, null);
         return new BACnetOpeningTag(header, tagNum, 0x6L);
     }
 
@@ -410,7 +410,7 @@ public class StaticHelper {
             tagNumber = 0xF;
             extTagNumber = tagNum;
         }
-        BACnetTagHeader header = new BACnetTagHeader(tagNumber, TagClass.APPLICATION_TAGS, (byte) 0x7, extTagNumber, null, null, null);
+        BACnetTagHeader header = new BACnetTagHeader(tagNumber, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) 0x7, extTagNumber, null, null, null);
         return new BACnetClosingTag(header, tagNum, 0x7L);
     }
 
