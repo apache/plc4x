@@ -570,6 +570,26 @@ func CreateBACnetContextTagCharacterString(tagNumber uint8, baCnetCharacterEncod
 	return NewBACnetContextTagCharacterString(NewBACnetTagPayloadCharacterString(baCnetCharacterEncoding, value, uint32(len(value)+1)), header, tagNumber, true)
 }
 
+func CreateBACnetApplicationTagBitString(value []bool) *BACnetApplicationTagBitString {
+	numberOfBytesNeeded := (len(value) + 7) / 8
+	unusedBits := 8 - (len(value) % 8)
+	if unusedBits == 8 {
+		unusedBits = 0
+	}
+	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_BIT_STRING), uint32(numberOfBytesNeeded+1))
+	return NewBACnetApplicationTagBitString(NewBACnetTagPayloadBitString(uint8(unusedBits), value, make([]bool, unusedBits), uint32(numberOfBytesNeeded+1)), header)
+}
+
+func CreateBACnetContextTagBitString(tagNumber uint8, value []bool) *BACnetContextTagBitString {
+	numberOfBytesNeeded := (len(value) + 7) / 8
+	unusedBits := 8 - (len(value) % 8)
+	if unusedBits == 8 {
+		unusedBits = 0
+	}
+	header := CreateBACnetTagHeaderBalanced(true, tagNumber, uint32(numberOfBytesNeeded+1))
+	return NewBACnetContextTagBitString(NewBACnetTagPayloadBitString(uint8(unusedBits), value, make([]bool, unusedBits), uint32(numberOfBytesNeeded+1)), header, tagNumber, true)
+}
+
 func requiredLength(value uint) uint32 {
 	var length uint32
 	switch {

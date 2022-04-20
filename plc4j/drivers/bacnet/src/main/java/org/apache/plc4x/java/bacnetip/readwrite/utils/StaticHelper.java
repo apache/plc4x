@@ -28,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithAdditionalStringRepresentation;
 
@@ -590,6 +592,26 @@ public class StaticHelper {
     public static BACnetContextTagCharacterString createBACnetContextTagCharacterString(byte tagNumber, BACnetCharacterEncoding baCnetCharacterEncoding, String value) {
         BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNumber, value.length() + 1);
         return new BACnetContextTagCharacterString(header, new BACnetTagPayloadCharacterString(baCnetCharacterEncoding, value, (long) value.length() + 1), (short) tagNumber, true);
+    }
+
+    public static BACnetApplicationTagBitString createBACnetApplicationTagBitString(List<Boolean> value) {
+        long numberOfBytesNeeded = (value.size() + 7) / 8;
+        short unusedBits = (short) (8 - (value.size() % 8));
+        if (unusedBits == 8) {
+            unusedBits = 0;
+        }
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.BIT_STRING.getValue(), numberOfBytesNeeded + 1);
+        return new BACnetApplicationTagBitString(header, new BACnetTagPayloadBitString(unusedBits, value, new ArrayList<>(unusedBits), numberOfBytesNeeded + 1));
+    }
+
+    public static BACnetContextTagBitString createBACnetContextTagBitString(byte tagNumber, List<Boolean> value) {
+        long numberOfBytesNeeded = (value.size() + 7) / 8;
+        short unusedBits = (short) (8 - (value.size() % 8));
+        if (unusedBits == 8) {
+            unusedBits = 0;
+        }
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNumber, numberOfBytesNeeded + 1);
+        return new BACnetContextTagBitString(header, new BACnetTagPayloadBitString(unusedBits, value, new ArrayList<>(unusedBits), numberOfBytesNeeded + 1), (short) tagNumber, true);
     }
 
     private static long requiredLength(long value) {
