@@ -542,6 +542,16 @@ public class StaticHelper {
         return Pair.of(length, payload);
     }
 
+    public static BACnetApplicationTagBoolean createBACnetApplicationTagBoolean(boolean value) {
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.BOOLEAN.getValue(), 1);
+        return new BACnetApplicationTagBoolean(header, new BACnetTagPayloadBoolean(value ? 1L : 0L));
+    }
+
+    public static BACnetContextTagBoolean createBACnetContextTagBoolean(byte tagNumber, boolean value) {
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNumber, 1);
+        return new BACnetContextTagBoolean(header, (short) (value ? 1 : 0), new BACnetTagPayloadBoolean(value ? 1L : 0L), (short) tagNumber, true);
+    }
+
     public static BACnetApplicationTagReal createBACnetApplicationTagReal(float value) {
         BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.REAL.getValue(), 4);
         return new BACnetApplicationTagReal(header, new BACnetTagPayloadReal(value));

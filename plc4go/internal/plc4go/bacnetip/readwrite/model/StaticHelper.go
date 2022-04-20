@@ -512,6 +512,24 @@ func CreateSignedPayload(value int32) (uint32, *BACnetTagPayloadSignedInteger) {
 	return length, payload
 }
 
+func CreateBACnetApplicationTagBoolean(value bool) *BACnetApplicationTagBoolean {
+	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_BOOLEAN), 1)
+	_value := uint32(0)
+	if value {
+		_value = 1
+	}
+	return NewBACnetApplicationTagBoolean(NewBACnetTagPayloadBoolean(_value), header)
+}
+
+func CreateBACnetContextTagBoolean(tagNumber uint8, value bool) *BACnetContextTagBoolean {
+	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 1)
+	_value := uint8(0)
+	if value {
+		_value = 1
+	}
+	return NewBACnetContextTagBoolean(_value, NewBACnetTagPayloadBoolean(uint32(_value)), header, tagNumber, true)
+}
+
 func CreateBACnetApplicationTagReal(value float32) *BACnetApplicationTagReal {
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_REAL), 4)
 	return NewBACnetApplicationTagReal(NewBACnetTagPayloadReal(value), header)
