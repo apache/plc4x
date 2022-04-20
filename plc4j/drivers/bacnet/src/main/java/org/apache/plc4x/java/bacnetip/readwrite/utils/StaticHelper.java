@@ -415,7 +415,7 @@ public class StaticHelper {
     }
 
     public static BACnetApplicationTagObjectIdentifier createBACnetApplicationTagObjectIdentifier(int objectType, long instance) {
-        BACnetTagHeader header = new BACnetTagHeader((byte) 0xC, TagClass.APPLICATION_TAGS, (byte) 4, null, null, null, null);
+        BACnetTagHeader header = new BACnetTagHeader((byte) BACnetDataType.SIGNED_INTEGER.getValue(), TagClass.APPLICATION_TAGS, (byte) 4, null, null, null, null);
         BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
         int proprietaryValue = 0;
         if (objectType >= 128 || !BACnetObjectType.isDefined(objectType)) {
@@ -451,7 +451,7 @@ public class StaticHelper {
 
     public static BACnetApplicationTagEnumerated createBACnetApplicationTagEnumerated(long value) {
         Pair<Long, BACnetTagPayloadEnumerated> lengthPayload = CreateEnumeratedPayload(value);
-        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 0x9, lengthPayload.getLeft());
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.ENUMERATED.getValue(), lengthPayload.getLeft());
         return new BACnetApplicationTagEnumerated(header, lengthPayload.getRight());
     }
 
@@ -470,7 +470,7 @@ public class StaticHelper {
 
     public static BACnetApplicationTagUnsignedInteger createBACnetApplicationTagUnsignedInteger(long value) {
         Pair<Long, BACnetTagPayloadUnsignedInteger> lengthPayload = createUnsignedPayload(value);
-        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 0x2, lengthPayload.getLeft());
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.UNSIGNED_INTEGER.getValue(), lengthPayload.getLeft());
         return new BACnetApplicationTagUnsignedInteger(header, lengthPayload.getRight());
     }
 
@@ -509,7 +509,7 @@ public class StaticHelper {
 
     public static BACnetApplicationTagSignedInteger createBACnetApplicationTagSignedInteger(long value) {
         Pair<Long, BACnetTagPayloadSignedInteger> lengthPayload = createSignedPayload(value);
-        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 0x3, lengthPayload.getLeft());
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.SIGNED_INTEGER.getValue(), lengthPayload.getLeft());
         return new BACnetApplicationTagSignedInteger(header, lengthPayload.getRight());
     }
 
@@ -540,6 +540,26 @@ public class StaticHelper {
         }
         BACnetTagPayloadSignedInteger payload = new BACnetTagPayloadSignedInteger(valueInt8, valueInt16, valueInt24, valueInt32, null, null, null, null, length);
         return Pair.of(length, payload);
+    }
+
+    public static BACnetApplicationTagReal createBACnetApplicationTagReal(float value) {
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.REAL.getValue(), 4);
+        return new BACnetApplicationTagReal(header, new BACnetTagPayloadReal(value));
+    }
+
+    public static BACnetContextTagReal createBACnetContextTagReal(byte tagNumber, float value) {
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNumber, 4);
+        return new BACnetContextTagReal(header, new BACnetTagPayloadReal(value), (short) tagNumber, true);
+    }
+
+    public static BACnetApplicationTagDouble createBACnetApplicationTagDouble(double value) {
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.DOUBLE.getValue(), 8);
+        return new BACnetApplicationTagDouble(header, new BACnetTagPayloadDouble(value));
+    }
+
+    public static BACnetContextTagDouble createBACnetContextTagDouble(byte tagNumber, double value) {
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNumber, 8);
+        return new BACnetContextTagDouble(header, new BACnetTagPayloadDouble(value), (short) tagNumber, true);
     }
 
     private static long requiredLength(long value) {
