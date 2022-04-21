@@ -21,9 +21,9 @@ package knxnetip
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
+	"github.com/pkg/errors"
 	"net"
 	"net/url"
 	"time"
@@ -124,7 +124,9 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 			// Create a codec for sending and receiving messages.
 			codec := NewMessageCodec(transportInstance, nil)
 			// Explicitly start the worker
-			codec.Connect()
+			if err := codec.Connect(); err != nil {
+				return errors.Wrap(err, "Error connecting")
+			}
 
 			// Cast to the UDP transport instance so we can access information on the local port.
 			udpTransportInstance, ok := transportInstance.(*udp.TransportInstance)

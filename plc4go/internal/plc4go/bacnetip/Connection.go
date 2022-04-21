@@ -53,16 +53,16 @@ func NewConnection(messageCodec spi.MessageCodec, fieldHandler spi.PlcFieldHandl
 	return connection
 }
 
-func (m *Connection) GetConnectionId() string {
-	return m.connectionId
+func (c *Connection) GetConnectionId() string {
+	return c.connectionId
 }
 
-func (m *Connection) IsTraceEnabled() bool {
-	return m.tracer != nil
+func (c *Connection) IsTraceEnabled() bool {
+	return c.tracer != nil
 }
 
-func (m *Connection) GetTracer() *spi.Tracer {
-	return m.tracer
+func (c *Connection) GetTracer() *spi.Tracer {
+	return c.tracer
 }
 
 func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {

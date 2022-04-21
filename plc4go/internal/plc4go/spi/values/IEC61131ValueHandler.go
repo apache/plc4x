@@ -29,14 +29,20 @@ import (
 )
 
 const (
+	////
 	// Bit & Bit-Strings
+
 	IEC61131_BOOL  string = "BOOL"
 	IEC61131_BYTE  string = "BYTE"
 	IEC61131_WORD  string = "WORD"
 	IEC61131_DWORD string = "DWORD"
 	IEC61131_LWORD string = "LWORD"
+	//
+	////
 
+	////
 	// Integers
+
 	IEC61131_USINT string = "USINT"
 	IEC61131_UINT  string = "UINT"
 	IEC61131_UDINT string = "UDINT"
@@ -45,22 +51,36 @@ const (
 	IEC61131_INT   string = "INT"
 	IEC61131_DINT  string = "DINT"
 	IEC61131_LINT  string = "LINT"
+	//
+	////
 
+	////
 	// Floating Point Values
+
 	IEC61131_REAL  string = "REAL"
 	IEC61131_LREAL string = "LREAL"
+	//
+	////
 
+	////
 	// Temporal Values
+
 	IEC61131_TIME          string = "TIME"
 	IEC61131_DATE          string = "DATE"
 	IEC61131_TIME_OF_DAY   string = "TIME_OF_DAY"
 	IEC61131_DATE_AND_TIME string = "DATE_AND_TIME"
+	//
+	////
 
+	////
 	// Chars and Strings
+
 	IEC61131_CHAR    string = "CHAR"
 	IEC61131_WCHAR   string = "WCHAR"
 	IEC61131_STRING  string = "STRING"
 	IEC61131_WSTRING string = "WSTRING"
+	//
+	////
 )
 
 type IEC61131ValueHandler struct {

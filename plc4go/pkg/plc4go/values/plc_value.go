@@ -22,24 +22,37 @@ package values
 import "time"
 
 type PlcValue interface {
-
+	////
 	// Simple Types
+
 	IsSimple() bool
 	IsNullable() bool
 	IsNull() bool
+	//
+	///
 
+	////
 	// Boolean
+
 	IsBool() bool
 	GetBoolLength() uint32
 	GetBool() bool
 	GetBoolAt(index uint32) bool
 	GetBoolArray() []bool
+	//
+	///
 
+	////
 	// Byte
+
 	IsByte() bool
 	GetByte() byte
+	//
+	///
 
+	////
 	// Integer
+
 	IsUint8() bool
 	GetUint8() uint8
 	IsUint16() bool
@@ -56,40 +69,66 @@ type PlcValue interface {
 	GetInt32() int32
 	IsInt64() bool
 	GetInt64() int64
+	//
+	///
 
+	////
 	// Floating Point
+
 	IsFloat32() bool
 	GetFloat32() float32
 	IsFloat64() bool
 	GetFloat64() float64
+	//
+	///
 
+	////
 	// String
+
 	IsString() bool
 	GetString() string
+	//
+	///
 
+	////
 	// Time
+
 	IsTime() bool
 	GetTime() time.Time
 	IsDate() bool
 	GetDate() time.Time
 	IsDateTime() bool
 	GetDateTime() time.Time
+	//
+	///
 
+	////
 	// Raw Access
-	GetRaw() []byte
 
+	GetRaw() []byte
+	//
+	///
+
+	////
 	// List Methods
+
 	IsList() bool
 	GetLength() uint32
 	GetIndex(i uint32) PlcValue
 	GetList() []PlcValue
+	//
+	///
 
+	////
 	// Struct Methods
+
 	IsStruct() bool
 	GetKeys() []string
 	HasKey(key string) bool
 	GetValue(key string) PlcValue
 	GetStruct() map[string]PlcValue
+	//
+	///
 }
 
 // RawPlcValue This type is used in cases where the driver doesn't have access to type information and therefore can't decode

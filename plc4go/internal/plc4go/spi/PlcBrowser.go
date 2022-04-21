@@ -22,10 +22,10 @@ package spi
 import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 
 type PlcBrowser interface {
-	// Non-Blocking request, which will return a full result as soon as the operation is finished
+	// Browse Non-Blocking request, which will return a full result as soon as the operation is finished
 	Browse(browseRequest model.PlcBrowseRequest) <-chan model.PlcBrowseRequestResult
 
-	// Variant of the Browser, which allows immediately intercepting found resources
+	// BrowseWithInterceptor Variant of the Browser, which allows immediately intercepting found resources
 	// This is ideal, if additional information has to be queried on such found resources
 	// and especially for connection-based protocols can reduce the stress on the system
 	// and increase throughput. It can also be used for simple filtering.
