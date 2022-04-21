@@ -362,6 +362,10 @@
             [optional BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')              priority            ]
         ]
         ['0x10' BACnetConfirmedServiceRequestWritePropertyMultiple
+            [array    BACnetWriteAccessSpecification
+                            data
+                            length
+                            'len'                   ]
         ]
 
         ['0x11' BACnetConfirmedServiceRequestDeviceCommunicationControl
@@ -432,6 +436,31 @@
                     propertyIdentifier              ]
     [optional   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
                     arrayIndex                      ]
+]
+
+[type BACnetWriteAccessSpecification
+    [simple     BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                    objectIdentifier                ]
+    [simple     BACnetOpeningTag('1', 'BACnetDataType.OPENING_TAG')
+                     openingTag                     ]
+    [array      BACnetPropertyWriteDefinition('objectIdentifier.objectType')
+                    listOfPropertyWriteDefinition
+                    terminated
+                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'
+    ]
+    [simple     BACnetClosingTag('1', 'BACnetDataType.CLOSING_TAG')
+                     closingTag                     ]
+]
+
+[type BACnetPropertyWriteDefinition(BACnetObjectType objectType)
+    [simple     BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+                    propertyIdentifier              ]
+    [optional   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+                    arrayIndex                      ]
+    [optional   BACnetConstructedData('2', 'objectType', 'propertyIdentifier')
+                    propertyValue                   ]
+    [optional   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
+                    priority                        ]
 ]
 
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)

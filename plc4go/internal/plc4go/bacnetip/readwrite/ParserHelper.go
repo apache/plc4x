@@ -131,6 +131,9 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BVLCParse(io)
 	case "BACnetTagPayloadObjectIdentifier":
 		return model.BACnetTagPayloadObjectIdentifierParse(io)
+	case "BACnetPropertyWriteDefinition":
+		objectType := model.BACnetObjectTypeByName(arguments[0])
+		return model.BACnetPropertyWriteDefinitionParse(io, objectType)
 	case "BACnetDateTime":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -218,6 +221,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetPropertyValueParse(io, objectType)
 	case "NLMInitalizeRoutingTablePortMapping":
 		return model.NLMInitalizeRoutingTablePortMappingParse(io)
+	case "BACnetWriteAccessSpecification":
+		return model.BACnetWriteAccessSpecificationParse(io)
 	case "BACnetServiceAck":
 		return model.BACnetServiceAckParse(io)
 	case "BACnetBinaryPV":
