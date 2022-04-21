@@ -863,7 +863,6 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                                     <#if hasRefParams>
 										,
                                         <#list complexTypeReference.params.orElseThrow() as parserArgument>
-                                            <#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && helper.needsPointerAccess(type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow())>*</#if>
                                             ${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayElementType, parserArgument?index), parserArgument, parserArguments)}
                                             <#sep>, </#sep>
                                         </#list>
