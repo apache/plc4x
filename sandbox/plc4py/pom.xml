@@ -79,16 +79,31 @@
         <artifactId>exec-maven-plugin</artifactId>
         <executions>
           <execution>
+            <id>python-venv</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>python</executable>
+              <arguments>
+                <argument>-m</argument>
+                <argument>venv</argument>
+                <argument> ./venv</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <execution>
             <id>python-install</id>
             <phase>compile</phase>
             <goals>
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>pipenv</executable>
+              <executable>venv/Scripts/pip</executable>
               <arguments>
                 <argument>install</argument>
-                <argument>-e</argument>
                 <argument>.</argument>
               </arguments>
             </configuration>
@@ -101,10 +116,9 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>pipenv</executable>
+              <executable>venv/Scripts/pip</executable>
               <arguments>
                 <argument>install</argument>
-                <argument>-e</argument>
                 <argument>.[dev]</argument>
               </arguments>
             </configuration>
@@ -117,12 +131,30 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>pipenv</executable>
+              <executable>venv/Scripts/python</executable>
               <arguments>
-                <argument>run</argument>
+                <argument>-m</argument>
                 <argument>pytest</argument>
                 <argument>-v</argument>
                 <argument>tests</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>python-package</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>venv/Scripts/pip</executable>
+              <arguments>
+                <argument>wheel</argument>
+                <argument>.</argument>
+                <argument>-w</argument>
+                <argument>dist</argument>
+                <argument>--no-deps</argument>
               </arguments>
             </configuration>
           </execution>
