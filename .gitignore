@@ -99,8 +99,8 @@ plc4py/venv/
 **/__pycache__/**/*
 /plc4cpp/.vscode/ipch
 *.egg-info
-plc4py/Pipfile.lock
-plc4py/Pipfile
+**/Pipfile.lock
+**/Pipfile
 
 # Exclude gradle stuff
 .gradle
