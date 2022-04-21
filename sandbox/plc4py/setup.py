@@ -23,12 +23,11 @@ setup(
     name="plc4py",
     version="0.1.0",
     description="Plc4py The Python Industrial IOT Adapter",
-    long_description="Really, the funniest around.",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: Apache 2.0 License",
         "Programming Language :: Python :: 3.8",
-        "Topic :: Text Processing :: Linguistic",
+        "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
     ],
     keywords="modbus plc4x",
     url="https://plc4x.apache.org",
