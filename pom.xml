@@ -791,7 +791,8 @@
             <!-- Python related files -->
             <exclude>**/.pytest_cache/**</exclude>
             <exclude>**/.mypy_cache/**</exclude>
-            <exclude>**/poetry.lock</exclude>
+            <exclude>**/Pipfile</exclude>
+            <exclude>**/Pipfile.lock</exclude>
 
             <!-- Eclipse related files -->
             <exclude>**/.project</exclude>
