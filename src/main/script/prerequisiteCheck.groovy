@@ -319,38 +319,7 @@ def checkPython() {
         Matcher matcher = extractVersion(stdOut + stdErr)
         if (matcher.size() > 0) {
             def curVersion = matcher[0][1]
-            def result = checkVersionAtLeast(curVersion, "2.7.0")
-            if (!result) {
-                allConditionsMet = false
-            }
-        } else {
-            println "missing (Please install at least version 3.6.0)"
-            allConditionsMet = false
-        }
-    } catch (Exception e) {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
-def checkPoetry(boolean isWin) {
-    print "Detecting Poetry version:  "
-    try {
-        def process
-        if (isWin) {
-            process = ("poetry.bat --version").execute()
-        } else {
-            process = ("poetry --version").execute()
-        }
-
-        def stdOut = new StringBuilder()
-        def stdErr = new StringBuilder()
-        process.consumeProcessOutput(stdOut, stdErr)
-        process.waitForOrKill(500)
-        Matcher matcher = extractVersion(stdOut + stdErr)
-        if (matcher.size() > 0) {
-            def curVersion = matcher[0][1]
-            def result = checkVersionAtLeast(curVersion, "1.0.0")
+            def result = checkVersionAtLeast(curVersion, "3.6.0")
             if (!result) {
                 allConditionsMet = false
             }
@@ -593,7 +562,6 @@ if (cppEnabled) {
 
 if (pythonEnabled) {
     checkPython()
-    checkPoetry(os == "windows")
     checkSetupTools()
 }
 

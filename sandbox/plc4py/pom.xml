@@ -79,43 +79,118 @@
         <artifactId>exec-maven-plugin</artifactId>
         <executions>
           <execution>
+            <id>python-venv</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>python</executable>
+              <arguments>
+                <argument>-m</argument>
+                <argument>venv</argument>
+                <argument> ./venv</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <execution>
             <id>python-install</id>
             <phase>compile</phase>
             <goals>
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>poetry</executable>
+              <executable>${python.venv.bin}pip</executable>
               <arguments>
                 <argument>install</argument>
+                <argument>.</argument>
               </arguments>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <executions>
           <execution>
-            <id>python-test</id>
+            <id>python-test-compile</id>
             <phase>test-compile</phase>
             <goals>
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>poetry</executable>
+              <executable>${python.venv.bin}pip</executable>
               <arguments>
-                <argument>run</argument>
+                <argument>install</argument>
+                <argument>.[dev]</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>python-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${python.venv.bin}python</executable>
+              <arguments>
+                <argument>-m</argument>
                 <argument>pytest</argument>
                 <argument>-v</argument>
                 <argument>tests</argument>
               </arguments>
             </configuration>
           </execution>
+
+          <execution>
+            <id>python-package</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${python.venv.bin}pip</executable>
+              <arguments>
+                <argument>wheel</argument>
+                <argument>.</argument>
+                <argument>-w</argument>
+                <argument>dist</argument>
+                <argument>--no-deps</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
         </executions>
       </plugin>
+
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>${maven.clean.plugin.version}</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>venv</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>dist</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>.pytest_cache</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>plc4py.egg-info</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>build</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
       </plugins>
   </build>
 
