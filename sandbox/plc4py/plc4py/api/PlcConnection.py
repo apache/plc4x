@@ -16,12 +16,14 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+import asyncio
 from abc import abstractmethod
 from typing import Awaitable
 
-from plc4py.api.messages.PlcResponse import PlcResponse
-from plc4py.api.messages.PlcRequest import ReadRequestBuilder
+from plc4py.api.messages.PlcResponse import PlcResponse, PlcReadResponse
+from plc4py.api.messages.PlcRequest import ReadRequestBuilder, PlcRequest
 from plc4py.api.exceptions.exceptions import PlcConnectionException
+from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.utils.GenericTypes import GenericGenerator
 
 
@@ -60,10 +62,23 @@ class PlcConnection(GenericGenerator):
         pass
 
     @abstractmethod
-    def execute(self, PlcRequest) -> Awaitable[PlcResponse]:
+    def execute(self, request: PlcRequest) -> Awaitable[PlcResponse]:
         """
         Executes a PlcRequest as long as it's already connected
-        :param PlcRequest: Plc Request to execute
+        :param request: Plc Request to execute
         :return: The response from the Plc/Device
         """
         pass
+
+    def _default_failed_request(
+        self, code: PlcResponseCode
+    ) -> Awaitable[PlcReadResponse]:
+        """
+        Returns a default PlcResponse, mainly used in case of a failed request
+        :param code: The response code to return
+        :return: The PlcResponse
+        """
+        loop = asyncio.get_running_loop()
+        future = loop.create_future()
+        future.set_result(PlcResponse(code))
+        return future

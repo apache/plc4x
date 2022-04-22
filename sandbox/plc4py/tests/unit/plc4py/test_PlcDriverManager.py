@@ -19,7 +19,7 @@
 from unittest.mock import MagicMock
 
 from plc4py.PlcDriverManager import PlcDriverManager
-from tests.unit.plc4py.api.test.MockPlcConection import MockPlcConnection
+from plc4py.drivers.mock.MockConnection import MockConnection
 
 
 def test_connection_context_manager_impl_close_called(mocker) -> None:
@@ -27,7 +27,7 @@ def test_connection_context_manager_impl_close_called(mocker) -> None:
 
     # getup a plain return value for get_connection
     connection_mock: MagicMock = mocker.patch.object(manager, "get_connection")
-    connection_mock.return_value = MockPlcConnection()
+    connection_mock.return_value = MockConnection()
 
     # the connection function is supposed to support context manager
     # so using it in a with statement should result in close being called on the connection

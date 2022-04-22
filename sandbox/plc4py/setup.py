@@ -51,7 +51,8 @@ setup(
     },
     entry_points={
         "plc4py.drivers": [
-            "modbus = plc4py.drivers.modbus.ModbusConnection:ModbusConnectionLoader"
+            "mock = plc4py.drivers.mock.MockConnection:MockConnectionLoader",
+            "modbus = plc4py.drivers.modbus.ModbusConnection:ModbusConnectionLoader",
         ]
     },
 )

@@ -16,16 +16,3 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import logging
-
-
-class PlcException(Exception):
-    pass
-
-
-class PlcConnectionException(Exception):
-    logging.error("Unable to establish a connection to the plc")
-
-
-class PlcFieldParseException(Exception):
-    pass

@@ -16,16 +16,22 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import logging
+
+from typing import Awaitable
+
+from plc4py.api.messages.PlcRequest import PlcReadRequest
+from plc4py.api.messages.PlcResponse import PlcReadResponse
 
 
-class PlcException(Exception):
-    pass
+class PlcReader:
+    """
+    Interface implemented by all PlcConnections that are able to read from remote resources.
+    """
 
+    def _read(self, request: PlcReadRequest) -> Awaitable[PlcReadResponse]:
+        """
+        Reads a requested value from a PLC
 
-class PlcConnectionException(Exception):
-    logging.error("Unable to establish a connection to the plc")
-
-
-class PlcFieldParseException(Exception):
-    pass
+        :param request: object describing the type and location of the value
+        :return: Future, giving async access to the returned value
+        """
