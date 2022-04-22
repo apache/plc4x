@@ -46,9 +46,7 @@ func (m SubscriptionEvent) GetRequest() apiModel.PlcSubscriptionRequest {
 	panic("implement me")
 }
 
-/*
- * Decode the binary data in the address according to the field requested
- */
+// GetAddress Decode the binary data in the address according to the field requested
 func (m SubscriptionEvent) GetAddress(name string) string {
 	rawAddress := m.addresses[name]
 	rawAddressReadBuffer := utils.NewReadBufferByteBased(rawAddress)

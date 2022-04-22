@@ -33,8 +33,8 @@ type APDUConfirmedRequest struct {
 	SegmentedMessage          bool
 	MoreFollows               bool
 	SegmentedResponseAccepted bool
-	MaxSegmentsAccepted       uint8
-	MaxApduLengthAccepted     uint8
+	MaxSegmentsAccepted       MaxSegmentsAccepted
+	MaxApduLengthAccepted     MaxApduLengthAccepted
 	InvokeId                  uint8
 	SequenceNumber            *uint8
 	ProposedWindowSize        *uint8
@@ -54,9 +54,9 @@ type IAPDUConfirmedRequest interface {
 	// GetSegmentedResponseAccepted returns SegmentedResponseAccepted (property field)
 	GetSegmentedResponseAccepted() bool
 	// GetMaxSegmentsAccepted returns MaxSegmentsAccepted (property field)
-	GetMaxSegmentsAccepted() uint8
+	GetMaxSegmentsAccepted() MaxSegmentsAccepted
 	// GetMaxApduLengthAccepted returns MaxApduLengthAccepted (property field)
-	GetMaxApduLengthAccepted() uint8
+	GetMaxApduLengthAccepted() MaxApduLengthAccepted
 	// GetInvokeId returns InvokeId (property field)
 	GetInvokeId() uint8
 	// GetSequenceNumber returns SequenceNumber (property field)
@@ -110,11 +110,11 @@ func (m *APDUConfirmedRequest) GetSegmentedResponseAccepted() bool {
 	return m.SegmentedResponseAccepted
 }
 
-func (m *APDUConfirmedRequest) GetMaxSegmentsAccepted() uint8 {
+func (m *APDUConfirmedRequest) GetMaxSegmentsAccepted() MaxSegmentsAccepted {
 	return m.MaxSegmentsAccepted
 }
 
-func (m *APDUConfirmedRequest) GetMaxApduLengthAccepted() uint8 {
+func (m *APDUConfirmedRequest) GetMaxApduLengthAccepted() MaxApduLengthAccepted {
 	return m.MaxApduLengthAccepted
 }
 
@@ -140,7 +140,7 @@ func (m *APDUConfirmedRequest) GetServiceRequest() *BACnetConfirmedServiceReques
 ///////////////////////////////////////////////////////////
 
 // NewAPDUConfirmedRequest factory function for APDUConfirmedRequest
-func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted uint8, maxApduLengthAccepted uint8, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest *BACnetConfirmedServiceRequest, apduLength uint16) *APDUConfirmedRequest {
+func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted MaxSegmentsAccepted, maxApduLengthAccepted MaxApduLengthAccepted, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest *BACnetConfirmedServiceRequest, apduLength uint16) *APDUConfirmedRequest {
 	_result := &APDUConfirmedRequest{
 		SegmentedMessage:          segmentedMessage,
 		MoreFollows:               moreFollows,
@@ -268,18 +268,30 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 	}
 
 	// Simple Field (maxSegmentsAccepted)
-	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := readBuffer.ReadUint8("maxSegmentsAccepted", 3)
+	if pullErr := readBuffer.PullContext("maxSegmentsAccepted"); pullErr != nil {
+		return nil, pullErr
+	}
+	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := MaxSegmentsAcceptedParse(readBuffer)
 	if _maxSegmentsAcceptedErr != nil {
 		return nil, errors.Wrap(_maxSegmentsAcceptedErr, "Error parsing 'maxSegmentsAccepted' field")
 	}
 	maxSegmentsAccepted := _maxSegmentsAccepted
+	if closeErr := readBuffer.CloseContext("maxSegmentsAccepted"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (maxApduLengthAccepted)
-	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := readBuffer.ReadUint8("maxApduLengthAccepted", 4)
+	if pullErr := readBuffer.PullContext("maxApduLengthAccepted"); pullErr != nil {
+		return nil, pullErr
+	}
+	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := MaxApduLengthAcceptedParse(readBuffer)
 	if _maxApduLengthAcceptedErr != nil {
 		return nil, errors.Wrap(_maxApduLengthAcceptedErr, "Error parsing 'maxApduLengthAccepted' field")
 	}
 	maxApduLengthAccepted := _maxApduLengthAccepted
+	if closeErr := readBuffer.CloseContext("maxApduLengthAccepted"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (invokeId)
 	_invokeId, _invokeIdErr := readBuffer.ReadUint8("invokeId", 8)
@@ -378,15 +390,25 @@ func (m *APDUConfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Simple Field (maxSegmentsAccepted)
-		maxSegmentsAccepted := uint8(m.MaxSegmentsAccepted)
-		_maxSegmentsAcceptedErr := writeBuffer.WriteUint8("maxSegmentsAccepted", 3, (maxSegmentsAccepted))
+		if pushErr := writeBuffer.PushContext("maxSegmentsAccepted"); pushErr != nil {
+			return pushErr
+		}
+		_maxSegmentsAcceptedErr := m.MaxSegmentsAccepted.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("maxSegmentsAccepted"); popErr != nil {
+			return popErr
+		}
 		if _maxSegmentsAcceptedErr != nil {
 			return errors.Wrap(_maxSegmentsAcceptedErr, "Error serializing 'maxSegmentsAccepted' field")
 		}
 
 		// Simple Field (maxApduLengthAccepted)
-		maxApduLengthAccepted := uint8(m.MaxApduLengthAccepted)
-		_maxApduLengthAcceptedErr := writeBuffer.WriteUint8("maxApduLengthAccepted", 4, (maxApduLengthAccepted))
+		if pushErr := writeBuffer.PushContext("maxApduLengthAccepted"); pushErr != nil {
+			return pushErr
+		}
+		_maxApduLengthAcceptedErr := m.MaxApduLengthAccepted.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("maxApduLengthAccepted"); popErr != nil {
+			return popErr
+		}
 		if _maxApduLengthAcceptedErr != nil {
 			return errors.Wrap(_maxApduLengthAcceptedErr, "Error serializing 'maxApduLengthAccepted' field")
 		}

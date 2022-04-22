@@ -30,7 +30,7 @@ type BACnetUnconfirmedServiceRequestWriteGroup struct {
 	*BACnetUnconfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetUnconfirmedServiceRequestWriteGroup is the corresponding interface of BACnetUnconfirmedServiceRequestWriteGroup
@@ -66,9 +66,9 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) GetParent() *BACnetUnconfirm
 }
 
 // NewBACnetUnconfirmedServiceRequestWriteGroup factory function for BACnetUnconfirmedServiceRequestWriteGroup
-func NewBACnetUnconfirmedServiceRequestWriteGroup(len uint16) *BACnetUnconfirmedServiceRequestWriteGroup {
+func NewBACnetUnconfirmedServiceRequestWriteGroup(serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestWriteGroup {
 	_result := &BACnetUnconfirmedServiceRequestWriteGroup{
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestWriteGroup, error) {
+func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetUnconfirmedServiceRequestWriteGroup, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWriteGroup"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestCreateObject struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestCreateObject is the corresponding interface of BACnetConfirmedServiceRequestCreateObject
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestCreateObject) GetParent() *BACnetConfirmed
 }
 
 // NewBACnetConfirmedServiceRequestCreateObject factory function for BACnetConfirmedServiceRequestCreateObject
-func NewBACnetConfirmedServiceRequestCreateObject(len uint16) *BACnetConfirmedServiceRequestCreateObject {
+func NewBACnetConfirmedServiceRequestCreateObject(serviceRequestLength uint16) *BACnetConfirmedServiceRequestCreateObject {
 	_result := &BACnetConfirmedServiceRequestCreateObject{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestCreateObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestCreateObject, error) {
+func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestCreateObject, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestCreateObject"); pullErr != nil {
 		return nil, pullErr
 	}

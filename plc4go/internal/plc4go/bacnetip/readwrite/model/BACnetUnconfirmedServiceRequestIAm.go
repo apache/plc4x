@@ -35,7 +35,7 @@ type BACnetUnconfirmedServiceRequestIAm struct {
 	VendorId                        *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetUnconfirmedServiceRequestIAm is the corresponding interface of BACnetUnconfirmedServiceRequestIAm
@@ -105,13 +105,13 @@ func (m *BACnetUnconfirmedServiceRequestIAm) GetVendorId() *BACnetApplicationTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetUnconfirmedServiceRequestIAm factory function for BACnetUnconfirmedServiceRequestIAm
-func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger, segmentationSupported *BACnetSegmentation, vendorId *BACnetApplicationTagUnsignedInteger, len uint16) *BACnetUnconfirmedServiceRequestIAm {
+func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger, segmentationSupported *BACnetSegmentation, vendorId *BACnetApplicationTagUnsignedInteger, serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestIAm {
 	_result := &BACnetUnconfirmedServiceRequestIAm{
 		DeviceIdentifier:                deviceIdentifier,
 		MaximumApduLengthAcceptedLength: maximumApduLengthAcceptedLength,
 		SegmentationSupported:           segmentationSupported,
 		VendorId:                        vendorId,
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -163,7 +163,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestIAm, error) {
+func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetUnconfirmedServiceRequestIAm, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestIAm"); pullErr != nil {
 		return nil, pullErr
 	}

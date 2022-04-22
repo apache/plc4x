@@ -28,6 +28,9 @@ import (
 // BACnetServiceAckRemovedReadPropertyConditional is the data-structure of this message
 type BACnetServiceAckRemovedReadPropertyConditional struct {
 	*BACnetServiceAck
+
+	// Arguments.
+	ServiceRequestLength uint16
 }
 
 // IBACnetServiceAckRemovedReadPropertyConditional is the corresponding interface of BACnetServiceAckRemovedReadPropertyConditional
@@ -62,9 +65,9 @@ func (m *BACnetServiceAckRemovedReadPropertyConditional) GetParent() *BACnetServ
 }
 
 // NewBACnetServiceAckRemovedReadPropertyConditional factory function for BACnetServiceAckRemovedReadPropertyConditional
-func NewBACnetServiceAckRemovedReadPropertyConditional() *BACnetServiceAckRemovedReadPropertyConditional {
+func NewBACnetServiceAckRemovedReadPropertyConditional(serviceRequestLength uint16) *BACnetServiceAckRemovedReadPropertyConditional {
 	_result := &BACnetServiceAckRemovedReadPropertyConditional{
-		BACnetServiceAck: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -104,7 +107,7 @@ func (m *BACnetServiceAckRemovedReadPropertyConditional) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckRemovedReadPropertyConditionalParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckRemovedReadPropertyConditional, error) {
+func BACnetServiceAckRemovedReadPropertyConditionalParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckRemovedReadPropertyConditional, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRemovedReadPropertyConditional"); pullErr != nil {
 		return nil, pullErr
 	}

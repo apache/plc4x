@@ -35,7 +35,7 @@ type BACnetConfirmedServiceRequestReadProperty struct {
 	ArrayIndex         *BACnetContextTagUnsignedInteger
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestReadProperty is the corresponding interface of BACnetConfirmedServiceRequestReadProperty
@@ -99,12 +99,12 @@ func (m *BACnetConfirmedServiceRequestReadProperty) GetArrayIndex() *BACnetConte
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestReadProperty factory function for BACnetConfirmedServiceRequestReadProperty
-func NewBACnetConfirmedServiceRequestReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, len uint16) *BACnetConfirmedServiceRequestReadProperty {
+func NewBACnetConfirmedServiceRequestReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *BACnetConfirmedServiceRequestReadProperty {
 	_result := &BACnetConfirmedServiceRequestReadProperty{
 		ObjectIdentifier:              objectIdentifier,
 		PropertyIdentifier:            propertyIdentifier,
 		ArrayIndex:                    arrayIndex,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -155,7 +155,7 @@ func (m *BACnetConfirmedServiceRequestReadProperty) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadPropertyParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestReadProperty, error) {
+func BACnetConfirmedServiceRequestReadPropertyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestReadProperty, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadProperty"); pullErr != nil {
 		return nil, pullErr
 	}

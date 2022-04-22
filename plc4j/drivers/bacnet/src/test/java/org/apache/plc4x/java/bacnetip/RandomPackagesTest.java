@@ -2876,7 +2876,7 @@ public class RandomPackagesTest {
                 () -> assertThat(baos.toByteArray())
                     .satisfies(bytes -> {
                         LOGGER.info("Trying to parse\n{}", Hex.dump(bytes));
-                        BACnetServiceAckAtomicReadFile baCnetServiceAck = (BACnetServiceAckAtomicReadFile) BACnetServiceAckAtomicReadFile.staticParse(new ReadBufferByteBased(bytes));
+                        BACnetServiceAckAtomicReadFile baCnetServiceAck = (BACnetServiceAckAtomicReadFile) BACnetServiceAckAtomicReadFile.staticParse(new ReadBufferByteBased(bytes),bytes.length);
                         assertThat(baCnetServiceAck)
                             .isNotNull()
                             .extracting(BACnetServiceAckAtomicReadFile::getAccessMethod)

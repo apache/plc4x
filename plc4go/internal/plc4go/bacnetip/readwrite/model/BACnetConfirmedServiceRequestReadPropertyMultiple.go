@@ -32,7 +32,7 @@ type BACnetConfirmedServiceRequestReadPropertyMultiple struct {
 	Data []*BACnetReadAccessSpecification
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestReadPropertyMultiple is the corresponding interface of BACnetConfirmedServiceRequestReadPropertyMultiple
@@ -84,10 +84,10 @@ func (m *BACnetConfirmedServiceRequestReadPropertyMultiple) GetData() []*BACnetR
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestReadPropertyMultiple factory function for BACnetConfirmedServiceRequestReadPropertyMultiple
-func NewBACnetConfirmedServiceRequestReadPropertyMultiple(data []*BACnetReadAccessSpecification, len uint16) *BACnetConfirmedServiceRequestReadPropertyMultiple {
+func NewBACnetConfirmedServiceRequestReadPropertyMultiple(data []*BACnetReadAccessSpecification, serviceRequestLength uint16) *BACnetConfirmedServiceRequestReadPropertyMultiple {
 	_result := &BACnetConfirmedServiceRequestReadPropertyMultiple{
 		Data:                          data,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -134,7 +134,7 @@ func (m *BACnetConfirmedServiceRequestReadPropertyMultiple) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadPropertyMultipleParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestReadPropertyMultiple, error) {
+func BACnetConfirmedServiceRequestReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestReadPropertyMultiple, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadPropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -148,7 +148,7 @@ func BACnetConfirmedServiceRequestReadPropertyMultipleParse(readBuffer utils.Rea
 	// Length array
 	data := make([]*BACnetReadAccessSpecification, 0)
 	{
-		_dataLength := len
+		_dataLength := serviceRequestLength
 		_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
 		for readBuffer.GetPos() < _dataEndPos {
 			_item, _err := BACnetReadAccessSpecificationParse(readBuffer)

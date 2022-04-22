@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple is the corresponding interface of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetParent() 
 }
 
 // NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple factory function for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
-func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(len uint16) *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
+func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(serviceRequestLength uint16) *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
 	_result := &BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthInB
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestVTOpen struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestVTOpen is the corresponding interface of BACnetConfirmedServiceRequestVTOpen
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestVTOpen) GetParent() *BACnetConfirmedServic
 }
 
 // NewBACnetConfirmedServiceRequestVTOpen factory function for BACnetConfirmedServiceRequestVTOpen
-func NewBACnetConfirmedServiceRequestVTOpen(len uint16) *BACnetConfirmedServiceRequestVTOpen {
+func NewBACnetConfirmedServiceRequestVTOpen(serviceRequestLength uint16) *BACnetConfirmedServiceRequestVTOpen {
 	_result := &BACnetConfirmedServiceRequestVTOpen{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestVTOpen) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestVTOpen, error) {
+func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestVTOpen, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTOpen"); pullErr != nil {
 		return nil, pullErr
 	}

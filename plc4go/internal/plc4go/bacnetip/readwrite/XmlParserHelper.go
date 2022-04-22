@@ -57,6 +57,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return model.BACnetStatusFlagsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
+	case "BACnetReadAccessPropertyError":
+		return model.BACnetReadAccessPropertyErrorParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetTagPayloadReal":
 		return model.BACnetTagPayloadRealParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NLM":
@@ -77,6 +79,9 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return model.BACnetNotificationParametersExtendedParametersParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
+	case "BACnetReadAccessProperty":
+		objectType := model.BACnetObjectTypeByName(parserArguments[0])
+		return model.BACnetReadAccessPropertyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectType)
 	case "BACnetNotificationParametersChangeOfValueNewValue":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -111,6 +116,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetPropertyStatesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetReadAccessSpecification":
 		return model.BACnetReadAccessSpecificationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetReadAccessResult":
+		return model.BACnetReadAccessResultParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConstructedData":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -146,14 +153,17 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		if err != nil {
 			return nil, err
 		}
-		len := uint16(parsedUint0)
-		return model.BACnetUnconfirmedServiceRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), len)
+		serviceRequestLength := uint16(parsedUint0)
+		return model.BACnetUnconfirmedServiceRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceRequestLength)
 	case "BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord":
 		return model.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BVLC":
 		return model.BVLCParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetTagPayloadObjectIdentifier":
 		return model.BACnetTagPayloadObjectIdentifierParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetPropertyWriteDefinition":
+		objectType := model.BACnetObjectTypeByName(parserArguments[0])
+		return model.BACnetPropertyWriteDefinitionParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectType)
 	case "BACnetDateTime":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -197,8 +207,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		if err != nil {
 			return nil, err
 		}
-		len := uint16(parsedUint0)
-		return model.BACnetConfirmedServiceRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), len)
+		serviceRequestLength := uint16(parsedUint0)
+		return model.BACnetConfirmedServiceRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceRequestLength)
 	case "BACnetAddress":
 		return model.BACnetAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetTagPayloadUnsignedInteger":
@@ -253,8 +263,15 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetPropertyValueParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectType)
 	case "NLMInitalizeRoutingTablePortMapping":
 		return model.NLMInitalizeRoutingTablePortMappingParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetWriteAccessSpecification":
+		return model.BACnetWriteAccessSpecificationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetServiceAck":
-		return model.BACnetServiceAckParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		if err != nil {
+			return nil, err
+		}
+		serviceRequestLength := uint16(parsedUint0)
+		return model.BACnetServiceAckParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceRequestLength)
 	case "BACnetBinaryPV":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {

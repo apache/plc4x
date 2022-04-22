@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestConfirmedTextMessage struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestConfirmedTextMessage is the corresponding interface of BACnetConfirmedServiceRequestConfirmedTextMessage
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) GetParent() *BACnetC
 }
 
 // NewBACnetConfirmedServiceRequestConfirmedTextMessage factory function for BACnetConfirmedServiceRequestConfirmedTextMessage
-func NewBACnetConfirmedServiceRequestConfirmedTextMessage(len uint16) *BACnetConfirmedServiceRequestConfirmedTextMessage {
+func NewBACnetConfirmedServiceRequestConfirmedTextMessage(serviceRequestLength uint16) *BACnetConfirmedServiceRequestConfirmedTextMessage {
 	_result := &BACnetConfirmedServiceRequestConfirmedTextMessage{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestConfirmedTextMessage, error) {
+func BACnetConfirmedServiceRequestConfirmedTextMessageParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestConfirmedTextMessage, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); pullErr != nil {
 		return nil, pullErr
 	}

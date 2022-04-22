@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestRemovedRequestKey struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestRemovedRequestKey is the corresponding interface of BACnetConfirmedServiceRequestRemovedRequestKey
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestRemovedRequestKey) GetParent() *BACnetConf
 }
 
 // NewBACnetConfirmedServiceRequestRemovedRequestKey factory function for BACnetConfirmedServiceRequestRemovedRequestKey
-func NewBACnetConfirmedServiceRequestRemovedRequestKey(len uint16) *BACnetConfirmedServiceRequestRemovedRequestKey {
+func NewBACnetConfirmedServiceRequestRemovedRequestKey(serviceRequestLength uint16) *BACnetConfirmedServiceRequestRemovedRequestKey {
 	_result := &BACnetConfirmedServiceRequestRemovedRequestKey{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestRemovedRequestKey) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemovedRequestKeyParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestRemovedRequestKey, error) {
+func BACnetConfirmedServiceRequestRemovedRequestKeyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestRemovedRequestKey, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRemovedRequestKey"); pullErr != nil {
 		return nil, pullErr
 	}

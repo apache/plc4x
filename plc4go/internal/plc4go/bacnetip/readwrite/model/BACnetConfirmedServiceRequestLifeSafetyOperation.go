@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestLifeSafetyOperation struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestLifeSafetyOperation is the corresponding interface of BACnetConfirmedServiceRequestLifeSafetyOperation
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) GetParent() *BACnetCo
 }
 
 // NewBACnetConfirmedServiceRequestLifeSafetyOperation factory function for BACnetConfirmedServiceRequestLifeSafetyOperation
-func NewBACnetConfirmedServiceRequestLifeSafetyOperation(len uint16) *BACnetConfirmedServiceRequestLifeSafetyOperation {
+func NewBACnetConfirmedServiceRequestLifeSafetyOperation(serviceRequestLength uint16) *BACnetConfirmedServiceRequestLifeSafetyOperation {
 	_result := &BACnetConfirmedServiceRequestLifeSafetyOperation{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestLifeSafetyOperationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestLifeSafetyOperation, error) {
+func BACnetConfirmedServiceRequestLifeSafetyOperationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestLifeSafetyOperation, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestLifeSafetyOperation"); pullErr != nil {
 		return nil, pullErr
 	}

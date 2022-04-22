@@ -186,8 +186,10 @@
             [simple   bit       moreFollows                             ]
             [simple   bit       segmentedResponseAccepted               ]
             [reserved uint 2    '0'                                     ]
-            [simple   uint 3    maxSegmentsAccepted                     ]
-            [simple   uint 4    maxApduLengthAccepted                   ]
+            [simple   MaxSegmentsAccepted
+                                maxSegmentsAccepted                     ]
+            [simple   MaxApduLengthAccepted
+                                maxApduLengthAccepted                   ]
             [simple   uint 8    invokeId                                ]
             [optional uint 8    sequenceNumber       'segmentedMessage' ]
             [optional uint 8    proposedWindowSize   'segmentedMessage' ]
@@ -211,7 +213,7 @@
             [simple   uint 8    originalInvokeId                        ]
             [optional uint 8    sequenceNumber     'segmentedMessage'   ]
             [optional uint 8    proposedWindowSize 'segmentedMessage'   ]
-            [optional BACnetServiceAck
+            [optional BACnetServiceAck('apduLength - (3 + (segmentedMessage ? 2 : 0))')
                                 serviceAck         '!segmentedMessage'  ]
             // TODO: maybe we should put this in the discriminated types below
             [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
@@ -251,7 +253,37 @@
     ]
 ]
 
-[discriminatedType BACnetConfirmedServiceRequest(uint 16 len)
+[enum uint 3 MaxSegmentsAccepted
+    ['0x0' UNSPECIFIED             ]
+    ['0x1' NUM_SEGMENTS_02         ]
+    ['0x2' NUM_SEGMENTS_04         ]
+    ['0x3' NUM_SEGMENTS_08         ]
+    ['0x4' NUM_SEGMENTS_16         ]
+    ['0x5' NUM_SEGMENTS_32         ]
+    ['0x6' NUM_SEGMENTS_64         ]
+    ['0x7' MORE_THAN_64_SEGMENTS   ]
+]
+
+[enum uint 4 MaxApduLengthAccepted
+    ['0x0' MINIMUM_MESSAGE_SIZE    ] // 50 octets
+    ['0x1' NUM_OCTETS_128          ]
+    ['0x2' NUM_OCTETS_206          ] // fits in a LonTalk frame
+    ['0x3' NUM_OCTETS_480          ] // fits in an ARCNET frame
+    ['0x4' NUM_OCTETS_1024         ]
+    ['0x5' NUM_OCTETS_1476         ] // fits in an Ethernet frame
+    ['0x6' RESERVED_BY_ASHRAE_01   ]
+    ['0x7' RESERVED_BY_ASHRAE_02   ]
+    ['0x8' RESERVED_BY_ASHRAE_03   ]
+    ['0x9' RESERVED_BY_ASHRAE_04   ]
+    ['0xA' RESERVED_BY_ASHRAE_05   ]
+    ['0xB' RESERVED_BY_ASHRAE_06   ]
+    ['0xC' RESERVED_BY_ASHRAE_07   ]
+    ['0xD' RESERVED_BY_ASHRAE_08   ]
+    ['0xE' RESERVED_BY_ASHRAE_09   ]
+    ['0xF' RESERVED_BY_ASHRAE_10   ]
+]
+
+[discriminatedType BACnetConfirmedServiceRequest(uint 16 serviceRequestLength)
     [discriminator uint 8 serviceChoice]
     [typeSwitch serviceChoice
         ['0x00' BACnetConfirmedServiceRequestAcknowledgeAlarm
@@ -320,7 +352,7 @@
             [array    BACnetReadAccessSpecification
                             data
                             length
-                            'len'                   ]
+                            'serviceRequestLength'                   ]
         ]
         ['0x0F' BACnetConfirmedServiceRequestWriteProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
@@ -330,6 +362,10 @@
             [optional BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')              priority            ]
         ]
         ['0x10' BACnetConfirmedServiceRequestWritePropertyMultiple
+            [array    BACnetWriteAccessSpecification
+                            data
+                            length
+                            'serviceRequestLength'                   ]
         ]
 
         ['0x11' BACnetConfirmedServiceRequestDeviceCommunicationControl
@@ -376,7 +412,7 @@
         ['0x1F' BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
         ]
         [BACnetConfirmedServiceRequestConfirmedUnknown
-            [array  byte    unknownBytes length '(len>0)?(len - 1):0']
+            [array  byte    unknownBytes length '(serviceRequestLength>0)?(serviceRequestLength - 1):0']
         ]
     ]
 ]
@@ -400,6 +436,31 @@
                     propertyIdentifier              ]
     [optional   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
                     arrayIndex                      ]
+]
+
+[type BACnetWriteAccessSpecification
+    [simple     BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                    objectIdentifier                ]
+    [simple     BACnetOpeningTag('1', 'BACnetDataType.OPENING_TAG')
+                     openingTag                     ]
+    [array      BACnetPropertyWriteDefinition('objectIdentifier.objectType')
+                    listOfPropertyWriteDefinition
+                    terminated
+                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'
+    ]
+    [simple     BACnetClosingTag('1', 'BACnetDataType.CLOSING_TAG')
+                     closingTag                     ]
+]
+
+[type BACnetPropertyWriteDefinition(BACnetObjectType objectType)
+    [simple     BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+                    propertyIdentifier              ]
+    [optional   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+                    arrayIndex                      ]
+    [optional   BACnetConstructedData('2', 'objectType', 'propertyIdentifier')
+                    propertyValue                   ]
+    [optional   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
+                    priority                        ]
 ]
 
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
@@ -432,7 +493,7 @@
     ]
 ]
 
-[discriminatedType BACnetUnconfirmedServiceRequest(uint 16 len)
+[discriminatedType BACnetUnconfirmedServiceRequest(uint 16 serviceRequestLength)
     [discriminator uint 8 serviceChoice]
     [typeSwitch serviceChoice
         ['0x00' BACnetUnconfirmedServiceRequestIAm
@@ -483,7 +544,7 @@
         ['0x0B' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
         ]
         [BACnetUnconfirmedServiceRequestUnconfirmedUnknown
-            [array  byte    unknownBytes length '(len>0)?(len - 1):0']
+            [array  byte    unknownBytes length '(serviceRequestLength>0)?(serviceRequestLength - 1):0']
         ]
     ]
 ]
@@ -497,7 +558,7 @@
     [virtual    bit isNoSegmentation          'rawData != null && rawData.payload.actualValue == 4']
 ]
 
-[discriminatedType BACnetServiceAck
+[discriminatedType BACnetServiceAck(uint 16 serviceRequestLength)
     [discriminator   uint 8 serviceChoice]
     [typeSwitch serviceChoice
         ['0x03' BACnetServiceAckGetAlarmSummary
@@ -535,7 +596,10 @@
                             values                  ]
         ]
         ['0x0E' BACnetServiceAckReadPropertyMultiple
-
+            [array    BACnetReadAccessResult
+                            data
+                            length
+                            'serviceRequestLength'                   ]
         ]
         ['0x1A' BACnetServiceAckReadRange
 
@@ -551,7 +615,6 @@
         ['0x17' BACnetServiceAckVTData
 
         ]
-
         ['0x18' BACnetServiceAckRemovedAuthenticate
 
         ]
@@ -559,6 +622,41 @@
 
         ]
     ]
+]
+
+[type BACnetReadAccessResult
+    [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                    objectIdentifier                ]
+    [simple     BACnetOpeningTag('1', 'BACnetDataType.OPENING_TAG')
+                     openingTag                     ]
+    [array    BACnetReadAccessProperty('objectIdentifier.objectType')
+                    listOfReadAccessProperty
+                    terminated
+                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'
+    ]
+    [simple     BACnetClosingTag('1', 'BACnetDataType.CLOSING_TAG')
+                     closingTag                     ]
+]
+
+[type BACnetReadAccessProperty(BACnetObjectType objectType)
+    [simple     BACnetContextTagPropertyIdentifier('2', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+                    propertyIdentifier              ]
+    [optional   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
+                    arrayIndex                      ]
+    [optional   BACnetConstructedData('4', 'objectType', 'propertyIdentifier')
+                    propertyValue                   ]
+    [optional   BACnetReadAccessPropertyError
+                    propertyAccessError             ]
+]
+
+// TODO: this need to be completely refactored with BACnet error below
+[type BACnetReadAccessPropertyError
+    [simple     BACnetOpeningTag('5', 'BACnetDataType.OPENING_TAG')
+                     openingTag                     ]
+    [simple BACnetApplicationTagEnumerated errorClass]
+    [simple BACnetApplicationTagEnumerated errorCode]
+    [simple     BACnetClosingTag('5', 'BACnetDataType.CLOSING_TAG')
+                     closingTag                     ]
 ]
 
 [type BACnetServiceAckAtomicReadFileStreamOrRecord
@@ -634,6 +732,7 @@
     ]
 ]
 
+// TODO: this need to be completly refactored
 [discriminatedType BACnetError
     [discriminator uint 8 serviceChoice]
     [typeSwitch serviceChoice
@@ -1477,7 +1576,7 @@
                                 data
                             terminated
                             'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
-            [virtual    bit     hasData 'COUNT(data) == 0']
+            [virtual    bit     hasData 'COUNT(data) != 0']
             [optional       BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
                             propertyIdentifier
                             'hasData'                                                                           ]

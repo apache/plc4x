@@ -35,7 +35,7 @@ type BACnetConfirmedServiceRequestSubscribeCOV struct {
 	LifetimeInSeconds           *BACnetContextTagUnsignedInteger
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestSubscribeCOV is the corresponding interface of BACnetConfirmedServiceRequestSubscribeCOV
@@ -105,13 +105,13 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) GetLifetimeInSeconds() *BACn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestSubscribeCOV factory function for BACnetConfirmedServiceRequestSubscribeCOV
-func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, issueConfirmed *BACnetContextTagBoolean, lifetimeInSeconds *BACnetContextTagUnsignedInteger, len uint16) *BACnetConfirmedServiceRequestSubscribeCOV {
+func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, issueConfirmed *BACnetContextTagBoolean, lifetimeInSeconds *BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *BACnetConfirmedServiceRequestSubscribeCOV {
 	_result := &BACnetConfirmedServiceRequestSubscribeCOV{
 		SubscriberProcessIdentifier:   subscriberProcessIdentifier,
 		MonitoredObjectIdentifier:     monitoredObjectIdentifier,
 		IssueConfirmed:                issueConfirmed,
 		LifetimeInSeconds:             lifetimeInSeconds,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -163,7 +163,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestSubscribeCOV, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestSubscribeCOV, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOV"); pullErr != nil {
 		return nil, pullErr
 	}

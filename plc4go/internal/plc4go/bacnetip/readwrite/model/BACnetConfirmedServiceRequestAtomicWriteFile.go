@@ -37,7 +37,7 @@ type BACnetConfirmedServiceRequestAtomicWriteFile struct {
 	ClosingTag        *BACnetClosingTag
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestAtomicWriteFile is the corresponding interface of BACnetConfirmedServiceRequestAtomicWriteFile
@@ -113,14 +113,14 @@ func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetClosingTag() *BACnetCl
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestAtomicWriteFile factory function for BACnetConfirmedServiceRequestAtomicWriteFile
-func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, fileStartPosition *BACnetApplicationTagSignedInteger, fileData *BACnetApplicationTagOctetString, closingTag *BACnetClosingTag, len uint16) *BACnetConfirmedServiceRequestAtomicWriteFile {
+func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, fileStartPosition *BACnetApplicationTagSignedInteger, fileData *BACnetApplicationTagOctetString, closingTag *BACnetClosingTag, serviceRequestLength uint16) *BACnetConfirmedServiceRequestAtomicWriteFile {
 	_result := &BACnetConfirmedServiceRequestAtomicWriteFile{
 		DeviceIdentifier:              deviceIdentifier,
 		OpeningTag:                    openingTag,
 		FileStartPosition:             fileStartPosition,
 		FileData:                      fileData,
 		ClosingTag:                    closingTag,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -179,7 +179,7 @@ func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestAtomicWriteFile, error) {
+func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestAtomicWriteFile, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicWriteFile"); pullErr != nil {
 		return nil, pullErr
 	}

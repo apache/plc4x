@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestConfirmedPrivateTransfer struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestConfirmedPrivateTransfer is the corresponding interface of BACnetConfirmedServiceRequestConfirmedPrivateTransfer
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetParent() *BAC
 }
 
 // NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer factory function for BACnetConfirmedServiceRequestConfirmedPrivateTransfer
-func NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(len uint16) *BACnetConfirmedServiceRequestConfirmedPrivateTransfer {
+func NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(serviceRequestLength uint16) *BACnetConfirmedServiceRequestConfirmedPrivateTransfer {
 	_result := &BACnetConfirmedServiceRequestConfirmedPrivateTransfer{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestConfirmedPrivateTransfer, error) {
+func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestConfirmedPrivateTransfer, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedPrivateTransfer"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestRemoveListElement struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestRemoveListElement is the corresponding interface of BACnetConfirmedServiceRequestRemoveListElement
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) GetParent() *BACnetConf
 }
 
 // NewBACnetConfirmedServiceRequestRemoveListElement factory function for BACnetConfirmedServiceRequestRemoveListElement
-func NewBACnetConfirmedServiceRequestRemoveListElement(len uint16) *BACnetConfirmedServiceRequestRemoveListElement {
+func NewBACnetConfirmedServiceRequestRemoveListElement(serviceRequestLength uint16) *BACnetConfirmedServiceRequestRemoveListElement {
 	_result := &BACnetConfirmedServiceRequestRemoveListElement{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestRemoveListElement, error) {
+func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestRemoveListElement, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRemoveListElement"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -28,6 +28,9 @@ import (
 // BACnetServiceAckRemovedAuthenticate is the data-structure of this message
 type BACnetServiceAckRemovedAuthenticate struct {
 	*BACnetServiceAck
+
+	// Arguments.
+	ServiceRequestLength uint16
 }
 
 // IBACnetServiceAckRemovedAuthenticate is the corresponding interface of BACnetServiceAckRemovedAuthenticate
@@ -62,9 +65,9 @@ func (m *BACnetServiceAckRemovedAuthenticate) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckRemovedAuthenticate factory function for BACnetServiceAckRemovedAuthenticate
-func NewBACnetServiceAckRemovedAuthenticate() *BACnetServiceAckRemovedAuthenticate {
+func NewBACnetServiceAckRemovedAuthenticate(serviceRequestLength uint16) *BACnetServiceAckRemovedAuthenticate {
 	_result := &BACnetServiceAckRemovedAuthenticate{
-		BACnetServiceAck: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -104,7 +107,7 @@ func (m *BACnetServiceAckRemovedAuthenticate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckRemovedAuthenticateParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckRemovedAuthenticate, error) {
+func BACnetServiceAckRemovedAuthenticateParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckRemovedAuthenticate, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRemovedAuthenticate"); pullErr != nil {
 		return nil, pullErr
 	}

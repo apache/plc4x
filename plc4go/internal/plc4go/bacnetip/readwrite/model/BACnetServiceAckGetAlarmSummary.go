@@ -28,6 +28,9 @@ import (
 // BACnetServiceAckGetAlarmSummary is the data-structure of this message
 type BACnetServiceAckGetAlarmSummary struct {
 	*BACnetServiceAck
+
+	// Arguments.
+	ServiceRequestLength uint16
 }
 
 // IBACnetServiceAckGetAlarmSummary is the corresponding interface of BACnetServiceAckGetAlarmSummary
@@ -62,9 +65,9 @@ func (m *BACnetServiceAckGetAlarmSummary) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckGetAlarmSummary factory function for BACnetServiceAckGetAlarmSummary
-func NewBACnetServiceAckGetAlarmSummary() *BACnetServiceAckGetAlarmSummary {
+func NewBACnetServiceAckGetAlarmSummary(serviceRequestLength uint16) *BACnetServiceAckGetAlarmSummary {
 	_result := &BACnetServiceAckGetAlarmSummary{
-		BACnetServiceAck: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -104,7 +107,7 @@ func (m *BACnetServiceAckGetAlarmSummary) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckGetAlarmSummary, error) {
+func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckGetAlarmSummary, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetAlarmSummary"); pullErr != nil {
 		return nil, pullErr
 	}

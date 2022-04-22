@@ -21,6 +21,9 @@ github:
   description: PLC4X The Industrial IoT adapter
   homepage: https://plc4x.apache.org/
 
+  dependabot_alerts:  true
+  dependabot_updates: false
+
   labels:
     - java
     - cpp

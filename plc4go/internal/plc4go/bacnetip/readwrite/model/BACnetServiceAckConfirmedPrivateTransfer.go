@@ -28,6 +28,9 @@ import (
 // BACnetServiceAckConfirmedPrivateTransfer is the data-structure of this message
 type BACnetServiceAckConfirmedPrivateTransfer struct {
 	*BACnetServiceAck
+
+	// Arguments.
+	ServiceRequestLength uint16
 }
 
 // IBACnetServiceAckConfirmedPrivateTransfer is the corresponding interface of BACnetServiceAckConfirmedPrivateTransfer
@@ -62,9 +65,9 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) GetParent() *BACnetServiceAck
 }
 
 // NewBACnetServiceAckConfirmedPrivateTransfer factory function for BACnetServiceAckConfirmedPrivateTransfer
-func NewBACnetServiceAckConfirmedPrivateTransfer() *BACnetServiceAckConfirmedPrivateTransfer {
+func NewBACnetServiceAckConfirmedPrivateTransfer(serviceRequestLength uint16) *BACnetServiceAckConfirmedPrivateTransfer {
 	_result := &BACnetServiceAckConfirmedPrivateTransfer{
-		BACnetServiceAck: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -104,7 +107,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckConfirmedPrivateTransfer, error) {
+func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckConfirmedPrivateTransfer, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckConfirmedPrivateTransfer"); pullErr != nil {
 		return nil, pullErr
 	}

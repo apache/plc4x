@@ -36,6 +36,6 @@ func (e ParseAssertError) Error() string {
 	return e.Message
 }
 
-func (m ParseAssertError) Is(target error) bool {
+func (e ParseAssertError) Is(target error) bool {
 	return true
 }

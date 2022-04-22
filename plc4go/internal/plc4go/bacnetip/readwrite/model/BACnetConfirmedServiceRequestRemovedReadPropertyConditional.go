@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestRemovedReadPropertyConditional struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestRemovedReadPropertyConditional is the corresponding interface of BACnetConfirmedServiceRequestRemovedReadPropertyConditional
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) GetParent(
 }
 
 // NewBACnetConfirmedServiceRequestRemovedReadPropertyConditional factory function for BACnetConfirmedServiceRequestRemovedReadPropertyConditional
-func NewBACnetConfirmedServiceRequestRemovedReadPropertyConditional(len uint16) *BACnetConfirmedServiceRequestRemovedReadPropertyConditional {
+func NewBACnetConfirmedServiceRequestRemovedReadPropertyConditional(serviceRequestLength uint16) *BACnetConfirmedServiceRequestRemovedReadPropertyConditional {
 	_result := &BACnetConfirmedServiceRequestRemovedReadPropertyConditional{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) GetLengthI
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestRemovedReadPropertyConditional, error) {
+func BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestRemovedReadPropertyConditional, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRemovedReadPropertyConditional"); pullErr != nil {
 		return nil, pullErr
 	}

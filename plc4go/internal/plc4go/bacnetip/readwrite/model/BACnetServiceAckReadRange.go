@@ -28,6 +28,9 @@ import (
 // BACnetServiceAckReadRange is the data-structure of this message
 type BACnetServiceAckReadRange struct {
 	*BACnetServiceAck
+
+	// Arguments.
+	ServiceRequestLength uint16
 }
 
 // IBACnetServiceAckReadRange is the corresponding interface of BACnetServiceAckReadRange
@@ -62,9 +65,9 @@ func (m *BACnetServiceAckReadRange) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckReadRange factory function for BACnetServiceAckReadRange
-func NewBACnetServiceAckReadRange() *BACnetServiceAckReadRange {
+func NewBACnetServiceAckReadRange(serviceRequestLength uint16) *BACnetServiceAckReadRange {
 	_result := &BACnetServiceAckReadRange{
-		BACnetServiceAck: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -104,7 +107,7 @@ func (m *BACnetServiceAckReadRange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckReadRange, error) {
+func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckReadRange, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadRange"); pullErr != nil {
 		return nil, pullErr
 	}

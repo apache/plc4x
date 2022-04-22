@@ -30,6 +30,9 @@ import (
 type BACnetServiceAckAtomicWriteFile struct {
 	*BACnetServiceAck
 	FileStartPosition *BACnetContextTagSignedInteger
+
+	// Arguments.
+	ServiceRequestLength uint16
 }
 
 // IBACnetServiceAckAtomicWriteFile is the corresponding interface of BACnetServiceAckAtomicWriteFile
@@ -80,10 +83,10 @@ func (m *BACnetServiceAckAtomicWriteFile) GetFileStartPosition() *BACnetContextT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckAtomicWriteFile factory function for BACnetServiceAckAtomicWriteFile
-func NewBACnetServiceAckAtomicWriteFile(fileStartPosition *BACnetContextTagSignedInteger) *BACnetServiceAckAtomicWriteFile {
+func NewBACnetServiceAckAtomicWriteFile(fileStartPosition *BACnetContextTagSignedInteger, serviceRequestLength uint16) *BACnetServiceAckAtomicWriteFile {
 	_result := &BACnetServiceAckAtomicWriteFile{
 		FileStartPosition: fileStartPosition,
-		BACnetServiceAck:  NewBACnetServiceAck(),
+		BACnetServiceAck:  NewBACnetServiceAck(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -126,7 +129,7 @@ func (m *BACnetServiceAckAtomicWriteFile) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckAtomicWriteFile, error) {
+func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckAtomicWriteFile, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicWriteFile"); pullErr != nil {
 		return nil, pullErr
 	}

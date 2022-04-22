@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestDeleteObject struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestDeleteObject is the corresponding interface of BACnetConfirmedServiceRequestDeleteObject
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestDeleteObject) GetParent() *BACnetConfirmed
 }
 
 // NewBACnetConfirmedServiceRequestDeleteObject factory function for BACnetConfirmedServiceRequestDeleteObject
-func NewBACnetConfirmedServiceRequestDeleteObject(len uint16) *BACnetConfirmedServiceRequestDeleteObject {
+func NewBACnetConfirmedServiceRequestDeleteObject(serviceRequestLength uint16) *BACnetConfirmedServiceRequestDeleteObject {
 	_result := &BACnetConfirmedServiceRequestDeleteObject{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestDeleteObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestDeleteObjectParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestDeleteObject, error) {
+func BACnetConfirmedServiceRequestDeleteObjectParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestDeleteObject, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestDeleteObject"); pullErr != nil {
 		return nil, pullErr
 	}

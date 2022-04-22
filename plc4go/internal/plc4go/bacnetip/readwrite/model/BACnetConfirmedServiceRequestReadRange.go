@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestReadRange struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestReadRange is the corresponding interface of BACnetConfirmedServiceRequestReadRange
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestReadRange) GetParent() *BACnetConfirmedSer
 }
 
 // NewBACnetConfirmedServiceRequestReadRange factory function for BACnetConfirmedServiceRequestReadRange
-func NewBACnetConfirmedServiceRequestReadRange(len uint16) *BACnetConfirmedServiceRequestReadRange {
+func NewBACnetConfirmedServiceRequestReadRange(serviceRequestLength uint16) *BACnetConfirmedServiceRequestReadRange {
 	_result := &BACnetConfirmedServiceRequestReadRange{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestReadRange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadRangeParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestReadRange, error) {
+func BACnetConfirmedServiceRequestReadRangeParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestReadRange, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRange"); pullErr != nil {
 		return nil, pullErr
 	}
