@@ -110,7 +110,7 @@ async def test_read_request_builder_non_empty_request_connected_bool(mocker) -> 
     # verify that request has one field
     assert response.code == PlcResponseCode.OK
 
-    value: PlcBOOL = cast(PlcBOOL, response.values[field][0].value)
+    value = response.values[field][0].value
     assert value.get_bool()
 
 
@@ -137,7 +137,7 @@ async def test_read_request_builder_non_empty_request_connected_int(mocker) -> N
     # verify that request has one field
     assert response.code == PlcResponseCode.OK
 
-    value: PlcINT = cast(PlcINT, response.values[field][0].value)
+    value = response.values[field][0].value
     assert value.get_int() == 1
 
 
