@@ -30,7 +30,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple struct {
 	*BACnetUnconfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple is the corresponding interface of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
@@ -66,9 +66,9 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetP
 }
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple factory function for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
-func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(len uint16) *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
 	_result := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetL
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"); pullErr != nil {
 		return nil, pullErr
 	}

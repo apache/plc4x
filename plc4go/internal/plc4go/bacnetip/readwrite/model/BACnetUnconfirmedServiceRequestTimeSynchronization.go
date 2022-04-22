@@ -33,7 +33,7 @@ type BACnetUnconfirmedServiceRequestTimeSynchronization struct {
 	SynchronizedTime *BACnetApplicationTagTime
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetUnconfirmedServiceRequestTimeSynchronization is the corresponding interface of BACnetUnconfirmedServiceRequestTimeSynchronization
@@ -91,11 +91,11 @@ func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) GetSynchronizedTime
 ///////////////////////////////////////////////////////////
 
 // NewBACnetUnconfirmedServiceRequestTimeSynchronization factory function for BACnetUnconfirmedServiceRequestTimeSynchronization
-func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate *BACnetApplicationTagDate, synchronizedTime *BACnetApplicationTagTime, len uint16) *BACnetUnconfirmedServiceRequestTimeSynchronization {
+func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate *BACnetApplicationTagDate, synchronizedTime *BACnetApplicationTagTime, serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestTimeSynchronization {
 	_result := &BACnetUnconfirmedServiceRequestTimeSynchronization{
 		SynchronizedDate:                synchronizedDate,
 		SynchronizedTime:                synchronizedTime,
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +141,7 @@ func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestTimeSynchronization, error) {
+func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetUnconfirmedServiceRequestTimeSynchronization, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestTimeSynchronization"); pullErr != nil {
 		return nil, pullErr
 	}

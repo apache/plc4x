@@ -31,6 +31,9 @@ type BACnetServiceAckAtomicReadFile struct {
 	*BACnetServiceAck
 	EndOfFile    *BACnetApplicationTagBoolean
 	AccessMethod *BACnetServiceAckAtomicReadFileStreamOrRecord
+
+	// Arguments.
+	ServiceRequestLength uint16
 }
 
 // IBACnetServiceAckAtomicReadFile is the corresponding interface of BACnetServiceAckAtomicReadFile
@@ -87,11 +90,11 @@ func (m *BACnetServiceAckAtomicReadFile) GetAccessMethod() *BACnetServiceAckAtom
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckAtomicReadFile factory function for BACnetServiceAckAtomicReadFile
-func NewBACnetServiceAckAtomicReadFile(endOfFile *BACnetApplicationTagBoolean, accessMethod *BACnetServiceAckAtomicReadFileStreamOrRecord) *BACnetServiceAckAtomicReadFile {
+func NewBACnetServiceAckAtomicReadFile(endOfFile *BACnetApplicationTagBoolean, accessMethod *BACnetServiceAckAtomicReadFileStreamOrRecord, serviceRequestLength uint16) *BACnetServiceAckAtomicReadFile {
 	_result := &BACnetServiceAckAtomicReadFile{
 		EndOfFile:        endOfFile,
 		AccessMethod:     accessMethod,
-		BACnetServiceAck: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +140,7 @@ func (m *BACnetServiceAckAtomicReadFile) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckAtomicReadFile, error) {
+func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckAtomicReadFile, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFile"); pullErr != nil {
 		return nil, pullErr
 	}

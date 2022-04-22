@@ -32,7 +32,7 @@ type BACnetConfirmedServiceRequestConfirmedUnknown struct {
 	UnknownBytes []byte
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestConfirmedUnknown is the corresponding interface of BACnetConfirmedServiceRequestConfirmedUnknown
@@ -84,10 +84,10 @@ func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetUnknownBytes() []byte
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestConfirmedUnknown factory function for BACnetConfirmedServiceRequestConfirmedUnknown
-func NewBACnetConfirmedServiceRequestConfirmedUnknown(unknownBytes []byte, len uint16) *BACnetConfirmedServiceRequestConfirmedUnknown {
+func NewBACnetConfirmedServiceRequestConfirmedUnknown(unknownBytes []byte, serviceRequestLength uint16) *BACnetConfirmedServiceRequestConfirmedUnknown {
 	_result := &BACnetConfirmedServiceRequestConfirmedUnknown{
 		UnknownBytes:                  unknownBytes,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -132,14 +132,14 @@ func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestConfirmedUnknown, error) {
+func BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestConfirmedUnknown, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedUnknown"); pullErr != nil {
 		return nil, pullErr
 	}
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
 	// Byte Array field (unknownBytes)
-	numberOfBytesunknownBytes := int(utils.InlineIf(bool(bool((len) > (0))), func() interface{} { return uint16(uint16(uint16(len) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	numberOfBytesunknownBytes := int(utils.InlineIf(bool(bool((serviceRequestLength) > (0))), func() interface{} { return uint16(uint16(uint16(serviceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field")

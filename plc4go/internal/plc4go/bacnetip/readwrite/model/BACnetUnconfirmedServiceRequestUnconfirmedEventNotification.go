@@ -30,7 +30,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedEventNotification struct {
 	*BACnetUnconfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetUnconfirmedServiceRequestUnconfirmedEventNotification is the corresponding interface of BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
@@ -66,9 +66,9 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetParent(
 }
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification factory function for BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
-func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(len uint16) *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
 	_result := &BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetLengthI
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestUnconfirmedEventNotification, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetUnconfirmedServiceRequestUnconfirmedEventNotification, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedEventNotification"); pullErr != nil {
 		return nil, pullErr
 	}

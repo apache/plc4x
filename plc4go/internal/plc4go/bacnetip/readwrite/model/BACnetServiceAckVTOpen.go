@@ -28,6 +28,9 @@ import (
 // BACnetServiceAckVTOpen is the data-structure of this message
 type BACnetServiceAckVTOpen struct {
 	*BACnetServiceAck
+
+	// Arguments.
+	ServiceRequestLength uint16
 }
 
 // IBACnetServiceAckVTOpen is the corresponding interface of BACnetServiceAckVTOpen
@@ -62,9 +65,9 @@ func (m *BACnetServiceAckVTOpen) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckVTOpen factory function for BACnetServiceAckVTOpen
-func NewBACnetServiceAckVTOpen() *BACnetServiceAckVTOpen {
+func NewBACnetServiceAckVTOpen(serviceRequestLength uint16) *BACnetServiceAckVTOpen {
 	_result := &BACnetServiceAckVTOpen{
-		BACnetServiceAck: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -104,7 +107,7 @@ func (m *BACnetServiceAckVTOpen) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckVTOpen, error) {
+func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckVTOpen, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTOpen"); pullErr != nil {
 		return nil, pullErr
 	}

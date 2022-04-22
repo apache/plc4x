@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestVTClose struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestVTClose is the corresponding interface of BACnetConfirmedServiceRequestVTClose
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestVTClose) GetParent() *BACnetConfirmedServi
 }
 
 // NewBACnetConfirmedServiceRequestVTClose factory function for BACnetConfirmedServiceRequestVTClose
-func NewBACnetConfirmedServiceRequestVTClose(len uint16) *BACnetConfirmedServiceRequestVTClose {
+func NewBACnetConfirmedServiceRequestVTClose(serviceRequestLength uint16) *BACnetConfirmedServiceRequestVTClose {
 	_result := &BACnetConfirmedServiceRequestVTClose{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestVTClose) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestVTClose, error) {
+func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestVTClose, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTClose"); pullErr != nil {
 		return nil, pullErr
 	}

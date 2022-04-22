@@ -36,7 +36,7 @@ type BACnetUnconfirmedServiceRequestWhoHas struct {
 	ObjectName                   *BACnetContextTagOctetString
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetUnconfirmedServiceRequestWhoHas is the corresponding interface of BACnetUnconfirmedServiceRequestWhoHas
@@ -106,13 +106,13 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) GetObjectName() *BACnetContextTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetUnconfirmedServiceRequestWhoHas factory function for BACnetUnconfirmedServiceRequestWhoHas
-func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger, objectIdentifier *BACnetContextTagObjectIdentifier, objectName *BACnetContextTagOctetString, len uint16) *BACnetUnconfirmedServiceRequestWhoHas {
+func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger, objectIdentifier *BACnetContextTagObjectIdentifier, objectName *BACnetContextTagOctetString, serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestWhoHas {
 	_result := &BACnetUnconfirmedServiceRequestWhoHas{
 		DeviceInstanceRangeLowLimit:     deviceInstanceRangeLowLimit,
 		DeviceInstanceRangeHighLimit:    deviceInstanceRangeHighLimit,
 		ObjectIdentifier:                objectIdentifier,
 		ObjectName:                      objectName,
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -172,7 +172,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestWhoHas, error) {
+func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetUnconfirmedServiceRequestWhoHas, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoHas"); pullErr != nil {
 		return nil, pullErr
 	}

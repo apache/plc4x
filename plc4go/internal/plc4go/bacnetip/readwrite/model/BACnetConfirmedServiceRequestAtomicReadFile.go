@@ -33,7 +33,7 @@ type BACnetConfirmedServiceRequestAtomicReadFile struct {
 	AccessMethod   *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestAtomicReadFile is the corresponding interface of BACnetConfirmedServiceRequestAtomicReadFile
@@ -91,11 +91,11 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetAccessMethod() *BACnetC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestAtomicReadFile factory function for BACnetConfirmedServiceRequestAtomicReadFile
-func NewBACnetConfirmedServiceRequestAtomicReadFile(fileIdentifier *BACnetApplicationTagObjectIdentifier, accessMethod *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, len uint16) *BACnetConfirmedServiceRequestAtomicReadFile {
+func NewBACnetConfirmedServiceRequestAtomicReadFile(fileIdentifier *BACnetApplicationTagObjectIdentifier, accessMethod *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, serviceRequestLength uint16) *BACnetConfirmedServiceRequestAtomicReadFile {
 	_result := &BACnetConfirmedServiceRequestAtomicReadFile{
 		FileIdentifier:                fileIdentifier,
 		AccessMethod:                  accessMethod,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +141,7 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestAtomicReadFile, error) {
+func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestAtomicReadFile, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFile"); pullErr != nil {
 		return nil, pullErr
 	}

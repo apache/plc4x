@@ -28,6 +28,9 @@ import (
 // BACnetServiceAckCreateObject is the data-structure of this message
 type BACnetServiceAckCreateObject struct {
 	*BACnetServiceAck
+
+	// Arguments.
+	ServiceRequestLength uint16
 }
 
 // IBACnetServiceAckCreateObject is the corresponding interface of BACnetServiceAckCreateObject
@@ -62,9 +65,9 @@ func (m *BACnetServiceAckCreateObject) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckCreateObject factory function for BACnetServiceAckCreateObject
-func NewBACnetServiceAckCreateObject() *BACnetServiceAckCreateObject {
+func NewBACnetServiceAckCreateObject(serviceRequestLength uint16) *BACnetServiceAckCreateObject {
 	_result := &BACnetServiceAckCreateObject{
-		BACnetServiceAck: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -104,7 +107,7 @@ func (m *BACnetServiceAckCreateObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckCreateObject, error) {
+func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckCreateObject, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckCreateObject"); pullErr != nil {
 		return nil, pullErr
 	}

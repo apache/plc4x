@@ -34,7 +34,7 @@ type BACnetUnconfirmedServiceRequestIHave struct {
 	ObjectName       *BACnetApplicationTagCharacterString
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetUnconfirmedServiceRequestIHave is the corresponding interface of BACnetUnconfirmedServiceRequestIHave
@@ -98,12 +98,12 @@ func (m *BACnetUnconfirmedServiceRequestIHave) GetObjectName() *BACnetApplicatio
 ///////////////////////////////////////////////////////////
 
 // NewBACnetUnconfirmedServiceRequestIHave factory function for BACnetUnconfirmedServiceRequestIHave
-func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier *BACnetApplicationTagObjectIdentifier, objectIdentifier *BACnetApplicationTagObjectIdentifier, objectName *BACnetApplicationTagCharacterString, len uint16) *BACnetUnconfirmedServiceRequestIHave {
+func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier *BACnetApplicationTagObjectIdentifier, objectIdentifier *BACnetApplicationTagObjectIdentifier, objectName *BACnetApplicationTagCharacterString, serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestIHave {
 	_result := &BACnetUnconfirmedServiceRequestIHave{
 		DeviceIdentifier:                deviceIdentifier,
 		ObjectIdentifier:                objectIdentifier,
 		ObjectName:                      objectName,
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -152,7 +152,7 @@ func (m *BACnetUnconfirmedServiceRequestIHave) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestIHave, error) {
+func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetUnconfirmedServiceRequestIHave, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestIHave"); pullErr != nil {
 		return nil, pullErr
 	}

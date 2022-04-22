@@ -28,6 +28,9 @@ import (
 // BACnetServiceAckGetEnrollmentSummary is the data-structure of this message
 type BACnetServiceAckGetEnrollmentSummary struct {
 	*BACnetServiceAck
+
+	// Arguments.
+	ServiceRequestLength uint16
 }
 
 // IBACnetServiceAckGetEnrollmentSummary is the corresponding interface of BACnetServiceAckGetEnrollmentSummary
@@ -62,9 +65,9 @@ func (m *BACnetServiceAckGetEnrollmentSummary) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckGetEnrollmentSummary factory function for BACnetServiceAckGetEnrollmentSummary
-func NewBACnetServiceAckGetEnrollmentSummary() *BACnetServiceAckGetEnrollmentSummary {
+func NewBACnetServiceAckGetEnrollmentSummary(serviceRequestLength uint16) *BACnetServiceAckGetEnrollmentSummary {
 	_result := &BACnetServiceAckGetEnrollmentSummary{
-		BACnetServiceAck: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -104,7 +107,7 @@ func (m *BACnetServiceAckGetEnrollmentSummary) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckGetEnrollmentSummary, error) {
+func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckGetEnrollmentSummary, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEnrollmentSummary"); pullErr != nil {
 		return nil, pullErr
 	}

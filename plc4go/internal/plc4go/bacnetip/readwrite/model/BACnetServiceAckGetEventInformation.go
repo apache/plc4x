@@ -28,6 +28,9 @@ import (
 // BACnetServiceAckGetEventInformation is the data-structure of this message
 type BACnetServiceAckGetEventInformation struct {
 	*BACnetServiceAck
+
+	// Arguments.
+	ServiceRequestLength uint16
 }
 
 // IBACnetServiceAckGetEventInformation is the corresponding interface of BACnetServiceAckGetEventInformation
@@ -62,9 +65,9 @@ func (m *BACnetServiceAckGetEventInformation) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckGetEventInformation factory function for BACnetServiceAckGetEventInformation
-func NewBACnetServiceAckGetEventInformation() *BACnetServiceAckGetEventInformation {
+func NewBACnetServiceAckGetEventInformation(serviceRequestLength uint16) *BACnetServiceAckGetEventInformation {
 	_result := &BACnetServiceAckGetEventInformation{
-		BACnetServiceAck: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -104,7 +107,7 @@ func (m *BACnetServiceAckGetEventInformation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckGetEventInformation, error) {
+func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckGetEventInformation, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEventInformation"); pullErr != nil {
 		return nil, pullErr
 	}

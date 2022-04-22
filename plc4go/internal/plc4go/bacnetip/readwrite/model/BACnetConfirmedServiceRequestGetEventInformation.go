@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestGetEventInformation struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestGetEventInformation is the corresponding interface of BACnetConfirmedServiceRequestGetEventInformation
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) GetParent() *BACnetCo
 }
 
 // NewBACnetConfirmedServiceRequestGetEventInformation factory function for BACnetConfirmedServiceRequestGetEventInformation
-func NewBACnetConfirmedServiceRequestGetEventInformation(len uint16) *BACnetConfirmedServiceRequestGetEventInformation {
+func NewBACnetConfirmedServiceRequestGetEventInformation(serviceRequestLength uint16) *BACnetConfirmedServiceRequestGetEventInformation {
 	_result := &BACnetConfirmedServiceRequestGetEventInformation{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestGetEventInformation, error) {
+func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestGetEventInformation, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEventInformation"); pullErr != nil {
 		return nil, pullErr
 	}

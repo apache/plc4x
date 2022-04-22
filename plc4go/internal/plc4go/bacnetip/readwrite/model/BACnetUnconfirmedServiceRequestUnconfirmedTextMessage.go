@@ -30,7 +30,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage struct {
 	*BACnetUnconfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetUnconfirmedServiceRequestUnconfirmedTextMessage is the corresponding interface of BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
@@ -66,9 +66,9 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetParent() *BAC
 }
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage factory function for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
-func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(len uint16) *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
 	_result := &BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestUnconfirmedTextMessage, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetUnconfirmedServiceRequestUnconfirmedTextMessage, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"); pullErr != nil {
 		return nil, pullErr
 	}

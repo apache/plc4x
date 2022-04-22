@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummary struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestGetEnrollmentSummary is the corresponding interface of BACnetConfirmedServiceRequestGetEnrollmentSummary
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) GetParent() *BACnetC
 }
 
 // NewBACnetConfirmedServiceRequestGetEnrollmentSummary factory function for BACnetConfirmedServiceRequestGetEnrollmentSummary
-func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(len uint16) *BACnetConfirmedServiceRequestGetEnrollmentSummary {
+func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(serviceRequestLength uint16) *BACnetConfirmedServiceRequestGetEnrollmentSummary {
 	_result := &BACnetConfirmedServiceRequestGetEnrollmentSummary{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEnrollmentSummary"); pullErr != nil {
 		return nil, pullErr
 	}

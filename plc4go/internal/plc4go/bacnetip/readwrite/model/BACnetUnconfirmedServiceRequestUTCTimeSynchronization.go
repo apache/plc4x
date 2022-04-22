@@ -30,7 +30,7 @@ type BACnetUnconfirmedServiceRequestUTCTimeSynchronization struct {
 	*BACnetUnconfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetUnconfirmedServiceRequestUTCTimeSynchronization is the corresponding interface of BACnetUnconfirmedServiceRequestUTCTimeSynchronization
@@ -66,9 +66,9 @@ func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetParent() *BAC
 }
 
 // NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization factory function for BACnetUnconfirmedServiceRequestUTCTimeSynchronization
-func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization(len uint16) *BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
+func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization(serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
 	_result := &BACnetUnconfirmedServiceRequestUTCTimeSynchronization{
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestUTCTimeSynchronization, error) {
+func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetUnconfirmedServiceRequestUTCTimeSynchronization, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization"); pullErr != nil {
 		return nil, pullErr
 	}

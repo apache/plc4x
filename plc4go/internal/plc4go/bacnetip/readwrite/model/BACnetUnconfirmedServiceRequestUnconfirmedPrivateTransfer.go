@@ -35,7 +35,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 	ServiceParameters *BACnetPropertyValues
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer is the corresponding interface of BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
@@ -99,12 +99,12 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServicePa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer factory function for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId *BACnetContextTagUnsignedInteger, serviceNumber *BACnetContextTagUnsignedInteger, serviceParameters *BACnetPropertyValues, len uint16) *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId *BACnetContextTagUnsignedInteger, serviceNumber *BACnetContextTagUnsignedInteger, serviceParameters *BACnetPropertyValues, serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
 	_result := &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
 		VendorId:                        vendorId,
 		ServiceNumber:                   serviceNumber,
 		ServiceParameters:               serviceParameters,
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -155,7 +155,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetLengthInB
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"); pullErr != nil {
 		return nil, pullErr
 	}

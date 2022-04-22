@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestAcknowledgeAlarm is the corresponding interface of BACnetConfirmedServiceRequestAcknowledgeAlarm
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetParent() *BACnetConfi
 }
 
 // NewBACnetConfirmedServiceRequestAcknowledgeAlarm factory function for BACnetConfirmedServiceRequestAcknowledgeAlarm
-func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(len uint16) *BACnetConfirmedServiceRequestAcknowledgeAlarm {
+func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(serviceRequestLength uint16) *BACnetConfirmedServiceRequestAcknowledgeAlarm {
 	_result := &BACnetConfirmedServiceRequestAcknowledgeAlarm{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestAcknowledgeAlarm, error) {
+func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestAcknowledgeAlarm, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); pullErr != nil {
 		return nil, pullErr
 	}

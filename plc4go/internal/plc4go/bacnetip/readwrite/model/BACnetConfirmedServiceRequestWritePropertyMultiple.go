@@ -32,7 +32,7 @@ type BACnetConfirmedServiceRequestWritePropertyMultiple struct {
 	Data []*BACnetWriteAccessSpecification
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestWritePropertyMultiple is the corresponding interface of BACnetConfirmedServiceRequestWritePropertyMultiple
@@ -84,10 +84,10 @@ func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) GetData() []*BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestWritePropertyMultiple factory function for BACnetConfirmedServiceRequestWritePropertyMultiple
-func NewBACnetConfirmedServiceRequestWritePropertyMultiple(data []*BACnetWriteAccessSpecification, len uint16) *BACnetConfirmedServiceRequestWritePropertyMultiple {
+func NewBACnetConfirmedServiceRequestWritePropertyMultiple(data []*BACnetWriteAccessSpecification, serviceRequestLength uint16) *BACnetConfirmedServiceRequestWritePropertyMultiple {
 	_result := &BACnetConfirmedServiceRequestWritePropertyMultiple{
 		Data:                          data,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -134,7 +134,7 @@ func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestWritePropertyMultiple, error) {
+func BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestWritePropertyMultiple, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -148,7 +148,7 @@ func BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer utils.Re
 	// Length array
 	data := make([]*BACnetWriteAccessSpecification, 0)
 	{
-		_dataLength := len
+		_dataLength := serviceRequestLength
 		_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
 		for readBuffer.GetPos() < _dataEndPos {
 			_item, _err := BACnetWriteAccessSpecificationParse(readBuffer)

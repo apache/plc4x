@@ -36,7 +36,7 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
 	ListOfValues                *BACnetPropertyValues
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestConfirmedCOVNotification is the corresponding interface of BACnetConfirmedServiceRequestConfirmedCOVNotification
@@ -112,14 +112,14 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetListOfValues(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestConfirmedCOVNotification factory function for BACnetConfirmedServiceRequestConfirmedCOVNotification
-func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetPropertyValues, len uint16) *BACnetConfirmedServiceRequestConfirmedCOVNotification {
+func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetPropertyValues, serviceRequestLength uint16) *BACnetConfirmedServiceRequestConfirmedCOVNotification {
 	_result := &BACnetConfirmedServiceRequestConfirmedCOVNotification{
 		SubscriberProcessIdentifier:   subscriberProcessIdentifier,
 		InitiatingDeviceIdentifier:    initiatingDeviceIdentifier,
 		MonitoredObjectIdentifier:     monitoredObjectIdentifier,
 		LifetimeInSeconds:             lifetimeInSeconds,
 		ListOfValues:                  listOfValues,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -174,7 +174,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestConfirmedCOVNotification, error) {
+func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestConfirmedCOVNotification, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); pullErr != nil {
 		return nil, pullErr
 	}

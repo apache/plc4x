@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestAddListElement struct {
 	*BACnetConfirmedServiceRequest
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestAddListElement is the corresponding interface of BACnetConfirmedServiceRequestAddListElement
@@ -66,9 +66,9 @@ func (m *BACnetConfirmedServiceRequestAddListElement) GetParent() *BACnetConfirm
 }
 
 // NewBACnetConfirmedServiceRequestAddListElement factory function for BACnetConfirmedServiceRequestAddListElement
-func NewBACnetConfirmedServiceRequestAddListElement(len uint16) *BACnetConfirmedServiceRequestAddListElement {
+func NewBACnetConfirmedServiceRequestAddListElement(serviceRequestLength uint16) *BACnetConfirmedServiceRequestAddListElement {
 	_result := &BACnetConfirmedServiceRequestAddListElement{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetConfirmedServiceRequestAddListElement) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAddListElementParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestAddListElement, error) {
+func BACnetConfirmedServiceRequestAddListElementParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestAddListElement, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAddListElement"); pullErr != nil {
 		return nil, pullErr
 	}

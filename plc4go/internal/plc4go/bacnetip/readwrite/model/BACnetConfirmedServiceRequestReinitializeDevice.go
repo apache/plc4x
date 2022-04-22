@@ -34,7 +34,7 @@ type BACnetConfirmedServiceRequestReinitializeDevice struct {
 	Password                   *BACnetContextTagCharacterString
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestReinitializeDevice is the corresponding interface of BACnetConfirmedServiceRequestReinitializeDevice
@@ -92,11 +92,11 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetPassword() *BACnetC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestReinitializeDevice factory function for BACnetConfirmedServiceRequestReinitializeDevice
-func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice *BACnetContextTagDeviceState, password *BACnetContextTagCharacterString, len uint16) *BACnetConfirmedServiceRequestReinitializeDevice {
+func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice *BACnetContextTagDeviceState, password *BACnetContextTagCharacterString, serviceRequestLength uint16) *BACnetConfirmedServiceRequestReinitializeDevice {
 	_result := &BACnetConfirmedServiceRequestReinitializeDevice{
 		ReinitializedStateOfDevice:    reinitializedStateOfDevice,
 		Password:                      password,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -144,7 +144,7 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestReinitializeDevice, error) {
+func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestReinitializeDevice, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReinitializeDevice"); pullErr != nil {
 		return nil, pullErr
 	}

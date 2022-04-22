@@ -35,7 +35,7 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControl struct {
 	Password      *BACnetContextTagCharacterString
 
 	// Arguments.
-	Len uint16
+	ServiceRequestLength uint16
 }
 
 // IBACnetConfirmedServiceRequestDeviceCommunicationControl is the corresponding interface of BACnetConfirmedServiceRequestDeviceCommunicationControl
@@ -99,12 +99,12 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetPassword() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestDeviceCommunicationControl factory function for BACnetConfirmedServiceRequestDeviceCommunicationControl
-func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration *BACnetContextTagUnsignedInteger, enableDisable *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable, password *BACnetContextTagCharacterString, len uint16) *BACnetConfirmedServiceRequestDeviceCommunicationControl {
+func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration *BACnetContextTagUnsignedInteger, enableDisable *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable, password *BACnetContextTagCharacterString, serviceRequestLength uint16) *BACnetConfirmedServiceRequestDeviceCommunicationControl {
 	_result := &BACnetConfirmedServiceRequestDeviceCommunicationControl{
 		TimeDuration:                  timeDuration,
 		EnableDisable:                 enableDisable,
 		Password:                      password,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
 	return _result
@@ -157,7 +157,7 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInByt
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
+func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); pullErr != nil {
 		return nil, pullErr
 	}
