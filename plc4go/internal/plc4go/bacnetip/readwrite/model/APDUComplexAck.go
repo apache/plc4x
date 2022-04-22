@@ -290,7 +290,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUC
 		if pullErr := readBuffer.PullContext("serviceAck"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetServiceAckParse(readBuffer, uint16(apduLength)-uint16(uint16(uint16(uint16(2))+uint16(uint16(utils.InlineIf(segmentedMessage, func() interface{} { return uint16(uint16(2)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
+		_val, _err := BACnetServiceAckParse(readBuffer, uint16(apduLength)-uint16(uint16(uint16(uint16(3))+uint16(uint16(utils.InlineIf(segmentedMessage, func() interface{} { return uint16(uint16(2)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

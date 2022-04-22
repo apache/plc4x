@@ -213,7 +213,7 @@
             [simple   uint 8    originalInvokeId                        ]
             [optional uint 8    sequenceNumber     'segmentedMessage'   ]
             [optional uint 8    proposedWindowSize 'segmentedMessage'   ]
-            [optional BACnetServiceAck('apduLength - (2 + (segmentedMessage ? 2 : 0))')
+            [optional BACnetServiceAck('apduLength - (3 + (segmentedMessage ? 2 : 0))')
                                 serviceAck         '!segmentedMessage'  ]
             // TODO: maybe we should put this in the discriminated types below
             [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
@@ -639,9 +639,9 @@
 ]
 
 [type BACnetReadAccessProperty(BACnetObjectType objectType)
-    [simple     BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+    [simple     BACnetContextTagPropertyIdentifier('2', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
                     propertyIdentifier              ]
-    [optional   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+    [optional   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
                     arrayIndex                      ]
     [optional   BACnetConstructedData('4', 'objectType', 'propertyIdentifier')
                     propertyValue                   ]
@@ -1576,7 +1576,7 @@
                                 data
                             terminated
                             'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
-            [virtual    bit     hasData 'COUNT(data) == 0']
+            [virtual    bit     hasData 'COUNT(data) != 0']
             [optional       BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
                             propertyIdentifier
                             'hasData'                                                                           ]

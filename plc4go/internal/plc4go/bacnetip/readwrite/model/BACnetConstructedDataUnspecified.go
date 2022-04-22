@@ -112,7 +112,7 @@ func (m *BACnetConstructedDataUnspecified) GetHasData() bool {
 	_ = propertyIdentifier
 	content := m.Content
 	_ = content
-	return bool(bool((len(m.GetData())) == (0)))
+	return bool(bool((len(m.GetData())) != (0)))
 }
 
 ///////////////////////
@@ -213,7 +213,7 @@ func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 
 	// Virtual field
-	_hasData := bool((len(data)) == (0))
+	_hasData := bool((len(data)) != (0))
 	hasData := bool(_hasData)
 	_ = hasData
 
