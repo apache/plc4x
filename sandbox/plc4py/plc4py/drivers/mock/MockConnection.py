@@ -43,27 +43,44 @@ from plc4py.drivers.mock.MockReadRequestBuilder import MockReadRequestBuilder
 
 @dataclass
 class MockPlcField(PlcField):
+    """
+    Mock PLC Field type
+    """
+
     datatype: str = "INT"
 
 
 class MockPlcFieldHandler:
+    """
+    Helper class to generate MockPlcField based on a fieldquery
+    """
+
     @staticmethod
-    def of(field: str) -> MockPlcField:
+    def of(fieldquery: str) -> MockPlcField:
+        """
+        :param fieldquery: Field identifier string e.g. '1:BOOL'
+        :return: A MockPlcField with the datatype populated
+        """
         try:
-            datatype = field.split(":")[1]
-            return MockPlcField(field, datatype)
+            datatype = fieldquery.split(":")[1]
+            return MockPlcField(fieldquery, datatype)
         except IndexError:
             raise PlcFieldParseException
 
 
+@dataclass
 class MockDevice:
-    def read(self, field) -> list[ResponseItem[PlcValue]]:
+    fields: dict[str, PlcValue] = field(default_factory=lambda: {})
+
+    def read(self, field: str) -> list[ResponseItem[PlcValue]]:
         logging.debug(f"Reading field {field} from Mock Device")
         plc_field = MockPlcFieldHandler.of(field)
         if plc_field.datatype == "BOOL":
-            return [ResponseItem(PlcResponseCode.OK, PlcBOOL(True))]
+            self.fields[field] = PlcBOOL(False)
+            return [ResponseItem(PlcResponseCode.OK, self.fields[field])]
         elif plc_field.datatype == "INT":
-            return [ResponseItem(PlcResponseCode.OK, PlcINT(1))]
+            self.fields[field] = PlcINT(0)
+            return [ResponseItem(PlcResponseCode.OK, self.fields[field])]
         else:
             raise PlcFieldParseException
 
@@ -135,7 +152,7 @@ class MockConnection(PlcConnection, PlcReader):
                     {field: device.read(field) for field in req.field_names},
                 )
                 fut.set_result(response)
-            except PlcFieldParseException:
+            except Exception:
                 fut.set_result(
                     PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, req.fields, {})
                 )

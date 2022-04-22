@@ -111,7 +111,7 @@ async def test_read_request_builder_non_empty_request_connected_bool(mocker) -> 
     assert response.code == PlcResponseCode.OK
 
     value = response.values[field][0].value
-    assert value.get_bool()
+    assert not value.get_bool()
 
 
 @pytest.mark.asyncio
@@ -138,7 +138,7 @@ async def test_read_request_builder_non_empty_request_connected_int(mocker) -> N
     assert response.code == PlcResponseCode.OK
 
     value = response.values[field][0].value
-    assert value.get_int() == 1
+    assert value.get_int() == 0
 
 
 def test_read_response_boolean_response(mocker) -> None:

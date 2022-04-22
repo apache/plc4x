@@ -21,4 +21,17 @@ from dataclasses import dataclass
 
 @dataclass
 class PlcField:
+    """
+    Base type for all field types.
+    Typically every driver provides an implementation of this interface in order
+    to be able to describe the fields of a resource. As this is completely tied to
+    the implemented protocol, this base interface makes absolutely no assumption to
+    any information it should provide.
+
+    In order to stay platform and protocol independent every driver connection implementation
+    provides a prepareField(String) method that is able to parse a string representation of
+    a resource into it's individual field type. Manually constructing PlcField objects
+    manually makes the solution less independent from the protocol, but might be faster.
+    """
+
     name: str
