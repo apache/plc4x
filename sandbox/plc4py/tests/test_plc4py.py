@@ -16,10 +16,14 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from typing import cast
 
 from plc4py import __version__
 from plc4py.PlcDriverManager import PlcDriverManager
 from plc4py.api.PlcConnection import PlcConnection
+from plc4py.api.messages.PlcRequest import PlcFieldRequest
+from plc4py.api.messages.PlcResponse import PlcReadResponse
+from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.drivers.mock.MockConnection import MockConnection
 from plc4py.drivers.modbus.ModbusConnection import ModbusConnection
 
@@ -44,3 +48,19 @@ def test_plc_driver_manager_init_mock():
     driver_manager = PlcDriverManager()
     with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
         assert isinstance(connection, MockConnection)
+
+
+async def test_plc_driver_manager_init_mock_read_request():
+    driver_manager = PlcDriverManager()
+    field = "1:BOOL"
+
+    with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
+        with connection.read_request_builder() as builder:
+            builder.add_item(field)
+            request: PlcFieldRequest = builder.build()
+            response: PlcReadResponse = cast(
+                PlcReadResponse, await connection.execute(request)
+            )
+
+    # verify that request has one field
+    assert response.code == PlcResponseCode.OK
