@@ -153,13 +153,42 @@
                 <argument>wheel</argument>
                 <argument>.</argument>
                 <argument>-w</argument>
-                <argument>target</argument>
+                <argument>dist</argument>
                 <argument>--no-deps</argument>
               </arguments>
             </configuration>
           </execution>
 
         </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>venv</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>dist</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>.pytest_cache</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>plc4py.egg-info</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>build</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
       </plugin>
 
       </plugins>
