@@ -1602,6 +1602,7 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-linux-x86_64.tar.gz</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
+        <python.venv.bin>venv/bin/</python.venv.bin>
       </properties>
     </profile>
     <profile>
@@ -1618,6 +1619,7 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-linux-${os.arch}.tar.gz</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-${os.arch}/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
+        <python.venv.bin>venv/bin/</python.venv.bin>
       </properties>
     </profile>
     <!-- Profile for mac (Self-Enabling) -->
@@ -1634,6 +1636,7 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-macos-universal.tar.gz</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
+        <python.venv.bin>venv/bin/</python.venv.bin>
       </properties>
     </profile>
     <!-- profile for windows (Self-Enabling) -->
@@ -1650,6 +1653,7 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-windows-x86_64.zip</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-windows-x86_64/bin</cmake.root>
         <cmake.generator>MinGW Makefiles</cmake.generator>
+        <python.venv.bin>venv/Scripts/</python.venv.bin>
       </properties>
     </profile>
 

@@ -101,7 +101,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>venv/Scripts/pip</executable>
+              <executable>${python.venv.bin}pip</executable>
               <arguments>
                 <argument>install</argument>
                 <argument>.</argument>
@@ -116,7 +116,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>venv/Scripts/pip</executable>
+              <executable>${python.venv.bin}pip</executable>
               <arguments>
                 <argument>install</argument>
                 <argument>.[dev]</argument>
@@ -131,7 +131,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>venv/Scripts/python</executable>
+              <executable>${python.venv.bin}python</executable>
               <arguments>
                 <argument>-m</argument>
                 <argument>pytest</argument>
@@ -148,7 +148,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>venv/Scripts/pip</executable>
+              <executable>${python.venv.bin}pip</executable>
               <arguments>
                 <argument>wheel</argument>
                 <argument>.</argument>
@@ -158,6 +158,7 @@
               </arguments>
             </configuration>
           </execution>
+
         </executions>
       </plugin>
 
