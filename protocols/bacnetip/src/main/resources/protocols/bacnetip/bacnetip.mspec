@@ -34,11 +34,13 @@
         ]
         ['0x02' BVLCReadBroadcastDistributionTable
         ]
-        ['0x03' BVLCReadBroadcastDistributionTableAck
+        ['0x03' BVLCReadBroadcastDistributionTableAck(uint 16 bvlcPayloadLength)
+            [array byte     bdtEntries
+                            length 'bvlcPayloadLength'          ]
         ]
         ['0x04' BVLCForwardedNPDU(uint 16 bvlcPayloadLength)
-            [array  uint 8  ip    count '4'         ]
-            [simple uint 16 port                    ]
+            [array  uint 8  ip    count '4'                     ]
+            [simple uint 16 port                                ]
             [simple NPDU('bvlcPayloadLength - 6')
                             npdu                                ]
         ]
@@ -47,9 +49,13 @@
         ]
         ['0x06' BVLCReadForeignDeviceTable
         ]
-        ['0x07' BVLCReadForeignDeviceTableAck
+        ['0x07' BVLCReadForeignDeviceTableAck(uint 16 bvlcPayloadLength)
+            [array byte     fdtEntries
+                             length 'bvlcPayloadLength'          ]
         ]
         ['0x08' BVLCDeleteForeignDeviceTableEntry
+            [array byte     fdtEntry
+                            count   '6']
         ]
         ['0x09' BVLCDistributeBroadcastToNetwork(uint 16 bvlcPayloadLength)
             [simple NPDU('bvlcPayloadLength')
@@ -63,7 +69,9 @@
             [simple NPDU('bvlcPayloadLength')
                             npdu                                ]
         ]
-        ['0x0C' BVLCSecureBVLL
+        ['0x0C' BVLCSecureBVLL(uint 16 bvlcPayloadLength)
+            [array byte     securityWrapper
+                            length 'bvlcPayloadLength'          ]
         ]
     ]
 ]
