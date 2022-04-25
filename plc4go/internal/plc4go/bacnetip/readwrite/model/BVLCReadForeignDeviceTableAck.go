@@ -29,7 +29,7 @@ import (
 // BVLCReadForeignDeviceTableAck is the data-structure of this message
 type BVLCReadForeignDeviceTableAck struct {
 	*BVLC
-	FdtEntries []byte
+	Table []*BVLCForeignDeviceTableEntry
 
 	// Arguments.
 	BvlcPayloadLength uint16
@@ -38,8 +38,8 @@ type BVLCReadForeignDeviceTableAck struct {
 // IBVLCReadForeignDeviceTableAck is the corresponding interface of BVLCReadForeignDeviceTableAck
 type IBVLCReadForeignDeviceTableAck interface {
 	IBVLC
-	// GetFdtEntries returns FdtEntries (property field)
-	GetFdtEntries() []byte
+	// GetTable returns Table (property field)
+	GetTable() []*BVLCForeignDeviceTableEntry
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -73,8 +73,8 @@ func (m *BVLCReadForeignDeviceTableAck) GetParent() *BVLC {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BVLCReadForeignDeviceTableAck) GetFdtEntries() []byte {
-	return m.FdtEntries
+func (m *BVLCReadForeignDeviceTableAck) GetTable() []*BVLCForeignDeviceTableEntry {
+	return m.Table
 }
 
 ///////////////////////
@@ -83,10 +83,10 @@ func (m *BVLCReadForeignDeviceTableAck) GetFdtEntries() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBVLCReadForeignDeviceTableAck factory function for BVLCReadForeignDeviceTableAck
-func NewBVLCReadForeignDeviceTableAck(fdtEntries []byte, bvlcPayloadLength uint16) *BVLCReadForeignDeviceTableAck {
+func NewBVLCReadForeignDeviceTableAck(table []*BVLCForeignDeviceTableEntry, bvlcPayloadLength uint16) *BVLCReadForeignDeviceTableAck {
 	_result := &BVLCReadForeignDeviceTableAck{
-		FdtEntries: fdtEntries,
-		BVLC:       NewBVLC(),
+		Table: table,
+		BVLC:  NewBVLC(),
 	}
 	_result.Child = _result
 	return _result
@@ -120,8 +120,10 @@ func (m *BVLCReadForeignDeviceTableAck) GetLengthInBitsConditional(lastItem bool
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
-	if len(m.FdtEntries) > 0 {
-		lengthInBits += 8 * uint16(len(m.FdtEntries))
+	if len(m.Table) > 0 {
+		for _, element := range m.Table {
+			lengthInBits += element.GetLengthInBits()
+		}
 	}
 
 	return lengthInBits
@@ -137,11 +139,26 @@ func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer, bvlcPayload
 	}
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
-	// Byte Array field (fdtEntries)
-	numberOfBytesfdtEntries := int(bvlcPayloadLength)
-	fdtEntries, _readArrayErr := readBuffer.ReadByteArray("fdtEntries", numberOfBytesfdtEntries)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'fdtEntries' field")
+
+	// Array field (table)
+	if pullErr := readBuffer.PullContext("table", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
+	// Length array
+	table := make([]*BVLCForeignDeviceTableEntry, 0)
+	{
+		_tableLength := bvlcPayloadLength
+		_tableEndPos := readBuffer.GetPos() + uint16(_tableLength)
+		for readBuffer.GetPos() < _tableEndPos {
+			_item, _err := BVLCForeignDeviceTableEntryParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'table' field")
+			}
+			table = append(table, _item)
+		}
+	}
+	if closeErr := readBuffer.CloseContext("table", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
 	}
 
 	if closeErr := readBuffer.CloseContext("BVLCReadForeignDeviceTableAck"); closeErr != nil {
@@ -150,8 +167,8 @@ func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer, bvlcPayload
 
 	// Create a partially initialized instance
 	_child := &BVLCReadForeignDeviceTableAck{
-		FdtEntries: fdtEntries,
-		BVLC:       &BVLC{},
+		Table: table,
+		BVLC:  &BVLC{},
 	}
 	_child.BVLC.Child = _child
 	return _child, nil
@@ -163,12 +180,19 @@ func (m *BVLCReadForeignDeviceTableAck) Serialize(writeBuffer utils.WriteBuffer)
 			return pushErr
 		}
 
-		// Array Field (fdtEntries)
-		if m.FdtEntries != nil {
-			// Byte Array field (fdtEntries)
-			_writeArrayErr := writeBuffer.WriteByteArray("fdtEntries", m.FdtEntries)
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'fdtEntries' field")
+		// Array Field (table)
+		if m.Table != nil {
+			if pushErr := writeBuffer.PushContext("table", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
+			for _, _element := range m.Table {
+				_elementErr := _element.Serialize(writeBuffer)
+				if _elementErr != nil {
+					return errors.Wrap(_elementErr, "Error serializing 'table' field")
+				}
+			}
+			if popErr := writeBuffer.PopContext("table", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
 			}
 		}
 

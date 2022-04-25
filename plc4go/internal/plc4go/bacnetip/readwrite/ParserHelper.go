@@ -49,6 +49,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetReadAccessPropertyErrorParse(io)
 	case "BACnetTagPayloadReal":
 		return model.BACnetTagPayloadRealParse(io)
+	case "BVLCForeignDeviceTableEntry":
+		return model.BVLCForeignDeviceTableEntryParse(io)
 	case "NLM":
 		apduLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {
@@ -138,6 +140,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BVLCParse(io)
 	case "BACnetTagPayloadObjectIdentifier":
 		return model.BACnetTagPayloadObjectIdentifierParse(io)
+	case "BVLCBroadcastDistributionTableEntry":
+		return model.BVLCBroadcastDistributionTableEntryParse(io)
 	case "BACnetPropertyWriteDefinition":
 		objectType := model.BACnetObjectTypeByName(arguments[0])
 		return model.BACnetPropertyWriteDefinitionParse(io, objectType)
@@ -256,8 +260,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.NPDUParse(io, npduLength)
 	case "BACnetPropertyReference":
 		return model.BACnetPropertyReferenceParse(io)
-	case "BVLCWriteBroadcastDistributionTableEntry":
-		return model.BVLCWriteBroadcastDistributionTableEntryParse(io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

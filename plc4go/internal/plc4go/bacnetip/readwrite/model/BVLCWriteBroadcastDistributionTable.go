@@ -29,7 +29,7 @@ import (
 // BVLCWriteBroadcastDistributionTable is the data-structure of this message
 type BVLCWriteBroadcastDistributionTable struct {
 	*BVLC
-	Table []*BVLCWriteBroadcastDistributionTableEntry
+	Table []*BVLCBroadcastDistributionTableEntry
 
 	// Arguments.
 	BvlcPayloadLength uint16
@@ -39,7 +39,7 @@ type BVLCWriteBroadcastDistributionTable struct {
 type IBVLCWriteBroadcastDistributionTable interface {
 	IBVLC
 	// GetTable returns Table (property field)
-	GetTable() []*BVLCWriteBroadcastDistributionTableEntry
+	GetTable() []*BVLCBroadcastDistributionTableEntry
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -73,7 +73,7 @@ func (m *BVLCWriteBroadcastDistributionTable) GetParent() *BVLC {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BVLCWriteBroadcastDistributionTable) GetTable() []*BVLCWriteBroadcastDistributionTableEntry {
+func (m *BVLCWriteBroadcastDistributionTable) GetTable() []*BVLCBroadcastDistributionTableEntry {
 	return m.Table
 }
 
@@ -83,7 +83,7 @@ func (m *BVLCWriteBroadcastDistributionTable) GetTable() []*BVLCWriteBroadcastDi
 ///////////////////////////////////////////////////////////
 
 // NewBVLCWriteBroadcastDistributionTable factory function for BVLCWriteBroadcastDistributionTable
-func NewBVLCWriteBroadcastDistributionTable(table []*BVLCWriteBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *BVLCWriteBroadcastDistributionTable {
+func NewBVLCWriteBroadcastDistributionTable(table []*BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *BVLCWriteBroadcastDistributionTable {
 	_result := &BVLCWriteBroadcastDistributionTable{
 		Table: table,
 		BVLC:  NewBVLC(),
@@ -145,12 +145,12 @@ func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcP
 		return nil, pullErr
 	}
 	// Length array
-	table := make([]*BVLCWriteBroadcastDistributionTableEntry, 0)
+	table := make([]*BVLCBroadcastDistributionTableEntry, 0)
 	{
 		_tableLength := bvlcPayloadLength
 		_tableEndPos := readBuffer.GetPos() + uint16(_tableLength)
 		for readBuffer.GetPos() < _tableEndPos {
-			_item, _err := BVLCWriteBroadcastDistributionTableEntryParse(readBuffer)
+			_item, _err := BVLCBroadcastDistributionTableEntryParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'table' field")
 			}

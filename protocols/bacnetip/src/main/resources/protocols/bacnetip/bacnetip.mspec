@@ -28,14 +28,15 @@
                             code                                ]
         ]
         ['0x01' BVLCWriteBroadcastDistributionTable(uint 16 bvlcPayloadLength)
-            [array  BVLCWriteBroadcastDistributionTableEntry
+            [array BVLCBroadcastDistributionTableEntry
                             table
                             length 'bvlcPayloadLength'          ]
         ]
         ['0x02' BVLCReadBroadcastDistributionTable
         ]
         ['0x03' BVLCReadBroadcastDistributionTableAck(uint 16 bvlcPayloadLength)
-            [array byte     bdtEntries
+            [array BVLCBroadcastDistributionTableEntry
+                            table
                             length 'bvlcPayloadLength'          ]
         ]
         ['0x04' BVLCForwardedNPDU(uint 16 bvlcPayloadLength)
@@ -50,12 +51,13 @@
         ['0x06' BVLCReadForeignDeviceTable
         ]
         ['0x07' BVLCReadForeignDeviceTableAck(uint 16 bvlcPayloadLength)
-            [array byte     fdtEntries
-                             length 'bvlcPayloadLength'          ]
+            [array BVLCForeignDeviceTableEntry
+                            table
+                            length 'bvlcPayloadLength'          ]
         ]
         ['0x08' BVLCDeleteForeignDeviceTableEntry
-            [array byte     fdtEntry
-                            count   '6']
+            [array  uint 8      ip                          count '4'       ]
+            [simple uint 16     port                                        ]
         ]
         ['0x09' BVLCDistributeBroadcastToNetwork(uint 16 bvlcPayloadLength)
             [simple NPDU('bvlcPayloadLength')
@@ -76,10 +78,17 @@
     ]
 ]
 
-[type BVLCWriteBroadcastDistributionTableEntry
+[type BVLCBroadcastDistributionTableEntry
     [array  uint 8      ip                          count '4'       ]
     [simple uint 16     port                                        ]
     [array  uint 8      broadcastDistributionMap    count '4'       ]
+]
+
+[type BVLCForeignDeviceTableEntry
+    [array  uint 8      ip                          count '4'       ]
+    [simple uint 16     port                                        ]
+    [simple uint 16     ttl                                         ]
+    [simple uint 16     secondRemainingBeforePurge                  ]
 ]
 
 [type NPDU(uint 16 npduLength)

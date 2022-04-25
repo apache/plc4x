@@ -29,14 +29,17 @@ import (
 // BVLCDeleteForeignDeviceTableEntry is the data-structure of this message
 type BVLCDeleteForeignDeviceTableEntry struct {
 	*BVLC
-	FdtEntry []byte
+	Ip   []uint8
+	Port uint16
 }
 
 // IBVLCDeleteForeignDeviceTableEntry is the corresponding interface of BVLCDeleteForeignDeviceTableEntry
 type IBVLCDeleteForeignDeviceTableEntry interface {
 	IBVLC
-	// GetFdtEntry returns FdtEntry (property field)
-	GetFdtEntry() []byte
+	// GetIp returns Ip (property field)
+	GetIp() []uint8
+	// GetPort returns Port (property field)
+	GetPort() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -70,8 +73,12 @@ func (m *BVLCDeleteForeignDeviceTableEntry) GetParent() *BVLC {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BVLCDeleteForeignDeviceTableEntry) GetFdtEntry() []byte {
-	return m.FdtEntry
+func (m *BVLCDeleteForeignDeviceTableEntry) GetIp() []uint8 {
+	return m.Ip
+}
+
+func (m *BVLCDeleteForeignDeviceTableEntry) GetPort() uint16 {
+	return m.Port
 }
 
 ///////////////////////
@@ -80,10 +87,11 @@ func (m *BVLCDeleteForeignDeviceTableEntry) GetFdtEntry() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBVLCDeleteForeignDeviceTableEntry factory function for BVLCDeleteForeignDeviceTableEntry
-func NewBVLCDeleteForeignDeviceTableEntry(fdtEntry []byte) *BVLCDeleteForeignDeviceTableEntry {
+func NewBVLCDeleteForeignDeviceTableEntry(ip []uint8, port uint16) *BVLCDeleteForeignDeviceTableEntry {
 	_result := &BVLCDeleteForeignDeviceTableEntry{
-		FdtEntry: fdtEntry,
-		BVLC:     NewBVLC(),
+		Ip:   ip,
+		Port: port,
+		BVLC: NewBVLC(),
 	}
 	_result.Child = _result
 	return _result
@@ -117,9 +125,12 @@ func (m *BVLCDeleteForeignDeviceTableEntry) GetLengthInBitsConditional(lastItem 
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
-	if len(m.FdtEntry) > 0 {
-		lengthInBits += 8 * uint16(len(m.FdtEntry))
+	if len(m.Ip) > 0 {
+		lengthInBits += 8 * uint16(len(m.Ip))
 	}
+
+	// Simple field (port)
+	lengthInBits += 16
 
 	return lengthInBits
 }
@@ -134,12 +145,32 @@ func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (*BVLCD
 	}
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
-	// Byte Array field (fdtEntry)
-	numberOfBytesfdtEntry := int(uint16(6))
-	fdtEntry, _readArrayErr := readBuffer.ReadByteArray("fdtEntry", numberOfBytesfdtEntry)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'fdtEntry' field")
+
+	// Array field (ip)
+	if pullErr := readBuffer.PullContext("ip", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
 	}
+	// Count array
+	ip := make([]uint8, uint16(4))
+	{
+		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
+			_item, _err := readBuffer.ReadUint8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'ip' field")
+			}
+			ip[curItem] = _item
+		}
+	}
+	if closeErr := readBuffer.CloseContext("ip", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	// Simple Field (port)
+	_port, _portErr := readBuffer.ReadUint16("port", 16)
+	if _portErr != nil {
+		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
+	}
+	port := _port
 
 	if closeErr := readBuffer.CloseContext("BVLCDeleteForeignDeviceTableEntry"); closeErr != nil {
 		return nil, closeErr
@@ -147,8 +178,9 @@ func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (*BVLCD
 
 	// Create a partially initialized instance
 	_child := &BVLCDeleteForeignDeviceTableEntry{
-		FdtEntry: fdtEntry,
-		BVLC:     &BVLC{},
+		Ip:   ip,
+		Port: port,
+		BVLC: &BVLC{},
 	}
 	_child.BVLC.Child = _child
 	return _child, nil
@@ -160,13 +192,27 @@ func (m *BVLCDeleteForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuf
 			return pushErr
 		}
 
-		// Array Field (fdtEntry)
-		if m.FdtEntry != nil {
-			// Byte Array field (fdtEntry)
-			_writeArrayErr := writeBuffer.WriteByteArray("fdtEntry", m.FdtEntry)
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'fdtEntry' field")
+		// Array Field (ip)
+		if m.Ip != nil {
+			if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
 			}
+			for _, _element := range m.Ip {
+				_elementErr := writeBuffer.WriteUint8("", 8, _element)
+				if _elementErr != nil {
+					return errors.Wrap(_elementErr, "Error serializing 'ip' field")
+				}
+			}
+			if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
+		}
+
+		// Simple Field (port)
+		port := uint16(m.Port)
+		_portErr := writeBuffer.WriteUint16("port", 16, (port))
+		if _portErr != nil {
+			return errors.Wrap(_portErr, "Error serializing 'port' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCDeleteForeignDeviceTableEntry"); popErr != nil {

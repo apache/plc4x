@@ -29,7 +29,7 @@ import (
 // BVLCReadBroadcastDistributionTableAck is the data-structure of this message
 type BVLCReadBroadcastDistributionTableAck struct {
 	*BVLC
-	BdtEntries []byte
+	Table []*BVLCBroadcastDistributionTableEntry
 
 	// Arguments.
 	BvlcPayloadLength uint16
@@ -38,8 +38,8 @@ type BVLCReadBroadcastDistributionTableAck struct {
 // IBVLCReadBroadcastDistributionTableAck is the corresponding interface of BVLCReadBroadcastDistributionTableAck
 type IBVLCReadBroadcastDistributionTableAck interface {
 	IBVLC
-	// GetBdtEntries returns BdtEntries (property field)
-	GetBdtEntries() []byte
+	// GetTable returns Table (property field)
+	GetTable() []*BVLCBroadcastDistributionTableEntry
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -73,8 +73,8 @@ func (m *BVLCReadBroadcastDistributionTableAck) GetParent() *BVLC {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BVLCReadBroadcastDistributionTableAck) GetBdtEntries() []byte {
-	return m.BdtEntries
+func (m *BVLCReadBroadcastDistributionTableAck) GetTable() []*BVLCBroadcastDistributionTableEntry {
+	return m.Table
 }
 
 ///////////////////////
@@ -83,10 +83,10 @@ func (m *BVLCReadBroadcastDistributionTableAck) GetBdtEntries() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBVLCReadBroadcastDistributionTableAck factory function for BVLCReadBroadcastDistributionTableAck
-func NewBVLCReadBroadcastDistributionTableAck(bdtEntries []byte, bvlcPayloadLength uint16) *BVLCReadBroadcastDistributionTableAck {
+func NewBVLCReadBroadcastDistributionTableAck(table []*BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *BVLCReadBroadcastDistributionTableAck {
 	_result := &BVLCReadBroadcastDistributionTableAck{
-		BdtEntries: bdtEntries,
-		BVLC:       NewBVLC(),
+		Table: table,
+		BVLC:  NewBVLC(),
 	}
 	_result.Child = _result
 	return _result
@@ -120,8 +120,10 @@ func (m *BVLCReadBroadcastDistributionTableAck) GetLengthInBitsConditional(lastI
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
-	if len(m.BdtEntries) > 0 {
-		lengthInBits += 8 * uint16(len(m.BdtEntries))
+	if len(m.Table) > 0 {
+		for _, element := range m.Table {
+			lengthInBits += element.GetLengthInBits()
+		}
 	}
 
 	return lengthInBits
@@ -137,11 +139,26 @@ func BVLCReadBroadcastDistributionTableAckParse(readBuffer utils.ReadBuffer, bvl
 	}
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
-	// Byte Array field (bdtEntries)
-	numberOfBytesbdtEntries := int(bvlcPayloadLength)
-	bdtEntries, _readArrayErr := readBuffer.ReadByteArray("bdtEntries", numberOfBytesbdtEntries)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bdtEntries' field")
+
+	// Array field (table)
+	if pullErr := readBuffer.PullContext("table", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
+	// Length array
+	table := make([]*BVLCBroadcastDistributionTableEntry, 0)
+	{
+		_tableLength := bvlcPayloadLength
+		_tableEndPos := readBuffer.GetPos() + uint16(_tableLength)
+		for readBuffer.GetPos() < _tableEndPos {
+			_item, _err := BVLCBroadcastDistributionTableEntryParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'table' field")
+			}
+			table = append(table, _item)
+		}
+	}
+	if closeErr := readBuffer.CloseContext("table", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
 	}
 
 	if closeErr := readBuffer.CloseContext("BVLCReadBroadcastDistributionTableAck"); closeErr != nil {
@@ -150,8 +167,8 @@ func BVLCReadBroadcastDistributionTableAckParse(readBuffer utils.ReadBuffer, bvl
 
 	// Create a partially initialized instance
 	_child := &BVLCReadBroadcastDistributionTableAck{
-		BdtEntries: bdtEntries,
-		BVLC:       &BVLC{},
+		Table: table,
+		BVLC:  &BVLC{},
 	}
 	_child.BVLC.Child = _child
 	return _child, nil
@@ -163,12 +180,19 @@ func (m *BVLCReadBroadcastDistributionTableAck) Serialize(writeBuffer utils.Writ
 			return pushErr
 		}
 
-		// Array Field (bdtEntries)
-		if m.BdtEntries != nil {
-			// Byte Array field (bdtEntries)
-			_writeArrayErr := writeBuffer.WriteByteArray("bdtEntries", m.BdtEntries)
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'bdtEntries' field")
+		// Array Field (table)
+		if m.Table != nil {
+			if pushErr := writeBuffer.PushContext("table", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
+			for _, _element := range m.Table {
+				_elementErr := _element.Serialize(writeBuffer)
+				if _elementErr != nil {
+					return errors.Wrap(_elementErr, "Error serializing 'table' field")
+				}
+			}
+			if popErr := writeBuffer.PopContext("table", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
 			}
 		}
 
