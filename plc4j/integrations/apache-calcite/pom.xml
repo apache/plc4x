@@ -34,7 +34,7 @@
   <properties>
     <!-- TODO: When updating to 1.29.0 the test won't run -->
     <!-- TODO: When updating this, also check if the false positive can be removed in the main pom dependency-check-maven config -->
-    <calcite-core.version>1.28.0</calcite-core.version>
+    <calcite-core.version>1.30.0</calcite-core.version>
   </properties>
 
   <build>
