@@ -140,24 +140,19 @@ class MockConnection(PlcConnection, PlcReader):
             logging.error("No device is set in the mock connection!")
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
-        loop = asyncio.get_running_loop()
-        logging.debug("Sending read request to MockDevice")
-        future = loop.create_future()
-
-        async def _request(fut, req, device):
+        async def _request(req, device):
             try:
                 response = PlcReadResponse(
                     PlcResponseCode.OK,
                     req.fields,
                     {field: device.read(field) for field in req.field_names},
                 )
-                fut.set_result(response)
+                return response
             except Exception:
-                fut.set_result(
-                    PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, req.fields, {})
-                )
+                return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, req.fields, {})
 
-        loop.create_task(_request(future, request, self.device))
+        logging.debug("Sending read request to MockDevice")
+        future = asyncio.ensure_future(_request(request, self.device))
         return future
 
 
