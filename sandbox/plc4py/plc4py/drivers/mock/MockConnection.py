@@ -73,6 +73,9 @@ class MockDevice:
     fields: dict[str, PlcValue] = field(default_factory=lambda: {})
 
     def read(self, field: str) -> list[ResponseItem[PlcValue]]:
+        """
+        Reads one field from the Mock Device
+        """
         logging.debug(f"Reading field {field} from Mock Device")
         plc_field = MockPlcFieldHandler.of(field)
         if plc_field.datatype == "BOOL":
@@ -140,7 +143,7 @@ class MockConnection(PlcConnection, PlcReader):
             logging.error("No device is set in the mock connection!")
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
-        async def _request(req, device):
+        async def _request(req, device) -> PlcReadResponse:
             try:
                 response = PlcReadResponse(
                     PlcResponseCode.OK,
@@ -149,6 +152,7 @@ class MockConnection(PlcConnection, PlcReader):
                 )
                 return response
             except Exception:
+                # TODO:- This exception is very general and probably should be replaced
                 return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, req.fields, {})
 
         logging.debug("Sending read request to MockDevice")
@@ -157,6 +161,11 @@ class MockConnection(PlcConnection, PlcReader):
 
 
 class MockConnectionLoader(PlcConnectionLoader):
+    """
+    Mock Connection Loader, after adding this to the setuptools entry point
+    pluggy should be able to find this and import it.
+    """
+
     @staticmethod
     @plc4py.hookimpl
     def get_connection() -> Type[MockConnection]:
