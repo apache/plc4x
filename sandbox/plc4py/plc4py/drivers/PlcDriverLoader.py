@@ -19,10 +19,10 @@
 from abc import abstractmethod
 from typing import Type
 
-from plc4py.api.PlcConnection import PlcConnection
+from plc4py.api.PlcDriver import PlcDriver
 
 
-class PlcConnectionLoader:
+class PlcDriverLoader:
     """
     Abstract class for Plc Driver Loaders.
     Each method should use the @hookimpl decorator to indicate it is a driver loader
@@ -30,7 +30,7 @@ class PlcConnectionLoader:
 
     @staticmethod
     @abstractmethod
-    def get_connection() -> Type[PlcConnection]:
+    def get_driver() -> Type[PlcDriver]:
         """
         :return Type[PlcConnection]: Returns the PlcConnection class that is used to instantiate the driver
         """

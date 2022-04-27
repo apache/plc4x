@@ -55,6 +55,7 @@ async def test_plc_driver_manager_init_mock_read_request():
     field = "1:BOOL"
 
     with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
+        connection.connect()
         with connection.read_request_builder() as builder:
             builder.add_item(field)
             request: PlcFieldRequest = builder.build()

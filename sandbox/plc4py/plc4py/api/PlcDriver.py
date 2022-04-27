@@ -42,9 +42,9 @@ class PlcDriver:
     <b>Note that each driver has to add a setuptools entrypoint as plc4x.driver in order to be loaded by pluggy</b>
     """
 
-    def __init__(self, protocol_code: str, protocol_name: str):
-        self.protocol_code = protocol_code
-        self.protocol_name = protocol_name
+    def __init__(self):
+        self.protocol_code: str
+        self.protocol_name: str
 
     @property
     def metadata(self):
@@ -52,7 +52,7 @@ class PlcDriver:
 
     @abstractmethod
     def get_connection(
-        self, url: str, authentication: PlcAuthentication
+        self, url: str, authentication: PlcAuthentication = PlcAuthentication()
     ) -> PlcConnection:
         """
         Connects to a PLC using the given plc connection string.

@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+
 import asyncio
 import logging
 from dataclasses import dataclass, field
@@ -24,6 +25,8 @@ from typing import Awaitable, Type
 import plc4py
 
 from plc4py.api.PlcConnection import PlcConnection
+from plc4py.api.PlcDriver import PlcDriver
+from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.exceptions.exceptions import PlcFieldParseException
 from plc4py.api.messages.PlcField import PlcField
 from plc4py.api.messages.PlcRequest import (
@@ -33,7 +36,7 @@ from plc4py.api.messages.PlcRequest import (
 )
 from plc4py.api.messages.PlcResponse import PlcReadResponse, PlcResponse
 from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
-from plc4py.drivers.PlcConnectionLoader import PlcConnectionLoader
+from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.spi.messages.PlcReader import PlcReader
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.spi.values.PlcBOOL import PlcBOOL
@@ -160,7 +163,24 @@ class MockConnection(PlcConnection, PlcReader):
         return future
 
 
-class MockConnectionLoader(PlcConnectionLoader):
+class MockDriver(PlcDriver):
+    def __init__(self):
+        self.protocol_code = "mock"
+        self.protocol_name = "Mock"
+
+    def get_connection(
+        self, url: str, authentication: PlcAuthentication = PlcAuthentication()
+    ) -> PlcConnection:
+        """
+        Connects to a PLC using the given plc connection string.
+        :param url: plc connection string
+        :param authentication: authentication credentials.
+        :return PlcConnection: PLC Connection object
+        """
+        return MockConnection()
+
+
+class MockDriverLoader(PlcDriverLoader):
     """
     Mock Connection Loader, after adding this to the setuptools entry point
     pluggy should be able to find this and import it.
@@ -168,8 +188,8 @@ class MockConnectionLoader(PlcConnectionLoader):
 
     @staticmethod
     @plc4py.hookimpl
-    def get_connection() -> Type[MockConnection]:
-        return MockConnection
+    def get_driver() -> Type[MockDriver]:
+        return MockDriver
 
     @staticmethod
     @plc4py.hookimpl
