@@ -16,20 +16,30 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import logging
+from abc import abstractmethod
+from typing import Type
+
+from plc4py.api.PlcDriver import PlcDriver
 
 
-class PlcException(Exception):
-    pass
+class PlcDriverLoader:
+    """
+    Abstract class for Plc Driver Loaders.
+    Each method should use the @hookimpl decorator to indicate it is a driver loader
+    """
 
+    @staticmethod
+    @abstractmethod
+    def get_driver() -> Type[PlcDriver]:
+        """
+        :return Type[PlcConnection]: Returns the PlcConnection class that is used to instantiate the driver
+        """
+        pass
 
-class PlcConnectionException(Exception):
-    logging.error("Unable to establish a connection to the plc")
-
-
-class PlcFieldParseException(Exception):
-    pass
-
-
-class PlcNotImplementedException(Exception):
-    pass
+    @staticmethod
+    @abstractmethod
+    def key() -> str:
+        """
+        :return str: Unique key to identify the driver
+        """
+        pass

@@ -16,6 +16,8 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from typing import cast
+
 import pytest
 
 from plc4py.api.PlcConnection import PlcConnection
@@ -28,7 +30,7 @@ from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.spi.values.PlcBOOL import PlcBOOL
 from plc4py.spi.values.PlcINT import PlcINT
-from tests.unit.plc4py.api.test.MockPlcConection import MockPlcConnection
+from plc4py.drivers.mock.MockConnection import MockConnection
 
 
 def test_read_request_builder_empty_request(mocker) -> None:
@@ -37,7 +39,7 @@ def test_read_request_builder_empty_request(mocker) -> None:
     :param mocker:
     :return:
     """
-    connection: PlcConnection = MockPlcConnection()
+    connection: PlcConnection = MockConnection()
 
     # the connection function is supposed to support context manager
     # so using it in a with statement should result in close being called on the connection
@@ -52,7 +54,7 @@ def test_read_request_builder_non_empty_request(mocker) -> None:
     :param mocker:
     :return:
     """
-    connection: PlcConnection = MockPlcConnection()
+    connection: PlcConnection = MockConnection()
 
     # the connection function is supposed to support context manager
     # so using it in a with statement should result in close being called on the connection
@@ -72,7 +74,7 @@ async def test_read_request_builder_non_empty_request_not_connected(mocker) -> N
     :param mocker:
     :return:
     """
-    connection: PlcConnection = MockPlcConnection()
+    connection: PlcConnection = MockConnection()
 
     # the connection function is supposed to support context manager
     # so using it in a with statement should result in close being called on the connection
@@ -83,6 +85,60 @@ async def test_read_request_builder_non_empty_request_not_connected(mocker) -> N
 
     # verify that request has one field
     assert response.code == PlcResponseCode.NOT_CONNECTED
+
+
+@pytest.mark.asyncio
+async def test_read_request_builder_non_empty_request_connected_bool(mocker) -> None:
+    """
+    Create a request with a field and then confirm an non empty response gets returned with a OK code
+    :param mocker:
+    :return:
+    """
+    connection: PlcConnection = MockConnection()
+    connection.connect()
+    field = "1:BOOL"
+
+    # the connection function is supposed to support context manager
+    # so using it in a with statement should result in close being called on the connection
+    with connection.read_request_builder() as builder:
+        builder.add_item(field)
+        request: PlcFieldRequest = builder.build()
+        response: PlcReadResponse = cast(
+            PlcReadResponse, await connection.execute(request)
+        )
+
+    # verify that request has one field
+    assert response.code == PlcResponseCode.OK
+
+    value = response.values[field][0].value
+    assert not value.get_bool()
+
+
+@pytest.mark.asyncio
+async def test_read_request_builder_non_empty_request_connected_int(mocker) -> None:
+    """
+    Create a request with a field and then confirm an non empty response gets returned with a OK code
+    :param mocker:
+    :return:
+    """
+    connection: PlcConnection = MockConnection()
+    connection.connect()
+    field = "1:INT"
+
+    # the connection function is supposed to support context manager
+    # so using it in a with statement should result in close being called on the connection
+    with connection.read_request_builder() as builder:
+        builder.add_item(field)
+        request: PlcFieldRequest = builder.build()
+        response: PlcReadResponse = cast(
+            PlcReadResponse, await connection.execute(request)
+        )
+
+    # verify that request has one field
+    assert response.code == PlcResponseCode.OK
+
+    value = response.values[field][0].value
+    assert value.get_int() == 0
 
 
 def test_read_response_boolean_response(mocker) -> None:

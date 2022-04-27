@@ -20,9 +20,11 @@ from typing import Type, Awaitable
 
 import plc4py
 from plc4py.api.PlcConnection import PlcConnection
+from plc4py.api.PlcDriver import PlcDriver
+from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.messages.PlcResponse import PlcResponse
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder
-from plc4py.drivers.PlcConnectionLoader import PlcConnectionLoader
+from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 
 
 class ModbusConnection(PlcConnection):
@@ -66,11 +68,28 @@ class ModbusConnection(PlcConnection):
         pass
 
 
-class ModbusConnectionLoader(PlcConnectionLoader):
+class ModbusDriver(PlcDriver):
+    def __init__(self):
+        self.protocol_code = "modbus"
+        self.protocol_name = "Modbus"
+
+    def get_connection(
+        self, url: str, authentication: PlcAuthentication = PlcAuthentication()
+    ) -> PlcConnection:
+        """
+        Connects to a PLC using the given plc connection string.
+        :param url: plc connection string
+        :param authentication: authentication credentials.
+        :return PlcConnection: PLC Connection object
+        """
+        return ModbusConnection(url)
+
+
+class ModbusDriverLoader(PlcDriverLoader):
     @staticmethod
     @plc4py.hookimpl
-    def get_connection() -> Type[ModbusConnection]:
-        return ModbusConnection
+    def get_driver() -> Type[ModbusDriver]:
+        return ModbusDriver
 
     @staticmethod
     @plc4py.hookimpl

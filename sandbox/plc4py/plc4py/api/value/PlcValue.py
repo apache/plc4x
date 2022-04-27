@@ -28,6 +28,12 @@ T = TypeVar("T")
 class PlcValue(Generic[T], ABC):
     value: T
 
+    def get_bool(self):
+        return self.value
+
+    def get_int(self):
+        return self.value
+
 
 class PlcResponseCode(Enum):
     OK = auto()

@@ -20,7 +20,7 @@ from typing import Type
 
 import pluggy
 
-from plc4py.api.PlcConnection import PlcConnection
+from plc4py.api.PlcDriver import PlcDriver
 
 
 class PlcDriverClassLoader:
@@ -30,7 +30,7 @@ class PlcDriverClassLoader:
 
     @staticmethod
     @hookspec
-    def get_connection() -> Type[PlcConnection]:
+    def get_driver() -> Type[PlcDriver]:
         """Returns the PlcConnection class that is used to instantiate the driver"""
 
     @staticmethod

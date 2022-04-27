@@ -16,30 +16,11 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from abc import abstractmethod
-from typing import Type
-
-from plc4py.api.PlcConnection import PlcConnection
 
 
-class PlcConnectionLoader:
-    """
-    Abstract class for Plc Driver Loaders.
-    Each method should use the @hookimpl decorator to indicate it is a driver loader
-    """
+class PlcDiscoveryRequest:
+    pass
 
-    @staticmethod
-    @abstractmethod
-    def get_connection() -> Type[PlcConnection]:
-        """
-        :return Type[PlcConnection]: Returns the PlcConnection class that is used to instantiate the driver
-        """
-        pass
 
-    @staticmethod
-    @abstractmethod
-    def key() -> str:
-        """
-        :return str: Unique key to identify the driver
-        """
-        pass
+class PlcDiscoveryRequestBuilder:
+    pass
