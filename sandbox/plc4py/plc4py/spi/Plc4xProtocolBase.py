@@ -16,29 +16,13 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from enum import Enum, auto
-from typing import Generator
+from abc import ABC
+from typing import TypeVar, Generic
+
+from plc4py.spi.messages.ChannelMessage import ChannelMessage
+
+T = TypeVar("T", bound=ChannelMessage)
 
 
-# TODO: Figure out what the parameters are and if we need this
-class GenericGenerator(Generator):
-    def __enter__(self):
-        return self
-
-    def send(self, _value, blah):
-        pass
-
-    def throw(self):
-        pass
-
-    def __exit__(self, *args):
-        pass
-
-
-class ByteOrder(Enum):
-    """
-    Specifies the byte order for a message
-    """
-
-    LITTLE_ENDIAN = auto()
-    BIG_ENDIAN = auto()
+class Plc4xProtocolBase(Generic[T], ABC):
+    pass

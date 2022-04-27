@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+
 from typing import Type, Awaitable
 
 import plc4py
@@ -70,8 +71,8 @@ class ModbusConnection(PlcConnection):
 
 class ModbusDriver(PlcDriver):
     def __init__(self):
-        self.protocol_code = "modbus"
-        self.protocol_name = "Modbus"
+        self.protocol_code = "modbus-tcp"
+        self.protocol_name = "Modbus TCP"
 
     def get_connection(
         self, url: str, authentication: PlcAuthentication = PlcAuthentication()
