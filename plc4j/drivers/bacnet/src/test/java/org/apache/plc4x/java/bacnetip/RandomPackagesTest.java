@@ -58,7 +58,6 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @RequirePcapNg
 public class RandomPackagesTest {
 
-
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomPackagesTest.class);
 
     public static final String BACNET_BPF_FILTER_UDP = "udp port 47808";
@@ -893,9 +892,9 @@ public class RandomPackagesTest {
                     }
                     {
                         BACnetNotificationParametersBufferReady baCnetNotificationParametersBufferReady = (BACnetNotificationParametersBufferReady) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
-                        assertEquals(BACnetObjectType.TREND_LOG, baCnetNotificationParametersBufferReady.getBufferProperty().getObjectIdentifier().getObjectType());
-                        assertEquals(BACnetPropertyIdentifier.LOG_BUFFER, baCnetNotificationParametersBufferReady.getBufferProperty().getPropertyIdentifier().getPropertyIdentifier());
-                        assertEquals(BACnetObjectType.DEVICE, baCnetNotificationParametersBufferReady.getBufferProperty().getDeviceIdentifier().getObjectType());
+                        assertEquals(BACnetObjectType.TREND_LOG, baCnetNotificationParametersBufferReady.getBufferProperty().getValue().getObjectIdentifier().getObjectType());
+                        assertEquals(BACnetPropertyIdentifier.LOG_BUFFER, baCnetNotificationParametersBufferReady.getBufferProperty().getValue().getPropertyIdentifier().getPropertyIdentifier());
+                        assertEquals(BACnetObjectType.DEVICE, baCnetNotificationParametersBufferReady.getBufferProperty().getValue().getDeviceIdentifier().getObjectType());
                         assertEquals(1640, baCnetNotificationParametersBufferReady.getPreviousNotification().getPayload().getActualValue().longValue());
                         assertEquals(1653, baCnetNotificationParametersBufferReady.getCurrentNotification().getPayload().getActualValue().longValue());
                     }

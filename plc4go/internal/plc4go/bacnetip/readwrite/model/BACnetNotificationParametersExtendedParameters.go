@@ -43,7 +43,7 @@ type BACnetNotificationParametersExtendedParameters struct {
 	DateValue            *BACnetApplicationTagDate
 	TimeValue            *BACnetApplicationTagTime
 	ObjectIdentifier     *BACnetApplicationTagObjectIdentifier
-	Reference            *BACnetDeviceObjectPropertyReference
+	Reference            *BACnetDeviceObjectPropertyReferenceEnclosed
 	ClosingTag           *BACnetClosingTag
 
 	// Arguments.
@@ -81,7 +81,7 @@ type IBACnetNotificationParametersExtendedParameters interface {
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetApplicationTagObjectIdentifier
 	// GetReference returns Reference (property field)
-	GetReference() *BACnetDeviceObjectPropertyReference
+	GetReference() *BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() *BACnetClosingTag
 	// GetLengthInBytes returns the length in bytes
@@ -153,7 +153,7 @@ func (m *BACnetNotificationParametersExtendedParameters) GetObjectIdentifier() *
 	return m.ObjectIdentifier
 }
 
-func (m *BACnetNotificationParametersExtendedParameters) GetReference() *BACnetDeviceObjectPropertyReference {
+func (m *BACnetNotificationParametersExtendedParameters) GetReference() *BACnetDeviceObjectPropertyReferenceEnclosed {
 	return m.Reference
 }
 
@@ -167,7 +167,7 @@ func (m *BACnetNotificationParametersExtendedParameters) GetClosingTag() *BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersExtendedParameters factory function for BACnetNotificationParametersExtendedParameters
-func NewBACnetNotificationParametersExtendedParameters(openingTag *BACnetOpeningTag, nullValue *BACnetApplicationTagNull, realValue *BACnetApplicationTagReal, unsignedValue *BACnetApplicationTagUnsignedInteger, booleanValue *BACnetApplicationTagBoolean, integerValue *BACnetApplicationTagSignedInteger, doubleValue *BACnetApplicationTagDouble, octetStringValue *BACnetApplicationTagOctetString, characterStringValue *BACnetApplicationTagCharacterString, bitStringValue *BACnetApplicationTagBitString, enumeratedValue *BACnetApplicationTagEnumerated, dateValue *BACnetApplicationTagDate, timeValue *BACnetApplicationTagTime, objectIdentifier *BACnetApplicationTagObjectIdentifier, reference *BACnetDeviceObjectPropertyReference, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetNotificationParametersExtendedParameters {
+func NewBACnetNotificationParametersExtendedParameters(openingTag *BACnetOpeningTag, nullValue *BACnetApplicationTagNull, realValue *BACnetApplicationTagReal, unsignedValue *BACnetApplicationTagUnsignedInteger, booleanValue *BACnetApplicationTagBoolean, integerValue *BACnetApplicationTagSignedInteger, doubleValue *BACnetApplicationTagDouble, octetStringValue *BACnetApplicationTagOctetString, characterStringValue *BACnetApplicationTagCharacterString, bitStringValue *BACnetApplicationTagBitString, enumeratedValue *BACnetApplicationTagEnumerated, dateValue *BACnetApplicationTagDate, timeValue *BACnetApplicationTagTime, objectIdentifier *BACnetApplicationTagObjectIdentifier, reference *BACnetDeviceObjectPropertyReferenceEnclosed, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetNotificationParametersExtendedParameters {
 	return &BACnetNotificationParametersExtendedParameters{OpeningTag: openingTag, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
@@ -569,20 +569,20 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	}
 
 	// Optional Field (reference) (Can be skipped, if a given expression evaluates to false)
-	var reference *BACnetDeviceObjectPropertyReference = nil
+	var reference *BACnetDeviceObjectPropertyReferenceEnclosed = nil
 	{
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("reference"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetDeviceObjectPropertyReferenceParse(readBuffer, uint8(0))
+		_val, _err := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(0))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'reference' field")
 		default:
-			reference = CastBACnetDeviceObjectPropertyReference(_val)
+			reference = CastBACnetDeviceObjectPropertyReferenceEnclosed(_val)
 			if closeErr := readBuffer.CloseContext("reference"); closeErr != nil {
 				return nil, closeErr
 			}
@@ -836,7 +836,7 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	}
 
 	// Optional Field (reference) (Can be skipped, if the value is null)
-	var reference *BACnetDeviceObjectPropertyReference = nil
+	var reference *BACnetDeviceObjectPropertyReferenceEnclosed = nil
 	if m.Reference != nil {
 		if pushErr := writeBuffer.PushContext("reference"); pushErr != nil {
 			return pushErr

@@ -92,6 +92,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetServiceAckAtomicReadFileStreamOrRecordParse(io)
 	case "NPDUControl":
 		return model.NPDUControlParse(io)
+	case "BACnetDeviceObjectPropertyReferenceEnclosed":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetDeviceObjectPropertyReferenceEnclosedParse(io, tagNumber)
 	case "BACnetPropertyStates":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -201,11 +207,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		return model.BACnetTagPayloadBitStringParse(io, actualLength)
 	case "BACnetDeviceObjectPropertyReference":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetDeviceObjectPropertyReferenceParse(io, tagNumber)
+		return model.BACnetDeviceObjectPropertyReferenceParse(io)
 	case "BACnetConstructedDataElement":
 		objectType := model.BACnetObjectTypeByName(arguments[0])
 		var propertyIdentifier model.BACnetContextTagPropertyIdentifier

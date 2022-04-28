@@ -292,9 +292,9 @@ func IsBACnetConstructedDataClosingTag(readBuffer utils.ReadBuffer, instantTermi
 	return foundOurClosingTag
 }
 
-func GuessDataType(objectType BACnetObjectType) BACnetDataType {
+func GuessDataType(objectType BACnetObjectType, propertyIdentifier *BACnetContextTagPropertyIdentifier) BACnetDataType {
 	// TODO: implement me
-	return BACnetDataType_BACNET_PROPERTY_IDENTIFIER
+	return BACnetDataType_ENUMERATED
 }
 
 func ParseVarUint(data []byte) uint32 {

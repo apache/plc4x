@@ -29,21 +29,14 @@ import (
 
 // BACnetDeviceObjectPropertyReference is the data-structure of this message
 type BACnetDeviceObjectPropertyReference struct {
-	OpeningTag         *BACnetOpeningTag
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
 	PropertyIdentifier *BACnetContextTagPropertyIdentifier
 	ArrayIndex         *BACnetContextTagUnsignedInteger
 	DeviceIdentifier   *BACnetContextTagObjectIdentifier
-	ClosingTag         *BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 // IBACnetDeviceObjectPropertyReference is the corresponding interface of BACnetDeviceObjectPropertyReference
 type IBACnetDeviceObjectPropertyReference interface {
-	// GetOpeningTag returns OpeningTag (property field)
-	GetOpeningTag() *BACnetOpeningTag
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
@@ -52,8 +45,6 @@ type IBACnetDeviceObjectPropertyReference interface {
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() *BACnetContextTagObjectIdentifier
-	// GetClosingTag returns ClosingTag (property field)
-	GetClosingTag() *BACnetClosingTag
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -66,10 +57,6 @@ type IBACnetDeviceObjectPropertyReference interface {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
-
-func (m *BACnetDeviceObjectPropertyReference) GetOpeningTag() *BACnetOpeningTag {
-	return m.OpeningTag
-}
 
 func (m *BACnetDeviceObjectPropertyReference) GetObjectIdentifier() *BACnetContextTagObjectIdentifier {
 	return m.ObjectIdentifier
@@ -87,18 +74,14 @@ func (m *BACnetDeviceObjectPropertyReference) GetDeviceIdentifier() *BACnetConte
 	return m.DeviceIdentifier
 }
 
-func (m *BACnetDeviceObjectPropertyReference) GetClosingTag() *BACnetClosingTag {
-	return m.ClosingTag
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewBACnetDeviceObjectPropertyReference factory function for BACnetDeviceObjectPropertyReference
-func NewBACnetDeviceObjectPropertyReference(openingTag *BACnetOpeningTag, objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, deviceIdentifier *BACnetContextTagObjectIdentifier, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetDeviceObjectPropertyReference {
-	return &BACnetDeviceObjectPropertyReference{OpeningTag: openingTag, ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, DeviceIdentifier: deviceIdentifier, ClosingTag: closingTag, TagNumber: tagNumber}
+func NewBACnetDeviceObjectPropertyReference(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, deviceIdentifier *BACnetContextTagObjectIdentifier) *BACnetDeviceObjectPropertyReference {
+	return &BACnetDeviceObjectPropertyReference{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, DeviceIdentifier: deviceIdentifier}
 }
 
 func CastBACnetDeviceObjectPropertyReference(structType interface{}) *BACnetDeviceObjectPropertyReference {
@@ -122,9 +105,6 @@ func (m *BACnetDeviceObjectPropertyReference) GetLengthInBits() uint16 {
 func (m *BACnetDeviceObjectPropertyReference) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
-	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
-
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
 
@@ -141,9 +121,6 @@ func (m *BACnetDeviceObjectPropertyReference) GetLengthInBitsConditional(lastIte
 		lengthInBits += (*m.DeviceIdentifier).GetLengthInBits()
 	}
 
-	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
-
 	return lengthInBits
 }
 
@@ -151,25 +128,12 @@ func (m *BACnetDeviceObjectPropertyReference) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetDeviceObjectPropertyReference, error) {
+func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BACnetDeviceObjectPropertyReference, error) {
 	if pullErr := readBuffer.PullContext("BACnetDeviceObjectPropertyReference"); pullErr != nil {
 		return nil, pullErr
 	}
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
-
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
-	}
-	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType(BACnetDataType_OPENING_TAG))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
-	}
-	openingTag := CastBACnetOpeningTag(_openingTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
-	}
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
@@ -239,42 +203,17 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer, tagNu
 		}
 	}
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
-	}
-	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType(BACnetDataType_CLOSING_TAG))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
-	}
-	closingTag := CastBACnetClosingTag(_closingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
-	}
-
 	if closeErr := readBuffer.CloseContext("BACnetDeviceObjectPropertyReference"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetDeviceObjectPropertyReference(openingTag, objectIdentifier, propertyIdentifier, arrayIndex, deviceIdentifier, closingTag, tagNumber), nil
+	return NewBACnetDeviceObjectPropertyReference(objectIdentifier, propertyIdentifier, arrayIndex, deviceIdentifier), nil
 }
 
 func (m *BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("BACnetDeviceObjectPropertyReference"); pushErr != nil {
 		return pushErr
-	}
-
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
-	}
-	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
 	// Simple Field (objectIdentifier)
@@ -331,18 +270,6 @@ func (m *BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteB
 		if _deviceIdentifierErr != nil {
 			return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
 		}
-	}
-
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
-	}
-	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetDeviceObjectPropertyReference"); popErr != nil {
