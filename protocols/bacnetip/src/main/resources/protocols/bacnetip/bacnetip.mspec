@@ -210,7 +210,7 @@
             [simple   uint 8    invokeId                                ]
             [optional uint 8    sequenceNumber       'segmentedMessage' ]
             [optional uint 8    proposedWindowSize   'segmentedMessage' ]
-            [simple   BACnetConfirmedServiceRequest('apduLength - (3 + (segmentedMessage ? 2 : 0))')
+            [simple   BACnetConfirmedServiceRequest('apduLength - (4 + (segmentedMessage ? 2 : 0))')
                                 serviceRequest                          ]
         ]
         ['0x1' APDUUnconfirmedRequest
