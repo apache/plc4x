@@ -21,7 +21,7 @@ package org.apache.plc4x.java.bacnetip;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
 
