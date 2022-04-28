@@ -41,6 +41,8 @@ type IBACnetContextTagOctetString interface {
 	IBACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() *BACnetTagPayloadOctetString
+	// GetValue returns Value (virtual field)
+	GetValue() string
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -78,6 +80,19 @@ func (m *BACnetContextTagOctetString) GetParent() *BACnetContextTag {
 
 func (m *BACnetContextTagOctetString) GetPayload() *BACnetTagPayloadOctetString {
 	return m.Payload
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetContextTagOctetString) GetValue() string {
+	return string(m.GetPayload().GetValue())
 }
 
 ///////////////////////
@@ -125,6 +140,8 @@ func (m *BACnetContextTagOctetString) GetLengthInBitsConditional(lastItem bool) 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -157,6 +174,11 @@ func BACnetContextTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgu
 		return nil, closeErr
 	}
 
+	// Virtual field
+	_value := payload.GetValue()
+	value := string(_value)
+	_ = value
+
 	if closeErr := readBuffer.CloseContext("BACnetContextTagOctetString"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -186,6 +208,10 @@ func (m *BACnetContextTagOctetString) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+		}
+		// Virtual field
+		if _valueErr := writeBuffer.WriteVirtual("value", m.GetValue()); _valueErr != nil {
+			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetContextTagOctetString"); popErr != nil {

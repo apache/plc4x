@@ -219,7 +219,7 @@ func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Optional Field (propertyIdentifier) (Can be skipped, if a given expression evaluates to false)
 	var propertyIdentifier *BACnetContextTagPropertyIdentifier = nil
-	if hasData {
+	if !(hasData) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 			return nil, pullErr
@@ -240,7 +240,7 @@ func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Optional Field (content) (Can be skipped, if a given expression evaluates to false)
 	var content *BACnetApplicationTag = nil
-	if hasData {
+	if !(hasData) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("content"); pullErr != nil {
 			return nil, pullErr

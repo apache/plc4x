@@ -707,48 +707,6 @@
     ]
 ]
 
-[discriminatedType BACnetConfirmedServiceACK
-    [discriminator uint 8 serviceChoice]
-    [typeSwitch serviceChoice
-        ['0x03' BACnetConfirmedServiceACKGetAlarmSummary
-        ]
-        ['0x04' BACnetConfirmedServiceACKGetEnrollmentSummary
-        ]
-        ['0x1D' BACnetConfirmedServiceACKGetEventInformation
-        ]
-
-        ['0x06' BACnetConfirmedServiceACKAtomicReadFile
-        ]
-        ['0x07' BACnetConfirmedServiceACKAtomicWriteFile
-        ]
-
-        ['0x08' BACnetConfirmedServiceAddListElement
-        ]
-
-        ['0x0A' BACnetConfirmedServiceACKCreateObject
-        ]
-        ['0x0C' BACnetConfirmedServiceACKReadProperty
-        ]
-        ['0x0E' BACnetConfirmedServiceACKReadPropertyMultiple
-        ]
-        ['0x1A' BACnetConfirmedServiceACKReadRange
-        ]
-
-        ['0x12' BACnetConfirmedServiceACKConfirmedPrivateTransfer
-        ]
-
-        ['0x15' BACnetConfirmedServiceACKVTOpen
-        ]
-        ['0x17' BACnetConfirmedServiceACKVTData
-        ]
-
-        ['0x18' BACnetConfirmedServiceACKRemovedAuthenticate
-        ]
-        ['0x0D' BACnetConfirmedServiceACKRemovedReadPropertyConditional
-        ]
-    ]
-]
-
 // TODO: this need to be completly refactored
 [discriminatedType BACnetError
     [discriminator uint 8 serviceChoice]
@@ -1333,11 +1291,13 @@
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
             [simple BACnetTagPayloadOctetString('header.actualLength')
                                 payload                                                                                 ]
+            [virtual vstring     value             'payload.value'                                                      ]
         ]
         ['CHARACTER_STRING' BACnetContextTagCharacterString(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
             [simple BACnetTagPayloadCharacterString('header.actualLength')
                                 payload                                                                                 ]
+            [virtual vstring     value             'payload.value'                                                      ]
         ]
         ['BIT_STRING' BACnetContextTagBitString(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
@@ -1596,9 +1556,9 @@
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
             [virtual  bit   hasData                 'COUNT(data) != 0']
             [optional       BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
-                            propertyIdentifier      'hasData'                                                   ]
+                            propertyIdentifier      '!hasData'                                                   ]
             [optional       BACnetApplicationTag
-                            content                 'hasData'                                                   ]
+                            content                 '!hasData'                                                   ]
         ]
     ]
     [simple       BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')

@@ -141,8 +141,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetSegmentationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetTagPayloadTime":
 		return model.BACnetTagPayloadTimeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "BACnetConfirmedServiceACK":
-		return model.BACnetConfirmedServiceACKParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {

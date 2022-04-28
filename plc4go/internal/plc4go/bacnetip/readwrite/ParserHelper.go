@@ -120,8 +120,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetSegmentationParse(io)
 	case "BACnetTagPayloadTime":
 		return model.BACnetTagPayloadTimeParse(io)
-	case "BACnetConfirmedServiceACK":
-		return model.BACnetConfirmedServiceACKParse(io)
 	case "BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
