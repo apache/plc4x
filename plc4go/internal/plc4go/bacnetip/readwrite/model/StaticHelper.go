@@ -419,19 +419,19 @@ func CreateBACnetContextTagPropertyIdentifier(tagNum uint8, propertyType uint32)
 	return NewBACnetContextTagPropertyIdentifier(propertyTypeEnum, proprietaryValue, header, tagNum, true, 0)
 }
 
-func CreateBACnetApplicationTagUnsignedInteger(value uint32) *BACnetApplicationTagUnsignedInteger {
+func CreateBACnetApplicationTagUnsignedInteger(value uint) *BACnetApplicationTagUnsignedInteger {
 	length, payload := CreateUnsignedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_UNSIGNED_INTEGER), length)
 	return NewBACnetApplicationTagUnsignedInteger(payload, header)
 }
 
-func CreateBACnetContextTagUnsignedInteger(tagNumber uint8, value uint32) *BACnetContextTagUnsignedInteger {
+func CreateBACnetContextTagUnsignedInteger(tagNumber uint8, value uint) *BACnetContextTagUnsignedInteger {
 	length, payload := CreateUnsignedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, length)
 	return NewBACnetContextTagUnsignedInteger(payload, header, tagNumber, true)
 }
 
-func CreateUnsignedPayload(value uint32) (uint32, *BACnetTagPayloadUnsignedInteger) {
+func CreateUnsignedPayload(value uint) (uint32, *BACnetTagPayloadUnsignedInteger) {
 	var length uint32
 	var valueUint8 *uint8
 	var valueUint16 *uint16
@@ -454,27 +454,29 @@ func CreateUnsignedPayload(value uint32) (uint32, *BACnetTagPayloadUnsignedInteg
 		length = 3
 		_valueUint24 := uint32(value)
 		valueUint24 = &_valueUint24
+		//TODO: support more than 32bit
 	default:
 		length = 4
-		valueUint32 = &value
+		valueUint32_ := uint32(value)
+		valueUint32 = &valueUint32_
 	}
 	payload := NewBACnetTagPayloadUnsignedInteger(valueUint8, valueUint16, valueUint24, valueUint32, valueUint40, valueUint48, valueUint56, valueUint64, length)
 	return length, payload
 }
 
-func CreateBACnetApplicationTagSignedInteger(value int32) *BACnetApplicationTagSignedInteger {
+func CreateBACnetApplicationTagSignedInteger(value int) *BACnetApplicationTagSignedInteger {
 	length, payload := CreateSignedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(true, uint8(BACnetDataType_SIGNED_INTEGER), length)
 	return NewBACnetApplicationTagSignedInteger(payload, header)
 }
 
-func CreateBACnetContextTagSignedInteger(tagNumber uint8, value int32) *BACnetContextTagSignedInteger {
+func CreateBACnetContextTagSignedInteger(tagNumber uint8, value int) *BACnetContextTagSignedInteger {
 	length, payload := CreateSignedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, length)
 	return NewBACnetContextTagSignedInteger(payload, header, tagNumber, true)
 }
 
-func CreateSignedPayload(value int32) (uint32, *BACnetTagPayloadSignedInteger) {
+func CreateSignedPayload(value int) (uint32, *BACnetTagPayloadSignedInteger) {
 	var length uint32
 	var valueInt8 *int8
 	var valueInt16 *int16
@@ -493,9 +495,11 @@ func CreateSignedPayload(value int32) (uint32, *BACnetTagPayloadSignedInteger) {
 		length = 3
 		_valueInt24 := int32(value)
 		valueInt24 = &_valueInt24
+		//TODO: support more than 32bit
 	default:
 		length = 4
-		valueInt32 = &value
+		_valueInt32 := int32(value)
+		valueInt32 = &_valueInt32
 	}
 	payload := NewBACnetTagPayloadSignedInteger(valueInt8, valueInt16, valueInt24, valueInt32, nil, nil, nil, nil, length)
 	return length, payload
