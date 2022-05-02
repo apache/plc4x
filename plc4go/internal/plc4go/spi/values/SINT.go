@@ -35,6 +35,12 @@ func NewPlcSINT(value int8) PlcSINT {
 	}
 }
 
+func (m PlcSINT) GetRaw() []byte {
+	buf := utils.NewWriteBufferByteBased()
+	m.Serialize(buf)
+	return buf.GetBytes()
+}
+
 func (m PlcSINT) GetBoolean() bool {
 	if m.value == 0 {
 		return false

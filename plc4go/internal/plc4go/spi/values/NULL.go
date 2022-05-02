@@ -26,3 +26,7 @@ type PlcNULL struct {
 func NewPlcNULL() PlcNULL {
 	return PlcNULL{}
 }
+
+func (m PlcNULL) GetRaw() []byte {
+	return []byte{}
+}

@@ -36,6 +36,12 @@ func NewPlcList(values []values.PlcValue) values.PlcValue {
 	}
 }
 
+func (m PlcList) GetRaw() []byte {
+	buf := utils.NewWriteBufferByteBased()
+	m.Serialize(buf)
+	return buf.GetBytes()
+}
+
 func (m PlcList) IsList() bool {
 	return true
 }

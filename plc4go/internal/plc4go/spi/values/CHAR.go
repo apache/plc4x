@@ -24,6 +24,7 @@ import (
 )
 
 type PlcCHAR struct {
+	// TODO: Why is this a byte-array?
 	value []byte
 	PlcSimpleValueAdapter
 }
@@ -32,6 +33,10 @@ func NewPlcCHAR(value uint8) PlcCHAR {
 	return PlcCHAR{
 		value: []byte{value},
 	}
+}
+
+func (m PlcCHAR) GetRaw() []byte {
+	return m.value
 }
 
 func (m PlcCHAR) IsString() bool {

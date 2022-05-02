@@ -36,6 +36,12 @@ func NewPlcDATE_AND_TIME(value time.Time) PlcDATE_AND_TIME {
 	}
 }
 
+func (m PlcDATE_AND_TIME) GetRaw() []byte {
+	buf := utils.NewWriteBufferByteBased()
+	m.Serialize(buf)
+	return buf.GetBytes()
+}
+
 func (m PlcDATE_AND_TIME) IsDateTime() bool {
 	return true
 }

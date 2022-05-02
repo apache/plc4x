@@ -34,6 +34,12 @@ func NewPlcLWORD(value uint64) PlcLWORD {
 	}
 }
 
+func (m PlcLWORD) GetRaw() []byte {
+	buf := utils.NewWriteBufferByteBased()
+	m.Serialize(buf)
+	return buf.GetBytes()
+}
+
 func (m PlcLWORD) IsBool() bool {
 	return true
 }

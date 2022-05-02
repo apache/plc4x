@@ -36,6 +36,12 @@ func NewPlcREAL(value float32) PlcREAL {
 	}
 }
 
+func (m PlcREAL) GetRaw() []byte {
+	buf := utils.NewWriteBufferByteBased()
+	m.Serialize(buf)
+	return buf.GetBytes()
+}
+
 func (m PlcREAL) GetBoolean() bool {
 	if m.value == 0.0 {
 		return false
@@ -149,5 +155,5 @@ func (m PlcREAL) GetString() string {
 }
 
 func (m PlcREAL) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteFloat32("PlcREAL", 31, m.value)
+	return writeBuffer.WriteFloat32("PlcREAL", 32, m.value)
 }

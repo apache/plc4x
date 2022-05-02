@@ -49,6 +49,12 @@ func NewPlcDATE(value interface{}) PlcDATE {
 	}
 }
 
+func (m PlcDATE) GetRaw() []byte {
+	buf := utils.NewWriteBufferByteBased()
+	m.Serialize(buf)
+	return buf.GetBytes()
+}
+
 func (m PlcDATE) IsDate() bool {
 	return true
 }
