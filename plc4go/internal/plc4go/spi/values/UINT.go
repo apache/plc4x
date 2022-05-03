@@ -36,6 +36,12 @@ func NewPlcUINT(value uint16) PlcUINT {
 	}
 }
 
+func (m PlcUINT) GetRaw() []byte {
+	buf := utils.NewWriteBufferByteBased()
+	m.Serialize(buf)
+	return buf.GetBytes()
+}
+
 func (m PlcUINT) GetBoolean() bool {
 	if m.value == 0 {
 		return false

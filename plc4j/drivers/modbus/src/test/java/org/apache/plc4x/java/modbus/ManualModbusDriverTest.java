@@ -72,12 +72,12 @@ public class ManualModbusDriverTest extends ManualTest {
     public static void main(String[] args) throws Exception {
         ManualModbusDriverTest test = new ManualModbusDriverTest("modbus-tcp://192.168.23.30");
         test.addTestCase("holding-register:1:BOOL", true); // 0001
-        test.addTestCase("holding-register:2:BYTE", Arrays.asList(false, false, true, false, true, false, true, false)); // 002A
+        test.addTestCase("holding-register:2:BYTE", Arrays.asList(false, false, true, false, true, false, true, false)); // 2A
         test.addTestCase("holding-register:3:WORD", Arrays.asList(true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false)); // A5B8
         test.addTestCase("holding-register:4:DWORD", Arrays.asList(true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false)); // FCDE 88B8
         test.addTestCase("holding-register:6:LWORD", Arrays.asList(true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false, true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false)); // FCDE 88B8 FCDE 88B8
-        test.addTestCase("holding-register:10:SINT", -42); // 00D6
-        test.addTestCase("holding-register:11:USINT", 42); // 002A
+        test.addTestCase("holding-register:10:SINT", -42); // D6
+        test.addTestCase("holding-register:11:USINT", 42); // 2A
         test.addTestCase("holding-register:12:INT", -2424); // F688
         test.addTestCase("holding-register:13:UINT", 42424); // A5B8
         test.addTestCase("holding-register:14:DINT", -242442424); // F18C 9F48

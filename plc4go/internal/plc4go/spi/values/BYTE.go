@@ -34,6 +34,10 @@ func NewPlcBYTE(value byte) PlcBYTE {
 	}
 }
 
+func (m PlcBYTE) GetRaw() []byte {
+	return []byte{m.value}
+}
+
 func (m PlcBYTE) IsBool() bool {
 	return true
 }

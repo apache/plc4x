@@ -122,7 +122,7 @@ func (m *BACnetConstructedDataElement) GetIsConstructedData() bool {
 	_ = contextTag
 	constructedData := m.ConstructedData
 	_ = constructedData
-	return bool(bool(!(m.GetIsApplicationTag())) && bool(bool((m.GetPeekedTagHeader().GetActualLength()) == (0x6))))
+	return bool(bool(!(m.GetIsApplicationTag())) && bool(bool((m.GetPeekedTagHeader().GetLengthValueType()) == (0x6))))
 }
 
 func (m *BACnetConstructedDataElement) GetIsContextTag() bool {
@@ -222,7 +222,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 	_ = isApplicationTag
 
 	// Virtual field
-	_isConstructedData := bool(!(isApplicationTag)) && bool(bool((peekedTagHeader.GetActualLength()) == (0x6)))
+	_isConstructedData := bool(!(isApplicationTag)) && bool(bool((peekedTagHeader.GetLengthValueType()) == (0x6)))
 	isConstructedData := bool(_isConstructedData)
 	_ = isConstructedData
 
@@ -259,7 +259,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 		if pullErr := readBuffer.PullContext("contextTag"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, peekedTagNumber, GuessDataType(objectType))
+		_val, _err := BACnetContextTagParse(readBuffer, peekedTagNumber, GuessDataType(objectType, propertyIdentifier))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

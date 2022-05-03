@@ -258,7 +258,467 @@ public class StaticHelper {
         }
     }
 
-    public static BACnetDataType guessDataType(BACnetObjectType objectType) {
+    public static BACnetDataType guessDataType(BACnetObjectType objectType, BACnetContextTagPropertyIdentifier propertyIdentifier) {
+        switch (propertyIdentifier.getPropertyIdentifier()) {
+            case ABSENTEE_LIMIT:
+            case ACCEPTED_MODES:
+            case ACCESS_ALARM_EVENTS:
+            case ACCESS_DOORS:
+            case ACCESS_EVENT:
+            case ACCESS_EVENT_AUTHENTICATION_FACTOR:
+            case ACCESS_EVENT_CREDENTIAL:
+            case ACCESS_EVENT_TAG:
+            case ACCESS_EVENT_TIME:
+            case ACCESS_TRANSACTION_EVENTS:
+            case ACCOMPANIMENT:
+            case ACCOMPANIMENT_TIME:
+            case ACK_REQUIRED:
+            case ACKED_TRANSITIONS:
+            case ACTION:
+            case ACTION_TEXT:
+            case ACTIVATION_TIME:
+            case ACTIVE_AUTHENTICATION_POLICY:
+            case ACTIVE_COV_MULTIPLE_SUBSCRIPTIONS:
+            case ACTIVE_COV_SUBSCRIPTIONS:
+            case ACTIVE_TEXT:
+            case ACTIVE_VT_SESSIONS:
+            case ACTUAL_SHED_LEVEL:
+            case ADJUST_VALUE:
+            case ALARM_VALUE:
+            case ALARM_VALUES:
+            case ALIGN_INTERVALS:
+            case ALL:
+            case ALL_WRITES_SUCCESSFUL:
+            case ALLOW_GROUP_DELAY_INHIBIT:
+            case APDU_LENGTH:
+            case APDU_SEGMENT_TIMEOUT:
+            case APDU_TIMEOUT:
+            case APPLICATION_SOFTWARE_VERSION:
+            case ARCHIVE:
+            case ASSIGNED_ACCESS_RIGHTS:
+            case ASSIGNED_LANDING_CALLS:
+            case ATTEMPTED_SAMPLES:
+            case AUTHENTICATION_FACTORS:
+            case AUTHENTICATION_POLICY_LIST:
+            case AUTHENTICATION_POLICY_NAMES:
+            case AUTHENTICATION_STATUS:
+            case AUTHORIZATION_EXEMPTIONS:
+            case AUTHORIZATION_MODE:
+            case AUTO_SLAVE_DISCOVERY:
+            case AVERAGE_VALUE:
+            case BACKUP_AND_RESTORE_STATE:
+            case BACKUP_FAILURE_TIMEOUT:
+            case BACKUP_PREPARATION_TIME:
+            case BACNET_IP_GLOBAL_ADDRESS:
+            case BACNET_IP_MODE:
+            case BACNET_IP_MULTICAST_ADDRESS:
+            case BACNET_IP_NAT_TRAVERSAL:
+            case BACNET_IP_UDP_PORT:
+            case BACNET_IPV6_MODE:
+            case BACNET_IPV6_UDP_PORT:
+            case BACNET_IPV6_MULTICAST_ADDRESS:
+            case BASE_DEVICE_SECURITY_POLICY:
+            case BBMD_ACCEPT_FD_REGISTRATIONS:
+            case BBMD_BROADCAST_DISTRIBUTION_TABLE:
+            case BBMD_FOREIGN_DEVICE_TABLE:
+            case BELONGS_TO:
+            case BIAS:
+            case BIT_MASK:
+            case BIT_TEXT:
+            case BLINK_WARN_ENABLE:
+            case BUFFER_SIZE:
+            case CAR_ASSIGNED_DIRECTION:
+            case CAR_DOOR_COMMAND:
+            case CAR_DOOR_STATUS:
+            case CAR_DOOR_TEXT:
+            case CAR_DOOR_ZONE:
+            case CAR_DRIVE_STATUS:
+            case CAR_LOAD:
+            case CAR_LOAD_UNITS:
+            case CAR_MODE:
+            case CAR_MOVING_DIRECTION:
+            case CAR_POSITION:
+            case CHANGE_OF_STATE_COUNT:
+            case CHANGE_OF_STATE_TIME:
+            case CHANGES_PENDING:
+            case CHANNEL_NUMBER:
+            case CLIENT_COV_INCREMENT:
+            case COMMAND:
+            case COMMAND_TIME_ARRAY:
+            case CONFIGURATION_FILES:
+            case CONTROL_GROUPS:
+            case CONTROLLED_VARIABLE_REFERENCE:
+            case CONTROLLED_VARIABLE_UNITS:
+            case CONTROLLED_VARIABLE_VALUE:
+            case COUNT:
+            case COUNT_BEFORE_CHANGE:
+            case COUNT_CHANGE_TIME:
+            case COV_INCREMENT:
+            case COV_PERIOD:
+            case COV_RESUBSCRIPTION_INTERVAL:
+            case COVU_PERIOD:
+            case COVU_RECIPIENTS:
+            case CREDENTIAL_DISABLE:
+            case CREDENTIAL_STATUS:
+            case CREDENTIALS:
+            case CREDENTIALS_IN_ZONE:
+            case CURRENT_COMMAND_PRIORITY:
+            case DATABASE_REVISION:
+            case DATE_LIST:
+            case DAYLIGHT_SAVINGS_STATUS:
+            case DAYS_REMAINING:
+            case DEADBAND:
+            case DEFAULT_FADE_TIME:
+            case DEFAULT_RAMP_RATE:
+            case DEFAULT_STEP_INCREMENT:
+            case DEFAULT_SUBORDINATE_RELATIONSHIP:
+            case DEFAULT_TIMEOUT:
+            case DEPLOYED_PROFILE_LOCATION:
+            case DERIVATIVE_CONSTANT:
+            case DERIVATIVE_CONSTANT_UNITS:
+            case DESCRIPTION:
+            case DESCRIPTION_OF_HALT:
+            case DEVICE_ADDRESS_BINDING:
+            case DEVICE_TYPE:
+            case DIRECT_READING:
+            case DISTRIBUTION_KEY_REVISION:
+            case DO_NOT_HIDE:
+            case DOOR_ALARM_STATE:
+            case DOOR_EXTENDED_PULSE_TIME:
+            case DOOR_MEMBERS:
+            case DOOR_OPEN_TOO_LONG_TIME:
+            case DOOR_PULSE_TIME:
+            case DOOR_STATUS:
+            case DOOR_UNLOCK_DELAY_TIME:
+            case DUTY_WINDOW:
+            case EFFECTIVE_PERIOD:
+            case EGRESS_ACTIVE:
+            case EGRESS_TIME:
+            case ELAPSED_ACTIVE_TIME:
+            case ELEVATOR_GROUP:
+            case ENABLE:
+            case ENERGY_METER:
+            case ENERGY_METER_REF:
+            case ENTRY_POINTS:
+            case ERROR_LIMIT:
+            case ESCALATOR_MODE:
+            case EVENT_ALGORITHM_INHIBIT:
+            case EVENT_ALGORITHM_INHIBIT_REF:
+            case EVENT_DETECTION_ENABLE:
+            case EVENT_ENABLE:
+            case EVENT_MESSAGE_TEXTS:
+            case EVENT_MESSAGE_TEXTS_CONFIG:
+            case EVENT_PARAMETERS:
+            case EVENT_STATE:
+            case EVENT_TIME_STAMPS:
+            case EVENT_TYPE:
+            case EXCEPTION_SCHEDULE:
+            case EXECUTION_DELAY:
+            case EXIT_POINTS:
+            case EXPECTED_SHED_LEVEL:
+            case EXPIRATION_TIME:
+            case EXTENDED_TIME_ENABLE:
+            case FAILED_ATTEMPT_EVENTS:
+            case FAILED_ATTEMPTS:
+            case FAILED_ATTEMPTS_TIME:
+            case FAULT_HIGH_LIMIT:
+            case FAULT_LOW_LIMIT:
+            case FAULT_PARAMETERS:
+            case FAULT_SIGNALS:
+            case FAULT_TYPE:
+            case FAULT_VALUES:
+            case FD_BBMD_ADDRESS:
+            case FD_SUBSCRIPTION_LIFETIME:
+            case FEEDBACK_VALUE:
+            case FILE_ACCESS_METHOD:
+            case FILE_SIZE:
+            case FILE_TYPE:
+            case FIRMWARE_REVISION:
+            case FLOOR_TEXT:
+            case FULL_DUTY_BASELINE:
+            case GLOBAL_IDENTIFIER:
+            case GROUP_ID:
+            case GROUP_MEMBER_NAMES:
+            case GROUP_MEMBERS:
+            case GROUP_MODE:
+            case HIGH_LIMIT:
+            case HIGHER_DECK:
+            case IN_PROCESS:
+            case IN_PROGRESS:
+            case INACTIVE_TEXT:
+            case INITIAL_TIMEOUT:
+            case INPUT_REFERENCE:
+            case INSTALLATION_ID:
+            case INSTANCE_OF:
+            case INSTANTANEOUS_POWER:
+            case INTEGRAL_CONSTANT:
+            case INTEGRAL_CONSTANT_UNITS:
+            case INTERFACE_VALUE:
+            case INTERVAL_OFFSET:
+            case IP_ADDRESS:
+            case IP_DEFAULT_GATEWAY:
+            case IP_DHCP_ENABLE:
+            case IP_DHCP_LEASE_TIME:
+            case IP_DHCP_LEASE_TIME_REMAINING:
+            case IP_DHCP_SERVER:
+            case IP_DNS_SERVER:
+            case IP_SUBNET_MASK:
+            case IPV6_ADDRESS:
+            case IPV6_AUTO_ADDRESSING_ENABLE:
+            case IPV6_DEFAULT_GATEWAY:
+            case IPV6_DHCP_LEASE_TIME:
+            case IPV6_DHCP_LEASE_TIME_REMAINING:
+            case IPV6_DHCP_SERVER:
+            case IPV6_DNS_SERVER:
+            case IPV6_PREFIX_LENGTH:
+            case IPV6_ZONE_INDEX:
+            case IS_UTC:
+            case KEY_SETS:
+            case LANDING_CALL_CONTROL:
+            case LANDING_CALLS:
+            case LANDING_DOOR_STATUS:
+            case LAST_ACCESS_EVENT:
+            case LAST_ACCESS_POINT:
+            case LAST_COMMAND_TIME:
+            case LAST_CREDENTIAL_ADDED:
+            case LAST_CREDENTIAL_ADDED_TIME:
+            case LAST_CREDENTIAL_REMOVED:
+            case LAST_CREDENTIAL_REMOVED_TIME:
+            case LAST_KEY_SERVER:
+            case LAST_NOTIFY_RECORD:
+            case LAST_PRIORITY:
+            case LAST_RESTART_REASON:
+            case LAST_RESTORE_TIME:
+            case LAST_STATE_CHANGE:
+            case LAST_USE_TIME:
+            case LIFE_SAFETY_ALARM_VALUES:
+            case LIGHTING_COMMAND:
+            case LIGHTING_COMMAND_DEFAULT_PRIORITY:
+            case LIMIT_ENABLE:
+            case LIMIT_MONITORING_INTERVAL:
+            case LINK_SPEED:
+            case LINK_SPEED_AUTONEGOTIATE:
+            case LINK_SPEEDS:
+            case LIST_OF_GROUP_MEMBERS:
+            case LIST_OF_OBJECT_PROPERTY_REFERENCES:
+            case LOCAL_DATE:
+            case LOCAL_FORWARDING_ONLY:
+            case LOCAL_TIME:
+            case LOCATION:
+            case LOCK_STATUS:
+            case LOCKOUT:
+            case LOCKOUT_RELINQUISH_TIME:
+            case LOG_BUFFER:
+            case LOG_DEVICE_OBJECT_PROPERTY:
+            case LOG_INTERVAL:
+            case LOGGING_OBJECT:
+            case LOGGING_RECORD:
+            case LOGGING_TYPE:
+            case LOW_DIFF_LIMIT:
+            case LOW_LIMIT:
+            case LOWER_DECK:
+            case MAC_ADDRESS:
+            case MACHINE_ROOM_ID:
+            case MAINTENANCE_REQUIRED:
+            case MAKING_CAR_CALL:
+            case MANIPULATED_VARIABLE_REFERENCE:
+            case MANUAL_SLAVE_ADDRESS_BINDING:
+            case MASKED_ALARM_VALUES:
+            case MAX_ACTUAL_VALUE:
+            case MAX_APDU_LENGTH_ACCEPTED:
+            case MAX_FAILED_ATTEMPTS:
+            case MAX_INFO_FRAMES:
+            case MAX_MASTER:
+            case MAX_PRES_VALUE:
+            case MAX_SEGMENTS_ACCEPTED:
+            case MAXIMUM_OUTPUT:
+            case MAXIMUM_VALUE:
+            case MAXIMUM_VALUE_TIMESTAMP:
+            case MEMBER_OF:
+            case MEMBER_STATUS_FLAGS:
+            case MEMBERS:
+            case MIN_ACTUAL_VALUE:
+            case MIN_PRES_VALUE:
+            case MINIMUM_OFF_TIME:
+            case MINIMUM_ON_TIME:
+            case MINIMUM_OUTPUT:
+            case MINIMUM_VALUE:
+            case MINIMUM_VALUE_TIMESTAMP:
+            case MODE:
+            case MODEL_NAME:
+            case MODIFICATION_DATE:
+            case MUSTER_POINT:
+            case NEGATIVE_ACCESS_RULES:
+            case NETWORK_ACCESS_SECURITY_POLICIES:
+            case NETWORK_INTERFACE_NAME:
+            case NETWORK_NUMBER:
+            case NETWORK_NUMBER_QUALITY:
+            case NETWORK_TYPE:
+            case NEXT_STOPPING_FLOOR:
+            case NODE_SUBTYPE:
+            case NODE_TYPE:
+            case NOTIFICATION_CLASS:
+            case NOTIFICATION_THRESHOLD:
+            case NOTIFY_TYPE:
+            case NUMBER_OF_APDU_RETRIES:
+            case NUMBER_OF_AUTHENTICATION_POLICIES:
+            case NUMBER_OF_STATES:
+            case OBJECT_IDENTIFIER:
+            case OBJECT_LIST:
+            case OBJECT_NAME:
+            case OBJECT_PROPERTY_REFERENCE:
+            case OBJECT_TYPE:
+            case OCCUPANCY_COUNT:
+            case OCCUPANCY_COUNT_ADJUST:
+            case OCCUPANCY_COUNT_ENABLE:
+            case OCCUPANCY_LOWER_LIMIT:
+            case OCCUPANCY_LOWER_LIMIT_ENFORCED:
+            case OCCUPANCY_STATE:
+            case OCCUPANCY_UPPER_LIMIT:
+            case OCCUPANCY_UPPER_LIMIT_ENFORCED:
+            case OPERATION_DIRECTION:
+            case OPERATION_EXPECTED:
+            case OPTIONAL:
+            case OUT_OF_SERVICE:
+            case OUTPUT_UNITS:
+            case PACKET_REORDER_TIME:
+            case PASSBACK_MODE:
+            case PASSBACK_TIMEOUT:
+            case PASSENGER_ALARM:
+            case POLARITY:
+            case PORT_FILTER:
+            case POSITIVE_ACCESS_RULES:
+            case POWER:
+            case POWER_MODE:
+            case PRESCALE:
+            case PRESENT_VALUE:
+            case PRIORITY:
+            case PRIORITY_ARRAY:
+            case PRIORITY_FOR_WRITING:
+            case PROCESS_IDENTIFIER:
+            case PROCESS_IDENTIFIER_FILTER:
+            case PROFILE_LOCATION:
+            case PROFILE_NAME:
+            case PROGRAM_CHANGE:
+            case PROGRAM_LOCATION:
+            case PROGRAM_STATE:
+            case PROPERTY_LIST:
+            case PROPORTIONAL_CONSTANT:
+            case PROPORTIONAL_CONSTANT_UNITS:
+            case PROTOCOL_LEVEL:
+            case PROTOCOL_CONFORMANCE_CLASS:
+            case PROTOCOL_OBJECT_TYPES_SUPPORTED:
+            case PROTOCOL_REVISION:
+            case PROTOCOL_SERVICES_SUPPORTED:
+            case PROTOCOL_VERSION:
+            case PULSE_RATE:
+            case READ_ONLY:
+            case REASON_FOR_DISABLE:
+            case REASON_FOR_HALT:
+            case RECIPIENT_LIST:
+            case RECORD_COUNT:
+            case RECORDS_SINCE_NOTIFICATION:
+            case REFERENCE_PORT:
+            case REGISTERED_CAR_CALL:
+            case RELIABILITY:
+            case RELIABILITY_EVALUATION_INHIBIT:
+            case RELINQUISH_DEFAULT:
+            case REPRESENTS:
+            case REQUESTED_SHED_LEVEL:
+            case REQUESTED_UPDATE_INTERVAL:
+            case REQUIRED:
+            case RESOLUTION:
+            case RESTART_NOTIFICATION_RECIPIENTS:
+            case RESTORE_COMPLETION_TIME:
+            case RESTORE_PREPARATION_TIME:
+            case ROUTING_TABLE:
+            case SCALE:
+            case SCALE_FACTOR:
+            case SCHEDULE_DEFAULT:
+            case SECURED_STATUS:
+            case SECURITY_PDU_TIMEOUT:
+            case SECURITY_TIME_WINDOW:
+            case SEGMENTATION_SUPPORTED:
+            case SERIAL_NUMBER:
+            case SETPOINT:
+            case SETPOINT_REFERENCE:
+            case SETTING:
+            case SHED_DURATION:
+            case SHED_LEVEL_DESCRIPTIONS:
+            case SHED_LEVELS:
+            case SILENCED:
+            case SLAVE_ADDRESS_BINDING:
+            case SLAVE_PROXY_ENABLE:
+            case START_TIME:
+            case STATE_CHANGE_VALUES:
+            case STATE_DESCRIPTION:
+            case STATE_TEXT:
+            case STATUS_FLAGS:
+            case STOP_TIME:
+            case STOP_WHEN_FULL:
+            case STRIKE_COUNT:
+            case STRUCTURED_OBJECT_LIST:
+            case SUBORDINATE_ANNOTATIONS:
+            case SUBORDINATE_LIST:
+            case SUBORDINATE_NODE_TYPES:
+            case SUBORDINATE_RELATIONSHIPS:
+            case SUBORDINATE_TAGS:
+            case SUBSCRIBED_RECIPIENTS:
+            case SUPPORTED_FORMAT_CLASSES:
+            case SUPPORTED_FORMATS:
+            case SUPPORTED_SECURITY_ALGORITHMS:
+            case SYSTEM_STATUS:
+            case TAGS:
+            case THREAT_AUTHORITY:
+            case THREAT_LEVEL:
+            case TIME_DELAY:
+            case TIME_DELAY_NORMAL:
+            case TIME_OF_ACTIVE_TIME_RESET:
+            case TIME_OF_DEVICE_RESTART:
+            case TIME_OF_STATE_COUNT_RESET:
+            case TIME_OF_STRIKE_COUNT_RESET:
+            case TIME_SYNCHRONIZATION_INTERVAL:
+            case TIME_SYNCHRONIZATION_RECIPIENTS:
+            case TIMER_RUNNING:
+            case TIMER_STATE:
+            case TOTAL_RECORD_COUNT:
+            case TRACE_FLAG:
+            case TRACKING_VALUE:
+            case TRANSACTION_NOTIFICATION_CLASS:
+            case TRANSITION:
+            case TRIGGER:
+            case UNITS:
+            case UPDATE_INTERVAL:
+            case UPDATE_KEY_SET_TIMEOUT:
+            case UPDATE_TIME:
+            case USER_EXTERNAL_IDENTIFIER:
+            case USER_INFORMATION_REFERENCE:
+            case USER_NAME:
+            case USER_TYPE:
+            case USES_REMAINING:
+            case UTC_OFFSET:
+            case UTC_TIME_SYNCHRONIZATION_RECIPIENTS:
+            case VALID_SAMPLES:
+            case VALUE_BEFORE_CHANGE:
+            case VALUE_CHANGE_TIME:
+            case VALUE_SET:
+            case VALUE_SOURCE:
+            case VALUE_SOURCE_ARRAY:
+            case VARIANCE_VALUE:
+            case VENDOR_IDENTIFIER:
+            case VENDOR_NAME:
+            case VERIFICATION_TIME:
+            case VIRTUAL_MAC_ADDRESS_TABLE:
+            case VT_CLASSES_SUPPORTED:
+            case WEEKLY_SCHEDULE:
+            case WINDOW_INTERVAL:
+            case WINDOW_SAMPLES:
+            case WRITE_STATUS:
+            case ZONE_FROM:
+            case ZONE_MEMBERS:
+            case ZONE_TO:
+            case VENDOR_PROPRIETARY_VALUE:
+        }
         switch (objectType) {
             case ACCESS_CREDENTIAL:
             case ACCESS_DOOR:
@@ -267,11 +727,9 @@ public class StaticHelper {
             case ACCESS_USER:
             case ACCESS_ZONE:
             case ACCUMULATOR:
-                // TODO: temporary
-                return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
+                break;
             case ALERT_ENROLLMENT:
-                // TODO: temporary
-                return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
+                break;
             case ANALOG_INPUT:
             case ANALOG_OUTPUT:
                 return BACnetDataType.REAL;
@@ -281,8 +739,7 @@ public class StaticHelper {
             case BINARY_LIGHTING_OUTPUT:
             case BINARY_OUTPUT:
             case BINARY_VALUE:
-                // TODO: temporary
-                return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
+                break;
             case BITSTRING_VALUE:
                 return BACnetDataType.BIT_STRING;
             case CALENDAR:
@@ -302,8 +759,7 @@ public class StaticHelper {
             case FILE:
             case GLOBAL_GROUP:
             case GROUP:
-                // TODO: temporary
-                return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
+                break;
             case INTEGER_VALUE:
                 return BACnetDataType.SIGNED_INTEGER;
             case LARGE_ANALOG_VALUE:
@@ -314,6 +770,7 @@ public class StaticHelper {
                 return BACnetDataType.BACNET_OBJECT_IDENTIFIER;
             case LIFT:
             case LIGHTING_OUTPUT:
+                break;
             case LOAD_CONTROL:
                 // TODO: temporary // FIXME: this is just so tags get consumed
                 return BACnetDataType.ENUMERATED;
@@ -330,6 +787,7 @@ public class StaticHelper {
             case PROGRAM:
             case PULSE_CONVERTER:
             case SCHEDULE:
+                break;
             case STRUCTURED_VIEW:
                 // TODO: temporary
                 return BACnetDataType.BACNET_OBJECT_IDENTIFIER;
@@ -340,8 +798,7 @@ public class StaticHelper {
             case TREND_LOG_MULTIPLE:
                 return BACnetDataType.ENUMERATED;
         }
-        // TODO: temporary
-        return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
+        return BACnetDataType.ENUMERATED;
     }
 
     public static long parseVarUint(byte[] data) {

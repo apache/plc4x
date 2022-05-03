@@ -36,6 +36,12 @@ func NewPlcDINT(value int32) PlcDINT {
 	}
 }
 
+func (m PlcDINT) GetRaw() []byte {
+	buf := utils.NewWriteBufferByteBased()
+	m.Serialize(buf)
+	return buf.GetBytes()
+}
+
 func (m PlcDINT) GetBoolean() bool {
 	if m.value == 0 {
 		return false
@@ -132,5 +138,5 @@ func (m PlcDINT) GetString() string {
 }
 
 func (m PlcDINT) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteInt32("PlcDINT", 64, m.value)
+	return writeBuffer.WriteInt32("PlcDINT", 32, m.value)
 }

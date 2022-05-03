@@ -30,7 +30,7 @@ import (
 type BACnetNotificationParametersBufferReady struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag      *BACnetOpeningTag
-	BufferProperty       *BACnetDeviceObjectPropertyReference
+	BufferProperty       *BACnetDeviceObjectPropertyReferenceEnclosed
 	PreviousNotification *BACnetContextTagUnsignedInteger
 	CurrentNotification  *BACnetContextTagUnsignedInteger
 	InnerClosingTag      *BACnetClosingTag
@@ -46,7 +46,7 @@ type IBACnetNotificationParametersBufferReady interface {
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() *BACnetOpeningTag
 	// GetBufferProperty returns BufferProperty (property field)
-	GetBufferProperty() *BACnetDeviceObjectPropertyReference
+	GetBufferProperty() *BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetPreviousNotification returns PreviousNotification (property field)
 	GetPreviousNotification() *BACnetContextTagUnsignedInteger
 	// GetCurrentNotification returns CurrentNotification (property field)
@@ -90,7 +90,7 @@ func (m *BACnetNotificationParametersBufferReady) GetInnerOpeningTag() *BACnetOp
 	return m.InnerOpeningTag
 }
 
-func (m *BACnetNotificationParametersBufferReady) GetBufferProperty() *BACnetDeviceObjectPropertyReference {
+func (m *BACnetNotificationParametersBufferReady) GetBufferProperty() *BACnetDeviceObjectPropertyReferenceEnclosed {
 	return m.BufferProperty
 }
 
@@ -112,7 +112,7 @@ func (m *BACnetNotificationParametersBufferReady) GetInnerClosingTag() *BACnetCl
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersBufferReady factory function for BACnetNotificationParametersBufferReady
-func NewBACnetNotificationParametersBufferReady(innerOpeningTag *BACnetOpeningTag, bufferProperty *BACnetDeviceObjectPropertyReference, previousNotification *BACnetContextTagUnsignedInteger, currentNotification *BACnetContextTagUnsignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersBufferReady {
+func NewBACnetNotificationParametersBufferReady(innerOpeningTag *BACnetOpeningTag, bufferProperty *BACnetDeviceObjectPropertyReferenceEnclosed, previousNotification *BACnetContextTagUnsignedInteger, currentNotification *BACnetContextTagUnsignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersBufferReady {
 	_result := &BACnetNotificationParametersBufferReady{
 		InnerOpeningTag:              innerOpeningTag,
 		BufferProperty:               bufferProperty,
@@ -198,11 +198,11 @@ func BACnetNotificationParametersBufferReadyParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("bufferProperty"); pullErr != nil {
 		return nil, pullErr
 	}
-	_bufferProperty, _bufferPropertyErr := BACnetDeviceObjectPropertyReferenceParse(readBuffer, uint8(uint8(0)))
+	_bufferProperty, _bufferPropertyErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _bufferPropertyErr != nil {
 		return nil, errors.Wrap(_bufferPropertyErr, "Error parsing 'bufferProperty' field")
 	}
-	bufferProperty := CastBACnetDeviceObjectPropertyReference(_bufferProperty)
+	bufferProperty := CastBACnetDeviceObjectPropertyReferenceEnclosed(_bufferProperty)
 	if closeErr := readBuffer.CloseContext("bufferProperty"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -253,7 +253,7 @@ func BACnetNotificationParametersBufferReadyParse(readBuffer utils.ReadBuffer, t
 	// Create a partially initialized instance
 	_child := &BACnetNotificationParametersBufferReady{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
-		BufferProperty:               CastBACnetDeviceObjectPropertyReference(bufferProperty),
+		BufferProperty:               CastBACnetDeviceObjectPropertyReferenceEnclosed(bufferProperty),
 		PreviousNotification:         CastBACnetContextTagUnsignedInteger(previousNotification),
 		CurrentNotification:          CastBACnetContextTagUnsignedInteger(currentNotification),
 		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),

@@ -35,6 +35,12 @@ func NewPlcWCHAR(value uint16) PlcWCHAR {
 	}
 }
 
+func (m PlcWCHAR) GetRaw() []byte {
+	buf := utils.NewWriteBufferByteBased()
+	m.Serialize(buf)
+	return buf.GetBytes()
+}
+
 func (m PlcWCHAR) IsString() bool {
 	return true
 }

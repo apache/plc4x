@@ -36,6 +36,12 @@ func NewPlcINT(value int16) PlcINT {
 	}
 }
 
+func (m PlcINT) GetRaw() []byte {
+	buf := utils.NewWriteBufferByteBased()
+	m.Serialize(buf)
+	return buf.GetBytes()
+}
+
 func (m PlcINT) GetBoolean() bool {
 	if m.value == 0 {
 		return false
@@ -125,5 +131,5 @@ func (m PlcINT) GetString() string {
 }
 
 func (m PlcINT) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteInt16("PlcINT", 32, m.value)
+	return writeBuffer.WriteInt16("PlcINT", 16, m.value)
 }

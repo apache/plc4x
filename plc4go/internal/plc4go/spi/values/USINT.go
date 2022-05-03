@@ -36,6 +36,12 @@ func NewPlcUSINT(value uint8) PlcUSINT {
 	}
 }
 
+func (m PlcUSINT) GetRaw() []byte {
+	buf := utils.NewWriteBufferByteBased()
+	m.Serialize(buf)
+	return buf.GetBytes()
+}
+
 func (m PlcUSINT) GetBoolean() bool {
 	if m.value == 0 {
 		return false
@@ -97,5 +103,5 @@ func (m PlcUSINT) GetString() string {
 }
 
 func (m PlcUSINT) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("PlcUSINT", 64, m.value)
+	return writeBuffer.WriteUint8("PlcUSINT", 8, m.value)
 }

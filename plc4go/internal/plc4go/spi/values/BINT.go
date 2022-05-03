@@ -37,6 +37,10 @@ func NewPlcBINT(value *big.Int) PlcBINT {
 	}
 }
 
+func (m PlcBINT) GetRaw() []byte {
+	return m.value.Bytes()
+}
+
 func (m PlcBINT) GetBoolean() bool {
 	if m.isZero() {
 		return false

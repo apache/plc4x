@@ -34,6 +34,12 @@ func NewPlcSTRING(value string) PlcSTRING {
 	}
 }
 
+func (m PlcSTRING) GetRaw() []byte {
+	buf := utils.NewWriteBufferByteBased()
+	m.Serialize(buf)
+	return buf.GetBytes()
+}
+
 func (m PlcSTRING) IsString() bool {
 	return true
 }

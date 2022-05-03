@@ -36,6 +36,12 @@ func NewPlcTIME(value uint32) PlcTIME {
 	}
 }
 
+func (m PlcTIME) GetRaw() []byte {
+	buf := utils.NewWriteBufferByteBased()
+	m.Serialize(buf)
+	return buf.GetBytes()
+}
+
 func (m PlcTIME) IsDuration() bool {
 	return true
 }

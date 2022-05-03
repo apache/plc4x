@@ -33,7 +33,7 @@
   <description>Integration module for integrating PLC4X into Apache Nifi.</description>
 
   <properties>
-    <nifi.version>1.16.0</nifi.version>
+    <nifi.version>1.16.1</nifi.version>
   </properties>
 
   <modules>
