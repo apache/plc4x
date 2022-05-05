@@ -126,7 +126,7 @@ public class KnxNetIpDriverContext implements DriverContext, HasConfiguration<Kn
         return tunnelConnectionType;
     }
 
-    public EtsModel getEts5Model() {
+    public EtsModel getEtsModel() {
         return etsModel;
     }
 

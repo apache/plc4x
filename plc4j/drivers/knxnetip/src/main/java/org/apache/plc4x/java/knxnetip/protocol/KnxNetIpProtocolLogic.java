@@ -271,7 +271,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
             final PlcValue value = request.getPlcValue(fieldName);
             byte dataFirstByte = 0;
             byte[] data = null;
-            final EtsModel etsModel = knxNetIpDriverContext.getEts5Model();
+            final EtsModel etsModel = knxNetIpDriverContext.getEtsModel();
             if (etsModel != null) {
                 final String destinationAddressString = etsModel.parseGroupAddress(destinationAddress);
                 final GroupAddress groupAddress = etsModel.getGroupAddresses().get(destinationAddressString);
@@ -282,7 +282,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                     return future;
                 }
 
-                // Use the data in the ets5 model to correctly check and serialize the PlcValue
+                // Use the data in the ets model to correctly check and serialize the PlcValue
                 try {
                     final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(KnxDatapoint.getLengthInBytes(value, groupAddress.getType()));
                     KnxDatapoint.staticSerialize(writeBuffer, value, groupAddress.getType());
@@ -461,9 +461,9 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
             KnxGroupAddress.staticParse(addressBuffer, knxNetIpDriverContext.getGroupAddressType());
         final String destinationAddress = toString(knxGroupAddress);
 
-        // If there is an ETS5 model provided, continue decoding the payload.
-        if (knxNetIpDriverContext.getEts5Model() != null) {
-            final EtsModel etsModel = knxNetIpDriverContext.getEts5Model();
+        // If there is an ETS model provided, continue decoding the payload.
+        if (knxNetIpDriverContext.getEtsModel() != null) {
+            final EtsModel etsModel = knxNetIpDriverContext.getEtsModel();
             final GroupAddress groupAddress = etsModel.getGroupAddresses().get(destinationAddress);
             final String areaName = etsModel.getTopologyName(destinationAddress.substring(
                 0, destinationAddress.indexOf('/')));
