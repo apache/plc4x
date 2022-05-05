@@ -46,6 +46,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcBOOL(value), nil
 	case datapointType == KnxDatapointType_BYTE: // BYTE
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -54,6 +59,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcBYTE(value), nil
 	case datapointType == KnxDatapointType_WORD: // WORD
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -62,6 +72,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcWORD(value), nil
 	case datapointType == KnxDatapointType_DWORD: // DWORD
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -70,6 +85,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDWORD(value), nil
 	case datapointType == KnxDatapointType_LWORD: // LWORD
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint64("value", 64)
 		if _valueErr != nil {
@@ -78,6 +98,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcLWORD(value), nil
 	case datapointType == KnxDatapointType_USINT: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -86,6 +111,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_SINT: // SINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt8("value", 8)
 		if _valueErr != nil {
@@ -94,6 +124,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcSINT(value), nil
 	case datapointType == KnxDatapointType_UINT: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -102,6 +137,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUINT(value), nil
 	case datapointType == KnxDatapointType_INT: // INT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
@@ -110,6 +150,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcINT(value), nil
 	case datapointType == KnxDatapointType_UDINT: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -118,6 +163,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUDINT(value), nil
 	case datapointType == KnxDatapointType_DINT: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -126,6 +176,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
 	case datapointType == KnxDatapointType_ULINT: // ULINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint64("value", 64)
 		if _valueErr != nil {
@@ -134,6 +189,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcULINT(value), nil
 	case datapointType == KnxDatapointType_LINT: // LINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt64("value", 64)
 		if _valueErr != nil {
@@ -142,6 +202,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcLINT(value), nil
 	case datapointType == KnxDatapointType_REAL: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -150,6 +215,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_LREAL: // LREAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat64("value", 64)
 		if _valueErr != nil {
@@ -158,6 +228,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcLREAL(value), nil
 	case datapointType == KnxDatapointType_CHAR: // CHAR
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -166,6 +241,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcCHAR(value), nil
 	case datapointType == KnxDatapointType_WCHAR: // WCHAR
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -174,6 +254,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcWCHAR(value), nil
 	case datapointType == KnxDatapointType_TIME: // TIME
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -182,6 +267,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcTIME(value), nil
 	case datapointType == KnxDatapointType_LTIME: // LTIME
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint64("value", 64)
 		if _valueErr != nil {
@@ -190,6 +280,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcLTIME(value), nil
 	case datapointType == KnxDatapointType_DATE: // DATE
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -198,6 +293,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDATE(value), nil
 	case datapointType == KnxDatapointType_TIME_OF_DAY: // TIME_OF_DAY
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -206,6 +306,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcTIME_OF_DAY(value), nil
 	case datapointType == KnxDatapointType_TOD: // TIME_OF_DAY
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -214,6 +319,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcTIME_OF_DAY(value), nil
 	case datapointType == KnxDatapointType_DATE_AND_TIME: // DATE_AND_TIME
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (year)
 		year, _yearErr := readBuffer.ReadUint16("year", 16)
 		if _yearErr != nil {
@@ -265,6 +375,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDATE_AND_TIME(value), nil
 	case datapointType == KnxDatapointType_DT: // DATE_AND_TIME
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (year)
 		year, _yearErr := readBuffer.ReadUint16("year", 16)
 		if _yearErr != nil {
@@ -964,6 +1079,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Char_ASCII: // STRING
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadString("value", uint32(8))
 		if _valueErr != nil {
@@ -972,6 +1092,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcSTRING(value), nil
 	case datapointType == KnxDatapointType_DPT_Char_8859_1: // STRING
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadString("value", uint32(8))
 		if _valueErr != nil {
@@ -980,6 +1105,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcSTRING(value), nil
 	case datapointType == KnxDatapointType_DPT_Scaling: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -988,6 +1118,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Angle: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -996,6 +1131,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Percent_U8: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -1004,6 +1144,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DecimalFactor: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -1012,6 +1157,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Tariff: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -1020,6 +1170,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_1_Ucount: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -1028,6 +1183,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_FanStage: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -1036,6 +1196,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Percent_V8: // SINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt8("value", 8)
 		if _valueErr != nil {
@@ -1044,6 +1209,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_1_Count: // SINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt8("value", 8)
 		if _valueErr != nil {
@@ -1054,6 +1224,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Status_Mode3: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (statusA)
 		statusA, _statusAErr := readBuffer.ReadBit("statusA")
@@ -1099,6 +1274,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Value_2_Ucount: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -1107,6 +1287,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUINT(value), nil
 	case datapointType == KnxDatapointType_DPT_TimePeriodMsec: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -1115,6 +1300,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUINT(value), nil
 	case datapointType == KnxDatapointType_DPT_TimePeriod10Msec: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -1123,6 +1313,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUINT(value), nil
 	case datapointType == KnxDatapointType_DPT_TimePeriod100Msec: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -1131,6 +1326,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUINT(value), nil
 	case datapointType == KnxDatapointType_DPT_TimePeriodSec: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -1139,6 +1339,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUINT(value), nil
 	case datapointType == KnxDatapointType_DPT_TimePeriodMin: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -1147,6 +1352,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUINT(value), nil
 	case datapointType == KnxDatapointType_DPT_TimePeriodHrs: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -1155,6 +1365,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUINT(value), nil
 	case datapointType == KnxDatapointType_DPT_PropDataType: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -1163,6 +1378,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Length_mm: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -1171,6 +1391,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUINT(value), nil
 	case datapointType == KnxDatapointType_DPT_UElCurrentmA: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -1179,6 +1404,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Brightness: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -1187,6 +1417,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Absolute_Colour_Temperature: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -1195,6 +1430,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_2_Count: // INT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
@@ -1203,6 +1443,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DeltaTimeMsec: // INT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
@@ -1211,6 +1456,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DeltaTime10Msec: // INT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
@@ -1219,6 +1469,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DeltaTime100Msec: // INT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
@@ -1227,6 +1482,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DeltaTimeSec: // INT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
@@ -1235,6 +1495,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DeltaTimeMin: // INT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
@@ -1243,6 +1508,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DeltaTimeHrs: // INT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
@@ -1251,6 +1521,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Percent_V16: // INT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
@@ -1259,6 +1534,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Rotation_Angle: // INT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
@@ -1267,6 +1547,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Length_m: // INT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
@@ -1275,6 +1560,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Temp: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1283,6 +1573,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Tempd: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1291,6 +1586,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Tempa: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1299,6 +1599,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Lux: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1307,6 +1612,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Wsp: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1315,6 +1625,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Pres: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1323,6 +1638,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Humidity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1331,6 +1651,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_AirQuality: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1339,6 +1664,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_AirFlow: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1347,6 +1677,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Time1: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1355,6 +1690,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Time2: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1363,6 +1703,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Volt: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1371,6 +1716,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Curr: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1379,6 +1729,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_PowerDensity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1387,6 +1742,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_KelvinPerPercent: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1395,6 +1755,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Power: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1403,6 +1768,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Volume_Flow: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1411,6 +1781,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Rain_Amount: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1419,6 +1794,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Temp_F: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1427,6 +1807,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Wsp_kmh: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1435,6 +1820,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Absolute_Humidity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1443,6 +1833,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Concentration_ygm3: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -1453,6 +1848,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_TimeOfDay: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (day)
 		day, _dayErr := readBuffer.ReadUint8("day", 3)
@@ -1498,6 +1898,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 3); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
@@ -1535,6 +1940,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Value_4_Ucount: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -1543,6 +1953,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Sec: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -1551,6 +1966,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Min: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -1559,6 +1979,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Hrs: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -1567,6 +1992,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_VolumeLiquid_Litre: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -1575,6 +2005,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Volume_m_3: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -1583,6 +2018,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_4_Count: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -1591,6 +2031,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_FlowRate_m3h: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -1599,6 +2044,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ActiveEnergy: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -1607,6 +2057,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ApparantEnergy: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -1615,6 +2070,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ReactiveEnergy: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -1623,6 +2083,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ActiveEnergy_kWh: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -1631,6 +2096,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ApparantEnergy_kVAh: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -1639,6 +2109,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ReactiveEnergy_kVARh: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -1647,6 +2122,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ActiveEnergy_MWh: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -1655,6 +2135,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_LongDeltaTimeSec: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -1663,6 +2148,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DeltaVolumeLiquid_Litre: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -1671,6 +2161,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DeltaVolume_m_3: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -1679,6 +2174,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcDINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Acceleration: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1687,6 +2187,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Acceleration_Angular: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1695,6 +2200,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Activation_Energy: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1703,6 +2213,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Activity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1711,6 +2226,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Mol: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1719,6 +2239,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Amplitude: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1727,6 +2252,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_AngleRad: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1735,6 +2265,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_AngleDeg: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1743,6 +2278,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Angular_Momentum: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1751,6 +2291,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Angular_Velocity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1759,6 +2304,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Area: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1767,6 +2317,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Capacitance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1775,6 +2330,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Charge_DensitySurface: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1783,6 +2343,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Charge_DensityVolume: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1791,6 +2356,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Compressibility: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1799,6 +2369,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Conductance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1807,6 +2382,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Electrical_Conductivity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1815,6 +2395,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Density: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1823,6 +2408,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Charge: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1831,6 +2421,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Current: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1839,6 +2434,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Electric_CurrentDensity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1847,6 +2447,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Electric_DipoleMoment: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1855,6 +2460,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Displacement: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1863,6 +2473,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Electric_FieldStrength: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1871,6 +2486,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Flux: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1879,6 +2499,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Electric_FluxDensity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1887,6 +2512,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Polarization: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1895,6 +2525,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Potential: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1903,6 +2538,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Electric_PotentialDifference: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1911,6 +2551,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_ElectromagneticMoment: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1919,6 +2564,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Electromotive_Force: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1927,6 +2577,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Energy: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1935,6 +2590,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Force: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1943,6 +2603,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Frequency: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1951,6 +2616,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Angular_Frequency: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1959,6 +2629,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Heat_Capacity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1967,6 +2642,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Heat_FlowRate: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1975,6 +2655,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Heat_Quantity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1983,6 +2668,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Impedance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1991,6 +2681,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Length: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -1999,6 +2694,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Light_Quantity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2007,6 +2707,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Luminance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2015,6 +2720,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Luminous_Flux: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2023,6 +2733,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Luminous_Intensity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2031,6 +2746,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_FieldStrength: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2039,6 +2759,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Flux: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2047,6 +2772,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_FluxDensity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2055,6 +2785,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Moment: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2063,6 +2798,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Polarization: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2071,6 +2811,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Magnetization: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2079,6 +2824,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_MagnetomotiveForce: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2087,6 +2837,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Mass: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2095,6 +2850,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_MassFlux: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2103,6 +2863,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Momentum: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2111,6 +2876,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Phase_AngleRad: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2119,6 +2889,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Phase_AngleDeg: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2127,6 +2902,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Power: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2135,6 +2915,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Power_Factor: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2143,6 +2928,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Pressure: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2151,6 +2941,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Reactance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2159,6 +2954,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Resistance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2167,6 +2967,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Resistivity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2175,6 +2980,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_SelfInductance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2183,6 +2993,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_SolidAngle: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2191,6 +3006,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Sound_Intensity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2199,6 +3019,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Speed: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2207,6 +3032,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Stress: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2215,6 +3045,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Surface_Tension: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2223,6 +3058,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Common_Temperature: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2231,6 +3071,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Absolute_Temperature: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2239,6 +3084,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_TemperatureDifference: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2247,6 +3097,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Thermal_Capacity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2255,6 +3110,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Thermal_Conductivity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2263,6 +3123,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_ThermoelectricPower: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2271,6 +3136,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Time: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2279,6 +3149,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Torque: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2287,6 +3162,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Volume: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2295,6 +3175,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Volume_Flux: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2303,6 +3188,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Weight: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2311,6 +3201,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Value_Work: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -2319,6 +3214,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Volume_Flux_Meter: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -2327,6 +3227,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Volume_Flux_ls: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
@@ -2337,6 +3242,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Access_Data: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (hurz)
 		hurz, _hurzErr := readBuffer.ReadUint8("hurz", 4)
@@ -2417,6 +3327,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_String_ASCII: // STRING
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadString("value", uint32(112))
 		if _valueErr != nil {
@@ -2425,6 +3340,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcSTRING(value), nil
 	case datapointType == KnxDatapointType_DPT_String_8859_1: // STRING
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadString("value", uint32(112))
 		if _valueErr != nil {
@@ -2433,6 +3353,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcSTRING(value), nil
 	case datapointType == KnxDatapointType_DPT_SceneNumber: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 2); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 6)
 		if _valueErr != nil {
@@ -2443,6 +3368,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_SceneControl: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (learnTheSceneCorrespondingToTheFieldSceneNumber)
 		learnTheSceneCorrespondingToTheFieldSceneNumber, _learnTheSceneCorrespondingToTheFieldSceneNumberErr := readBuffer.ReadBit("learnTheSceneCorrespondingToTheFieldSceneNumber")
@@ -2467,6 +3397,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_DateTime: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (year)
 		year, _yearErr := readBuffer.ReadUint8("year", 8)
@@ -2607,6 +3542,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_SCLOMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2615,6 +3555,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_BuildingMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2623,6 +3568,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_OccMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2631,6 +3581,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Priority: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2639,6 +3594,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_LightApplicationMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2647,6 +3607,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ApplicationArea: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2655,6 +3620,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_AlarmClassType: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2663,6 +3633,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_PSUMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2671,6 +3646,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ErrorClass_System: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2679,6 +3659,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ErrorClass_HVAC: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2687,6 +3672,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Time_Delay: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2695,6 +3685,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Beaufort_Wind_Force_Scale: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2703,6 +3698,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_SensorSelect: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2711,6 +3711,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ActuatorConnectType: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2719,6 +3724,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Cloud_Cover: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2727,6 +3737,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_PowerReturnMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2735,6 +3750,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_FuelType: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2743,6 +3763,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_BurnerType: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2751,6 +3776,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_HVACMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2759,6 +3789,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DHWMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2767,6 +3802,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_LoadPriority: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2775,6 +3815,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_HVACContrMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2783,6 +3828,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_HVACEmergMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2791,6 +3841,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ChangeoverMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2799,6 +3854,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ValveMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2807,6 +3867,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DamperMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2815,6 +3880,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_HeaterMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2823,6 +3893,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_FanMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2831,6 +3906,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_MasterSlaveMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2839,6 +3919,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_StatusRoomSetp: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2847,6 +3932,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Metering_DeviceType: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2855,6 +3945,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_HumDehumMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2863,6 +3958,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_EnableHCStage: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2871,6 +3971,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ADAType: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2879,6 +3984,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_BackupMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2887,6 +3997,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_StartSynchronization: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2895,6 +4010,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Behaviour_Lock_Unlock: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2903,6 +4023,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Behaviour_Bus_Power_Up_Down: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2911,6 +4036,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DALI_Fade_Time: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2919,6 +4049,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_BlinkingMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2927,6 +4062,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_LightControlMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2935,6 +4075,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_SwitchPBModel: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2943,6 +4088,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_PBAction: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2951,6 +4101,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DimmPBModel: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2959,6 +4114,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_SwitchOnMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2967,6 +4127,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_LoadTypeSet: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2975,6 +4140,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_LoadTypeDetected: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2983,6 +4153,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Converter_Test_Control: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2991,6 +4166,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_SABExcept_Behaviour: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -2999,6 +4179,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_SABBehaviour_Lock_Unlock: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -3007,6 +4192,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_SSSBMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -3015,6 +4205,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_BlindsControlMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -3023,6 +4218,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_CommMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -3031,6 +4231,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_AddInfoTypes: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -3039,6 +4244,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_RF_ModeSelect: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -3047,6 +4257,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_RF_FilterSelect: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -3057,6 +4272,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_StatusGen: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 3); _err != nil {
@@ -3104,6 +4324,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 5); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
@@ -3133,6 +4358,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_ForceSign: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (roomhmax)
 		roomhmax, _roomhmaxErr := readBuffer.ReadBit("roomhmax")
@@ -3208,6 +4438,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (summermode)
 		summermode, _summermodeErr := readBuffer.ReadBit("summermode")
 		if _summermodeErr != nil {
@@ -3270,6 +4505,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 5); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
@@ -3299,6 +4539,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_FuelTypeSet: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 5); _err != nil {
@@ -3345,6 +4590,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 4); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
@@ -3381,6 +4631,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_CombinedStatus_RTSM: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 3); _err != nil {
@@ -3426,6 +4681,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_LightActuatorErrorInfo: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 1); _err != nil {
@@ -3487,6 +4747,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 5); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
@@ -3518,6 +4783,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 5); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
@@ -3547,6 +4817,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Channel_Activation_8: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (activationStateOfChannel1)
 		activationStateOfChannel1, _activationStateOfChannel1Err := readBuffer.ReadBit("activationStateOfChannel1")
@@ -3614,6 +4889,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (tempoptimshiftactive)
 		tempoptimshiftactive, _tempoptimshiftactiveErr := readBuffer.ReadBit("tempoptimshiftactive")
 		if _tempoptimshiftactiveErr != nil {
@@ -3674,6 +4954,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_StatusRHCC: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 1); _err != nil {
@@ -3791,6 +5076,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 7); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
@@ -3862,6 +5152,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_CombinedStatus_RTC: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 7); _err != nil {
@@ -3937,6 +5232,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint16("reserved", 10); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
@@ -3983,6 +5283,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Channel_Activation_16: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (activationStateOfChannel1)
 		activationStateOfChannel1, _activationStateOfChannel1Err := readBuffer.ReadBit("activationStateOfChannel1")
@@ -4153,6 +5458,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (busy)
 		busy, _busyErr := readBuffer.ReadUint8("busy", 4)
 		if _busyErr != nil {
@@ -4171,6 +5481,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_SceneInfo: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 1); _err != nil {
@@ -4195,6 +5510,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_CombinedInfoOnOff: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (maskBitInfoOnOffOutput16)
 		maskBitInfoOnOffOutput16, _maskBitInfoOnOffOutput16Err := readBuffer.ReadBit("maskBitInfoOnOffOutput16")
@@ -4422,6 +5742,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_ActiveEnergy_V64: // LINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt64("value", 64)
 		if _valueErr != nil {
@@ -4430,6 +5755,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcLINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ApparantEnergy_V64: // LINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt64("value", 64)
 		if _valueErr != nil {
@@ -4438,6 +5768,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcLINT(value), nil
 	case datapointType == KnxDatapointType_DPT_ReactiveEnergy_V64: // LINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt64("value", 64)
 		if _valueErr != nil {
@@ -4448,6 +5783,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Channel_Activation_24: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (activationStateOfChannel1)
 		activationStateOfChannel1, _activationStateOfChannel1Err := readBuffer.ReadBit("activationStateOfChannel1")
@@ -4622,6 +5962,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (delayTimeMin)
 		delayTimeMin, _delayTimeMinErr := readBuffer.ReadUint16("delayTimeMin", 16)
 		if _delayTimeMinErr != nil {
@@ -4640,6 +5985,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_DHWModeNext: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (delayTimeMin)
 		delayTimeMin, _delayTimeMinErr := readBuffer.ReadUint16("delayTimeMin", 16)
@@ -4660,6 +6010,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (delayTimeMin)
 		delayTimeMin, _delayTimeMinErr := readBuffer.ReadUint16("delayTimeMin", 16)
 		if _delayTimeMinErr != nil {
@@ -4679,6 +6034,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (delayTimeMin)
 		delayTimeMin, _delayTimeMinErr := readBuffer.ReadUint16("delayTimeMin", 16)
 		if _delayTimeMinErr != nil {
@@ -4697,6 +6057,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_StatusLightingActuator: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (validactualvalue)
 		validactualvalue, _validactualvalueErr := readBuffer.ReadBit("validactualvalue")
@@ -4766,6 +6131,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (magicNumber)
 		magicNumber, _magicNumberErr := readBuffer.ReadUint8("magicNumber", 5)
 		if _magicNumberErr != nil {
@@ -4791,6 +6161,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_AlarmInfo: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (logNumber)
 		logNumber, _logNumberErr := readBuffer.ReadUint8("logNumber", 8)
@@ -4884,6 +6259,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (tempsetpcomf)
 		tempsetpcomf, _tempsetpcomfErr := readBuffer.ReadFloat32("tempsetpcomf", 16)
 		if _tempsetpcomfErr != nil {
@@ -4909,6 +6289,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (tempsetpshiftcomf)
 		tempsetpshiftcomf, _tempsetpshiftcomfErr := readBuffer.ReadFloat32("tempsetpshiftcomf", 16)
@@ -4936,6 +6321,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (timePeriod)
 		timePeriod, _timePeriodErr := readBuffer.ReadUint16("timePeriod", 16)
 		if _timePeriodErr != nil {
@@ -4955,6 +6345,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (timePeriod)
 		timePeriod, _timePeriodErr := readBuffer.ReadUint16("timePeriod", 16)
 		if _timePeriodErr != nil {
@@ -4973,6 +6368,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_MeteringValue: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (countval)
 		countval, _countvalErr := readBuffer.ReadInt32("countval", 32)
@@ -5033,6 +6433,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (manufactid)
 		manufactid, _manufactidErr := readBuffer.ReadUint16("manufactid", 16)
 		if _manufactidErr != nil {
@@ -5066,6 +6471,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (r)
 		r, _rErr := readBuffer.ReadUint8("r", 8)
 		if _rErr != nil {
@@ -5089,6 +6499,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII: // STRING
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadString("value", uint32(16))
 		if _valueErr != nil {
@@ -5099,6 +6514,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Tariff_ActiveEnergy: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (activeelectricalenergy)
 		activeelectricalenergy, _activeelectricalenergyErr := readBuffer.ReadInt32("activeelectricalenergy", 32)
@@ -5138,6 +6558,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (deactivationOfPriority)
 		deactivationOfPriority, _deactivationOfPriorityErr := readBuffer.ReadBit("deactivationOfPriority")
 		if _deactivationOfPriorityErr != nil {
@@ -5163,6 +6588,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 5); _err != nil {
@@ -5216,6 +6646,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (ballastFailure)
 		ballastFailure, _ballastFailureErr := readBuffer.ReadBit("ballastFailure")
 		if _ballastFailureErr != nil {
@@ -5241,6 +6676,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_CombinedPosition: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (heightPosition)
 		heightPosition, _heightPositionErr := readBuffer.ReadUint8("heightPosition", 8)
@@ -5279,6 +6719,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_StatusSAB: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (heightPosition)
 		heightPosition, _heightPositionErr := readBuffer.ReadUint8("heightPosition", 8)
@@ -5395,6 +6840,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (xAxis)
 		xAxis, _xAxisErr := readBuffer.ReadUint16("xAxis", 16)
 		if _xAxisErr != nil {
@@ -5439,6 +6889,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Converter_Status: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (converterModeAccordingToTheDaliConverterStateMachine)
 		converterModeAccordingToTheDaliConverterStateMachine, _converterModeAccordingToTheDaliConverterStateMachineErr := readBuffer.ReadUint8("converterModeAccordingToTheDaliConverterStateMachine", 4)
@@ -5498,6 +6953,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Converter_Test_Result: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (ltrf)
 		ltrf, _ltrfErr := readBuffer.ReadUint8("ltrf", 4)
@@ -5571,6 +7031,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 5); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
@@ -5607,6 +7072,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (ms)
 		ms, _msErr := readBuffer.ReadUint16("ms", 16)
@@ -5659,6 +7129,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Brightness_Colour_Temperature_Control: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 4); _err != nil {
@@ -5721,6 +7196,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Colour_RGBW: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (colourLevelRed)
 		colourLevelRed, _colourLevelRedErr := readBuffer.ReadUint8("colourLevelRed", 8)
@@ -5792,6 +7272,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Relative_Control_RGBW: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (maskcw)
 		maskcw, _maskcwErr := readBuffer.ReadBit("maskcw")
@@ -5907,6 +7392,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (cb)
 		cb, _cbErr := readBuffer.ReadBit("cb")
 		if _cbErr != nil {
@@ -5969,6 +7459,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		// Struct
 		_map := map[string]api.PlcValue{}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (longitude)
 		longitude, _longitudeErr := readBuffer.ReadFloat32("longitude", 32)
 		if _longitudeErr != nil {
@@ -5987,6 +7482,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetF16_4: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (roomTemperatureSetpointComfort)
 		roomTemperatureSetpointComfort, _roomTemperatureSetpointComfortErr := readBuffer.ReadFloat32("roomTemperatureSetpointComfort", 16)
@@ -6020,6 +7520,11 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
 
 		// Simple Field (roomTemperatureSetpointShiftComfort)
 		roomTemperatureSetpointShiftComfort, _roomTemperatureSetpointShiftComfortErr := readBuffer.ReadFloat32("roomTemperatureSetpointShiftComfort", 16)
@@ -6075,111 +7580,221 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_BYTE: // BYTE
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_WORD: // WORD
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DWORD: // DWORD
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_LWORD: // LWORD
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_USINT: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_SINT: // SINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt8("value", 8, value.GetInt8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_UINT: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_INT: // INT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_UDINT: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DINT: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_ULINT: // ULINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_LINT: // LINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt64("value", 64, value.GetInt64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_REAL: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_LREAL: // LREAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat64("value", 64, value.GetFloat64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_CHAR: // CHAR
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_WCHAR: // WCHAR
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_TIME: // TIME
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_LTIME: // LTIME
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DATE: // DATE
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_TIME_OF_DAY: // TIME_OF_DAY
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_TOD: // TIME_OF_DAY
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DATE_AND_TIME: // DATE_AND_TIME
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (year)
 		if _err := writeBuffer.WriteUint16("year", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
@@ -6220,6 +7835,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'nanos' field")
 		}
 	case datapointType == KnxDatapointType_DT: // DATE_AND_TIME
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (year)
 		if _err := writeBuffer.WriteUint16("year", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
@@ -6710,61 +8330,121 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'stepcode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Char_ASCII: // STRING
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteString("value", uint32(8), "ASCII", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Char_8859_1: // STRING
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteString("value", uint32(8), "ISO-8859-1", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Scaling: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Angle: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Percent_U8: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DecimalFactor: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Tariff: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_1_Ucount: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_FanStage: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Percent_V8: // SINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt8("value", 8, value.GetInt8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_1_Count: // SINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt8("value", 8, value.GetInt8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Status_Mode3: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (statusA)
 		if _err := writeBuffer.WriteBit("statusA", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusA' field")
@@ -6795,226 +8475,451 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'mode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_2_Ucount: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimePeriodMsec: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimePeriod10Msec: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimePeriod100Msec: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimePeriodSec: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimePeriodMin: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimePeriodHrs: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_PropDataType: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Length_mm: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_UElCurrentmA: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Brightness: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Absolute_Colour_Temperature: // UINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_2_Count: // INT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaTimeMsec: // INT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaTime10Msec: // INT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaTime100Msec: // INT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaTimeSec: // INT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaTimeMin: // INT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaTimeHrs: // INT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Percent_V16: // INT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Rotation_Angle: // INT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Length_m: // INT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Temp: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Tempd: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Tempa: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Lux: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Wsp: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Pres: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Humidity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_AirQuality: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_AirFlow: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Time1: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Time2: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Volt: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Curr: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_PowerDensity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_KelvinPerPercent: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Power: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Volume_Flow: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Rain_Amount: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Temp_F: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Wsp_kmh: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Absolute_Humidity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Concentration_ygm3: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimeOfDay: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (day)
 		if _err := writeBuffer.WriteUint8("day", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'day' field")
@@ -7046,6 +8951,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 		}
 	case datapointType == KnxDatapointType_DPT_Date: // Struct
 		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 3, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
@@ -7075,506 +8985,1011 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_4_Ucount: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Sec: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Min: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Hrs: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_VolumeLiquid_Litre: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Volume_m_3: // UDINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_4_Count: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_FlowRate_m3h: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ActiveEnergy: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ApparantEnergy: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ReactiveEnergy: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ActiveEnergy_kWh: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ApparantEnergy_kVAh: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ReactiveEnergy_kVARh: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ActiveEnergy_MWh: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LongDeltaTimeSec: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaVolumeLiquid_Litre: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaVolume_m_3: // DINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Acceleration: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Acceleration_Angular: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Activation_Energy: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Activity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Mol: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Amplitude: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_AngleRad: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_AngleDeg: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Angular_Momentum: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Angular_Velocity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Area: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Capacitance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Charge_DensitySurface: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Charge_DensityVolume: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Compressibility: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Conductance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electrical_Conductivity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Density: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Charge: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Current: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_CurrentDensity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_DipoleMoment: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Displacement: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_FieldStrength: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Flux: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_FluxDensity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Polarization: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Potential: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_PotentialDifference: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_ElectromagneticMoment: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electromotive_Force: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Energy: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Force: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Frequency: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Angular_Frequency: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Heat_Capacity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Heat_FlowRate: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Heat_Quantity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Impedance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Length: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Light_Quantity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Luminance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Luminous_Flux: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Luminous_Intensity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_FieldStrength: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Flux: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_FluxDensity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Moment: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Polarization: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Magnetization: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_MagnetomotiveForce: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Mass: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_MassFlux: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Momentum: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Phase_AngleRad: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Phase_AngleDeg: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Power: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Power_Factor: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Pressure: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Reactance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Resistance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Resistivity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_SelfInductance: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_SolidAngle: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Sound_Intensity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Speed: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Stress: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Surface_Tension: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Common_Temperature: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Absolute_Temperature: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_TemperatureDifference: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Thermal_Capacity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Thermal_Conductivity: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_ThermoelectricPower: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Time: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Torque: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Volume: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Volume_Flux: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Weight: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Work: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Volume_Flux_Meter: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Volume_Flux_ls: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Access_Data: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (hurz)
 		if _err := writeBuffer.WriteUint8("hurz", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hurz' field")
@@ -7630,21 +10045,41 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'indexOfAccessIdentificationCode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_String_ASCII: // STRING
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteString("value", uint32(112), "ASCII", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_String_8859_1: // STRING
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteString("value", uint32(112), "ISO-8859-1", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SceneNumber: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SceneControl: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (learnTheSceneCorrespondingToTheFieldSceneNumber)
 		if _err := writeBuffer.WriteBit("learnTheSceneCorrespondingToTheFieldSceneNumber", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'learnTheSceneCorrespondingToTheFieldSceneNumber' field")
@@ -7660,6 +10095,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'sceneNumber' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DateTime: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (year)
 		if _err := writeBuffer.WriteUint8("year", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
@@ -7765,286 +10205,571 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case datapointType == KnxDatapointType_DPT_SCLOMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BuildingMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_OccMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Priority: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LightApplicationMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ApplicationArea: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_AlarmClassType: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_PSUMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ErrorClass_System: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ErrorClass_HVAC: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Time_Delay: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Beaufort_Wind_Force_Scale: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SensorSelect: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ActuatorConnectType: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Cloud_Cover: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_PowerReturnMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_FuelType: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BurnerType: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_HVACMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DHWMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LoadPriority: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_HVACContrMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_HVACEmergMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ChangeoverMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ValveMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DamperMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_HeaterMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_FanMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_MasterSlaveMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusRoomSetp: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Metering_DeviceType: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_HumDehumMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_EnableHCStage: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ADAType: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BackupMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StartSynchronization: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Behaviour_Lock_Unlock: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Behaviour_Bus_Power_Up_Down: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DALI_Fade_Time: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BlinkingMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LightControlMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SwitchPBModel: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_PBAction: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DimmPBModel: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SwitchOnMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LoadTypeSet: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LoadTypeDetected: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Converter_Test_Control: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SABExcept_Behaviour: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SABBehaviour_Lock_Unlock: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SSSBMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BlindsControlMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_CommMode: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_AddInfoTypes: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_RF_ModeSelect: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_RF_FilterSelect: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusGen: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 3, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
@@ -8076,6 +10801,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 		}
 	case datapointType == KnxDatapointType_DPT_Device_Control: // Struct
 		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
@@ -8095,6 +10825,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'theUserApplicationIsStopped' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ForceSign: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (roomhmax)
 		if _err := writeBuffer.WriteBit("roomhmax", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomhmax' field")
@@ -8145,6 +10880,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusRHC: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (summermode)
 		if _err := writeBuffer.WriteBit("summermode", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'summermode' field")
@@ -8186,6 +10926,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 		}
 	case datapointType == KnxDatapointType_DPT_StatusSDHWC: // Struct
 		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
@@ -8205,6 +10950,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'fault' field")
 		}
 	case datapointType == KnxDatapointType_DPT_FuelTypeSet: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
@@ -8236,6 +10986,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 		}
 	case datapointType == KnxDatapointType_DPT_StatusAHU: // Struct
 		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
@@ -8260,6 +11015,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'fault' field")
 		}
 	case datapointType == KnxDatapointType_DPT_CombinedStatus_RTSM: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 3, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
@@ -8290,6 +11050,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'effectiveValueOfTheWindowStatus' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LightActuatorErrorInfo: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 1, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
@@ -8331,6 +11096,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 		}
 	case datapointType == KnxDatapointType_DPT_RF_ModeInfo: // Struct
 		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
@@ -8351,6 +11121,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 		}
 	case datapointType == KnxDatapointType_DPT_RF_FilterInfo: // Struct
 		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
@@ -8370,6 +11145,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'doaAndKnxSn' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Channel_Activation_8: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (activationStateOfChannel1)
 		if _err := writeBuffer.WriteBit("activationStateOfChannel1", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel1' field")
@@ -8415,6 +11195,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (tempoptimshiftactive)
 		if _err := writeBuffer.WriteBit("tempoptimshiftactive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempoptimshiftactive' field")
@@ -8455,6 +11240,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'fault' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusRHCC: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 1, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
@@ -8536,6 +11326,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 		}
 	case datapointType == KnxDatapointType_DPT_CombinedStatus_HVA: // Struct
 		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
@@ -8585,6 +11380,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'currentValvePosition' field")
 		}
 	case datapointType == KnxDatapointType_DPT_CombinedStatus_RTC: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
@@ -8636,6 +11436,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 		}
 	case datapointType == KnxDatapointType_DPT_Media: // Struct
 		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint16("reserved", 10, uint16(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
@@ -8670,6 +11475,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case datapointType == KnxDatapointType_DPT_Channel_Activation_16: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (activationStateOfChannel1)
 		if _err := writeBuffer.WriteBit("activationStateOfChannel1", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel1' field")
@@ -8790,6 +11600,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DoubleNibble: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (busy)
 		if _err := writeBuffer.WriteUint8("busy", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'busy' field")
@@ -8800,6 +11615,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'nak' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SceneInfo: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 1, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
@@ -8815,6 +11635,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'scenenumber' field")
 		}
 	case datapointType == KnxDatapointType_DPT_CombinedInfoOnOff: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (maskBitInfoOnOffOutput16)
 		if _err := writeBuffer.WriteBit("maskBitInfoOnOffOutput16", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput16' field")
@@ -8975,21 +11800,41 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput1' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ActiveEnergy_V64: // LINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt64("value", 64, value.GetInt64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ApparantEnergy_V64: // LINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt64("value", 64, value.GetInt64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ReactiveEnergy_V64: // LINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt64("value", 64, value.GetInt64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Channel_Activation_24: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (activationStateOfChannel1)
 		if _err := writeBuffer.WriteBit("activationStateOfChannel1", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel1' field")
@@ -9110,6 +11955,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel24' field")
 		}
 	case datapointType == KnxDatapointType_DPT_HVACModeNext: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (delayTimeMin)
 		if _err := writeBuffer.WriteUint16("delayTimeMin", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'delayTimeMin' field")
@@ -9120,6 +11970,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'hvacMode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DHWModeNext: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (delayTimeMin)
 		if _err := writeBuffer.WriteUint16("delayTimeMin", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'delayTimeMin' field")
@@ -9130,6 +11985,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'dhwMode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_OccModeNext: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (delayTimeMin)
 		if _err := writeBuffer.WriteUint16("delayTimeMin", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'delayTimeMin' field")
@@ -9140,6 +12000,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'occupancyMode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BuildingModeNext: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (delayTimeMin)
 		if _err := writeBuffer.WriteUint16("delayTimeMin", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'delayTimeMin' field")
@@ -9150,6 +12015,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'buildingMode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusLightingActuator: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (validactualvalue)
 		if _err := writeBuffer.WriteBit("validactualvalue", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'validactualvalue' field")
@@ -9195,6 +12065,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'actualvalue' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Version: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (magicNumber)
 		if _err := writeBuffer.WriteUint8("magicNumber", 5, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'magicNumber' field")
@@ -9210,6 +12085,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'revisionNumber' field")
 		}
 	case datapointType == KnxDatapointType_DPT_AlarmInfo: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (logNumber)
 		if _err := writeBuffer.WriteUint8("logNumber", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'logNumber' field")
@@ -9275,6 +12155,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'inalarm' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetF16_3: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (tempsetpcomf)
 		if _err := writeBuffer.WriteFloat32("tempsetpcomf", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpcomf' field")
@@ -9290,6 +12175,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'tempsetpeco' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (tempsetpshiftcomf)
 		if _err := writeBuffer.WriteFloat32("tempsetpshiftcomf", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpshiftcomf' field")
@@ -9305,6 +12195,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'tempsetpshifteco' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Scaling_Speed: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (timePeriod)
 		if _err := writeBuffer.WriteUint16("timePeriod", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'timePeriod' field")
@@ -9315,6 +12210,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'percent' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Scaling_Step_Time: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (timePeriod)
 		if _err := writeBuffer.WriteUint16("timePeriod", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'timePeriod' field")
@@ -9325,6 +12225,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'percent' field")
 		}
 	case datapointType == KnxDatapointType_DPT_MeteringValue: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (countval)
 		if _err := writeBuffer.WriteInt32("countval", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'countval' field")
@@ -9365,6 +12270,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'outofservice' field")
 		}
 	case datapointType == KnxDatapointType_DPT_MBus_Address: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (manufactid)
 		if _err := writeBuffer.WriteUint16("manufactid", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'manufactid' field")
@@ -9385,6 +12295,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'medium' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Colour_RGB: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (r)
 		if _err := writeBuffer.WriteUint8("r", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'r' field")
@@ -9400,11 +12315,21 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'b' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII: // STRING
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteString("value", uint32(16), "ASCII", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Tariff_ActiveEnergy: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (activeelectricalenergy)
 		if _err := writeBuffer.WriteInt32("activeelectricalenergy", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activeelectricalenergy' field")
@@ -9430,6 +12355,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'tariffvalidity' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Prioritised_Mode_Control: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (deactivationOfPriority)
 		if _err := writeBuffer.WriteBit("deactivationOfPriority", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'deactivationOfPriority' field")
@@ -9445,6 +12375,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'modeLevel' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
@@ -9480,6 +12415,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'daliDeviceAddressOrDaliGroupAddress' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DALI_Diagnostics: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (ballastFailure)
 		if _err := writeBuffer.WriteBit("ballastFailure", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ballastFailure' field")
@@ -9495,6 +12435,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'deviceAddress' field")
 		}
 	case datapointType == KnxDatapointType_DPT_CombinedPosition: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (heightPosition)
 		if _err := writeBuffer.WriteUint8("heightPosition", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'heightPosition' field")
@@ -9520,6 +12465,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'validitySlatsPosition' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusSAB: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (heightPosition)
 		if _err := writeBuffer.WriteUint8("heightPosition", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'heightPosition' field")
@@ -9600,6 +12550,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'validitySlatsPos' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Colour_xyY: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (xAxis)
 		if _err := writeBuffer.WriteUint16("xAxis", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'xAxis' field")
@@ -9630,6 +12585,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'validityBrightness' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Converter_Status: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (converterModeAccordingToTheDaliConverterStateMachine)
 		if _err := writeBuffer.WriteUint8("converterModeAccordingToTheDaliConverterStateMachine", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'converterModeAccordingToTheDaliConverterStateMachine' field")
@@ -9670,6 +12630,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'converterFailure' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Converter_Test_Result: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (ltrf)
 		if _err := writeBuffer.WriteUint8("ltrf", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ltrf' field")
@@ -9721,6 +12686,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 		}
 	case datapointType == KnxDatapointType_DPT_Battery_Info: // Struct
 		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
@@ -9745,6 +12715,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'batteryChargeLevel' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (ms)
 		if _err := writeBuffer.WriteUint16("ms", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ms' field")
@@ -9780,6 +12755,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'validityOfTheAbsoluteBrightness' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Brightness_Colour_Temperature_Control: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
@@ -9825,6 +12805,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'cbAndStepCodeBrightnessValidity' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Colour_RGBW: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (colourLevelRed)
 		if _err := writeBuffer.WriteUint8("colourLevelRed", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'colourLevelRed' field")
@@ -9875,6 +12860,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'mw' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Relative_Control_RGBW: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (maskcw)
 		if _err := writeBuffer.WriteBit("maskcw", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskcw' field")
@@ -9960,6 +12950,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case datapointType == KnxDatapointType_DPT_Relative_Control_RGB: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (cb)
 		if _err := writeBuffer.WriteBit("cb", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'cb' field")
@@ -10005,6 +13000,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case datapointType == KnxDatapointType_DPT_GeographicalLocation: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (longitude)
 		if _err := writeBuffer.WriteFloat32("longitude", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'longitude' field")
@@ -10015,6 +13015,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'latitude' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetF16_4: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (roomTemperatureSetpointComfort)
 		if _err := writeBuffer.WriteFloat32("roomTemperatureSetpointComfort", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointComfort' field")
@@ -10035,6 +13040,11 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointBuildingProtection' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4: // Struct
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (roomTemperatureSetpointShiftComfort)
 		if _err := writeBuffer.WriteFloat32("roomTemperatureSetpointShiftComfort", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointShiftComfort' field")
