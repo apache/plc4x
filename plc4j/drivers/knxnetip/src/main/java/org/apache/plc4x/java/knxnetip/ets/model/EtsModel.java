@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.knxnetip.ets5.model;
+package org.apache.plc4x.java.knxnetip.ets.model;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -25,13 +25,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Map;
 
-public class Ets5Model {
+public class EtsModel {
 
     private final byte groupAddressType;
     private final Map<String, GroupAddress> groupAddresses;
     private final Map<String, String> topologyNames;
 
-    public Ets5Model(byte groupAddressType, Map<String, GroupAddress> groupAddresses, Map<String, String> topologyNames) {
+    public EtsModel(byte groupAddressType, Map<String, GroupAddress> groupAddresses, Map<String, String> topologyNames) {
         this.groupAddressType = groupAddressType;
         this.groupAddresses = groupAddresses;
         this.topologyNames = topologyNames;
@@ -89,15 +89,15 @@ public class Ets5Model {
             return true;
         }
 
-        if (!(o instanceof Ets5Model)) {
+        if (!(o instanceof EtsModel)) {
             return false;
         }
 
-        Ets5Model ets5Model = (Ets5Model) o;
+        EtsModel etsModel = (EtsModel) o;
 
         return new EqualsBuilder()
-            .append(getGroupAddressType(), ets5Model.getGroupAddressType())
-            .append(getGroupAddresses(), ets5Model.getGroupAddresses())
+            .append(getGroupAddressType(), etsModel.getGroupAddressType())
+            .append(getGroupAddresses(), etsModel.getGroupAddresses())
             .isEquals();
     }
 

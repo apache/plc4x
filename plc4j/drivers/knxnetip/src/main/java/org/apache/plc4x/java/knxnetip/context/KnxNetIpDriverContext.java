@@ -20,8 +20,8 @@ package org.apache.plc4x.java.knxnetip.context;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
-import org.apache.plc4x.java.knxnetip.ets5.Ets5Parser;
-import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
+import org.apache.plc4x.java.knxnetip.ets.EtsParser;
+import org.apache.plc4x.java.knxnetip.ets.model.EtsModel;
 import org.apache.plc4x.java.knxnetip.readwrite.IPAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxLayer;
@@ -41,15 +41,16 @@ public class KnxNetIpDriverContext implements DriverContext, HasConfiguration<Kn
     private KnxAddress clientKnxAddress;
     private byte groupAddressType;
     private KnxLayer tunnelConnectionType;
-    private Ets5Model ets5Model;
+    private EtsModel etsModel;
 
     @Override
     public void setConfiguration(KnxNetIpConfiguration configuration) {
         if (configuration.knxprojFilePath != null) {
             File knxprojFile = new File(configuration.knxprojFilePath);
             if (knxprojFile.exists() && knxprojFile.isFile()) {
-                ets5Model = new Ets5Parser().parse(knxprojFile, configuration.knxprojPassword);
-                groupAddressType = ets5Model.getGroupAddressType();
+                final EtsParser parser = new EtsParser();
+                etsModel = parser.parse(knxprojFile, configuration.knxprojPassword);
+                groupAddressType = etsModel.getGroupAddressType();
             } else {
                 throw new PlcRuntimeException(String.format(
                     "File specified with 'knxproj-file-path' does not exist or is not a file: '%s'",
@@ -125,8 +126,8 @@ public class KnxNetIpDriverContext implements DriverContext, HasConfiguration<Kn
         return tunnelConnectionType;
     }
 
-    public Ets5Model getEts5Model() {
-        return ets5Model;
+    public EtsModel getEts5Model() {
+        return etsModel;
     }
 
 }

@@ -27,8 +27,8 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.knxnetip.context.KnxNetIpDriverContext;
-import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
-import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
+import org.apache.plc4x.java.knxnetip.ets.model.EtsModel;
+import org.apache.plc4x.java.knxnetip.ets.model.GroupAddress;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
 import org.apache.plc4x.java.knxnetip.model.KnxNetIpSubscriptionHandle;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress;
@@ -271,10 +271,10 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
             final PlcValue value = request.getPlcValue(fieldName);
             byte dataFirstByte = 0;
             byte[] data = null;
-            final Ets5Model ets5Model = knxNetIpDriverContext.getEts5Model();
-            if (ets5Model != null) {
-                final String destinationAddressString = ets5Model.parseGroupAddress(destinationAddress);
-                final GroupAddress groupAddress = ets5Model.getGroupAddresses().get(destinationAddressString);
+            final EtsModel etsModel = knxNetIpDriverContext.getEts5Model();
+            if (etsModel != null) {
+                final String destinationAddressString = etsModel.parseGroupAddress(destinationAddress);
+                final GroupAddress groupAddress = etsModel.getGroupAddresses().get(destinationAddressString);
                 if ((groupAddress == null) || (groupAddress.getType() == null)) {
                     future.completeExceptionally(new PlcRuntimeException(
                         "ETS5 model didn't specify group address '" + destinationAddressString +
@@ -463,11 +463,11 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
 
         // If there is an ETS5 model provided, continue decoding the payload.
         if (knxNetIpDriverContext.getEts5Model() != null) {
-            final Ets5Model ets5Model = knxNetIpDriverContext.getEts5Model();
-            final GroupAddress groupAddress = ets5Model.getGroupAddresses().get(destinationAddress);
-            final String areaName = ets5Model.getTopologyName(destinationAddress.substring(
+            final EtsModel etsModel = knxNetIpDriverContext.getEts5Model();
+            final GroupAddress groupAddress = etsModel.getGroupAddresses().get(destinationAddress);
+            final String areaName = etsModel.getTopologyName(destinationAddress.substring(
                 0, destinationAddress.indexOf('/')));
-            final String lineName = ets5Model.getTopologyName(destinationAddress.substring(
+            final String lineName = etsModel.getTopologyName(destinationAddress.substring(
                 0, destinationAddress.indexOf('/', destinationAddress.indexOf('/') + 1)));
 
             if ((groupAddress != null) && (groupAddress.getType() != null)) {

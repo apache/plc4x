@@ -158,6 +158,10 @@
       <groupId>net.lingala.zip4j</groupId>
       <artifactId>zip4j</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.pcap4j</groupId>

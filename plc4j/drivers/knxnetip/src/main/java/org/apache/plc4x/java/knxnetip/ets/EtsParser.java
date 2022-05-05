@@ -16,16 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.knxnetip.ets5;
+package org.apache.plc4x.java.knxnetip.ets;
 
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.knxnetip.ets5.model.AddressType;
-import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
-import org.apache.plc4x.java.knxnetip.ets5.model.Function;
-import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
+import org.apache.plc4x.java.knxnetip.ets.filehandlers.Ets5FileHandler;
+import org.apache.plc4x.java.knxnetip.ets.filehandlers.Ets6FileHandler;
+import org.apache.plc4x.java.knxnetip.ets.filehandlers.EtsFileHandler;
+import org.apache.plc4x.java.knxnetip.ets.model.AddressType;
+import org.apache.plc4x.java.knxnetip.ets.model.EtsModel;
+import org.apache.plc4x.java.knxnetip.ets.model.Function;
+import org.apache.plc4x.java.knxnetip.ets.model.GroupAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxDatapointType;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -44,13 +47,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Ets5Parser {
+public class EtsParser {
 
-    public Ets5Model parse(File knxprojFile, String password) {
+    public EtsModel parse(File knxprojFile, String password) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
@@ -60,6 +64,27 @@ public class Ets5Parser {
             XPath xPath = xPathFactory.newXPath();
 
             try (ZipFile zipFile = new ZipFile(knxprojFile)) {
+                Path tempDir = Files.createTempDirectory(null);
+
+                final FileHeader knxMasterFileHeader = zipFile.getFileHeader("knx_master.xml");
+                if(knxMasterFileHeader == null) {
+                    throw new PlcRuntimeException("Error accessing knx_master.xml file.");
+                }
+                zipFile.extractFile("knx_master.xml", tempDir.toFile().getAbsolutePath());
+                File knxMasterFile = new File(tempDir.toFile(), "knx_master.xml");
+                // If the file contains: <KNX xmlns="http://knx.org/xml/project/21"> it's an ETS6 file
+                // In all other cases, we'll treat it as ETS5
+                Scanner scanner = new Scanner(knxMasterFile);
+                String etsSchemaVersion = null;
+                while (scanner.hasNextLine()) {
+                    final String curLine = scanner.nextLine();
+                    if(curLine.contains("http://knx.org/xml/project/")) {
+                        etsSchemaVersion = curLine.substring(curLine.indexOf("http://knx.org/xml/project/") + "http://knx.org/xml/project/".length());
+                        etsSchemaVersion = etsSchemaVersion.substring(0, etsSchemaVersion.indexOf("\""));
+                        break;
+                    }
+                }
+                EtsFileHandler fileHandler = ("21".equals(etsSchemaVersion)) ? new Ets6FileHandler() : new Ets5FileHandler();
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // File containing the information on the type of encoding used for group addresses.
@@ -75,12 +100,11 @@ public class Ets5Parser {
                         throw new PlcRuntimeException(String.format("Error accessing project header file. Project file '%s/project.xml' and '%s.zip' don't exist.", projectNumber, projectNumber));
                     }
                     // Dump the encrypted zip to a temp file.
-                    Path tempDir = Files.createTempDirectory(null);
                     zipFile.extractFile(projectNumber + ".zip", tempDir.toFile().getAbsolutePath());
                     File tempFile = new File(tempDir.toFile(), projectNumber + ".zip");
 
                     // Unzip the archive inside the archive.
-                    try (ZipFile projectZipFile = new ZipFile(tempFile, password.toCharArray())) {
+                    try (ZipFile projectZipFile = fileHandler.getProjectFiles(tempFile, password)) {
                         final FileHeader compressedProjectFileHeader = projectZipFile.getFileHeader("project.xml");
                         if (compressedProjectFileHeader == null) {
                             throw new PlcRuntimeException(String.format("Error accessing project header file: Project file 'project.xml' inside '%s.zip'.", projectNumber));
@@ -179,7 +203,7 @@ public class Ets5Parser {
                     final Function function = groupAddressRefs.get(id);
 
                     final int addressInt = Integer.parseInt(groupAddressNode.getAttribute("Address"));
-                    final String knxGroupAddress = Ets5Model.parseGroupAddress(groupAddressStyleCode, addressInt);
+                    final String knxGroupAddress = EtsModel.parseGroupAddress(groupAddressStyleCode, addressInt);
 
                     final String name = groupAddressNode.getAttribute("Name");
 
@@ -195,7 +219,7 @@ public class Ets5Parser {
                         groupAddresses.put(knxGroupAddress, groupAddress);
                     }
                 }
-                return new Ets5Model(groupAddressStyleCode, groupAddresses, topologyNames);
+                return new EtsModel(groupAddressStyleCode, groupAddresses, topologyNames);
             }
         } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
             // Zip and Xml Stuff
@@ -219,7 +243,7 @@ public class Ets5Parser {
         // The following is defined within the KNX spec: Project Scheme 2.1 public documentation
         //
         // P-iiii/project.xml Created by user; contains the global data for project iiii (internal project ID, formatted as 4 hex digits).
-        Pattern pattern = Pattern.compile( "^P-[0-9A-F]{4}", Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile( "^P-[\\dA-F]{4}", Pattern.CASE_INSENSITIVE);
         for (FileHeader fileHeader : zipFile.getFileHeaders ( ) ) {
             Matcher matcher = pattern.matcher(fileHeader.getFileName());
             if (matcher.find()) {

@@ -16,41 +16,41 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.knxnetip.ets5.model;
+package org.apache.plc4x.java.knxnetip.ets.model;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class AddressType {
+public class Function {
 
     private final String id;
-    private final int mainType;
-    private final int subType;
     private final String name;
+    private final String type;
+    private final String spaceName;
 
-    public AddressType(String id, int mainType, int subType, String name) {
+    public Function(String id, String name, String type, String spaceName) {
         this.id = id;
-        this.mainType = mainType;
-        this.subType = subType;
         this.name = name;
+        this.type = type;
+        this.spaceName = spaceName;
     }
 
     public String getId() {
         return id;
     }
 
-    public int getMainType() {
-        return mainType;
-    }
-
-    public int getSubType() {
-        return subType;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getSpaceName() {
+        return spaceName;
     }
 
     @Override
@@ -59,17 +59,17 @@ public class AddressType {
             return true;
         }
 
-        if (!(o instanceof AddressType)) {
+        if (!(o instanceof Function)) {
             return false;
         }
 
-        AddressType that = (AddressType) o;
+        Function function = (Function) o;
 
         return new EqualsBuilder()
-            .append(getMainType(), that.getMainType())
-            .append(getSubType(), that.getSubType())
-            .append(getId(), that.getId())
-            .append(getName(), that.getName())
+            .append(getId(), function.getId())
+            .append(getName(), function.getName())
+            .append(getType(), function.getType())
+            .append(getSpaceName(), function.getSpaceName())
             .isEquals();
     }
 
@@ -77,9 +77,9 @@ public class AddressType {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
             .append(getId())
-            .append(getMainType())
-            .append(getSubType())
             .append(getName())
+            .append(getType())
+            .append(getSpaceName())
             .toHashCode();
     }
 
@@ -87,9 +87,9 @@ public class AddressType {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
             .append("id", id)
-            .append("mainType", mainType)
-            .append("subType", subType)
             .append("name", name)
+            .append("type", type)
+            .append("spaceName", spaceName)
             .toString();
     }
 

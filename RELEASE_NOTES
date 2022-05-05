@@ -20,6 +20,9 @@ New Features
   communication, which however can be tunneled through a
   "tcp" and "udp" transport)
 
+- The KNX driver in Java now supports reading "knxproj" files
+  exported from the new ETS version 6.
+
 Incompatible changes
 --------------------
 
