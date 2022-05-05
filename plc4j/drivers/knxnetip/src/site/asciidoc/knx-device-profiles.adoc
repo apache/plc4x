@@ -61,25 +61,29 @@ The `Dynamic` blocks are where the configuration "logic" is defined.
 
 It defines which `Parameters` are active in which mode, which `ComObjects` are enabled and which data types they have.
 
-=== Channel
+=== Channel / IndependentChannel
 
-TODO: I have no idea what the "Channels" are
+Channels are generally only visual ordering components in ETS. The only difference between them are that normal `Channels` are displayed as expandable block and `IndependentChannels` are always expanded.
+
+On an evaluation of the devices dynamic state perspective these elements have no influence at all and can be skipped.
 
 === ParameterBlock
 
-I would assume that a `ParameterBlock` element enables a parameter-block. I would assume this is a group of parameters. However, I haven't seen how multiple Parameters are aggregated to a block.
+Just like `Channel` and `IndependentChannel` element are `ParameterBlock` elements used for visually grouping parameters together.
+
+The `Id` or `ParamRefId` seem to both only be used for providing the information on which label ETS should output. However, I have no idea on how the priorities are handled.
 
 === ParameterRefRef
 
-I would assume, as soon as we encounter this type of element, the corresponding `ParameterRef` is enabled and hereby the `Parameter` that links to.
+A `ParameterRefRef` enables the corresponding `ParameterRef` and hereby the `Parameter` that links to. In ETS the Parameter is then visible in the UI, and in case of the device, the Parameter has an effect on the Devices operation.
 
-NOTE: I don't quite know what happens if multiple `ParameterRefs` are enabled that point to the same `Parameter`, or perhaps this is forbidden by convention.
+NOTE: It is possible that multiple `ParmeterRefRef` point to the same `ParameterRef` element and hereby enable that point. However, never should more than one of these be enabled at the same time.
 
 === ComObjectRefRef
 
 Same as the `ParameterRefRef`, this enables a `ComObjectRef` which enables the `ComObject` that links to.
 
-NOTE: Same as with the `ParameterRefRef` I am not sure what happens if a `ComObject` is enabled by multiple `ComObjectRefs`.
+NOTE: It is possible that multiple `ComObjectRefRef` point to the same `ComObjectRef` element and hereby enable that com object. However, never should more than one of these be enabled at the same time.
 
 === choose
 
@@ -103,9 +107,9 @@ However, there are more complex values the `test` attribute can have:
 - `!=4`: The value is NOT 4
 - `1 3 5`: The value is 1, 3 or 5
 - `<5`: The value is less than 5
+- `<=5`: The value is less or equal 5
 - `>5`: The value is greater as 5
-
-NOTE: Not sure if there's a `<=5`, `>=5` or a `3-5`
+- `>=5`: The value is greater or equal 5
 
 One important thing to keep in mind, is that in contrast to most programming languages, more than one `when` can be active at the same time.
 
@@ -122,4 +126,4 @@ One special case seem to be constructs like this:
 
 These seem to be left-overs from an automatic conversion from older ETS versions. As far as I understand them, as soon as the `Parameter` in the `choose` element is enabled the body of the `when` is evaluated, no matter what value the parameter has.
 
-NOTE: Not sure what happens if a `when default="true"` is located alongside other `when` blocks. It does seem as if these are only evaluated if no other block is evaluated (Sort of like a `default` case in a normal switch command of most programming languages).
+If a `when default="true"` is located alongside other `when` blocks. These are only evaluated if no other block is evaluated (Sort of like a `default` case in a normal switch command of most programming languages).
