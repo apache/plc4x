@@ -32,6 +32,10 @@ Incompatible changes
 Bug Fixes
 ---------
 
+- Fixed a big bug in the KNX Datapoint decoding, which caused
+  byte-aligned data types to parse with an offset of 8 bit.
+  (This bug affected both the Java and the Go driver)
+
 ==============================================================
 Apache PLC4X 0.9.0
 ==============================================================
