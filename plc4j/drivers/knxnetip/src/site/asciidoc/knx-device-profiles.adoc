@@ -17,6 +17,10 @@
 
 == General
 
+In the device profiles, data is arranged a bit similar to relational databases. We have element/entities with a unique id, and they reference each other by these ids.
+
+Now with Parameters and ComObjects there are multiple layers of indirection. In order to know which values are valid, you need to start at the `RefRef` element (`ComObjectRefRef` or `ParameterRefRef`). If an attribute is defined here, this overwrites the same attribute of upstream elements. Same applies for the `Ref` elements (`ComObjectRef` and `ParameterRef`). In general this rule seems to apply to all elements in the device profiles.
+
 === ParameterTypes
 
 These generally define the types a parameter can have.
