@@ -19,25 +19,24 @@
 
 from __future__ import annotations
 
-from asyncio import Transport
-from dataclasses import dataclass
+import asyncio
+from asyncio import Protocol, Transport, ReadTransport, WriteTransport, AbstractEventLoop
+from dataclasses import dataclass, InitVar
 from typing import Any, Optional
 
 
 @dataclass
-class TCPTransport(Transport):
+class PLC4XBaseTransport(Transport):
     """
-    Wrapper for the TCP Python Transport. Instead of using the generic asyncio.create_connection.
+    Wrapper for the Python Transport. Instead of using the generic asyncio.create_connection.
     Using a custom transport allows for it to be modified if required.
     """
 
-    loop: str
-    _protocol: str
-    _read_transport: Transport
-    _write_transport: Transport
+    _protocol: Protocol
+    _transport: Transport
 
     @property
-    def protocol(self):
+    def protocol(self) -> Protocol:
         return self._protocol
 
     @protocol.setter
@@ -45,22 +44,22 @@ class TCPTransport(Transport):
         self._protocol = protocol
 
     def is_reading(self):
-        return self._read_transport
+        return self._transport.is_reading()
 
     def pause_reading(self):
-        self._read_transport.pause_reading()
+        self._transport.pause_reading()
 
     def resume_reading(self):
-        self._read_transport.pause_reading()
+        self._transport.pause_reading()
 
     def abort(self):
-        self._write_transport.abort()
+        self._transport.abort()
 
     def can_write_eof(self):
-        return self._write_transport.can_write_eof()
+        return self._transport.can_write_eof()
 
     def get_write_buffer_size(self):
-        return self._write_transport.get_write_buffer_size()
+        return self._transport.get_write_buffer_size()
 
     # def get_write_buffer_limits(self):
     #    return self._write_transport.get_write_buffer_limits()
@@ -68,13 +67,13 @@ class TCPTransport(Transport):
     def set_write_buffer_limits(
         self, high: Optional[int] = 65535, low: Optional[int] = 1023
     ) -> None:
-        self._write_transport.set_write_buffer_limits(high, low)
+        self._transport.set_write_buffer_limits(high, low)
 
     def write(self, data: Any) -> None:
-        self._write_transport.write(data)
+        self._transport.write(data)
 
     def writelines(self, list_of_data: list[Any]) -> None:
-        self._write_transport.writelines(list_of_data)
+        self._transport.writelines(list_of_data)
 
     def write_eof(self):
-        self._write_transport.write_eof()
+        self._transport.write_eof()
