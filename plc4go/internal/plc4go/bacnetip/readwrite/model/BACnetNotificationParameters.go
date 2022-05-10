@@ -200,6 +200,8 @@ func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber ui
 		_child, typeSwitchError = BACnetNotificationParametersChangeOfStateParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(2): // BACnetNotificationParametersChangeOfValue
 		_child, typeSwitchError = BACnetNotificationParametersChangeOfValueParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+	case peekedTagNumber == uint8(3): // BACnetNotificationParametersCommandFailure
+		_child, typeSwitchError = BACnetNotificationParametersCommandFailureParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(4): // BACnetNotificationParametersFloatingLimit
 		_child, typeSwitchError = BACnetNotificationParametersFloatingLimitParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(5): // BACnetNotificationParametersOutOfRange

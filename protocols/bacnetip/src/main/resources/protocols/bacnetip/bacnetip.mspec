@@ -644,13 +644,25 @@
         ]
         ['UNCONFIRMED_COV_NOTIFICATION' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
             [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
-            [simple     BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier   ]
+            [simple     BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier  ]
             [simple     BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
             [simple     BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
             [simple     BACnetPropertyValues('4', 'monitoredObjectIdentifier.objectType')                listOfValues                ]
         ]
         ['UNCONFIRMED_EVENT_NOTIFICATION' BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
-            // TODO: implement me
+            [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          processIdentifier            ]
+            [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier   ]
+            [simple   BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') eventObjectIdentifier        ]
+            [simple   BACnetTimeStamp('3')                                                             timestamp                    ]
+            [simple   BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')          notificationClass            ]
+            [simple   BACnetContextTagUnsignedInteger('5', 'BACnetDataType.UNSIGNED_INTEGER')          priority                     ]
+            [simple   BACnetContextTagEventType('6', 'BACnetDataType.EVENT_TYPE')                      eventType                    ]
+            [optional BACnetContextTagCharacterString('7', 'BACnetDataType.CHARACTER_STRING')          messageText                  ]
+            [simple   BACnetContextTagNotifyType('8', 'BACnetDataType.NOTIFY_TYPE')                    notifyType                   ]
+            [optional BACnetContextTagBoolean('9', 'BACnetDataType.BOOLEAN')                           ackRequired                  ]
+            [optional BACnetContextTagEventState('10', 'BACnetDataType.EVENT_STATE')                   fromState                    ]
+            [simple   BACnetContextTagEventState('11', 'BACnetDataType.EVENT_STATE')                   toState                      ]
+            [optional BACnetNotificationParameters('12', 'eventObjectIdentifier.objectType')           eventValues                  ]
         ]
         ['UNCONFIRMED_PRIVATE_TRANSFER' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
             [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
@@ -948,7 +960,25 @@
                     innerClosingTag
             ]
         ]
-        // TODO: implement other cases
+        ['3' BACnetNotificationParametersCommandFailure(uint 8 peekedTagNumber)
+            [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
+                    innerOpeningTag
+            ]
+            // TODO: temporary dummy property identifier... get rid of that
+            [simple BACnetConstructedData('0', 'objectType', 'STATIC_CALL("dummyPropertyIdentifier")')
+                    commandValue
+            ]
+            [simple BACnetStatusFlags('1')
+                    statusFlags
+            ]
+            // TODO: temporary dummy property identifier... get rid of that
+            [simple BACnetConstructedData('2', 'objectType', 'STATIC_CALL("dummyPropertyIdentifier")')
+                    feedbackValue
+            ]
+            [simple BACnetClosingTag('peekedTagNumber', 'BACnetDataType.CLOSING_TAG')
+                    innerClosingTag
+            ]
+        ]
         ['4' BACnetNotificationParametersFloatingLimit(uint 8 peekedTagNumber)
             [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
                             innerOpeningTag

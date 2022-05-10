@@ -1121,4 +1121,8 @@ public class StaticHelper {
             length = 4;
         return length;
     }
+
+    public static BACnetContextTagPropertyIdentifier dummyPropertyIdentifier() {
+        return new BACnetContextTagPropertyIdentifier(null, BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, 0L, (short) 0, true, 0L);
+    }
 }

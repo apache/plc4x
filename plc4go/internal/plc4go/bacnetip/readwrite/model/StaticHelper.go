@@ -632,6 +632,10 @@ func CreateBACnetContextTagTime(tagNumber uint8, hour, minute, second, fractiona
 	return NewBACnetContextTagTime(NewBACnetTagPayloadTime(hour, minute, second, fractional), header, tagNumber, true)
 }
 
+func DummyPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+	return NewBACnetContextTagPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, 0, nil, 0, true, 0)
+}
+
 func requiredLength(value uint) uint32 {
 	var length uint32
 	switch {
