@@ -49,8 +49,8 @@ type IBACnetUnconfirmedServiceRequestWriteGroup interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetUnconfirmedServiceRequestWriteGroup) GetServiceChoice() uint8 {
-	return 0x0A
+func (m *BACnetUnconfirmedServiceRequestWriteGroup) GetServiceChoice() BACnetUnconfirmedServiceChoice {
+	return BACnetUnconfirmedServiceChoice_WRITE_GROUP
 }
 
 ///////////////////////

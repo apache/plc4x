@@ -65,8 +65,8 @@ type IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetServiceChoice() uint8 {
-	return 0x02
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetServiceChoice() BACnetUnconfirmedServiceChoice {
+	return BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION
 }
 
 ///////////////////////

@@ -49,8 +49,8 @@ type IBACnetUnconfirmedServiceRequestUnconfirmedEventNotification interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetServiceChoice() uint8 {
-	return 0x03
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetServiceChoice() BACnetUnconfirmedServiceChoice {
+	return BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION
 }
 
 ///////////////////////

@@ -37,7 +37,7 @@ type BACnetUnconfirmedServiceRequest struct {
 // IBACnetUnconfirmedServiceRequest is the corresponding interface of BACnetUnconfirmedServiceRequest
 type IBACnetUnconfirmedServiceRequest interface {
 	// GetServiceChoice returns ServiceChoice (discriminator field)
-	GetServiceChoice() uint8
+	GetServiceChoice() BACnetUnconfirmedServiceChoice
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -110,7 +110,14 @@ func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRe
 	_ = currentPos
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice, _serviceChoiceErr := readBuffer.ReadUint8("serviceChoice", 8)
+	if pullErr := readBuffer.PullContext("serviceChoice"); pullErr != nil {
+		return nil, pullErr
+	}
+	serviceChoice_temp, _serviceChoiceErr := BACnetUnconfirmedServiceChoiceParse(readBuffer)
+	var serviceChoice BACnetUnconfirmedServiceChoice = serviceChoice_temp
+	if closeErr := readBuffer.CloseContext("serviceChoice"); closeErr != nil {
+		return nil, closeErr
+	}
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
@@ -123,29 +130,29 @@ func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRe
 	var _child BACnetUnconfirmedServiceRequestChild
 	var typeSwitchError error
 	switch {
-	case serviceChoice == 0x00: // BACnetUnconfirmedServiceRequestIAm
+	case serviceChoice == BACnetUnconfirmedServiceChoice_I_AM: // BACnetUnconfirmedServiceRequestIAm
 		_child, typeSwitchError = BACnetUnconfirmedServiceRequestIAmParse(readBuffer, serviceRequestLength)
-	case serviceChoice == 0x01: // BACnetUnconfirmedServiceRequestIHave
+	case serviceChoice == BACnetUnconfirmedServiceChoice_I_HAVE: // BACnetUnconfirmedServiceRequestIHave
 		_child, typeSwitchError = BACnetUnconfirmedServiceRequestIHaveParse(readBuffer, serviceRequestLength)
-	case serviceChoice == 0x02: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
 		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer, serviceRequestLength)
-	case serviceChoice == 0x03: // BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
+	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION: // BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
 		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer, serviceRequestLength)
-	case serviceChoice == 0x04: // BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER: // BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
 		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer, serviceRequestLength)
-	case serviceChoice == 0x05: // BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE: // BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
 		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer, serviceRequestLength)
-	case serviceChoice == 0x06: // BACnetUnconfirmedServiceRequestTimeSynchronization
+	case serviceChoice == BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION: // BACnetUnconfirmedServiceRequestTimeSynchronization
 		_child, typeSwitchError = BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer, serviceRequestLength)
-	case serviceChoice == 0x07: // BACnetUnconfirmedServiceRequestWhoHas
+	case serviceChoice == BACnetUnconfirmedServiceChoice_WHO_HAS: // BACnetUnconfirmedServiceRequestWhoHas
 		_child, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer, serviceRequestLength)
-	case serviceChoice == 0x08: // BACnetUnconfirmedServiceRequestWhoIs
+	case serviceChoice == BACnetUnconfirmedServiceChoice_WHO_IS: // BACnetUnconfirmedServiceRequestWhoIs
 		_child, typeSwitchError = BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer, serviceRequestLength)
-	case serviceChoice == 0x09: // BACnetUnconfirmedServiceRequestUTCTimeSynchronization
+	case serviceChoice == BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION: // BACnetUnconfirmedServiceRequestUTCTimeSynchronization
 		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer, serviceRequestLength)
-	case serviceChoice == 0x0A: // BACnetUnconfirmedServiceRequestWriteGroup
+	case serviceChoice == BACnetUnconfirmedServiceChoice_WRITE_GROUP: // BACnetUnconfirmedServiceRequestWriteGroup
 		_child, typeSwitchError = BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer, serviceRequestLength)
-	case serviceChoice == 0x0B: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
+	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
 		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(readBuffer, serviceRequestLength)
 	case true: // BACnetUnconfirmedServiceRequestUnconfirmedUnknown
 		_child, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedUnknownParse(readBuffer, serviceRequestLength)
@@ -176,8 +183,14 @@ func (m *BACnetUnconfirmedServiceRequest) SerializeParent(writeBuffer utils.Writ
 	}
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice := uint8(child.GetServiceChoice())
-	_serviceChoiceErr := writeBuffer.WriteUint8("serviceChoice", 8, (serviceChoice))
+	serviceChoice := BACnetUnconfirmedServiceChoice(child.GetServiceChoice())
+	if pushErr := writeBuffer.PushContext("serviceChoice"); pushErr != nil {
+		return pushErr
+	}
+	_serviceChoiceErr := serviceChoice.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("serviceChoice"); popErr != nil {
+		return popErr
+	}
 
 	if _serviceChoiceErr != nil {
 		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")

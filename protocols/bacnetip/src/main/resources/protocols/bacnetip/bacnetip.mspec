@@ -629,59 +629,79 @@
 ]
 
 [discriminatedType BACnetUnconfirmedServiceRequest(uint 16 serviceRequestLength)
-    [discriminator uint 8 serviceChoice]
+    [discriminator BACnetUnconfirmedServiceChoice serviceChoice]
     [typeSwitch serviceChoice
-        ['0x00' BACnetUnconfirmedServiceRequestIAm
+        ['I_AM' BACnetUnconfirmedServiceRequestIAm
             [simple     BACnetApplicationTagObjectIdentifier    deviceIdentifier                ]
             [simple     BACnetApplicationTagUnsignedInteger     maximumApduLengthAcceptedLength ]
             [simple     BACnetSegmentation                      segmentationSupported           ]
             [simple     BACnetApplicationTagUnsignedInteger     vendorId                        ] // TODO: vendor list?
         ]
-        ['0x01' BACnetUnconfirmedServiceRequestIHave
+        ['I_HAVE' BACnetUnconfirmedServiceRequestIHave
             [simple     BACnetApplicationTagObjectIdentifier    deviceIdentifier    ]
             [simple     BACnetApplicationTagObjectIdentifier    objectIdentifier    ]
             [simple     BACnetApplicationTagCharacterString     objectName          ]
         ]
-        ['0x02' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+        ['UNCONFIRMED_COV_NOTIFICATION' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
             [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
             [simple     BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier   ]
             [simple     BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
             [simple     BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
             [simple     BACnetPropertyValues('4', 'monitoredObjectIdentifier.objectType')                listOfValues                ]
         ]
-        ['0x03' BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
+        ['UNCONFIRMED_EVENT_NOTIFICATION' BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
+            // TODO: implement me
         ]
-        ['0x04' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+        ['UNCONFIRMED_PRIVATE_TRANSFER' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
             [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
             [simple     BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
             [optional   BACnetPropertyValues('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE')           serviceParameters           ] //TODO: what should we use as object identifier here?
         ]
-        ['0x05' BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+        ['UNCONFIRMED_TEXT_MESSAGE' BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+            // TODO: implement me
         ]
-        ['0x06' BACnetUnconfirmedServiceRequestTimeSynchronization
+        ['TIME_SYNCHRONIZATION' BACnetUnconfirmedServiceRequestTimeSynchronization
             [simple BACnetApplicationTagDate synchronizedDate]
             [simple BACnetApplicationTagTime synchronizedTime]
         ]
-        ['0x07' BACnetUnconfirmedServiceRequestWhoHas
+        ['WHO_HAS' BACnetUnconfirmedServiceRequestWhoHas
             [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')           deviceInstanceRangeLowLimit                                         ]
             [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')           deviceInstanceRangeHighLimit  'deviceInstanceRangeLowLimit != null' ]
             [optional BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')  objectIdentifier                                                    ]
             [optional BACnetContextTagOctetString('3', 'BACnetDataType.OCTET_STRING')                   objectName                    'objectIdentifier == null'            ]
         ]
-        ['0x08' BACnetUnconfirmedServiceRequestWhoIs
+        ['WHO_IS' BACnetUnconfirmedServiceRequestWhoIs
             [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')   deviceInstanceRangeLowLimit                                                 ]
             [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')   deviceInstanceRangeHighLimit  'deviceInstanceRangeLowLimit != null'         ]
         ]
-        ['0x09' BACnetUnconfirmedServiceRequestUTCTimeSynchronization
+        ['UTC_TIME_SYNCHRONIZATION' BACnetUnconfirmedServiceRequestUTCTimeSynchronization
+            // TODO: implement me
         ]
-        ['0x0A' BACnetUnconfirmedServiceRequestWriteGroup
+        ['WRITE_GROUP' BACnetUnconfirmedServiceRequestWriteGroup
+            // TODO: implement me
         ]
-        ['0x0B' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
+        ['UNCONFIRMED_COV_NOTIFICATION_MULTIPLE' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
+            // TODO: implement me
         ]
         [BACnetUnconfirmedServiceRequestUnconfirmedUnknown
             [array  byte    unknownBytes length '(serviceRequestLength>0)?(serviceRequestLength - 1):0']
         ]
     ]
+]
+
+[enum uint 8 BACnetUnconfirmedServiceChoice
+    ['0x00' I_AM                                        ]
+    ['0x01' I_HAVE                                      ]
+    ['0x02' UNCONFIRMED_COV_NOTIFICATION                ]
+    ['0x03' UNCONFIRMED_EVENT_NOTIFICATION              ]
+    ['0x04' UNCONFIRMED_PRIVATE_TRANSFER                ]
+    ['0x05' UNCONFIRMED_TEXT_MESSAGE                    ]
+    ['0x06' TIME_SYNCHRONIZATION                        ]
+    ['0x07' WHO_HAS                                     ]
+    ['0x08' WHO_IS                                      ]
+    ['0x09' UTC_TIME_SYNCHRONIZATION                    ]
+    ['0x0A' WRITE_GROUP                                 ]
+    ['0x0B' UNCONFIRMED_COV_NOTIFICATION_MULTIPLE       ]
 ]
 
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
