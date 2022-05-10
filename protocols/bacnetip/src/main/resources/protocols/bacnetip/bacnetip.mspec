@@ -675,7 +675,8 @@
             [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')   deviceInstanceRangeHighLimit  'deviceInstanceRangeLowLimit != null'         ]
         ]
         ['UTC_TIME_SYNCHRONIZATION' BACnetUnconfirmedServiceRequestUTCTimeSynchronization
-            // TODO: implement me
+            [simple BACnetApplicationTagDate synchronizedDate]
+            [simple BACnetApplicationTagTime synchronizedTime]
         ]
         ['WRITE_GROUP' BACnetUnconfirmedServiceRequestWriteGroup
             // TODO: implement me
