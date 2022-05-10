@@ -53,8 +53,8 @@ type IBACnetConfirmedServiceRequestWritePropertyMultiple interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) GetServiceChoice() uint8 {
-	return 0x10
+func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE
 }
 
 ///////////////////////

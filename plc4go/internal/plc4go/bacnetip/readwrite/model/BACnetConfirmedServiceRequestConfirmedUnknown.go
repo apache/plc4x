@@ -53,7 +53,7 @@ type IBACnetConfirmedServiceRequestConfirmedUnknown interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetServiceChoice() uint8 {
+func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetServiceChoice() BACnetConfirmedServiceChoice {
 	return 0
 }
 

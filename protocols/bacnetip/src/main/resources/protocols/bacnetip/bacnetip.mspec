@@ -301,18 +301,25 @@
 ]
 
 [discriminatedType BACnetConfirmedServiceRequest(uint 16 serviceRequestLength)
-    [discriminator uint 8 serviceChoice]
+    [discriminator BACnetConfirmedServiceChoice serviceChoice]
     [typeSwitch serviceChoice
-        ['0x00' BACnetConfirmedServiceRequestAcknowledgeAlarm
+        ////
+        // Alarm and Event Services
+
+        ['ACKNOWLEDGE_ALARM' BACnetConfirmedServiceRequestAcknowledgeAlarm
+            // TODO: implement me
         ]
-        ['0x01' BACnetConfirmedServiceRequestConfirmedCOVNotification
+        ['CONFIRMED_COV_NOTIFICATION' BACnetConfirmedServiceRequestConfirmedCOVNotification
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
             [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier   ]
             [simple   BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
             [simple   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
             [simple   BACnetPropertyValues('4', 'monitoredObjectIdentifier.objectType')                listOfValues                ]
         ]
-        ['0x02' BACnetConfirmedServiceRequestConfirmedEventNotification // Spec complete
+        ['CONFIRMED_COV_NOTIFICATION_MULTIPLE' BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
+            // TODO: implement me
+        ]
+        ['CONFIRMED_EVENT_NOTIFICATION' BACnetConfirmedServiceRequestConfirmedEventNotification // Spec complete
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          processIdentifier            ]
             [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier   ]
             [simple   BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') eventObjectIdentifier        ]
@@ -327,45 +334,68 @@
             [simple   BACnetContextTagEventState('11', 'BACnetDataType.EVENT_STATE')                   toState                      ]
             [optional BACnetNotificationParameters('12', 'eventObjectIdentifier.objectType')           eventValues                  ]
         ]
-
-        ['0x04' BACnetConfirmedServiceRequestGetEnrollmentSummary
+        ['GET_ENROLLMENT_SUMMARY' BACnetConfirmedServiceRequestGetEnrollmentSummary
+            // TODO: implement me
         ]
-        ['0x05' BACnetConfirmedServiceRequestSubscribeCOV
+        ['GET_EVENT_INFORMATION' BACnetConfirmedServiceRequestGetEventInformation
+            // TODO: implement me
+        ]
+        ['LIFE_SAFETY_OPERATION' BACnetConfirmedServiceRequestLifeSafetyOperation
+            // TODO: implement me
+        ]
+        ['SUBSCRIBE_COV' BACnetConfirmedServiceRequestSubscribeCOV
             [simple BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
             [simple BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
             [simple BACnetContextTagBoolean('2', 'BACnetDataType.BOOLEAN')                           issueConfirmed              ]
             [simple BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
         ]
+        ['SUBSCRIBE_COV_PROPERTY' BACnetConfirmedServiceRequestSubscribeCOVProperty
+            // TODO: implement me
+        ]
+        ['SUBSCRIBE_COV_PROPERTY_MULTIPLE' BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
+            // TODO: implement me
+        ]
+        //
+        ////
 
-        ['0x06' BACnetConfirmedServiceRequestAtomicReadFile
+        ////
+        // File Access Services
+
+        ['ATOMIC_READ_FILE' BACnetConfirmedServiceRequestAtomicReadFile
             [simple BACnetApplicationTagObjectIdentifier                        fileIdentifier      ]
             [simple BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord   accessMethod        ]
         ]
-        ['0x07' BACnetConfirmedServiceRequestAtomicWriteFile
+        ['ATOMIC_WRITE_FILE' BACnetConfirmedServiceRequestAtomicWriteFile
             [simple BACnetApplicationTagObjectIdentifier                  deviceIdentifier    ]
             [optional BACnetOpeningTag('0', 'BACnetDataType.OPENING_TAG') openingTag          ]
             [simple BACnetApplicationTagSignedInteger                     fileStartPosition   ]
             [simple BACnetApplicationTagOctetString                       fileData            ]
             [optional BACnetClosingTag('0', 'BACnetDataType.CLOSING_TAG') closingTag          ]
         ]
+        //
+        ////
 
-        ['0x08' BACnetConfirmedServiceRequestAddListElement
+        ////
+        // Object Access Services
+        ['ADD_LIST_ELEMENT' BACnetConfirmedServiceRequestAddListElement
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
             [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
             [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              arrayIndex          ]
             [optional BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')      listOfElements      ]
         ]
-        ['0x09' BACnetConfirmedServiceRequestRemoveListElement
+        ['REMOVE_LIST_ELEMENT' BACnetConfirmedServiceRequestRemoveListElement
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
             [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
             [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              arrayIndex          ]
             [optional BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')      listOfElements      ]
         ]
-        ['0x0A' BACnetConfirmedServiceRequestCreateObject
+        ['CREATE_OBJECT' BACnetConfirmedServiceRequestCreateObject
+            // TODO: implement me
         ]
-        ['0x0B' BACnetConfirmedServiceRequestDeleteObject
+        ['DELETE_OBJECT' BACnetConfirmedServiceRequestDeleteObject
+            // TODO: implement me
         ]
-        ['0x0C' BACnetConfirmedServiceRequestReadProperty
+        ['READ_PROPERTY' BACnetConfirmedServiceRequestReadProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                             objectIdentifier        ]
             [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
@@ -373,73 +403,153 @@
             [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
                             arrayIndex              ]
         ]
-        ['0x0E' BACnetConfirmedServiceRequestReadPropertyMultiple
+        ['READ_PROPERTY_MULTIPLE' BACnetConfirmedServiceRequestReadPropertyMultiple
             [array    BACnetReadAccessSpecification
                             data
                             length
                             'serviceRequestLength'                   ]
         ]
-        ['0x0F' BACnetConfirmedServiceRequestWriteProperty
+        ['READ_RANGE' BACnetConfirmedServiceRequestReadRange
+            // TODO: implement me
+        ]
+        ['WRITE_PROPERTY' BACnetConfirmedServiceRequestWriteProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
             [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
             [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              arrayIndex          ]
             [simple   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')      propertyValue       ]
             [optional BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')              priority            ]
         ]
-        ['0x10' BACnetConfirmedServiceRequestWritePropertyMultiple
+        ['WRITE_PROPERTY_MULTIPLE' BACnetConfirmedServiceRequestWritePropertyMultiple
             [array    BACnetWriteAccessSpecification
                             data
                             length
                             'serviceRequestLength'                   ]
         ]
+        //
+        ////
 
-        ['0x11' BACnetConfirmedServiceRequestDeviceCommunicationControl
+        ////
+        // Remote Device Management Services
+
+        ['DEVICE_COMMUNICATION_CONTROL' BACnetConfirmedServiceRequestDeviceCommunicationControl
             [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')              timeDuration        ]
             [simple   BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable('1')                    enableDisable       ]
             [optional BACnetContextTagCharacterString('2', 'BACnetDataType.CHARACTER_STRING')              password            ]
 
         ]
-        ['0x12' BACnetConfirmedServiceRequestConfirmedPrivateTransfer
+        ['CONFIRMED_PRIVATE_TRANSFER' BACnetConfirmedServiceRequestConfirmedPrivateTransfer
         ]
-        ['0x13' BACnetConfirmedServiceRequestConfirmedTextMessage
+        ['CONFIRMED_TEXT_MESSAGE' BACnetConfirmedServiceRequestConfirmedTextMessage
         ]
-        ['0x14' BACnetConfirmedServiceRequestReinitializeDevice
+        ['REINITIALIZE_DEVICE' BACnetConfirmedServiceRequestReinitializeDevice
           [simple BACnetContextTagDeviceState('0', 'BACnetDataType.BACNET_DEVICE_STATE')     reinitializedStateOfDevice  ]
           [optional BACnetContextTagCharacterString('1', 'BACnetDataType.CHARACTER_STRING')  password                    ]
         ]
 
-        ['0x15' BACnetConfirmedServiceRequestVTOpen
-        ]
-        ['0x16' BACnetConfirmedServiceRequestVTClose
-        ]
-        ['0x17' BACnetConfirmedServiceRequestVTData
-        ]
+        ////
+        //  Virtual Terminal Services
 
-        ['0x18' BACnetConfirmedServiceRequestRemovedAuthenticate
+        ['VT_OPEN' BACnetConfirmedServiceRequestVTOpen
+            // TODO: implement me
         ]
-        ['0x19' BACnetConfirmedServiceRequestRemovedRequestKey
+        ['VT_CLOSE' BACnetConfirmedServiceRequestVTClose
+            // TODO: implement me
         ]
-        ['0x0D' BACnetConfirmedServiceRequestRemovedReadPropertyConditional
+        ['VT_DATA' BACnetConfirmedServiceRequestVTData
+            // TODO: implement me
         ]
+        //
+        ////
 
-        ['0x1A' BACnetConfirmedServiceRequestReadRange
-        ]
-        ['0x1B' BACnetConfirmedServiceRequestLifeSafetyOperation
-        ]
-        ['0x1C' BACnetConfirmedServiceRequestSubscribeCOVProperty
+        ////
+        //  Removed Services
 
+        ['AUTHENTICATE' BACnetConfirmedServiceRequestAuthenticate
+            // TODO: implement me
         ]
-        ['0x1D' BACnetConfirmedServiceRequestGetEventInformation
+        ['REQUEST_KEY' BACnetConfirmedServiceRequestRequestKey
+            // TODO: implement me
         ]
+        ['READ_PROPERTY_CONDITIONAL' BACnetConfirmedServiceRequestReadPropertyConditional
+            // TODO: implement me
+        ]
+        //
+        ////
 
-        ['0x1E' BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
-        ]
-        ['0x1F' BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
-        ]
         [BACnetConfirmedServiceRequestConfirmedUnknown
             [array  byte    unknownBytes length '(serviceRequestLength>0)?(serviceRequestLength - 1):0']
         ]
     ]
+]
+
+[enum uint 8 BACnetConfirmedServiceChoice
+    ////
+    // Alarm and Event Services
+
+    ['0x00' ACKNOWLEDGE_ALARM                       ]
+    ['0x01' CONFIRMED_COV_NOTIFICATION              ]
+    ['0x1F' CONFIRMED_COV_NOTIFICATION_MULTIPLE     ]
+    ['0x02' CONFIRMED_EVENT_NOTIFICATION            ]
+    ['0x03' GET_ALARM_SUMMARY                       ]
+    ['0x04' GET_ENROLLMENT_SUMMARY                  ]
+    ['0x1D' GET_EVENT_INFORMATION                   ]
+    ['0x1B' LIFE_SAFETY_OPERATION                   ]
+    ['0x05' SUBSCRIBE_COV                           ]
+    ['0x1C' SUBSCRIBE_COV_PROPERTY                  ]
+    ['0x1E' SUBSCRIBE_COV_PROPERTY_MULTIPLE         ]
+    //
+    ////
+
+    ////
+    // File Access Services
+
+    ['0x06' ATOMIC_READ_FILE                        ]
+    ['0x07' ATOMIC_WRITE_FILE                       ]
+    //
+    ////
+
+    ////
+    // Object Access Services
+
+    ['0x08' ADD_LIST_ELEMENT                        ]
+    ['0x09' REMOVE_LIST_ELEMENT                     ]
+    ['0x0A' CREATE_OBJECT                           ]
+    ['0x0B' DELETE_OBJECT                           ]
+    ['0x0C' READ_PROPERTY                           ]
+    ['0x0E' READ_PROPERTY_MULTIPLE                  ]
+    ['0x1A' READ_RANGE                              ]
+    ['0x0F' WRITE_PROPERTY                          ]
+    ['0x10' WRITE_PROPERTY_MULTIPLE                 ]
+    //
+    ////
+
+    ////
+    // Remote Device Management Services
+
+    ['0x11' DEVICE_COMMUNICATION_CONTROL            ]
+    ['0x12' CONFIRMED_PRIVATE_TRANSFER              ]
+    ['0x13' CONFIRMED_TEXT_MESSAGE                  ]
+    ['0x14' REINITIALIZE_DEVICE                     ]
+    //
+    ////
+
+    ////
+    //  Virtual Terminal Services
+
+    ['0x15' VT_OPEN                                 ]
+    ['0x16' VT_CLOSE                                ]
+    ['0x17' VT_DATA                                 ]
+    //
+    ////
+
+    ////
+    //  Removed Services
+
+    ['0x18' AUTHENTICATE                            ]
+    ['0x19' REQUEST_KEY                             ]
+    ['0x0D' READ_PROPERTY_CONDITIONAL               ]
+    //
+    ////
 ]
 
 [type BACnetReadAccessSpecification

@@ -60,8 +60,8 @@ type IBACnetConfirmedServiceRequestDeviceCommunicationControl interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetServiceChoice() uint8 {
-	return 0x11
+func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL
 }
 
 ///////////////////////

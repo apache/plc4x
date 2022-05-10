@@ -90,8 +90,8 @@ type IBACnetConfirmedServiceRequestConfirmedEventNotification interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetServiceChoice() uint8 {
-	return 0x02
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_CONFIRMED_EVENT_NOTIFICATION
 }
 
 ///////////////////////

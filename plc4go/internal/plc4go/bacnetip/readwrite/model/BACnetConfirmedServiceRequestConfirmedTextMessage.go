@@ -49,8 +49,8 @@ type IBACnetConfirmedServiceRequestConfirmedTextMessage interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) GetServiceChoice() uint8 {
-	return 0x13
+func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_CONFIRMED_TEXT_MESSAGE
 }
 
 ///////////////////////

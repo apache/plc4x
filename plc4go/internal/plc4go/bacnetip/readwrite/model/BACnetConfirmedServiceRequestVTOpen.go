@@ -49,8 +49,8 @@ type IBACnetConfirmedServiceRequestVTOpen interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConfirmedServiceRequestVTOpen) GetServiceChoice() uint8 {
-	return 0x15
+func (m *BACnetConfirmedServiceRequestVTOpen) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_VT_OPEN
 }
 
 ///////////////////////

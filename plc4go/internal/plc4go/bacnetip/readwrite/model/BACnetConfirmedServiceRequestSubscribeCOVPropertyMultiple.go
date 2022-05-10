@@ -49,8 +49,8 @@ type IBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetServiceChoice() uint8 {
-	return 0x1E
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE
 }
 
 ///////////////////////

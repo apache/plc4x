@@ -49,8 +49,8 @@ type IBACnetConfirmedServiceRequestReadRange interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConfirmedServiceRequestReadRange) GetServiceChoice() uint8 {
-	return 0x1A
+func (m *BACnetConfirmedServiceRequestReadRange) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_READ_RANGE
 }
 
 ///////////////////////

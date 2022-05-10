@@ -63,8 +63,8 @@ type IBACnetConfirmedServiceRequestRemoveListElement interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConfirmedServiceRequestRemoveListElement) GetServiceChoice() uint8 {
-	return 0x09
+func (m *BACnetConfirmedServiceRequestRemoveListElement) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT
 }
 
 ///////////////////////
