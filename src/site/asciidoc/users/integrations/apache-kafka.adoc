@@ -56,6 +56,10 @@ in the config/connect-distributed.properties file.
 
 4) Copy the files in the `config` to Kafka's `config` directory.
 
+5) Make sure that the host name that the OPCUA server advertises during the discovery process is able
+to be resolved from the Kafka Connect server. The easiest way to do this is to add the hostname to your
+hosts file.
+
 ### Start a Kafka Broker
 
 1) Open 4 console windows and change directory into that directory
@@ -85,7 +89,7 @@ A sample configuration file is provided in the PLC4X Kafka integration repositor
 This includes comments as well as meaningful properties that can be used with the worker.
 
 The configuration of the connectors via the REST interface expects the same properties as are specified within the
-example `config/plc4x-source.properties` file. These will need to be in JSON format and included with a couple of headers.
+example https://github.com/apache/plc4x/tree/develop/plc4j/integrations/apache-kafka/config[config/plc4x-source.properties] file. These will need to be in JSON format and included with a couple of headers.
 An example below shows the format it expects:-
 
     curl -X POST -H "Content-Type: application/json" --data '{"name": "plc-source-test", "config": {"connector.class":"org.apache.plc4x.kafka.Plc4xSourceConnector",
@@ -131,7 +135,7 @@ The configuration of the Connectors is then provided via REST interface:
 
 ## Sink Connector
 
-See `config/sink.properties` for an example configuration.
+See https://github.com/apache/plc4x/tree/develop/plc4j/integrations/apache-kafka/config[config/sink.properties] for an example configuration.
 
 ### Start a Kafka Connect Sink Worker (Standalone)
 
