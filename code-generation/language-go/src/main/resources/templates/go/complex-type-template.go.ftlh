@@ -949,14 +949,21 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 
 	// Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
 	<#if helper.isEnumField(field)>
+        <#assign namedField = field.asNamedField().orElseThrow()>
+	if pullErr := readBuffer.PullContext("${namedField.name}"); pullErr != nil {
+		return nil, pullErr
+	}
 	${helper.getVariableName(field)}_temp, _${discriminatorField.name}Err := ${helper.getLanguageTypeNameForField(discriminatorField)}Parse(readBuffer)
 	var ${helper.getVariableName(field)} ${helper.getLanguageTypeNameForField(discriminatorField)} = ${helper.getVariableName(field)}_temp
+	if closeErr := readBuffer.CloseContext("${namedField.name}"); closeErr != nil {
+		return nil, closeErr
+	}
 	<#else>
         <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
 	${helper.getVariableName(field)}, _${discriminatorField.name}Err := ${helper.getReadBufferReadMethodCall(discriminatorField.name, simpleTypeReference, discriminatorField)}
 	</#if>
 	if _${discriminatorField.name}Err != nil {
-	return nil, errors.Wrap(_${discriminatorField.name}Err, "Error parsing '${discriminatorField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.Wrap(_${discriminatorField.name}Err, "Error parsing '${discriminatorField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "enum">
@@ -1578,7 +1585,14 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
 	${discriminatorField.name} := ${helper.getLanguageTypeNameForField(field)}(child.Get${discriminatorField.name?cap_first}())
 					<#if helper.isEnumField(field)>
+                        <#assign namedField = field.asNamedField().orElseThrow()>
+	if pushErr := writeBuffer.PushContext("${namedField.name}"); pushErr != nil {
+		return pushErr
+	}
 	_${discriminatorField.name}Err := ${discriminatorField.name}.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("${namedField.name}"); popErr != nil {
+		return popErr
+	}
 					<#else>
                         <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
 	_${discriminatorField.name}Err := ${helper.getWriteBufferWriteMethodCall(discriminatorField.name, simpleTypeReference, "(" + discriminatorField.name + ")", discriminatorField)}
