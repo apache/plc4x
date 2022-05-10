@@ -82,6 +82,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetTagPayloadEnumeratedParse(io, actualLength)
+	case "BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsParse(io, tagNumber)
 	case "BACnetTagPayloadOctetString":
 		actualLength, err := utils.StrToUint32(arguments[0])
 		if err != nil {
@@ -161,6 +167,9 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.APDUParse(io, apduLength)
+	case "BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue":
+		objectType := model.BACnetObjectTypeByName(arguments[0])
+		return model.BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValueParse(io, objectType)
 	case "BACnetTagPayloadCharacterString":
 		actualLength, err := utils.StrToUint32(arguments[0])
 		if err != nil {

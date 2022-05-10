@@ -322,7 +322,12 @@
             [simple   BACnetPropertyValues('4', 'monitoredObjectIdentifier.objectType')                listOfValues                ]
         ]
         ['CONFIRMED_COV_NOTIFICATION_MULTIPLE' BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
-            // TODO: implement me
+            [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
+            [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier  ]
+            [simple   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')          timeRemaining               ]
+            [optional BACnetTimeStamp('3')                                                             timestamp                   ]
+            [simple   BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications('4')
+                                                                                                       listOfCovNotifications      ]
         ]
         ['CONFIRMED_EVENT_NOTIFICATION' BACnetConfirmedServiceRequestConfirmedEventNotification // Spec complete
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          processIdentifier            ]
@@ -555,6 +560,34 @@
     ['0x0D' READ_PROPERTY_CONDITIONAL               ]
     //
     ////
+]
+
+[type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications(uint 8 tagNumber)
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                     openingTag                     ]
+    [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
+    [simple     BACnetOpeningTag('1', 'BACnetDataType.OPENING_TAG')
+                         innerOpeningTag            ]
+    [array    BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue('monitoredObjectIdentifier.objectType')
+                        listOfValues
+                        terminated
+                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'
+    ]
+    [simple     BACnetClosingTag('1', 'BACnetDataType.CLOSING_TAG')
+                     innerClosingTag                ]
+    [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                     closingTag                     ]
+]
+
+[type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue(BACnetObjectType objectType)
+    [simple   BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+                                propertyIdentifier      ]
+    [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+                                arrayIndex              ]
+    [simple   BACnetConstructedData('2', 'objectType', 'propertyIdentifier')
+                                propertyValue           ]
+    [optional BACnetContextTagTime('3', 'BACnetDataType.TIME')
+                                timeOfChange            ]
 ]
 
 [type BACnetReadAccessSpecification
