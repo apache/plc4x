@@ -1744,7 +1744,7 @@
                     terminated
                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
-        ['LIFE_SAFETY_ZONE', 'MEMBER_OF' BACnetConstructedDataLifeSafetyZoneMembers
+        ['LIFE_SAFETY_ZONE', 'MEMBER_OF' BACnetConstructedDataLifeSafetyZoneMemberOf
             [array  BACnetDeviceObjectReference
                         zones
                     terminated
