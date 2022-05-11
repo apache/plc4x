@@ -49,6 +49,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetReadAccessPropertyErrorParse(io)
 	case "BACnetTagPayloadReal":
 		return model.BACnetTagPayloadRealParse(io)
+	case "BACnetDeviceObjectReference":
+		return model.BACnetDeviceObjectReferenceParse(io)
 	case "BVLCForeignDeviceTableEntry":
 		return model.BVLCForeignDeviceTableEntryParse(io)
 	case "NLM":

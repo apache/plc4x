@@ -183,8 +183,10 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	switch {
 	case objectType == BACnetObjectType_COMMAND: // BACnetConstructedDataCommand
 		_child, typeSwitchError = BACnetConstructedDataCommandParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
-	case objectType == BACnetObjectType_LIFE_SAFETY_ZONE: // BACnetConstructedDataLifeSafetyZone
-		_child, typeSwitchError = BACnetConstructedDataLifeSafetyZoneParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
+	case objectType == BACnetObjectType_LIFE_SAFETY_ZONE && propertyIdentifierEnum == BACnetPropertyIdentifier_ZONE_MEMBERS: // BACnetConstructedDataLifeSafetyZoneMembers
+		_child, typeSwitchError = BACnetConstructedDataLifeSafetyZoneMembersParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
+	case objectType == BACnetObjectType_LIFE_SAFETY_ZONE && propertyIdentifierEnum == BACnetPropertyIdentifier_MEMBER_OF: // BACnetConstructedDataLifeSafetyZoneMemberOf
+		_child, typeSwitchError = BACnetConstructedDataLifeSafetyZoneMemberOfParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_EVENT_TIME_STAMPS: // BACnetConstructedDataEventTimestamps
 		_child, typeSwitchError = BACnetConstructedDataEventTimestampsParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_LIST_OF_OBJECT_PROPERTY_REFERENCES: // BACnetConstructedDataListOfObjectPropertyReferences

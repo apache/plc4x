@@ -1738,8 +1738,14 @@
             [simple       BACnetClosingTag('0', 'BACnetDataType.CLOSING_TAG')
                                 innerClosingTag                                                                 ]
         ]
-        ['LIFE_SAFETY_ZONE' BACnetConstructedDataLifeSafetyZone
-            [array  BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+        ['LIFE_SAFETY_ZONE', 'ZONE_MEMBERS' BACnetConstructedDataLifeSafetyZoneMembers
+            [array  BACnetDeviceObjectReference
+                        zones
+                    terminated
+                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
+        ['LIFE_SAFETY_ZONE', 'MEMBER_OF' BACnetConstructedDataLifeSafetyZoneMembers
+            [array  BACnetDeviceObjectReference
                         zones
                     terminated
                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
@@ -1770,6 +1776,13 @@
     ]
     [simple       BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                         closingTag                                                                              ]
+]
+
+[type BACnetDeviceObjectReference
+    [optional BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                        deviceIdentifier                                                                        ]
+    [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                        objectIdentifier                                                                        ]
 ]
 
 [type BACnetDeviceObjectPropertyReference
