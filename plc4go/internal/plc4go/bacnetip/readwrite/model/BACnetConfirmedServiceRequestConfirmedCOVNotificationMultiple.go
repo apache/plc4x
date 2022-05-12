@@ -33,7 +33,7 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple struct {
 	SubscriberProcessIdentifier *BACnetContextTagUnsignedInteger
 	InitiatingDeviceIdentifier  *BACnetContextTagObjectIdentifier
 	TimeRemaining               *BACnetContextTagUnsignedInteger
-	Timestamp                   *BACnetTimeStamp
+	Timestamp                   *BACnetTimeStampEnclosed
 	ListOfCovNotifications      *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications
 
 	// Arguments.
@@ -50,7 +50,7 @@ type IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple interface {
 	// GetTimeRemaining returns TimeRemaining (property field)
 	GetTimeRemaining() *BACnetContextTagUnsignedInteger
 	// GetTimestamp returns Timestamp (property field)
-	GetTimestamp() *BACnetTimeStamp
+	GetTimestamp() *BACnetTimeStampEnclosed
 	// GetListOfCovNotifications returns ListOfCovNotifications (property field)
 	GetListOfCovNotifications() *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications
 	// GetLengthInBytes returns the length in bytes
@@ -99,7 +99,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetTimeR
 	return m.TimeRemaining
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetTimestamp() *BACnetTimeStamp {
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetTimestamp() *BACnetTimeStampEnclosed {
 	return m.Timestamp
 }
 
@@ -113,7 +113,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetListO
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple factory function for BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
-func NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, timeRemaining *BACnetContextTagUnsignedInteger, timestamp *BACnetTimeStamp, listOfCovNotifications *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications, serviceRequestLength uint16) *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
+func NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, timeRemaining *BACnetContextTagUnsignedInteger, timestamp *BACnetTimeStampEnclosed, listOfCovNotifications *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications, serviceRequestLength uint16) *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
 	_result := &BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{
 		SubscriberProcessIdentifier:   subscriberProcessIdentifier,
 		InitiatingDeviceIdentifier:    initiatingDeviceIdentifier,
@@ -224,20 +224,20 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuff
 	}
 
 	// Optional Field (timestamp) (Can be skipped, if a given expression evaluates to false)
-	var timestamp *BACnetTimeStamp = nil
+	var timestamp *BACnetTimeStampEnclosed = nil
 	{
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetTimeStampParse(readBuffer, uint8(3))
+		_val, _err := BACnetTimeStampEnclosedParse(readBuffer, uint8(3))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'timestamp' field")
 		default:
-			timestamp = CastBACnetTimeStamp(_val)
+			timestamp = CastBACnetTimeStampEnclosed(_val)
 			if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
 				return nil, closeErr
 			}
@@ -266,7 +266,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuff
 		SubscriberProcessIdentifier:   CastBACnetContextTagUnsignedInteger(subscriberProcessIdentifier),
 		InitiatingDeviceIdentifier:    CastBACnetContextTagObjectIdentifier(initiatingDeviceIdentifier),
 		TimeRemaining:                 CastBACnetContextTagUnsignedInteger(timeRemaining),
-		Timestamp:                     CastBACnetTimeStamp(timestamp),
+		Timestamp:                     CastBACnetTimeStampEnclosed(timestamp),
 		ListOfCovNotifications:        CastBACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications(listOfCovNotifications),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
@@ -317,7 +317,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Serializ
 		}
 
 		// Optional Field (timestamp) (Can be skipped, if the value is null)
-		var timestamp *BACnetTimeStamp = nil
+		var timestamp *BACnetTimeStampEnclosed = nil
 		if m.Timestamp != nil {
 			if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
 				return pushErr

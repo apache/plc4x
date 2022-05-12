@@ -49,8 +49,8 @@ type IBACnetServiceAckVTData interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetServiceAckVTData) GetServiceChoice() uint8 {
-	return 0x17
+func (m *BACnetServiceAckVTData) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_VT_DATA
 }
 
 ///////////////////////
@@ -113,6 +113,11 @@ func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceRequestLeng
 	}
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
+
+	// Validation
+	if !(bool((1) == (2))) {
+		return nil, utils.ParseAssertError{"TODO: implement me"}
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckVTData"); closeErr != nil {
 		return nil, closeErr

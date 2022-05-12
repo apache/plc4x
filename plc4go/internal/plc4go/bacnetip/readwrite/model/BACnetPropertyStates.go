@@ -199,6 +199,8 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 		_child, typeSwitchError = BACnetPropertyStatesBinaryValueParse(readBuffer, tagNumber, peekedTagNumber)
 	case peekedTagNumber == uint8(16): // BACnetPropertyStatesAction
 		_child, typeSwitchError = BACnetPropertyStatesActionParse(readBuffer, tagNumber, peekedTagNumber)
+	case true: // BACnetPropertyStateActionUnmapped
+		_child, typeSwitchError = BACnetPropertyStateActionUnmappedParse(readBuffer, tagNumber)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

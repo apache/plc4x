@@ -214,6 +214,8 @@ func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber ui
 		_child, typeSwitchError = BACnetNotificationParametersBufferReadyParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(11): // BACnetNotificationParametersUnsignedRange
 		_child, typeSwitchError = BACnetNotificationParametersUnsignedRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+	case true: // BACnetNotificationParametersUnmapped
+		_child, typeSwitchError = BACnetNotificationParametersUnmappedParse(readBuffer, tagNumber, objectType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

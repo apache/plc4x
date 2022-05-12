@@ -28,23 +28,14 @@ import (
 
 // BACnetTimeStamp is the data-structure of this message
 type BACnetTimeStamp struct {
-	OpeningTag      *BACnetOpeningTag
 	PeekedTagHeader *BACnetTagHeader
-	ClosingTag      *BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
-	Child     IBACnetTimeStampChild
+	Child           IBACnetTimeStampChild
 }
 
 // IBACnetTimeStamp is the corresponding interface of BACnetTimeStamp
 type IBACnetTimeStamp interface {
-	// GetOpeningTag returns OpeningTag (property field)
-	GetOpeningTag() *BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() *BACnetTagHeader
-	// GetClosingTag returns ClosingTag (property field)
-	GetClosingTag() *BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
 	// GetLengthInBytes returns the length in bytes
@@ -62,7 +53,7 @@ type IBACnetTimeStampParent interface {
 
 type IBACnetTimeStampChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag)
+	InitializeParent(parent *BACnetTimeStamp, peekedTagHeader *BACnetTagHeader)
 	GetParent() *BACnetTimeStamp
 
 	GetTypeName() string
@@ -74,16 +65,8 @@ type IBACnetTimeStampChild interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetTimeStamp) GetOpeningTag() *BACnetOpeningTag {
-	return m.OpeningTag
-}
-
 func (m *BACnetTimeStamp) GetPeekedTagHeader() *BACnetTagHeader {
 	return m.PeekedTagHeader
-}
-
-func (m *BACnetTimeStamp) GetClosingTag() *BACnetClosingTag {
-	return m.ClosingTag
 }
 
 ///////////////////////
@@ -105,8 +88,8 @@ func (m *BACnetTimeStamp) GetPeekedTagNumber() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetTimeStamp factory function for BACnetTimeStamp
-func NewBACnetTimeStamp(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetTimeStamp {
-	return &BACnetTimeStamp{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+func NewBACnetTimeStamp(peekedTagHeader *BACnetTagHeader) *BACnetTimeStamp {
+	return &BACnetTimeStamp{PeekedTagHeader: peekedTagHeader}
 }
 
 func CastBACnetTimeStamp(structType interface{}) *BACnetTimeStamp {
@@ -137,13 +120,7 @@ func (m *BACnetTimeStamp) GetLengthInBitsConditional(lastItem bool) uint16 {
 func (m *BACnetTimeStamp) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
-	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
-
 	// A virtual field doesn't have any in- or output.
-
-	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -152,25 +129,12 @@ func (m *BACnetTimeStamp) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimeStampParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetTimeStamp, error) {
+func BACnetTimeStampParse(readBuffer utils.ReadBuffer) (*BACnetTimeStamp, error) {
 	if pullErr := readBuffer.PullContext("BACnetTimeStamp"); pullErr != nil {
 		return nil, pullErr
 	}
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
-
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
-	}
-	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType(BACnetDataType_OPENING_TAG))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
-	}
-	openingTag := CastBACnetOpeningTag(_openingTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
-	}
 
 	// Peek Field (peekedTagHeader)
 	currentPos = readBuffer.GetPos()
@@ -187,18 +151,18 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnet
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type BACnetTimeStampChild interface {
-		InitializeParent(*BACnetTimeStamp, *BACnetOpeningTag, *BACnetTagHeader, *BACnetClosingTag)
+		InitializeParent(*BACnetTimeStamp, *BACnetTagHeader)
 		GetParent() *BACnetTimeStamp
 	}
 	var _child BACnetTimeStampChild
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetTimeStampTime
-		_child, typeSwitchError = BACnetTimeStampTimeParse(readBuffer, tagNumber)
+		_child, typeSwitchError = BACnetTimeStampTimeParse(readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetTimeStampSequence
-		_child, typeSwitchError = BACnetTimeStampSequenceParse(readBuffer, tagNumber)
+		_child, typeSwitchError = BACnetTimeStampSequenceParse(readBuffer)
 	case peekedTagNumber == uint8(2): // BACnetTimeStampDateTime
-		_child, typeSwitchError = BACnetTimeStampDateTimeParse(readBuffer, tagNumber)
+		_child, typeSwitchError = BACnetTimeStampDateTimeParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -207,25 +171,12 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnet
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
-	}
-	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType(BACnetDataType_CLOSING_TAG))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
-	}
-	closingTag := CastBACnetClosingTag(_closingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
-	}
-
 	if closeErr := readBuffer.CloseContext("BACnetTimeStamp"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child.GetParent(), openingTag, peekedTagHeader, closingTag)
+	_child.InitializeParent(_child.GetParent(), peekedTagHeader)
 	return _child.GetParent(), nil
 }
 
@@ -237,18 +188,6 @@ func (m *BACnetTimeStamp) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	if pushErr := writeBuffer.PushContext("BACnetTimeStamp"); pushErr != nil {
 		return pushErr
 	}
-
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
-	}
-	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
-	}
 	// Virtual field
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
@@ -257,18 +196,6 @@ func (m *BACnetTimeStamp) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
-	}
-
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
-	}
-	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTimeStamp"); popErr != nil {

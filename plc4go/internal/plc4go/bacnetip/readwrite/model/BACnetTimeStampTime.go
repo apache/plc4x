@@ -30,9 +30,6 @@ import (
 type BACnetTimeStampTime struct {
 	*BACnetTimeStamp
 	TimeValue *BACnetContextTagTime
-
-	// Arguments.
-	TagNumber uint8
 }
 
 // IBACnetTimeStampTime is the corresponding interface of BACnetTimeStampTime
@@ -58,10 +55,8 @@ type IBACnetTimeStampTime interface {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetTimeStampTime) InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
-	m.BACnetTimeStamp.OpeningTag = openingTag
+func (m *BACnetTimeStampTime) InitializeParent(parent *BACnetTimeStamp, peekedTagHeader *BACnetTagHeader) {
 	m.BACnetTimeStamp.PeekedTagHeader = peekedTagHeader
-	m.BACnetTimeStamp.ClosingTag = closingTag
 }
 
 func (m *BACnetTimeStampTime) GetParent() *BACnetTimeStamp {
@@ -83,10 +78,10 @@ func (m *BACnetTimeStampTime) GetTimeValue() *BACnetContextTagTime {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetTimeStampTime factory function for BACnetTimeStampTime
-func NewBACnetTimeStampTime(timeValue *BACnetContextTagTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetTimeStampTime {
+func NewBACnetTimeStampTime(timeValue *BACnetContextTagTime, peekedTagHeader *BACnetTagHeader) *BACnetTimeStampTime {
 	_result := &BACnetTimeStampTime{
 		TimeValue:       timeValue,
-		BACnetTimeStamp: NewBACnetTimeStamp(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetTimeStamp: NewBACnetTimeStamp(peekedTagHeader),
 	}
 	_result.Child = _result
 	return _result
@@ -129,7 +124,7 @@ func (m *BACnetTimeStampTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimeStampTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetTimeStampTime, error) {
+func BACnetTimeStampTimeParse(readBuffer utils.ReadBuffer) (*BACnetTimeStampTime, error) {
 	if pullErr := readBuffer.PullContext("BACnetTimeStampTime"); pullErr != nil {
 		return nil, pullErr
 	}

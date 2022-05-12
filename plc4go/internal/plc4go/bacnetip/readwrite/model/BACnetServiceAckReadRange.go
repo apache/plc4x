@@ -49,8 +49,8 @@ type IBACnetServiceAckReadRange interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetServiceAckReadRange) GetServiceChoice() uint8 {
-	return 0x1A
+func (m *BACnetServiceAckReadRange) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_READ_RANGE
 }
 
 ///////////////////////
@@ -113,6 +113,11 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceRequestL
 	}
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
+
+	// Validation
+	if !(bool((1) == (2))) {
+		return nil, utils.ParseAssertError{"TODO: implement me"}
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckReadRange"); closeErr != nil {
 		return nil, closeErr

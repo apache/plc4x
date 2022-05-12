@@ -49,8 +49,8 @@ type IBACnetServiceAckCreateObject interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetServiceAckCreateObject) GetServiceChoice() uint8 {
-	return 0x0A
+func (m *BACnetServiceAckCreateObject) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_CREATE_OBJECT
 }
 
 ///////////////////////
@@ -113,6 +113,11 @@ func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceReque
 	}
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
+
+	// Validation
+	if !(bool((1) == (2))) {
+		return nil, utils.ParseAssertError{"TODO: implement me"}
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckCreateObject"); closeErr != nil {
 		return nil, closeErr

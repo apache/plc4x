@@ -32,9 +32,9 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
 	AcknowledgingProcessIdentifier *BACnetContextTagUnsignedInteger
 	EventObjectIdentifier          *BACnetContextTagObjectIdentifier
 	EventStateAcknowledged         *BACnetContextTagEventState
-	Timestamp                      *BACnetTimeStamp
+	Timestamp                      *BACnetTimeStampEnclosed
 	AcknowledgmentSource           *BACnetContextTagCharacterString
-	TimeOfAcknowledgment           *BACnetTimeStamp
+	TimeOfAcknowledgment           *BACnetTimeStampEnclosed
 
 	// Arguments.
 	ServiceRequestLength uint16
@@ -50,11 +50,11 @@ type IBACnetConfirmedServiceRequestAcknowledgeAlarm interface {
 	// GetEventStateAcknowledged returns EventStateAcknowledged (property field)
 	GetEventStateAcknowledged() *BACnetContextTagEventState
 	// GetTimestamp returns Timestamp (property field)
-	GetTimestamp() *BACnetTimeStamp
+	GetTimestamp() *BACnetTimeStampEnclosed
 	// GetAcknowledgmentSource returns AcknowledgmentSource (property field)
 	GetAcknowledgmentSource() *BACnetContextTagCharacterString
 	// GetTimeOfAcknowledgment returns TimeOfAcknowledgment (property field)
-	GetTimeOfAcknowledgment() *BACnetTimeStamp
+	GetTimeOfAcknowledgment() *BACnetTimeStampEnclosed
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -101,7 +101,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetEventStateAcknowledge
 	return m.EventStateAcknowledged
 }
 
-func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTimestamp() *BACnetTimeStamp {
+func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTimestamp() *BACnetTimeStampEnclosed {
 	return m.Timestamp
 }
 
@@ -109,7 +109,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetAcknowledgmentSource(
 	return m.AcknowledgmentSource
 }
 
-func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTimeOfAcknowledgment() *BACnetTimeStamp {
+func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTimeOfAcknowledgment() *BACnetTimeStampEnclosed {
 	return m.TimeOfAcknowledgment
 }
 
@@ -119,7 +119,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTimeOfAcknowledgment(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestAcknowledgeAlarm factory function for BACnetConfirmedServiceRequestAcknowledgeAlarm
-func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdentifier *BACnetContextTagUnsignedInteger, eventObjectIdentifier *BACnetContextTagObjectIdentifier, eventStateAcknowledged *BACnetContextTagEventState, timestamp *BACnetTimeStamp, acknowledgmentSource *BACnetContextTagCharacterString, timeOfAcknowledgment *BACnetTimeStamp, serviceRequestLength uint16) *BACnetConfirmedServiceRequestAcknowledgeAlarm {
+func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdentifier *BACnetContextTagUnsignedInteger, eventObjectIdentifier *BACnetContextTagObjectIdentifier, eventStateAcknowledged *BACnetContextTagEventState, timestamp *BACnetTimeStampEnclosed, acknowledgmentSource *BACnetContextTagCharacterString, timeOfAcknowledgment *BACnetTimeStampEnclosed, serviceRequestLength uint16) *BACnetConfirmedServiceRequestAcknowledgeAlarm {
 	_result := &BACnetConfirmedServiceRequestAcknowledgeAlarm{
 		AcknowledgingProcessIdentifier: acknowledgingProcessIdentifier,
 		EventObjectIdentifier:          eventObjectIdentifier,
@@ -235,11 +235,11 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
 		return nil, pullErr
 	}
-	_timestamp, _timestampErr := BACnetTimeStampParse(readBuffer, uint8(uint8(3)))
+	_timestamp, _timestampErr := BACnetTimeStampEnclosedParse(readBuffer, uint8(uint8(3)))
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
 	}
-	timestamp := CastBACnetTimeStamp(_timestamp)
+	timestamp := CastBACnetTimeStampEnclosed(_timestamp)
 	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -261,11 +261,11 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("timeOfAcknowledgment"); pullErr != nil {
 		return nil, pullErr
 	}
-	_timeOfAcknowledgment, _timeOfAcknowledgmentErr := BACnetTimeStampParse(readBuffer, uint8(uint8(5)))
+	_timeOfAcknowledgment, _timeOfAcknowledgmentErr := BACnetTimeStampEnclosedParse(readBuffer, uint8(uint8(5)))
 	if _timeOfAcknowledgmentErr != nil {
 		return nil, errors.Wrap(_timeOfAcknowledgmentErr, "Error parsing 'timeOfAcknowledgment' field")
 	}
-	timeOfAcknowledgment := CastBACnetTimeStamp(_timeOfAcknowledgment)
+	timeOfAcknowledgment := CastBACnetTimeStampEnclosed(_timeOfAcknowledgment)
 	if closeErr := readBuffer.CloseContext("timeOfAcknowledgment"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -279,9 +279,9 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 		AcknowledgingProcessIdentifier: CastBACnetContextTagUnsignedInteger(acknowledgingProcessIdentifier),
 		EventObjectIdentifier:          CastBACnetContextTagObjectIdentifier(eventObjectIdentifier),
 		EventStateAcknowledged:         CastBACnetContextTagEventState(eventStateAcknowledged),
-		Timestamp:                      CastBACnetTimeStamp(timestamp),
+		Timestamp:                      CastBACnetTimeStampEnclosed(timestamp),
 		AcknowledgmentSource:           CastBACnetContextTagCharacterString(acknowledgmentSource),
-		TimeOfAcknowledgment:           CastBACnetTimeStamp(timeOfAcknowledgment),
+		TimeOfAcknowledgment:           CastBACnetTimeStampEnclosed(timeOfAcknowledgment),
 		BACnetConfirmedServiceRequest:  &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child

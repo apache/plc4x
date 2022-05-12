@@ -115,6 +115,11 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
 
+	// Validation
+	if !(bool((1) == (2))) {
+		return nil, utils.ParseAssertError{"TODO: implement me"}
+	}
+
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestCreateObject"); closeErr != nil {
 		return nil, closeErr
 	}

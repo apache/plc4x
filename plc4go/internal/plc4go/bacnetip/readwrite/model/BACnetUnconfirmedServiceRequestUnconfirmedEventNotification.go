@@ -33,7 +33,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedEventNotification struct {
 	ProcessIdentifier          *BACnetContextTagUnsignedInteger
 	InitiatingDeviceIdentifier *BACnetContextTagObjectIdentifier
 	EventObjectIdentifier      *BACnetContextTagObjectIdentifier
-	Timestamp                  *BACnetTimeStamp
+	Timestamp                  *BACnetTimeStampEnclosed
 	NotificationClass          *BACnetContextTagUnsignedInteger
 	Priority                   *BACnetContextTagUnsignedInteger
 	EventType                  *BACnetContextTagEventType
@@ -58,7 +58,7 @@ type IBACnetUnconfirmedServiceRequestUnconfirmedEventNotification interface {
 	// GetEventObjectIdentifier returns EventObjectIdentifier (property field)
 	GetEventObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetTimestamp returns Timestamp (property field)
-	GetTimestamp() *BACnetTimeStamp
+	GetTimestamp() *BACnetTimeStampEnclosed
 	// GetNotificationClass returns NotificationClass (property field)
 	GetNotificationClass() *BACnetContextTagUnsignedInteger
 	// GetPriority returns Priority (property field)
@@ -123,7 +123,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetEventOb
 	return m.EventObjectIdentifier
 }
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetTimestamp() *BACnetTimeStamp {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetTimestamp() *BACnetTimeStampEnclosed {
 	return m.Timestamp
 }
 
@@ -169,7 +169,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetEventVa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification factory function for BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
-func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(processIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, eventObjectIdentifier *BACnetContextTagObjectIdentifier, timestamp *BACnetTimeStamp, notificationClass *BACnetContextTagUnsignedInteger, priority *BACnetContextTagUnsignedInteger, eventType *BACnetContextTagEventType, messageText *BACnetContextTagCharacterString, notifyType *BACnetContextTagNotifyType, ackRequired *BACnetContextTagBoolean, fromState *BACnetContextTagEventState, toState *BACnetContextTagEventState, eventValues *BACnetNotificationParameters, serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(processIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, eventObjectIdentifier *BACnetContextTagObjectIdentifier, timestamp *BACnetTimeStampEnclosed, notificationClass *BACnetContextTagUnsignedInteger, priority *BACnetContextTagUnsignedInteger, eventType *BACnetContextTagEventType, messageText *BACnetContextTagCharacterString, notifyType *BACnetContextTagNotifyType, ackRequired *BACnetContextTagBoolean, fromState *BACnetContextTagEventState, toState *BACnetContextTagEventState, eventValues *BACnetNotificationParameters, serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
 	_result := &BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{
 		ProcessIdentifier:               processIdentifier,
 		InitiatingDeviceIdentifier:      initiatingDeviceIdentifier,
@@ -321,11 +321,11 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer
 	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
 		return nil, pullErr
 	}
-	_timestamp, _timestampErr := BACnetTimeStampParse(readBuffer, uint8(uint8(3)))
+	_timestamp, _timestampErr := BACnetTimeStampEnclosedParse(readBuffer, uint8(uint8(3)))
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
 	}
-	timestamp := CastBACnetTimeStamp(_timestamp)
+	timestamp := CastBACnetTimeStampEnclosed(_timestamp)
 	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -488,7 +488,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer
 		ProcessIdentifier:               CastBACnetContextTagUnsignedInteger(processIdentifier),
 		InitiatingDeviceIdentifier:      CastBACnetContextTagObjectIdentifier(initiatingDeviceIdentifier),
 		EventObjectIdentifier:           CastBACnetContextTagObjectIdentifier(eventObjectIdentifier),
-		Timestamp:                       CastBACnetTimeStamp(timestamp),
+		Timestamp:                       CastBACnetTimeStampEnclosed(timestamp),
 		NotificationClass:               CastBACnetContextTagUnsignedInteger(notificationClass),
 		Priority:                        CastBACnetContextTagUnsignedInteger(priority),
 		EventType:                       CastBACnetContextTagEventType(eventType),

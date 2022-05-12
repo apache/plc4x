@@ -49,8 +49,8 @@ type IBACnetServiceAckGetEnrollmentSummary interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetServiceAckGetEnrollmentSummary) GetServiceChoice() uint8 {
-	return 0x04
+func (m *BACnetServiceAckGetEnrollmentSummary) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY
 }
 
 ///////////////////////
@@ -113,6 +113,11 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 	}
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
+
+	// Validation
+	if !(bool((1) == (2))) {
+		return nil, utils.ParseAssertError{"TODO: implement me"}
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckGetEnrollmentSummary"); closeErr != nil {
 		return nil, closeErr

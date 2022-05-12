@@ -63,8 +63,8 @@ type IBACnetServiceAckReadProperty interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetServiceAckReadProperty) GetServiceChoice() uint8 {
-	return 0x0C
+func (m *BACnetServiceAckReadProperty) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_READ_PROPERTY
 }
 
 ///////////////////////

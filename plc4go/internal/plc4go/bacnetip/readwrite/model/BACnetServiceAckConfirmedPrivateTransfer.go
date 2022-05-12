@@ -49,8 +49,8 @@ type IBACnetServiceAckConfirmedPrivateTransfer interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetServiceAckConfirmedPrivateTransfer) GetServiceChoice() uint8 {
-	return 0x12
+func (m *BACnetServiceAckConfirmedPrivateTransfer) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER
 }
 
 ///////////////////////
@@ -113,6 +113,11 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 	}
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
+
+	// Validation
+	if !(bool((1) == (2))) {
+		return nil, utils.ParseAssertError{"TODO: implement me"}
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckConfirmedPrivateTransfer"); closeErr != nil {
 		return nil, closeErr

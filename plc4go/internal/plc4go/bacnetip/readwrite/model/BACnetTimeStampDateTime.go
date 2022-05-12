@@ -30,9 +30,6 @@ import (
 type BACnetTimeStampDateTime struct {
 	*BACnetTimeStamp
 	DateTimeValue *BACnetDateTime
-
-	// Arguments.
-	TagNumber uint8
 }
 
 // IBACnetTimeStampDateTime is the corresponding interface of BACnetTimeStampDateTime
@@ -58,10 +55,8 @@ type IBACnetTimeStampDateTime interface {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetTimeStampDateTime) InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
-	m.BACnetTimeStamp.OpeningTag = openingTag
+func (m *BACnetTimeStampDateTime) InitializeParent(parent *BACnetTimeStamp, peekedTagHeader *BACnetTagHeader) {
 	m.BACnetTimeStamp.PeekedTagHeader = peekedTagHeader
-	m.BACnetTimeStamp.ClosingTag = closingTag
 }
 
 func (m *BACnetTimeStampDateTime) GetParent() *BACnetTimeStamp {
@@ -83,10 +78,10 @@ func (m *BACnetTimeStampDateTime) GetDateTimeValue() *BACnetDateTime {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetTimeStampDateTime factory function for BACnetTimeStampDateTime
-func NewBACnetTimeStampDateTime(dateTimeValue *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetTimeStampDateTime {
+func NewBACnetTimeStampDateTime(dateTimeValue *BACnetDateTime, peekedTagHeader *BACnetTagHeader) *BACnetTimeStampDateTime {
 	_result := &BACnetTimeStampDateTime{
 		DateTimeValue:   dateTimeValue,
-		BACnetTimeStamp: NewBACnetTimeStamp(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetTimeStamp: NewBACnetTimeStamp(peekedTagHeader),
 	}
 	_result.Child = _result
 	return _result
@@ -129,7 +124,7 @@ func (m *BACnetTimeStampDateTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetTimeStampDateTime, error) {
+func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer) (*BACnetTimeStampDateTime, error) {
 	if pullErr := readBuffer.PullContext("BACnetTimeStampDateTime"); pullErr != nil {
 		return nil, pullErr
 	}

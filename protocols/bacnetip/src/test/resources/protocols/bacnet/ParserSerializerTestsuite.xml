@@ -1049,7 +1049,9 @@ make -f demo/object/ai</value>
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
                     <serviceAck>
                       <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetServiceAckAtomicWriteFile>
                           <fileStartPosition>
                             <BACnetContextTag>
@@ -1309,7 +1311,9 @@ make -f awf.mak</value>
                     <originalInvokeId dataType="uint" bitLength="8">2</originalInvokeId>
                     <serviceAck>
                       <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetServiceAckAtomicWriteFile>
                           <fileStartPosition>
                             <BACnetContextTag>
@@ -1572,7 +1576,9 @@ make -f bacstr.mak</value>
                     <originalInvokeId dataType="uint" bitLength="8">3</originalInvokeId>
                     <serviceAck>
                       <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetServiceAckAtomicWriteFile>
                           <fileStartPosition>
                             <BACnetContextTag>
@@ -1832,7 +1838,9 @@ make -f crc.mak clean</value>
                     <originalInvokeId dataType="uint" bitLength="8">4</originalInvokeId>
                     <serviceAck>
                       <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetServiceAckAtomicWriteFile>
                           <fileStartPosition>
                             <BACnetContextTag>
@@ -2093,7 +2101,9 @@ make -f demo/object/lsp.</value>
                     <originalInvokeId dataType="uint" bitLength="8">5</originalInvokeId>
                     <serviceAck>
                       <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetServiceAckAtomicWriteFile>
                           <fileStartPosition>
                             <BACnetContextTag>
@@ -2357,7 +2367,9 @@ make</value>
                     <originalInvokeId dataType="uint" bitLength="8">6</originalInvokeId>
                     <serviceAck>
                       <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetServiceAckAtomicWriteFile>
                           <fileStartPosition>
                             <BACnetContextTag>
@@ -2622,7 +2634,9 @@ make -f tsm.mak cle</value>
                     <originalInvokeId dataType="uint" bitLength="8">7</originalInvokeId>
                     <serviceAck>
                       <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetServiceAckAtomicWriteFile>
                           <fileStartPosition>
                             <BACnetContextTag>
@@ -2880,7 +2894,9 @@ make -f wp.mak clean</value>
                     <originalInvokeId dataType="uint" bitLength="8">8</originalInvokeId>
                     <serviceAck>
                       <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetServiceAckAtomicWriteFile>
                           <fileStartPosition>
                             <BACnetContextTag>
@@ -4640,7 +4656,9 @@ make -f wp.mak clean</value>
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
                     <serviceAck>
                       <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">12</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="READ_PROPERTY">12</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetServiceAckReadProperty>
                           <objectIdentifier>
                             <BACnetContextTag>
@@ -8768,7 +8786,9 @@ make -f wp.mak clean</value>
                     <originalInvokeId dataType="uint" bitLength="8">54</originalInvokeId>
                     <serviceAck>
                       <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_READ_FILE">6</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetServiceAckAtomicReadFile>
                           <endOfFile>
                             <BACnetApplicationTag>
@@ -9113,7 +9133,9 @@ Test "BACnet Applicat</value>
                     <originalInvokeId dataType="uint" bitLength="8">55</originalInvokeId>
                     <serviceAck>
                       <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_READ_FILE">6</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetServiceAckAtomicReadFile>
                           <endOfFile>
                             <BACnetApplicationTag>
@@ -9463,7 +9485,9 @@ Test "BACnet I-Am":
                     <originalInvokeId dataType="uint" bitLength="8">56</originalInvokeId>
                     <serviceAck>
                       <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_READ_FILE">6</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetServiceAckAtomicReadFile>
                           <endOfFile>
                             <BACnetApplicationTag>
@@ -9810,7 +9834,9 @@ Test "BACnet ReadProperty":
                     <originalInvokeId dataType="uint" bitLength="8">57</originalInvokeId>
                     <serviceAck>
                       <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_READ_FILE">6</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetServiceAckAtomicReadFile>
                           <endOfFile>
                             <BACnetApplicationTag>

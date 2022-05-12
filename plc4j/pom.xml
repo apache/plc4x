@@ -265,6 +265,7 @@
                 <ignoredDependency>org.junit.jupiter:junit-jupiter</ignoredDependency>
                 <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
                 <ignoredDependency>org.junit.jupiter:junit-jupiter-params</ignoredDependency>
+                <ignoredDependency>org.opentest4j:opentest4j</ignoredDependency>
                 <ignoredDependency>org.hamcrest:hamcrest</ignoredDependency>
                 <ignoredDependency>org.hamcrest:hamcrest-core</ignoredDependency>
                 <ignoredDependency>org.hamcrest:hamcrest-library</ignoredDependency>

@@ -49,8 +49,8 @@ type IBACnetServiceAckGetAlarmSummary interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetServiceAckGetAlarmSummary) GetServiceChoice() uint8 {
-	return 0x03
+func (m *BACnetServiceAckGetAlarmSummary) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_GET_ALARM_SUMMARY
 }
 
 ///////////////////////
@@ -113,6 +113,11 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceRe
 	}
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
+
+	// Validation
+	if !(bool((1) == (2))) {
+		return nil, utils.ParseAssertError{"TODO: implement me"}
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckGetAlarmSummary"); closeErr != nil {
 		return nil, closeErr

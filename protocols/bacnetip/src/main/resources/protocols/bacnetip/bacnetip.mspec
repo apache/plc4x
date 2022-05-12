@@ -110,6 +110,7 @@
     [optional   APDU('npduLength - payloadSubtraction')
                             apdu
                                                         '!control.messageTypeFieldPresent'                          ]
+    [validation    'nlm != null || apdu != null'        "something is wrong here... apdu and nlm not set"           ]
 ]
 
 [type NPDUControl
@@ -310,9 +311,9 @@
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          acknowledgingProcessIdentifier ]
             [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') eventObjectIdentifier          ]
             [simple   BACnetContextTagEventState('2', 'BACnetDataType.EVENT_STATE')                    eventStateAcknowledged         ]
-            [simple   BACnetTimeStamp('3')                                                             timestamp                      ]
+            [simple   BACnetTimeStampEnclosed('3')                                                     timestamp                      ]
             [simple   BACnetContextTagCharacterString('4', 'BACnetDataType.CHARACTER_STRING')          acknowledgmentSource           ]
-            [simple   BACnetTimeStamp('5')                                                             timeOfAcknowledgment           ]
+            [simple   BACnetTimeStampEnclosed('5')                                                     timeOfAcknowledgment           ]
         ]
         ['CONFIRMED_COV_NOTIFICATION' BACnetConfirmedServiceRequestConfirmedCOVNotification
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
@@ -325,7 +326,7 @@
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
             [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier  ]
             [simple   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')          timeRemaining               ]
-            [optional BACnetTimeStamp('3')                                                             timestamp                   ]
+            [optional BACnetTimeStampEnclosed('3')                                                     timestamp                   ]
             [simple   BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications('4')
                                                                                                        listOfCovNotifications      ]
         ]
@@ -333,7 +334,7 @@
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          processIdentifier            ]
             [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier   ]
             [simple   BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') eventObjectIdentifier        ]
-            [simple   BACnetTimeStamp('3')                                                             timestamp                    ]
+            [simple   BACnetTimeStampEnclosed('3')                                                     timestamp                    ]
             [simple   BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')          notificationClass            ]
             [simple   BACnetContextTagUnsignedInteger('5', 'BACnetDataType.UNSIGNED_INTEGER')          priority                     ]
             [simple   BACnetContextTagEventType('6', 'BACnetDataType.EVENT_TYPE')                      eventType                    ]
@@ -346,12 +347,14 @@
         ]
         ['GET_ENROLLMENT_SUMMARY' BACnetConfirmedServiceRequestGetEnrollmentSummary
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['GET_EVENT_INFORMATION' BACnetConfirmedServiceRequestGetEventInformation
-            // TODO: implement me
+            [optional BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') lastReceivedObjectIdentifier   ]
         ]
         ['LIFE_SAFETY_OPERATION' BACnetConfirmedServiceRequestLifeSafetyOperation
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['SUBSCRIBE_COV' BACnetConfirmedServiceRequestSubscribeCOV
             [simple BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
@@ -361,9 +364,11 @@
         ]
         ['SUBSCRIBE_COV_PROPERTY' BACnetConfirmedServiceRequestSubscribeCOVProperty
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['SUBSCRIBE_COV_PROPERTY_MULTIPLE' BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         //
         ////
@@ -401,9 +406,11 @@
         ]
         ['CREATE_OBJECT' BACnetConfirmedServiceRequestCreateObject
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['DELETE_OBJECT' BACnetConfirmedServiceRequestDeleteObject
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['READ_PROPERTY' BACnetConfirmedServiceRequestReadProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
@@ -421,6 +428,7 @@
         ]
         ['READ_RANGE' BACnetConfirmedServiceRequestReadRange
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['WRITE_PROPERTY' BACnetConfirmedServiceRequestWriteProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
@@ -461,12 +469,15 @@
 
         ['VT_OPEN' BACnetConfirmedServiceRequestVTOpen
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['VT_CLOSE' BACnetConfirmedServiceRequestVTClose
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['VT_DATA' BACnetConfirmedServiceRequestVTData
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         //
         ////
@@ -476,12 +487,15 @@
 
         ['AUTHENTICATE' BACnetConfirmedServiceRequestAuthenticate
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['REQUEST_KEY' BACnetConfirmedServiceRequestRequestKey
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['READ_PROPERTY_CONDITIONAL' BACnetConfirmedServiceRequestReadPropertyConditional
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         //
         ////
@@ -691,7 +705,7 @@
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          processIdentifier            ]
             [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier   ]
             [simple   BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') eventObjectIdentifier        ]
-            [simple   BACnetTimeStamp('3')                                                             timestamp                    ]
+            [simple   BACnetTimeStampEnclosed('3')                                                     timestamp                    ]
             [simple   BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')          notificationClass            ]
             [simple   BACnetContextTagUnsignedInteger('5', 'BACnetDataType.UNSIGNED_INTEGER')          priority                     ]
             [simple   BACnetContextTagEventType('6', 'BACnetDataType.EVENT_TYPE')                      eventType                    ]
@@ -709,6 +723,7 @@
         ]
         ['UNCONFIRMED_TEXT_MESSAGE' BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['TIME_SYNCHRONIZATION' BACnetUnconfirmedServiceRequestTimeSynchronization
             [simple BACnetApplicationTagDate synchronizedDate]
@@ -730,9 +745,11 @@
         ]
         ['WRITE_GROUP' BACnetUnconfirmedServiceRequestWriteGroup
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['UNCONFIRMED_COV_NOTIFICATION_MULTIPLE' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         [BACnetUnconfirmedServiceRequestUnconfirmedUnknown
             [array  byte    unknownBytes length '(serviceRequestLength>0)?(serviceRequestLength - 1):0']
@@ -765,33 +782,92 @@
 ]
 
 [discriminatedType BACnetServiceAck(uint 16 serviceRequestLength)
-    [discriminator   uint 8 serviceChoice]
+    [discriminator   BACnetConfirmedServiceChoice
+                        serviceChoice                   ]
     [typeSwitch serviceChoice
-        ['0x03' BACnetServiceAckGetAlarmSummary
+        ////
+        // Alarm and Event Services
 
+        ['ACKNOWLEDGE_ALARM' BACnetServiceAckAcknowledgeAlarm
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
-        ['0x04' BACnetServiceAckGetEnrollmentSummary
-
+        ['CONFIRMED_COV_NOTIFICATION' BACnetServiceAckConfirmedCovNotification
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
-        ['0x1D' BACnetServiceAckGetEventInformation
-
+        ['CONFIRMED_COV_NOTIFICATION_MULTIPLE' BACnetServiceAckConfirmedCovNotificationMultiple
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
+        ['CONFIRMED_EVENT_NOTIFICATION' BACnetServiceAckConfirmedEventNotification
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['GET_ALARM_SUMMARY' BACnetServiceAckGetAlarmSummary
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['GET_ENROLLMENT_SUMMARY' BACnetServiceAckGetEnrollmentSummary
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['GET_EVENT_INFORMATION' BACnetServiceAckGetEventInformation
+            [simple BACnetEventSummaries
+                        listOfEventSummaries        ]
+            [simple BACnetContextTagBoolean('0', 'BACnetDataType.BOOLEAN')
+                        moreEvents                  ]
+        ]
+        ['LIFE_SAFETY_OPERATION' BACnetServiceAckLifeSafetyOperation
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['SUBSCRIBE_COV' BACnetServiceAckSubscribeCov
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['SUBSCRIBE_COV_PROPERTY' BACnetServiceAckSubscribeCovProperty
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['SUBSCRIBE_COV_PROPERTY_MULTIPLE' BACnetServiceAckSubscribeCovPropertyMultiple
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        //
+        ////
 
-        ['0x06' BACnetServiceAckAtomicReadFile
+        ////
+        // File Access Services
+
+        ['ATOMIC_READ_FILE' BACnetServiceAckAtomicReadFile
             [simple BACnetApplicationTagBoolean
                             endOfFile               ]
             [simple BACnetServiceAckAtomicReadFileStreamOrRecord
                             accessMethod            ]
         ]
-        ['0x07' BACnetServiceAckAtomicWriteFile
+        ['ATOMIC_WRITE_FILE' BACnetServiceAckAtomicWriteFile
             [simple BACnetContextTagSignedInteger('0', 'BACnetDataType.SIGNED_INTEGER')
                             fileStartPosition       ]
         ]
+        //
+        ////
 
-        ['0x0A' BACnetServiceAckCreateObject
-
+        ////
+        // Object Access Services
+        ['ADD_LIST_ELEMENT' BACnetServiceAckAddListElement
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
-        ['0x0C' BACnetServiceAckReadProperty
+        ['REMOVE_LIST_ELEMENT' BACnetServiceAckRemoveListElement
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['CREATE_OBJECT' BACnetServiceAckCreateObject
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['READ_PROPERTY' BACnetServiceAckReadProperty
             [simple     BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                             objectIdentifier        ]
             [simple     BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
@@ -801,33 +877,157 @@
             [optional   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')
                             values                  ]
         ]
-        ['0x0E' BACnetServiceAckReadPropertyMultiple
+        ['READ_PROPERTY_MULTIPLE' BACnetServiceAckReadPropertyMultiple
             [array    BACnetReadAccessResult
                             data
                             length
                             'serviceRequestLength'                   ]
         ]
-        ['0x1A' BACnetServiceAckReadRange
-
+        ['READ_RANGE' BACnetServiceAckReadRange
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
-
-        ['0x12' BACnetServiceAckConfirmedPrivateTransfer
-
+        ['WRITE_PROPERTY' BACnetServiceAckWriteProperty
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
-
-        ['0x15' BACnetServiceAckVTOpen
-
+        ['WRITE_PROPERTY_MULTIPLE' BACnetServiceAckWritePropertyMultiple
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
-        ['0x17' BACnetServiceAckVTData
+        //
+        ////
 
-        ]
-        ['0x18' BACnetServiceAckRemovedAuthenticate
 
-        ]
-        ['0x0D' BACnetServiceAckRemovedReadPropertyConditional
+        ////
+        // Remote Device Management Services
 
+        ['DEVICE_COMMUNICATION_CONTROL' BACnetServiceAckDeviceCommunicationControl
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
+        ['CONFIRMED_PRIVATE_TRANSFER' BACnetServiceAckConfirmedPrivateTransfer
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['CONFIRMED_TEXT_MESSAGE' BACnetServiceAckConfirmedTextMessage
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['REINITIALIZE_DEVICE' BACnetServiceAckReinitializeDevice
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        //
+        ////
+
+        ////
+        //  Virtual Terminal Services
+
+        ['VT_OPEN' BACnetServiceAckVTOpen
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['VT_CLOSE' BACnetServiceAckVTClose
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['VT_DATA' BACnetServiceAckVTData
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        //
+        ////
+
+
+        ////
+        //  Removed Services
+
+        ['AUTHENTICATE' BACnetServiceAckAuthenticate
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['REQUEST_KEY' BACnetServiceAckRequestKey
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        ['READ_PROPERTY_CONDITIONAL' BACnetServiceAckReadPropertyConditional
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
+        //
+        ////
     ]
+]
+
+// TODO: check if we should embed this type into BACnetServiceAckGetEventInformation as we double map
+[type BACnetEventSummaries
+    [simple     BACnetOpeningTag('0', 'BACnetDataType.OPENING_TAG')
+                     openingTag                     ]
+    [array    BACnetEventSummary
+                         listOfEventSummaries
+                         terminated
+                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'
+    ]
+    [simple     BACnetClosingTag('0', 'BACnetDataType.CLOSING_TAG')
+                     closingTag                     ]
+]
+
+[type BACnetEventSummary
+    [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                    objectIdentifier                ]
+    [simple   BACnetContextTagEventState('1', 'BACnetDataType.EVENT_STATE')
+                    eventState                      ]
+    [simple   BACnetEventTransitionBits('2')
+                    acknowledgedTransitions         ]
+    [simple   BACnetEventTimestamps('3')
+                    eventTimestamps                 ]
+    [simple   BACnetContextTagNotifyType('4', 'BACnetDataType.NOTIFY_TYPE')
+                    notifyType                      ]
+    [simple   BACnetEventTransitionBits('5')
+                    eventEnable                     ]
+    [simple   BACnetEventProrities('6')
+                    eventPriorities                 ]
+]
+
+[type BACnetEventTimestamps(uint 8 tagNumber)
+    [simple  BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                    openingTag
+    ]
+    [simple  BACnetTimeStamp
+                    toOffnormal                     ]
+    [simple  BACnetTimeStamp
+                    toFault                         ]
+    [simple  BACnetTimeStamp
+                    toNormal                        ]
+    [simple  BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                    closingTag
+    ]
+]
+
+[type BACnetEventProrities(uint 8 tagNumber)
+    [simple  BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                    openingTag
+    ]
+    [simple  BACnetApplicationTagUnsignedInteger
+                    toOffnormal                     ]
+    [simple  BACnetApplicationTagUnsignedInteger
+                    toFault                         ]
+    [simple  BACnetApplicationTagUnsignedInteger
+                    toNormal                        ]
+    [simple  BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                    closingTag
+    ]
+]
+
+// TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
+[type BACnetEventTransitionBits(uint 8 tagNumber)
+    [simple BACnetContextTagBitString('tagNumber', 'BACnetDataType.BIT_STRING')
+        rawBits
+    ]
+    [virtual    bit toOffnormal         'rawBits.payload.data[0]']
+    [virtual    bit toFault             'rawBits.payload.data[1]']
+    [virtual    bit toNormal            'rawBits.payload.data[2]']
 ]
 
 [type BACnetReadAccessResult
@@ -1115,6 +1315,10 @@
             ]
         ]
         // TODO: implement other cases
+        [BACnetNotificationParametersUnmapped
+            // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
+        ]
     ]
     [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                 closingTag
@@ -1301,16 +1505,17 @@
             ]
         ]
         // TODO: add missing type
+        [BACnetPropertyStateActionUnmapped
+                // TODO: implement me
+                [validation    '1 == 2'    "TODO: implement me"]
+        ]
     ]
     [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                 closingTag
     ]
 ]
 
-[type BACnetTimeStamp(uint 8 tagNumber)
-    [simple         BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
-                    openingTag
-    ]
+[type BACnetTimeStamp
     [peek       BACnetTagHeader
                             peekedTagHeader
     ]
@@ -1331,6 +1536,26 @@
                     dateTimeValue
             ]
         ]
+    ]
+]
+
+[type BACnetTimeStampEnclosed(uint 8 tagNumber)
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                    openingTag          ]
+    [simple     BACnetTimeStamp
+                    timestamp           ]
+    [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                    closingTag          ]
+]
+
+[type BACnetTimeStampsEnclosed(uint 8 tagNumber)
+    [simple         BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                    openingTag
+    ]
+    [array  BACnetTimeStamp
+                timestamps
+                terminated
+                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'
     ]
     [simple         BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                     closingTag
@@ -1726,7 +1951,6 @@
                         openingTag                                                                              ]
     [virtual    BACnetPropertyIdentifier
                         propertyIdentifierEnum  'propertyIdentifierArgument.propertyIdentifier']
-    // TODO: maybe its better to typeswitch the elements
     [typeSwitch objectType, propertyIdentifierEnum
         ['COMMAND'                                      BACnetConstructedDataCommand
             [simple       BACnetOpeningTag('0', 'BACnetDataType.OPENING_TAG')

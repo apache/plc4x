@@ -56,8 +56,8 @@ type IBACnetServiceAckAtomicReadFile interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetServiceAckAtomicReadFile) GetServiceChoice() uint8 {
-	return 0x06
+func (m *BACnetServiceAckAtomicReadFile) GetServiceChoice() BACnetConfirmedServiceChoice {
+	return BACnetConfirmedServiceChoice_ATOMIC_READ_FILE
 }
 
 ///////////////////////
