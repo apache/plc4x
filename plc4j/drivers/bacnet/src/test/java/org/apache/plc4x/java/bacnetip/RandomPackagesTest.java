@@ -281,22 +281,22 @@ public class RandomPackagesTest {
                     assertEquals(BACnetPropertyIdentifier.ZONE_MEMBERS, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                     BACnetConstructedDataLifeSafetyZoneMembers baCnetConstructedDataLifeSafetyZoneMembers = (BACnetConstructedDataLifeSafetyZoneMembers) baCnetServiceAckReadProperty.getValues();
 
-                    List<BACnetDeviceObjectReference> zones = baCnetConstructedDataLifeSafetyZoneMembers.getZones();
-                    assertThat(zones.get(0)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 3L);
-                    assertThat(zones.get(1)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 4L);
-                    assertThat(zones.get(2)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 5L);
-                    assertThat(zones.get(3)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 6L);
-                    assertThat(zones.get(4)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 7L);
-                    assertThat(zones.get(5)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 8L);
-                    assertThat(zones.get(6)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 9L);
-                    assertThat(zones.get(7)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 16L);
-                    assertThat(zones.get(8)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 494L);
-                    assertThat(zones.get(9)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 255L);
-                    assertThat(zones.get(10)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 231L);
-                    assertThat(zones.get(11)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 4193620L);
-                    assertThat(zones.get(12)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 222L);
-                    assertThat(zones.get(13)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 300L);
-                    assertThat(zones.get(14)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 166L);
+                    List<BACnetDeviceObjectReference> members = baCnetConstructedDataLifeSafetyZoneMembers.getMembers();
+                    assertThat(members.get(0)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 3L);
+                    assertThat(members.get(1)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 4L);
+                    assertThat(members.get(2)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 5L);
+                    assertThat(members.get(3)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 6L);
+                    assertThat(members.get(4)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 7L);
+                    assertThat(members.get(5)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 8L);
+                    assertThat(members.get(6)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 9L);
+                    assertThat(members.get(7)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 16L);
+                    assertThat(members.get(8)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 494L);
+                    assertThat(members.get(9)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 255L);
+                    assertThat(members.get(10)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 231L);
+                    assertThat(members.get(11)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 4193620L);
+                    assertThat(members.get(12)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 222L);
+                    assertThat(members.get(13)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 300L);
+                    assertThat(members.get(14)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 166L);
                 }),
             DynamicTest.dynamicTest("No. 3 - Confirmed-REQ   readProperty[  0] life-safety-zone,1 member-of",
                 () -> {
