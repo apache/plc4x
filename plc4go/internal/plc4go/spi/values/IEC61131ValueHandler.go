@@ -142,7 +142,7 @@ func (m IEC61131ValueHandler) newPlcValue(typeName string, quantity uint16, valu
 		}
 	case IEC61131_BYTE:
 		if isString {
-			casted, err := strconv.ParseInt(stringValue, 10, 8)
+			casted, err := strconv.ParseUint(stringValue, 10, 8)
 			if err != nil {
 				return nil, errors.New("couldn't parse string value '" + stringValue + "' to byte")
 			}
@@ -156,7 +156,7 @@ func (m IEC61131ValueHandler) newPlcValue(typeName string, quantity uint16, valu
 		}
 	case IEC61131_WORD:
 		if isString {
-			casted, err := strconv.ParseInt(stringValue, 10, 16)
+			casted, err := strconv.ParseUint(stringValue, 10, 16)
 			if err != nil {
 				return nil, errors.New("couldn't parse string value '" + stringValue + "' to word")
 			}
@@ -170,7 +170,7 @@ func (m IEC61131ValueHandler) newPlcValue(typeName string, quantity uint16, valu
 		}
 	case IEC61131_DWORD:
 		if isString {
-			casted, err := strconv.ParseInt(stringValue, 10, 32)
+			casted, err := strconv.ParseUint(stringValue, 10, 32)
 			if err != nil {
 				return nil, errors.New("couldn't parse string value '" + stringValue + "' to dword")
 			}
@@ -184,7 +184,7 @@ func (m IEC61131ValueHandler) newPlcValue(typeName string, quantity uint16, valu
 		}
 	case IEC61131_LWORD:
 		if isString {
-			casted, err := strconv.ParseInt(stringValue, 10, 64)
+			casted, err := strconv.ParseUint(stringValue, 10, 64)
 			if err != nil {
 				return nil, errors.New("couldn't parse string value '" + stringValue + "' to lword")
 			}
@@ -200,7 +200,7 @@ func (m IEC61131ValueHandler) newPlcValue(typeName string, quantity uint16, valu
 	// Integers
 	case IEC61131_USINT:
 		if isString {
-			casted, err := strconv.ParseInt(stringValue, 10, 8)
+			casted, err := strconv.ParseUint(stringValue, 10, 8)
 			if err != nil {
 				return nil, errors.New("couldn't parse string value '" + stringValue + "' to usint")
 			}
@@ -214,7 +214,7 @@ func (m IEC61131ValueHandler) newPlcValue(typeName string, quantity uint16, valu
 		}
 	case IEC61131_UINT:
 		if isString {
-			casted, err := strconv.ParseInt(stringValue, 10, 16)
+			casted, err := strconv.ParseUint(stringValue, 10, 16)
 			if err != nil {
 				return nil, errors.New("couldn't parse string value '" + stringValue + "' to uint")
 			}
@@ -228,7 +228,7 @@ func (m IEC61131ValueHandler) newPlcValue(typeName string, quantity uint16, valu
 		}
 	case IEC61131_UDINT:
 		if isString {
-			casted, err := strconv.ParseInt(stringValue, 10, 32)
+			casted, err := strconv.ParseUint(stringValue, 10, 32)
 			if err != nil {
 				return nil, errors.New("couldn't parse string value '" + stringValue + "' to udint")
 			}
@@ -242,7 +242,7 @@ func (m IEC61131ValueHandler) newPlcValue(typeName string, quantity uint16, valu
 		}
 	case IEC61131_ULINT:
 		if isString {
-			casted, err := strconv.ParseInt(stringValue, 10, 64)
+			casted, err := strconv.ParseUint(stringValue, 10, 64)
 			if err != nil {
 				return nil, errors.New("couldn't parse string value '" + stringValue + "' to ulint")
 			}
