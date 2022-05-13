@@ -427,8 +427,11 @@
                             'serviceRequestLength'                   ]
         ]
         ['READ_RANGE' BACnetConfirmedServiceRequestReadRange
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
+            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              propertyArrayIndex  ]
+            // TODO: this attribute should be named range but this is a keyword in golang (so at this point we should build a language translator which makes keywords safe)
+            [optional BACnetConfirmedServiceRequestReadRangeRange                                          readRange           ]
         ]
         ['WRITE_PROPERTY' BACnetConfirmedServiceRequestWriteProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
@@ -642,6 +645,31 @@
     ]
     [simple     BACnetClosingTag('1', 'BACnetDataType.CLOSING_TAG')
                      closingTag                     ]
+]
+
+[type BACnetConfirmedServiceRequestReadRangeRange
+    [peek       BACnetTagHeader
+                    peekedTagHeader                 ]
+    [simple     BACnetOpeningTag('peekedTagHeader.actualTagNumber', 'BACnetDataType.OPENING_TAG')
+                     openingTag                     ]
+    [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
+    [typeSwitch peekedTagNumber
+        ['0x3' BACnetConfirmedServiceRequestReadRangeRangeByPosition
+            [simple BACnetApplicationTagUnsignedInteger                   referenceIndex            ]
+            [simple BACnetApplicationTagSignedInteger                     count                     ]
+        ]
+        ['0x6' BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
+            [simple BACnetApplicationTagUnsignedInteger                   referenceSequenceNumber   ]
+            [simple BACnetApplicationTagSignedInteger                     count                     ]
+        ]
+        ['0x7' BACnetConfirmedServiceRequestReadRangeRangeByTime
+            [simple BACnetDateTime                                        referenceTime             ]
+            [simple BACnetApplicationTagSignedInteger                     count                     ]
+        ]
+    ]
+    [simple     BACnetClosingTag('peekedTagHeader.actualTagNumber', 'BACnetDataType.CLOSING_TAG')
+                     closingTag
+    ]
 ]
 
 [type BACnetPropertyWriteDefinition(BACnetObjectType objectType)
@@ -889,8 +917,13 @@
                             'serviceRequestLength'                   ]
         ]
         ['READ_RANGE' BACnetServiceAckReadRange
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
+            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              propertyArrayIndex  ]
+            [simple   BACnetResultFlags('3')                                                               resultFlags         ]
+            [simple   BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')              itemCount           ]
+            [optional BACnetConstructedData('5', 'objectIdentifier.objectType', 'propertyIdentifier')      itemData            ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              firstSequenceNumber ]
         ]
         ['WRITE_PROPERTY' BACnetServiceAckWriteProperty
             // TODO: implement me
@@ -1069,6 +1102,16 @@
     [simple BACnetApplicationTagEnumerated errorCode]
     [simple     BACnetClosingTag('5', 'BACnetDataType.CLOSING_TAG')
                      closingTag                     ]
+]
+
+// TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
+[type BACnetResultFlags(uint 8 tagNumber)
+    [simple BACnetContextTagBitString('tagNumber', 'BACnetDataType.BIT_STRING')
+        rawBits
+    ]
+    [virtual    bit firstItem           'rawBits.payload.data[0]']
+    [virtual    bit lastItem            'rawBits.payload.data[1]']
+    [virtual    bit moreItems           'rawBits.payload.data[2]']
 ]
 
 [type BACnetServiceAckAtomicReadFileStreamOrRecord
@@ -1538,7 +1581,7 @@
             ]
         ]
         ['2' BACnetTimeStampDateTime
-            [simple BACnetDateTime('2')
+            [simple BACnetDateTimeEnclosed('2')
                     dateTimeValue
             ]
         ]
@@ -1568,15 +1611,21 @@
     ]
 ]
 
-[type BACnetDateTime(uint 8 tagNumber)
-    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
-                openingTag
-    ]
+[type BACnetDateTime
     [simple     BACnetApplicationTagDate
                 dateValue
     ]
     [simple     BACnetApplicationTagTime
                 timeValue
+    ]
+]
+
+[type BACnetDateTimeEnclosed(uint 8 tagNumber)
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                openingTag
+    ]
+    [simple     BACnetDateTime
+                dateTimeValue
     ]
     [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                 closingTag
@@ -2143,7 +2192,7 @@
                     toOffnormal                                                                                 ]
             [simple BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
                     toFault                                                                                     ]
-            [simple BACnetDateTime('2')
+            [simple BACnetDateTimeEnclosed('2')
                     toNormal                                                                                    ]
         ]
         //[*, 'EVENT_TYPE'                              BACnetConstructedDataEventType]

@@ -859,12 +859,12 @@ public class RandomPackagesTest {
                     assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getInstanceNumber());
                     {
                         BACnetTimeStampDateTime timestamp = (BACnetTimeStampDateTime) baCnetConfirmedServiceRequestConfirmedEventNotification.getTimestamp().getTimestamp();
-                        BACnetTagPayloadDate payload = timestamp.getDateTimeValue().getDateValue().getPayload();
+                        BACnetTagPayloadDate payload = timestamp.getDateTimeValue().getDateTimeValue().getDateValue().getPayload();
                         assertEquals(2008, payload.getYear());
                         assertEquals(5, payload.getMonth());
                         assertEquals(2, payload.getDayOfMonth());
                         assertEquals(5, payload.getDayOfWeek());
-                        BACnetTagPayloadTime baCnetTagPayloadTime = timestamp.getDateTimeValue().getTimeValue().getPayload();
+                        BACnetTagPayloadTime baCnetTagPayloadTime = timestamp.getDateTimeValue().getDateTimeValue().getTimeValue().getPayload();
                         assertEquals(11, baCnetTagPayloadTime.getHour());
                         assertEquals(11, baCnetTagPayloadTime.getMinute());
                         assertEquals(30, baCnetTagPayloadTime.getSecond());
@@ -1094,70 +1094,38 @@ public class RandomPackagesTest {
     @DisplayName("DRI%20CAVE%20log%20udp-0168-20081216-1117-03")
     Collection<DynamicNode> DRI_CAVE_log_udp_0168_20081216_1117_03() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("DRI%20CAVE%20log%20udp-0168-20081216-1117-03.cap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: missing parsing
-            3,
-            // TODO: missing parsing
-            30,
-            // TODO: missing parsing
-            46,
-            // TODO: missing parsing
-            55,
-            // TODO: missing parsing
-            60,
-            // TODO: missing parsing
-            86,
-            // TODO: missing parsing
-            87,
-            // TODO: missing parsing
-            92,
-            // TODO: missing parsing
-            94,
-            // TODO: missing parsing
-            95,
-            // TODO: missing parsing
-            99,
-            // TODO: missing parsing
-            102,
-            // TODO: missing parsing
-            104,
-            // TODO: missing parsing
-            105,
-            // TODO: missing parsing
-            110,
-            // TODO: missing parsing
-            111,
-            // TODO: missing parsing
-            120,
-            // TODO: missing parsing
-            127,
-            // TODO: missing parsing
-            131,
-            // TODO: missing parsing
-            134,
-            // TODO: missing parsing
-            138,
-            // TODO: missing parsing
-            140,
-            // TODO: missing parsing
-            142,
-            // TODO: missing parsing
-            143,
-            // TODO: missing parsing
-            147,
-            // TODO: missing parsing
-            151,
-            // TODO: missing parsing
-            152,
-            // TODO: missing parsing
-            200,
-            // TODO: missing parsing
-            207,
-            // TODO: missing parsing
-            215,
-            // TODO: missing parsing
-            241
-        ));
+        return List.of(
+            pcapEvaluator.parseEmAll(
+                // incomplete captured package (size limit 100)
+                86,
+                // broken package
+                87,
+                // incomplete captured package (size limit 100)
+                94,
+                // broken package
+                95,
+                // incomplete captured package (size limit 100)
+                104,
+                // broken package
+                105,
+                // incomplete captured package (size limit 100)
+                110,
+                // broken package
+                111,
+                // broken package
+                140,
+                // incomplete captured package (size limit 100)
+                142,
+                // broken package
+                143,
+                // broken package
+                147,
+                // incomplete captured package (size limit 100)
+                151,
+                // broken package
+                152
+            )
+        );
     }
 
     @TestFactory
@@ -1188,14 +1156,14 @@ public class RandomPackagesTest {
                     assertEquals(3000016, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getInstanceNumber());
                     {
                         BACnetTimeStampDateTime timestamp = (BACnetTimeStampDateTime) baCnetConfirmedServiceRequestConfirmedEventNotification.getTimestamp().getTimestamp();
-                        assertEquals(2005, timestamp.getDateTimeValue().getDateValue().getPayload().getYear());
-                        assertEquals(12, timestamp.getDateTimeValue().getDateValue().getPayload().getMonth());
-                        assertEquals(8, timestamp.getDateTimeValue().getDateValue().getPayload().getDayOfMonth());
-                        assertEquals(4, timestamp.getDateTimeValue().getDateValue().getPayload().getDayOfWeek());
-                        assertEquals(14, timestamp.getDateTimeValue().getTimeValue().getPayload().getHour());
-                        assertEquals(12, timestamp.getDateTimeValue().getTimeValue().getPayload().getMinute());
-                        assertEquals(49, timestamp.getDateTimeValue().getTimeValue().getPayload().getSecond());
-                        assertEquals(0, timestamp.getDateTimeValue().getTimeValue().getPayload().getFractional());
+                        assertEquals(2005, timestamp.getDateTimeValue().getDateTimeValue().getDateValue().getPayload().getYear());
+                        assertEquals(12, timestamp.getDateTimeValue().getDateTimeValue().getDateValue().getPayload().getMonth());
+                        assertEquals(8, timestamp.getDateTimeValue().getDateTimeValue().getDateValue().getPayload().getDayOfMonth());
+                        assertEquals(4, timestamp.getDateTimeValue().getDateTimeValue().getDateValue().getPayload().getDayOfWeek());
+                        assertEquals(14, timestamp.getDateTimeValue().getDateTimeValue().getTimeValue().getPayload().getHour());
+                        assertEquals(12, timestamp.getDateTimeValue().getDateTimeValue().getTimeValue().getPayload().getMinute());
+                        assertEquals(49, timestamp.getDateTimeValue().getDateTimeValue().getTimeValue().getPayload().getSecond());
+                        assertEquals(0, timestamp.getDateTimeValue().getDateTimeValue().getTimeValue().getPayload().getFractional());
                     }
                     {
                         assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotificationClass().getPayload().getActualValue().longValue());
@@ -1311,9 +1279,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> PrivateTransferError_octetstring() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("PrivateTransferError-octetstring.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            3,
-            4,
-            // TODO: check broken parsing
+            // TODO: repair error parsing as this seems to be all over the place
             7
         ));
     }
@@ -1323,7 +1289,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> PrivateTransferError() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("PrivateTransferError.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
+            // TODO: repair error parsing as this seems to be all over the place
             1
         ));
     }
@@ -1561,22 +1527,14 @@ public class RandomPackagesTest {
     @DisplayName("TC51103_BTL-9.21.1.X3_bool_ext_3")
     Collection<DynamicNode> TC51103_BTL_9_21_1_X3_bool_ext_3() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TC51103_BTL-9.21.1.X3_bool_ext_3.pcap");
-        return List.of(pcapEvaluator.parseEmAll(
-            //TODO: check parsing
-            11
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("TC51103_BTL-9.21.1.X3_int_ext_1")
     Collection<DynamicNode> TC51103_BTL_9_21_1_X3_int_ext_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TC51103_BTL-9.21.1.X3_int_ext_1.pcap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
-            15,
-            // TODO: check broken parsing
-            17
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1597,13 +1555,7 @@ public class RandomPackagesTest {
     @DisplayName("TestRun5 - Internal side of Router")
     Collection<DynamicNode> TestRun5___Internal_side_of_Router() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TestRun5%20-%20Internal%20side%20of%20Router.pcap");
-        return List.of(pcapEvaluator.parseEmAll(
-            3,
-            4,
-            51,
-            52,
-            117
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1617,21 +1569,7 @@ public class RandomPackagesTest {
     @DisplayName("TestRun8 - Internal side of Router")
     Collection<DynamicNode> TestRun8___Internal_side_of_Router() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TestRun8%20-%20Internal%20side%20of%20Router.pcap");
-        return List.of(pcapEvaluator.parseEmAll(
-            1,
-            4,
-            5,
-            13,
-            14,
-            15,
-            20,
-            25,
-            205,
-            206,
-            350,
-            351,
-            451
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1659,32 +1597,21 @@ public class RandomPackagesTest {
     @DisplayName("TrendLogMultipleReadRange")
     Collection<DynamicNode> TrendLogMultipleReadRange() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRange.pcap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
-            1
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("TrendLogMultipleReadRange2")
     Collection<DynamicNode> TrendLogMultipleReadRange2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRange2.pcap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
-            1
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("TrendLogMultipleReadRange3")
     Collection<DynamicNode> TrendLogMultipleReadRange3() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRange3.pcap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
-            3,
-            // TODO: check broken parsing
-            14
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1692,142 +1619,8 @@ public class RandomPackagesTest {
     Collection<DynamicNode> TrendLogMultipleReadRangeSimple() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRangeSimple.pcap");
         return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
-            1,
-            // TODO: check broken parsing
-            148,
-            // TODO: check broken parsing
-            151,
-            // TODO: check broken parsing
-            164,
-            // TODO: check broken parsing
-            174,
-            // TODO: check broken parsing
-            197,
-            // TODO: check broken parsing
-            205,
-            // TODO: check broken parsing
-            210,
-            // TODO: check broken parsing
-            260,
-            // TODO: check broken parsing
-            267,
-            // TODO: check broken parsing
-            270,
-            // TODO: check broken parsing
-            273,
-            // TODO: check broken parsing
-            276,
-            // TODO: check broken parsing
-            290,
-            // TODO: check broken parsing
-            317,
-            // TODO: check broken parsing
-            334,
-            // TODO: check broken parsing
-            337,
-            // TODO: check broken parsing
-            371,
-            // TODO: check broken parsing
-            412,
-            // TODO: check broken parsing
-            439,
-            // TODO: check broken parsing
-            448,
-            // TODO: check broken parsing
-            452,
-            // TODO: check broken parsing
-            464,
-            // TODO: check broken parsing
-            471,
-            // TODO: check broken parsing
-            478,
-            // TODO: check broken parsing
-            483,
-            // TODO: check broken parsing
-            507,
-            // TODO: check broken parsing
-            519,
-            // TODO: check broken parsing
-            528,
-            // TODO: check broken parsing
-            531,
-            // TODO: check broken parsing
-            534,
-            // TODO: check broken parsing
-            539,
-            // TODO: check broken parsing
-            544,
-            // TODO: check broken parsing
-            553,
-            // TODO: check broken parsing
-            556,
-            // TODO: check broken parsing
-            559,
-            // TODO: check broken parsing
-            564,
-            // TODO: check broken parsing
-            570,
-            // TODO: check broken parsing
-            577,
-            // TODO: check broken parsing
-            582,
-            // TODO: check broken parsing
-            587,
-            // TODO: check broken parsing
-            611,
-            // TODO: check broken parsing
-            633,
-            // TODO: check broken parsing
-            650,
-            // TODO: check broken parsing
-            655,
-            // TODO: check broken parsing
-            659,
-            // TODO: check broken parsing
-            662,
-            // TODO: check broken parsing
-            668,
-            // TODO: check broken parsing
-            681,
-            // TODO: check broken parsing
-            688,
-            // TODO: check broken parsing
-            699,
-            // TODO: check broken parsing
-            702,
-            // TODO: check broken parsing
-            712,
-            // TODO: check broken parsing
-            713,
-            // TODO: check broken parsing
-            720,
-            // TODO: check broken parsing
-            728,
-            // TODO: check broken parsing
-            731,
-            // TODO: check broken parsing
-            736,
-            // TODO: check broken parsing
-            741,
-            // TODO: check broken parsing
-            749,
-            // TODO: check broken parsing
-            759,
-            // TODO: check broken parsing
-            764,
-            // TODO: check broken parsing
-            770,
-            // TODO: check broken parsing
-            775,
-            // TODO: check broken parsing
-            783,
-            // TODO: check broken parsing
-            796,
-            // TODO: check broken parsing
-            804,
-            // TODO: check broken parsing
-            807
+            // TODO: fix error handling as it is all over the place
+            478
         ));
     }
 
@@ -1835,36 +1628,7 @@ public class RandomPackagesTest {
     @DisplayName("TrendLogMultipleUsage")
     Collection<DynamicNode> TrendLogMultipleUsage() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleUsage.pcap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
-            1,
-            // TODO: check broken parsing
-            11,
-            // TODO: check broken parsing
-            13,
-            // TODO: check broken parsing
-            17,
-            // TODO: check broken parsing
-            27,
-            // TODO: check broken parsing
-            29,
-            // TODO: check broken parsing
-            37,
-            // TODO: check broken parsing
-            42,
-            // TODO: check broken parsing
-            45,
-            // TODO: check broken parsing
-            51,
-            // TODO: check broken parsing
-            54,
-            // TODO: check broken parsing
-            61,
-            // TODO: check broken parsing
-            63,
-            // TODO: check broken parsing
-            68
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -3252,6 +3016,7 @@ public class RandomPackagesTest {
                                     .extracting(BACnetConstructedDataEventTimestamps::getToNormal)
                                     .satisfies(baCnetDateTime ->
                                         assertThat(baCnetDateTime)
+                                            .extracting(BACnetDateTimeEnclosed::getDateTimeValue)
                                             .extracting(BACnetDateTime::getDateValue)
                                             .extracting(BACnetApplicationTagDate::getPayload)
                                             .extracting(BACnetTagPayloadDate::getYearIsWildcard, BACnetTagPayloadDate::getMonthIsWildcard, BACnetTagPayloadDate::getDayOfMonthIsWildcard, BACnetTagPayloadDate::getDayOfWeekIsWildcard)
@@ -3259,6 +3024,7 @@ public class RandomPackagesTest {
                                     )
                                     .satisfies(baCnetDateTime ->
                                         assertThat(baCnetDateTime)
+                                            .extracting(BACnetDateTimeEnclosed::getDateTimeValue)
                                             .extracting(BACnetDateTime::getTimeValue)
                                             .extracting(BACnetApplicationTagTime::getPayload)
                                             .extracting(BACnetTagPayloadTime::getFractionalIsWildcard, BACnetTagPayloadTime::getMinuteIsWildcard, BACnetTagPayloadTime::getSecondIsWildcard, BACnetTagPayloadTime::getFractionalIsWildcard)

@@ -29,14 +29,14 @@ import (
 // BACnetTimeStampDateTime is the data-structure of this message
 type BACnetTimeStampDateTime struct {
 	*BACnetTimeStamp
-	DateTimeValue *BACnetDateTime
+	DateTimeValue *BACnetDateTimeEnclosed
 }
 
 // IBACnetTimeStampDateTime is the corresponding interface of BACnetTimeStampDateTime
 type IBACnetTimeStampDateTime interface {
 	IBACnetTimeStamp
 	// GetDateTimeValue returns DateTimeValue (property field)
-	GetDateTimeValue() *BACnetDateTime
+	GetDateTimeValue() *BACnetDateTimeEnclosed
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -68,7 +68,7 @@ func (m *BACnetTimeStampDateTime) GetParent() *BACnetTimeStamp {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetTimeStampDateTime) GetDateTimeValue() *BACnetDateTime {
+func (m *BACnetTimeStampDateTime) GetDateTimeValue() *BACnetDateTimeEnclosed {
 	return m.DateTimeValue
 }
 
@@ -78,7 +78,7 @@ func (m *BACnetTimeStampDateTime) GetDateTimeValue() *BACnetDateTime {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetTimeStampDateTime factory function for BACnetTimeStampDateTime
-func NewBACnetTimeStampDateTime(dateTimeValue *BACnetDateTime, peekedTagHeader *BACnetTagHeader) *BACnetTimeStampDateTime {
+func NewBACnetTimeStampDateTime(dateTimeValue *BACnetDateTimeEnclosed, peekedTagHeader *BACnetTagHeader) *BACnetTimeStampDateTime {
 	_result := &BACnetTimeStampDateTime{
 		DateTimeValue:   dateTimeValue,
 		BACnetTimeStamp: NewBACnetTimeStamp(peekedTagHeader),
@@ -135,11 +135,11 @@ func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer) (*BACnetTimeStamp
 	if pullErr := readBuffer.PullContext("dateTimeValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeParse(readBuffer, uint8(uint8(2)))
+	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(2)))
 	if _dateTimeValueErr != nil {
 		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field")
 	}
-	dateTimeValue := CastBACnetDateTime(_dateTimeValue)
+	dateTimeValue := CastBACnetDateTimeEnclosed(_dateTimeValue)
 	if closeErr := readBuffer.CloseContext("dateTimeValue"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -150,7 +150,7 @@ func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer) (*BACnetTimeStamp
 
 	// Create a partially initialized instance
 	_child := &BACnetTimeStampDateTime{
-		DateTimeValue:   CastBACnetDateTime(dateTimeValue),
+		DateTimeValue:   CastBACnetDateTimeEnclosed(dateTimeValue),
 		BACnetTimeStamp: &BACnetTimeStamp{},
 	}
 	_child.BACnetTimeStamp.Child = _child

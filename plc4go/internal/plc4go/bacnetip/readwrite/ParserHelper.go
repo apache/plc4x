@@ -146,6 +146,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetTimeStampEnclosedParse(io, tagNumber)
 	case "BACnetSegmentation":
 		return model.BACnetSegmentationParse(io)
+	case "BACnetResultFlags":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetResultFlagsParse(io, tagNumber)
 	case "BACnetTagPayloadTime":
 		return model.BACnetTagPayloadTimeParse(io)
 	case "BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable":
@@ -172,6 +178,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(io)
 	case "BVLC":
 		return model.BVLCParse(io)
+	case "BACnetDateTimeEnclosed":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetDateTimeEnclosedParse(io, tagNumber)
 	case "BACnetTagPayloadObjectIdentifier":
 		return model.BACnetTagPayloadObjectIdentifierParse(io)
 	case "BVLCBroadcastDistributionTableEntry":
@@ -180,11 +192,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		objectType := model.BACnetObjectTypeByName(arguments[0])
 		return model.BACnetPropertyWriteDefinitionParse(io, objectType)
 	case "BACnetDateTime":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetDateTimeParse(io, tagNumber)
+		return model.BACnetDateTimeParse(io)
 	case "APDU":
 		apduLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {
@@ -200,6 +208,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetTagPayloadCharacterStringParse(io, actualLength)
+	case "BACnetConfirmedServiceRequestReadRangeRange":
+		return model.BACnetConfirmedServiceRequestReadRangeRangeParse(io)
 	case "BACnetError":
 		return model.BACnetErrorParse(io)
 	case "BACnetTimeStamp":
