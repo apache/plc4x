@@ -1362,7 +1362,9 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 
 	// Validation
 	if (!(${helper.toParseExpression(validationField, helper.boolTypeReference, validationField.getValidationExpression(), null)})) {
-		return nil, utils.ParseAssertError{${validationField.getDescription().orElse("Validation failed")}}
+		<#assign errorType="ParseValidationError">
+		<#if !validationField.shouldFail()><#assign errorType="ParseAssertError"></#if>
+		return nil, utils.${errorType}{${validationField.getDescription().orElse("Validation failed")}}
 	}
                 <#break>
             <#case "peek">

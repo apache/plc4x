@@ -480,7 +480,11 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     @Override
     public void enterValidationField(MSpecParser.ValidationFieldContext ctx) {
         Term validationExpression = getExpressionTerm(ctx.validationExpression);
-        Field field = new DefaultValidationField(validationExpression, ctx.description.getText());
+        boolean shouldFail = true;
+        if (ctx.shouldFail!=null){
+            shouldFail = "true".equalsIgnoreCase(ctx.shouldFail.getText());
+        }
+        Field field = new DefaultValidationField(validationExpression, ctx.description.getText(), shouldFail);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }

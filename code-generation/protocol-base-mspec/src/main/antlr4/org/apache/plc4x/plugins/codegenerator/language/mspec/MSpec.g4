@@ -137,7 +137,7 @@ virtualField
  ;
 
 validationField
- : 'validation' validationExpression=expression (description=STRING_LITERAL)?
+ : 'validation' validationExpression=expression (description=STRING_LITERAL)? ('shouldFail='shouldFail=BOOLEAN_LITERAL)?
  ;
 
 peekField

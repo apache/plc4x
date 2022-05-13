@@ -30,9 +30,12 @@ public class DefaultValidationField implements ValidationField, Field {
     private final Term validationExpression;
     private final String description;
 
-    public DefaultValidationField(Term validationExpression, String description) {
+    private final boolean shouldFail;
+
+    public DefaultValidationField(Term validationExpression, String description, boolean shouldFail) {
         this.validationExpression = Objects.requireNonNull(validationExpression);
-        this.description=description;
+        this.description = description;
+        this.shouldFail = shouldFail;
     }
 
     @Override
@@ -43,6 +46,11 @@ public class DefaultValidationField implements ValidationField, Field {
     @Override
     public Optional<String> getDescription() {
         return Optional.ofNullable(description);
+    }
+
+    @Override
+    public boolean shouldFail() {
+        return shouldFail;
     }
 
     // TODO: dummy implementation as this is not really a field
