@@ -4,6 +4,7 @@
 *.iml
 .vscode/**
 .java-version
+.attach_pid*
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
