@@ -802,6 +802,9 @@ public class StaticHelper {
     }
 
     public static long parseVarUint(byte[] data) {
+        if (data.length == 0) {
+            return 0;
+        }
         return new BigInteger(data).longValue();
     }
 

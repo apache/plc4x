@@ -68,7 +68,7 @@ public class FieldReaderVirtual<T> implements FieldCommons {
             } else if (type == float.class) {
                 Number valueExpressionNumber = (Number) valueExpression;
                 return (T) (Float) valueExpressionNumber.floatValue();
-            } else if (type == Double.class) {
+            } else if (type == double.class) {
                 Number valueExpressionNumber = (Number) valueExpression;
                 return (T) (Double) valueExpressionNumber.doubleValue();
             } else {

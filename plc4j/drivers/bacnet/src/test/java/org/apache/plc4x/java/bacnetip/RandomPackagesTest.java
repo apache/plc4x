@@ -1586,11 +1586,17 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
+    @Disabled("Glorious Siemens implementation is a bit all over the place")
     @TestFactory
     @DisplayName("Tower333 lighting 5min IP")
     Collection<DynamicNode> Tower333_lighting_5min_IP() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("Tower333%20lighting%205min%20IP.pcap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll());
+        return List.of(pcapEvaluator.parseEmAll(
+            // TODO: this is a broken message which should be ignored but also it results in a java heap space error so we should take care of that
+            7,
+            // TODO: this is a broken message which should be ignored but also it results in a java heap space error so we should take care of that
+            14
+        ));
     }
 
     @TestFactory
@@ -1903,14 +1909,14 @@ public class RandomPackagesTest {
                     assertNotNull(baCnetServiceAckReadProperty);
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
-                    // TODO:
+                    // TODO: finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("No. 2 - Complex-ACK readProperty[155] device,42222 protocol-conformance-class",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
+                    // TODO: finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             pcapEvaluator.parseFrom(3,
@@ -2129,13 +2135,13 @@ public class RandomPackagesTest {
     Collection<DynamicNode> bacnet_stack_services() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-stack-services.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
+            // Malformed Package
             56,
-            // TODO: check broken parsing
+            // Malformed Package
             58,
-            // TODO: check broken parsing
+            // Malformed Package
             60,
-            // TODO: check broken parsing
+            // Malformed Package
             62
         ));
     }
@@ -2200,56 +2206,56 @@ public class RandomPackagesTest {
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
+                    // TODO:finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("No. 22 - Unconfirmed-REQ unconfirmedCOVNotification device,1 accumulator,22 present-value status-flags",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
+                    // TODO:finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("No. 23 - Unconfirmed-REQ unconfirmedCOVNotification device,1 binary-input,217 present-value status-flags",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
+                    // TODO:finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("No. 24 - Unconfirmed-REQ unconfirmedCOVNotification device,1 accumulator,21 present-value status-flags",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
+                    // TODO:finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("No. 25 - Unconfirmed-REQ unconfirmedCOVNotification device,1 binary-input,217 present-value status-flags",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
+                    // TODO:finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("No. 26 - Unconfirmed-REQ unconfirmedCOVNotification device,1 binary-output,1 present-value status-flags",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
+                    // TODO:finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("No. 26 - Unconfirmed-REQ unconfirmedEventNotification device,1 binary-output,1",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
+                    // TODO:finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("No. 28 - Unconfirmed-REQ unconfirmedCOVNotification device,1 accumulator,22 present-value status-flags",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
+                    // TODO:finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
@@ -2324,7 +2330,7 @@ public class RandomPackagesTest {
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
+                    // TODO:finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             pcapEvaluator.parseFrom(2)
@@ -2379,10 +2385,7 @@ public class RandomPackagesTest {
     @DisplayName("eventLog_ReadRange")
     Collection<DynamicNode> eventLog_ReadRange() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("eventLog_ReadRange.pcap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
-            1
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -2535,10 +2538,7 @@ public class RandomPackagesTest {
     @DisplayName("log-buffer_readRange")
     Collection<DynamicNode> log_buffer_readRange() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("log-buffer_readRange.pcap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
-            1
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -2778,12 +2778,7 @@ public class RandomPackagesTest {
     @DisplayName("plugfest-2011-siemens-1")
     Collection<DynamicNode> plugfest_2011_siemens_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-siemens-1.pcap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
-            1599,
-            // TODO: check broken parsing
-            1677
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -2809,306 +2804,37 @@ public class RandomPackagesTest {
     @DisplayName("plugfest-delta-2")
     Collection<DynamicNode> plugfest_delta_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2.cap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
-            9817,
-            // TODO: check broken parsing
-            9819,
-            // TODO: check broken parsing
-            9829,
-            // TODO: check broken parsing
-            9851,
-            // TODO: check broken parsing
-            9860,
-            // TODO: check broken parsing
-            9876,
-            // TODO: check broken parsing
-            9897,
-            // TODO: check broken parsing
-            9908,
-            // TODO: check broken parsing
-            9923,
-            // TODO: check broken parsing
-            9946,
-            // TODO: check broken parsing
-            9955,
-            // TODO: check broken parsing
-            9970,
-            // TODO: check broken parsing
-            9993,
-            // TODO: check broken parsing
-            10002,
-            // TODO: check broken parsing
-            10017,
-            // TODO: check broken parsing
-            10036,
-            // TODO: check broken parsing
-            10047,
-            // TODO: check broken parsing
-            10061,
-            // TODO: check broken parsing
-            10717,
-            // TODO: check broken parsing
-            11038,
-            // TODO: check broken parsing
-            12101,
-            // TODO: check broken parsing
-            12950,
-            // TODO: check broken parsing
-            13267,
-            // TODO: check broken parsing
-            13755,
-            // TODO: check broken parsing
-            13777,
-            // TODO: check broken parsing
-            13787,
-            // TODO: check broken parsing
-            13802,
-            // TODO: check broken parsing
-            13821,
-            // TODO: check broken parsing
-            13830,
-            // TODO: check broken parsing
-            13845,
-            // TODO: check broken parsing
-            13867,
-            // TODO: check broken parsing
-            13876,
-            // TODO: check broken parsing
-            13918,
-            // TODO: check broken parsing
-            13920,
-            // TODO: check broken parsing
-            13929,
-            // TODO: check broken parsing
-            13931,
-            // TODO: check broken parsing
-            13940,
-            // TODO: check broken parsing
-            13942,
-            // TODO: check broken parsing
-            13951,
-            // TODO: check broken parsing
-            13953
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("plugfest-delta-2b")
     Collection<DynamicNode> plugfest_delta_2b() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2b.cap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
-            93,
-            // TODO: check broken parsing
-            95,
-            // TODO: check broken parsing
-            97,
-            // TODO: check broken parsing
-            129,
-            // TODO: check broken parsing
-            169,
-            // TODO: check broken parsing
-            278,
-            // TODO: check broken parsing
-            280,
-            // TODO: check broken parsing
-            289,
-            // TODO: check broken parsing
-            291,
-            // TODO: check broken parsing
-            300,
-            // TODO: check broken parsing
-            302,
-            // TODO: check broken parsing
-            311,
-            // TODO: check broken parsing
-            313,
-            // TODO: check broken parsing
-            1985,
-            // TODO: check broken parsing
-            6298,
-            // TODO: check broken parsing
-            6300,
-            // TODO: check broken parsing
-            6318,
-            // TODO: check broken parsing
-            6320,
-            // TODO: check broken parsing
-            6329,
-            // TODO: check broken parsing
-            6331,
-            // TODO: check broken parsing
-            6374,
-            // TODO: check broken parsing
-            6376,
-            // TODO: check broken parsing
-            6387,
-            // TODO: check broken parsing
-            6389,
-            // TODO: check broken parsing
-            6411,
-            // TODO: check broken parsing
-            6413,
-            // TODO: check broken parsing
-            6425,
-            // TODO: check broken parsing
-            6427,
-            // TODO: check broken parsing
-            6439,
-            // TODO: check broken parsing
-            6441,
-            // TODO: check broken parsing
-            6462,
-            // TODO: check broken parsing
-            6464,
-            // TODO: check broken parsing
-            6473,
-            // TODO: check broken parsing
-            6475,
-            // TODO: check broken parsing
-            9148,
-            // TODO: check broken parsing
-            9152,
-            // TODO: check broken parsing
-            9153,
-            // TODO: check broken parsing
-            9154,
-            // TODO: check broken parsing
-            9155,
-            // TODO: check broken parsing
-            9156,
-            // TODO: check broken parsing
-            9159,
-            // TODO: check broken parsing
-            9160,
-            // TODO: check broken parsing
-            9161,
-            // TODO: check broken parsing
-            9162,
-            // TODO: check broken parsing
-            9163,
-            // TODO: check broken parsing
-            9312,
-            // TODO: check broken parsing
-            9314,
-            // TODO: check broken parsing
-            9316,
-            // TODO: check broken parsing
-            9345,
-            // TODO: check broken parsing
-            9415,
-            // TODO: check broken parsing
-            9417,
-            // TODO: check broken parsing
-            9426,
-            // TODO: check broken parsing
-            9428,
-            // TODO: check broken parsing
-            9437,
-            // TODO: check broken parsing
-            9439,
-            // TODO: check broken parsing
-            9448,
-            // TODO: check broken parsing
-            9450,
-            // TODO: check broken parsing
-            9467,
-            // TODO: check broken parsing
-            9469,
-            // TODO: check broken parsing
-            9481,
-            // TODO: check broken parsing
-            9483,
-            // TODO: check broken parsing
-            9492,
-            // TODO: check broken parsing
-            9481,
-            // TODO: check broken parsing
-            9483,
-            // TODO: check broken parsing
-            9492,
-            // TODO: check broken parsing
-            9494,
-            // TODO: check broken parsing
-            9536,
-            // TODO: check broken parsing
-            9538,
-            // TODO: check broken parsing
-            9688,
-            // TODO: check broken parsing
-            10488,
-            // TODO: check broken parsing
-            10490,
-            // TODO: check broken parsing
-            10492,
-            // TODO: check broken parsing
-            10521,
-            // TODO: check broken parsing
-            10559
-        ));
+        return List.of(
+            pcapEvaluator.parseEmAll(
+                // TODO: fix broken error mapping
+                129,
+                // TODO: fix broken error mapping
+                169,
+                // TODO: fix broken error mapping
+                1985,
+                // TODO: fix broken error mapping
+                9345,
+                // TODO: fix broken error mapping
+                9688,
+                // TODO: fix broken error mapping
+                10521,
+                // TODO: fix broken error mapping
+                10559
+            ));
     }
 
     @TestFactory
     @DisplayName("plugfest-tridium-1")
     Collection<DynamicNode> plugfest_tridium_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-1.pcap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: check broken parsing
-            2312,
-            // TODO: check broken parsing
-            2317,
-            // TODO: check broken parsing
-            2322,
-            // TODO: check broken parsing
-            2330,
-            // TODO: check broken parsing
-            2346,
-            // TODO: check broken parsing
-            2351,
-            // TODO: check broken parsing
-            2354,
-            // TODO: check broken parsing
-            2357,
-            // TODO: check broken parsing
-            2361,
-            // TODO: check broken parsing
-            2363,
-            // TODO: check broken parsing
-            2366,
-            // TODO: check broken parsing
-            2369,
-            // TODO: check broken parsing
-            2371,
-            // TODO: check broken parsing
-            2375,
-            // TODO: check broken parsing
-            2378,
-            // TODO: check broken parsing
-            2381,
-            // TODO: check broken parsing
-            2511,
-            // TODO: check broken parsing
-            2513,
-            // TODO: check broken parsing
-            2515,
-            // TODO: check broken parsing
-            2518,
-            // TODO: check broken parsing
-            2707,
-            // TODO: check broken parsing
-            2711,
-            // TODO: check broken parsing
-            2726,
-            // TODO: check broken parsing
-            2729,
-            // TODO: check broken parsing
-            2732,
-            // TODO: check broken parsing
-            2734,
-            // TODO: check broken parsing
-            2736
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -5019,14 +4745,14 @@ public class RandomPackagesTest {
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
+                    // TODO: finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("No. 2 - Complex-ACK     readProperty[  1] load-control,0 expected-shed-level",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
+                    // TODO: finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             pcapEvaluator.parseFrom(3)
@@ -5558,7 +5284,6 @@ public class RandomPackagesTest {
         protected final PcapHandle pcapHandle;
         // maps timestamp to package number
         protected final Map<Timestamp, Integer> timestampToPackageNumberMap;
-        protected final Map<Integer, Packet> packageMap;
         // maps read package (index) to package number
         protected final List<Integer> packageNumbers;
         protected final int maxPackages;
@@ -5572,17 +5297,13 @@ public class RandomPackagesTest {
             String toParse = DownloadAndCache(pcapFile);
             LOGGER.info("Reading {}", toParse);
             PcapHandle intermediateHandle = getHandle(toParse);
-            packageMap = new HashMap<>();
             int packageNumber = 0;
             if (filter != null) {
                 // In case of filtering we need to read all packages
                 LOGGER.info("Building timestamp number map");
                 timestampToPackageNumberMap = new HashMap<>();
-                Packet packet;
-                while ((packet = intermediateHandle.getNextPacket()) != null) {
-                    int currentPackageNumber = ++packageNumber;
-                    packageMap.put(currentPackageNumber, packet);
-                    timestampToPackageNumberMap.put(intermediateHandle.getTimestamp(), currentPackageNumber);
+                while (intermediateHandle.getNextPacket() != null) {
+                    timestampToPackageNumberMap.put(intermediateHandle.getTimestamp(), ++packageNumber);
                 }
                 intermediateHandle.close();
                 // Count package numbers now
@@ -5601,10 +5322,8 @@ public class RandomPackagesTest {
             } else {
                 timestampToPackageNumberMap = null;
                 packageNumbers = null;
-                Packet packet;
-                while ((packet = intermediateHandle.getNextPacket()) != null) {
-                    int currentPackageNumber = ++packageNumber;
-                    packageMap.put(currentPackageNumber, packet);
+                while (intermediateHandle.getNextPacket() != null) {
+                    packageNumber++;
                 }
                 intermediateHandle.close();
                 intermediateHandle = getHandle(toParse);
@@ -5640,10 +5359,6 @@ public class RandomPackagesTest {
             return nextBVLC(null);
         }
 
-        public BVLC getBVLC(int packageNumber) throws ParseException {
-            return getBvlc(packageMap.get(packageNumber));
-        }
-
         public BVLC nextBVLC(Integer ensurePackageNumber) throws NotOpenException, ParseException {
             Packet packet = nextPacket();
             if (packet == null) {
@@ -5676,13 +5391,7 @@ public class RandomPackagesTest {
             try {
                 return BVLC.staticParse(new ReadBufferByteBased(rawData));
             } catch (ParseException e) {
-                throw new ParseException(String.format("Caught at current package number: %d. Packages read so far %d" +
-                    "" +
-                    "\n\n,\n" +
-                    "                // TODO: check broken parsing\n" +
-                    "                " + readPackages +
-                    "" +
-                    "", currentPackageNumber, readPackages), e);
+                throw new ParseException(String.format("Caught at current package number: %d. Packages read so far %d", currentPackageNumber, readPackages), e);
             }
         }
 

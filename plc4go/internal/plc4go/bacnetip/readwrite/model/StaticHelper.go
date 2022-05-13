@@ -298,6 +298,9 @@ func GuessDataType(objectType BACnetObjectType, propertyIdentifier *BACnetContex
 }
 
 func ParseVarUint(data []byte) uint32 {
+	if len(data) == 0 {
+		return 0
+	}
 	bigInt := big.NewInt(0)
 	return uint32(bigInt.SetBytes(data).Uint64())
 }

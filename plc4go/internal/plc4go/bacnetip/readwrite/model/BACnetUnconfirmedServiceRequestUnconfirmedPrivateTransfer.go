@@ -32,7 +32,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 	*BACnetUnconfirmedServiceRequest
 	VendorId          *BACnetContextTagUnsignedInteger
 	ServiceNumber     *BACnetContextTagUnsignedInteger
-	ServiceParameters *BACnetPropertyValues
+	ServiceParameters *BACnetConstructedData
 
 	// Arguments.
 	ServiceRequestLength uint16
@@ -46,7 +46,7 @@ type IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
 	// GetServiceNumber returns ServiceNumber (property field)
 	GetServiceNumber() *BACnetContextTagUnsignedInteger
 	// GetServiceParameters returns ServiceParameters (property field)
-	GetServiceParameters() *BACnetPropertyValues
+	GetServiceParameters() *BACnetConstructedData
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -89,7 +89,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServiceNu
 	return m.ServiceNumber
 }
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServiceParameters() *BACnetPropertyValues {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServiceParameters() *BACnetConstructedData {
 	return m.ServiceParameters
 }
 
@@ -99,7 +99,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServicePa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer factory function for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId *BACnetContextTagUnsignedInteger, serviceNumber *BACnetContextTagUnsignedInteger, serviceParameters *BACnetPropertyValues, serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId *BACnetContextTagUnsignedInteger, serviceNumber *BACnetContextTagUnsignedInteger, serviceParameters *BACnetConstructedData, serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
 	_result := &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
 		VendorId:                        vendorId,
 		ServiceNumber:                   serviceNumber,
@@ -189,20 +189,20 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 	}
 
 	// Optional Field (serviceParameters) (Can be skipped, if a given expression evaluates to false)
-	var serviceParameters *BACnetPropertyValues = nil
+	var serviceParameters *BACnetConstructedData = nil
 	{
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("serviceParameters"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetPropertyValuesParse(readBuffer, uint8(2), BACnetObjectType_VENDOR_PROPRIETARY_VALUE)
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, DummyPropertyIdentifier())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'serviceParameters' field")
 		default:
-			serviceParameters = CastBACnetPropertyValues(_val)
+			serviceParameters = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("serviceParameters"); closeErr != nil {
 				return nil, closeErr
 			}
@@ -217,7 +217,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 	_child := &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
 		VendorId:                        CastBACnetContextTagUnsignedInteger(vendorId),
 		ServiceNumber:                   CastBACnetContextTagUnsignedInteger(serviceNumber),
-		ServiceParameters:               CastBACnetPropertyValues(serviceParameters),
+		ServiceParameters:               CastBACnetConstructedData(serviceParameters),
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
 	_child.BACnetUnconfirmedServiceRequest.Child = _child
@@ -255,7 +255,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(wr
 		}
 
 		// Optional Field (serviceParameters) (Can be skipped, if the value is null)
-		var serviceParameters *BACnetPropertyValues = nil
+		var serviceParameters *BACnetConstructedData = nil
 		if m.ServiceParameters != nil {
 			if pushErr := writeBuffer.PushContext("serviceParameters"); pushErr != nil {
 				return pushErr

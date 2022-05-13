@@ -32,7 +32,7 @@ type BACnetServiceAckConfirmedPrivateTransfer struct {
 	*BACnetServiceAck
 	VendorId      *BACnetContextTagUnsignedInteger
 	ServiceNumber *BACnetContextTagUnsignedInteger
-	ResultBlock   *BACnetPropertyValues
+	ResultBlock   *BACnetConstructedData
 
 	// Arguments.
 	ServiceRequestLength uint16
@@ -46,7 +46,7 @@ type IBACnetServiceAckConfirmedPrivateTransfer interface {
 	// GetServiceNumber returns ServiceNumber (property field)
 	GetServiceNumber() *BACnetContextTagUnsignedInteger
 	// GetResultBlock returns ResultBlock (property field)
-	GetResultBlock() *BACnetPropertyValues
+	GetResultBlock() *BACnetConstructedData
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -88,7 +88,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) GetServiceNumber() *BACnetCon
 	return m.ServiceNumber
 }
 
-func (m *BACnetServiceAckConfirmedPrivateTransfer) GetResultBlock() *BACnetPropertyValues {
+func (m *BACnetServiceAckConfirmedPrivateTransfer) GetResultBlock() *BACnetConstructedData {
 	return m.ResultBlock
 }
 
@@ -98,7 +98,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) GetResultBlock() *BACnetPrope
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckConfirmedPrivateTransfer factory function for BACnetServiceAckConfirmedPrivateTransfer
-func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId *BACnetContextTagUnsignedInteger, serviceNumber *BACnetContextTagUnsignedInteger, resultBlock *BACnetPropertyValues, serviceRequestLength uint16) *BACnetServiceAckConfirmedPrivateTransfer {
+func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId *BACnetContextTagUnsignedInteger, serviceNumber *BACnetContextTagUnsignedInteger, resultBlock *BACnetConstructedData, serviceRequestLength uint16) *BACnetServiceAckConfirmedPrivateTransfer {
 	_result := &BACnetServiceAckConfirmedPrivateTransfer{
 		VendorId:         vendorId,
 		ServiceNumber:    serviceNumber,
@@ -188,20 +188,20 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 	}
 
 	// Optional Field (resultBlock) (Can be skipped, if a given expression evaluates to false)
-	var resultBlock *BACnetPropertyValues = nil
+	var resultBlock *BACnetConstructedData = nil
 	{
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("resultBlock"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetPropertyValuesParse(readBuffer, uint8(2), BACnetObjectType_VENDOR_PROPRIETARY_VALUE)
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, DummyPropertyIdentifier())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'resultBlock' field")
 		default:
-			resultBlock = CastBACnetPropertyValues(_val)
+			resultBlock = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("resultBlock"); closeErr != nil {
 				return nil, closeErr
 			}
@@ -216,7 +216,7 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 	_child := &BACnetServiceAckConfirmedPrivateTransfer{
 		VendorId:         CastBACnetContextTagUnsignedInteger(vendorId),
 		ServiceNumber:    CastBACnetContextTagUnsignedInteger(serviceNumber),
-		ResultBlock:      CastBACnetPropertyValues(resultBlock),
+		ResultBlock:      CastBACnetConstructedData(resultBlock),
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
@@ -254,7 +254,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) Serialize(writeBuffer utils.W
 		}
 
 		// Optional Field (resultBlock) (Can be skipped, if the value is null)
-		var resultBlock *BACnetPropertyValues = nil
+		var resultBlock *BACnetConstructedData = nil
 		if m.ResultBlock != nil {
 			if pushErr := writeBuffer.PushContext("resultBlock"); pushErr != nil {
 				return pushErr

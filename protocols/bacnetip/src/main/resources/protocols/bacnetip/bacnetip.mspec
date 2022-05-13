@@ -466,7 +466,8 @@
         ['CONFIRMED_PRIVATE_TRANSFER' BACnetConfirmedServiceRequestConfirmedPrivateTransfer
             [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
             [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
-            [optional   BACnetPropertyValues('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE')           serviceParameters           ] //TODO: what should we use as object identifier here?
+            // TODO: temporary dummy property identifier... get rid of that
+            [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'STATIC_CALL("dummyPropertyIdentifier")') serviceParameters           ]
         ]
         ['CONFIRMED_TEXT_MESSAGE' BACnetConfirmedServiceRequestConfirmedTextMessage
              // TODO: implement me
@@ -757,7 +758,8 @@
         ['UNCONFIRMED_PRIVATE_TRANSFER' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
             [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
             [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
-            [optional   BACnetPropertyValues('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE')           serviceParameters           ] //TODO: what should we use as object identifier here?
+            // TODO: temporary dummy property identifier... get rid of that
+            [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'STATIC_CALL("dummyPropertyIdentifier")') serviceParameters           ]
         ]
         ['UNCONFIRMED_TEXT_MESSAGE' BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
             // TODO: implement me
@@ -952,7 +954,8 @@
         ['CONFIRMED_PRIVATE_TRANSFER' BACnetServiceAckConfirmedPrivateTransfer
             [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
             [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
-            [optional   BACnetPropertyValues('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE')           resultBlock                 ] //TODO: what should we use as object identifier here?
+            // TODO: temporary dummy property identifier... get rid of that
+            [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'STATIC_CALL("dummyPropertyIdentifier")') resultBlock                 ]
         ]
         ['CONFIRMED_TEXT_MESSAGE' BACnetServiceAckConfirmedTextMessage
             // TODO: implement me
@@ -1913,6 +1916,7 @@
     [optional   uint 56     valueUint56     'isUint56'           ]
     [virtual    bit         isUint64        'actualLength == 8'  ]
     [optional   uint 64     valueUint64     'isUint64'           ]
+    [validation 'isUint8 || isUint16 || isUint24 || isUint32 || isUint40 || isUint48 || isUint56 || isUint64' "unmapped integer length"]
     [virtual    uint 64     actualValue     'isUint8?valueUint8:(isUint16?valueUint16:(isUint24?valueUint24:(isUint32?valueUint32:(isUint40?valueUint40:(isUint48?valueUint48:(isUint56?valueUint56:valueUint64))))))']
 ]
 
@@ -1933,6 +1937,7 @@
     [optional   int 56      valueInt56      'isInt56'            ]
     [virtual    bit         isInt64         'actualLength == 8'  ]
     [optional   int 64      valueInt64      'isInt64'            ]
+    [validation 'isInt8 || isInt16 || isInt24 || isInt32 || isInt40 || isInt48 || isInt56 || isInt64' "unmapped integer length"]
     [virtual    uint 64     actualValue     'isInt8?valueInt8:(isInt16?valueInt16:(isInt24?valueInt24:(isInt32?valueInt32:(isInt40?valueInt40:(isInt48?valueInt48:(isInt56?valueInt56:valueInt64))))))']
 ]
 
@@ -2561,15 +2566,19 @@
                             peekedTagHeader                                                                     ]
     [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
     [virtual    bit         isApplicationTag    'peekedTagHeader.tagClass == TagClass.APPLICATION_TAGS'         ]
-    [virtual    bit         isConstructedData   '!isApplicationTag && peekedTagHeader.lengthValueType == 0x6'      ]
+    [virtual    bit         isConstructedData   '!isApplicationTag && peekedTagHeader.lengthValueType == 0x6'   ]
     [virtual    bit         isContextTag        '!isConstructedData && !isApplicationTag'                       ]
+    [validation '!isContextTag || (isContextTag && peekedTagHeader.lengthValueType != 0x7)'
+                "unexpected closing tag"                                                                        ]
     [optional   BACnetApplicationTag
                             applicationTag      'isApplicationTag'                                              ]
-    [optional   BACnetContextTag('peekedTagNumber', 'STATIC_CALL("guessDataType", objectType, propertyIdentifier)')
+    [optional   BACnetContextTag('peekedTagNumber',
+                                 'STATIC_CALL("guessDataType", objectType, propertyIdentifier)')
                             contextTag          'isContextTag'                                                  ]
     [optional   BACnetConstructedData('peekedTagNumber', 'objectType', 'propertyIdentifier')
                             constructedData     'isConstructedData'                                             ]
-    [validation 'isApplicationTag || isContextTag || isConstructedData' "BACnetConstructedDataElement could not parse anything"]
+    [validation 'isApplicationTag || isContextTag || isConstructedData'
+                "BACnetConstructedDataElement could not parse anything"                                         ]
 ]
 
 [enum uint 16 BVLCResultCode
