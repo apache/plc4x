@@ -20,8 +20,13 @@ package org.apache.plc4x.java.spi.codegen.io;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.spi.generation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DataWriterComplexDefault<T extends Message> implements DataWriterComplex<T> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataWriterComplexDefault.class);
+
 
     protected final WriteBuffer writeBuffer;
 
@@ -55,7 +60,11 @@ public class DataWriterComplexDefault<T extends Message> implements DataWriterCo
         if (hasLogicalName) {
             writeBuffer.pushContext(logicalName);
         }
-        value.serialize(writeBuffer);
+        if (value != null) {
+            value.serialize(writeBuffer);
+        } else {
+            LOGGER.warn("Trying to serialize null value for {}", logicalName);
+        }
         if (hasLogicalName) {
             writeBuffer.popContext(logicalName);
         }

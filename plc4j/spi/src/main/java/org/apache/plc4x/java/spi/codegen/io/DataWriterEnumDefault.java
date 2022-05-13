@@ -23,10 +23,14 @@ import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithReaderWriterArgs;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Function;
 
 public class DataWriterEnumDefault<T, I> implements DataWriterEnum<T> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataWriterEnumDefault.class);
 
     private final Function<T, I> enumSerializer;
     private final Function<T, String> enumNamer;
@@ -54,6 +58,10 @@ public class DataWriterEnumDefault<T, I> implements DataWriterEnum<T> {
     }
 
     public void write(String logicalName, T value, Function<T, I> enumSerializer, Function<T, String> enumNamer, DataWriter<I> rawWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        if (value == null) {
+            LOGGER.warn("Trying to serialize null value for {}", logicalName);
+            return;
+        }
         final I rawValue = enumSerializer.apply(value);
         rawWriter.write(logicalName, rawValue, ArrayUtils.addAll(writerArgs, WithReaderWriterArgs.WithAdditionalStringRepresentation(enumNamer.apply(value))));
     }
