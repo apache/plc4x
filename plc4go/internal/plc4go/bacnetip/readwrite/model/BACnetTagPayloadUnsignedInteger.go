@@ -548,7 +548,7 @@ func BACnetTagPayloadUnsignedIntegerParse(readBuffer utils.ReadBuffer, actualLen
 
 	// Validation
 	if !(bool(bool(bool(bool(bool(bool(bool(isUint8) || bool(isUint16)) || bool(isUint24)) || bool(isUint32)) || bool(isUint40)) || bool(isUint48)) || bool(isUint56)) || bool(isUint64)) {
-		return nil, utils.ParseAssertError{"unmapped integer length"}
+		return nil, utils.ParseValidationError{"unmapped integer length"}
 	}
 
 	// Virtual field

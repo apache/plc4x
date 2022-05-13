@@ -162,7 +162,7 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (*BACnetApplicationT
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS))) {
-		return nil, utils.ParseAssertError{"should be a application tag"}
+		return nil, utils.ParseValidationError{"should be a application tag"}
 	}
 
 	// Virtual field

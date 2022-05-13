@@ -142,7 +142,7 @@ func BACnetContextTagNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumberArgum
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {
-		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
+		return nil, utils.ParseValidationError{"length 6 and 7 reserved for opening and closing tag"}
 	}
 
 	// Simple Field (value)

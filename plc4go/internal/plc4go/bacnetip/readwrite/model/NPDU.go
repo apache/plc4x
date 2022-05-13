@@ -464,7 +464,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 
 	// Validation
 	if !(bool(bool((nlm) != (nil))) || bool(bool((apdu) != (nil)))) {
-		return nil, utils.ParseAssertError{"something is wrong here... apdu and nlm not set"}
+		return nil, utils.ParseValidationError{"something is wrong here... apdu and nlm not set"}
 	}
 
 	if closeErr := readBuffer.CloseContext("NPDU"); closeErr != nil {

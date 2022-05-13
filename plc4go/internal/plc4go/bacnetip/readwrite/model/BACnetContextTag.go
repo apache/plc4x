@@ -180,7 +180,7 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
-		return nil, utils.ParseAssertError{"should be a context tag"}
+		return nil, utils.ParseValidationError{"should be a context tag"}
 	}
 
 	// Virtual field

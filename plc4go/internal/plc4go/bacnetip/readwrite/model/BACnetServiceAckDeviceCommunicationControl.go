@@ -116,7 +116,7 @@ func BACnetServiceAckDeviceCommunicationControlParse(readBuffer utils.ReadBuffer
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, utils.ParseAssertError{"TODO: implement me"}
+		return nil, utils.ParseValidationError{"TODO: implement me"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckDeviceCommunicationControl"); closeErr != nil {

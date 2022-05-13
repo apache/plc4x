@@ -116,7 +116,7 @@ func BACnetServiceAckReinitializeDeviceParse(readBuffer utils.ReadBuffer, servic
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, utils.ParseAssertError{"TODO: implement me"}
+		return nil, utils.ParseValidationError{"TODO: implement me"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckReinitializeDevice"); closeErr != nil {

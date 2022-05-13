@@ -317,7 +317,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 
 	// Validation
 	if !(bool(bool(isUnitAddress) && bool(bool((*reservedByte) == (0x00)))) || bool(!(isUnitAddress))) {
-		return nil, utils.ParseAssertError{"invalid unit address"}
+		return nil, utils.ParseValidationError{"invalid unit address"}
 	}
 
 	// Optional Field (replyNetwork) (Can be skipped, if a given expression evaluates to false)

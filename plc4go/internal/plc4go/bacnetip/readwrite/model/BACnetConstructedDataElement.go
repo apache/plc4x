@@ -233,7 +233,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 
 	// Validation
 	if !(bool(!(isContextTag)) || bool(bool(bool(isContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
-		return nil, utils.ParseAssertError{"unexpected closing tag"}
+		return nil, utils.ParseValidationError{"unexpected closing tag"}
 	}
 
 	// Optional Field (applicationTag) (Can be skipped, if a given expression evaluates to false)
@@ -301,7 +301,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 
 	// Validation
 	if !(bool(bool(isApplicationTag) || bool(isContextTag)) || bool(isConstructedData)) {
-		return nil, utils.ParseAssertError{"BACnetConstructedDataElement could not parse anything"}
+		return nil, utils.ParseValidationError{"BACnetConstructedDataElement could not parse anything"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataElement"); closeErr != nil {

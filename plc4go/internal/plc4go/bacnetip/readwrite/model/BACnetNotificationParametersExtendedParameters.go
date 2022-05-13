@@ -30,6 +30,7 @@ import (
 // BACnetNotificationParametersExtendedParameters is the data-structure of this message
 type BACnetNotificationParametersExtendedParameters struct {
 	OpeningTag           *BACnetOpeningTag
+	PeekedTagHeader      *BACnetTagHeader
 	NullValue            *BACnetApplicationTagNull
 	RealValue            *BACnetApplicationTagReal
 	UnsignedValue        *BACnetApplicationTagUnsignedInteger
@@ -54,6 +55,8 @@ type BACnetNotificationParametersExtendedParameters struct {
 type IBACnetNotificationParametersExtendedParameters interface {
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() *BACnetOpeningTag
+	// GetPeekedTagHeader returns PeekedTagHeader (property field)
+	GetPeekedTagHeader() *BACnetTagHeader
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() *BACnetApplicationTagNull
 	// GetRealValue returns RealValue (property field)
@@ -84,6 +87,12 @@ type IBACnetNotificationParametersExtendedParameters interface {
 	GetReference() *BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() *BACnetClosingTag
+	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
+	GetPeekedTagNumber() uint8
+	// GetIsOpeningTag returns IsOpeningTag (virtual field)
+	GetIsOpeningTag() bool
+	// GetIsClosingTag returns IsClosingTag (virtual field)
+	GetIsClosingTag() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -99,6 +108,10 @@ type IBACnetNotificationParametersExtendedParameters interface {
 
 func (m *BACnetNotificationParametersExtendedParameters) GetOpeningTag() *BACnetOpeningTag {
 	return m.OpeningTag
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetPeekedTagHeader() *BACnetTagHeader {
+	return m.PeekedTagHeader
 }
 
 func (m *BACnetNotificationParametersExtendedParameters) GetNullValue() *BACnetApplicationTagNull {
@@ -165,10 +178,115 @@ func (m *BACnetNotificationParametersExtendedParameters) GetClosingTag() *BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetNotificationParametersExtendedParameters) GetPeekedTagNumber() uint8 {
+	nullValue := m.NullValue
+	_ = nullValue
+	realValue := m.RealValue
+	_ = realValue
+	unsignedValue := m.UnsignedValue
+	_ = unsignedValue
+	booleanValue := m.BooleanValue
+	_ = booleanValue
+	integerValue := m.IntegerValue
+	_ = integerValue
+	doubleValue := m.DoubleValue
+	_ = doubleValue
+	octetStringValue := m.OctetStringValue
+	_ = octetStringValue
+	characterStringValue := m.CharacterStringValue
+	_ = characterStringValue
+	bitStringValue := m.BitStringValue
+	_ = bitStringValue
+	enumeratedValue := m.EnumeratedValue
+	_ = enumeratedValue
+	dateValue := m.DateValue
+	_ = dateValue
+	timeValue := m.TimeValue
+	_ = timeValue
+	objectIdentifier := m.ObjectIdentifier
+	_ = objectIdentifier
+	reference := m.Reference
+	_ = reference
+	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetIsOpeningTag() bool {
+	nullValue := m.NullValue
+	_ = nullValue
+	realValue := m.RealValue
+	_ = realValue
+	unsignedValue := m.UnsignedValue
+	_ = unsignedValue
+	booleanValue := m.BooleanValue
+	_ = booleanValue
+	integerValue := m.IntegerValue
+	_ = integerValue
+	doubleValue := m.DoubleValue
+	_ = doubleValue
+	octetStringValue := m.OctetStringValue
+	_ = octetStringValue
+	characterStringValue := m.CharacterStringValue
+	_ = characterStringValue
+	bitStringValue := m.BitStringValue
+	_ = bitStringValue
+	enumeratedValue := m.EnumeratedValue
+	_ = enumeratedValue
+	dateValue := m.DateValue
+	_ = dateValue
+	timeValue := m.TimeValue
+	_ = timeValue
+	objectIdentifier := m.ObjectIdentifier
+	_ = objectIdentifier
+	reference := m.Reference
+	_ = reference
+	return bool(bool((m.GetPeekedTagHeader().GetLengthValueType()) == (0x6)))
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetIsClosingTag() bool {
+	nullValue := m.NullValue
+	_ = nullValue
+	realValue := m.RealValue
+	_ = realValue
+	unsignedValue := m.UnsignedValue
+	_ = unsignedValue
+	booleanValue := m.BooleanValue
+	_ = booleanValue
+	integerValue := m.IntegerValue
+	_ = integerValue
+	doubleValue := m.DoubleValue
+	_ = doubleValue
+	octetStringValue := m.OctetStringValue
+	_ = octetStringValue
+	characterStringValue := m.CharacterStringValue
+	_ = characterStringValue
+	bitStringValue := m.BitStringValue
+	_ = bitStringValue
+	enumeratedValue := m.EnumeratedValue
+	_ = enumeratedValue
+	dateValue := m.DateValue
+	_ = dateValue
+	timeValue := m.TimeValue
+	_ = timeValue
+	objectIdentifier := m.ObjectIdentifier
+	_ = objectIdentifier
+	reference := m.Reference
+	_ = reference
+	return bool(bool((m.GetPeekedTagHeader().GetLengthValueType()) == (0x7)))
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersExtendedParameters factory function for BACnetNotificationParametersExtendedParameters
-func NewBACnetNotificationParametersExtendedParameters(openingTag *BACnetOpeningTag, nullValue *BACnetApplicationTagNull, realValue *BACnetApplicationTagReal, unsignedValue *BACnetApplicationTagUnsignedInteger, booleanValue *BACnetApplicationTagBoolean, integerValue *BACnetApplicationTagSignedInteger, doubleValue *BACnetApplicationTagDouble, octetStringValue *BACnetApplicationTagOctetString, characterStringValue *BACnetApplicationTagCharacterString, bitStringValue *BACnetApplicationTagBitString, enumeratedValue *BACnetApplicationTagEnumerated, dateValue *BACnetApplicationTagDate, timeValue *BACnetApplicationTagTime, objectIdentifier *BACnetApplicationTagObjectIdentifier, reference *BACnetDeviceObjectPropertyReferenceEnclosed, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetNotificationParametersExtendedParameters {
-	return &BACnetNotificationParametersExtendedParameters{OpeningTag: openingTag, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag, TagNumber: tagNumber}
+func NewBACnetNotificationParametersExtendedParameters(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, nullValue *BACnetApplicationTagNull, realValue *BACnetApplicationTagReal, unsignedValue *BACnetApplicationTagUnsignedInteger, booleanValue *BACnetApplicationTagBoolean, integerValue *BACnetApplicationTagSignedInteger, doubleValue *BACnetApplicationTagDouble, octetStringValue *BACnetApplicationTagOctetString, characterStringValue *BACnetApplicationTagCharacterString, bitStringValue *BACnetApplicationTagBitString, enumeratedValue *BACnetApplicationTagEnumerated, dateValue *BACnetApplicationTagDate, timeValue *BACnetApplicationTagTime, objectIdentifier *BACnetApplicationTagObjectIdentifier, reference *BACnetDeviceObjectPropertyReferenceEnclosed, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetNotificationParametersExtendedParameters {
+	return &BACnetNotificationParametersExtendedParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
 func CastBACnetNotificationParametersExtendedParameters(structType interface{}) *BACnetNotificationParametersExtendedParameters {
@@ -194,6 +312,12 @@ func (m *BACnetNotificationParametersExtendedParameters) GetLengthInBitsConditio
 
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits()
+
+	// A virtual field doesn't have any in- or output.
+
+	// A virtual field doesn't have any in- or output.
+
+	// A virtual field doesn't have any in- or output.
 
 	// Optional Field (nullValue)
 	if m.NullValue != nil {
@@ -295,9 +419,32 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		return nil, closeErr
 	}
 
+	// Peek Field (peekedTagHeader)
+	currentPos = readBuffer.GetPos()
+	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
+		return nil, pullErr
+	}
+	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	readBuffer.Reset(currentPos)
+
+	// Virtual field
+	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
+	peekedTagNumber := uint8(_peekedTagNumber)
+	_ = peekedTagNumber
+
+	// Virtual field
+	_isOpeningTag := bool((peekedTagHeader.GetLengthValueType()) == (0x6))
+	isOpeningTag := bool(_isOpeningTag)
+	_ = isOpeningTag
+
+	// Virtual field
+	_isClosingTag := bool((peekedTagHeader.GetLengthValueType()) == (0x7))
+	isClosingTag := bool(_isClosingTag)
+	_ = isClosingTag
+
 	// Optional Field (nullValue) (Can be skipped, if a given expression evaluates to false)
 	var nullValue *BACnetApplicationTagNull = nil
-	{
+	if bool(bool(bool((peekedTagNumber) == (0x0))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
 			return nil, pullErr
@@ -318,7 +465,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 
 	// Optional Field (realValue) (Can be skipped, if a given expression evaluates to false)
 	var realValue *BACnetApplicationTagReal = nil
-	{
+	if bool(bool(bool((peekedTagNumber) == (0x4))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
 			return nil, pullErr
@@ -339,7 +486,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 
 	// Optional Field (unsignedValue) (Can be skipped, if a given expression evaluates to false)
 	var unsignedValue *BACnetApplicationTagUnsignedInteger = nil
-	{
+	if bool(bool(bool((peekedTagNumber) == (0x2))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
 			return nil, pullErr
@@ -360,7 +507,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 
 	// Optional Field (booleanValue) (Can be skipped, if a given expression evaluates to false)
 	var booleanValue *BACnetApplicationTagBoolean = nil
-	{
+	if bool(bool(bool((peekedTagNumber) == (0x1))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 			return nil, pullErr
@@ -381,7 +528,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 
 	// Optional Field (integerValue) (Can be skipped, if a given expression evaluates to false)
 	var integerValue *BACnetApplicationTagSignedInteger = nil
-	{
+	if bool(bool(bool((peekedTagNumber) == (0x3))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
 			return nil, pullErr
@@ -402,7 +549,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 
 	// Optional Field (doubleValue) (Can be skipped, if a given expression evaluates to false)
 	var doubleValue *BACnetApplicationTagDouble = nil
-	{
+	if bool(bool(bool((peekedTagNumber) == (0x5))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
 			return nil, pullErr
@@ -423,7 +570,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 
 	// Optional Field (octetStringValue) (Can be skipped, if a given expression evaluates to false)
 	var octetStringValue *BACnetApplicationTagOctetString = nil
-	{
+	if bool(bool(bool((peekedTagNumber) == (0x6))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
 			return nil, pullErr
@@ -444,7 +591,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 
 	// Optional Field (characterStringValue) (Can be skipped, if a given expression evaluates to false)
 	var characterStringValue *BACnetApplicationTagCharacterString = nil
-	{
+	if bool(bool(bool((peekedTagNumber) == (0x7))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
 			return nil, pullErr
@@ -465,7 +612,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 
 	// Optional Field (bitStringValue) (Can be skipped, if a given expression evaluates to false)
 	var bitStringValue *BACnetApplicationTagBitString = nil
-	{
+	if bool(bool(bool((peekedTagNumber) == (0x8))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
 			return nil, pullErr
@@ -486,7 +633,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 
 	// Optional Field (enumeratedValue) (Can be skipped, if a given expression evaluates to false)
 	var enumeratedValue *BACnetApplicationTagEnumerated = nil
-	{
+	if bool(bool(bool((peekedTagNumber) == (0x9))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
 			return nil, pullErr
@@ -507,7 +654,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 
 	// Optional Field (dateValue) (Can be skipped, if a given expression evaluates to false)
 	var dateValue *BACnetApplicationTagDate = nil
-	{
+	if bool(bool(bool((peekedTagNumber) == (0xA))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
 			return nil, pullErr
@@ -528,7 +675,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 
 	// Optional Field (timeValue) (Can be skipped, if a given expression evaluates to false)
 	var timeValue *BACnetApplicationTagTime = nil
-	{
+	if bool(bool(bool((peekedTagNumber) == (0xB))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
 			return nil, pullErr
@@ -549,7 +696,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 
 	// Optional Field (objectIdentifier) (Can be skipped, if a given expression evaluates to false)
 	var objectIdentifier *BACnetApplicationTagObjectIdentifier = nil
-	{
+	if bool(bool((peekedTagNumber) == (0xC))) && bool(!(isOpeningTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 			return nil, pullErr
@@ -570,7 +717,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 
 	// Optional Field (reference) (Can be skipped, if a given expression evaluates to false)
 	var reference *BACnetDeviceObjectPropertyReferenceEnclosed = nil
-	{
+	if bool(isOpeningTag) && bool(!(isClosingTag)) {
 		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("reference"); pullErr != nil {
 			return nil, pullErr
@@ -607,7 +754,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	}
 
 	// Create the instance
-	return NewBACnetNotificationParametersExtendedParameters(openingTag, nullValue, realValue, unsignedValue, booleanValue, integerValue, doubleValue, octetStringValue, characterStringValue, bitStringValue, enumeratedValue, dateValue, timeValue, objectIdentifier, reference, closingTag, tagNumber), nil
+	return NewBACnetNotificationParametersExtendedParameters(openingTag, peekedTagHeader, nullValue, realValue, unsignedValue, booleanValue, integerValue, doubleValue, octetStringValue, characterStringValue, bitStringValue, enumeratedValue, dateValue, timeValue, objectIdentifier, reference, closingTag, tagNumber), nil
 }
 
 func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -625,6 +772,18 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	}
+	// Virtual field
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
+	}
+	// Virtual field
+	if _isOpeningTagErr := writeBuffer.WriteVirtual("isOpeningTag", m.GetIsOpeningTag()); _isOpeningTagErr != nil {
+		return errors.Wrap(_isOpeningTagErr, "Error serializing 'isOpeningTag' field")
+	}
+	// Virtual field
+	if _isClosingTagErr := writeBuffer.WriteVirtual("isClosingTag", m.GetIsClosingTag()); _isClosingTagErr != nil {
+		return errors.Wrap(_isClosingTagErr, "Error serializing 'isClosingTag' field")
 	}
 
 	// Optional Field (nullValue) (Can be skipped, if the value is null)

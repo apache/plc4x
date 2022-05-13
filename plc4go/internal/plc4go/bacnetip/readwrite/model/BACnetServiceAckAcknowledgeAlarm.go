@@ -116,7 +116,7 @@ func BACnetServiceAckAcknowledgeAlarmParse(readBuffer utils.ReadBuffer, serviceR
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, utils.ParseAssertError{"TODO: implement me"}
+		return nil, utils.ParseValidationError{"TODO: implement me"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckAcknowledgeAlarm"); closeErr != nil {

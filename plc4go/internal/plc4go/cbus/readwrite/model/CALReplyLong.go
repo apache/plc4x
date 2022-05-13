@@ -317,7 +317,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 
 	// Validation
 	if !(bool(bool(isUnitAddress) && bool(bool((*reservedByte) == (0x00)))) || bool(!(isUnitAddress))) {
-		return nil, utils.ParseAssertError{"wrong reservedByte"}
+		return nil, utils.ParseValidationError{"wrong reservedByte"}
 	}
 
 	// Optional Field (replyNetwork) (Can be skipped, if a given expression evaluates to false)

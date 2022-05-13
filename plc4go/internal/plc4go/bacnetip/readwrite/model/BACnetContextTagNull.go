@@ -124,7 +124,7 @@ func BACnetContextTagNullParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 
 	// Validation
 	if !(bool((header.GetActualLength()) == (0))) {
-		return nil, utils.ParseAssertError{"length field should be 0"}
+		return nil, utils.ParseValidationError{"length field should be 0"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagNull"); closeErr != nil {
