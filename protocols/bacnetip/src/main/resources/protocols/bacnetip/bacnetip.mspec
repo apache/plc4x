@@ -200,19 +200,24 @@
     [discriminator uint 4 apduType]
     [typeSwitch apduType
         ['0x0' APDUConfirmedRequest
-            [simple   bit       segmentedMessage                        ]
-            [simple   bit       moreFollows                             ]
-            [simple   bit       segmentedResponseAccepted               ]
-            [reserved uint 2    '0'                                     ]
+            [simple   bit       segmentedMessage                         ]
+            [simple   bit       moreFollows                              ]
+            [simple   bit       segmentedResponseAccepted                ]
+            [reserved uint 2    '0'                                      ]
             [simple   MaxSegmentsAccepted
-                                maxSegmentsAccepted                     ]
+                                maxSegmentsAccepted                      ]
             [simple   MaxApduLengthAccepted
-                                maxApduLengthAccepted                   ]
-            [simple   uint 8    invokeId                                ]
-            [optional uint 8    sequenceNumber       'segmentedMessage' ]
-            [optional uint 8    proposedWindowSize   'segmentedMessage' ]
-            [simple   BACnetConfirmedServiceRequest('apduLength - (4 + (segmentedMessage ? 2 : 0))')
-                                serviceRequest                          ]
+                                maxApduLengthAccepted                    ]
+            [simple   uint 8    invokeId                                 ]
+            [optional uint 8    sequenceNumber       'segmentedMessage'  ]
+            [optional uint 8    proposedWindowSize   'segmentedMessage'  ]
+            [optional BACnetConfirmedServiceRequest('apduLength - (4 + (segmentedMessage ? 2 : 0))')
+                                serviceRequest       '!segmentedMessage' ]
+            // TODO: maybe we should put this in the discriminated types below
+            [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
+            [array    byte      segment
+                                length
+                                'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?6:5)):0):0'
         ]
         ['0x1' APDUUnconfirmedRequest
             [reserved uint 4                          '0'               ]

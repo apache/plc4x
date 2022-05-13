@@ -996,6 +996,7 @@ make -f demo/object/ai</value>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -1258,6 +1259,7 @@ make -f awf.mak</value>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -1523,6 +1525,7 @@ make -f bacstr.mak</value>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -1785,6 +1788,7 @@ make -f crc.mak clean</value>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -2048,6 +2052,7 @@ make -f demo/object/lsp.</value>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -2314,6 +2319,7 @@ make</value>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -2581,6 +2587,7 @@ make -f tsm.mak cle</value>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -2841,6 +2848,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -3274,6 +3282,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestReinitializeDevice>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -3717,6 +3726,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestReadProperty>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -4160,6 +4170,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestReadProperty>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -4603,6 +4614,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestReadProperty>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -5670,6 +5682,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestWriteProperty>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -6124,6 +6137,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -6532,6 +6546,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -6885,6 +6900,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -7000,6 +7016,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -7115,6 +7132,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -7230,6 +7248,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -7487,6 +7506,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -7699,6 +7719,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -8311,6 +8332,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestReinitializeDevice>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -8517,6 +8539,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestReinitializeDevice>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -8732,6 +8755,7 @@ make -f wp.mak clean</value>
                         </BACnetConfirmedServiceRequestAtomicReadFile>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -9079,6 +9103,7 @@ Test "BACnet Applicat</value>
                         </BACnetConfirmedServiceRequestAtomicReadFile>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -9431,6 +9456,7 @@ Test "BACnet I-Am":
                         </BACnetConfirmedServiceRequestAtomicReadFile>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -9780,6 +9806,7 @@ Test "BACnet ReadProperty":
                         </BACnetConfirmedServiceRequestAtomicReadFile>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -10138,6 +10165,7 @@ Test "BACnet Applicat</value>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
@@ -10331,6 +10359,7 @@ Test "BACnet Applicat</value>
                         </BACnetConfirmedServiceRequestReadPropertyMultiple>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUConfirmedRequest>
                 </APDU>
               </apdu>
