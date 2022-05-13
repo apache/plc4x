@@ -3845,7 +3845,7 @@ public class RandomPackagesTest {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-1.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
             // TODO: check broken parsing
-            2312 ,
+            2312,
             // TODO: check broken parsing
             2317,
             // TODO: check broken parsing
@@ -6348,6 +6348,7 @@ public class RandomPackagesTest {
         protected final PcapHandle pcapHandle;
         // maps timestamp to package number
         protected final Map<Timestamp, Integer> timestampToPackageNumberMap;
+        protected final Map<Integer, Packet> packageMap;
         // maps read package (index) to package number
         protected final List<Integer> packageNumbers;
         protected final int maxPackages;
@@ -6361,13 +6362,17 @@ public class RandomPackagesTest {
             String toParse = DownloadAndCache(pcapFile);
             LOGGER.info("Reading {}", toParse);
             PcapHandle intermediateHandle = getHandle(toParse);
+            packageMap = new HashMap<>();
             int packageNumber = 0;
             if (filter != null) {
                 // In case of filtering we need to read all packages
                 LOGGER.info("Building timestamp number map");
                 timestampToPackageNumberMap = new HashMap<>();
-                while (intermediateHandle.getNextPacket() != null) {
-                    timestampToPackageNumberMap.put(intermediateHandle.getTimestamp(), ++packageNumber);
+                Packet packet;
+                while ((packet = intermediateHandle.getNextPacket()) != null) {
+                    int currentPackageNumber = ++packageNumber;
+                    packageMap.put(currentPackageNumber, packet);
+                    timestampToPackageNumberMap.put(intermediateHandle.getTimestamp(), currentPackageNumber);
                 }
                 intermediateHandle.close();
                 // Count package numbers now
@@ -6386,8 +6391,10 @@ public class RandomPackagesTest {
             } else {
                 timestampToPackageNumberMap = null;
                 packageNumbers = null;
-                while (intermediateHandle.getNextPacket() != null) {
-                    packageNumber++;
+                Packet packet;
+                while ((packet = intermediateHandle.getNextPacket()) != null) {
+                    int currentPackageNumber = ++packageNumber;
+                    packageMap.put(currentPackageNumber, packet);
                 }
                 intermediateHandle.close();
                 intermediateHandle = getHandle(toParse);
@@ -6423,6 +6430,10 @@ public class RandomPackagesTest {
             return nextBVLC(null);
         }
 
+        public BVLC getBVLC(int packageNumber) throws ParseException {
+            return getBvlc(packageMap.get(packageNumber));
+        }
+
         public BVLC nextBVLC(Integer ensurePackageNumber) throws NotOpenException, ParseException {
             Packet packet = nextPacket();
             if (packet == null) {
@@ -6443,6 +6454,10 @@ public class RandomPackagesTest {
                     throw new IllegalArgumentException("Could not find package with package number " + ensurePackageNumber);
                 }
             }
+            return getBvlc(packet);
+        }
+
+        private BVLC getBvlc(Packet packet) throws ParseException {
             UdpPacket udpPacket = packet.get(UdpPacket.class);
             assumeTrue(udpPacket != null, "nextBVLC assumes a UDP Packet. If non is there it might by LLC");
             LOGGER.info("Handling UDP\n{}", udpPacket);
