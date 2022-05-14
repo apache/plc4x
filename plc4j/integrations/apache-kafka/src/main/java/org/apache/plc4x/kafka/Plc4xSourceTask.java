@@ -34,7 +34,7 @@ import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.java.utils.connectionpool2.PooledDriverManager;
 import org.apache.plc4x.kafka.config.Constants;
 import org.apache.plc4x.kafka.util.VersionUtil;
 import org.slf4j.Logger;
@@ -152,7 +152,7 @@ public class Plc4xSourceTask extends SourceTask {
         ScraperConfigurationTriggeredImpl scraperConfig = builder.build();
 
         try {
-            PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
+            PlcDriverManager plcDriverManager = new PooledDriverManager();
             TriggerCollector triggerCollector = new TriggerCollectorImpl(plcDriverManager);
             scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
                 try {
