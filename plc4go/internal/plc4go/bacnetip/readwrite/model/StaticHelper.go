@@ -653,3 +653,11 @@ func requiredLength(value uint) uint32 {
 	}
 	return length
 }
+
+func MapErrorClass(applicationTagEnumerated *BACnetApplicationTagEnumerated) ErrorClass {
+	return ErrorClassByValue(uint16(applicationTagEnumerated.GetActualValue()))
+}
+
+func MapErrorCode(applicationTagEnumerated *BACnetApplicationTagEnumerated) ErrorCode {
+	return ErrorCodeByValue(uint16(applicationTagEnumerated.GetActualValue()))
+}

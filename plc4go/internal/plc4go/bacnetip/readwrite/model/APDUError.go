@@ -31,6 +31,7 @@ import (
 type APDUError struct {
 	*APDU
 	OriginalInvokeId uint8
+	ErrorChoice      BACnetConfirmedServiceChoice
 	Error            *BACnetError
 
 	// Arguments.
@@ -42,6 +43,8 @@ type IAPDUError interface {
 	IAPDU
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
+	// GetErrorChoice returns ErrorChoice (property field)
+	GetErrorChoice() BACnetConfirmedServiceChoice
 	// GetError returns Error (property field)
 	GetError() *BACnetError
 	// GetLengthInBytes returns the length in bytes
@@ -81,6 +84,10 @@ func (m *APDUError) GetOriginalInvokeId() uint8 {
 	return m.OriginalInvokeId
 }
 
+func (m *APDUError) GetErrorChoice() BACnetConfirmedServiceChoice {
+	return m.ErrorChoice
+}
+
 func (m *APDUError) GetError() *BACnetError {
 	return m.Error
 }
@@ -91,9 +98,10 @@ func (m *APDUError) GetError() *BACnetError {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUError factory function for APDUError
-func NewAPDUError(originalInvokeId uint8, error *BACnetError, apduLength uint16) *APDUError {
+func NewAPDUError(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error *BACnetError, apduLength uint16) *APDUError {
 	_result := &APDUError{
 		OriginalInvokeId: originalInvokeId,
+		ErrorChoice:      errorChoice,
 		Error:            error,
 		APDU:             NewAPDU(apduLength),
 	}
@@ -134,6 +142,9 @@ func (m *APDUError) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Simple field (originalInvokeId)
 	lengthInBits += 8
 
+	// Simple field (errorChoice)
+	lengthInBits += 8
+
 	// Simple field (error)
 	lengthInBits += m.Error.GetLengthInBits()
 
@@ -172,11 +183,24 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUError,
 	}
 	originalInvokeId := _originalInvokeId
 
+	// Simple Field (errorChoice)
+	if pullErr := readBuffer.PullContext("errorChoice"); pullErr != nil {
+		return nil, pullErr
+	}
+	_errorChoice, _errorChoiceErr := BACnetConfirmedServiceChoiceParse(readBuffer)
+	if _errorChoiceErr != nil {
+		return nil, errors.Wrap(_errorChoiceErr, "Error parsing 'errorChoice' field")
+	}
+	errorChoice := _errorChoice
+	if closeErr := readBuffer.CloseContext("errorChoice"); closeErr != nil {
+		return nil, closeErr
+	}
+
 	// Simple Field (error)
 	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
 		return nil, pullErr
 	}
-	_error, _errorErr := BACnetErrorParse(readBuffer)
+	_error, _errorErr := BACnetErrorParse(readBuffer, BACnetConfirmedServiceChoice(errorChoice))
 	if _errorErr != nil {
 		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field")
 	}
@@ -192,6 +216,7 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUError,
 	// Create a partially initialized instance
 	_child := &APDUError{
 		OriginalInvokeId: originalInvokeId,
+		ErrorChoice:      errorChoice,
 		Error:            CastBACnetError(error),
 		APDU:             &APDU{},
 	}
@@ -218,6 +243,18 @@ func (m *APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 		_originalInvokeIdErr := writeBuffer.WriteUint8("originalInvokeId", 8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
+		}
+
+		// Simple Field (errorChoice)
+		if pushErr := writeBuffer.PushContext("errorChoice"); pushErr != nil {
+			return pushErr
+		}
+		_errorChoiceErr := m.ErrorChoice.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("errorChoice"); popErr != nil {
+			return popErr
+		}
+		if _errorChoiceErr != nil {
+			return errors.Wrap(_errorChoiceErr, "Error serializing 'errorChoice' field")
 		}
 
 		// Simple Field (error)

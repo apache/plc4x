@@ -255,19 +255,23 @@
         ]
         ['0x5' APDUError
             [reserved uint 4    '0x00'                                  ]
-            [simple   uint 8    originalInvokeId]
-            [simple   BACnetError
+            [simple   uint 8    originalInvokeId                        ]
+            [simple   BACnetConfirmedServiceChoice
+                                errorChoice                             ]
+            [simple   BACnetError('errorChoice')
                                 error                                   ]
         ]
         ['0x6' APDUReject
             [reserved uint 4    '0x00'                                  ]
             [simple   uint 8    originalInvokeId                        ]
+            // TODO: replace with proper object
             [simple   uint 8    rejectReason                            ]
         ]
         ['0x7' APDUAbort
             [reserved uint 3    '0x00'                                  ]
             [simple   bit       server                                  ]
             [simple   uint 8    originalInvokeId                        ]
+            // TODO: replace with proper object
             [simple   uint 8    abortReason                             ]
         ]
         [APDUUnknown
@@ -632,10 +636,37 @@
                      closingTag                     ]
 ]
 
+[type BACnetPropertyReferenceEnclosed(uint 8 tagNumber)
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                    openingTag                  ]
+    [simple BACnetPropertyReference
+                    reference                   ]
+    [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                    closingTag                  ]
+]
+
 [type BACnetPropertyReference
     [simple     BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
                     propertyIdentifier              ]
     [optional   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+                    arrayIndex                      ]
+]
+
+[type BACnetObjectPropertyReferenceEnclosed(uint 8 tagNumber)
+   [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                   openingTag                  ]
+   [simple BACnetObjectPropertyReference
+                   objectPropertyReference     ]
+   [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                   closingTag                  ]
+]
+
+[type BACnetObjectPropertyReference
+    [simple     BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                    objectIdentifier                ]
+    [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+                    propertyIdentifier              ]
+    [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
                     arrayIndex                      ]
 ]
 
@@ -1153,55 +1184,249 @@
     ]
 ]
 
-// TODO: this need to be completly refactored
-[discriminatedType BACnetError
-    [discriminator uint 8 serviceChoice]
-    [typeSwitch serviceChoice
-        ['0x00' BACnetErrorAcknowledgeAlarm
+[discriminatedType BACnetError(BACnetConfirmedServiceChoice errorChoice)
+    [typeSwitch errorChoice
+        ['SUBSCRIBE_COV_PROPERTY_MULTIPLE'  SubscribeCOVPropertyMultipleError
+            [simple ErrorEnclosed('0')
+                        errorType                           ]
+            [simple SubscribeCOVPropertyMultipleErrorFirstFailedSubscription('1')
+                        firstFailedSubscription             ]
         ]
-        ['0x03' BACnetErrorGetAlarmSummary
+        ['ADD_LIST_ELEMENT'                 ChangeListAddError
+            [simple     ErrorEnclosed('0')
+                            errorType                       ]
+            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+                            firstFailedElementNumber        ]
         ]
-        ['0x02' BACnetErrorConfirmedEventNotification
+        ['REMOVE_LIST_ELEMENT'              ChangeListRemoveError
+            [simple     ErrorEnclosed('0')
+                            errorType                       ]
+            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+                            firstFailedElementNumber        ]
         ]
-        ['0x04' BACnetErrorGetEnrollmentSummary
+        ['CREATE_OBJECT'                    CreateObjectError
+            [simple     ErrorEnclosed('0')
+                            errorType                       ]
+            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+                            firstFailedElementNumber        ]
         ]
-        ['0x05' BACnetErrorDeviceCommunicationProtocol
+        ['WRITE_PROPERTY_MULTIPLE'          WritePropertyMultipleError
+            [simple     ErrorEnclosed('0')
+                            errorType                   ]
+            [simple BACnetObjectPropertyReferenceEnclosed('1')
+                        firstFailedWriteAttempt             ]
         ]
-        ['0x1D' BACnetErrorGetEventInformation
+        ['CONFIRMED_PRIVATE_TRANSFER'       ConfirmedPrivateTransferError
+            [simple     ErrorEnclosed('0')
+                            errorType                   ]
+            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+                            vendorId                    ]// TODO: vendor list?
+            [simple     BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
+                            serviceNumber               ]
+            // TODO: temporary dummy property identifier... get rid of that
+            [optional BACnetConstructedData('3', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'STATIC_CALL("dummyPropertyIdentifier")')
+                            errorParameters             ]
         ]
-        ['0x06' BACnetErrorAtomicReadFile
+        ['VT_CLOSE'                         VTCloseError
+            [simple     ErrorEnclosed('0')
+                            errorType                   ]
+            [optional   VTCloseErrorListOfVTSessionIdentifiers('1')
+                            listOfVtSessionIdentifiers  ]
         ]
-        ['0x07' BACnetErrorAtomicWriteFile
-        ]
-        ['0x0A' BACnetErrorCreateObject
-        ]
-        ['0x0C' BACnetErrorReadProperty
-        ]
-        ['0x0E' BACnetErrorReadPropertyMultiple
-        ]
-        ['0x0F' BACnetErrorWriteProperty
-        ]
-        ['0x1A' BACnetErrorReadRange
-        ]
-        ['0x11' BACnetErrorDeviceCommunicationProtocol
-        ]
-        ['0x12' BACnetErrorConfirmedPrivateTransfer
-        ]
-        ['0x14' BACnetErrorPasswordFailure
-        ]
-        ['0x15' BACnetErrorVTOpen
-        ]
-        ['0x17' BACnetErrorVTData
-        ]
-        ['0x18' BACnetErrorRemovedAuthenticate
-        ]
-        ['0x0D' BACnetErrorRemovedReadPropertyConditional
-        ]
-        [BACnetErrorUnknown
+        [BACnetErrorGeneral
+            [simple     Error
+                            error               ]
         ]
     ]
-    [simple BACnetApplicationTagEnumerated errorClass]
-    [simple BACnetApplicationTagEnumerated errorCode]
+]
+
+[type VTCloseErrorListOfVTSessionIdentifiers(uint 8 tagNumber)
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                    openingTag                  ]
+    [array      BACnetApplicationTagUnsignedInteger
+                    listOfVtSessionIdentifiers
+                             terminated
+                             'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'
+                                                ]
+    [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                    closingTag                  ]
+]
+
+[type SubscribeCOVPropertyMultipleErrorFirstFailedSubscription(uint 8 tagNumber)
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                    openingTag                  ]
+    [simple     BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                    monitoredObjectIdentifier   ]
+    [simple     BACnetPropertyReferenceEnclosed('1')
+                    monitoredPropertyReference  ]
+    [simple     ErrorEnclosed('2')
+                    errorType                   ]
+    [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                    closingTag                  ]
+]
+
+[type ErrorEnclosed(uint 8 tagNumber)
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                    openingTag          ]
+    [simple     Error
+                    error               ]
+    [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                    closingTag          ]
+]
+
+// TODO; check if we should do it the same way like below with manual fields
+[type Error
+    [simple BACnetApplicationTagEnumerated rawErrorClass]
+    [virtual ErrorClass errorClass 'STATIC_CALL("mapErrorClass", rawErrorClass)']
+    [virtual bit isErrorClassProprietary 'rawErrorClass.actualValue > 63']
+    [virtual uint 16 errorClassProprietary 'rawErrorClass.actualValue']
+    [simple BACnetApplicationTagEnumerated rawErrorCode]
+    [virtual ErrorCode errorCode 'STATIC_CALL("mapErrorCode", rawErrorCode)']
+    [virtual bit isErrorCodeProprietary 'rawErrorCode.actualValue > 255']
+    [virtual uint 16 ErrorCodeProprietary 'rawErrorCode.actualValue']
+]
+
+[enum uint 16 ErrorClass
+     ['0x0000' DEVICE          ]
+     ['0x0001' OBJECT          ]
+     ['0x0002' PROPERTY        ]
+     ['0x0003' RESOURCES       ]
+     ['0x0004' SECURITY        ]
+     ['0x0005' SERVICES        ]
+     ['0x0006' VT              ]
+     ['0x0007' COMMUNICATION   ]
+]
+
+[enum uint 16 ErrorCode
+    ['123'  ABORT_APDU_TOO_LONG                       ]
+    ['124'  ABORT_APPLICATION_EXCEEDED_REPLY_TIME     ]
+    ['51'   ABORT_BUFFER_OVERFLOW                     ]
+    ['135'  ABORT_INSUFFICIENT_SECURITY               ]
+    ['52'   ABORT_INVALID_APDU_IN_THIS_STATE          ]
+    ['56'   ABORT_OTHER                               ]
+    ['125'  ABORT_OUT_OF_RESOURCES                    ]
+    ['53'   ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK   ]
+    ['55'   ABORT_PROPRIETARY                         ]
+    ['136'  ABORT_SECURITY_ERROR                      ]
+    ['54'   ABORT_SEGMENTATION_NOT_SUPPORTED          ]
+    ['126'  ABORT_TSM_TIMEOUT                         ]
+    ['127'  ABORT_WINDOW_SIZE_OUT_OF_RANGE            ]
+    ['85'   ACCESS_DENIED                             ]
+    ['115'  ADDRESSING_ERROR                          ]
+    ['86'   BAD_DESTINATION_ADDRESS                   ]
+    ['87'   BAD_DESTINATION_DEVICE_ID                 ]
+    ['88'   BAD_SIGNATURE                             ]
+    ['89'   BAD_SOURCE_ADDRESS                        ]
+    ['90'   BAD_TIMESTAMP                             ]
+    ['82'   Busy                                      ]
+    ['91'   CANNOT_USE_KEY                            ]
+    ['92'   CANNOT_VERIFY_MESSAGE_ID                  ]
+    ['41'   CHARACTER_SET_NOT_SUPPORTED               ]
+    ['83'   COMMUNICATION_DISABLED                    ]
+    ['2'    CONFIGURATION_IN_PROGRESS                 ]
+    ['93'   CORRECT_KEY_REVISION                      ]
+    ['43'   COV_SUBSCRIPTION_FAILED                   ]
+    ['47'   DATATYPE_NOT_SUPPORTED                    ]
+    ['120'  DELETE_FDT_ENTRY_FAILED                   ]
+    ['94'   DESTINATION_DEVICE_ID_REQUIRED            ]
+    ['3'    DEVICE_BUSY                               ]
+    ['121'  DISTRIBUTE_BROADCAST_FAILED               ]
+    ['137'  DUPLICATE_ENTRY                           ]
+    ['95'   DUPLICATE_MESSAGE                         ]
+    ['48'   DUPLICATE_NAME                            ]
+    ['49'   DUPLICATE_OBJECT_ID                       ]
+    ['4'    DYNAMIC_CREATION_NOT_SUPPORTED            ]
+    ['96'   ENCRYPTION_NOT_CONFIGURED                 ]
+    ['97'   ENCRYPTION_REQUIRED                       ]
+    ['5'    FILE_ACCESS_DENIED                        ]
+    ['128'  FILE_FULL                                 ]
+    ['129'  INCONSISTENT_CONFIGURATION                ]
+    ['130'  INCONSISTENT_OBJECT_TYPE                  ]
+    ['7'    INCONSISTENT_PARAMETERS                   ]
+    ['8'    INCONSISTENT_SELECTION_CRITERION          ]
+    ['98'   INCORRECT_KEY                             ]
+    ['131'  INTERNAL_ERROR                            ]
+    ['42'   INVALID_ARRAY_INDEX                       ]
+    ['46'   INVALID_CONFIGURATION_DATA                ]
+    ['9'    INVALID_DATA_TYPE                         ]
+    ['13'   D_PARAMETER_DATA_TYPE                     ]
+    ['57'   INVALID_TAG                               ]
+    ['14'   INVALID_TIMESTAMP                         ]
+    ['138'  INVALID_VALUE_IN_THIS_STATE               ]
+    ['100'  KEY_UPDATE_IN_PROGRESS                    ]
+    ['81'   LIST_ELEMENT_NOT_FOUND                    ]
+    ['75'   LOG_BUFFER_FULL                           ]
+    ['76'   LOGGED_VALUE_PURGED                       ]
+    ['101'  MALFORMED_MESSAGE                         ]
+    ['113'  MESSAGE_TOO_LONG                          ]
+    ['16'   MISSING_REQUIRED_PARAMETER                ]
+    ['58'   NETWORK_DOWN                              ]
+    ['74'   NO_ALARM_CONFIGURED                       ]
+    ['17'   NO_OBJECTS_OF_SPECIFIED_TYPE              ]
+    ['77'   NO_PROPERTY_SPECIFIED                     ]
+    ['18'   NO_SPACE_FOR_OBJECT                       ]
+    ['19'   NO_SPACE_TO_ADD_LIST_ELEMENT              ]
+    ['20'   NO_SPACE_TO_WRITE_PROPERTY                ]
+    ['21'   NO_VT_SESSIONS_AVAILABLE                  ]
+    ['132'  NOT_CONFIGURED                            ]
+    ['78'   NOT_CONFIGURED_FOR_TRIGGERED_LOGGING      ]
+    ['44'   NOT_COV_PROPERTY                          ]
+    ['102'  NOT_KEY_SERVER                            ]
+    ['110'  NOT_ROUTER_TO_DNET                        ]
+    ['23'   OBJECT_DELETION_NOT_PERMITTED             ]
+    ['24'   OBJECT_IDENTIFIER_ALREADY_EXISTS          ]
+    ['25'   OPERATIONAL_PROBLEM                       ]
+    ['45'   OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED      ]
+    ['0'    OTHER                                     ]
+    ['133'  OUT_OF_MEMORY                             ]
+    ['80'   PARAMETER_OUT_OF_RANGE                    ]
+    ['26'   PASSWORD_FAILURE                          ]
+    ['22'   PROPERTY_IS_NOT_A_LIST                    ]
+    ['50'   PROPERTY_IS_NOT_AN_ARRAY                  ]
+    ['27'   READ_ACCESS_DENIED                        ]
+    ['117'  READ_BDT_FAILED                           ]
+    ['119'  READ_FDT_FAILED                           ]
+    ['118'  REGISTER_FOREIGN_DEVICE_FAILED            ]
+    ['59'   REJECT_BUFFER_OVERFLOW                    ]
+    ['60'   REJECT_INCONSISTENT_PARAMETERS            ]
+    ['61'   REJECT_INVALID_PARAMETER_DATA_TYPE        ]
+    ['62'   REJECT_INVALID_TAG                        ]
+    ['63'   REJECT_MISSING_REQUIRED_PARAMETER         ]
+    ['69'   REJECT_OTHER                              ]
+    ['64'   REJECT_PARAMETER_OUT_OF_RANGE             ]
+    ['68'   REJECT_PROPRIETARY                        ]
+    ['65'   REJECT_TOO_MANY_ARGUMENTS                 ]
+    ['66'   REJECT_UNDEFINED_ENUMERATION              ]
+    ['67'   REJECT_UNRECOGNIZED_SERVICE               ]
+    ['111'  ROUTER_BUSY                               ]
+    ['114'  SECURITY_ERROR                            ]
+    ['103'  SECURITY_NOT_CONFIGURED                   ]
+    ['29'   SERVICE_REQUEST_DENIED                    ]
+    ['104'  SOURCE_SECURITY_REQUIRED                  ]
+    ['84'   SUCCESS                                   ]
+    ['30'   TIMEOUT                                   ]
+    ['105'  TOO_MANY_KEYS                             ]
+    ['106'  UNKNOWN_AUTHENTICATION_TYPE               ]
+    ['70'   UNKNOWN_DEVICE                            ]
+    ['122'  UNKNOWN_FILE_SIZE                         ]
+    ['107'  UNKNOWN_KEY                               ]
+    ['108'  UNKNOWN_KEY_REVISION                      ]
+    ['112'  UNKNOWN_NETWORK_MESSAGE                   ]
+    ['31'   UNKNOWN_OBJECT                            ]
+    ['32'   UNKNOWN_PROPERTY                          ]
+    ['71'   UNKNOWN_ROUTE                             ]
+    ['109'  UNKNOWN_SOURCE_MESSAGE                    ]
+    ['79'   UNKNOWN_SUBSCRIPTION                      ]
+    ['34'   UNKNOWN_VT_CLASS                          ]
+    ['35'   UNKNOWN_VT_SESSION                        ]
+    ['36'   UNSUPPORTED_OBJECT_TYPE                   ]
+    ['72'   VALUE_NOT_INITIALIZED                     ]
+    ['37'   VALUE_OUT_OF_RANGE                        ]
+    ['134'  VALUE_TOO_LONG                            ]
+    ['38'   VT_SESSION_ALREADY_CLOSED                 ]
+    ['39'   VT_SESSION_TERMINATION_FAILURE            ]
+    ['40'   WRITE_ACCESS_DENIED                       ]
+    ['116'  WRITE_BDT_FAILED                          ]
 ]
 
 [type BACnetNotificationParameters(uint 8 tagNumber, BACnetObjectType objectType)

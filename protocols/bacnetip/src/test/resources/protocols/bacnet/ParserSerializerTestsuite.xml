@@ -3332,51 +3332,57 @@ make -f wp.mak clean</value>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
+                    <errorChoice>
+                      <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="REINITIALIZE_DEVICE">20</BACnetConfirmedServiceChoice>
+                    </errorChoice>
                     <error>
                       <BACnetError>
-                        <serviceChoice dataType="uint" bitLength="8">20</serviceChoice>
-                        <BACnetErrorPasswordFailure>
-                        </BACnetErrorPasswordFailure>
-                        <errorClass>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x05</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorClass>
-                        <errorCode>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x1a</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorCode>
+                        <BACnetErrorGeneral>
+                          <error>
+                            <Error>
+                              <rawErrorClass>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x05</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorClass>
+                              <rawErrorCode>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x1a</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorCode>
+                            </Error>
+                          </error>
+                        </BACnetErrorGeneral>
                       </BACnetError>
                     </error>
                   </APDUError>
@@ -3776,51 +3782,57 @@ make -f wp.mak clean</value>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
+                    <errorChoice>
+                      <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="READ_PROPERTY">12</BACnetConfirmedServiceChoice>
+                    </errorChoice>
                     <error>
                       <BACnetError>
-                        <serviceChoice dataType="uint" bitLength="8">12</serviceChoice>
-                        <BACnetErrorReadProperty>
-                        </BACnetErrorReadProperty>
-                        <errorClass>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x02</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorClass>
-                        <errorCode>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x20</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorCode>
+                        <BACnetErrorGeneral>
+                          <error>
+                            <Error>
+                              <rawErrorClass>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x02</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorClass>
+                              <rawErrorCode>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x20</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorCode>
+                            </Error>
+                          </error>
+                        </BACnetErrorGeneral>
                       </BACnetError>
                     </error>
                   </APDUError>
@@ -4220,51 +4232,57 @@ make -f wp.mak clean</value>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
+                    <errorChoice>
+                      <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="READ_PROPERTY">12</BACnetConfirmedServiceChoice>
+                    </errorChoice>
                     <error>
                       <BACnetError>
-                        <serviceChoice dataType="uint" bitLength="8">12</serviceChoice>
-                        <BACnetErrorReadProperty>
-                        </BACnetErrorReadProperty>
-                        <errorClass>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x02</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorClass>
-                        <errorCode>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x20</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorCode>
+                        <BACnetErrorGeneral>
+                          <error>
+                            <Error>
+                              <rawErrorClass>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x02</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorClass>
+                              <rawErrorCode>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x20</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorCode>
+                            </Error>
+                          </error>
+                        </BACnetErrorGeneral>
                       </BACnetError>
                     </error>
                   </APDUError>
@@ -5732,51 +5750,57 @@ make -f wp.mak clean</value>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
+                    <errorChoice>
+                      <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WRITE_PROPERTY">15</BACnetConfirmedServiceChoice>
+                    </errorChoice>
                     <error>
                       <BACnetError>
-                        <serviceChoice dataType="uint" bitLength="8">15</serviceChoice>
-                        <BACnetErrorWriteProperty>
-                        </BACnetErrorWriteProperty>
-                        <errorClass>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x01</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorClass>
-                        <errorCode>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x1f</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorCode>
+                        <BACnetErrorGeneral>
+                          <error>
+                            <Error>
+                              <rawErrorClass>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x01</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorClass>
+                              <rawErrorCode>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x1f</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorCode>
+                            </Error>
+                          </error>
+                        </BACnetErrorGeneral>
                       </BACnetError>
                     </error>
                   </APDUError>
@@ -6596,51 +6620,57 @@ make -f wp.mak clean</value>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
+                    <errorChoice>
+                      <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="DEVICE_COMMUNICATION_CONTROL">17</BACnetConfirmedServiceChoice>
+                    </errorChoice>
                     <error>
                       <BACnetError>
-                        <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
-                        <BACnetErrorDeviceCommunicationProtocol>
-                        </BACnetErrorDeviceCommunicationProtocol>
-                        <errorClass>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x05</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorClass>
-                        <errorCode>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x1a</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorCode>
+                        <BACnetErrorGeneral>
+                          <error>
+                            <Error>
+                              <rawErrorClass>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x05</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorClass>
+                              <rawErrorCode>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x1a</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorCode>
+                            </Error>
+                          </error>
+                        </BACnetErrorGeneral>
                       </BACnetError>
                     </error>
                   </APDUError>
@@ -7557,51 +7587,57 @@ make -f wp.mak clean</value>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">50</originalInvokeId>
+                    <errorChoice>
+                      <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="DEVICE_COMMUNICATION_CONTROL">17</BACnetConfirmedServiceChoice>
+                    </errorChoice>
                     <error>
                       <BACnetError>
-                        <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
-                        <BACnetErrorDeviceCommunicationProtocol>
-                        </BACnetErrorDeviceCommunicationProtocol>
-                        <errorClass>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x05</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorClass>
-                        <errorCode>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x1a</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorCode>
+                        <BACnetErrorGeneral>
+                          <error>
+                            <Error>
+                              <rawErrorClass>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x05</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorClass>
+                              <rawErrorCode>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x1a</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorCode>
+                            </Error>
+                          </error>
+                        </BACnetErrorGeneral>
                       </BACnetError>
                     </error>
                   </APDUError>
@@ -8383,51 +8419,57 @@ make -f wp.mak clean</value>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">52</originalInvokeId>
+                    <errorChoice>
+                      <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="REINITIALIZE_DEVICE">20</BACnetConfirmedServiceChoice>
+                    </errorChoice>
                     <error>
                       <BACnetError>
-                        <serviceChoice dataType="uint" bitLength="8">20</serviceChoice>
-                        <BACnetErrorPasswordFailure>
-                        </BACnetErrorPasswordFailure>
-                        <errorClass>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x05</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorClass>
-                        <errorCode>
-                          <BACnetApplicationTag>
-                            <header>
-                              <BACnetTagHeader>
-                                <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                <tagClass>
-                                  <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                </tagClass>
-                                <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                              </BACnetTagHeader>
-                            </header>
-                            <BACnetApplicationTagEnumerated>
-                              <payload>
-                                <BACnetTagPayloadEnumerated>
-                                  <data dataType="byte" bitLength="8">0x1a</data>
-                                </BACnetTagPayloadEnumerated>
-                              </payload>
-                            </BACnetApplicationTagEnumerated>
-                          </BACnetApplicationTag>
-                        </errorCode>
+                        <BACnetErrorGeneral>
+                          <error>
+                            <Error>
+                              <rawErrorClass>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x05</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorClass>
+                              <rawErrorCode>
+                                <BACnetApplicationTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetApplicationTagEnumerated>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x1a</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
+                                  </BACnetApplicationTagEnumerated>
+                                </BACnetApplicationTag>
+                              </rawErrorCode>
+                            </Error>
+                          </error>
+                        </BACnetErrorGeneral>
                       </BACnetError>
                     </error>
                   </APDUError>

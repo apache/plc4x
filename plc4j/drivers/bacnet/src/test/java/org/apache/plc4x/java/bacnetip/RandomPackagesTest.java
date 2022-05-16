@@ -51,8 +51,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.apache.plc4x.java.bacnetip.readwrite.BACnetEventType.COMMAND_FAILURE;
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -458,7 +456,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PRIORITY_ARRAY, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
-                    /* FIXME: we get now a bunch of tags here
+                    /* FIXME: we get now a bunch of tags here (Priority Array)
                     BACnetPropertyValuePriorityValue baCnetPropertyValuePriorityValue = (BACnetPropertyValuePriorityValue) ((BACnetConstructedDataUnspecified)baCnetServiceAckReadProperty.getValues()).getData();
                     assertArrayEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, baCnetPropertyValuePriorityValue.getValues());
                      */
@@ -566,11 +564,9 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
-                    BACnetErrorWriteProperty baCnetErrorWriteProperty = (BACnetErrorWriteProperty) apduError.getError();
-                    // TODO: change to enum
-                    assertEquals(0x02, baCnetErrorWriteProperty.getErrorClass().getActualValue());
-                    // TODO: change to enum
-                    assertEquals(0x28, baCnetErrorWriteProperty.getErrorCode().getActualValue());
+                    BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
+                    assertEquals(ErrorCode.WRITE_ACCESS_DENIED, baCnetErrorWriteProperty.getError().getErrorCode());
                 }),
             DynamicTest.dynamicTest("No. 79-86 - Skip Misc 8 packages",
                 () -> {
@@ -601,11 +597,9 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
-                    BACnetErrorWriteProperty baCnetErrorWriteProperty = (BACnetErrorWriteProperty) apduError.getError();
-                    // TODO: change to enum
-                    assertEquals(0x02, baCnetErrorWriteProperty.getErrorClass().getActualValue());
-                    // TODO: change to enum
-                    assertEquals(0x25, baCnetErrorWriteProperty.getErrorCode().getActualValue());
+                    BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
+                    assertEquals(ErrorCode.VALUE_OUT_OF_RANGE, baCnetErrorWriteProperty.getError().getErrorCode());
                 }),
             DynamicTest.dynamicTest("No. 89-142 - Skip to 142 Misc packages",
                 () -> {
@@ -1280,20 +1274,14 @@ public class RandomPackagesTest {
     @DisplayName("PrivateTransferError-octetstring")
     Collection<DynamicNode> PrivateTransferError_octetstring() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("PrivateTransferError-octetstring.cap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: repair error parsing as this seems to be all over the place
-            7
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("PrivateTransferError")
     Collection<DynamicNode> PrivateTransferError() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("PrivateTransferError.cap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: repair error parsing as this seems to be all over the place
-            1
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1626,10 +1614,7 @@ public class RandomPackagesTest {
     @DisplayName("TrendLogMultipleReadRangeSimple")
     Collection<DynamicNode> TrendLogMultipleReadRangeSimple() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRangeSimple.pcap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: fix error handling as it is all over the place
-            478
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1921,12 +1906,7 @@ public class RandomPackagesTest {
                     // TODO: finish me
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
-            pcapEvaluator.parseFrom(3,
-                // TODO: fix: error handling as this seems all over the place
-                26972,
-                // TODO: fix: error handling as this seems all over the place
-                27012
-            )
+            pcapEvaluator.parseFrom(3)
         );
     }
 
@@ -1934,12 +1914,7 @@ public class RandomPackagesTest {
     @DisplayName("alerton-plugfest-3")
     Collection<DynamicNode> alerton_plugfest_3() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-3.cap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: fix: error handling as this seems all over the place
-            1622,
-            // TODO: fix: error handling as this seems all over the place
-            1638
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("too fat will crash ide (250k entries)")
@@ -3322,22 +3297,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> plugfest_delta_2b() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2b.cap", BACNET_BPF_FILTER_UDP);
         return List.of(
-            pcapEvaluator.parseEmAll(
-                // TODO: fix broken error mapping
-                129,
-                // TODO: fix broken error mapping
-                169,
-                // TODO: fix broken error mapping
-                1985,
-                // TODO: fix broken error mapping
-                9345,
-                // TODO: fix broken error mapping
-                9688,
-                // TODO: fix broken error mapping
-                10521,
-                // TODO: fix broken error mapping
-                10559
-            ));
+            pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -4216,9 +4176,9 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
-                    BACnetErrorReadProperty baCnetErrorReadProperty = (BACnetErrorReadProperty) apduError.getError();
-                    // TODO: use proper enums
-                    assertEquals(32, baCnetErrorReadProperty.getErrorCode().getActualValue());
+                    BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
+                    assertEquals(ErrorCode.UNKNOWN_PROPERTY, baCnetErrorWriteProperty.getError().getErrorCode());
                 }),
             DynamicTest.dynamicTest("No. 57 - Confirmed-REQ   readProperty[ 52] device,201 max-master",
                 () -> {
@@ -4352,9 +4312,9 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
-                    BACnetErrorReadProperty baCnetErrorReadProperty = (BACnetErrorReadProperty) apduError.getError();
-                    // TODO: use proper enums
-                    assertEquals(32, baCnetErrorReadProperty.getErrorCode().getActualValue());
+                    BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
+                    assertEquals(ErrorCode.UNKNOWN_PROPERTY, baCnetErrorWriteProperty.getError().getErrorCode());
                 }),
             DynamicTest.dynamicTest("No. 67 - Confirmed-REQ   readProperty[ 57] device,61 object-identifier",
                 () -> {
@@ -5016,9 +4976,9 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
-                    BACnetErrorReadProperty baCnetErrorReadProperty = (BACnetErrorReadProperty) apduError.getError();
-                    // TODO: use proper enums
-                    assertEquals(32, baCnetErrorReadProperty.getErrorCode().getActualValue());
+                    BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
+                    assertEquals(ErrorCode.UNKNOWN_PROPERTY, baCnetErrorWriteProperty.getError().getErrorCode());
                 }),
             DynamicTest.dynamicTest("No. 113 - Confirmed-REQ   readProperty[ 80] device,61 max-master",
                 () -> {
@@ -5471,7 +5431,6 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    // TODO: we should use a enum here
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedBoth());
                     assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
