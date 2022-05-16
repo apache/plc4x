@@ -110,10 +110,12 @@ func (m *EipDisconnectRequest) GetLengthInBytes() uint16 {
 }
 
 func EipDisconnectRequestParse(readBuffer utils.ReadBuffer) (*EipDisconnectRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipDisconnectRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("EipDisconnectRequest"); closeErr != nil {
@@ -129,6 +131,8 @@ func EipDisconnectRequestParse(readBuffer utils.ReadBuffer) (*EipDisconnectReque
 }
 
 func (m *EipDisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("EipDisconnectRequest"); pushErr != nil {
 			return pushErr

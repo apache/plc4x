@@ -107,10 +107,12 @@ func (m *NotTransmittedToManyReTransmissions) GetLengthInBytes() uint16 {
 }
 
 func NotTransmittedToManyReTransmissionsParse(readBuffer utils.ReadBuffer) (*NotTransmittedToManyReTransmissions, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("NotTransmittedToManyReTransmissions"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("NotTransmittedToManyReTransmissions"); closeErr != nil {
@@ -126,6 +128,8 @@ func NotTransmittedToManyReTransmissionsParse(readBuffer utils.ReadBuffer) (*Not
 }
 
 func (m *NotTransmittedToManyReTransmissions) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("NotTransmittedToManyReTransmissions"); pushErr != nil {
 			return pushErr

@@ -125,10 +125,12 @@ func (m *SALDataOff) GetLengthInBytes() uint16 {
 }
 
 func SALDataOffParse(readBuffer utils.ReadBuffer) (*SALDataOff, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataOff"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (group)
@@ -152,6 +154,8 @@ func SALDataOffParse(readBuffer utils.ReadBuffer) (*SALDataOff, error) {
 }
 
 func (m *SALDataOff) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataOff"); pushErr != nil {
 			return pushErr

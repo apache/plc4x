@@ -139,16 +139,18 @@ func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetLength
 }
 
 func BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Optional Field (rawData) (Can be skipped, if a given expression evaluates to false)
 	var rawData *BACnetContextTagEnumerated = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("rawData"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -190,6 +192,8 @@ func BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffe
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable"); pushErr != nil {
 		return pushErr
 	}

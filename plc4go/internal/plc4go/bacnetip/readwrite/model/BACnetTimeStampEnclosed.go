@@ -117,10 +117,12 @@ func (m *BACnetTimeStampEnclosed) GetLengthInBytes() uint16 {
 }
 
 func BACnetTimeStampEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetTimeStampEnclosed, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStampEnclosed"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
@@ -171,6 +173,8 @@ func BACnetTimeStampEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 }
 
 func (m *BACnetTimeStampEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTimeStampEnclosed"); pushErr != nil {
 		return pushErr
 	}

@@ -108,10 +108,12 @@ func (m *ApduDataExtGroupPropertyValueResponse) GetLengthInBytes() uint16 {
 }
 
 func ApduDataExtGroupPropertyValueResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtGroupPropertyValueResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtGroupPropertyValueResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtGroupPropertyValueResponse"); closeErr != nil {
@@ -127,6 +129,8 @@ func ApduDataExtGroupPropertyValueResponseParse(readBuffer utils.ReadBuffer, len
 }
 
 func (m *ApduDataExtGroupPropertyValueResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataExtGroupPropertyValueResponse"); pushErr != nil {
 			return pushErr

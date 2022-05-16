@@ -104,10 +104,12 @@ func (m *ProjectInstallationIdentifier) GetLengthInBytes() uint16 {
 }
 
 func ProjectInstallationIdentifierParse(readBuffer utils.ReadBuffer) (*ProjectInstallationIdentifier, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ProjectInstallationIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (projectNumber)
@@ -133,6 +135,8 @@ func ProjectInstallationIdentifierParse(readBuffer utils.ReadBuffer) (*ProjectIn
 }
 
 func (m *ProjectInstallationIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ProjectInstallationIdentifier"); pushErr != nil {
 		return pushErr
 	}

@@ -163,10 +163,12 @@ func (m *ConfirmedPrivateTransferError) GetLengthInBytes() uint16 {
 }
 
 func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (*ConfirmedPrivateTransferError, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConfirmedPrivateTransferError"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (errorType)
@@ -211,7 +213,7 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 	// Optional Field (errorParameters) (Can be skipped, if a given expression evaluates to false)
 	var errorParameters *BACnetConstructedData = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("errorParameters"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -246,6 +248,8 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 }
 
 func (m *ConfirmedPrivateTransferError) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConfirmedPrivateTransferError"); pushErr != nil {
 			return pushErr

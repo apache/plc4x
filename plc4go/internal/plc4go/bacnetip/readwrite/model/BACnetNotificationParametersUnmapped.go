@@ -109,10 +109,12 @@ func (m *BACnetNotificationParametersUnmapped) GetLengthInBytes() uint16 {
 }
 
 func BACnetNotificationParametersUnmappedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType) (*BACnetNotificationParametersUnmapped, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersUnmapped"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -133,6 +135,8 @@ func BACnetNotificationParametersUnmappedParse(readBuffer utils.ReadBuffer, tagN
 }
 
 func (m *BACnetNotificationParametersUnmapped) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersUnmapped"); pushErr != nil {
 			return pushErr

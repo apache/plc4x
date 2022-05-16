@@ -141,10 +141,12 @@ func (m *VTCloseError) GetLengthInBytes() uint16 {
 }
 
 func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (*VTCloseError, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("VTCloseError"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (errorType)
@@ -163,7 +165,7 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 	// Optional Field (listOfVtSessionIdentifiers) (Can be skipped, if a given expression evaluates to false)
 	var listOfVtSessionIdentifiers *VTCloseErrorListOfVTSessionIdentifiers = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("listOfVtSessionIdentifiers"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -196,6 +198,8 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 }
 
 func (m *VTCloseError) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("VTCloseError"); pushErr != nil {
 			return pushErr

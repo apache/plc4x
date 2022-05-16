@@ -94,10 +94,12 @@ func (m *UnitAddress) GetLengthInBytes() uint16 {
 }
 
 func UnitAddressParse(readBuffer utils.ReadBuffer) (*UnitAddress, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("UnitAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (address)
@@ -116,6 +118,8 @@ func UnitAddressParse(readBuffer utils.ReadBuffer) (*UnitAddress, error) {
 }
 
 func (m *UnitAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("UnitAddress"); pushErr != nil {
 		return pushErr
 	}

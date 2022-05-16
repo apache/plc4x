@@ -105,10 +105,12 @@ func (m *DF1SymbolMessageFrameACK) GetLengthInBytes() uint16 {
 }
 
 func DF1SymbolMessageFrameACKParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessageFrameACK, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrameACK"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("DF1SymbolMessageFrameACK"); closeErr != nil {
@@ -124,6 +126,8 @@ func DF1SymbolMessageFrameACKParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessa
 }
 
 func (m *DF1SymbolMessageFrameACK) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DF1SymbolMessageFrameACK"); pushErr != nil {
 			return pushErr

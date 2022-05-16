@@ -116,10 +116,12 @@ func (m *AdsNotificationSample) GetLengthInBytes() uint16 {
 }
 
 func AdsNotificationSampleParse(readBuffer utils.ReadBuffer) (*AdsNotificationSample, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsNotificationSample"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (notificationHandle)
@@ -151,6 +153,8 @@ func AdsNotificationSampleParse(readBuffer utils.ReadBuffer) (*AdsNotificationSa
 }
 
 func (m *AdsNotificationSample) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsNotificationSample"); pushErr != nil {
 		return pushErr
 	}

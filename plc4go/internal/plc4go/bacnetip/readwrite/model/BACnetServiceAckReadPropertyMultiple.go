@@ -134,10 +134,12 @@ func (m *BACnetServiceAckReadPropertyMultiple) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckReadPropertyMultiple, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (data)
@@ -148,8 +150,8 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serv
 	data := make([]*BACnetReadAccessResult, 0)
 	{
 		_dataLength := serviceRequestLength
-		_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
-		for readBuffer.GetPos() < _dataEndPos {
+		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
+		for positionAware.GetPos() < _dataEndPos {
 			_item, _err := BACnetReadAccessResultParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field")
@@ -175,6 +177,8 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serv
 }
 
 func (m *BACnetServiceAckReadPropertyMultiple) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckReadPropertyMultiple"); pushErr != nil {
 			return pushErr

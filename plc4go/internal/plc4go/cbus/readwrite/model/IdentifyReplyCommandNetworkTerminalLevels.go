@@ -105,10 +105,12 @@ func (m *IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBytes() uint16 {
 }
 
 func IdentifyReplyCommandNetworkTerminalLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandNetworkTerminalLevels, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandNetworkTerminalLevels"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandNetworkTerminalLevels"); closeErr != nil {
@@ -124,6 +126,8 @@ func IdentifyReplyCommandNetworkTerminalLevelsParse(readBuffer utils.ReadBuffer,
 }
 
 func (m *IdentifyReplyCommandNetworkTerminalLevels) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandNetworkTerminalLevels"); pushErr != nil {
 			return pushErr

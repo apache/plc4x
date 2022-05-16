@@ -229,10 +229,11 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     </#if>
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
 </#if>
+        PositionAware positionAware = writeBuffer;
         <#if helper.hasFieldOfType("unknown")>
             throw new SerializationException("Unknown field not serializable");
         <#else>
-            int startPos = writeBuffer.getPos();
+            int startPos = positionAware.getPos();
             writeBuffer.pushContext("${type.name}");
             <#list type.fields as field>
                 <#switch field.typeName>
@@ -315,11 +316,11 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
                         // Optional Field (${optionalField.name}) (Can be skipped, if the value is null)
                         <#if optionalField.type.isEnumTypeReference()>
-                            writeOptionalEnumField("${optionalField.name}", "${helper.getLanguageTypeNameForField(field)}", ${optionalField.name}, ${helper.getEnumDataWriterCall(optionalField.type, optionalField.name, "value")});
+                            writeOptionalEnumField("${optionalField.name}", "${helper.getLanguageTypeNameForField(field)}", ${optionalField.name}, ${helper.getEnumDataWriterCall(optionalField.type, optionalField.name, "value")}<#if optionalField.conditionExpression.present>, ${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}</#if>);
                         <#elseif optionalField.type.isDataIoTypeReference()>
-                            writeOptionalField("${optionalField.name}", ${optionalField.name}, new DataWriterDataIoDefault(writeBuffer, (wb, val) -> ${optionalField.type.asComplexTypeReference().orElseThrow().name}.staticSerialize(wb, val<#if optionalField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(optionalField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>)));
+                            writeOptionalField("${optionalField.name}", ${optionalField.name}, new DataWriterDataIoDefault(writeBuffer, (wb, val) -> ${optionalField.type.asComplexTypeReference().orElseThrow().name}.staticSerialize(wb, val<#if optionalField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(optionalField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>))<#if optionalField.conditionExpression.present>, ${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}</#if>);
                         <#else>
-                            writeOptionalField("${optionalField.name}", ${optionalField.name}, ${helper.getDataWriterCall(typedField.type, optionalField.name)});
+                            writeOptionalField("${optionalField.name}", ${optionalField.name}, ${helper.getDataWriterCall(typedField.type, optionalField.name)}<#if optionalField.conditionExpression.present>, ${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}</#if>);
                         </#if>
                         <#break>
                     <#case "padding">
@@ -555,6 +556,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 <#-- The parse and serialize methods here are just proxies for forwardning the requests to static counterparts -->
     <#if !type.isDiscriminatedChildTypeDefinition()>
     public static ${type.name} staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
+        PositionAware positionAware = readBuffer;
         <#if parserArguments?has_content>
         if((args == null) || (args.length != ${parserArguments?size})) {
             throw new PlcRuntimeException("Wrong number of arguments, expected ${parserArguments?size}, but got " + args.length);
@@ -582,7 +584,8 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     <#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
     public static ${type.name}<#if type.isDiscriminatedChildTypeDefinition()>Builder staticParseBuilder<#else> staticParse</#if>(ReadBuffer readBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) throws ParseException {
         readBuffer.pullContext("${type.name}");
-        int startPos = readBuffer.getPos();
+        PositionAware positionAware = readBuffer;
+        int startPos = positionAware.getPos();
         int curPos;
     <#list type.fields as field>
         <#switch field.typeName>

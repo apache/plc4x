@@ -107,10 +107,12 @@ func (m *NotTransmittedTooLong) GetLengthInBytes() uint16 {
 }
 
 func NotTransmittedTooLongParse(readBuffer utils.ReadBuffer) (*NotTransmittedTooLong, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("NotTransmittedTooLong"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("NotTransmittedTooLong"); closeErr != nil {
@@ -126,6 +128,8 @@ func NotTransmittedTooLongParse(readBuffer utils.ReadBuffer) (*NotTransmittedToo
 }
 
 func (m *NotTransmittedTooLong) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("NotTransmittedTooLong"); pushErr != nil {
 			return pushErr

@@ -141,10 +141,12 @@ func (m *FirmataCommandSetPinMode) GetLengthInBytes() uint16 {
 }
 
 func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommandSetPinMode, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSetPinMode"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (pin)
@@ -182,6 +184,8 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (
 }
 
 func (m *FirmataCommandSetPinMode) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("FirmataCommandSetPinMode"); pushErr != nil {
 			return pushErr

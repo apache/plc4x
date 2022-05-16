@@ -107,10 +107,12 @@ func (m *ConfirmationSuccessful) GetLengthInBytes() uint16 {
 }
 
 func ConfirmationSuccessfulParse(readBuffer utils.ReadBuffer) (*ConfirmationSuccessful, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConfirmationSuccessful"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ConfirmationSuccessful"); closeErr != nil {
@@ -126,6 +128,8 @@ func ConfirmationSuccessfulParse(readBuffer utils.ReadBuffer) (*ConfirmationSucc
 }
 
 func (m *ConfirmationSuccessful) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConfirmationSuccessful"); pushErr != nil {
 			return pushErr

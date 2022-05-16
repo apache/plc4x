@@ -144,10 +144,12 @@ func (m *COTPPacketDisconnectResponse) GetLengthInBytes() uint16 {
 }
 
 func COTPPacketDisconnectResponseParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacketDisconnectResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacketDisconnectResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (destinationReference)
@@ -179,6 +181,8 @@ func COTPPacketDisconnectResponseParse(readBuffer utils.ReadBuffer, cotpLen uint
 }
 
 func (m *COTPPacketDisconnectResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("COTPPacketDisconnectResponse"); pushErr != nil {
 			return pushErr

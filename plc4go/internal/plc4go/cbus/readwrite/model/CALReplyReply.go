@@ -125,10 +125,12 @@ func (m *CALReplyReply) GetLengthInBytes() uint16 {
 }
 
 func CALReplyReplyParse(readBuffer utils.ReadBuffer) (*CALReplyReply, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReplyReply"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (isA)
@@ -158,6 +160,8 @@ func CALReplyReplyParse(readBuffer utils.ReadBuffer) (*CALReplyReply, error) {
 }
 
 func (m *CALReplyReply) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CALReplyReply"); pushErr != nil {
 			return pushErr

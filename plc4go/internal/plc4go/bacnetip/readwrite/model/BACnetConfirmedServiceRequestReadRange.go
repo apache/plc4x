@@ -169,10 +169,12 @@ func (m *BACnetConfirmedServiceRequestReadRange) GetLengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestReadRangeParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestReadRange, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRange"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
@@ -204,7 +206,7 @@ func BACnetConfirmedServiceRequestReadRangeParse(readBuffer utils.ReadBuffer, se
 	// Optional Field (propertyArrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var propertyArrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("propertyArrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -225,7 +227,7 @@ func BACnetConfirmedServiceRequestReadRangeParse(readBuffer utils.ReadBuffer, se
 	// Optional Field (readRange) (Can be skipped, if a given expression evaluates to false)
 	var readRange *BACnetConfirmedServiceRequestReadRangeRange = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("readRange"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -260,6 +262,8 @@ func BACnetConfirmedServiceRequestReadRangeParse(readBuffer utils.ReadBuffer, se
 }
 
 func (m *BACnetConfirmedServiceRequestReadRange) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestReadRange"); pushErr != nil {
 			return pushErr

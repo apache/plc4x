@@ -420,10 +420,12 @@ func (m *BACnetTagPayloadSignedInteger) GetLengthInBytes() uint16 {
 }
 
 func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTagPayloadSignedInteger, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadSignedInteger"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Virtual field
@@ -577,6 +579,8 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 }
 
 func (m *BACnetTagPayloadSignedInteger) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadSignedInteger"); pushErr != nil {
 		return pushErr
 	}

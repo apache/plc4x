@@ -146,10 +146,12 @@ func (m *ApduDataMemoryResponse) GetLengthInBytes() uint16 {
 }
 
 func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataMemoryResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataMemoryResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Implicit Field (numBytes) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -187,6 +189,8 @@ func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) 
 }
 
 func (m *ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataMemoryResponse"); pushErr != nil {
 			return pushErr

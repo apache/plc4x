@@ -108,10 +108,12 @@ func (m *BACnetServiceAckReinitializeDevice) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckReinitializeDeviceParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckReinitializeDevice, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReinitializeDevice"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetServiceAckReinitializeDeviceParse(readBuffer utils.ReadBuffer, servic
 }
 
 func (m *BACnetServiceAckReinitializeDevice) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckReinitializeDevice"); pushErr != nil {
 			return pushErr

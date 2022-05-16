@@ -133,16 +133,18 @@ func (m *BACnetPropertyStatesBinaryValue) GetLengthInBytes() uint16 {
 }
 
 func BACnetPropertyStatesBinaryValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetPropertyStatesBinaryValue, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBinaryValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Optional Field (binaryValue) (Can be skipped, if a given expression evaluates to false)
 	var binaryValue *BACnetBinaryPV = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("binaryValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -174,6 +176,8 @@ func BACnetPropertyStatesBinaryValueParse(readBuffer utils.ReadBuffer, tagNumber
 }
 
 func (m *BACnetPropertyStatesBinaryValue) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesBinaryValue"); pushErr != nil {
 			return pushErr

@@ -108,10 +108,12 @@ func (m *BACnetServiceAckSubscribeCovProperty) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckSubscribeCovPropertyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckSubscribeCovProperty, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckSubscribeCovProperty"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetServiceAckSubscribeCovPropertyParse(readBuffer utils.ReadBuffer, serv
 }
 
 func (m *BACnetServiceAckSubscribeCovProperty) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckSubscribeCovProperty"); pushErr != nil {
 			return pushErr

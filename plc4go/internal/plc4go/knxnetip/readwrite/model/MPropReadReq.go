@@ -174,10 +174,12 @@ func (m *MPropReadReq) GetLengthInBytes() uint16 {
 }
 
 func MPropReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*MPropReadReq, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("MPropReadReq"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (interfaceObjectType)
@@ -233,6 +235,8 @@ func MPropReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*MPropReadReq,
 }
 
 func (m *MPropReadReq) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MPropReadReq"); pushErr != nil {
 			return pushErr

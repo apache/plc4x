@@ -156,10 +156,12 @@ func (m *CBusCommand) GetLengthInBytes() uint16 {
 }
 
 func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommand, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommand"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Const Field (initiator)
@@ -225,6 +227,8 @@ func (m *CBusCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *CBusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child ICBusCommand, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusCommand"); pushErr != nil {
 		return pushErr
 	}

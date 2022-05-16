@@ -176,10 +176,12 @@ func (m *ApduDataExtPropertyValueResponse) GetLengthInBytes() uint16 {
 }
 
 func ApduDataExtPropertyValueResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtPropertyValueResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyValueResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIndex)
@@ -234,6 +236,8 @@ func ApduDataExtPropertyValueResponseParse(readBuffer utils.ReadBuffer, length u
 }
 
 func (m *ApduDataExtPropertyValueResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataExtPropertyValueResponse"); pushErr != nil {
 			return pushErr

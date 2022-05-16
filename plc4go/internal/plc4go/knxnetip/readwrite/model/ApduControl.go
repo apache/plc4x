@@ -100,10 +100,12 @@ func (m *ApduControl) GetLengthInBytes() uint16 {
 }
 
 func ApduControlParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControl"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (controlType) (Used as input to a switch field)
@@ -150,6 +152,8 @@ func (m *ApduControl) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *ApduControl) SerializeParent(writeBuffer utils.WriteBuffer, child IApduControl, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ApduControl"); pushErr != nil {
 		return pushErr
 	}

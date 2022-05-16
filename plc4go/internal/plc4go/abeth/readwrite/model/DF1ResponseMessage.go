@@ -160,10 +160,12 @@ func (m *DF1ResponseMessage) GetLengthInBytes() uint16 {
 }
 
 func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) (*DF1ResponseMessage, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1ResponseMessage"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -260,6 +262,8 @@ func (m *DF1ResponseMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *DF1ResponseMessage) SerializeParent(writeBuffer utils.WriteBuffer, child IDF1ResponseMessage, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DF1ResponseMessage"); pushErr != nil {
 		return pushErr
 	}

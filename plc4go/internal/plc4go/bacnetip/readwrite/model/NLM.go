@@ -125,10 +125,12 @@ func (m *NLM) GetLengthInBytes() uint16 {
 }
 
 func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (*NLM, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLM"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
@@ -197,6 +199,8 @@ func (m *NLM) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *NLM) SerializeParent(writeBuffer utils.WriteBuffer, child INLM, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NLM"); pushErr != nil {
 		return pushErr
 	}

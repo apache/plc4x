@@ -125,10 +125,12 @@ func (m *ParameterChangeReply) GetLengthInBytes() uint16 {
 }
 
 func ParameterChangeReplyParse(readBuffer utils.ReadBuffer) (*ParameterChangeReply, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterChangeReply"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (isA)
@@ -158,6 +160,8 @@ func ParameterChangeReplyParse(readBuffer utils.ReadBuffer) (*ParameterChangeRep
 }
 
 func (m *ParameterChangeReply) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ParameterChangeReply"); pushErr != nil {
 			return pushErr

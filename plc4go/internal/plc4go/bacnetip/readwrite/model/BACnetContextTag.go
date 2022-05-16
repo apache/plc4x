@@ -154,10 +154,12 @@ func (m *BACnetContextTag) GetLengthInBytes() uint16 {
 }
 
 func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetContextTag, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (header)
@@ -270,6 +272,8 @@ func (m *BACnetContextTag) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetContextTag, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetContextTag"); pushErr != nil {
 		return pushErr
 	}

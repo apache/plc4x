@@ -125,10 +125,12 @@ func (m *ConfirmationReply) GetLengthInBytes() uint16 {
 }
 
 func ConfirmationReplyParse(readBuffer utils.ReadBuffer) (*ConfirmationReply, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConfirmationReply"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (isA)
@@ -158,6 +160,8 @@ func ConfirmationReplyParse(readBuffer utils.ReadBuffer) (*ConfirmationReply, er
 }
 
 func (m *ConfirmationReply) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConfirmationReply"); pushErr != nil {
 			return pushErr

@@ -138,10 +138,12 @@ func (m *CreateObjectError) GetLengthInBytes() uint16 {
 }
 
 func CreateObjectErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (*CreateObjectError, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CreateObjectError"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (errorType)
@@ -185,6 +187,8 @@ func CreateObjectErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfi
 }
 
 func (m *CreateObjectError) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CreateObjectError"); pushErr != nil {
 			return pushErr

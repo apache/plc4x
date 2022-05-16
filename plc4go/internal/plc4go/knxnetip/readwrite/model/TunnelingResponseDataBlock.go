@@ -117,10 +117,12 @@ func (m *TunnelingResponseDataBlock) GetLengthInBytes() uint16 {
 }
 
 func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (*TunnelingResponseDataBlock, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingResponseDataBlock"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -166,6 +168,8 @@ func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (*TunnelingRes
 }
 
 func (m *TunnelingResponseDataBlock) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TunnelingResponseDataBlock"); pushErr != nil {
 		return pushErr
 	}

@@ -80,11 +80,19 @@ public class FieldWriterFactory {
     }
 
     public static <T> void writeOptionalField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
-        new FieldWriterOptional<T>().writeOptionalField(logicalName, value, dataWriter, writerArgs);
+        new FieldWriterOptional<T>().writeOptionalField(logicalName, value, dataWriter, true, writerArgs);
+    }
+
+    public static <T> void writeOptionalField(String logicalName, T value, DataWriter<T> dataWriter, boolean condition, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterOptional<T>().writeOptionalField(logicalName, value, dataWriter, condition, writerArgs);
     }
 
     public static <T> void writeOptionalEnumField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
-        new FieldWriterOptionalEnum<T>().writeOptionalEnumField(logicalName, innerName, value, dataWriter, writerArgs);
+        new FieldWriterOptionalEnum<T>().writeOptionalEnumField(logicalName, innerName, value, dataWriter, true, writerArgs);
+    }
+
+    public static <T> void writeOptionalEnumField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, boolean condition, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterOptionalEnum<T>().writeOptionalEnumField(logicalName, innerName, value, dataWriter, condition, writerArgs);
     }
 
     public static <T> void writePaddingField(String logicalName, int timesPadding, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {

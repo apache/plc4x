@@ -159,10 +159,12 @@ func (m *CIPEncapsulationPacket) GetLengthInBytes() uint16 {
 }
 
 func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulationPacket, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPEncapsulationPacket"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
@@ -270,6 +272,8 @@ func (m *CIPEncapsulationPacket) Serialize(writeBuffer utils.WriteBuffer) error 
 }
 
 func (m *CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICIPEncapsulationPacket, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CIPEncapsulationPacket"); pushErr != nil {
 		return pushErr
 	}

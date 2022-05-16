@@ -98,10 +98,12 @@ func (m *DeviceStatus) GetLengthInBytes() uint16 {
 }
 
 func DeviceStatusParse(readBuffer utils.ReadBuffer) (*DeviceStatus, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceStatus"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -134,6 +136,8 @@ func DeviceStatusParse(readBuffer utils.ReadBuffer) (*DeviceStatus, error) {
 }
 
 func (m *DeviceStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DeviceStatus"); pushErr != nil {
 		return pushErr
 	}

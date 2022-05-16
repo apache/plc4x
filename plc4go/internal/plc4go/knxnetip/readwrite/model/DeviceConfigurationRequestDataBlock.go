@@ -111,10 +111,12 @@ func (m *DeviceConfigurationRequestDataBlock) GetLengthInBytes() uint16 {
 }
 
 func DeviceConfigurationRequestDataBlockParse(readBuffer utils.ReadBuffer) (*DeviceConfigurationRequestDataBlock, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequestDataBlock"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -161,6 +163,8 @@ func DeviceConfigurationRequestDataBlockParse(readBuffer utils.ReadBuffer) (*Dev
 }
 
 func (m *DeviceConfigurationRequestDataBlock) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DeviceConfigurationRequestDataBlock"); pushErr != nil {
 		return pushErr
 	}

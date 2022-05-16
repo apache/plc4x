@@ -125,10 +125,12 @@ func (m *BACnetTimeStampDateTime) GetLengthInBytes() uint16 {
 }
 
 func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer) (*BACnetTimeStampDateTime, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStampDateTime"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (dateTimeValue)
@@ -158,6 +160,8 @@ func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer) (*BACnetTimeStamp
 }
 
 func (m *BACnetTimeStampDateTime) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetTimeStampDateTime"); pushErr != nil {
 			return pushErr

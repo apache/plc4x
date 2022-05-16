@@ -134,10 +134,12 @@ func (m *BACnetPropertyWriteDefinition) GetLengthInBytes() uint16 {
 }
 
 func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetPropertyWriteDefinition, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyWriteDefinition"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (propertyIdentifier)
@@ -156,7 +158,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectType 
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -177,7 +179,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectType 
 	// Optional Field (propertyValue) (Can be skipped, if a given expression evaluates to false)
 	var propertyValue *BACnetConstructedData = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -198,7 +200,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectType 
 	// Optional Field (priority) (Can be skipped, if a given expression evaluates to false)
 	var priority *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -225,6 +227,8 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectType 
 }
 
 func (m *BACnetPropertyWriteDefinition) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPropertyWriteDefinition"); pushErr != nil {
 		return pushErr
 	}

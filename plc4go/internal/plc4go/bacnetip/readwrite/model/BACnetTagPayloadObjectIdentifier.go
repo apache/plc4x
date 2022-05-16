@@ -131,10 +131,12 @@ func (m *BACnetTagPayloadObjectIdentifier) GetLengthInBytes() uint16 {
 }
 
 func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadObjectIdentifier, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadObjectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Manual Field (objectType)
@@ -170,6 +172,8 @@ func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BACnet
 }
 
 func (m *BACnetTagPayloadObjectIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadObjectIdentifier"); pushErr != nil {
 		return pushErr
 	}

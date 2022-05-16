@@ -141,10 +141,12 @@ func (m *DeviceConfigurationRequest) GetLengthInBytes() uint16 {
 }
 
 func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*DeviceConfigurationRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (deviceConfigurationRequestDataBlock)
@@ -188,6 +190,8 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 }
 
 func (m *DeviceConfigurationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DeviceConfigurationRequest"); pushErr != nil {
 			return pushErr

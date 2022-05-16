@@ -98,10 +98,12 @@ func (m *KnxGroupAddress) GetLengthInBytes() uint16 {
 }
 
 func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxGroupAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -140,6 +142,8 @@ func (m *KnxGroupAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *KnxGroupAddress) SerializeParent(writeBuffer utils.WriteBuffer, child IKnxGroupAddress, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("KnxGroupAddress"); pushErr != nil {
 		return pushErr
 	}

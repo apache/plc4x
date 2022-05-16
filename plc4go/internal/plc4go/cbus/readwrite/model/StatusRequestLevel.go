@@ -143,10 +143,12 @@ func (m *StatusRequestLevel) GetLengthInBytes() uint16 {
 }
 
 func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (*StatusRequestLevel, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusRequestLevel"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -211,6 +213,8 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (*StatusRequestLevel, 
 }
 
 func (m *StatusRequestLevel) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("StatusRequestLevel"); pushErr != nil {
 			return pushErr

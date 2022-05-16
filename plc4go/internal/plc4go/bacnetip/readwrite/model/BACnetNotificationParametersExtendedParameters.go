@@ -400,10 +400,12 @@ func (m *BACnetNotificationParametersExtendedParameters) GetLengthInBytes() uint
 }
 
 func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetNotificationParametersExtendedParameters, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersExtendedParameters"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
@@ -420,7 +422,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	}
 
 	// Peek Field (peekedTagHeader)
-	currentPos = readBuffer.GetPos()
+	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -445,7 +447,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (nullValue) (Can be skipped, if a given expression evaluates to false)
 	var nullValue *BACnetApplicationTagNull = nil
 	if bool(bool(bool((peekedTagNumber) == (0x0))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -466,7 +468,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (realValue) (Can be skipped, if a given expression evaluates to false)
 	var realValue *BACnetApplicationTagReal = nil
 	if bool(bool(bool((peekedTagNumber) == (0x4))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -487,7 +489,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (unsignedValue) (Can be skipped, if a given expression evaluates to false)
 	var unsignedValue *BACnetApplicationTagUnsignedInteger = nil
 	if bool(bool(bool((peekedTagNumber) == (0x2))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -508,7 +510,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (booleanValue) (Can be skipped, if a given expression evaluates to false)
 	var booleanValue *BACnetApplicationTagBoolean = nil
 	if bool(bool(bool((peekedTagNumber) == (0x1))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -529,7 +531,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (integerValue) (Can be skipped, if a given expression evaluates to false)
 	var integerValue *BACnetApplicationTagSignedInteger = nil
 	if bool(bool(bool((peekedTagNumber) == (0x3))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -550,7 +552,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (doubleValue) (Can be skipped, if a given expression evaluates to false)
 	var doubleValue *BACnetApplicationTagDouble = nil
 	if bool(bool(bool((peekedTagNumber) == (0x5))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -571,7 +573,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (octetStringValue) (Can be skipped, if a given expression evaluates to false)
 	var octetStringValue *BACnetApplicationTagOctetString = nil
 	if bool(bool(bool((peekedTagNumber) == (0x6))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -592,7 +594,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (characterStringValue) (Can be skipped, if a given expression evaluates to false)
 	var characterStringValue *BACnetApplicationTagCharacterString = nil
 	if bool(bool(bool((peekedTagNumber) == (0x7))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -613,7 +615,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (bitStringValue) (Can be skipped, if a given expression evaluates to false)
 	var bitStringValue *BACnetApplicationTagBitString = nil
 	if bool(bool(bool((peekedTagNumber) == (0x8))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -634,7 +636,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (enumeratedValue) (Can be skipped, if a given expression evaluates to false)
 	var enumeratedValue *BACnetApplicationTagEnumerated = nil
 	if bool(bool(bool((peekedTagNumber) == (0x9))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -655,7 +657,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (dateValue) (Can be skipped, if a given expression evaluates to false)
 	var dateValue *BACnetApplicationTagDate = nil
 	if bool(bool(bool((peekedTagNumber) == (0xA))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -676,7 +678,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (timeValue) (Can be skipped, if a given expression evaluates to false)
 	var timeValue *BACnetApplicationTagTime = nil
 	if bool(bool(bool((peekedTagNumber) == (0xB))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -697,7 +699,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (objectIdentifier) (Can be skipped, if a given expression evaluates to false)
 	var objectIdentifier *BACnetApplicationTagObjectIdentifier = nil
 	if bool(bool((peekedTagNumber) == (0xC))) && bool(!(isOpeningTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -718,7 +720,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (reference) (Can be skipped, if a given expression evaluates to false)
 	var reference *BACnetDeviceObjectPropertyReferenceEnclosed = nil
 	if bool(isOpeningTag) && bool(!(isClosingTag)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("reference"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -758,6 +760,8 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 }
 
 func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetNotificationParametersExtendedParameters"); pushErr != nil {
 		return pushErr
 	}

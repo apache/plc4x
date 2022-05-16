@@ -119,10 +119,12 @@ func (m *ReplyNetwork) GetLengthInBytes() uint16 {
 }
 
 func ReplyNetworkParse(readBuffer utils.ReadBuffer) (*ReplyNetwork, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (routeType)
@@ -179,6 +181,8 @@ func ReplyNetworkParse(readBuffer utils.ReadBuffer) (*ReplyNetwork, error) {
 }
 
 func (m *ReplyNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ReplyNetwork"); pushErr != nil {
 		return pushErr
 	}

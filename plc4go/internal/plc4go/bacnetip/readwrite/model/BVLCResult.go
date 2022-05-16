@@ -127,10 +127,12 @@ func (m *BVLCResult) GetLengthInBytes() uint16 {
 }
 
 func BVLCResultParse(readBuffer utils.ReadBuffer) (*BVLCResult, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCResult"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (code)
@@ -160,6 +162,8 @@ func BVLCResultParse(readBuffer utils.ReadBuffer) (*BVLCResult, error) {
 }
 
 func (m *BVLCResult) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BVLCResult"); pushErr != nil {
 			return pushErr

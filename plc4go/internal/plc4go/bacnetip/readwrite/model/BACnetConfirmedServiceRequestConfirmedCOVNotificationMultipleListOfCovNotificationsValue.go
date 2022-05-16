@@ -132,10 +132,12 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovN
 }
 
 func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (propertyIdentifier)
@@ -154,7 +156,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotif
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -188,7 +190,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotif
 	// Optional Field (timeOfChange) (Can be skipped, if a given expression evaluates to false)
 	var timeOfChange *BACnetContextTagTime = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("timeOfChange"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -215,6 +217,8 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotif
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue"); pushErr != nil {
 		return pushErr
 	}

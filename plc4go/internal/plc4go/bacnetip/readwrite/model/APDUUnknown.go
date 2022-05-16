@@ -132,10 +132,12 @@ func (m *APDUUnknown) GetLengthInBytes() uint16 {
 }
 
 func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUUnknown, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUUnknown"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (unknownBytes)
 	numberOfBytesunknownBytes := int(utils.InlineIf(bool(bool((apduLength) > (0))), func() interface{} { return uint16(uint16(uint16(apduLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
@@ -158,6 +160,8 @@ func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUUnkn
 }
 
 func (m *APDUUnknown) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUUnknown"); pushErr != nil {
 			return pushErr

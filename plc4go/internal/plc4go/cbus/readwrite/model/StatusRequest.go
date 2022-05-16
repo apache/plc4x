@@ -113,14 +113,16 @@ func (m *StatusRequest) GetLengthInBytes() uint16 {
 }
 
 func StatusRequestParse(readBuffer utils.ReadBuffer) (*StatusRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Peek Field (statusType)
-	currentPos = readBuffer.GetPos()
+	currentPos = positionAware.GetPos()
 	statusType, _err := readBuffer.ReadByte("statusType")
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'statusType' field")
@@ -162,6 +164,8 @@ func (m *StatusRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *StatusRequest) SerializeParent(writeBuffer utils.WriteBuffer, child IStatusRequest, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("StatusRequest"); pushErr != nil {
 		return pushErr
 	}

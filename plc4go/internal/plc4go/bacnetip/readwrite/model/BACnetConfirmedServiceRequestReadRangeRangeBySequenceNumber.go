@@ -138,10 +138,12 @@ func (m *BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLengthI
 }
 
 func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (referenceSequenceNumber)
@@ -185,6 +187,8 @@ func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(readBuffer
 }
 
 func (m *BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber"); pushErr != nil {
 			return pushErr

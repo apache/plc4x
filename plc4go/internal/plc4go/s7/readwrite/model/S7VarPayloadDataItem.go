@@ -126,10 +126,12 @@ func (m *S7VarPayloadDataItem) GetLengthInBytes() uint16 {
 }
 
 func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataItem, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarPayloadDataItem"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (returnCode)
@@ -198,6 +200,8 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataIt
 }
 
 func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7VarPayloadDataItem"); pushErr != nil {
 		return pushErr
 	}

@@ -108,10 +108,12 @@ func (m *ApduDataExtReadRouterStatusRequest) GetLengthInBytes() uint16 {
 }
 
 func ApduDataExtReadRouterStatusRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtReadRouterStatusRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtReadRouterStatusRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtReadRouterStatusRequest"); closeErr != nil {
@@ -127,6 +129,8 @@ func ApduDataExtReadRouterStatusRequestParse(readBuffer utils.ReadBuffer, length
 }
 
 func (m *ApduDataExtReadRouterStatusRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataExtReadRouterStatusRequest"); pushErr != nil {
 			return pushErr

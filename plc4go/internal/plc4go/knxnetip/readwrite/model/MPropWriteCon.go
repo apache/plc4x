@@ -108,10 +108,12 @@ func (m *MPropWriteCon) GetLengthInBytes() uint16 {
 }
 
 func MPropWriteConParse(readBuffer utils.ReadBuffer, size uint16) (*MPropWriteCon, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("MPropWriteCon"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("MPropWriteCon"); closeErr != nil {
@@ -127,6 +129,8 @@ func MPropWriteConParse(readBuffer utils.ReadBuffer, size uint16) (*MPropWriteCo
 }
 
 func (m *MPropWriteCon) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MPropWriteCon"); pushErr != nil {
 			return pushErr

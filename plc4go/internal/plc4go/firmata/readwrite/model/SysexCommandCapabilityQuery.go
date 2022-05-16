@@ -109,10 +109,12 @@ func (m *SysexCommandCapabilityQuery) GetLengthInBytes() uint16 {
 }
 
 func SysexCommandCapabilityQueryParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandCapabilityQuery, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandCapabilityQuery"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandCapabilityQuery"); closeErr != nil {
@@ -128,6 +130,8 @@ func SysexCommandCapabilityQueryParse(readBuffer utils.ReadBuffer, response bool
 }
 
 func (m *SysexCommandCapabilityQuery) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SysexCommandCapabilityQuery"); pushErr != nil {
 			return pushErr

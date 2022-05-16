@@ -164,10 +164,12 @@ func (m *LDataFrame) GetLengthInBytes() uint16 {
 }
 
 func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataFrame"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (frameType)
@@ -259,6 +261,8 @@ func (m *LDataFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child ILDataFrame, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("LDataFrame"); pushErr != nil {
 		return pushErr
 	}

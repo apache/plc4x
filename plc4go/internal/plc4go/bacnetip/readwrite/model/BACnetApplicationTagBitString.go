@@ -125,10 +125,12 @@ func (m *BACnetApplicationTagBitString) GetLengthInBytes() uint16 {
 }
 
 func BACnetApplicationTagBitStringParse(readBuffer utils.ReadBuffer, header *BACnetTagHeader) (*BACnetApplicationTagBitString, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagBitString"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (payload)
@@ -158,6 +160,8 @@ func BACnetApplicationTagBitStringParse(readBuffer utils.ReadBuffer, header *BAC
 }
 
 func (m *BACnetApplicationTagBitString) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetApplicationTagBitString"); pushErr != nil {
 			return pushErr

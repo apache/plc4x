@@ -129,10 +129,12 @@ func (m *IdentifyReplyCommandGAVPhysicalAddresses) GetLengthInBytes() uint16 {
 }
 
 func IdentifyReplyCommandGAVPhysicalAddressesParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandGAVPhysicalAddresses, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandGAVPhysicalAddresses"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (values)
 	numberOfBytesvalues := int(uint16(16))
@@ -155,6 +157,8 @@ func IdentifyReplyCommandGAVPhysicalAddressesParse(readBuffer utils.ReadBuffer, 
 }
 
 func (m *IdentifyReplyCommandGAVPhysicalAddresses) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandGAVPhysicalAddresses"); pushErr != nil {
 			return pushErr

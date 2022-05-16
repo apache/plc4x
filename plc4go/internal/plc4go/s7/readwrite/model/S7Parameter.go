@@ -102,10 +102,12 @@ func (m *S7Parameter) GetLengthInBytes() uint16 {
 }
 
 func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Parameter"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
@@ -158,6 +160,8 @@ func (m *S7Parameter) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *S7Parameter) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Parameter, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7Parameter"); pushErr != nil {
 		return pushErr
 	}

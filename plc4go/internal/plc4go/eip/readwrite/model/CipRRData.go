@@ -142,10 +142,12 @@ func (m *CipRRData) GetLengthInBytes() uint16 {
 }
 
 func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (*CipRRData, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipRRData"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -203,6 +205,8 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (*CipRRData, error)
 }
 
 func (m *CipRRData) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CipRRData"); pushErr != nil {
 			return pushErr

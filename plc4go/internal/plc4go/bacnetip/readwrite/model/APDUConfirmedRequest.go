@@ -255,10 +255,12 @@ func (m *APDUConfirmedRequest) GetLengthInBytes() uint16 {
 }
 
 func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUConfirmedRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUConfirmedRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (segmentedMessage)
@@ -352,7 +354,7 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 	// Optional Field (serviceRequest) (Can be skipped, if a given expression evaluates to false)
 	var serviceRequest *BACnetConfirmedServiceRequest = nil
 	if !(segmentedMessage) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -414,6 +416,8 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 }
 
 func (m *APDUConfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUConfirmedRequest"); pushErr != nil {
 			return pushErr

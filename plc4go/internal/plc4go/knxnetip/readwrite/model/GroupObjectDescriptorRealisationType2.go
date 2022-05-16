@@ -174,10 +174,12 @@ func (m *GroupObjectDescriptorRealisationType2) GetLengthInBytes() uint16 {
 }
 
 func GroupObjectDescriptorRealisationType2Parse(readBuffer utils.ReadBuffer) (*GroupObjectDescriptorRealisationType2, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType2"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (dataPointer)
@@ -264,6 +266,8 @@ func GroupObjectDescriptorRealisationType2Parse(readBuffer utils.ReadBuffer) (*G
 }
 
 func (m *GroupObjectDescriptorRealisationType2) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("GroupObjectDescriptorRealisationType2"); pushErr != nil {
 		return pushErr
 	}

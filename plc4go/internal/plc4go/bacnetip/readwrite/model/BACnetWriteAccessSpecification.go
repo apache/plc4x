@@ -128,10 +128,12 @@ func (m *BACnetWriteAccessSpecification) GetLengthInBytes() uint16 {
 }
 
 func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (*BACnetWriteAccessSpecification, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetWriteAccessSpecification"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
@@ -202,6 +204,8 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (*BACnetWr
 }
 
 func (m *BACnetWriteAccessSpecification) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetWriteAccessSpecification"); pushErr != nil {
 		return pushErr
 	}

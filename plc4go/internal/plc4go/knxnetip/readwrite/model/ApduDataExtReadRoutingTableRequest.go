@@ -108,10 +108,12 @@ func (m *ApduDataExtReadRoutingTableRequest) GetLengthInBytes() uint16 {
 }
 
 func ApduDataExtReadRoutingTableRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtReadRoutingTableRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtReadRoutingTableRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtReadRoutingTableRequest"); closeErr != nil {
@@ -127,6 +129,8 @@ func ApduDataExtReadRoutingTableRequestParse(readBuffer utils.ReadBuffer, length
 }
 
 func (m *ApduDataExtReadRoutingTableRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataExtReadRoutingTableRequest"); pushErr != nil {
 			return pushErr

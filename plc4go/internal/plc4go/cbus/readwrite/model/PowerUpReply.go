@@ -125,10 +125,12 @@ func (m *PowerUpReply) GetLengthInBytes() uint16 {
 }
 
 func PowerUpReplyParse(readBuffer utils.ReadBuffer) (*PowerUpReply, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("PowerUpReply"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (isA)
@@ -158,6 +160,8 @@ func PowerUpReplyParse(readBuffer utils.ReadBuffer) (*PowerUpReply, error) {
 }
 
 func (m *PowerUpReply) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("PowerUpReply"); pushErr != nil {
 			return pushErr

@@ -142,10 +142,12 @@ func (m *BACnetApplicationTagOctetString) GetLengthInBytes() uint16 {
 }
 
 func BACnetApplicationTagOctetStringParse(readBuffer utils.ReadBuffer, header *BACnetTagHeader) (*BACnetApplicationTagOctetString, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagOctetString"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (payload)
@@ -180,6 +182,8 @@ func BACnetApplicationTagOctetStringParse(readBuffer utils.ReadBuffer, header *B
 }
 
 func (m *BACnetApplicationTagOctetString) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetApplicationTagOctetString"); pushErr != nil {
 			return pushErr

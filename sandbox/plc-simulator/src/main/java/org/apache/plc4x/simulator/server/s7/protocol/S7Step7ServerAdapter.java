@@ -145,7 +145,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                     // TODO should send S7MessageResponseData
                     S7MessageResponseData s7MessageResponse = new S7MessageResponseData(
                         s7TpduReference, s7ParameterSetupCommunicationResponse, null, (short) 0, (short) 0);
-                    ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, s7MessageResponse, true, cotpTpduRef, -1)));
+                    ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, s7MessageResponse, true, cotpTpduRef, Integer.MAX_VALUE)));
 
                     state = State.S7_CONNECTED;
                     break;
@@ -210,7 +210,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
 
                                                 S7Message s7ResponseMessage = new S7MessageUserData(s7TpduReference,
                                                     responseParameterUserData, responsePayloadUserData);
-                                                ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, s7ResponseMessage, true, cotpTpduRef, -1)));
+                                                ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, s7ResponseMessage, true, cotpTpduRef, Integer.MAX_VALUE)));
                                             } else {
                                                 LOGGER.error("Not able to respond to the given request Read SZL with SZL type class " +
                                                     szlId.getTypeClass().name() + " and SZL sublist " + szlId.getSublistList().name());
@@ -293,7 +293,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                 S7PayloadReadVarResponse readVarResponsePayload = new S7PayloadReadVarResponse(payloadItems, null);
                                 S7MessageResponseData response = new S7MessageResponseData(request.getTpduReference(),
                                     readVarResponseParameter, readVarResponsePayload, (short) 0x00, (short) 0x00);
-                                ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, response, true, cotpTpduRef, -1)));
+                                ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, response, true, cotpTpduRef, Integer.MAX_VALUE)));
                             } else if (request.getParameter() instanceof S7ParameterWriteVarRequest) {
                                 S7ParameterWriteVarRequest writeVarRequestParameter =
                                     (S7ParameterWriteVarRequest) request.getParameter();

@@ -94,10 +94,12 @@ func (m *Alpha) GetLengthInBytes() uint16 {
 }
 
 func AlphaParse(readBuffer utils.ReadBuffer) (*Alpha, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("Alpha"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (character)
@@ -116,6 +118,8 @@ func AlphaParse(readBuffer utils.ReadBuffer) (*Alpha, error) {
 }
 
 func (m *Alpha) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Alpha"); pushErr != nil {
 		return pushErr
 	}

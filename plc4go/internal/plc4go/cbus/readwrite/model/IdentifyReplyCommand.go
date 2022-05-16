@@ -98,10 +98,12 @@ func (m *IdentifyReplyCommand) GetLengthInBytes() uint16 {
 }
 
 func IdentifyReplyCommandParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommand, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommand"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -170,6 +172,8 @@ func (m *IdentifyReplyCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *IdentifyReplyCommand) SerializeParent(writeBuffer utils.WriteBuffer, child IIdentifyReplyCommand, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("IdentifyReplyCommand"); pushErr != nil {
 		return pushErr
 	}

@@ -108,10 +108,12 @@ func (m *TDataIndividualInd) GetLengthInBytes() uint16 {
 }
 
 func TDataIndividualIndParse(readBuffer utils.ReadBuffer, size uint16) (*TDataIndividualInd, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("TDataIndividualInd"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("TDataIndividualInd"); closeErr != nil {
@@ -127,6 +129,8 @@ func TDataIndividualIndParse(readBuffer utils.ReadBuffer, size uint16) (*TDataIn
 }
 
 func (m *TDataIndividualInd) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("TDataIndividualInd"); pushErr != nil {
 			return pushErr

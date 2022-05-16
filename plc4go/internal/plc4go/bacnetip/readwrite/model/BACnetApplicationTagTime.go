@@ -125,10 +125,12 @@ func (m *BACnetApplicationTagTime) GetLengthInBytes() uint16 {
 }
 
 func BACnetApplicationTagTimeParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTagTime, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagTime"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (payload)
@@ -158,6 +160,8 @@ func BACnetApplicationTagTimeParse(readBuffer utils.ReadBuffer) (*BACnetApplicat
 }
 
 func (m *BACnetApplicationTagTime) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetApplicationTagTime"); pushErr != nil {
 			return pushErr

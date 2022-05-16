@@ -129,10 +129,12 @@ func (m *BACnetDeviceObjectPropertyReference) GetLengthInBytes() uint16 {
 }
 
 func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BACnetDeviceObjectPropertyReference, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDeviceObjectPropertyReference"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
@@ -164,7 +166,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BAC
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -185,7 +187,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BAC
 	// Optional Field (deviceIdentifier) (Can be skipped, if a given expression evaluates to false)
 	var deviceIdentifier *BACnetContextTagObjectIdentifier = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -212,6 +214,8 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BAC
 }
 
 func (m *BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDeviceObjectPropertyReference"); pushErr != nil {
 		return pushErr
 	}

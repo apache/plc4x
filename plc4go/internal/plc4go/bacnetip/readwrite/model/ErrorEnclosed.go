@@ -117,10 +117,12 @@ func (m *ErrorEnclosed) GetLengthInBytes() uint16 {
 }
 
 func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*ErrorEnclosed, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorEnclosed"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
@@ -171,6 +173,8 @@ func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*ErrorEnc
 }
 
 func (m *ErrorEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ErrorEnclosed"); pushErr != nil {
 		return pushErr
 	}

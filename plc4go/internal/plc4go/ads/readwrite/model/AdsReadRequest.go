@@ -153,10 +153,12 @@ func (m *AdsReadRequest) GetLengthInBytes() uint16 {
 }
 
 func AdsReadRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsReadRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (indexGroup)
@@ -196,6 +198,8 @@ func AdsReadRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, respo
 }
 
 func (m *AdsReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AdsReadRequest"); pushErr != nil {
 			return pushErr

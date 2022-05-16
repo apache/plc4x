@@ -291,10 +291,12 @@ func (m *NPDU) GetLengthInBytes() uint16 {
 }
 
 func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("NPDU"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (protocolVersionNumber)
@@ -423,7 +425,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Optional Field (nlm) (Can be skipped, if a given expression evaluates to false)
 	var nlm *NLM = nil
 	if control.GetMessageTypeFieldPresent() {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("nlm"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -444,7 +446,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Optional Field (apdu) (Can be skipped, if a given expression evaluates to false)
 	var apdu *APDU = nil
 	if !(control.GetMessageTypeFieldPresent()) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -476,6 +478,8 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 }
 
 func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NPDU"); pushErr != nil {
 		return pushErr
 	}

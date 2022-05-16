@@ -108,10 +108,12 @@ func (m *LRawCon) GetLengthInBytes() uint16 {
 }
 
 func LRawConParse(readBuffer utils.ReadBuffer, size uint16) (*LRawCon, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("LRawCon"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("LRawCon"); closeErr != nil {
@@ -127,6 +129,8 @@ func LRawConParse(readBuffer utils.ReadBuffer, size uint16) (*LRawCon, error) {
 }
 
 func (m *LRawCon) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("LRawCon"); pushErr != nil {
 			return pushErr

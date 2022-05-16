@@ -68,6 +68,7 @@ type jsonWriteBuffer struct {
 	rootNode      interface{}
 	doRenderLists bool
 	doRenderAttr  bool
+	pos           uint
 }
 
 type elementContext struct {
@@ -96,11 +97,17 @@ func (j *jsonWriteBuffer) PushContext(logicalName string, writerArgs ...WithWrit
 	return nil
 }
 
+func (j *jsonWriteBuffer) GetPos() uint16 {
+	return uint16(j.pos / 8)
+}
+
 func (j *jsonWriteBuffer) WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error {
+	j.move(1)
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwBitKey, 1, writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteByte(logicalName string, value byte, writerArgs ...WithWriterArgs) error {
+	j.move(8)
 	return j.encodeNode(logicalName, fmt.Sprintf("%#02x", value), j.generateAttr(logicalName, rwByteKey, 8, writerArgs...))
 }
 
@@ -110,60 +117,74 @@ func (j *jsonWriteBuffer) WriteByteArray(logicalName string, data []byte, writer
 		// golang does mess up the formatting on empty arrays
 		hexString = "0x"
 	}
+	j.move(uint(len(data) * 8))
 	return j.encodeNode(logicalName, hexString, j.generateAttr(logicalName, rwByteKey, uint(len(data)*8), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error {
+	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwUintKey, uint(bitLength), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteUint16(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs) error {
+	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwUintKey, uint(bitLength), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteUint32(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs) error {
+	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwUintKey, uint(bitLength), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteUint64(logicalName string, bitLength uint8, value uint64, writerArgs ...WithWriterArgs) error {
+	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwUintKey, uint(bitLength), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteInt8(logicalName string, bitLength uint8, value int8, writerArgs ...WithWriterArgs) error {
+	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwIntKey, uint(bitLength), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteInt16(logicalName string, bitLength uint8, value int16, writerArgs ...WithWriterArgs) error {
+	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwIntKey, uint(bitLength), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteInt32(logicalName string, bitLength uint8, value int32, writerArgs ...WithWriterArgs) error {
+	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwIntKey, uint(bitLength), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteInt64(logicalName string, bitLength uint8, value int64, writerArgs ...WithWriterArgs) error {
+	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwIntKey, uint(bitLength), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteBigInt(logicalName string, bitLength uint8, value *big.Int, writerArgs ...WithWriterArgs) error {
+	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwIntKey, uint(bitLength), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteFloat32(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs) error {
+	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwFloatKey, uint(bitLength), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteFloat64(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs) error {
+	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwFloatKey, uint(bitLength), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error {
+	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwFloatKey, uint(bitLength), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteString(logicalName string, bitLength uint32, encoding string, value string, writerArgs ...WithWriterArgs) error {
 	attr := j.generateAttr(logicalName, rwStringKey, uint(bitLength), writerArgs...)
 	attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwEncodingKey)] = encoding
+	j.move(uint(bitLength))
 	return j.encodeNode(logicalName, value, attr)
 }
 
@@ -262,4 +283,8 @@ func (j *jsonWriteBuffer) generateAttr(logicalName string, dataType string, bitL
 		attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwStringRepresentationKey)] = additionalStringRepresentation
 	}
 	return attr
+}
+
+func (j *jsonWriteBuffer) move(bits uint) {
+	j.pos += bits
 }

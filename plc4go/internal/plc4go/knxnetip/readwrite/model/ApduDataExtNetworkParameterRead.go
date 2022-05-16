@@ -108,10 +108,12 @@ func (m *ApduDataExtNetworkParameterRead) GetLengthInBytes() uint16 {
 }
 
 func ApduDataExtNetworkParameterReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtNetworkParameterRead, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtNetworkParameterRead"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtNetworkParameterRead"); closeErr != nil {
@@ -127,6 +129,8 @@ func ApduDataExtNetworkParameterReadParse(readBuffer utils.ReadBuffer, length ui
 }
 
 func (m *ApduDataExtNetworkParameterRead) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataExtNetworkParameterRead"); pushErr != nil {
 			return pushErr

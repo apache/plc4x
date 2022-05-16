@@ -114,10 +114,12 @@ func (m *KnxAddress) GetLengthInBytes() uint16 {
 }
 
 func KnxAddressParse(readBuffer utils.ReadBuffer) (*KnxAddress, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (mainGroup)
@@ -150,6 +152,8 @@ func KnxAddressParse(readBuffer utils.ReadBuffer) (*KnxAddress, error) {
 }
 
 func (m *KnxAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("KnxAddress"); pushErr != nil {
 		return pushErr
 	}

@@ -74,6 +74,7 @@ type byteWriteBuffer struct {
 	data      *bytes.Buffer
 	writer    *bitio.Writer
 	byteOrder binary.ByteOrder
+	pos       uint
 }
 
 //
@@ -95,7 +96,7 @@ func (wb *byteWriteBuffer) GetByteOrder() binary.ByteOrder {
 }
 
 func (wb *byteWriteBuffer) GetPos() uint16 {
-	return 0
+	return uint16(wb.pos / 8)
 }
 
 func (wb *byteWriteBuffer) GetBytes() []byte {
@@ -107,10 +108,12 @@ func (wb *byteWriteBuffer) GetTotalBytes() uint64 {
 }
 
 func (wb *byteWriteBuffer) WriteBit(_ string, value bool, _ ...WithWriterArgs) error {
+	wb.move(1)
 	return wb.writer.WriteBool(value)
 }
 
 func (wb *byteWriteBuffer) WriteByte(_ string, value byte, _ ...WithWriterArgs) error {
+	wb.move(8)
 	return wb.writer.WriteBits(uint64(value), 8)
 }
 
@@ -121,14 +124,17 @@ func (wb *byteWriteBuffer) WriteByteArray(_ string, data []byte, _ ...WithWriter
 			return err
 		}
 	}
+	wb.move(uint(len(data) * 8))
 	return nil
 }
 
 func (wb *byteWriteBuffer) WriteUint8(_ string, bitLength uint8, value uint8, _ ...WithWriterArgs) error {
+	wb.move(uint(bitLength))
 	return wb.writer.WriteBits(uint64(value), bitLength)
 }
 
 func (wb *byteWriteBuffer) WriteUint16(_ string, bitLength uint8, value uint16, _ ...WithWriterArgs) error {
+	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -138,6 +144,7 @@ func (wb *byteWriteBuffer) WriteUint16(_ string, bitLength uint8, value uint16, 
 }
 
 func (wb *byteWriteBuffer) WriteUint32(_ string, bitLength uint8, value uint32, _ ...WithWriterArgs) error {
+	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -147,6 +154,7 @@ func (wb *byteWriteBuffer) WriteUint32(_ string, bitLength uint8, value uint32, 
 }
 
 func (wb *byteWriteBuffer) WriteUint64(_ string, bitLength uint8, value uint64, _ ...WithWriterArgs) error {
+	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -156,10 +164,12 @@ func (wb *byteWriteBuffer) WriteUint64(_ string, bitLength uint8, value uint64, 
 }
 
 func (wb *byteWriteBuffer) WriteInt8(_ string, bitLength uint8, value int8, _ ...WithWriterArgs) error {
+	wb.move(uint(bitLength))
 	return wb.writer.WriteBits(uint64(value), bitLength)
 }
 
 func (wb *byteWriteBuffer) WriteInt16(_ string, bitLength uint8, value int16, _ ...WithWriterArgs) error {
+	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -169,6 +179,7 @@ func (wb *byteWriteBuffer) WriteInt16(_ string, bitLength uint8, value int16, _ 
 }
 
 func (wb *byteWriteBuffer) WriteInt32(_ string, bitLength uint8, value int32, _ ...WithWriterArgs) error {
+	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -178,6 +189,7 @@ func (wb *byteWriteBuffer) WriteInt32(_ string, bitLength uint8, value int32, _ 
 }
 
 func (wb *byteWriteBuffer) WriteInt64(_ string, bitLength uint8, value int64, _ ...WithWriterArgs) error {
+	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -187,10 +199,12 @@ func (wb *byteWriteBuffer) WriteInt64(_ string, bitLength uint8, value int64, _ 
 }
 
 func (wb *byteWriteBuffer) WriteBigInt(_ string, bitLength uint8, value *big.Int, _ ...WithWriterArgs) error {
+	wb.move(uint(bitLength))
 	return errors.New("not implemented yet")
 }
 
 func (wb *byteWriteBuffer) WriteFloat32(_ string, bitLength uint8, value float32, _ ...WithWriterArgs) error {
+	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -201,6 +215,7 @@ func (wb *byteWriteBuffer) WriteFloat32(_ string, bitLength uint8, value float32
 }
 
 func (wb *byteWriteBuffer) WriteFloat64(_ string, bitLength uint8, value float64, _ ...WithWriterArgs) error {
+	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -211,10 +226,12 @@ func (wb *byteWriteBuffer) WriteFloat64(_ string, bitLength uint8, value float64
 }
 
 func (wb *byteWriteBuffer) WriteBigFloat(_ string, bitLength uint8, value *big.Float, _ ...WithWriterArgs) error {
+	wb.move(uint(bitLength))
 	return errors.New("not implemented yet")
 }
 
 func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, encoding string, value string, _ ...WithWriterArgs) error {
+	wb.move(uint(bitLength))
 	// TODO: the implementation completely ignores encoding for now. Fix this
 	for _, theByte := range []byte(value) {
 		wb.writer.TryWriteByte(theByte)
@@ -229,4 +246,8 @@ func (wb *byteWriteBuffer) WriteVirtual(logicalName string, value interface{}, w
 
 func (wb *byteWriteBuffer) PopContext(_ string, _ ...WithWriterArgs) error {
 	return nil
+}
+
+func (wb *byteWriteBuffer) move(bits uint) {
+	wb.pos += bits
 }

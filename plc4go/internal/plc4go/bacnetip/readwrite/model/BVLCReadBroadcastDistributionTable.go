@@ -105,10 +105,12 @@ func (m *BVLCReadBroadcastDistributionTable) GetLengthInBytes() uint16 {
 }
 
 func BVLCReadBroadcastDistributionTableParse(readBuffer utils.ReadBuffer) (*BVLCReadBroadcastDistributionTable, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCReadBroadcastDistributionTable"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BVLCReadBroadcastDistributionTable"); closeErr != nil {
@@ -124,6 +126,8 @@ func BVLCReadBroadcastDistributionTableParse(readBuffer utils.ReadBuffer) (*BVLC
 }
 
 func (m *BVLCReadBroadcastDistributionTable) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BVLCReadBroadcastDistributionTable"); pushErr != nil {
 			return pushErr

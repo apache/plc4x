@@ -136,10 +136,12 @@ func (m *CipExchange) GetLengthInBytes() uint16 {
 }
 
 func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExchange, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipExchange"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Const Field (itemCount)
@@ -198,6 +200,8 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 }
 
 func (m *CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CipExchange"); pushErr != nil {
 		return pushErr
 	}

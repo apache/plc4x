@@ -100,10 +100,12 @@ func (m *CEMIAdditionalInformation) GetLengthInBytes() uint16 {
 }
 
 func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformation"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
@@ -146,6 +148,8 @@ func (m *CEMIAdditionalInformation) Serialize(writeBuffer utils.WriteBuffer) err
 }
 
 func (m *CEMIAdditionalInformation) SerializeParent(writeBuffer utils.WriteBuffer, child ICEMIAdditionalInformation, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CEMIAdditionalInformation"); pushErr != nil {
 		return pushErr
 	}

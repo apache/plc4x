@@ -127,10 +127,12 @@ func (m *KnxNetIpDeviceManagement) GetLengthInBytes() uint16 {
 }
 
 func KnxNetIpDeviceManagementParse(readBuffer utils.ReadBuffer) (*KnxNetIpDeviceManagement, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpDeviceManagement"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (version)
@@ -154,6 +156,8 @@ func KnxNetIpDeviceManagementParse(readBuffer utils.ReadBuffer) (*KnxNetIpDevice
 }
 
 func (m *KnxNetIpDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("KnxNetIpDeviceManagement"); pushErr != nil {
 			return pushErr

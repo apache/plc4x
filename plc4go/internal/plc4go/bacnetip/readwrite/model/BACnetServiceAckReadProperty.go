@@ -168,10 +168,12 @@ func (m *BACnetServiceAckReadProperty) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckReadProperty, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadProperty"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
@@ -203,7 +205,7 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer, serviceReque
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -224,7 +226,7 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer, serviceReque
 	// Optional Field (values) (Can be skipped, if a given expression evaluates to false)
 	var values *BACnetConstructedData = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("values"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -259,6 +261,8 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer, serviceReque
 }
 
 func (m *BACnetServiceAckReadProperty) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckReadProperty"); pushErr != nil {
 			return pushErr

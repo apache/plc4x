@@ -141,10 +141,12 @@ func (m *BACnetServiceAckGetEventInformation) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckGetEventInformation, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEventInformation"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (listOfEventSummaries)
@@ -188,6 +190,8 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 }
 
 func (m *BACnetServiceAckGetEventInformation) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckGetEventInformation"); pushErr != nil {
 			return pushErr

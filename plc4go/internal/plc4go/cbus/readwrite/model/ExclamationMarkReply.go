@@ -125,10 +125,12 @@ func (m *ExclamationMarkReply) GetLengthInBytes() uint16 {
 }
 
 func ExclamationMarkReplyParse(readBuffer utils.ReadBuffer) (*ExclamationMarkReply, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ExclamationMarkReply"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (isA)
@@ -158,6 +160,8 @@ func ExclamationMarkReplyParse(readBuffer utils.ReadBuffer) (*ExclamationMarkRep
 }
 
 func (m *ExclamationMarkReply) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ExclamationMarkReply"); pushErr != nil {
 			return pushErr

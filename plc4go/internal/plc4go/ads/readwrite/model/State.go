@@ -178,10 +178,12 @@ func (m *State) GetLengthInBytes() uint16 {
 }
 
 func StateParse(readBuffer utils.ReadBuffer) (*State, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("State"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (initCommand)
@@ -270,6 +272,8 @@ func StateParse(readBuffer utils.ReadBuffer) (*State, error) {
 }
 
 func (m *State) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("State"); pushErr != nil {
 		return pushErr
 	}

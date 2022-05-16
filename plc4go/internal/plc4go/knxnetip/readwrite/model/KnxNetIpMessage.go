@@ -127,10 +127,12 @@ func (m *KnxNetIpMessage) GetLengthInBytes() uint16 {
 }
 
 func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpMessage"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -224,6 +226,8 @@ func (m *KnxNetIpMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child IKnxNetIpMessage, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("KnxNetIpMessage"); pushErr != nil {
 		return pushErr
 	}

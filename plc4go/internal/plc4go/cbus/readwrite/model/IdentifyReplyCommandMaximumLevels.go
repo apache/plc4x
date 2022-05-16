@@ -105,10 +105,12 @@ func (m *IdentifyReplyCommandMaximumLevels) GetLengthInBytes() uint16 {
 }
 
 func IdentifyReplyCommandMaximumLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandMaximumLevels, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandMaximumLevels"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandMaximumLevels"); closeErr != nil {
@@ -124,6 +126,8 @@ func IdentifyReplyCommandMaximumLevelsParse(readBuffer utils.ReadBuffer, attribu
 }
 
 func (m *IdentifyReplyCommandMaximumLevels) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandMaximumLevels"); pushErr != nil {
 			return pushErr

@@ -145,10 +145,12 @@ func (m *FirmataCommandSetDigitalPinValue) GetLengthInBytes() uint16 {
 }
 
 func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommandSetDigitalPinValue, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSetDigitalPinValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (pin)
@@ -194,6 +196,8 @@ func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response
 }
 
 func (m *FirmataCommandSetDigitalPinValue) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("FirmataCommandSetDigitalPinValue"); pushErr != nil {
 			return pushErr

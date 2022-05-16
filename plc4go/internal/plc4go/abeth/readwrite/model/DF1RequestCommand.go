@@ -100,10 +100,12 @@ func (m *DF1RequestCommand) GetLengthInBytes() uint16 {
 }
 
 func DF1RequestCommandParse(readBuffer utils.ReadBuffer) (*DF1RequestCommand, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1RequestCommand"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (functionCode) (Used as input to a switch field)
@@ -144,6 +146,8 @@ func (m *DF1RequestCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *DF1RequestCommand) SerializeParent(writeBuffer utils.WriteBuffer, child IDF1RequestCommand, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DF1RequestCommand"); pushErr != nil {
 		return pushErr
 	}

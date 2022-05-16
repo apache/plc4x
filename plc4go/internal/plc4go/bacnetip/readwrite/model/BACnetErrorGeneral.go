@@ -127,10 +127,12 @@ func (m *BACnetErrorGeneral) GetLengthInBytes() uint16 {
 }
 
 func BACnetErrorGeneralParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (*BACnetErrorGeneral, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetErrorGeneral"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (error)
@@ -160,6 +162,8 @@ func BACnetErrorGeneralParse(readBuffer utils.ReadBuffer, errorChoice BACnetConf
 }
 
 func (m *BACnetErrorGeneral) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetErrorGeneral"); pushErr != nil {
 			return pushErr

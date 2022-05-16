@@ -150,14 +150,16 @@ func (m *BACnetConfirmedServiceRequestReadRangeRange) GetLengthInBytes() uint16 
 }
 
 func BACnetConfirmedServiceRequestReadRangeRangeParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequestReadRangeRange, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRange"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Peek Field (peekedTagHeader)
-	currentPos = readBuffer.GetPos()
+	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -231,6 +233,8 @@ func (m *BACnetConfirmedServiceRequestReadRangeRange) Serialize(writeBuffer util
 }
 
 func (m *BACnetConfirmedServiceRequestReadRangeRange) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetConfirmedServiceRequestReadRangeRange, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestReadRangeRange"); pushErr != nil {
 		return pushErr
 	}

@@ -117,10 +117,12 @@ func (m *BACnetDateTimeEnclosed) GetLengthInBytes() uint16 {
 }
 
 func BACnetDateTimeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetDateTimeEnclosed, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDateTimeEnclosed"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
@@ -171,6 +173,8 @@ func BACnetDateTimeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (
 }
 
 func (m *BACnetDateTimeEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDateTimeEnclosed"); pushErr != nil {
 		return pushErr
 	}

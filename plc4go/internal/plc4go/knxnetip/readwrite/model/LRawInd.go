@@ -108,10 +108,12 @@ func (m *LRawInd) GetLengthInBytes() uint16 {
 }
 
 func LRawIndParse(readBuffer utils.ReadBuffer, size uint16) (*LRawInd, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("LRawInd"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("LRawInd"); closeErr != nil {
@@ -127,6 +129,8 @@ func LRawIndParse(readBuffer utils.ReadBuffer, size uint16) (*LRawInd, error) {
 }
 
 func (m *LRawInd) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("LRawInd"); pushErr != nil {
 			return pushErr

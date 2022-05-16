@@ -127,10 +127,12 @@ func (m *KnxNetRemoteLogging) GetLengthInBytes() uint16 {
 }
 
 func KnxNetRemoteLoggingParse(readBuffer utils.ReadBuffer) (*KnxNetRemoteLogging, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetRemoteLogging"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (version)
@@ -154,6 +156,8 @@ func KnxNetRemoteLoggingParse(readBuffer utils.ReadBuffer) (*KnxNetRemoteLogging
 }
 
 func (m *KnxNetRemoteLogging) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("KnxNetRemoteLogging"); pushErr != nil {
 			return pushErr

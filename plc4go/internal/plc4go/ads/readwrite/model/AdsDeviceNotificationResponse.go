@@ -109,10 +109,12 @@ func (m *AdsDeviceNotificationResponse) GetLengthInBytes() uint16 {
 }
 
 func AdsDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsDeviceNotificationResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("AdsDeviceNotificationResponse"); closeErr != nil {
@@ -128,6 +130,8 @@ func AdsDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandId C
 }
 
 func (m *AdsDeviceNotificationResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AdsDeviceNotificationResponse"); pushErr != nil {
 			return pushErr

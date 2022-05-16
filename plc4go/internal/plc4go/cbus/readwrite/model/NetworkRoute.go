@@ -109,10 +109,12 @@ func (m *NetworkRoute) GetLengthInBytes() uint16 {
 }
 
 func NetworkRouteParse(readBuffer utils.ReadBuffer) (*NetworkRoute, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("NetworkRoute"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (routeType)
@@ -156,6 +158,8 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (*NetworkRoute, error) {
 }
 
 func (m *NetworkRoute) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NetworkRoute"); pushErr != nil {
 		return pushErr
 	}

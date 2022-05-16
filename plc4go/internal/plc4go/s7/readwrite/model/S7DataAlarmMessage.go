@@ -127,10 +127,12 @@ func (m *S7DataAlarmMessage) GetLengthInBytes() uint16 {
 }
 
 func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (*S7DataAlarmMessage, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7DataAlarmMessage"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Const Field (functionId)
@@ -185,6 +187,8 @@ func (m *S7DataAlarmMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *S7DataAlarmMessage) SerializeParent(writeBuffer utils.WriteBuffer, child IS7DataAlarmMessage, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7DataAlarmMessage"); pushErr != nil {
 		return pushErr
 	}

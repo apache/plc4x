@@ -136,10 +136,12 @@ func (m *CALDataRequestGetStatus) GetLengthInBytes() uint16 {
 }
 
 func CALDataRequestGetStatusParse(readBuffer utils.ReadBuffer) (*CALDataRequestGetStatus, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataRequestGetStatus"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (paramNo)
@@ -171,6 +173,8 @@ func CALDataRequestGetStatusParse(readBuffer utils.ReadBuffer) (*CALDataRequestG
 }
 
 func (m *CALDataRequestGetStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CALDataRequestGetStatus"); pushErr != nil {
 			return pushErr

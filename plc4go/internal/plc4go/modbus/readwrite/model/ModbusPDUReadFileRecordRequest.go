@@ -142,10 +142,12 @@ func (m *ModbusPDUReadFileRecordRequest) GetLengthInBytes() uint16 {
 }
 
 func ModbusPDUReadFileRecordRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUReadFileRecordRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFileRecordRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -163,8 +165,8 @@ func ModbusPDUReadFileRecordRequestParse(readBuffer utils.ReadBuffer, response b
 	items := make([]*ModbusPDUReadFileRecordRequestItem, 0)
 	{
 		_itemsLength := byteCount
-		_itemsEndPos := readBuffer.GetPos() + uint16(_itemsLength)
-		for readBuffer.GetPos() < _itemsEndPos {
+		_itemsEndPos := positionAware.GetPos() + uint16(_itemsLength)
+		for positionAware.GetPos() < _itemsEndPos {
 			_item, _err := ModbusPDUReadFileRecordRequestItemParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field")
@@ -190,6 +192,8 @@ func ModbusPDUReadFileRecordRequestParse(readBuffer utils.ReadBuffer, response b
 }
 
 func (m *ModbusPDUReadFileRecordRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	itemsArraySizeInBytes := func(items []*ModbusPDUReadFileRecordRequestItem) uint32 {
 		var sizeInBytes uint32 = 0
 		for _, v := range items {

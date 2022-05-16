@@ -108,10 +108,12 @@ func (m *ApduDataRestart) GetLengthInBytes() uint16 {
 }
 
 func ApduDataRestartParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataRestart, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataRestart"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataRestart"); closeErr != nil {
@@ -127,6 +129,8 @@ func ApduDataRestartParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduD
 }
 
 func (m *ApduDataRestart) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataRestart"); pushErr != nil {
 			return pushErr

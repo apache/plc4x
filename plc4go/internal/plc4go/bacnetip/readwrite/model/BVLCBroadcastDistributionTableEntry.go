@@ -118,10 +118,12 @@ func (m *BVLCBroadcastDistributionTableEntry) GetLengthInBytes() uint16 {
 }
 
 func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (*BVLCBroadcastDistributionTableEntry, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCBroadcastDistributionTableEntry"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (ip)
@@ -178,6 +180,8 @@ func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (*BVL
 }
 
 func (m *BVLCBroadcastDistributionTableEntry) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BVLCBroadcastDistributionTableEntry"); pushErr != nil {
 		return pushErr
 	}

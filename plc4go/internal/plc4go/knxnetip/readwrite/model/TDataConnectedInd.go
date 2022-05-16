@@ -108,10 +108,12 @@ func (m *TDataConnectedInd) GetLengthInBytes() uint16 {
 }
 
 func TDataConnectedIndParse(readBuffer utils.ReadBuffer, size uint16) (*TDataConnectedInd, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("TDataConnectedInd"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("TDataConnectedInd"); closeErr != nil {
@@ -127,6 +129,8 @@ func TDataConnectedIndParse(readBuffer utils.ReadBuffer, size uint16) (*TDataCon
 }
 
 func (m *TDataConnectedInd) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("TDataConnectedInd"); pushErr != nil {
 			return pushErr

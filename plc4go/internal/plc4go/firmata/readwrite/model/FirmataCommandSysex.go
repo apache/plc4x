@@ -134,10 +134,12 @@ func (m *FirmataCommandSysex) GetLengthInBytes() uint16 {
 }
 
 func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommandSysex, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSysex"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (command)
@@ -181,6 +183,8 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (*Firm
 }
 
 func (m *FirmataCommandSysex) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("FirmataCommandSysex"); pushErr != nil {
 			return pushErr

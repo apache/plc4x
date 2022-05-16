@@ -125,10 +125,12 @@ func (m *SALDataTerminateRamp) GetLengthInBytes() uint16 {
 }
 
 func SALDataTerminateRampParse(readBuffer utils.ReadBuffer) (*SALDataTerminateRamp, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataTerminateRamp"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (group)
@@ -152,6 +154,8 @@ func SALDataTerminateRampParse(readBuffer utils.ReadBuffer) (*SALDataTerminateRa
 }
 
 func (m *SALDataTerminateRamp) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataTerminateRamp"); pushErr != nil {
 			return pushErr

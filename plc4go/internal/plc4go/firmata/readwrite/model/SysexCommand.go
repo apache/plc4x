@@ -102,10 +102,12 @@ func (m *SysexCommand) GetLengthInBytes() uint16 {
 }
 
 func SysexCommandParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommand"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
@@ -174,6 +176,8 @@ func (m *SysexCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *SysexCommand) SerializeParent(writeBuffer utils.WriteBuffer, child ISysexCommand, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SysexCommand"); pushErr != nil {
 		return pushErr
 	}

@@ -128,10 +128,12 @@ func (m *CBusCommandPointToPoint) GetLengthInBytes() uint16 {
 }
 
 func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommandPointToPoint, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandPointToPoint"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (command)
@@ -161,6 +163,8 @@ func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 }
 
 func (m *CBusCommandPointToPoint) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CBusCommandPointToPoint"); pushErr != nil {
 			return pushErr

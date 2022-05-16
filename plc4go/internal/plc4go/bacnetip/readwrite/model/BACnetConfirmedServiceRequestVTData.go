@@ -109,10 +109,12 @@ func (m *BACnetConfirmedServiceRequestVTData) GetLengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestVTData, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTData"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -133,6 +135,8 @@ func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, servi
 }
 
 func (m *BACnetConfirmedServiceRequestVTData) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestVTData"); pushErr != nil {
 			return pushErr

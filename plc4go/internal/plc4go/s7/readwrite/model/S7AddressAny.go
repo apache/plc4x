@@ -186,10 +186,12 @@ func (m *S7AddressAny) GetLengthInBytes() uint16 {
 }
 
 func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7AddressAny, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7AddressAny"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
@@ -282,6 +284,8 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7AddressAny, error) {
 }
 
 func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7AddressAny"); pushErr != nil {
 			return pushErr

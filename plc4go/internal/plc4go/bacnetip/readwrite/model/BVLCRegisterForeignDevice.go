@@ -127,10 +127,12 @@ func (m *BVLCRegisterForeignDevice) GetLengthInBytes() uint16 {
 }
 
 func BVLCRegisterForeignDeviceParse(readBuffer utils.ReadBuffer) (*BVLCRegisterForeignDevice, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCRegisterForeignDevice"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ttl)
@@ -154,6 +156,8 @@ func BVLCRegisterForeignDeviceParse(readBuffer utils.ReadBuffer) (*BVLCRegisterF
 }
 
 func (m *BVLCRegisterForeignDevice) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BVLCRegisterForeignDevice"); pushErr != nil {
 			return pushErr

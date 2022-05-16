@@ -109,10 +109,12 @@ func (m *S7MessageUserData) GetLengthInBytes() uint16 {
 }
 
 func S7MessageUserDataParse(readBuffer utils.ReadBuffer) (*S7MessageUserData, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7MessageUserData"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("S7MessageUserData"); closeErr != nil {
@@ -128,6 +130,8 @@ func S7MessageUserDataParse(readBuffer utils.ReadBuffer) (*S7MessageUserData, er
 }
 
 func (m *S7MessageUserData) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7MessageUserData"); pushErr != nil {
 			return pushErr

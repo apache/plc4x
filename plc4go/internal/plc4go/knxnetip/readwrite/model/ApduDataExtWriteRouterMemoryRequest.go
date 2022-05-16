@@ -108,10 +108,12 @@ func (m *ApduDataExtWriteRouterMemoryRequest) GetLengthInBytes() uint16 {
 }
 
 func ApduDataExtWriteRouterMemoryRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtWriteRouterMemoryRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtWriteRouterMemoryRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtWriteRouterMemoryRequest"); closeErr != nil {
@@ -127,6 +129,8 @@ func ApduDataExtWriteRouterMemoryRequestParse(readBuffer utils.ReadBuffer, lengt
 }
 
 func (m *ApduDataExtWriteRouterMemoryRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataExtWriteRouterMemoryRequest"); pushErr != nil {
 			return pushErr

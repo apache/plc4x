@@ -141,10 +141,12 @@ func (m *BACnetServiceAckAtomicReadFile) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckAtomicReadFile, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFile"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (endOfFile)
@@ -188,6 +190,8 @@ func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceReq
 }
 
 func (m *BACnetServiceAckAtomicReadFile) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckAtomicReadFile"); pushErr != nil {
 			return pushErr

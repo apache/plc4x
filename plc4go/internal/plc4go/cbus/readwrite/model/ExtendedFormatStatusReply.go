@@ -177,10 +177,12 @@ func (m *ExtendedFormatStatusReply) GetLengthInBytes() uint16 {
 }
 
 func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedFormatStatusReply, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ExtendedFormatStatusReply"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (statusHeader)
@@ -288,6 +290,8 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 }
 
 func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ExtendedFormatStatusReply"); pushErr != nil {
 		return pushErr
 	}

@@ -336,10 +336,12 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBytes() uint1
 }
 
 func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandExtendedDiagnosticSummary, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandExtendedDiagnosticSummary"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lowApplication)
@@ -561,6 +563,8 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 }
 
 func (m *IdentifyReplyCommandExtendedDiagnosticSummary) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandExtendedDiagnosticSummary"); pushErr != nil {
 			return pushErr

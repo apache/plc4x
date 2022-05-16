@@ -105,10 +105,12 @@ func (m *IdentifyReplyCommandOutputUnitSummary) GetLengthInBytes() uint16 {
 }
 
 func IdentifyReplyCommandOutputUnitSummaryParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandOutputUnitSummary, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandOutputUnitSummary"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandOutputUnitSummary"); closeErr != nil {
@@ -124,6 +126,8 @@ func IdentifyReplyCommandOutputUnitSummaryParse(readBuffer utils.ReadBuffer, att
 }
 
 func (m *IdentifyReplyCommandOutputUnitSummary) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandOutputUnitSummary"); pushErr != nil {
 			return pushErr

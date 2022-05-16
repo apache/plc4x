@@ -255,10 +255,12 @@ func (m *BACnetTagHeader) GetLengthInBytes() uint16 {
 }
 
 func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (*BACnetTagHeader, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (tagNumber)
@@ -366,6 +368,8 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (*BACnetTagHeader, error)
 }
 
 func (m *BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagHeader"); pushErr != nil {
 		return pushErr
 	}

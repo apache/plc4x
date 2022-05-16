@@ -127,10 +127,12 @@ func (m *KnxNetIpRouting) GetLengthInBytes() uint16 {
 }
 
 func KnxNetIpRoutingParse(readBuffer utils.ReadBuffer) (*KnxNetIpRouting, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpRouting"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (version)
@@ -154,6 +156,8 @@ func KnxNetIpRoutingParse(readBuffer utils.ReadBuffer) (*KnxNetIpRouting, error)
 }
 
 func (m *KnxNetIpRouting) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("KnxNetIpRouting"); pushErr != nil {
 			return pushErr

@@ -155,10 +155,12 @@ func (m *EipPacket) GetLengthInBytes() uint16 {
 }
 
 func EipPacketParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipPacket"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (command) (Used as input to a switch field)
@@ -250,6 +252,8 @@ func (m *EipPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child IEipPacket, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("EipPacket"); pushErr != nil {
 		return pushErr
 	}

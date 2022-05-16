@@ -106,10 +106,12 @@ func (m *BACnetAddress) GetLengthInBytes() uint16 {
 }
 
 func BACnetAddressParse(readBuffer utils.ReadBuffer) (*BACnetAddress, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (address)
@@ -147,6 +149,8 @@ func BACnetAddressParse(readBuffer utils.ReadBuffer) (*BACnetAddress, error) {
 }
 
 func (m *BACnetAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAddress"); pushErr != nil {
 		return pushErr
 	}

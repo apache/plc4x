@@ -182,10 +182,12 @@ func (m *MultipleServiceResponse) GetLengthInBytes() uint16 {
 }
 
 func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*MultipleServiceResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("MultipleServiceResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -266,6 +268,8 @@ func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16
 }
 
 func (m *MultipleServiceResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MultipleServiceResponse"); pushErr != nil {
 			return pushErr

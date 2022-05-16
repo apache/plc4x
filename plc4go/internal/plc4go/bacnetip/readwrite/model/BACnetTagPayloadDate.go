@@ -221,10 +221,12 @@ func (m *BACnetTagPayloadDate) GetLengthInBytes() uint16 {
 }
 
 func BACnetTagPayloadDateParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadDate, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadDate"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Virtual field
@@ -319,6 +321,8 @@ func BACnetTagPayloadDateParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadDa
 }
 
 func (m *BACnetTagPayloadDate) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadDate"); pushErr != nil {
 		return pushErr
 	}

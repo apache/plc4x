@@ -164,10 +164,12 @@ func (m *CBusOptions) GetLengthInBytes() uint16 {
 }
 
 func CBusOptionsParse(readBuffer utils.ReadBuffer) (*CBusOptions, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusOptions"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (connect)
@@ -235,6 +237,8 @@ func CBusOptionsParse(readBuffer utils.ReadBuffer) (*CBusOptions, error) {
 }
 
 func (m *CBusOptions) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusOptions"); pushErr != nil {
 		return pushErr
 	}

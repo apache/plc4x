@@ -104,10 +104,12 @@ func (m *CALReplyShort) GetLengthInBytes() uint16 {
 }
 
 func CALReplyShortParse(readBuffer utils.ReadBuffer) (*CALReplyShort, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReplyShort"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("CALReplyShort"); closeErr != nil {
@@ -123,6 +125,8 @@ func CALReplyShortParse(readBuffer utils.ReadBuffer) (*CALReplyShort, error) {
 }
 
 func (m *CALReplyShort) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CALReplyShort"); pushErr != nil {
 			return pushErr

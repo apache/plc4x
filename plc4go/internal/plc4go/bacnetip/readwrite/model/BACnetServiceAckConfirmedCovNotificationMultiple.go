@@ -109,10 +109,12 @@ func (m *BACnetServiceAckConfirmedCovNotificationMultiple) GetLengthInBytes() ui
 }
 
 func BACnetServiceAckConfirmedCovNotificationMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckConfirmedCovNotificationMultiple, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckConfirmedCovNotificationMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -133,6 +135,8 @@ func BACnetServiceAckConfirmedCovNotificationMultipleParse(readBuffer utils.Read
 }
 
 func (m *BACnetServiceAckConfirmedCovNotificationMultiple) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckConfirmedCovNotificationMultiple"); pushErr != nil {
 			return pushErr

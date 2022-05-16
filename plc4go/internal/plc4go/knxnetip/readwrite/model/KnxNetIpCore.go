@@ -127,10 +127,12 @@ func (m *KnxNetIpCore) GetLengthInBytes() uint16 {
 }
 
 func KnxNetIpCoreParse(readBuffer utils.ReadBuffer) (*KnxNetIpCore, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpCore"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (version)
@@ -154,6 +156,8 @@ func KnxNetIpCoreParse(readBuffer utils.ReadBuffer) (*KnxNetIpCore, error) {
 }
 
 func (m *KnxNetIpCore) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("KnxNetIpCore"); pushErr != nil {
 			return pushErr

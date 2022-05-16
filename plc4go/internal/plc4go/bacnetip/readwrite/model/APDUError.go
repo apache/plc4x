@@ -156,10 +156,12 @@ func (m *APDUError) GetLengthInBytes() uint16 {
 }
 
 func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUError, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUError"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -225,6 +227,8 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUError,
 }
 
 func (m *APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUError"); pushErr != nil {
 			return pushErr

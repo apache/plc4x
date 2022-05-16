@@ -108,10 +108,12 @@ func (m *LRawReq) GetLengthInBytes() uint16 {
 }
 
 func LRawReqParse(readBuffer utils.ReadBuffer, size uint16) (*LRawReq, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("LRawReq"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("LRawReq"); closeErr != nil {
@@ -127,6 +129,8 @@ func LRawReqParse(readBuffer utils.ReadBuffer, size uint16) (*LRawReq, error) {
 }
 
 func (m *LRawReq) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("LRawReq"); pushErr != nil {
 			return pushErr

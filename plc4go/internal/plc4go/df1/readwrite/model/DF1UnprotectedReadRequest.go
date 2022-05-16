@@ -141,10 +141,12 @@ func (m *DF1UnprotectedReadRequest) GetLengthInBytes() uint16 {
 }
 
 func DF1UnprotectedReadRequestParse(readBuffer utils.ReadBuffer) (*DF1UnprotectedReadRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1UnprotectedReadRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (address)
@@ -176,6 +178,8 @@ func DF1UnprotectedReadRequestParse(readBuffer utils.ReadBuffer) (*DF1Unprotecte
 }
 
 func (m *DF1UnprotectedReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DF1UnprotectedReadRequest"); pushErr != nil {
 			return pushErr

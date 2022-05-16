@@ -39,17 +39,17 @@ import java.util.Optional;
 
 public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
 
-    Deque<String> stack;
+    private final Deque<String> stack;
 
-    ByteArrayOutputStream byteArrayOutputStream;
+    private final ByteArrayOutputStream byteArrayOutputStream;
 
-    XMLEventFactory xmlEventFactory;
+    private final XMLEventFactory xmlEventFactory;
 
-    XMLEventWriter xmlEventWriter;
+    private final XMLEventWriter xmlEventWriter;
 
-    int pos = 1;
+    private int pos = 1;
 
-    int depth = 0;
+    private int depth = 0;
 
     public WriteBufferXmlBased() {
         byteArrayOutputStream = new ByteArrayOutputStream();

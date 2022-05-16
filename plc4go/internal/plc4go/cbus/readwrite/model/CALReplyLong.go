@@ -216,10 +216,12 @@ func (m *CALReplyLong) GetLengthInBytes() uint16 {
 }
 
 func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReplyLong"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -237,7 +239,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 	}
 
 	// Peek Field (terminatingByte)
-	currentPos = readBuffer.GetPos()
+	currentPos = positionAware.GetPos()
 	terminatingByte, _err := readBuffer.ReadUint32("terminatingByte", 24)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'terminatingByte' field")
@@ -253,7 +255,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 	// Optional Field (unitAddress) (Can be skipped, if a given expression evaluates to false)
 	var unitAddress *UnitAddress = nil
 	if isUnitAddress {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -274,7 +276,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 	// Optional Field (bridgeAddress) (Can be skipped, if a given expression evaluates to false)
 	var bridgeAddress *BridgeAddress = nil
 	if !(isUnitAddress) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -323,7 +325,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 	// Optional Field (replyNetwork) (Can be skipped, if a given expression evaluates to false)
 	var replyNetwork *ReplyNetwork = nil
 	if !(isUnitAddress) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("replyNetwork"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -360,6 +362,8 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 }
 
 func (m *CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CALReplyLong"); pushErr != nil {
 			return pushErr

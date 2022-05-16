@@ -222,10 +222,12 @@ func (m *APDUComplexAck) GetLengthInBytes() uint16 {
 }
 
 func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUComplexAck, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUComplexAck"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (segmentedMessage)
@@ -286,7 +288,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUC
 	// Optional Field (serviceAck) (Can be skipped, if a given expression evaluates to false)
 	var serviceAck *BACnetServiceAck = nil
 	if !(segmentedMessage) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("serviceAck"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -345,6 +347,8 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUC
 }
 
 func (m *APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUComplexAck"); pushErr != nil {
 			return pushErr

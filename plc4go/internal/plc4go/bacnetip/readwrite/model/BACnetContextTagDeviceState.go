@@ -133,10 +133,12 @@ func (m *BACnetContextTagDeviceState) GetLengthInBytes() uint16 {
 }
 
 func BACnetContextTagDeviceStateParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool) (*BACnetContextTagDeviceState, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagDeviceState"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -171,6 +173,8 @@ func BACnetContextTagDeviceStateParse(readBuffer utils.ReadBuffer, tagNumberArgu
 }
 
 func (m *BACnetContextTagDeviceState) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetContextTagDeviceState"); pushErr != nil {
 			return pushErr

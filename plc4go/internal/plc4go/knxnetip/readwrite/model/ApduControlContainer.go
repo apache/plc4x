@@ -133,10 +133,12 @@ func (m *ApduControlContainer) GetLengthInBytes() uint16 {
 }
 
 func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduControlContainer, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlContainer"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (controlApdu)
@@ -166,6 +168,8 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*
 }
 
 func (m *ApduControlContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduControlContainer"); pushErr != nil {
 			return pushErr

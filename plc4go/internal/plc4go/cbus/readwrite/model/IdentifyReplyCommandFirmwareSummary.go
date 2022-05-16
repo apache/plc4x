@@ -149,10 +149,12 @@ func (m *IdentifyReplyCommandFirmwareSummary) GetLengthInBytes() uint16 {
 }
 
 func IdentifyReplyCommandFirmwareSummaryParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandFirmwareSummary, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandFirmwareSummary"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (firmwareVersion)
@@ -192,6 +194,8 @@ func IdentifyReplyCommandFirmwareSummaryParse(readBuffer utils.ReadBuffer, attri
 }
 
 func (m *IdentifyReplyCommandFirmwareSummary) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandFirmwareSummary"); pushErr != nil {
 			return pushErr

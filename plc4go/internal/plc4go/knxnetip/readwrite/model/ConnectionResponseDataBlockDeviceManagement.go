@@ -106,10 +106,12 @@ func (m *ConnectionResponseDataBlockDeviceManagement) GetLengthInBytes() uint16 
 }
 
 func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffer) (*ConnectionResponseDataBlockDeviceManagement, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockDeviceManagement"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ConnectionResponseDataBlockDeviceManagement"); closeErr != nil {
@@ -125,6 +127,8 @@ func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffe
 }
 
 func (m *ConnectionResponseDataBlockDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConnectionResponseDataBlockDeviceManagement"); pushErr != nil {
 			return pushErr

@@ -216,10 +216,12 @@ func (m *MonitoredSALLongFormSmartMode) GetLengthInBytes() uint16 {
 }
 
 func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*MonitoredSALLongFormSmartMode, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALLongFormSmartMode"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -237,7 +239,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 	}
 
 	// Peek Field (terminatingByte)
-	currentPos = readBuffer.GetPos()
+	currentPos = positionAware.GetPos()
 	terminatingByte, _err := readBuffer.ReadUint32("terminatingByte", 24)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'terminatingByte' field")
@@ -253,7 +255,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 	// Optional Field (unitAddress) (Can be skipped, if a given expression evaluates to false)
 	var unitAddress *UnitAddress = nil
 	if isUnitAddress {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -274,7 +276,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 	// Optional Field (bridgeAddress) (Can be skipped, if a given expression evaluates to false)
 	var bridgeAddress *BridgeAddress = nil
 	if !(isUnitAddress) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -323,7 +325,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 	// Optional Field (replyNetwork) (Can be skipped, if a given expression evaluates to false)
 	var replyNetwork *ReplyNetwork = nil
 	if !(isUnitAddress) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("replyNetwork"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -360,6 +362,8 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 }
 
 func (m *MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MonitoredSALLongFormSmartMode"); pushErr != nil {
 			return pushErr

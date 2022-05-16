@@ -141,10 +141,12 @@ func (m *BACnetApplicationTag) GetLengthInBytes() uint16 {
 }
 
 func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTag, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (header)
@@ -231,6 +233,8 @@ func (m *BACnetApplicationTag) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *BACnetApplicationTag) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetApplicationTag, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetApplicationTag"); pushErr != nil {
 		return pushErr
 	}

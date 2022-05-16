@@ -175,10 +175,12 @@ func (m *ModbusTcpADU) GetLengthInBytes() uint16 {
 }
 
 func ModbusTcpADUParse(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (*ModbusTcpADU, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusTcpADU"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (transactionIdentifier)
@@ -240,6 +242,8 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 }
 
 func (m *ModbusTcpADU) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusTcpADU"); pushErr != nil {
 			return pushErr

@@ -143,10 +143,12 @@ func (m *NLMRejectRouterToNetwork) GetLengthInBytes() uint16 {
 }
 
 func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLMRejectRouterToNetwork, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMRejectRouterToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (rejectReason)
@@ -184,6 +186,8 @@ func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint1
 }
 
 func (m *NLMRejectRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("NLMRejectRouterToNetwork"); pushErr != nil {
 			return pushErr

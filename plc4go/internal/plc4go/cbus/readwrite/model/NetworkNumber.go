@@ -94,10 +94,12 @@ func (m *NetworkNumber) GetLengthInBytes() uint16 {
 }
 
 func NetworkNumberParse(readBuffer utils.ReadBuffer) (*NetworkNumber, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("NetworkNumber"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (number)
@@ -116,6 +118,8 @@ func NetworkNumberParse(readBuffer utils.ReadBuffer) (*NetworkNumber, error) {
 }
 
 func (m *NetworkNumber) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NetworkNumber"); pushErr != nil {
 		return pushErr
 	}

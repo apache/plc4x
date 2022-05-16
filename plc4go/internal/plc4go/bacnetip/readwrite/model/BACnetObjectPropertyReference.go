@@ -117,10 +117,12 @@ func (m *BACnetObjectPropertyReference) GetLengthInBytes() uint16 {
 }
 
 func BACnetObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BACnetObjectPropertyReference, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetObjectPropertyReference"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
@@ -152,7 +154,7 @@ func BACnetObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BACnetObj
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -179,6 +181,8 @@ func BACnetObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BACnetObj
 }
 
 func (m *BACnetObjectPropertyReference) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetObjectPropertyReference"); pushErr != nil {
 		return pushErr
 	}

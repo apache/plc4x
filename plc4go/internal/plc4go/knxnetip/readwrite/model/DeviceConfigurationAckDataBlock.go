@@ -117,10 +117,12 @@ func (m *DeviceConfigurationAckDataBlock) GetLengthInBytes() uint16 {
 }
 
 func DeviceConfigurationAckDataBlockParse(readBuffer utils.ReadBuffer) (*DeviceConfigurationAckDataBlock, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAckDataBlock"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -166,6 +168,8 @@ func DeviceConfigurationAckDataBlockParse(readBuffer utils.ReadBuffer) (*DeviceC
 }
 
 func (m *DeviceConfigurationAckDataBlock) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DeviceConfigurationAckDataBlock"); pushErr != nil {
 		return pushErr
 	}

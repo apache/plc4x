@@ -114,10 +114,12 @@ func (m *SzlId) GetLengthInBytes() uint16 {
 }
 
 func SzlIdParse(readBuffer utils.ReadBuffer) (*SzlId, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SzlId"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (typeClass)
@@ -162,6 +164,8 @@ func SzlIdParse(readBuffer utils.ReadBuffer) (*SzlId, error) {
 }
 
 func (m *SzlId) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SzlId"); pushErr != nil {
 		return pushErr
 	}

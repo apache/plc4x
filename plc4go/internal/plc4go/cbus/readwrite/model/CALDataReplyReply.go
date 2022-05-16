@@ -138,10 +138,12 @@ func (m *CALDataReplyReply) GetLengthInBytes() uint16 {
 }
 
 func CALDataReplyReplyParse(readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer) (*CALDataReplyReply, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataReplyReply"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (paramNumber)
@@ -172,6 +174,8 @@ func CALDataReplyReplyParse(readBuffer utils.ReadBuffer, commandTypeContainer CA
 }
 
 func (m *CALDataReplyReply) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CALDataReplyReply"); pushErr != nil {
 			return pushErr

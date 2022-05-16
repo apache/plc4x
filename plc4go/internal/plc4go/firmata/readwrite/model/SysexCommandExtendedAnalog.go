@@ -109,10 +109,12 @@ func (m *SysexCommandExtendedAnalog) GetLengthInBytes() uint16 {
 }
 
 func SysexCommandExtendedAnalogParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandExtendedAnalog, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandExtendedAnalog"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandExtendedAnalog"); closeErr != nil {
@@ -128,6 +130,8 @@ func SysexCommandExtendedAnalogParse(readBuffer utils.ReadBuffer, response bool)
 }
 
 func (m *SysexCommandExtendedAnalog) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SysexCommandExtendedAnalog"); pushErr != nil {
 			return pushErr

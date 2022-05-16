@@ -108,10 +108,12 @@ func (m *BACnetPropertyStateActionUnmapped) GetLengthInBytes() uint16 {
 }
 
 func BACnetPropertyStateActionUnmappedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetPropertyStateActionUnmapped, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStateActionUnmapped"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetPropertyStateActionUnmappedParse(readBuffer utils.ReadBuffer, tagNumb
 }
 
 func (m *BACnetPropertyStateActionUnmapped) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStateActionUnmapped"); pushErr != nil {
 			return pushErr

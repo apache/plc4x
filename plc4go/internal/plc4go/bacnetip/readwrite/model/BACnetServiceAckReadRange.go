@@ -203,10 +203,12 @@ func (m *BACnetServiceAckReadRange) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckReadRange, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadRange"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
@@ -238,7 +240,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceRequestL
 	// Optional Field (propertyArrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var propertyArrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("propertyArrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -285,7 +287,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceRequestL
 	// Optional Field (itemData) (Can be skipped, if a given expression evaluates to false)
 	var itemData *BACnetConstructedData = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("itemData"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -306,7 +308,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceRequestL
 	// Optional Field (firstSequenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var firstSequenceNumber *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("firstSequenceNumber"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -344,6 +346,8 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceRequestL
 }
 
 func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckReadRange"); pushErr != nil {
 			return pushErr

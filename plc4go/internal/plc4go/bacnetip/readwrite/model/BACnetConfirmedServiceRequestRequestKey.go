@@ -109,10 +109,12 @@ func (m *BACnetConfirmedServiceRequestRequestKey) GetLengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestRequestKeyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestRequestKey, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRequestKey"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -133,6 +135,8 @@ func BACnetConfirmedServiceRequestRequestKeyParse(readBuffer utils.ReadBuffer, s
 }
 
 func (m *BACnetConfirmedServiceRequestRequestKey) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestRequestKey"); pushErr != nil {
 			return pushErr

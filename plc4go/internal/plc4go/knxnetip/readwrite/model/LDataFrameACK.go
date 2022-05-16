@@ -115,10 +115,12 @@ func (m *LDataFrameACK) GetLengthInBytes() uint16 {
 }
 
 func LDataFrameACKParse(readBuffer utils.ReadBuffer) (*LDataFrameACK, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataFrameACK"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("LDataFrameACK"); closeErr != nil {
@@ -134,6 +136,8 @@ func LDataFrameACKParse(readBuffer utils.ReadBuffer) (*LDataFrameACK, error) {
 }
 
 func (m *LDataFrameACK) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("LDataFrameACK"); pushErr != nil {
 			return pushErr

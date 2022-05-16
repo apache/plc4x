@@ -95,10 +95,12 @@ func (m *ModbusConstants) GetLengthInBytes() uint16 {
 }
 
 func ModbusConstantsParse(readBuffer utils.ReadBuffer) (*ModbusConstants, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusConstants"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Const Field (modbusTcpDefaultPort)
@@ -119,6 +121,8 @@ func ModbusConstantsParse(readBuffer utils.ReadBuffer) (*ModbusConstants, error)
 }
 
 func (m *ModbusConstants) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusConstants"); pushErr != nil {
 		return pushErr
 	}

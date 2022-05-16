@@ -182,10 +182,12 @@ func (m *S7ParameterModeTransition) GetLengthInBytes() uint16 {
 }
 
 func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7ParameterModeTransition, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterModeTransition"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -262,6 +264,8 @@ func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uin
 }
 
 func (m *S7ParameterModeTransition) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7ParameterModeTransition"); pushErr != nil {
 			return pushErr

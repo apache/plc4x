@@ -129,10 +129,12 @@ func (m *DF1UnprotectedReadResponse) GetLengthInBytes() uint16 {
 }
 
 func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1UnprotectedReadResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1UnprotectedReadResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, pullErr
@@ -167,6 +169,8 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1Unprotect
 }
 
 func (m *DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DF1UnprotectedReadResponse"); pushErr != nil {
 			return pushErr

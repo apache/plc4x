@@ -94,10 +94,12 @@ func (m *CommandHeader) GetLengthInBytes() uint16 {
 }
 
 func CommandHeaderParse(readBuffer utils.ReadBuffer) (*CommandHeader, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CommandHeader"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (value)
@@ -116,6 +118,8 @@ func CommandHeaderParse(readBuffer utils.ReadBuffer) (*CommandHeader, error) {
 }
 
 func (m *CommandHeader) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CommandHeader"); pushErr != nil {
 		return pushErr
 	}

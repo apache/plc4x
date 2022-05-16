@@ -119,10 +119,12 @@ func (m *AdsStampHeader) GetLengthInBytes() uint16 {
 }
 
 func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (*AdsStampHeader, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsStampHeader"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timestamp)
@@ -167,6 +169,8 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (*AdsStampHeader, error) {
 }
 
 func (m *AdsStampHeader) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsStampHeader"); pushErr != nil {
 		return pushErr
 	}

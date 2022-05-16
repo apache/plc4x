@@ -103,10 +103,12 @@ func (m *BACnetServiceAck) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAck, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAck"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
@@ -214,6 +216,8 @@ func (m *BACnetServiceAck) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *BACnetServiceAck) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetServiceAck, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetServiceAck"); pushErr != nil {
 		return pushErr
 	}

@@ -103,10 +103,12 @@ func (m *FirmataCommand) GetLengthInBytes() uint16 {
 }
 
 func FirmataCommandParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommand"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
@@ -155,6 +157,8 @@ func (m *FirmataCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *FirmataCommand) SerializeParent(writeBuffer utils.WriteBuffer, child IFirmataCommand, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("FirmataCommand"); pushErr != nil {
 		return pushErr
 	}

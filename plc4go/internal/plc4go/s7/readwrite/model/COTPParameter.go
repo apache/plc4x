@@ -106,10 +106,12 @@ func (m *COTPParameter) GetLengthInBytes() uint16 {
 }
 
 func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameter"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
@@ -165,6 +167,8 @@ func (m *COTPParameter) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *COTPParameter) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPParameter, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("COTPParameter"); pushErr != nil {
 		return pushErr
 	}

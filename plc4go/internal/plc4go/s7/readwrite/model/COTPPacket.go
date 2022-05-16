@@ -143,12 +143,14 @@ func (m *COTPPacket) GetLengthInBytes() uint16 {
 }
 
 func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacket"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
-	var startPos = readBuffer.GetPos()
+	var startPos = positionAware.GetPos()
 	var curPos uint16
 
 	// Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -196,19 +198,19 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	if pullErr := readBuffer.PullContext("parameters", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, pullErr
 	}
-	curPos = readBuffer.GetPos() - startPos
+	curPos = positionAware.GetPos() - startPos
 	// Length array
 	parameters := make([]*COTPParameter, 0)
 	{
 		_parametersLength := uint16(uint16(uint16(headerLength)+uint16(uint16(1)))) - uint16(curPos)
-		_parametersEndPos := readBuffer.GetPos() + uint16(_parametersLength)
-		for readBuffer.GetPos() < _parametersEndPos {
+		_parametersEndPos := positionAware.GetPos() + uint16(_parametersLength)
+		for positionAware.GetPos() < _parametersEndPos {
 			_item, _err := COTPParameterParse(readBuffer, uint8(uint8(uint8(headerLength)+uint8(uint8(1))))-uint8(curPos))
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'parameters' field")
 			}
 			parameters = append(parameters, _item)
-			curPos = readBuffer.GetPos() - startPos
+			curPos = positionAware.GetPos() - startPos
 		}
 	}
 	if closeErr := readBuffer.CloseContext("parameters", utils.WithRenderAsList(true)); closeErr != nil {
@@ -216,10 +218,10 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	}
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
-	curPos = readBuffer.GetPos() - startPos
+	curPos = positionAware.GetPos() - startPos
 	var payload *S7Message = nil
 	if bool((curPos) < (cotpLen)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -251,6 +253,8 @@ func (m *COTPPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPPacket, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("COTPPacket"); pushErr != nil {
 		return pushErr
 	}

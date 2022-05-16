@@ -180,10 +180,12 @@ func (m *DF1SymbolMessageFrame) GetLengthInBytes() uint16 {
 }
 
 func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessageFrame, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrame"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (destinationAddress)
@@ -262,6 +264,8 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessageF
 }
 
 func (m *DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DF1SymbolMessageFrame"); pushErr != nil {
 			return pushErr

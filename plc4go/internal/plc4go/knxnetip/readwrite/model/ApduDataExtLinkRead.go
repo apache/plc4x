@@ -108,10 +108,12 @@ func (m *ApduDataExtLinkRead) GetLengthInBytes() uint16 {
 }
 
 func ApduDataExtLinkReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtLinkRead, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtLinkRead"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtLinkRead"); closeErr != nil {
@@ -127,6 +129,8 @@ func ApduDataExtLinkReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduD
 }
 
 func (m *ApduDataExtLinkRead) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataExtLinkRead"); pushErr != nil {
 			return pushErr

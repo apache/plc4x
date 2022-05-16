@@ -108,10 +108,12 @@ func (m *BACnetServiceAckCreateObject) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckCreateObject, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckCreateObject"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceReque
 }
 
 func (m *BACnetServiceAckCreateObject) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckCreateObject"); pushErr != nil {
 			return pushErr

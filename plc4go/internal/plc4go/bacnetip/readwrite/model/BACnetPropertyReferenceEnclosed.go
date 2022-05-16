@@ -117,10 +117,12 @@ func (m *BACnetPropertyReferenceEnclosed) GetLengthInBytes() uint16 {
 }
 
 func BACnetPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetPropertyReferenceEnclosed, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyReferenceEnclosed"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
@@ -171,6 +173,8 @@ func BACnetPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffer, tagNumber
 }
 
 func (m *BACnetPropertyReferenceEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPropertyReferenceEnclosed"); pushErr != nil {
 		return pushErr
 	}

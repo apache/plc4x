@@ -109,10 +109,12 @@ func (m *SysexCommandSamplingInterval) GetLengthInBytes() uint16 {
 }
 
 func SysexCommandSamplingIntervalParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandSamplingInterval, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandSamplingInterval"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandSamplingInterval"); closeErr != nil {
@@ -128,6 +130,8 @@ func SysexCommandSamplingIntervalParse(readBuffer utils.ReadBuffer, response boo
 }
 
 func (m *SysexCommandSamplingInterval) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SysexCommandSamplingInterval"); pushErr != nil {
 			return pushErr

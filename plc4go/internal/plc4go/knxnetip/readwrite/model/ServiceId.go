@@ -100,10 +100,12 @@ func (m *ServiceId) GetLengthInBytes() uint16 {
 }
 
 func ServiceIdParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServiceId"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
@@ -156,6 +158,8 @@ func (m *ServiceId) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *ServiceId) SerializeParent(writeBuffer utils.WriteBuffer, child IServiceId, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ServiceId"); pushErr != nil {
 		return pushErr
 	}

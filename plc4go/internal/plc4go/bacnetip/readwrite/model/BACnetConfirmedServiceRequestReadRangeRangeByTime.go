@@ -138,10 +138,12 @@ func (m *BACnetConfirmedServiceRequestReadRangeRangeByTime) GetLengthInBytes() u
 }
 
 func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequestReadRangeRangeByTime, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeByTime"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (referenceTime)
@@ -185,6 +187,8 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer utils.Rea
 }
 
 func (m *BACnetConfirmedServiceRequestReadRangeRangeByTime) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestReadRangeRangeByTime"); pushErr != nil {
 			return pushErr

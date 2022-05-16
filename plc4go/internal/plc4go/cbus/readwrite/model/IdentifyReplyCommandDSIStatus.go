@@ -226,10 +226,12 @@ func (m *IdentifyReplyCommandDSIStatus) GetLengthInBytes() uint16 {
 }
 
 func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandDSIStatus, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandDSIStatus"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (channelStatus1)
@@ -379,6 +381,8 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 }
 
 func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandDSIStatus"); pushErr != nil {
 			return pushErr

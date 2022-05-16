@@ -130,14 +130,16 @@ func (m *BACnetTimeStamp) GetLengthInBytes() uint16 {
 }
 
 func BACnetTimeStampParse(readBuffer utils.ReadBuffer) (*BACnetTimeStamp, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStamp"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Peek Field (peekedTagHeader)
-	currentPos = readBuffer.GetPos()
+	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -185,6 +187,8 @@ func (m *BACnetTimeStamp) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *BACnetTimeStamp) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetTimeStamp, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTimeStamp"); pushErr != nil {
 		return pushErr
 	}

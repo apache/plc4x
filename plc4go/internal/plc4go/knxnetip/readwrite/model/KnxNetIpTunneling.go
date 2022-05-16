@@ -127,10 +127,12 @@ func (m *KnxNetIpTunneling) GetLengthInBytes() uint16 {
 }
 
 func KnxNetIpTunnelingParse(readBuffer utils.ReadBuffer) (*KnxNetIpTunneling, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpTunneling"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (version)
@@ -154,6 +156,8 @@ func KnxNetIpTunnelingParse(readBuffer utils.ReadBuffer) (*KnxNetIpTunneling, er
 }
 
 func (m *KnxNetIpTunneling) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("KnxNetIpTunneling"); pushErr != nil {
 			return pushErr

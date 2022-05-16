@@ -135,10 +135,12 @@ func (m *S7PayloadUserDataItem) GetLengthInBytes() uint16 {
 }
 
 func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItem"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (returnCode)
@@ -240,6 +242,8 @@ func (m *S7PayloadUserDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *S7PayloadUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer, child IS7PayloadUserDataItem, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7PayloadUserDataItem"); pushErr != nil {
 		return pushErr
 	}

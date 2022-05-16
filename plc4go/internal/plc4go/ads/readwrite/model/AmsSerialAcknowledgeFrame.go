@@ -144,10 +144,12 @@ func (m *AmsSerialAcknowledgeFrame) GetLengthInBytes() uint16 {
 }
 
 func AmsSerialAcknowledgeFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialAcknowledgeFrame, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsSerialAcknowledgeFrame"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (magicCookie)
@@ -201,6 +203,8 @@ func AmsSerialAcknowledgeFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialAckn
 }
 
 func (m *AmsSerialAcknowledgeFrame) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsSerialAcknowledgeFrame"); pushErr != nil {
 		return pushErr
 	}

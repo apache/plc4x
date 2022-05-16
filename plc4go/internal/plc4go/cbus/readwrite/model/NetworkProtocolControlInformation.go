@@ -108,10 +108,12 @@ func (m *NetworkProtocolControlInformation) GetLengthInBytes() uint16 {
 }
 
 func NetworkProtocolControlInformationParse(readBuffer utils.ReadBuffer) (*NetworkProtocolControlInformation, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("NetworkProtocolControlInformation"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -151,6 +153,8 @@ func NetworkProtocolControlInformationParse(readBuffer utils.ReadBuffer) (*Netwo
 }
 
 func (m *NetworkProtocolControlInformation) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NetworkProtocolControlInformation"); pushErr != nil {
 		return pushErr
 	}

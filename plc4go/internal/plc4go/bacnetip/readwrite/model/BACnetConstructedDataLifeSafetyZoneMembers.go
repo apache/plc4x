@@ -138,10 +138,12 @@ func (m *BACnetConstructedDataLifeSafetyZoneMembers) GetLengthInBytes() uint16 {
 }
 
 func BACnetConstructedDataLifeSafetyZoneMembersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataLifeSafetyZoneMembers, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyZoneMembers"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (members)
@@ -178,6 +180,8 @@ func BACnetConstructedDataLifeSafetyZoneMembersParse(readBuffer utils.ReadBuffer
 }
 
 func (m *BACnetConstructedDataLifeSafetyZoneMembers) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLifeSafetyZoneMembers"); pushErr != nil {
 			return pushErr

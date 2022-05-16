@@ -141,10 +141,12 @@ func (m *ApduDataMemoryRead) GetLengthInBytes() uint16 {
 }
 
 func ApduDataMemoryReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataMemoryRead, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataMemoryRead"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (numBytes)
@@ -176,6 +178,8 @@ func ApduDataMemoryReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Ap
 }
 
 func (m *ApduDataMemoryRead) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataMemoryRead"); pushErr != nil {
 			return pushErr

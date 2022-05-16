@@ -111,10 +111,12 @@ func (m *DIBSuppSvcFamilies) GetLengthInBytes() uint16 {
 }
 
 func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DIBSuppSvcFamilies"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -139,8 +141,8 @@ func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (*DIBSuppSvcFamilies, 
 	serviceIds := make([]*ServiceId, 0)
 	{
 		_serviceIdsLength := uint16(structureLength) - uint16(uint16(2))
-		_serviceIdsEndPos := readBuffer.GetPos() + uint16(_serviceIdsLength)
-		for readBuffer.GetPos() < _serviceIdsEndPos {
+		_serviceIdsEndPos := positionAware.GetPos() + uint16(_serviceIdsLength)
+		for positionAware.GetPos() < _serviceIdsEndPos {
 			_item, _err := ServiceIdParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'serviceIds' field")
@@ -161,6 +163,8 @@ func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (*DIBSuppSvcFamilies, 
 }
 
 func (m *DIBSuppSvcFamilies) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DIBSuppSvcFamilies"); pushErr != nil {
 		return pushErr
 	}

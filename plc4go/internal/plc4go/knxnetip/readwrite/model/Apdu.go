@@ -133,10 +133,12 @@ func (m *Apdu) GetLengthInBytes() uint16 {
 }
 
 func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("Apdu"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (control) (Used as input to a switch field)
@@ -193,6 +195,8 @@ func (m *Apdu) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *Apdu) SerializeParent(writeBuffer utils.WriteBuffer, child IApdu, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Apdu"); pushErr != nil {
 		return pushErr
 	}

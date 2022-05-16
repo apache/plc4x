@@ -138,10 +138,12 @@ func (m *BACnetConstructedDataListOfObjectPropertyReferences) GetLengthInBytes()
 }
 
 func BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataListOfObjectPropertyReferences, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataListOfObjectPropertyReferences"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (references)
@@ -178,6 +180,8 @@ func BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer utils.R
 }
 
 func (m *BACnetConstructedDataListOfObjectPropertyReferences) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataListOfObjectPropertyReferences"); pushErr != nil {
 			return pushErr

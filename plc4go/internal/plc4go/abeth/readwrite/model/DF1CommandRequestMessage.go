@@ -132,10 +132,12 @@ func (m *DF1CommandRequestMessage) GetLengthInBytes() uint16 {
 }
 
 func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (*DF1CommandRequestMessage, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1CommandRequestMessage"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (command)
@@ -165,6 +167,8 @@ func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (*DF1CommandRequ
 }
 
 func (m *DF1CommandRequestMessage) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DF1CommandRequestMessage"); pushErr != nil {
 			return pushErr

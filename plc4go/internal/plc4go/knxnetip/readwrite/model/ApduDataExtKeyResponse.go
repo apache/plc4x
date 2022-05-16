@@ -108,10 +108,12 @@ func (m *ApduDataExtKeyResponse) GetLengthInBytes() uint16 {
 }
 
 func ApduDataExtKeyResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtKeyResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtKeyResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtKeyResponse"); closeErr != nil {
@@ -127,6 +129,8 @@ func ApduDataExtKeyResponseParse(readBuffer utils.ReadBuffer, length uint8) (*Ap
 }
 
 func (m *ApduDataExtKeyResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataExtKeyResponse"); pushErr != nil {
 			return pushErr

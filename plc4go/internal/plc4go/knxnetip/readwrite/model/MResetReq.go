@@ -108,10 +108,12 @@ func (m *MResetReq) GetLengthInBytes() uint16 {
 }
 
 func MResetReqParse(readBuffer utils.ReadBuffer, size uint16) (*MResetReq, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("MResetReq"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("MResetReq"); closeErr != nil {
@@ -127,6 +129,8 @@ func MResetReqParse(readBuffer utils.ReadBuffer, size uint16) (*MResetReq, error
 }
 
 func (m *MResetReq) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MResetReq"); pushErr != nil {
 			return pushErr

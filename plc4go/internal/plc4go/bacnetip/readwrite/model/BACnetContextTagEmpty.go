@@ -110,10 +110,12 @@ func (m *BACnetContextTagEmpty) GetLengthInBytes() uint16 {
 }
 
 func BACnetContextTagEmptyParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetContextTagEmpty, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagEmpty"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagEmpty"); closeErr != nil {
@@ -129,6 +131,8 @@ func BACnetContextTagEmptyParse(readBuffer utils.ReadBuffer, tagNumberArgument u
 }
 
 func (m *BACnetContextTagEmpty) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetContextTagEmpty"); pushErr != nil {
 			return pushErr

@@ -149,10 +149,12 @@ func (m *ConnectionRequest) GetLengthInBytes() uint16 {
 }
 
 func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*ConnectionRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (hpaiDiscoveryEndpoint)
@@ -210,6 +212,8 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*ConnectionRequest, er
 }
 
 func (m *ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConnectionRequest"); pushErr != nil {
 			return pushErr

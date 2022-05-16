@@ -124,10 +124,12 @@ func (m *Services) GetLengthInBytes() uint16 {
 }
 
 func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("Services"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (serviceNb)
@@ -184,6 +186,8 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, 
 }
 
 func (m *Services) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Services"); pushErr != nil {
 		return pushErr
 	}

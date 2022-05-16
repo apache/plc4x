@@ -130,10 +130,12 @@ func (m *ApduDataOther) GetLengthInBytes() uint16 {
 }
 
 func ApduDataOtherParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataOther, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataOther"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (extendedApdu)
@@ -163,6 +165,8 @@ func ApduDataOtherParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDat
 }
 
 func (m *ApduDataOther) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataOther"); pushErr != nil {
 			return pushErr

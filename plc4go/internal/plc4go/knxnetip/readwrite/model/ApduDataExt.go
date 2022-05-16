@@ -103,10 +103,12 @@ func (m *ApduDataExt) GetLengthInBytes() uint16 {
 }
 
 func ApduDataExtParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExt"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (extApciType) (Used as input to a switch field)
@@ -227,6 +229,8 @@ func (m *ApduDataExt) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *ApduDataExt) SerializeParent(writeBuffer utils.WriteBuffer, child IApduDataExt, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ApduDataExt"); pushErr != nil {
 		return pushErr
 	}

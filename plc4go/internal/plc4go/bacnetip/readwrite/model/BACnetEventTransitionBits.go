@@ -130,10 +130,12 @@ func (m *BACnetEventTransitionBits) GetLengthInBytes() uint16 {
 }
 
 func BACnetEventTransitionBitsParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetEventTransitionBits, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventTransitionBits"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (rawBits)
@@ -173,6 +175,8 @@ func BACnetEventTransitionBitsParse(readBuffer utils.ReadBuffer, tagNumber uint8
 }
 
 func (m *BACnetEventTransitionBits) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventTransitionBits"); pushErr != nil {
 		return pushErr
 	}

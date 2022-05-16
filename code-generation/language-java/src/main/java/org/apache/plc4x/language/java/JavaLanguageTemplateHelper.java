@@ -690,7 +690,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             tracer = tracer.dive("variable literal instanceOf");
             VariableLiteral variableLiteral = (VariableLiteral) literal;
             if ("curPos".equals(((VariableLiteral) literal).getName())) {
-                return "(readBuffer.getPos() - startPos)";
+                return "(positionAware.getPos() - startPos)";
             }
             // If this literal references an Enum type, then we have to output it differently.
             if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {

@@ -129,10 +129,12 @@ func (m *ModbusPDUWriteFileRecordRequestItem) GetLengthInBytes() uint16 {
 }
 
 func ModbusPDUWriteFileRecordRequestItemParse(readBuffer utils.ReadBuffer) (*ModbusPDUWriteFileRecordRequestItem, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteFileRecordRequestItem"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (referenceType)
@@ -178,6 +180,8 @@ func ModbusPDUWriteFileRecordRequestItemParse(readBuffer utils.ReadBuffer) (*Mod
 }
 
 func (m *ModbusPDUWriteFileRecordRequestItem) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusPDUWriteFileRecordRequestItem"); pushErr != nil {
 		return pushErr
 	}

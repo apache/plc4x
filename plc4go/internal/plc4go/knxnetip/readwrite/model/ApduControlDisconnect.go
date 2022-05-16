@@ -105,10 +105,12 @@ func (m *ApduControlDisconnect) GetLengthInBytes() uint16 {
 }
 
 func ApduControlDisconnectParse(readBuffer utils.ReadBuffer) (*ApduControlDisconnect, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlDisconnect"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduControlDisconnect"); closeErr != nil {
@@ -124,6 +126,8 @@ func ApduControlDisconnectParse(readBuffer utils.ReadBuffer) (*ApduControlDiscon
 }
 
 func (m *ApduControlDisconnect) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduControlDisconnect"); pushErr != nil {
 			return pushErr

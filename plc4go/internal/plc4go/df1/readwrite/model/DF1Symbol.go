@@ -121,10 +121,12 @@ func (m *DF1Symbol) GetLengthInBytes() uint16 {
 }
 
 func DF1SymbolParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1Symbol"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Const Field (messageStart)
@@ -178,6 +180,8 @@ func (m *DF1Symbol) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *DF1Symbol) SerializeParent(writeBuffer utils.WriteBuffer, child IDF1Symbol, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DF1Symbol"); pushErr != nil {
 		return pushErr
 	}

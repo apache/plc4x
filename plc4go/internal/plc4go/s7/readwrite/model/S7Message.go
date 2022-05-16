@@ -175,10 +175,12 @@ func (m *S7Message) GetLengthInBytes() uint16 {
 }
 
 func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Message"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Const Field (protocolId)
@@ -258,7 +260,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	// Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
 	var parameter *S7Parameter = nil
 	if bool((parameterLength) > (0)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("parameter"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -279,7 +281,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
 	var payload *S7Payload = nil
 	if bool((payloadLength) > (0)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -311,6 +313,8 @@ func (m *S7Message) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Message, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7Message"); pushErr != nil {
 		return pushErr
 	}

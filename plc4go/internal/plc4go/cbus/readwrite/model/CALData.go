@@ -133,10 +133,12 @@ func (m *CALData) GetLengthInBytes() uint16 {
 }
 
 func CALDataParse(readBuffer utils.ReadBuffer) (*CALData, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALData"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (commandTypeContainer)
@@ -203,6 +205,8 @@ func (m *CALData) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *CALData) SerializeParent(writeBuffer utils.WriteBuffer, child ICALData, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CALData"); pushErr != nil {
 		return pushErr
 	}

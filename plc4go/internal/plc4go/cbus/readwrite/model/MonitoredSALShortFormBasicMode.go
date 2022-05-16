@@ -174,14 +174,16 @@ func (m *MonitoredSALShortFormBasicMode) GetLengthInBytes() uint16 {
 }
 
 func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*MonitoredSALShortFormBasicMode, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALShortFormBasicMode"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Peek Field (counts)
-	currentPos = readBuffer.GetPos()
+	currentPos = positionAware.GetPos()
 	counts, _err := readBuffer.ReadByte("counts")
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'counts' field")
@@ -192,7 +194,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*Monitore
 	// Optional Field (bridgeCount) (Can be skipped, if a given expression evaluates to false)
 	var bridgeCount *BridgeCount = nil
 	if bool((counts) != (0x00)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("bridgeCount"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -213,7 +215,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*Monitore
 	// Optional Field (networkNumber) (Can be skipped, if a given expression evaluates to false)
 	var networkNumber *NetworkNumber = nil
 	if bool((counts) != (0x00)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("networkNumber"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -272,6 +274,8 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*Monitore
 }
 
 func (m *MonitoredSALShortFormBasicMode) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MonitoredSALShortFormBasicMode"); pushErr != nil {
 			return pushErr

@@ -133,10 +133,12 @@ func (m *SysexCommandExtendedId) GetLengthInBytes() uint16 {
 }
 
 func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandExtendedId, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandExtendedId"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (id)
@@ -172,6 +174,8 @@ func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (*S
 }
 
 func (m *SysexCommandExtendedId) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SysexCommandExtendedId"); pushErr != nil {
 			return pushErr

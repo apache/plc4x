@@ -73,10 +73,12 @@ func (m *GroupObjectDescriptorRealisationType6) GetLengthInBytes() uint16 {
 }
 
 func GroupObjectDescriptorRealisationType6Parse(readBuffer utils.ReadBuffer) (*GroupObjectDescriptorRealisationType6, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType6"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("GroupObjectDescriptorRealisationType6"); closeErr != nil {
@@ -88,6 +90,8 @@ func GroupObjectDescriptorRealisationType6Parse(readBuffer utils.ReadBuffer) (*G
 }
 
 func (m *GroupObjectDescriptorRealisationType6) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("GroupObjectDescriptorRealisationType6"); pushErr != nil {
 		return pushErr
 	}

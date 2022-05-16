@@ -130,10 +130,12 @@ func (m *COTPParameterChecksum) GetLengthInBytes() uint16 {
 }
 
 func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameterChecksum, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterChecksum"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (crc)
@@ -157,6 +159,8 @@ func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPP
 }
 
 func (m *COTPParameterChecksum) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("COTPParameterChecksum"); pushErr != nil {
 			return pushErr

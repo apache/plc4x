@@ -146,10 +146,12 @@ func (m *ModbusPDUWriteSingleRegisterRequest) GetLengthInBytes() uint16 {
 }
 
 func ModbusPDUWriteSingleRegisterRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUWriteSingleRegisterRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteSingleRegisterRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (address)
@@ -181,6 +183,8 @@ func ModbusPDUWriteSingleRegisterRequestParse(readBuffer utils.ReadBuffer, respo
 }
 
 func (m *ModbusPDUWriteSingleRegisterRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUWriteSingleRegisterRequest"); pushErr != nil {
 			return pushErr

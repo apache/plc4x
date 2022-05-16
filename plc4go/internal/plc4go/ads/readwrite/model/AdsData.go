@@ -100,10 +100,12 @@ func (m *AdsData) GetLengthInBytes() uint16 {
 }
 
 func AdsDataParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsData"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -176,6 +178,8 @@ func (m *AdsData) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *AdsData) SerializeParent(writeBuffer utils.WriteBuffer, child IAdsData, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsData"); pushErr != nil {
 		return pushErr
 	}

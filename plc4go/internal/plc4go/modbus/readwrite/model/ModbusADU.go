@@ -101,10 +101,12 @@ func (m *ModbusADU) GetLengthInBytes() uint16 {
 }
 
 func ModbusADUParse(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (*ModbusADU, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusADU"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -143,6 +145,8 @@ func (m *ModbusADU) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *ModbusADU) SerializeParent(writeBuffer utils.WriteBuffer, child IModbusADU, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusADU"); pushErr != nil {
 		return pushErr
 	}

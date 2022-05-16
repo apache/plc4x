@@ -141,10 +141,12 @@ func (m *NPDUControl) GetLengthInBytes() uint16 {
 }
 
 func NPDUControlParse(readBuffer utils.ReadBuffer) (*NPDUControl, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("NPDUControl"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (messageTypeFieldPresent)
@@ -225,6 +227,8 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (*NPDUControl, error) {
 }
 
 func (m *NPDUControl) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NPDUControl"); pushErr != nil {
 		return pushErr
 	}

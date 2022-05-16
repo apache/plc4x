@@ -150,14 +150,16 @@ func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) GetLengthInBytes() uint16
 }
 
 func BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckAtomicReadFileStreamOrRecord, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFileStreamOrRecord"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Peek Field (peekedTagHeader)
-	currentPos = readBuffer.GetPos()
+	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -229,6 +231,8 @@ func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) Serialize(writeBuffer uti
 }
 
 func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetServiceAckAtomicReadFileStreamOrRecord, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetServiceAckAtomicReadFileStreamOrRecord"); pushErr != nil {
 		return pushErr
 	}

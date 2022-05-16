@@ -108,10 +108,12 @@ func (m *BACnetServiceAckLifeSafetyOperation) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckLifeSafetyOperationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckLifeSafetyOperation, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckLifeSafetyOperation"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetServiceAckLifeSafetyOperationParse(readBuffer utils.ReadBuffer, servi
 }
 
 func (m *BACnetServiceAckLifeSafetyOperation) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckLifeSafetyOperation"); pushErr != nil {
 			return pushErr

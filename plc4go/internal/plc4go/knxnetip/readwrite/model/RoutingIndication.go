@@ -105,10 +105,12 @@ func (m *RoutingIndication) GetLengthInBytes() uint16 {
 }
 
 func RoutingIndicationParse(readBuffer utils.ReadBuffer) (*RoutingIndication, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("RoutingIndication"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("RoutingIndication"); closeErr != nil {
@@ -124,6 +126,8 @@ func RoutingIndicationParse(readBuffer utils.ReadBuffer) (*RoutingIndication, er
 }
 
 func (m *RoutingIndication) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("RoutingIndication"); pushErr != nil {
 			return pushErr

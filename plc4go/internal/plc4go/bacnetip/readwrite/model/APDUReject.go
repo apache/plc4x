@@ -145,10 +145,12 @@ func (m *APDUReject) GetLengthInBytes() uint16 {
 }
 
 func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUReject, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUReject"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -194,6 +196,8 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDURejec
 }
 
 func (m *APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUReject"); pushErr != nil {
 			return pushErr

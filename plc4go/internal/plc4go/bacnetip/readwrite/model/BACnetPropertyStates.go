@@ -153,10 +153,12 @@ func (m *BACnetPropertyStates) GetLengthInBytes() uint16 {
 }
 
 func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetPropertyStates, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStates"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
@@ -173,7 +175,7 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	}
 
 	// Peek Field (peekedTagHeader)
-	currentPos = readBuffer.GetPos()
+	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -236,6 +238,8 @@ func (m *BACnetPropertyStates) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *BACnetPropertyStates) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetPropertyStates, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPropertyStates"); pushErr != nil {
 		return pushErr
 	}

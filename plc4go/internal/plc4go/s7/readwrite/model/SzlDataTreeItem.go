@@ -136,10 +136,12 @@ func (m *SzlDataTreeItem) GetLengthInBytes() uint16 {
 }
 
 func SzlDataTreeItemParse(readBuffer utils.ReadBuffer) (*SzlDataTreeItem, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SzlDataTreeItem"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (itemIndex)
@@ -185,6 +187,8 @@ func SzlDataTreeItemParse(readBuffer utils.ReadBuffer) (*SzlDataTreeItem, error)
 }
 
 func (m *SzlDataTreeItem) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SzlDataTreeItem"); pushErr != nil {
 		return pushErr
 	}

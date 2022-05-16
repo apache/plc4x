@@ -104,10 +104,12 @@ func (m *ChannelInformation) GetLengthInBytes() uint16 {
 }
 
 func ChannelInformationParse(readBuffer utils.ReadBuffer) (*ChannelInformation, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ChannelInformation"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (numChannels)
@@ -133,6 +135,8 @@ func ChannelInformationParse(readBuffer utils.ReadBuffer) (*ChannelInformation, 
 }
 
 func (m *ChannelInformation) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ChannelInformation"); pushErr != nil {
 		return pushErr
 	}

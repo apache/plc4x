@@ -138,10 +138,12 @@ func (m *ChangeListAddError) GetLengthInBytes() uint16 {
 }
 
 func ChangeListAddErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (*ChangeListAddError, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ChangeListAddError"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (errorType)
@@ -185,6 +187,8 @@ func ChangeListAddErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConf
 }
 
 func (m *ChangeListAddError) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ChangeListAddError"); pushErr != nil {
 			return pushErr

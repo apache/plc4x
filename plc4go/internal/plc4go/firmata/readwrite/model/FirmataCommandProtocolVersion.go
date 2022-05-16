@@ -141,10 +141,12 @@ func (m *FirmataCommandProtocolVersion) GetLengthInBytes() uint16 {
 }
 
 func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommandProtocolVersion, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandProtocolVersion"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (majorVersion)
@@ -176,6 +178,8 @@ func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bo
 }
 
 func (m *FirmataCommandProtocolVersion) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("FirmataCommandProtocolVersion"); pushErr != nil {
 			return pushErr

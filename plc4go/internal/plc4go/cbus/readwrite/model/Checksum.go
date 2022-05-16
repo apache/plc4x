@@ -94,10 +94,12 @@ func (m *Checksum) GetLengthInBytes() uint16 {
 }
 
 func ChecksumParse(readBuffer utils.ReadBuffer) (*Checksum, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("Checksum"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (crc)
@@ -116,6 +118,8 @@ func ChecksumParse(readBuffer utils.ReadBuffer) (*Checksum, error) {
 }
 
 func (m *Checksum) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Checksum"); pushErr != nil {
 		return pushErr
 	}

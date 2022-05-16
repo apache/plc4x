@@ -108,10 +108,12 @@ func (m *ApduDataExtDomainAddressRead) GetLengthInBytes() uint16 {
 }
 
 func ApduDataExtDomainAddressReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtDomainAddressRead, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtDomainAddressRead"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtDomainAddressRead"); closeErr != nil {
@@ -127,6 +129,8 @@ func ApduDataExtDomainAddressReadParse(readBuffer utils.ReadBuffer, length uint8
 }
 
 func (m *ApduDataExtDomainAddressRead) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataExtDomainAddressRead"); pushErr != nil {
 			return pushErr

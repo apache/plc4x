@@ -164,10 +164,12 @@ func (m *DateAndTime) GetLengthInBytes() uint16 {
 }
 
 func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DateAndTime"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Manual Field (year)
@@ -228,6 +230,8 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 }
 
 func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DateAndTime"); pushErr != nil {
 		return pushErr
 	}

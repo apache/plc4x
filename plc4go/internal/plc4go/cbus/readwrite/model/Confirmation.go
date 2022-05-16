@@ -120,10 +120,12 @@ func (m *Confirmation) GetLengthInBytes() uint16 {
 }
 
 func ConfirmationParse(readBuffer utils.ReadBuffer) (*Confirmation, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("Confirmation"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (alpha)
@@ -185,6 +187,8 @@ func (m *Confirmation) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *Confirmation) SerializeParent(writeBuffer utils.WriteBuffer, child IConfirmation, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Confirmation"); pushErr != nil {
 		return pushErr
 	}

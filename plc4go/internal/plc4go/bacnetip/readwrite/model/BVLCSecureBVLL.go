@@ -132,10 +132,12 @@ func (m *BVLCSecureBVLL) GetLengthInBytes() uint16 {
 }
 
 func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLCSecureBVLL, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCSecureBVLL"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (securityWrapper)
 	numberOfBytessecurityWrapper := int(bvlcPayloadLength)
@@ -158,6 +160,8 @@ func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) 
 }
 
 func (m *BVLCSecureBVLL) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BVLCSecureBVLL"); pushErr != nil {
 			return pushErr

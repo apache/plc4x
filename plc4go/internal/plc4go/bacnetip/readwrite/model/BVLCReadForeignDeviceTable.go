@@ -105,10 +105,12 @@ func (m *BVLCReadForeignDeviceTable) GetLengthInBytes() uint16 {
 }
 
 func BVLCReadForeignDeviceTableParse(readBuffer utils.ReadBuffer) (*BVLCReadForeignDeviceTable, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCReadForeignDeviceTable"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BVLCReadForeignDeviceTable"); closeErr != nil {
@@ -124,6 +126,8 @@ func BVLCReadForeignDeviceTableParse(readBuffer utils.ReadBuffer) (*BVLCReadFore
 }
 
 func (m *BVLCReadForeignDeviceTable) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BVLCReadForeignDeviceTable"); pushErr != nil {
 			return pushErr

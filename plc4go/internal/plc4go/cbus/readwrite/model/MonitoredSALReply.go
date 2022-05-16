@@ -125,10 +125,12 @@ func (m *MonitoredSALReply) GetLengthInBytes() uint16 {
 }
 
 func MonitoredSALReplyParse(readBuffer utils.ReadBuffer) (*MonitoredSALReply, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALReply"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (isA)
@@ -158,6 +160,8 @@ func MonitoredSALReplyParse(readBuffer utils.ReadBuffer) (*MonitoredSALReply, er
 }
 
 func (m *MonitoredSALReply) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MonitoredSALReply"); pushErr != nil {
 			return pushErr

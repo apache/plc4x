@@ -167,10 +167,12 @@ func (m *StandardFormatStatusReply) GetLengthInBytes() uint16 {
 }
 
 func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*StandardFormatStatusReply, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("StandardFormatStatusReply"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (statusHeader)
@@ -265,6 +267,8 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*StandardForma
 }
 
 func (m *StandardFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("StandardFormatStatusReply"); pushErr != nil {
 		return pushErr
 	}

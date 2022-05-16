@@ -103,10 +103,12 @@ func (m *CEMI) GetLengthInBytes() uint16 {
 }
 
 func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMI"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
@@ -191,6 +193,8 @@ func (m *CEMI) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *CEMI) SerializeParent(writeBuffer utils.WriteBuffer, child ICEMI, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CEMI"); pushErr != nil {
 		return pushErr
 	}

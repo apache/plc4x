@@ -109,10 +109,12 @@ func (m *AdsReadDeviceInfoRequest) GetLengthInBytes() uint16 {
 }
 
 func AdsReadDeviceInfoRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsReadDeviceInfoRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("AdsReadDeviceInfoRequest"); closeErr != nil {
@@ -128,6 +130,8 @@ func AdsReadDeviceInfoRequestParse(readBuffer utils.ReadBuffer, commandId Comman
 }
 
 func (m *AdsReadDeviceInfoRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AdsReadDeviceInfoRequest"); pushErr != nil {
 			return pushErr

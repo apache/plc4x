@@ -184,10 +184,12 @@ func (m *DeviceDescriptorType2) GetLengthInBytes() uint16 {
 }
 
 func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorType2, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceDescriptorType2"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (manufacturerId)
@@ -293,6 +295,8 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 }
 
 func (m *DeviceDescriptorType2) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DeviceDescriptorType2"); pushErr != nil {
 		return pushErr
 	}

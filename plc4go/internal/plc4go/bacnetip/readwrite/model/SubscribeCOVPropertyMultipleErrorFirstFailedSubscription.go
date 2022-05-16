@@ -137,10 +137,12 @@ func (m *SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) GetLengthInBy
 }
 
 func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*SubscribeCOVPropertyMultipleErrorFirstFailedSubscription, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
@@ -217,6 +219,8 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 }
 
 func (m *SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription"); pushErr != nil {
 		return pushErr
 	}

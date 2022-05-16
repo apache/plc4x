@@ -103,10 +103,12 @@ func (m *BACnetUnconfirmedServiceRequest) GetLengthInBytes() uint16 {
 }
 
 func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetUnconfirmedServiceRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
@@ -178,6 +180,8 @@ func (m *BACnetUnconfirmedServiceRequest) Serialize(writeBuffer utils.WriteBuffe
 }
 
 func (m *BACnetUnconfirmedServiceRequest) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetUnconfirmedServiceRequest, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetUnconfirmedServiceRequest"); pushErr != nil {
 		return pushErr
 	}

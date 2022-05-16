@@ -157,10 +157,12 @@ func (m *S7ParameterSetupCommunication) GetLengthInBytes() uint16 {
 }
 
 func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7ParameterSetupCommunication, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterSetupCommunication"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -214,6 +216,8 @@ func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType
 }
 
 func (m *S7ParameterSetupCommunication) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7ParameterSetupCommunication"); pushErr != nil {
 			return pushErr

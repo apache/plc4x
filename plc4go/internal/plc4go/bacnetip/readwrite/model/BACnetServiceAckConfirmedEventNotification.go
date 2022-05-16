@@ -108,10 +108,12 @@ func (m *BACnetServiceAckConfirmedEventNotification) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckConfirmedEventNotificationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckConfirmedEventNotification, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckConfirmedEventNotification"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetServiceAckConfirmedEventNotificationParse(readBuffer utils.ReadBuffer
 }
 
 func (m *BACnetServiceAckConfirmedEventNotification) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckConfirmedEventNotification"); pushErr != nil {
 			return pushErr

@@ -109,10 +109,12 @@ func (m *ModbusPDUReadFileRecordResponseItem) GetLengthInBytes() uint16 {
 }
 
 func ModbusPDUReadFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (*ModbusPDUReadFileRecordResponseItem, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFileRecordResponseItem"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -144,6 +146,8 @@ func ModbusPDUReadFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (*Mod
 }
 
 func (m *ModbusPDUReadFileRecordResponseItem) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusPDUReadFileRecordResponseItem"); pushErr != nil {
 		return pushErr
 	}

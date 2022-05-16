@@ -108,10 +108,12 @@ func (m *BACnetServiceAckWriteProperty) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckWritePropertyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckWriteProperty, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckWriteProperty"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetServiceAckWritePropertyParse(readBuffer utils.ReadBuffer, serviceRequ
 }
 
 func (m *BACnetServiceAckWriteProperty) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckWriteProperty"); pushErr != nil {
 			return pushErr

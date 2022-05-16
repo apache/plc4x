@@ -117,10 +117,12 @@ func (m *HPAIDiscoveryEndpoint) GetLengthInBytes() uint16 {
 }
 
 func HPAIDiscoveryEndpointParse(readBuffer utils.ReadBuffer) (*HPAIDiscoveryEndpoint, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("HPAIDiscoveryEndpoint"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -172,6 +174,8 @@ func HPAIDiscoveryEndpointParse(readBuffer utils.ReadBuffer) (*HPAIDiscoveryEndp
 }
 
 func (m *HPAIDiscoveryEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HPAIDiscoveryEndpoint"); pushErr != nil {
 		return pushErr
 	}

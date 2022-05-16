@@ -126,10 +126,12 @@ func (m *NLMInitalizeRoutingTablePortMapping) GetLengthInBytes() uint16 {
 }
 
 func NLMInitalizeRoutingTablePortMappingParse(readBuffer utils.ReadBuffer) (*NLMInitalizeRoutingTablePortMapping, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTablePortMapping"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (destinationNetworkAddress)
@@ -168,6 +170,8 @@ func NLMInitalizeRoutingTablePortMappingParse(readBuffer utils.ReadBuffer) (*NLM
 }
 
 func (m *NLMInitalizeRoutingTablePortMapping) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NLMInitalizeRoutingTablePortMapping"); pushErr != nil {
 		return pushErr
 	}

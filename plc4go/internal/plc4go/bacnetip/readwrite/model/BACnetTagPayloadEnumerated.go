@@ -116,10 +116,12 @@ func (m *BACnetTagPayloadEnumerated) GetLengthInBytes() uint16 {
 }
 
 func BACnetTagPayloadEnumeratedParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTagPayloadEnumerated, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadEnumerated"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (data)
 	numberOfBytesdata := int(actualLength)
@@ -142,6 +144,8 @@ func BACnetTagPayloadEnumeratedParse(readBuffer utils.ReadBuffer, actualLength u
 }
 
 func (m *BACnetTagPayloadEnumerated) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadEnumerated"); pushErr != nil {
 		return pushErr
 	}

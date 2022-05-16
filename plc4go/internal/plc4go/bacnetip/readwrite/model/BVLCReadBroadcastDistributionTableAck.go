@@ -134,10 +134,12 @@ func (m *BVLCReadBroadcastDistributionTableAck) GetLengthInBytes() uint16 {
 }
 
 func BVLCReadBroadcastDistributionTableAckParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLCReadBroadcastDistributionTableAck, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCReadBroadcastDistributionTableAck"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (table)
@@ -148,8 +150,8 @@ func BVLCReadBroadcastDistributionTableAckParse(readBuffer utils.ReadBuffer, bvl
 	table := make([]*BVLCBroadcastDistributionTableEntry, 0)
 	{
 		_tableLength := bvlcPayloadLength
-		_tableEndPos := readBuffer.GetPos() + uint16(_tableLength)
-		for readBuffer.GetPos() < _tableEndPos {
+		_tableEndPos := positionAware.GetPos() + uint16(_tableLength)
+		for positionAware.GetPos() < _tableEndPos {
 			_item, _err := BVLCBroadcastDistributionTableEntryParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'table' field")
@@ -175,6 +177,8 @@ func BVLCReadBroadcastDistributionTableAckParse(readBuffer utils.ReadBuffer, bvl
 }
 
 func (m *BVLCReadBroadcastDistributionTableAck) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BVLCReadBroadcastDistributionTableAck"); pushErr != nil {
 			return pushErr

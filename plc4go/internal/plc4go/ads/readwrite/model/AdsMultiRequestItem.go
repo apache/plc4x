@@ -98,10 +98,12 @@ func (m *AdsMultiRequestItem) GetLengthInBytes() uint16 {
 }
 
 func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*AdsMultiRequestItem, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItem"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -140,6 +142,8 @@ func (m *AdsMultiRequestItem) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *AdsMultiRequestItem) SerializeParent(writeBuffer utils.WriteBuffer, child IAdsMultiRequestItem, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsMultiRequestItem"); pushErr != nil {
 		return pushErr
 	}

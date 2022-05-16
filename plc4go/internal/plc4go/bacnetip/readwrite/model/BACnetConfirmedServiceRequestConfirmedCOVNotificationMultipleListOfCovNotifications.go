@@ -151,10 +151,12 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovN
 }
 
 func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
@@ -251,6 +253,8 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotif
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications"); pushErr != nil {
 		return pushErr
 	}

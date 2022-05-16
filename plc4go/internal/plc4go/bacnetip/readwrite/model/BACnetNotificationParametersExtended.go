@@ -175,10 +175,12 @@ func (m *BACnetNotificationParametersExtended) GetLengthInBytes() uint16 {
 }
 
 func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersExtended, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersExtended"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
@@ -264,6 +266,8 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 }
 
 func (m *BACnetNotificationParametersExtended) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersExtended"); pushErr != nil {
 			return pushErr

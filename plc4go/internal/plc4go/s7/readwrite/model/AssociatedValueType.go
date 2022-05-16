@@ -126,10 +126,12 @@ func (m *AssociatedValueType) GetLengthInBytes() uint16 {
 }
 
 func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("AssociatedValueType"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (returnCode)
@@ -192,6 +194,8 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType
 }
 
 func (m *AssociatedValueType) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AssociatedValueType"); pushErr != nil {
 		return pushErr
 	}

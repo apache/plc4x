@@ -100,10 +100,12 @@ func (m *S7Address) GetLengthInBytes() uint16 {
 }
 
 func S7AddressParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Address"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
@@ -144,6 +146,8 @@ func (m *S7Address) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *S7Address) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Address, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7Address"); pushErr != nil {
 		return pushErr
 	}

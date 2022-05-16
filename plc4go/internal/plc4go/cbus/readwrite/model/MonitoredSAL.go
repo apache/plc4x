@@ -154,14 +154,16 @@ func (m *MonitoredSAL) GetLengthInBytes() uint16 {
 }
 
 func MonitoredSALParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSAL"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Peek Field (salType)
-	currentPos = readBuffer.GetPos()
+	currentPos = positionAware.GetPos()
 	salType, _err := readBuffer.ReadByte("salType")
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'salType' field")
@@ -192,7 +194,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
 	// Optional Field (salData) (Can be skipped, if a given expression evaluates to false)
 	var salData *SALData = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -242,6 +244,8 @@ func (m *MonitoredSAL) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child IMonitoredSAL, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("MonitoredSAL"); pushErr != nil {
 		return pushErr
 	}

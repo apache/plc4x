@@ -23,7 +23,7 @@ import org.apache.plc4x.java.spi.codegen.io.ByteOrderAware;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public interface ReadBuffer extends ByteOrderAware {
+public interface ReadBuffer extends ByteOrderAware, PositionAware {
     int getPos();
 
     void reset(int pos);

@@ -121,10 +121,12 @@ func (m *TPKTPacket) GetLengthInBytes() uint16 {
 }
 
 func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("TPKTPacket"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Const Field (protocolId)
@@ -179,6 +181,8 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
 }
 
 func (m *TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TPKTPacket"); pushErr != nil {
 		return pushErr
 	}

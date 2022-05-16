@@ -108,10 +108,12 @@ func (m *BACnetServiceAckDeviceCommunicationControl) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckDeviceCommunicationControlParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckDeviceCommunicationControl, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckDeviceCommunicationControl"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetServiceAckDeviceCommunicationControlParse(readBuffer utils.ReadBuffer
 }
 
 func (m *BACnetServiceAckDeviceCommunicationControl) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckDeviceCommunicationControl"); pushErr != nil {
 			return pushErr

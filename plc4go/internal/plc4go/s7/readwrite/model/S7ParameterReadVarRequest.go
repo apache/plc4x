@@ -139,10 +139,12 @@ func (m *S7ParameterReadVarRequest) GetLengthInBytes() uint16 {
 }
 
 func S7ParameterReadVarRequestParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7ParameterReadVarRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterReadVarRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Implicit Field (numItems) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -185,6 +187,8 @@ func S7ParameterReadVarRequestParse(readBuffer utils.ReadBuffer, messageType uin
 }
 
 func (m *S7ParameterReadVarRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7ParameterReadVarRequest"); pushErr != nil {
 			return pushErr

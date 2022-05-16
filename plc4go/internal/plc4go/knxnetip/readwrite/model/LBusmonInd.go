@@ -169,10 +169,12 @@ func (m *LBusmonInd) GetLengthInBytes() uint16 {
 }
 
 func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*LBusmonInd, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("LBusmonInd"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (additionalInformationLength)
@@ -190,8 +192,8 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*LBusmonInd, err
 	additionalInformation := make([]*CEMIAdditionalInformation, 0)
 	{
 		_additionalInformationLength := additionalInformationLength
-		_additionalInformationEndPos := readBuffer.GetPos() + uint16(_additionalInformationLength)
-		for readBuffer.GetPos() < _additionalInformationEndPos {
+		_additionalInformationEndPos := positionAware.GetPos() + uint16(_additionalInformationLength)
+		for positionAware.GetPos() < _additionalInformationEndPos {
 			_item, _err := CEMIAdditionalInformationParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field")
@@ -243,6 +245,8 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*LBusmonInd, err
 }
 
 func (m *LBusmonInd) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("LBusmonInd"); pushErr != nil {
 			return pushErr

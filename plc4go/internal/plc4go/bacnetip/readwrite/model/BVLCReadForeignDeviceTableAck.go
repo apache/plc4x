@@ -134,10 +134,12 @@ func (m *BVLCReadForeignDeviceTableAck) GetLengthInBytes() uint16 {
 }
 
 func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLCReadForeignDeviceTableAck, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCReadForeignDeviceTableAck"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (table)
@@ -148,8 +150,8 @@ func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer, bvlcPayload
 	table := make([]*BVLCForeignDeviceTableEntry, 0)
 	{
 		_tableLength := bvlcPayloadLength
-		_tableEndPos := readBuffer.GetPos() + uint16(_tableLength)
-		for readBuffer.GetPos() < _tableEndPos {
+		_tableEndPos := positionAware.GetPos() + uint16(_tableLength)
+		for positionAware.GetPos() < _tableEndPos {
 			_item, _err := BVLCForeignDeviceTableEntryParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'table' field")
@@ -175,6 +177,8 @@ func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer, bvlcPayload
 }
 
 func (m *BVLCReadForeignDeviceTableAck) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BVLCReadForeignDeviceTableAck"); pushErr != nil {
 			return pushErr

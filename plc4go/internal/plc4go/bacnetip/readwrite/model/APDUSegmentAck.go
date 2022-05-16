@@ -178,10 +178,12 @@ func (m *APDUSegmentAck) GetLengthInBytes() uint16 {
 }
 
 func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUSegmentAck, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUSegmentAck"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -251,6 +253,8 @@ func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUS
 }
 
 func (m *APDUSegmentAck) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUSegmentAck"); pushErr != nil {
 			return pushErr

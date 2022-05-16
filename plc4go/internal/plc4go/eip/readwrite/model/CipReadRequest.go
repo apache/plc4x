@@ -154,10 +154,12 @@ func (m *CipReadRequest) GetLengthInBytes() uint16 {
 }
 
 func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipReadRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipReadRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (requestPathSize)
@@ -196,6 +198,8 @@ func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipRe
 }
 
 func (m *CipReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CipReadRequest"); pushErr != nil {
 			return pushErr

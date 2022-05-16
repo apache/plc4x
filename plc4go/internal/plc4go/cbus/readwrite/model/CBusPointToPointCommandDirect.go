@@ -136,10 +136,12 @@ func (m *CBusPointToPointCommandDirect) GetLengthInBytes() uint16 {
 }
 
 func CBusPointToPointCommandDirectParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusPointToPointCommandDirect, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommandDirect"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (unitAddress)
@@ -183,6 +185,8 @@ func CBusPointToPointCommandDirectParse(readBuffer utils.ReadBuffer, srchk bool)
 }
 
 func (m *CBusPointToPointCommandDirect) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CBusPointToPointCommandDirect"); pushErr != nil {
 			return pushErr

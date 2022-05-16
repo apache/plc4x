@@ -126,10 +126,12 @@ func (m *BVLCForeignDeviceTableEntry) GetLengthInBytes() uint16 {
 }
 
 func BVLCForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (*BVLCForeignDeviceTableEntry, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCForeignDeviceTableEntry"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (ip)
@@ -181,6 +183,8 @@ func BVLCForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (*BVLCForeign
 }
 
 func (m *BVLCForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BVLCForeignDeviceTableEntry"); pushErr != nil {
 		return pushErr
 	}

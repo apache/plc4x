@@ -136,10 +136,12 @@ func (m *CBusPointToPointToMultipointCommand) GetLengthInBytes() uint16 {
 }
 
 func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusPointToPointToMultipointCommand, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointToMultipointCommand"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bridgeAddress)
@@ -169,7 +171,7 @@ func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk
 	}
 
 	// Peek Field (peekedApplication)
-	currentPos = readBuffer.GetPos()
+	currentPos = positionAware.GetPos()
 	peekedApplication, _err := readBuffer.ReadByte("peekedApplication")
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'peekedApplication' field")
@@ -211,6 +213,8 @@ func (m *CBusPointToPointToMultipointCommand) Serialize(writeBuffer utils.WriteB
 }
 
 func (m *CBusPointToPointToMultipointCommand) SerializeParent(writeBuffer utils.WriteBuffer, child ICBusPointToPointToMultipointCommand, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusPointToPointToMultipointCommand"); pushErr != nil {
 		return pushErr
 	}

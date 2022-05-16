@@ -94,10 +94,12 @@ func (m *BridgeCount) GetLengthInBytes() uint16 {
 }
 
 func BridgeCountParse(readBuffer utils.ReadBuffer) (*BridgeCount, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BridgeCount"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (count)
@@ -116,6 +118,8 @@ func BridgeCountParse(readBuffer utils.ReadBuffer) (*BridgeCount, error) {
 }
 
 func (m *BridgeCount) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BridgeCount"); pushErr != nil {
 		return pushErr
 	}

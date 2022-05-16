@@ -134,10 +134,12 @@ func (m *NLMIAmRouterToNetwork) GetLengthInBytes() uint16 {
 }
 
 func NLMIAmRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLMIAmRouterToNetwork, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMIAmRouterToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (destinationNetworkAddress)
@@ -148,8 +150,8 @@ func NLMIAmRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, 
 	destinationNetworkAddress := make([]uint16, 0)
 	{
 		_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), func() interface{} { return uint16(uint16(3)) }, func() interface{} { return uint16(uint16(1)) }).(uint16)))
-		_destinationNetworkAddressEndPos := readBuffer.GetPos() + uint16(_destinationNetworkAddressLength)
-		for readBuffer.GetPos() < _destinationNetworkAddressEndPos {
+		_destinationNetworkAddressEndPos := positionAware.GetPos() + uint16(_destinationNetworkAddressLength)
+		for positionAware.GetPos() < _destinationNetworkAddressEndPos {
 			_item, _err := readBuffer.ReadUint16("", 16)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field")
@@ -175,6 +177,8 @@ func NLMIAmRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, 
 }
 
 func (m *NLMIAmRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("NLMIAmRouterToNetwork"); pushErr != nil {
 			return pushErr

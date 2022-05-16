@@ -144,10 +144,12 @@ func (m *ModbusRtuADU) GetLengthInBytes() uint16 {
 }
 
 func ModbusRtuADUParse(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (*ModbusRtuADU, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusRtuADU"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (address)
@@ -200,6 +202,8 @@ func ModbusRtuADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 }
 
 func (m *ModbusRtuADU) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusRtuADU"); pushErr != nil {
 			return pushErr

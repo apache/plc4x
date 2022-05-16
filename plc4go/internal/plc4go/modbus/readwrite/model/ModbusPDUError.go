@@ -135,10 +135,12 @@ func (m *ModbusPDUError) GetLengthInBytes() uint16 {
 }
 
 func ModbusPDUErrorParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUError, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUError"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (exceptionCode)
@@ -168,6 +170,8 @@ func ModbusPDUErrorParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU
 }
 
 func (m *ModbusPDUError) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUError"); pushErr != nil {
 			return pushErr

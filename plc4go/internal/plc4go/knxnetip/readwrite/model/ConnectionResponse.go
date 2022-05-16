@@ -165,10 +165,12 @@ func (m *ConnectionResponse) GetLengthInBytes() uint16 {
 }
 
 func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*ConnectionResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (communicationChannelId)
@@ -194,7 +196,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*ConnectionResponse, 
 	// Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
 	var hpaiDataEndpoint *HPAIDataEndpoint = nil
 	if bool((status) == (Status_NO_ERROR)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -215,7 +217,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*ConnectionResponse, 
 	// Optional Field (connectionResponseDataBlock) (Can be skipped, if a given expression evaluates to false)
 	var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
 	if bool((status) == (Status_NO_ERROR)) {
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("connectionResponseDataBlock"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -250,6 +252,8 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*ConnectionResponse, 
 }
 
 func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConnectionResponse"); pushErr != nil {
 			return pushErr

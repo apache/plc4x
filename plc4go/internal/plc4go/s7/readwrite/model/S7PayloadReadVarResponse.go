@@ -139,10 +139,12 @@ func (m *S7PayloadReadVarResponse) GetLengthInBytes() uint16 {
 }
 
 func S7PayloadReadVarResponseParse(readBuffer utils.ReadBuffer, messageType uint8, parameter *S7Parameter) (*S7PayloadReadVarResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadReadVarResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (items)
@@ -178,6 +180,8 @@ func S7PayloadReadVarResponseParse(readBuffer utils.ReadBuffer, messageType uint
 }
 
 func (m *S7PayloadReadVarResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7PayloadReadVarResponse"); pushErr != nil {
 			return pushErr

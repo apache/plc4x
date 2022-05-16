@@ -98,10 +98,12 @@ func (m *BACnetError) GetLengthInBytes() uint16 {
 }
 
 func BACnetErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (*BACnetError, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetError"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -150,6 +152,8 @@ func (m *BACnetError) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *BACnetError) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetError, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetError"); pushErr != nil {
 		return pushErr
 	}

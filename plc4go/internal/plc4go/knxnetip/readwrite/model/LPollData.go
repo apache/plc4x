@@ -165,10 +165,12 @@ func (m *LPollData) GetLengthInBytes() uint16 {
 }
 
 func LPollDataParse(readBuffer utils.ReadBuffer) (*LPollData, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("LPollData"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (sourceAddress)
@@ -227,6 +229,8 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LPollData, error) {
 }
 
 func (m *LPollData) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("LPollData"); pushErr != nil {
 			return pushErr

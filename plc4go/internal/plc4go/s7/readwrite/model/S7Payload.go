@@ -103,10 +103,12 @@ func (m *S7Payload) GetLengthInBytes() uint16 {
 }
 
 func S7PayloadParse(readBuffer utils.ReadBuffer, messageType uint8, parameter *S7Parameter) (*S7Payload, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Payload"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -147,6 +149,8 @@ func (m *S7Payload) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *S7Payload) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Payload, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7Payload"); pushErr != nil {
 		return pushErr
 	}

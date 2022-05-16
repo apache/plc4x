@@ -138,10 +138,12 @@ func (m *DisconnectResponse) GetLengthInBytes() uint16 {
 }
 
 func DisconnectResponseParse(readBuffer utils.ReadBuffer) (*DisconnectResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DisconnectResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (communicationChannelId)
@@ -179,6 +181,8 @@ func DisconnectResponseParse(readBuffer utils.ReadBuffer) (*DisconnectResponse, 
 }
 
 func (m *DisconnectResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DisconnectResponse"); pushErr != nil {
 			return pushErr

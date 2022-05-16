@@ -138,10 +138,12 @@ func (m *DescriptionResponse) GetLengthInBytes() uint16 {
 }
 
 func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*DescriptionResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DescriptionResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (dibDeviceInfo)
@@ -185,6 +187,8 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*DescriptionResponse
 }
 
 func (m *DescriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DescriptionResponse"); pushErr != nil {
 			return pushErr

@@ -130,10 +130,12 @@ func (m *BACnetResultFlags) GetLengthInBytes() uint16 {
 }
 
 func BACnetResultFlagsParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetResultFlags, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetResultFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (rawBits)
@@ -173,6 +175,8 @@ func BACnetResultFlagsParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACn
 }
 
 func (m *BACnetResultFlags) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetResultFlags"); pushErr != nil {
 		return pushErr
 	}

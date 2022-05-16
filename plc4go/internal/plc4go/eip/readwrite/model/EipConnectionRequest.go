@@ -140,10 +140,12 @@ func (m *EipConnectionRequest) GetLengthInBytes() uint16 {
 }
 
 func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipConnectionRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipConnectionRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Const Field (protocolVersion)
@@ -177,6 +179,8 @@ func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipConnectionReque
 }
 
 func (m *EipConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("EipConnectionRequest"); pushErr != nil {
 			return pushErr

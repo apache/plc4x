@@ -103,10 +103,12 @@ func (m *CipService) GetLengthInBytes() uint16 {
 }
 
 func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipService"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (service) (Used as input to a switch field)
@@ -159,6 +161,8 @@ func (m *CipService) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *CipService) SerializeParent(writeBuffer utils.WriteBuffer, child ICipService, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CipService"); pushErr != nil {
 		return pushErr
 	}

@@ -108,10 +108,12 @@ func (m *BACnetServiceAckAuthenticate) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckAuthenticateParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckAuthenticate, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAuthenticate"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetServiceAckAuthenticateParse(readBuffer utils.ReadBuffer, serviceReque
 }
 
 func (m *BACnetServiceAckAuthenticate) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckAuthenticate"); pushErr != nil {
 			return pushErr

@@ -144,10 +144,12 @@ func (m *COTPPacketData) GetLengthInBytes() uint16 {
 }
 
 func COTPPacketDataParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacketData, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacketData"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (eot)
@@ -179,6 +181,8 @@ func COTPPacketDataParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPack
 }
 
 func (m *COTPPacketData) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("COTPPacketData"); pushErr != nil {
 			return pushErr

@@ -135,10 +135,12 @@ func (m *BACnetSegmentation) GetLengthInBytes() uint16 {
 }
 
 func BACnetSegmentationParse(readBuffer utils.ReadBuffer) (*BACnetSegmentation, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSegmentation"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (rawData)
@@ -183,6 +185,8 @@ func BACnetSegmentationParse(readBuffer utils.ReadBuffer) (*BACnetSegmentation, 
 }
 
 func (m *BACnetSegmentation) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetSegmentation"); pushErr != nil {
 		return pushErr
 	}

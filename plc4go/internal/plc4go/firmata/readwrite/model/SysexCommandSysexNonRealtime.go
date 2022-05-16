@@ -109,10 +109,12 @@ func (m *SysexCommandSysexNonRealtime) GetLengthInBytes() uint16 {
 }
 
 func SysexCommandSysexNonRealtimeParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandSysexNonRealtime, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandSysexNonRealtime"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandSysexNonRealtime"); closeErr != nil {
@@ -128,6 +130,8 @@ func SysexCommandSysexNonRealtimeParse(readBuffer utils.ReadBuffer, response boo
 }
 
 func (m *SysexCommandSysexNonRealtime) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SysexCommandSysexNonRealtime"); pushErr != nil {
 			return pushErr

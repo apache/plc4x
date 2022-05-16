@@ -124,10 +124,12 @@ func (m *StatusByte) GetLengthInBytes() uint16 {
 }
 
 func StatusByteParse(readBuffer utils.ReadBuffer) (*StatusByte, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusByte"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (gav3)
@@ -191,6 +193,8 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (*StatusByte, error) {
 }
 
 func (m *StatusByte) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("StatusByte"); pushErr != nil {
 		return pushErr
 	}

@@ -105,10 +105,12 @@ func (m *ApduControlConnect) GetLengthInBytes() uint16 {
 }
 
 func ApduControlConnectParse(readBuffer utils.ReadBuffer) (*ApduControlConnect, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlConnect"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduControlConnect"); closeErr != nil {
@@ -124,6 +126,8 @@ func ApduControlConnectParse(readBuffer utils.ReadBuffer) (*ApduControlConnect, 
 }
 
 func (m *ApduControlConnect) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduControlConnect"); pushErr != nil {
 			return pushErr

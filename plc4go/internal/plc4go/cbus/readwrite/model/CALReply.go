@@ -151,14 +151,16 @@ func (m *CALReply) GetLengthInBytes() uint16 {
 }
 
 func CALReplyParse(readBuffer utils.ReadBuffer) (*CALReply, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReply"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Peek Field (calType)
-	currentPos = readBuffer.GetPos()
+	currentPos = positionAware.GetPos()
 	calType, _err := readBuffer.ReadByte("calType")
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'calType' field")
@@ -231,6 +233,8 @@ func (m *CALReply) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child ICALReply, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CALReply"); pushErr != nil {
 		return pushErr
 	}

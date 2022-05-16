@@ -105,10 +105,12 @@ func (m *ApduControlNack) GetLengthInBytes() uint16 {
 }
 
 func ApduControlNackParse(readBuffer utils.ReadBuffer) (*ApduControlNack, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlNack"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduControlNack"); closeErr != nil {
@@ -124,6 +126,8 @@ func ApduControlNackParse(readBuffer utils.ReadBuffer) (*ApduControlNack, error)
 }
 
 func (m *ApduControlNack) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduControlNack"); pushErr != nil {
 			return pushErr

@@ -154,10 +154,12 @@ func (m *CBusPointToPointCommandIndirect) GetLengthInBytes() uint16 {
 }
 
 func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusPointToPointCommandIndirect, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommandIndirect"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bridgeAddress)
@@ -215,6 +217,8 @@ func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, srchk boo
 }
 
 func (m *CBusPointToPointCommandIndirect) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CBusPointToPointCommandIndirect"); pushErr != nil {
 			return pushErr

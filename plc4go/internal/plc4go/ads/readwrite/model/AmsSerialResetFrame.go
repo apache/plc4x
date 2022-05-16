@@ -144,10 +144,12 @@ func (m *AmsSerialResetFrame) GetLengthInBytes() uint16 {
 }
 
 func AmsSerialResetFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialResetFrame, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsSerialResetFrame"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (magicCookie)
@@ -201,6 +203,8 @@ func AmsSerialResetFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialResetFrame
 }
 
 func (m *AmsSerialResetFrame) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsSerialResetFrame"); pushErr != nil {
 		return pushErr
 	}

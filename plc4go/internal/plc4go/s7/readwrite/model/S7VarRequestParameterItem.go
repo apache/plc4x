@@ -100,10 +100,12 @@ func (m *S7VarRequestParameterItem) GetLengthInBytes() uint16 {
 }
 
 func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItem"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
@@ -144,6 +146,8 @@ func (m *S7VarRequestParameterItem) Serialize(writeBuffer utils.WriteBuffer) err
 }
 
 func (m *S7VarRequestParameterItem) SerializeParent(writeBuffer utils.WriteBuffer, child IS7VarRequestParameterItem, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7VarRequestParameterItem"); pushErr != nil {
 		return pushErr
 	}

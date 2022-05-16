@@ -127,10 +127,12 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) GetLengthInBytes() uint16 {
 }
 
 func KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer utils.ReadBuffer) (*KnxNetRemoteConfigurationAndDiagnosis, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetRemoteConfigurationAndDiagnosis"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (version)
@@ -154,6 +156,8 @@ func KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer utils.ReadBuffer) (*K
 }
 
 func (m *KnxNetRemoteConfigurationAndDiagnosis) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("KnxNetRemoteConfigurationAndDiagnosis"); pushErr != nil {
 			return pushErr

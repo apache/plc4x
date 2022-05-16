@@ -272,10 +272,12 @@ func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetLengthInByt
 }
 
 func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestConfirmedEventNotification, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedEventNotification"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (processIdentifier)
@@ -372,7 +374,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	// Optional Field (messageText) (Can be skipped, if a given expression evaluates to false)
 	var messageText *BACnetContextTagCharacterString = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("messageText"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -406,7 +408,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	// Optional Field (ackRequired) (Can be skipped, if a given expression evaluates to false)
 	var ackRequired *BACnetContextTagBoolean = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("ackRequired"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -427,7 +429,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	// Optional Field (fromState) (Can be skipped, if a given expression evaluates to false)
 	var fromState *BACnetContextTagEventState = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("fromState"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -461,7 +463,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	// Optional Field (eventValues) (Can be skipped, if a given expression evaluates to false)
 	var eventValues *BACnetNotificationParameters = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("eventValues"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -505,6 +507,8 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestConfirmedEventNotification"); pushErr != nil {
 			return pushErr

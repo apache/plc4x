@@ -108,10 +108,12 @@ func (m *BACnetServiceAckAddListElement) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckAddListElementParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckAddListElement, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAddListElement"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetServiceAckAddListElementParse(readBuffer utils.ReadBuffer, serviceReq
 }
 
 func (m *BACnetServiceAckAddListElement) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckAddListElement"); pushErr != nil {
 			return pushErr

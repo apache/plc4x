@@ -111,10 +111,12 @@ func (m *CBusHeader) GetLengthInBytes() uint16 {
 }
 
 func CBusHeaderParse(readBuffer utils.ReadBuffer) (*CBusHeader, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusHeader"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (priorityClass)
@@ -180,6 +182,8 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (*CBusHeader, error) {
 }
 
 func (m *CBusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusHeader"); pushErr != nil {
 		return pushErr
 	}

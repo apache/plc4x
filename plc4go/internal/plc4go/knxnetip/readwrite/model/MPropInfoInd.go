@@ -108,10 +108,12 @@ func (m *MPropInfoInd) GetLengthInBytes() uint16 {
 }
 
 func MPropInfoIndParse(readBuffer utils.ReadBuffer, size uint16) (*MPropInfoInd, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("MPropInfoInd"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("MPropInfoInd"); closeErr != nil {
@@ -127,6 +129,8 @@ func MPropInfoIndParse(readBuffer utils.ReadBuffer, size uint16) (*MPropInfoInd,
 }
 
 func (m *MPropInfoInd) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MPropInfoInd"); pushErr != nil {
 			return pushErr

@@ -128,10 +128,12 @@ func (m *CBusCommandPointToPointToMultiPoint) GetLengthInBytes() uint16 {
 }
 
 func CBusCommandPointToPointToMultiPointParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommandPointToPointToMultiPoint, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandPointToPointToMultiPoint"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (command)
@@ -161,6 +163,8 @@ func CBusCommandPointToPointToMultiPointParse(readBuffer utils.ReadBuffer, srchk
 }
 
 func (m *CBusCommandPointToPointToMultiPoint) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CBusCommandPointToPointToMultiPoint"); pushErr != nil {
 			return pushErr

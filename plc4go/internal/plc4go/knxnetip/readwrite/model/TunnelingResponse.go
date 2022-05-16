@@ -127,10 +127,12 @@ func (m *TunnelingResponse) GetLengthInBytes() uint16 {
 }
 
 func TunnelingResponseParse(readBuffer utils.ReadBuffer) (*TunnelingResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (tunnelingResponseDataBlock)
@@ -160,6 +162,8 @@ func TunnelingResponseParse(readBuffer utils.ReadBuffer) (*TunnelingResponse, er
 }
 
 func (m *TunnelingResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("TunnelingResponse"); pushErr != nil {
 			return pushErr

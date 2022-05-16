@@ -136,10 +136,12 @@ func (m *SALDataRampToLevel) GetLengthInBytes() uint16 {
 }
 
 func SALDataRampToLevelParse(readBuffer utils.ReadBuffer) (*SALDataRampToLevel, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataRampToLevel"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (group)
@@ -171,6 +173,8 @@ func SALDataRampToLevelParse(readBuffer utils.ReadBuffer) (*SALDataRampToLevel, 
 }
 
 func (m *SALDataRampToLevel) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataRampToLevel"); pushErr != nil {
 			return pushErr

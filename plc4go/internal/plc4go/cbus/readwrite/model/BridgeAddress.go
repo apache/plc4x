@@ -94,10 +94,12 @@ func (m *BridgeAddress) GetLengthInBytes() uint16 {
 }
 
 func BridgeAddressParse(readBuffer utils.ReadBuffer) (*BridgeAddress, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BridgeAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (address)
@@ -116,6 +118,8 @@ func BridgeAddressParse(readBuffer utils.ReadBuffer) (*BridgeAddress, error) {
 }
 
 func (m *BridgeAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BridgeAddress"); pushErr != nil {
 		return pushErr
 	}

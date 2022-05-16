@@ -162,10 +162,12 @@ func (m *AlarmMessageObjectAckType) GetLengthInBytes() uint16 {
 }
 
 func AlarmMessageObjectAckTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageObjectAckType, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectAckType"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Const Field (variableSpec)
@@ -248,6 +250,8 @@ func AlarmMessageObjectAckTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageO
 }
 
 func (m *AlarmMessageObjectAckType) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageObjectAckType"); pushErr != nil {
 		return pushErr
 	}

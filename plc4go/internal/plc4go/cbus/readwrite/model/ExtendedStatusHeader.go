@@ -98,10 +98,12 @@ func (m *ExtendedStatusHeader) GetLengthInBytes() uint16 {
 }
 
 func ExtendedStatusHeaderParse(readBuffer utils.ReadBuffer) (*ExtendedStatusHeader, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ExtendedStatusHeader"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -134,6 +136,8 @@ func ExtendedStatusHeaderParse(readBuffer utils.ReadBuffer) (*ExtendedStatusHead
 }
 
 func (m *ExtendedStatusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ExtendedStatusHeader"); pushErr != nil {
 		return pushErr
 	}

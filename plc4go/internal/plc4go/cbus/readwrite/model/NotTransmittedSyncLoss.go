@@ -107,10 +107,12 @@ func (m *NotTransmittedSyncLoss) GetLengthInBytes() uint16 {
 }
 
 func NotTransmittedSyncLossParse(readBuffer utils.ReadBuffer) (*NotTransmittedSyncLoss, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("NotTransmittedSyncLoss"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("NotTransmittedSyncLoss"); closeErr != nil {
@@ -126,6 +128,8 @@ func NotTransmittedSyncLossParse(readBuffer utils.ReadBuffer) (*NotTransmittedSy
 }
 
 func (m *NotTransmittedSyncLoss) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("NotTransmittedSyncLoss"); pushErr != nil {
 			return pushErr

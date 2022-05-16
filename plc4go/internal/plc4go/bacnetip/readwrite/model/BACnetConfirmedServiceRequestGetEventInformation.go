@@ -134,16 +134,18 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBytes() ui
 }
 
 func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestGetEventInformation, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEventInformation"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Optional Field (lastReceivedObjectIdentifier) (Can be skipped, if a given expression evaluates to false)
 	var lastReceivedObjectIdentifier *BACnetContextTagObjectIdentifier = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("lastReceivedObjectIdentifier"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -175,6 +177,8 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.Read
 }
 
 func (m *BACnetConfirmedServiceRequestGetEventInformation) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestGetEventInformation"); pushErr != nil {
 			return pushErr

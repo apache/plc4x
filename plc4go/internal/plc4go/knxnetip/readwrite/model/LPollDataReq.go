@@ -108,10 +108,12 @@ func (m *LPollDataReq) GetLengthInBytes() uint16 {
 }
 
 func LPollDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*LPollDataReq, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("LPollDataReq"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("LPollDataReq"); closeErr != nil {
@@ -127,6 +129,8 @@ func LPollDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*LPollDataReq,
 }
 
 func (m *LPollDataReq) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("LPollDataReq"); pushErr != nil {
 			return pushErr

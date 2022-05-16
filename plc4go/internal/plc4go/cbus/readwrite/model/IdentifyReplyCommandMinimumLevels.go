@@ -105,10 +105,12 @@ func (m *IdentifyReplyCommandMinimumLevels) GetLengthInBytes() uint16 {
 }
 
 func IdentifyReplyCommandMinimumLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandMinimumLevels, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandMinimumLevels"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandMinimumLevels"); closeErr != nil {
@@ -124,6 +126,8 @@ func IdentifyReplyCommandMinimumLevelsParse(readBuffer utils.ReadBuffer, attribu
 }
 
 func (m *IdentifyReplyCommandMinimumLevels) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandMinimumLevels"); pushErr != nil {
 			return pushErr

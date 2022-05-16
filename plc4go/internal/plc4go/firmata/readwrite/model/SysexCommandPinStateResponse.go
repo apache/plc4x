@@ -153,10 +153,12 @@ func (m *SysexCommandPinStateResponse) GetLengthInBytes() uint16 {
 }
 
 func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandPinStateResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandPinStateResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (pin)
@@ -196,6 +198,8 @@ func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer, response boo
 }
 
 func (m *SysexCommandPinStateResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SysexCommandPinStateResponse"); pushErr != nil {
 			return pushErr

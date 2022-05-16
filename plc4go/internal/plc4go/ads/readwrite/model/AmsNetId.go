@@ -144,10 +144,12 @@ func (m *AmsNetId) GetLengthInBytes() uint16 {
 }
 
 func AmsNetIdParse(readBuffer utils.ReadBuffer) (*AmsNetId, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsNetId"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (octet1)
@@ -201,6 +203,8 @@ func AmsNetIdParse(readBuffer utils.ReadBuffer) (*AmsNetId, error) {
 }
 
 func (m *AmsNetId) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsNetId"); pushErr != nil {
 		return pushErr
 	}

@@ -121,10 +121,12 @@ func (m *VTCloseErrorListOfVTSessionIdentifiers) GetLengthInBytes() uint16 {
 }
 
 func VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*VTCloseErrorListOfVTSessionIdentifiers, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("VTCloseErrorListOfVTSessionIdentifiers"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
@@ -182,6 +184,8 @@ func VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer utils.ReadBuffer, ta
 }
 
 func (m *VTCloseErrorListOfVTSessionIdentifiers) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("VTCloseErrorListOfVTSessionIdentifiers"); pushErr != nil {
 		return pushErr
 	}

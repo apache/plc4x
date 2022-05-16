@@ -132,10 +132,12 @@ func (m *UnknownMessage) GetLengthInBytes() uint16 {
 }
 
 func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (*UnknownMessage, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("UnknownMessage"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (unknownData)
 	numberOfBytesunknownData := int(uint16(totalLength) - uint16(uint16(6)))
@@ -158,6 +160,8 @@ func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Unkn
 }
 
 func (m *UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("UnknownMessage"); pushErr != nil {
 			return pushErr

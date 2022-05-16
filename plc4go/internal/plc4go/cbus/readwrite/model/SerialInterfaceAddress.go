@@ -94,10 +94,12 @@ func (m *SerialInterfaceAddress) GetLengthInBytes() uint16 {
 }
 
 func SerialInterfaceAddressParse(readBuffer utils.ReadBuffer) (*SerialInterfaceAddress, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SerialInterfaceAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (address)
@@ -116,6 +118,8 @@ func SerialInterfaceAddressParse(readBuffer utils.ReadBuffer) (*SerialInterfaceA
 }
 
 func (m *SerialInterfaceAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SerialInterfaceAddress"); pushErr != nil {
 		return pushErr
 	}

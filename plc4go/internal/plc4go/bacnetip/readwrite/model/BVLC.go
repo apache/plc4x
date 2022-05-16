@@ -141,10 +141,12 @@ func (m *BVLC) GetLengthInBytes() uint16 {
 }
 
 func BVLCParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLC"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Const Field (bacnetType)
@@ -230,6 +232,8 @@ func (m *BVLC) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *BVLC) SerializeParent(writeBuffer utils.WriteBuffer, child IBVLC, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BVLC"); pushErr != nil {
 		return pushErr
 	}

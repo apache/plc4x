@@ -105,10 +105,12 @@ func (m *ApduControlAck) GetLengthInBytes() uint16 {
 }
 
 func ApduControlAckParse(readBuffer utils.ReadBuffer) (*ApduControlAck, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlAck"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduControlAck"); closeErr != nil {
@@ -124,6 +126,8 @@ func ApduControlAckParse(readBuffer utils.ReadBuffer) (*ApduControlAck, error) {
 }
 
 func (m *ApduControlAck) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduControlAck"); pushErr != nil {
 			return pushErr

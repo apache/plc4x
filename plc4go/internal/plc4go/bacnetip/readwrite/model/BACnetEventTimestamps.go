@@ -137,10 +137,12 @@ func (m *BACnetEventTimestamps) GetLengthInBytes() uint16 {
 }
 
 func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetEventTimestamps, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventTimestamps"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
@@ -217,6 +219,8 @@ func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*
 }
 
 func (m *BACnetEventTimestamps) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventTimestamps"); pushErr != nil {
 		return pushErr
 	}

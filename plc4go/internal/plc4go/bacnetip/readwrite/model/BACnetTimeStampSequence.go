@@ -125,10 +125,12 @@ func (m *BACnetTimeStampSequence) GetLengthInBytes() uint16 {
 }
 
 func BACnetTimeStampSequenceParse(readBuffer utils.ReadBuffer) (*BACnetTimeStampSequence, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStampSequence"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (sequenceNumber)
@@ -158,6 +160,8 @@ func BACnetTimeStampSequenceParse(readBuffer utils.ReadBuffer) (*BACnetTimeStamp
 }
 
 func (m *BACnetTimeStampSequence) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetTimeStampSequence"); pushErr != nil {
 			return pushErr

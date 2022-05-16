@@ -132,10 +132,12 @@ func (m *ConnectionRequestInformationTunnelConnection) GetLengthInBytes() uint16
 }
 
 func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuffer) (*ConnectionRequestInformationTunnelConnection, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformationTunnelConnection"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (knxLayer)
@@ -179,6 +181,8 @@ func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuff
 }
 
 func (m *ConnectionRequestInformationTunnelConnection) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConnectionRequestInformationTunnelConnection"); pushErr != nil {
 			return pushErr

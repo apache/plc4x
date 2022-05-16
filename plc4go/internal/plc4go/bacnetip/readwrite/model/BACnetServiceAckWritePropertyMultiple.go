@@ -108,10 +108,12 @@ func (m *BACnetServiceAckWritePropertyMultiple) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckWritePropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckWritePropertyMultiple, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckWritePropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetServiceAckWritePropertyMultipleParse(readBuffer utils.ReadBuffer, ser
 }
 
 func (m *BACnetServiceAckWritePropertyMultiple) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckWritePropertyMultiple"); pushErr != nil {
 			return pushErr

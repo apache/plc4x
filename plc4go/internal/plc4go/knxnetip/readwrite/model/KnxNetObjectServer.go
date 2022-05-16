@@ -127,10 +127,12 @@ func (m *KnxNetObjectServer) GetLengthInBytes() uint16 {
 }
 
 func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (*KnxNetObjectServer, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetObjectServer"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (version)
@@ -154,6 +156,8 @@ func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (*KnxNetObjectServer, 
 }
 
 func (m *KnxNetObjectServer) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("KnxNetObjectServer"); pushErr != nil {
 			return pushErr

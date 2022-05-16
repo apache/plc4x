@@ -161,10 +161,12 @@ func (m *Error) GetLengthInBytes() uint16 {
 }
 
 func ErrorParse(readBuffer utils.ReadBuffer) (*Error, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("Error"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (rawErrorClass)
@@ -232,6 +234,8 @@ func ErrorParse(readBuffer utils.ReadBuffer) (*Error, error) {
 }
 
 func (m *Error) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Error"); pushErr != nil {
 		return pushErr
 	}

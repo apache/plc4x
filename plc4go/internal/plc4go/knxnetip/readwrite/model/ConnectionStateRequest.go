@@ -142,10 +142,12 @@ func (m *ConnectionStateRequest) GetLengthInBytes() uint16 {
 }
 
 func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (*ConnectionStateRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionStateRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (communicationChannelId)
@@ -197,6 +199,8 @@ func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (*ConnectionStateR
 }
 
 func (m *ConnectionStateRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConnectionStateRequest"); pushErr != nil {
 			return pushErr

@@ -108,10 +108,12 @@ func (m *BACnetServiceAckVTClose) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckVTCloseParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckVTClose, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTClose"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetServiceAckVTCloseParse(readBuffer utils.ReadBuffer, serviceRequestLen
 }
 
 func (m *BACnetServiceAckVTClose) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckVTClose"); pushErr != nil {
 			return pushErr

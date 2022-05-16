@@ -127,10 +127,12 @@ func (m *DescriptionRequest) GetLengthInBytes() uint16 {
 }
 
 func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*DescriptionRequest, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DescriptionRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (hpaiControlEndpoint)
@@ -160,6 +162,8 @@ func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*DescriptionRequest, 
 }
 
 func (m *DescriptionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DescriptionRequest"); pushErr != nil {
 			return pushErr

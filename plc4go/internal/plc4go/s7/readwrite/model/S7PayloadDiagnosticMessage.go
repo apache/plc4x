@@ -204,10 +204,12 @@ func (m *S7PayloadDiagnosticMessage) GetLengthInBytes() uint16 {
 }
 
 func S7PayloadDiagnosticMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadDiagnosticMessage, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadDiagnosticMessage"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (EventId)
@@ -285,6 +287,8 @@ func S7PayloadDiagnosticMessageParse(readBuffer utils.ReadBuffer, cpuFunctionTyp
 }
 
 func (m *S7PayloadDiagnosticMessage) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7PayloadDiagnosticMessage"); pushErr != nil {
 			return pushErr

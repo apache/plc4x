@@ -108,10 +108,12 @@ func (m *BACnetServiceAckRemoveListElement) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckRemoveListElementParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckRemoveListElement, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRemoveListElement"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetServiceAckRemoveListElementParse(readBuffer utils.ReadBuffer, service
 }
 
 func (m *BACnetServiceAckRemoveListElement) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckRemoveListElement"); pushErr != nil {
 			return pushErr

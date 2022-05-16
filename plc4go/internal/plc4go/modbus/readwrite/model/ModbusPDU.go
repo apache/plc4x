@@ -106,10 +106,12 @@ func (m *ModbusPDU) GetLengthInBytes() uint16 {
 }
 
 func ModbusPDUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDU"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
@@ -232,6 +234,8 @@ func (m *ModbusPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *ModbusPDU) SerializeParent(writeBuffer utils.WriteBuffer, child IModbusPDU, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusPDU"); pushErr != nil {
 		return pushErr
 	}

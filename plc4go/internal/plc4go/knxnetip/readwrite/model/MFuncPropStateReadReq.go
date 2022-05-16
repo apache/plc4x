@@ -108,10 +108,12 @@ func (m *MFuncPropStateReadReq) GetLengthInBytes() uint16 {
 }
 
 func MFuncPropStateReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*MFuncPropStateReadReq, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("MFuncPropStateReadReq"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("MFuncPropStateReadReq"); closeErr != nil {
@@ -127,6 +129,8 @@ func MFuncPropStateReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*MFun
 }
 
 func (m *MFuncPropStateReadReq) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MFuncPropStateReadReq"); pushErr != nil {
 			return pushErr

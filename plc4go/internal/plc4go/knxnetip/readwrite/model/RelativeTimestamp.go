@@ -94,10 +94,12 @@ func (m *RelativeTimestamp) GetLengthInBytes() uint16 {
 }
 
 func RelativeTimestampParse(readBuffer utils.ReadBuffer) (*RelativeTimestamp, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("RelativeTimestamp"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timestamp)
@@ -116,6 +118,8 @@ func RelativeTimestampParse(readBuffer utils.ReadBuffer) (*RelativeTimestamp, er
 }
 
 func (m *RelativeTimestamp) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("RelativeTimestamp"); pushErr != nil {
 		return pushErr
 	}

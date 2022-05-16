@@ -169,10 +169,12 @@ func (m *CipReadResponse) GetLengthInBytes() uint16 {
 }
 
 func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipReadResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipReadResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -239,6 +241,8 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipR
 }
 
 func (m *CipReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CipReadResponse"); pushErr != nil {
 			return pushErr

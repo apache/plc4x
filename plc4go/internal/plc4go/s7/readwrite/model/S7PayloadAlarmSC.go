@@ -138,10 +138,12 @@ func (m *S7PayloadAlarmSC) GetLengthInBytes() uint16 {
 }
 
 func S7PayloadAlarmSCParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadAlarmSC, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadAlarmSC"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (alarmMessage)
@@ -171,6 +173,8 @@ func S7PayloadAlarmSCParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, c
 }
 
 func (m *S7PayloadAlarmSC) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7PayloadAlarmSC"); pushErr != nil {
 			return pushErr

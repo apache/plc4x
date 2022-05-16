@@ -127,10 +127,12 @@ func (m *IdentifyReplyCommandType) GetLengthInBytes() uint16 {
 }
 
 func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandType, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandType"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (unitType)
@@ -154,6 +156,8 @@ func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attrib
 }
 
 func (m *IdentifyReplyCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandType"); pushErr != nil {
 			return pushErr

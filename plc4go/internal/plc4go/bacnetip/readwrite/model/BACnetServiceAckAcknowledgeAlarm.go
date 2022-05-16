@@ -108,10 +108,12 @@ func (m *BACnetServiceAckAcknowledgeAlarm) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckAcknowledgeAlarmParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckAcknowledgeAlarm, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAcknowledgeAlarm"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Validation
@@ -132,6 +134,8 @@ func BACnetServiceAckAcknowledgeAlarmParse(readBuffer utils.ReadBuffer, serviceR
 }
 
 func (m *BACnetServiceAckAcknowledgeAlarm) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckAcknowledgeAlarm"); pushErr != nil {
 			return pushErr

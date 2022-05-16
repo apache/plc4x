@@ -175,10 +175,12 @@ func (m *BACnetNotificationParametersCommandFailure) GetLengthInBytes() uint16 {
 }
 
 func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersCommandFailure, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersCommandFailure"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
@@ -264,6 +266,8 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 }
 
 func (m *BACnetNotificationParametersCommandFailure) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersCommandFailure"); pushErr != nil {
 			return pushErr

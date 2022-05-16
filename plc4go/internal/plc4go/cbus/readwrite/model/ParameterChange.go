@@ -119,10 +119,12 @@ func (m *ParameterChange) GetLengthInBytes() uint16 {
 }
 
 func ParameterChangeParse(readBuffer utils.ReadBuffer) (*ParameterChange, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterChange"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Const Field (specialChar1)
@@ -170,6 +172,8 @@ func ParameterChangeParse(readBuffer utils.ReadBuffer) (*ParameterChange, error)
 }
 
 func (m *ParameterChange) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ParameterChange"); pushErr != nil {
 		return pushErr
 	}

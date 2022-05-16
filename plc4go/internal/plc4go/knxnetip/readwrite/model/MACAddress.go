@@ -96,10 +96,12 @@ func (m *MACAddress) GetLengthInBytes() uint16 {
 }
 
 func MACAddressParse(readBuffer utils.ReadBuffer) (*MACAddress, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("MACAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (addr)
 	numberOfBytesaddr := int(uint16(6))
@@ -117,6 +119,8 @@ func MACAddressParse(readBuffer utils.ReadBuffer) (*MACAddress, error) {
 }
 
 func (m *MACAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("MACAddress"); pushErr != nil {
 		return pushErr
 	}

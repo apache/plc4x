@@ -124,10 +124,12 @@ func (m *BACnetReadAccessPropertyError) GetLengthInBytes() uint16 {
 }
 
 func BACnetReadAccessPropertyErrorParse(readBuffer utils.ReadBuffer) (*BACnetReadAccessPropertyError, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReadAccessPropertyError"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
@@ -191,6 +193,8 @@ func BACnetReadAccessPropertyErrorParse(readBuffer utils.ReadBuffer) (*BACnetRea
 }
 
 func (m *BACnetReadAccessPropertyError) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetReadAccessPropertyError"); pushErr != nil {
 		return pushErr
 	}

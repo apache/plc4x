@@ -94,10 +94,12 @@ func (m *Dummy) GetLengthInBytes() uint16 {
 }
 
 func DummyParse(readBuffer utils.ReadBuffer) (*Dummy, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("Dummy"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (dummy)
@@ -116,6 +118,8 @@ func DummyParse(readBuffer utils.ReadBuffer) (*Dummy, error) {
 }
 
 func (m *Dummy) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Dummy"); pushErr != nil {
 		return pushErr
 	}

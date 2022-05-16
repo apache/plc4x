@@ -132,10 +132,12 @@ func (m *COTPParameterDisconnectAdditionalInformation) GetLengthInBytes() uint16
 }
 
 func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameterDisconnectAdditionalInformation, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterDisconnectAdditionalInformation"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (data)
 	numberOfBytesdata := int(rest)
@@ -158,6 +160,8 @@ func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuff
 }
 
 func (m *COTPParameterDisconnectAdditionalInformation) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("COTPParameterDisconnectAdditionalInformation"); pushErr != nil {
 			return pushErr

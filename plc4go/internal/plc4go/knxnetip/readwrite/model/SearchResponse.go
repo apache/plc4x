@@ -149,10 +149,12 @@ func (m *SearchResponse) GetLengthInBytes() uint16 {
 }
 
 func SearchResponseParse(readBuffer utils.ReadBuffer) (*SearchResponse, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("SearchResponse"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (hpaiControlEndpoint)
@@ -210,6 +212,8 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (*SearchResponse, error) {
 }
 
 func (m *SearchResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SearchResponse"); pushErr != nil {
 			return pushErr

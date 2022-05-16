@@ -127,10 +127,12 @@ func (m *DeviceConfigurationAck) GetLengthInBytes() uint16 {
 }
 
 func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*DeviceConfigurationAck, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAck"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (deviceConfigurationAckDataBlock)
@@ -160,6 +162,8 @@ func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*DeviceConfigurat
 }
 
 func (m *DeviceConfigurationAck) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DeviceConfigurationAck"); pushErr != nil {
 			return pushErr

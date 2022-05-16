@@ -109,10 +109,12 @@ func (m *ModbusDeviceInformationObject) GetLengthInBytes() uint16 {
 }
 
 func ModbusDeviceInformationObjectParse(readBuffer utils.ReadBuffer) (*ModbusDeviceInformationObject, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusDeviceInformationObject"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectId)
@@ -144,6 +146,8 @@ func ModbusDeviceInformationObjectParse(readBuffer utils.ReadBuffer) (*ModbusDev
 }
 
 func (m *ModbusDeviceInformationObject) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusDeviceInformationObject"); pushErr != nil {
 		return pushErr
 	}

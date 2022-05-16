@@ -98,10 +98,12 @@ func (m *ComObjectTable) GetLengthInBytes() uint16 {
 }
 
 func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (*ComObjectTable, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ComObjectTable"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -140,6 +142,8 @@ func (m *ComObjectTable) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *ComObjectTable) SerializeParent(writeBuffer utils.WriteBuffer, child IComObjectTable, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ComObjectTable"); pushErr != nil {
 		return pushErr
 	}

@@ -197,10 +197,12 @@ func (m *LDataExtended) GetLengthInBytes() uint16 {
 }
 
 func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataExtended, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataExtended"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (groupAddress)
@@ -282,6 +284,8 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataExtended, error) {
 }
 
 func (m *LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("LDataExtended"); pushErr != nil {
 			return pushErr

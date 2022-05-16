@@ -103,10 +103,12 @@ func (m *ConnectionResponseDataBlock) GetLengthInBytes() uint16 {
 }
 
 func ConnectionResponseDataBlockParse(readBuffer utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlock"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -156,6 +158,8 @@ func (m *ConnectionResponseDataBlock) Serialize(writeBuffer utils.WriteBuffer) e
 }
 
 func (m *ConnectionResponseDataBlock) SerializeParent(writeBuffer utils.WriteBuffer, child IConnectionResponseDataBlock, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ConnectionResponseDataBlock"); pushErr != nil {
 		return pushErr
 	}

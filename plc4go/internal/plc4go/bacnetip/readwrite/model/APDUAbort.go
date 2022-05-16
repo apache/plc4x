@@ -156,10 +156,12 @@ func (m *APDUAbort) GetLengthInBytes() uint16 {
 }
 
 func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUAbort, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUAbort"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -213,6 +215,8 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUAbort,
 }
 
 func (m *APDUAbort) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUAbort"); pushErr != nil {
 			return pushErr

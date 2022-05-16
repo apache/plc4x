@@ -113,14 +113,16 @@ func (m *Reply) GetLengthInBytes() uint16 {
 }
 
 func ReplyParse(readBuffer utils.ReadBuffer) (*Reply, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("Reply"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Peek Field (magicByte)
-	currentPos = readBuffer.GetPos()
+	currentPos = positionAware.GetPos()
 	magicByte, _err := readBuffer.ReadByte("magicByte")
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'magicByte' field")
@@ -170,6 +172,8 @@ func (m *Reply) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *Reply) SerializeParent(writeBuffer utils.WriteBuffer, child IReply, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Reply"); pushErr != nil {
 		return pushErr
 	}

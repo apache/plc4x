@@ -111,10 +111,12 @@ func (m *PowerUp) GetLengthInBytes() uint16 {
 }
 
 func PowerUpParse(readBuffer utils.ReadBuffer) (*PowerUp, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("PowerUp"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Const Field (plus)
@@ -153,6 +155,8 @@ func PowerUpParse(readBuffer utils.ReadBuffer) (*PowerUp, error) {
 }
 
 func (m *PowerUp) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("PowerUp"); pushErr != nil {
 		return pushErr
 	}

@@ -96,10 +96,12 @@ func (m *IPAddress) GetLengthInBytes() uint16 {
 }
 
 func IPAddressParse(readBuffer utils.ReadBuffer) (*IPAddress, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("IPAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (addr)
 	numberOfBytesaddr := int(uint16(4))
@@ -117,6 +119,8 @@ func IPAddressParse(readBuffer utils.ReadBuffer) (*IPAddress, error) {
 }
 
 func (m *IPAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("IPAddress"); pushErr != nil {
 		return pushErr
 	}

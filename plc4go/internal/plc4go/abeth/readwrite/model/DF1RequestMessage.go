@@ -154,10 +154,12 @@ func (m *DF1RequestMessage) GetLengthInBytes() uint16 {
 }
 
 func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMessage, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1RequestMessage"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (destinationAddress)
@@ -240,6 +242,8 @@ func (m *DF1RequestMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *DF1RequestMessage) SerializeParent(writeBuffer utils.WriteBuffer, child IDF1RequestMessage, serializeChildFunction func() error) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DF1RequestMessage"); pushErr != nil {
 		return pushErr
 	}

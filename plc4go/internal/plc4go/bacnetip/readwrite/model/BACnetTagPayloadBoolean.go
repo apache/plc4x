@@ -111,10 +111,12 @@ func (m *BACnetTagPayloadBoolean) GetLengthInBytes() uint16 {
 }
 
 func BACnetTagPayloadBooleanParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTagPayloadBoolean, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadBoolean"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Virtual field
@@ -141,6 +143,8 @@ func BACnetTagPayloadBooleanParse(readBuffer utils.ReadBuffer, actualLength uint
 }
 
 func (m *BACnetTagPayloadBoolean) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadBoolean"); pushErr != nil {
 		return pushErr
 	}
