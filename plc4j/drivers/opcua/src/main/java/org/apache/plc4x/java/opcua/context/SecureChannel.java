@@ -79,7 +79,7 @@ public class SecureChannel {
     protected static final ExtensionObject NULL_EXTENSION_OBJECT = new ExtensionObject(
         NULL_EXPANDED_NODEID,
         new ExtensionObjectEncodingMask(false, false, false),
-        new NullExtension(), false);               // Body
+        new NullExtension(), true);               // Body
 
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(.(?<transportCode>tcp))?://" +
         "(?<transportHost>[\\w.-]+)(:" +

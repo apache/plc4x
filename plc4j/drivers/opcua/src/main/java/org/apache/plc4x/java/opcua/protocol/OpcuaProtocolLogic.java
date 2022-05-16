@@ -69,7 +69,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         NULL_EXPANDED_NODEID,
         new ExtensionObjectEncodingMask(false, false, false),
         new NullExtension(),
-        false);               // Body
+        true);               // Body
 
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
     private OpcuaConfiguration configuration;
