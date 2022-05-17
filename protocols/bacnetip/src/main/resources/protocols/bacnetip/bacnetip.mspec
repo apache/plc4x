@@ -464,12 +464,12 @@
             [optional BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')      listOfElements      ]
         ]
         ['CREATE_OBJECT' BACnetConfirmedServiceRequestCreateObject
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple       BACnetConfirmedServiceRequestCreateObjectObjectSpecifier('0')                    objectSpecifier     ]
+            [optional     BACnetPropertyValues('1', 'objectSpecifier.isObjectType?objectSpecifier.objectType:objectSpecifier.objectIdentifier.objectType')
+                                                                                                           listOfValues        ]
         ]
         ['DELETE_OBJECT' BACnetConfirmedServiceRequestDeleteObject
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetApplicationTagObjectIdentifier                                                 objectIdentifier    ]
         ]
         ['READ_PROPERTY' BACnetConfirmedServiceRequestReadProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
@@ -642,6 +642,22 @@
     ['0x0D' READ_PROPERTY_CONDITIONAL               ]
     //
     ////
+]
+
+[type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier(uint 8 tagNumber)
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                     openingTag                                                                         ]
+    [optional   BACnetContextTagEnumerated('0', 'BACnetDataType.ENUMERATED')
+                     rawObjectType                                                                      ]
+    [virtual    bit  isObjectType   'rawObjectType != null'                                             ]
+    [virtual    BACnetObjectType
+                     objectType     'STATIC_CALL('mapBACnetObjectType', rawObjectType)'                 ]
+    [optional   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                     objectIdentifier                                                                   ]
+    [virtual    bit  isObjectIdentifier   'objectIdentifier != null'                                    ]
+    [validation 'isObjectType || isObjectIdentifier' "either we need a objectType or a objectIdentifier"]
+    [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                     closingTag                                                                         ]
 ]
 
 [type ListOfCovNotificationsList(uint 8 tagNumber)

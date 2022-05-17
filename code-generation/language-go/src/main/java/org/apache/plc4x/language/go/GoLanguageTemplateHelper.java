@@ -586,9 +586,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             Term b = ternaryTerm.getB();
             Term c = ternaryTerm.getC();
             String castExpressionForTypeReference = getCastExpressionForTypeReference(fieldType);
-            return tracer + "utils.InlineIf(" + toExpression(field, new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + ", " +
+            String inlineIf = "utils.InlineIf(" + toExpression(field, new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + ", " +
                 "func() interface{} {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + ")}, " +
-                "func() interface{} {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, c, parserArguments, serializerArguments, serialize, false) + ")}).(" + castExpressionForTypeReference + ")";
+                "func() interface{} {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, c, parserArguments, serializerArguments, serialize, false) + ")})";
+            if (fieldType.isNonSimpleTypeReference()) {
+                return tracer.dive("nonsimpletypereference") + castExpressionForTypeReference + "(" + inlineIf + ")";
+            }
+            return tracer + inlineIf + ".(" + castExpressionForTypeReference + ")";
         } else {
             throw new RuntimeException("Unsupported ternary operation type " + ternaryTerm.getOperation());
         }

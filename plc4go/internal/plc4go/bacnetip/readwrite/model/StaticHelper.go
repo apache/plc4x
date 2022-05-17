@@ -675,3 +675,11 @@ func MapRejectReason(rawRejectReason uint8, proprietary bool) RejectReason {
 	}
 	return RejectReason(rawRejectReason)
 }
+
+func MapBACnetObjectType(rawObjectType BACnetContextTagEnumerated) BACnetObjectType {
+	baCnetObjectType := BACnetObjectTypeByValue(uint16(rawObjectType.GetActualValue()))
+	if baCnetObjectType == 0 {
+		return BACnetObjectType_VENDOR_PROPRIETARY_VALUE
+	}
+	return baCnetObjectType
+}

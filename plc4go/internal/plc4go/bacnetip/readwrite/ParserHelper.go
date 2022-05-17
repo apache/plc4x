@@ -340,6 +340,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetBinaryPVParse(io, tagNumber)
 	case "ListOfCovNotifications":
 		return model.ListOfCovNotificationsParse(io)
+	case "BACnetConfirmedServiceRequestCreateObjectObjectSpecifier":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(io, tagNumber)
 	case "Error":
 		return model.ErrorParse(io)
 	case "BACnetAction":

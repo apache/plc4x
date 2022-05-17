@@ -389,6 +389,13 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetBinaryPVParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "ListOfCovNotifications":
 		return model.ListOfCovNotificationsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetConfirmedServiceRequestCreateObjectObjectSpecifier":
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
+		if err != nil {
+			return nil, err
+		}
+		tagNumber := uint8(parsedUint0)
+		return model.BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "Error":
 		return model.ErrorParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetAction":
