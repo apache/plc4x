@@ -221,9 +221,9 @@ func ErrorParse(readBuffer utils.ReadBuffer) (*Error, error) {
 	_ = isErrorCodeProprietary
 
 	// Virtual field
-	_ErrorCodeProprietary := rawErrorCode.GetActualValue()
-	ErrorCodeProprietary := uint16(_ErrorCodeProprietary)
-	_ = ErrorCodeProprietary
+	_errorCodeProprietary := rawErrorCode.GetActualValue()
+	errorCodeProprietary := uint16(_errorCodeProprietary)
+	_ = errorCodeProprietary
 
 	if closeErr := readBuffer.CloseContext("Error"); closeErr != nil {
 		return nil, closeErr
@@ -284,8 +284,8 @@ func (m *Error) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(_isErrorCodeProprietaryErr, "Error serializing 'isErrorCodeProprietary' field")
 	}
 	// Virtual field
-	if _ErrorCodeProprietaryErr := writeBuffer.WriteVirtual("ErrorCodeProprietary", m.GetErrorCodeProprietary()); _ErrorCodeProprietaryErr != nil {
-		return errors.Wrap(_ErrorCodeProprietaryErr, "Error serializing 'ErrorCodeProprietary' field")
+	if _errorCodeProprietaryErr := writeBuffer.WriteVirtual("errorCodeProprietary", m.GetErrorCodeProprietary()); _errorCodeProprietaryErr != nil {
+		return errors.Wrap(_errorCodeProprietaryErr, "Error serializing 'errorCodeProprietary' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Error"); popErr != nil {

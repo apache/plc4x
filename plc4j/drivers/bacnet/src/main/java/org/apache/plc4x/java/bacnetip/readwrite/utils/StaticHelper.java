@@ -1136,4 +1136,14 @@ public class StaticHelper {
     public static ErrorCode mapErrorCode(BACnetApplicationTagEnumerated rawErrorCode) {
         return ErrorCode.enumForValue((int) rawErrorCode.getActualValue());
     }
+
+    public static AbortReason mapAbortReason(short rawAbortReason, boolean proprietary) {
+        if (proprietary) return null;
+        return AbortReason.enumForValue(rawAbortReason);
+    }
+
+    public static RejectReason mapRejectReason(short rawRejectReason, boolean proprietary) {
+        if (proprietary) return null;
+        return RejectReason.enumForValue(rawRejectReason);
+    }
 }

@@ -30,14 +30,14 @@
         ['0x01' BVLCWriteBroadcastDistributionTable(uint 16 bvlcPayloadLength)
             [array BVLCBroadcastDistributionTableEntry
                             table
-                            length 'bvlcPayloadLength'          ]
+                                length 'bvlcPayloadLength'      ]
         ]
         ['0x02' BVLCReadBroadcastDistributionTable
         ]
         ['0x03' BVLCReadBroadcastDistributionTableAck(uint 16 bvlcPayloadLength)
             [array BVLCBroadcastDistributionTableEntry
                             table
-                            length 'bvlcPayloadLength'          ]
+                                length 'bvlcPayloadLength'      ]
         ]
         ['0x04' BVLCForwardedNPDU(uint 16 bvlcPayloadLength)
             [array  uint 8  ip    count '4'                     ]
@@ -53,11 +53,11 @@
         ['0x07' BVLCReadForeignDeviceTableAck(uint 16 bvlcPayloadLength)
             [array BVLCForeignDeviceTableEntry
                             table
-                            length 'bvlcPayloadLength'          ]
+                                length 'bvlcPayloadLength'      ]
         ]
         ['0x08' BVLCDeleteForeignDeviceTableEntry
-            [array  uint 8      ip                          count '4'       ]
-            [simple uint 16     port                                        ]
+            [array  uint 8  ip  count '4'                       ]
+            [simple uint 16 port                                ]
         ]
         ['0x09' BVLCDistributeBroadcastToNetwork(uint 16 bvlcPayloadLength)
             [simple NPDU('bvlcPayloadLength')
@@ -78,17 +78,27 @@
     ]
 ]
 
+[enum uint 16 BVLCResultCode
+    ['0x0000' SUCCESSFUL_COMPLETION                             ]
+    ['0x0010' WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK            ]
+    ['0x0020' READ_BROADCAST_DISTRIBUTION_TABLE_NAK             ]
+    ['0x0030' REGISTER_FOREIGN_DEVICE_NAK                       ]
+    ['0x0040' READ_FOREIGN_DEVICE_TABLE_NAK                     ]
+    ['0x0050' DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK             ]
+    ['0x0060' DISTRIBUTE_BROADCAST_TO_NETWORK_NAK               ]
+]
+
 [type BVLCBroadcastDistributionTableEntry
-    [array  uint 8      ip                          count '4'       ]
-    [simple uint 16     port                                        ]
-    [array  uint 8      broadcastDistributionMap    count '4'       ]
+    [array  uint 8      ip                          count '4'   ]
+    [simple uint 16     port                                    ]
+    [array  uint 8      broadcastDistributionMap    count '4'   ]
 ]
 
 [type BVLCForeignDeviceTableEntry
-    [array  uint 8      ip                          count '4'       ]
-    [simple uint 16     port                                        ]
-    [simple uint 16     ttl                                         ]
-    [simple uint 16     secondRemainingBeforePurge                  ]
+    [array  uint 8      ip                          count '4'   ]
+    [simple uint 16     port                                    ]
+    [simple uint 16     ttl                                     ]
+    [simple uint 16     secondRemainingBeforePurge              ]
 ]
 
 [type NPDU(uint 16 npduLength)
@@ -103,7 +113,7 @@
     [optional   uint 8      hopCount                    'control.destinationSpecified'                              ]
     [virtual    uint 16     sourceLengthAddon           'control.sourceSpecified ? 3 + sourceLength : 0'            ]
     [virtual    uint 16     destinationLengthAddon      'control.destinationSpecified ? 3 + destinationLength : 0'  ]
-    [virtual    uint 16     payloadSubtraction         '2 + (sourceLengthAddon + destinationLengthAddon + ((control.destinationSpecified || control.sourceSpecified) ? 1 : 0))'     ]
+    [virtual    uint 16     payloadSubtraction          '2 + (sourceLengthAddon + destinationLengthAddon + ((control.destinationSpecified || control.sourceSpecified) ? 1 : 0))'     ]
     [optional   NLM('npduLength - payloadSubtraction')
                             nlm
                                                         'control.messageTypeFieldPresent'                           ]
@@ -114,22 +124,21 @@
 ]
 
 [type NPDUControl
-    [simple     bit         messageTypeFieldPresent]
-    [reserved   uint 1      '0']
-    [simple     bit         destinationSpecified]
-    [reserved   uint 1      '0']
-    [simple     bit         sourceSpecified]
-    [simple     bit         expectingReply]
+    [simple     bit         messageTypeFieldPresent         ]
+    [reserved   uint 1      '0'                             ]
+    [simple     bit         destinationSpecified            ]
+    [reserved   uint 1      '0'                             ]
+    [simple     bit         sourceSpecified                 ]
+    [simple     bit         expectingReply                  ]
     [simple     NPDUNetworkPriority
-                            networkPriority
-    ]
+                            networkPriority                 ]
 ]
 
 [enum uint 2 NPDUNetworkPriority
-    ['3' LIFE_SAVETY_MESSAGE        ]
-    ['2' CRITICAL_EQUIPMENT_MESSAGE ]
-    ['1' URGENT_MESSAGE             ]
-    ['0' NORMAL_MESSAGE             ]
+    ['3' LIFE_SAVETY_MESSAGE                                ]
+    ['2' CRITICAL_EQUIPMENT_MESSAGE                         ]
+    ['1' URGENT_MESSAGE                                     ]
+    ['0' NORMAL_MESSAGE                                     ]
 ]
 
 [discriminatedType NLM(uint 16 apduLength)
@@ -158,16 +167,16 @@
             [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
         ]
         ['0x06' NLMInitalizeRoutingTable(uint 8 messageType)
-            [simple     uint 8      numberOfPorts                   ]
+            [simple     uint 8      numberOfPorts               ]
             [array      NLMInitalizeRoutingTablePortMapping
                                     portMappings
-                        count 'numberOfPorts'                       ]
+                        count 'numberOfPorts'                   ]
         ]
         ['0x07' NLMInitalizeRoutingTableAck(uint 8 messageType)
-            [simple     uint 8      numberOfPorts                   ]
+            [simple     uint 8      numberOfPorts               ]
             [array      NLMInitalizeRoutingTablePortMapping
                                     portMappings
-                        count 'numberOfPorts'                       ]
+                        count 'numberOfPorts'                   ]
         ]
         ['0x08' NLMEstablishConnectionToNetwork(uint 8 messageType)
             [simple     uint 16     destinationNetworkAddress   ]
@@ -180,13 +189,13 @@
 ]
 
 [enum uint 8  NLMRejectRouterToNetworkRejectReason
-    ['0'    OTHER]
-    ['1'    NOT_DIRECTLY_CONNECTED]
-    ['2'    BUSY]
-    ['3'    UNKNOWN_NLMT]
-    ['4'    TOO_LONG]
-    ['5'    SECURITY_ERROR]
-    ['6'    ADDRESSING_ERROR]
+    ['0'    OTHER                                           ]
+    ['1'    NOT_DIRECTLY_CONNECTED                          ]
+    ['2'    BUSY                                            ]
+    ['3'    UNKNOWN_NLMT                                    ]
+    ['4'    TOO_LONG                                        ]
+    ['5'    SECURITY_ERROR                                  ]
+    ['6'    ADDRESSING_ERROR                                ]
 ]
 
 [type NLMInitalizeRoutingTablePortMapping
@@ -264,15 +273,21 @@
         ['0x6' APDUReject
             [reserved uint 4    '0x00'                                  ]
             [simple   uint 8    originalInvokeId                        ]
-            // TODO: replace with proper object
-            [simple   uint 8    rejectReason                            ]
+            [simple   uint 8    rawRejectReason                         ]
+            [virtual  bit       isRejectReasonProprietary 'rawRejectReason > 63'                                            ]
+            [virtual  RejectReason
+                                rejectReason 'STATIC_CALL("mapRejectReason", rawRejectReason, isRejectReasonProprietary)'   ]
+            [virtual  uint 8    rejectReasonProprietary 'isRejectReasonProprietary?rawRejectReason:0'                       ]
         ]
         ['0x7' APDUAbort
             [reserved uint 3    '0x00'                                  ]
             [simple   bit       server                                  ]
             [simple   uint 8    originalInvokeId                        ]
-            // TODO: replace with proper object
-            [simple   uint 8    abortReason                             ]
+            [simple   uint 8    rawAbortReason                          ]
+            [virtual  bit       isAbortReasonProprietary 'rawAbortReason > 63'                                              ]
+            [virtual  AbortReason
+                                abortReason 'STATIC_CALL("mapAbortReason", rawAbortReason, isAbortReasonProprietary)'       ]
+            [virtual  uint 8    abortReasonProprietary 'isAbortReasonProprietary?rawAbortReason:0'                          ]
         ]
         [APDUUnknown
             [array    byte      unknownBytes length '(apduLength>0)?(apduLength - 1):0'    ]
@@ -280,34 +295,62 @@
     ]
 ]
 
+[enum uint 8 RejectReason
+    ['0x0' OTHER                        ]
+    ['0x1' BUFFER_OVERFLOW              ]
+    ['0x2' INCONSISTENT_PARAMETERS      ]
+    ['0x3' INVALID_PARAMETER_DATA_TYPE  ]
+    ['0x4' INVALID_TAG                  ]
+    ['0x5' MISSING_REQUIRED_PARAMETER   ]
+    ['0x6' PARAMETER_OUT_OF_RANGE       ]
+    ['0x7' TOO_MANY_ARGUMENTS           ]
+    ['0x8' UNDEFINED_ENUMERATION        ]
+    ['0x9' UNRECOGNIZED_SERVICE         ]
+]
+
+[enum uint 8 AbortReason
+    ['0'  OTHER                             ]
+    ['1'  BUFFER_OVERFLOW                   ]
+    ['2'  INVALID_APDU_IN_THIS_STATE        ]
+    ['3'  PREEMPTED_BY_HIGHER_PRIORITY_TASK ]
+    ['4'  SEGMENTATION_NOT_SUPPORTED        ]
+    ['5'  SECURITY_ERROR                    ]
+    ['6'  INSUFFICIENT_SECURITY             ]
+    ['7'  WINDOW_SIZE_OUT_OF_RANGE          ]
+    ['8'  APPLICATION_EXCEEDED_REPLY_TIME   ]
+    ['9'  OUT_OF_RESOURCES                  ]
+    ['10' TSM_TIMEOUT                       ]
+    ['11' APDU_TOO_LONG                     ]
+]
+
 [enum uint 3 MaxSegmentsAccepted
-    ['0x0' UNSPECIFIED             ]
-    ['0x1' NUM_SEGMENTS_02         ]
-    ['0x2' NUM_SEGMENTS_04         ]
-    ['0x3' NUM_SEGMENTS_08         ]
-    ['0x4' NUM_SEGMENTS_16         ]
-    ['0x5' NUM_SEGMENTS_32         ]
-    ['0x6' NUM_SEGMENTS_64         ]
-    ['0x7' MORE_THAN_64_SEGMENTS   ]
+    ['0x0' UNSPECIFIED              ]
+    ['0x1' NUM_SEGMENTS_02          ]
+    ['0x2' NUM_SEGMENTS_04          ]
+    ['0x3' NUM_SEGMENTS_08          ]
+    ['0x4' NUM_SEGMENTS_16          ]
+    ['0x5' NUM_SEGMENTS_32          ]
+    ['0x6' NUM_SEGMENTS_64          ]
+    ['0x7' MORE_THAN_64_SEGMENTS    ]
 ]
 
 [enum uint 4 MaxApduLengthAccepted
-    ['0x0' MINIMUM_MESSAGE_SIZE    ] // 50 octets
-    ['0x1' NUM_OCTETS_128          ]
-    ['0x2' NUM_OCTETS_206          ] // fits in a LonTalk frame
-    ['0x3' NUM_OCTETS_480          ] // fits in an ARCNET frame
-    ['0x4' NUM_OCTETS_1024         ]
-    ['0x5' NUM_OCTETS_1476         ] // fits in an Ethernet frame
-    ['0x6' RESERVED_BY_ASHRAE_01   ]
-    ['0x7' RESERVED_BY_ASHRAE_02   ]
-    ['0x8' RESERVED_BY_ASHRAE_03   ]
-    ['0x9' RESERVED_BY_ASHRAE_04   ]
-    ['0xA' RESERVED_BY_ASHRAE_05   ]
-    ['0xB' RESERVED_BY_ASHRAE_06   ]
-    ['0xC' RESERVED_BY_ASHRAE_07   ]
-    ['0xD' RESERVED_BY_ASHRAE_08   ]
-    ['0xE' RESERVED_BY_ASHRAE_09   ]
-    ['0xF' RESERVED_BY_ASHRAE_10   ]
+    ['0x0' MINIMUM_MESSAGE_SIZE     ] // 50 octets
+    ['0x1' NUM_OCTETS_128           ]
+    ['0x2' NUM_OCTETS_206           ] // fits in a LonTalk frame
+    ['0x3' NUM_OCTETS_480           ] // fits in an ARCNET frame
+    ['0x4' NUM_OCTETS_1024          ]
+    ['0x5' NUM_OCTETS_1476          ] // fits in an Ethernet frame
+    ['0x6' RESERVED_BY_ASHRAE_01    ]
+    ['0x7' RESERVED_BY_ASHRAE_02    ]
+    ['0x8' RESERVED_BY_ASHRAE_03    ]
+    ['0x9' RESERVED_BY_ASHRAE_04    ]
+    ['0xA' RESERVED_BY_ASHRAE_05    ]
+    ['0xB' RESERVED_BY_ASHRAE_06    ]
+    ['0xC' RESERVED_BY_ASHRAE_07    ]
+    ['0xD' RESERVED_BY_ASHRAE_08    ]
+    ['0xE' RESERVED_BY_ASHRAE_09    ]
+    ['0xF' RESERVED_BY_ASHRAE_10    ]
 ]
 
 [discriminatedType BACnetConfirmedServiceRequest(uint 16 serviceRequestLength)
@@ -1274,16 +1317,17 @@
                     closingTag          ]
 ]
 
-// TODO; check if we should do it the same way like below with manual fields
 [type Error
-    [simple BACnetApplicationTagEnumerated rawErrorClass]
-    [virtual ErrorClass errorClass 'STATIC_CALL("mapErrorClass", rawErrorClass)']
-    [virtual bit isErrorClassProprietary 'rawErrorClass.actualValue > 63']
-    [virtual uint 16 errorClassProprietary 'rawErrorClass.actualValue']
-    [simple BACnetApplicationTagEnumerated rawErrorCode]
-    [virtual ErrorCode errorCode 'STATIC_CALL("mapErrorCode", rawErrorCode)']
-    [virtual bit isErrorCodeProprietary 'rawErrorCode.actualValue > 255']
-    [virtual uint 16 ErrorCodeProprietary 'rawErrorCode.actualValue']
+    [simple BACnetApplicationTagEnumerated
+                        rawErrorClass                                               ]
+    [virtual ErrorClass errorClass 'STATIC_CALL("mapErrorClass", rawErrorClass)'    ]
+    [virtual bit        isErrorClassProprietary 'rawErrorClass.actualValue > 63'    ]
+    [virtual uint 16    errorClassProprietary 'rawErrorClass.actualValue'           ]
+    [simple BACnetApplicationTagEnumerated
+                        rawErrorCode                                                ]
+    [virtual ErrorCode  errorCode 'STATIC_CALL("mapErrorCode", rawErrorCode)'       ]
+    [virtual bit        isErrorCodeProprietary 'rawErrorCode.actualValue > 255'     ]
+    [virtual uint 16    errorCodeProprietary 'rawErrorCode.actualValue'             ]
 ]
 
 [enum uint 16 ErrorClass
@@ -2819,16 +2863,6 @@
                             constructedData     'isConstructedData'                                             ]
     [validation 'isApplicationTag || isContextTag || isConstructedData'
                 "BACnetConstructedDataElement could not parse anything"                                         ]
-]
-
-[enum uint 16 BVLCResultCode
-    ['0x0000' SUCCESSFUL_COMPLETION                     ]
-    ['0x0010' WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK    ]
-    ['0x0020' READ_BROADCAST_DISTRIBUTION_TABLE_NAK     ]
-    ['0x0030' REGISTER_FOREIGN_DEVICE_NAK               ]
-    ['0x0040' READ_FOREIGN_DEVICE_TABLE_NAK             ]
-    ['0x0050' DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK     ]
-    ['0x0060' DISTRIBUTE_BROADCAST_TO_NETWORK_NAK       ]
 ]
 
 [enum uint 1 TagClass

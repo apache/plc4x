@@ -10258,7 +10258,7 @@ Test "BACnet Applicat</value>
                   <APDUReject>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">58</originalInvokeId>
-                    <rejectReason dataType="uint" bitLength="8">9</rejectReason>
+                    <rawRejectReason dataType="uint" bitLength="8">9</rawRejectReason>
                   </APDUReject>
                 </APDU>
               </apdu>
@@ -10452,7 +10452,7 @@ Test "BACnet Applicat</value>
                   <APDUReject>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">59</originalInvokeId>
-                    <rejectReason dataType="uint" bitLength="8">9</rejectReason>
+                    <rawRejectReason dataType="uint" bitLength="8">9</rawRejectReason>
                   </APDUReject>
                 </APDU>
               </apdu>

@@ -661,3 +661,17 @@ func MapErrorClass(applicationTagEnumerated *BACnetApplicationTagEnumerated) Err
 func MapErrorCode(applicationTagEnumerated *BACnetApplicationTagEnumerated) ErrorCode {
 	return ErrorCodeByValue(uint16(applicationTagEnumerated.GetActualValue()))
 }
+
+func MapAbortReason(rawAbortReason uint8, proprietary bool) AbortReason {
+	if proprietary {
+		return 0
+	}
+	return AbortReason(rawAbortReason)
+}
+
+func MapRejectReason(rawRejectReason uint8, proprietary bool) RejectReason {
+	if proprietary {
+		return 0
+	}
+	return RejectReason(rawRejectReason)
+}

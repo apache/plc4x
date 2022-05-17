@@ -32,7 +32,7 @@ type APDUAbort struct {
 	*APDU
 	Server           bool
 	OriginalInvokeId uint8
-	AbortReason      uint8
+	RawAbortReason   uint8
 
 	// Arguments.
 	ApduLength uint16
@@ -45,8 +45,14 @@ type IAPDUAbort interface {
 	GetServer() bool
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
-	// GetAbortReason returns AbortReason (property field)
-	GetAbortReason() uint8
+	// GetRawAbortReason returns RawAbortReason (property field)
+	GetRawAbortReason() uint8
+	// GetIsAbortReasonProprietary returns IsAbortReasonProprietary (virtual field)
+	GetIsAbortReasonProprietary() bool
+	// GetAbortReason returns AbortReason (virtual field)
+	GetAbortReason() AbortReason
+	// GetAbortReasonProprietary returns AbortReasonProprietary (virtual field)
+	GetAbortReasonProprietary() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -88,8 +94,29 @@ func (m *APDUAbort) GetOriginalInvokeId() uint8 {
 	return m.OriginalInvokeId
 }
 
-func (m *APDUAbort) GetAbortReason() uint8 {
-	return m.AbortReason
+func (m *APDUAbort) GetRawAbortReason() uint8 {
+	return m.RawAbortReason
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *APDUAbort) GetIsAbortReasonProprietary() bool {
+	return bool(bool((m.GetRawAbortReason()) > (63)))
+}
+
+func (m *APDUAbort) GetAbortReason() AbortReason {
+	return AbortReason(MapAbortReason(m.GetRawAbortReason(), m.GetIsAbortReasonProprietary()))
+}
+
+func (m *APDUAbort) GetAbortReasonProprietary() uint8 {
+	return uint8(utils.InlineIf(m.GetIsAbortReasonProprietary(), func() interface{} { return uint8(m.GetRawAbortReason()) }, func() interface{} { return uint8(uint8(0)) }).(uint8))
 }
 
 ///////////////////////
@@ -98,11 +125,11 @@ func (m *APDUAbort) GetAbortReason() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUAbort factory function for APDUAbort
-func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8, apduLength uint16) *APDUAbort {
+func NewAPDUAbort(server bool, originalInvokeId uint8, rawAbortReason uint8, apduLength uint16) *APDUAbort {
 	_result := &APDUAbort{
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
-		AbortReason:      abortReason,
+		RawAbortReason:   rawAbortReason,
 		APDU:             NewAPDU(apduLength),
 	}
 	_result.Child = _result
@@ -145,8 +172,14 @@ func (m *APDUAbort) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Simple field (originalInvokeId)
 	lengthInBits += 8
 
-	// Simple field (abortReason)
+	// Simple field (rawAbortReason)
 	lengthInBits += 8
+
+	// A virtual field doesn't have any in- or output.
+
+	// A virtual field doesn't have any in- or output.
+
+	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
@@ -192,12 +225,27 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUAbort,
 	}
 	originalInvokeId := _originalInvokeId
 
-	// Simple Field (abortReason)
-	_abortReason, _abortReasonErr := readBuffer.ReadUint8("abortReason", 8)
-	if _abortReasonErr != nil {
-		return nil, errors.Wrap(_abortReasonErr, "Error parsing 'abortReason' field")
+	// Simple Field (rawAbortReason)
+	_rawAbortReason, _rawAbortReasonErr := readBuffer.ReadUint8("rawAbortReason", 8)
+	if _rawAbortReasonErr != nil {
+		return nil, errors.Wrap(_rawAbortReasonErr, "Error parsing 'rawAbortReason' field")
 	}
-	abortReason := _abortReason
+	rawAbortReason := _rawAbortReason
+
+	// Virtual field
+	_isAbortReasonProprietary := bool((rawAbortReason) > (63))
+	isAbortReasonProprietary := bool(_isAbortReasonProprietary)
+	_ = isAbortReasonProprietary
+
+	// Virtual field
+	_abortReason := MapAbortReason(rawAbortReason, isAbortReasonProprietary)
+	abortReason := AbortReason(_abortReason)
+	_ = abortReason
+
+	// Virtual field
+	_abortReasonProprietary := utils.InlineIf(isAbortReasonProprietary, func() interface{} { return uint8(rawAbortReason) }, func() interface{} { return uint8(uint8(0)) }).(uint8)
+	abortReasonProprietary := uint8(_abortReasonProprietary)
+	_ = abortReasonProprietary
 
 	if closeErr := readBuffer.CloseContext("APDUAbort"); closeErr != nil {
 		return nil, closeErr
@@ -207,7 +255,7 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUAbort,
 	_child := &APDUAbort{
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
-		AbortReason:      abortReason,
+		RawAbortReason:   rawAbortReason,
 		APDU:             &APDU{},
 	}
 	_child.APDU.Child = _child
@@ -244,11 +292,23 @@ func (m *APDUAbort) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
-		// Simple Field (abortReason)
-		abortReason := uint8(m.AbortReason)
-		_abortReasonErr := writeBuffer.WriteUint8("abortReason", 8, (abortReason))
-		if _abortReasonErr != nil {
+		// Simple Field (rawAbortReason)
+		rawAbortReason := uint8(m.RawAbortReason)
+		_rawAbortReasonErr := writeBuffer.WriteUint8("rawAbortReason", 8, (rawAbortReason))
+		if _rawAbortReasonErr != nil {
+			return errors.Wrap(_rawAbortReasonErr, "Error serializing 'rawAbortReason' field")
+		}
+		// Virtual field
+		if _isAbortReasonProprietaryErr := writeBuffer.WriteVirtual("isAbortReasonProprietary", m.GetIsAbortReasonProprietary()); _isAbortReasonProprietaryErr != nil {
+			return errors.Wrap(_isAbortReasonProprietaryErr, "Error serializing 'isAbortReasonProprietary' field")
+		}
+		// Virtual field
+		if _abortReasonErr := writeBuffer.WriteVirtual("abortReason", m.GetAbortReason()); _abortReasonErr != nil {
 			return errors.Wrap(_abortReasonErr, "Error serializing 'abortReason' field")
+		}
+		// Virtual field
+		if _abortReasonProprietaryErr := writeBuffer.WriteVirtual("abortReasonProprietary", m.GetAbortReasonProprietary()); _abortReasonProprietaryErr != nil {
+			return errors.Wrap(_abortReasonProprietaryErr, "Error serializing 'abortReasonProprietary' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUAbort"); popErr != nil {
