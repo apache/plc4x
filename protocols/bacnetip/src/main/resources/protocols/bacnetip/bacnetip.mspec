@@ -222,6 +222,7 @@
             [optional uint 8    proposedWindowSize   'segmentedMessage'  ]
             [optional BACnetConfirmedServiceRequest('apduLength - (4 + (segmentedMessage ? 2 : 0))')
                                 serviceRequest       '!segmentedMessage' ]
+            [validation '(!segmentedMessage && serviceRequest != null) || segmentedMessage' "service request should be set" ]
             // TODO: maybe we should put this in the discriminated types below
             [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
             [array    byte      segment
@@ -247,6 +248,7 @@
             [optional uint 8    proposedWindowSize 'segmentedMessage'   ]
             [optional BACnetServiceAck('apduLength - (3 + (segmentedMessage ? 2 : 0))')
                                 serviceAck         '!segmentedMessage'  ]
+            [validation '(!segmentedMessage && serviceAck != null) || segmentedMessage' "service ack should be set" ]
             // TODO: maybe we should put this in the discriminated types below
             [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
             [array    byte      segment
@@ -408,10 +410,10 @@
             [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['SUBSCRIBE_COV' BACnetConfirmedServiceRequestSubscribeCOV
-            [simple BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')            subscriberProcessIdentifier  ]
-            [simple BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')   monitoredObjectIdentifier    ]
-            [simple BACnetContextTagBoolean('2', 'BACnetDataType.BOOLEAN')                             issueConfirmed               ]
-            [simple BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')            lifetimeInSeconds            ]
+            [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')            subscriberProcessIdentifier  ]
+            [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')   monitoredObjectIdentifier    ]
+            [optional BACnetContextTagBoolean('2', 'BACnetDataType.BOOLEAN')                             issueConfirmed               ]
+            [optional BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')            lifetimeInSeconds            ]
         ]
         ['SUBSCRIBE_COV_PROPERTY' BACnetConfirmedServiceRequestSubscribeCOVProperty
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier  ]
@@ -829,9 +831,9 @@
 [type BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(uint 8 tagNumber)
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
                     rawData                         ]
-    [virtual    bit isEnable            'rawData != null && rawData.payload.actualValue == 0']
-    [virtual    bit isDisable           'rawData != null && rawData.payload.actualValue == 1']
-    [virtual    bit isDisableInitiation 'rawData != null && rawData.payload.actualValue == 2']
+    [virtual    bit isEnable            'rawData != null && rawData.actualValue == 0']
+    [virtual    bit isDisable           'rawData != null && rawData.actualValue == 1']
+    [virtual    bit isDisableInitiation 'rawData != null && rawData.actualValue == 2']
 ]
 
 [type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
@@ -954,10 +956,10 @@
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
 [type BACnetSegmentation
     [simple BACnetApplicationTagEnumerated          rawData ]
-    [virtual    bit isSegmentedBoth           'rawData != null && rawData.payload.actualValue == 0']
-    [virtual    bit isSegmentedTransmit       'rawData != null && rawData.payload.actualValue == 1']
-    [virtual    bit isSegmentedReceive        'rawData != null && rawData.payload.actualValue == 3']
-    [virtual    bit isNoSegmentation          'rawData != null && rawData.payload.actualValue == 4']
+    [virtual    bit isSegmentedBoth           'rawData != null && rawData.actualValue == 0']
+    [virtual    bit isSegmentedTransmit       'rawData != null && rawData.actualValue == 1']
+    [virtual    bit isSegmentedReceive        'rawData != null && rawData.actualValue == 3']
+    [virtual    bit isNoSegmentation          'rawData != null && rawData.actualValue == 4']
 ]
 
 [discriminatedType BACnetServiceAck(uint 16 serviceRequestLength)
@@ -1153,7 +1155,7 @@
     [array    BACnetEventSummary
                          listOfEventSummaries
                          terminated
-                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'
+                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'
     ]
     [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                      closingTag                     ]
@@ -1218,37 +1220,46 @@
 
 [type BACnetReadAccessResult
     [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
-                    objectIdentifier                ]
-    [simple     BACnetOpeningTag('1', 'BACnetDataType.OPENING_TAG')
-                     openingTag                     ]
-    [array    BACnetReadAccessProperty('objectIdentifier.objectType')
+                    objectIdentifier                  ]
+    [optional BACnetReadAccessResultListOfResults('1', 'objectIdentifier.objectType')
+                    listOfResults                     ]
+]
+
+[type BACnetReadAccessResultListOfResults(uint 8 tagNumber, BACnetObjectType objectType)
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                     openingTag                                                                 ]
+    [array    BACnetReadAccessProperty('objectType')
                     listOfReadAccessProperty
                     terminated
-                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'
-    ]
-    [simple     BACnetClosingTag('1', 'BACnetDataType.CLOSING_TAG')
-                     closingTag                     ]
+                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'    ]
+    [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                     closingTag                                                                 ]
 ]
 
 [type BACnetReadAccessProperty(BACnetObjectType objectType)
     [simple     BACnetContextTagPropertyIdentifier('2', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
-                    propertyIdentifier              ]
+                    propertyIdentifier                                                          ]
     [optional   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
-                    arrayIndex                      ]
-    [optional   BACnetConstructedData('4', 'objectType', 'propertyIdentifier')
-                    propertyValue                   ]
-    [optional   BACnetReadAccessPropertyError
-                    propertyAccessError             ]
+                    arrayIndex                                                                  ]
+    [optional   BACnetReadAccessPropertyReadResult('objectType', 'propertyIdentifier')
+                    readResult                                                                  ]
 ]
 
-// TODO: this need to be completely refactored with BACnet error below
-[type BACnetReadAccessPropertyError
-    [simple     BACnetOpeningTag('5', 'BACnetDataType.OPENING_TAG')
-                     openingTag                     ]
-    [simple BACnetApplicationTagEnumerated errorClass]
-    [simple BACnetApplicationTagEnumerated errorCode]
-    [simple     BACnetClosingTag('5', 'BACnetDataType.CLOSING_TAG')
-                     closingTag                     ]
+[type BACnetReadAccessPropertyReadResult(BACnetObjectType objectType, BACnetContextTagPropertyIdentifier propertyIdentifier)
+    [peek       BACnetTagHeader
+                            peekedTagHeader                                                     ]
+    [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber'               ]
+    [optional   BACnetConstructedData('4', 'objectType', 'propertyIdentifier')
+                    propertyValue           'peekedTagNumber == 4'                              ]
+    [validation    '(peekedTagNumber == 4 && propertyValue != null) || peekedTagNumber != 4 '
+                   "failure parsing field 4"                                                    ]
+    [optional   ErrorEnclosed('5')
+                    propertyAccessError     'peekedTagNumber == 5'                              ]
+    [validation    '(peekedTagNumber == 5 && propertyAccessError != null) || peekedTagNumber != 5'
+                   "failure parsing field 5"                                                    ]
+    [validation    'peekedTagNumber == 4 || peekedTagNumber == 5'
+                   "should be either 4 or 5"
+                   shouldFail=false                                                             ]
 ]
 
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
@@ -1843,12 +1854,24 @@
 ]
 
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
+// TODO: fixme... this is only in context a context tag... otherwise it can be and application tag
 [type BACnetAction(uint 8 tagNumber)
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
                 rawData
     ]
-    [virtual    bit isDirect         'rawData != null && rawData.payload.actualValue == 0']
-    [virtual    bit isReverse        'rawData != null && rawData.payload.actualValue == 1']
+    [virtual    bit isDirect         'rawData != null && rawData.actualValue == 0']
+    [virtual    bit isReverse        'rawData != null && rawData.actualValue == 1']
+]
+
+[type BACnetActionList
+    [simple BACnetOpeningTag('0', 'BACnetDataType.OPENING_TAG')
+                innerOpeningTag                                                                 ]
+    [array  BACnetActionCommand
+                action
+                    terminated
+                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 0)'    ]
+    [simple BACnetClosingTag('0', 'BACnetDataType.CLOSING_TAG')
+                innerClosingTag                                                                 ]
 ]
 
 [type BACnetActionCommand
@@ -1886,8 +1909,8 @@
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
                 rawData
     ]
-    [virtual    bit isInactive         'rawData != null && rawData.payload.actualValue == 0']
-    [virtual    bit isActive           'rawData != null && rawData.payload.actualValue == 1']
+    [virtual    bit isInactive         'rawData != null && rawData.actualValue == 0']
+    [virtual    bit isActive           'rawData != null && rawData.actualValue == 1']
 ]
 
 [type BACnetPropertyStates(uint 8 tagNumber)
@@ -2371,16 +2394,6 @@
     [virtual    BACnetPropertyIdentifier
                         propertyIdentifierEnum  'propertyIdentifierArgument.propertyIdentifier']
     [typeSwitch objectType, propertyIdentifierEnum
-        ['COMMAND'                                      BACnetConstructedDataCommand
-            [simple       BACnetOpeningTag('0', 'BACnetDataType.OPENING_TAG')
-                                innerOpeningTag                                                                 ]
-            [array  BACnetActionCommand
-                        action
-                    terminated
-                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 0)'                    ]
-            [simple       BACnetClosingTag('0', 'BACnetDataType.CLOSING_TAG')
-                                innerClosingTag                                                                 ]
-        ]
         /////
         // LifeSafetyZone
 
@@ -2393,8 +2406,8 @@
         ['LIFE_SAFETY_ZONE', 'MEMBER_OF'                BACnetConstructedDataLifeSafetyZoneMemberOf
             [array  BACnetDeviceObjectReference
                         zones
-                    terminated
-                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+                            terminated
+                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         //
         /////
@@ -2415,7 +2428,20 @@
         //[*, 'ACCOMPANIMENT_TIME'                      BACnetConstructedDataAccompanimentTime]
         //[*, 'ACK_REQUIRED'                            BACnetConstructedDataAckRequired]
         //[*, 'ACKED_TRANSITIONS'                       BACnetConstructedDataAckedTransitions]
-        //[*, 'ACTION'                                  BACnetConstructedDataAction]
+        ['LOOP', 'ACTION'                             BACnetConstructedDataLoopAction
+            // TODO: fixme BACnetAction is a enum and above it came from a context tag... here now from a application tag
+            [optional   BACnetApplicationTagEnumerated
+                            rawData
+            ]
+            [virtual    bit isDirect         'rawData != null && rawData.actualValue == 0']
+            [virtual    bit isReverse        'rawData != null && rawData.actualValue == 1']
+        ]
+        [*, 'ACTION'                                  BACnetConstructedDataAction
+            [array    BACnetActionList
+                            actionLists
+                                terminated
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         //[*, 'ACTION_TEXT'                             BACnetConstructedDataActionText]
         //[*, 'ACTIVATION_TIME'                         BACnetConstructedDataActivationTime]
         //[*, 'ACTIVE_AUTHENTICATION_POLICY'            BACnetConstructedDataActiveAuthenticationPolicy]
@@ -2552,12 +2578,10 @@
         //[*, 'EVENT_PARAMETERS'                        BACnetConstructedDataEventParameters]
         //[*, 'EVENT_STATE'                             BACnetConstructedDataEventState]
         [*, 'EVENT_TIME_STAMPS'                         BACnetConstructedDataEventTimestamps
-            [simple BACnetContextTagTime('0', 'BACnetDataType.TIME')
-                    toOffnormal                                                                                 ]
-            [simple BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
-                    toFault                                                                                     ]
-            [simple BACnetDateTimeEnclosed('2')
-                    toNormal                                                                                    ]
+            //TODO reuse object maybe by pulling opening and closing tag into the types itself (might lead to repeating it quite some time)
+            [simple  BACnetTimeStamp toOffnormal    ]
+            [simple  BACnetTimeStamp toFault        ]
+            [simple  BACnetTimeStamp toNormal       ]
         ]
         //[*, 'EVENT_TYPE'                              BACnetConstructedDataEventType]
         //[*, 'EXCEPTION_SCHEDULE'                      BACnetConstructedDataExceptionSchedule]

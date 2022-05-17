@@ -72,13 +72,13 @@ func (m *BACnetBinaryPV) GetRawData() *BACnetContextTagEnumerated {
 func (m *BACnetBinaryPV) GetIsInactive() bool {
 	rawData := m.RawData
 	_ = rawData
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (0))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetActualValue()) == (0))))
 }
 
 func (m *BACnetBinaryPV) GetIsActive() bool {
 	rawData := m.RawData
 	_ = rawData
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (1))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetActualValue()) == (1))))
 }
 
 ///////////////////////
@@ -159,12 +159,12 @@ func BACnetBinaryPVParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetB
 	}
 
 	// Virtual field
-	_isInactive := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (0)))
+	_isInactive := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetActualValue()) == (0)))
 	isInactive := bool(_isInactive)
 	_ = isInactive
 
 	// Virtual field
-	_isActive := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (1)))
+	_isActive := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetActualValue()) == (1)))
 	isActive := bool(_isActive)
 	_ = isActive
 

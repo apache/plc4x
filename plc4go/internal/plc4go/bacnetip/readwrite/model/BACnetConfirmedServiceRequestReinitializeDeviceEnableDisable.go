@@ -74,19 +74,19 @@ func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetRawDat
 func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetIsEnable() bool {
 	rawData := m.RawData
 	_ = rawData
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (0))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetActualValue()) == (0))))
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetIsDisable() bool {
 	rawData := m.RawData
 	_ = rawData
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (1))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetActualValue()) == (1))))
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetIsDisableInitiation() bool {
 	rawData := m.RawData
 	_ = rawData
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (2))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetActualValue()) == (2))))
 }
 
 ///////////////////////
@@ -169,17 +169,17 @@ func BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffe
 	}
 
 	// Virtual field
-	_isEnable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (0)))
+	_isEnable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetActualValue()) == (0)))
 	isEnable := bool(_isEnable)
 	_ = isEnable
 
 	// Virtual field
-	_isDisable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (1)))
+	_isDisable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetActualValue()) == (1)))
 	isDisable := bool(_isDisable)
 	_ = isDisable
 
 	// Virtual field
-	_isDisableInitiation := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (2)))
+	_isDisableInitiation := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetActualValue()) == (2)))
 	isDisableInitiation := bool(_isDisableInitiation)
 	_ = isDisableInitiation
 

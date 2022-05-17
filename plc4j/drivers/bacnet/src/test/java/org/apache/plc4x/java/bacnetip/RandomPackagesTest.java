@@ -1748,9 +1748,13 @@ public class RandomPackagesTest {
                             .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
                             .isEqualTo(BACnetPropertyIdentifier.ACTION);
                         assertThat(baCnetServiceAckReadProperty.getValues())
-                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataCommand.class))
-                            .extracting(BACnetConstructedDataCommand::getAction)
-                            .satisfies(baCnetActionCommands -> {
+                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataAction.class))
+                            .extracting(BACnetConstructedDataAction::getActionLists)
+                            .satisfies(baCnetActionLists -> {
+                                assertThat(baCnetActionLists).hasSize(1);
+                                BACnetActionList baCnetActionList = baCnetActionLists.get(0);
+                                assertThat(baCnetActionList.getAction()).isNotNull();
+                                List<BACnetActionCommand> baCnetActionCommands = baCnetActionList.getAction();
                                 assertThat(baCnetActionCommands)
                                     .element(0)
                                     .extracting(
@@ -2973,6 +2977,8 @@ public class RandomPackagesTest {
                             .satisfies(baCnetConstructedDataEventTimestamps ->
                                 assertThat(baCnetConstructedDataEventTimestamps)
                                     .extracting(BACnetConstructedDataEventTimestamps::getToOffnormal)
+                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetTimeStampTime.class))
+                                    .extracting(BACnetTimeStampTime::getTimeValue)
                                     .extracting(BACnetContextTagTime::getPayload)
                                     .extracting(BACnetTagPayloadTime::getHourIsWildcard, BACnetTagPayloadTime::getMinuteIsWildcard, BACnetTagPayloadTime::getSecondIsWildcard, BACnetTagPayloadTime::getFractionalIsWildcard)
                                     .containsExactly(true, true, true, true)
@@ -2980,6 +2986,8 @@ public class RandomPackagesTest {
                             .satisfies(baCnetConstructedDataEventTimestamps ->
                                 assertThat(baCnetConstructedDataEventTimestamps)
                                     .extracting(BACnetConstructedDataEventTimestamps::getToFault)
+                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetTimeStampSequence.class))
+                                    .extracting(BACnetTimeStampSequence::getSequenceNumber)
                                     .extracting(BACnetContextTagUnsignedInteger::getPayload)
                                     .extracting(BACnetTagPayloadUnsignedInteger::getActualValue)
                                     .isEqualTo(BigInteger.ZERO)
@@ -2987,6 +2995,8 @@ public class RandomPackagesTest {
                             .satisfies(baCnetConstructedDataEventTimestamps ->
                                 assertThat(baCnetConstructedDataEventTimestamps)
                                     .extracting(BACnetConstructedDataEventTimestamps::getToNormal)
+                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetTimeStampDateTime.class))
+                                    .extracting(BACnetTimeStampDateTime::getDateTimeValue)
                                     .satisfies(baCnetDateTime ->
                                         assertThat(baCnetDateTime)
                                             .extracting(BACnetDateTimeEnclosed::getDateTimeValue)

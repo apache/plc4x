@@ -29,10 +29,9 @@ import (
 
 // BACnetReadAccessProperty is the data-structure of this message
 type BACnetReadAccessProperty struct {
-	PropertyIdentifier  *BACnetContextTagPropertyIdentifier
-	ArrayIndex          *BACnetContextTagUnsignedInteger
-	PropertyValue       *BACnetConstructedData
-	PropertyAccessError *BACnetReadAccessPropertyError
+	PropertyIdentifier *BACnetContextTagPropertyIdentifier
+	ArrayIndex         *BACnetContextTagUnsignedInteger
+	ReadResult         *BACnetReadAccessPropertyReadResult
 
 	// Arguments.
 	ObjectType BACnetObjectType
@@ -44,10 +43,8 @@ type IBACnetReadAccessProperty interface {
 	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
-	// GetPropertyValue returns PropertyValue (property field)
-	GetPropertyValue() *BACnetConstructedData
-	// GetPropertyAccessError returns PropertyAccessError (property field)
-	GetPropertyAccessError() *BACnetReadAccessPropertyError
+	// GetReadResult returns ReadResult (property field)
+	GetReadResult() *BACnetReadAccessPropertyReadResult
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -69,12 +66,8 @@ func (m *BACnetReadAccessProperty) GetArrayIndex() *BACnetContextTagUnsignedInte
 	return m.ArrayIndex
 }
 
-func (m *BACnetReadAccessProperty) GetPropertyValue() *BACnetConstructedData {
-	return m.PropertyValue
-}
-
-func (m *BACnetReadAccessProperty) GetPropertyAccessError() *BACnetReadAccessPropertyError {
-	return m.PropertyAccessError
+func (m *BACnetReadAccessProperty) GetReadResult() *BACnetReadAccessPropertyReadResult {
+	return m.ReadResult
 }
 
 ///////////////////////
@@ -83,8 +76,8 @@ func (m *BACnetReadAccessProperty) GetPropertyAccessError() *BACnetReadAccessPro
 ///////////////////////////////////////////////////////////
 
 // NewBACnetReadAccessProperty factory function for BACnetReadAccessProperty
-func NewBACnetReadAccessProperty(propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, propertyAccessError *BACnetReadAccessPropertyError, objectType BACnetObjectType) *BACnetReadAccessProperty {
-	return &BACnetReadAccessProperty{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, PropertyAccessError: propertyAccessError, ObjectType: objectType}
+func NewBACnetReadAccessProperty(propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, readResult *BACnetReadAccessPropertyReadResult, objectType BACnetObjectType) *BACnetReadAccessProperty {
+	return &BACnetReadAccessProperty{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, ReadResult: readResult, ObjectType: objectType}
 }
 
 func CastBACnetReadAccessProperty(structType interface{}) *BACnetReadAccessProperty {
@@ -116,14 +109,9 @@ func (m *BACnetReadAccessProperty) GetLengthInBitsConditional(lastItem bool) uin
 		lengthInBits += (*m.ArrayIndex).GetLengthInBits()
 	}
 
-	// Optional Field (propertyValue)
-	if m.PropertyValue != nil {
-		lengthInBits += (*m.PropertyValue).GetLengthInBits()
-	}
-
-	// Optional Field (propertyAccessError)
-	if m.PropertyAccessError != nil {
-		lengthInBits += (*m.PropertyAccessError).GetLengthInBits()
+	// Optional Field (readResult)
+	if m.ReadResult != nil {
+		lengthInBits += (*m.ReadResult).GetLengthInBits()
 	}
 
 	return lengthInBits
@@ -176,43 +164,22 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectType BACne
 		}
 	}
 
-	// Optional Field (propertyValue) (Can be skipped, if a given expression evaluates to false)
-	var propertyValue *BACnetConstructedData = nil
+	// Optional Field (readResult) (Can be skipped, if a given expression evaluates to false)
+	var readResult *BACnetReadAccessPropertyReadResult = nil
 	{
 		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
+		if pullErr := readBuffer.PullContext("readResult"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), objectType, propertyIdentifier)
+		_val, _err := BACnetReadAccessPropertyReadResultParse(readBuffer, objectType, propertyIdentifier)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field")
+			return nil, errors.Wrap(_err, "Error parsing 'readResult' field")
 		default:
-			propertyValue = CastBACnetConstructedData(_val)
-			if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
-				return nil, closeErr
-			}
-		}
-	}
-
-	// Optional Field (propertyAccessError) (Can be skipped, if a given expression evaluates to false)
-	var propertyAccessError *BACnetReadAccessPropertyError = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("propertyAccessError"); pullErr != nil {
-			return nil, pullErr
-		}
-		_val, _err := BACnetReadAccessPropertyErrorParse(readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'propertyAccessError' field")
-		default:
-			propertyAccessError = CastBACnetReadAccessPropertyError(_val)
-			if closeErr := readBuffer.CloseContext("propertyAccessError"); closeErr != nil {
+			readResult = CastBACnetReadAccessPropertyReadResult(_val)
+			if closeErr := readBuffer.CloseContext("readResult"); closeErr != nil {
 				return nil, closeErr
 			}
 		}
@@ -223,7 +190,7 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectType BACne
 	}
 
 	// Create the instance
-	return NewBACnetReadAccessProperty(propertyIdentifier, arrayIndex, propertyValue, propertyAccessError, objectType), nil
+	return NewBACnetReadAccessProperty(propertyIdentifier, arrayIndex, readResult, objectType), nil
 }
 
 func (m *BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -261,35 +228,19 @@ func (m *BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 	}
 
-	// Optional Field (propertyValue) (Can be skipped, if the value is null)
-	var propertyValue *BACnetConstructedData = nil
-	if m.PropertyValue != nil {
-		if pushErr := writeBuffer.PushContext("propertyValue"); pushErr != nil {
+	// Optional Field (readResult) (Can be skipped, if the value is null)
+	var readResult *BACnetReadAccessPropertyReadResult = nil
+	if m.ReadResult != nil {
+		if pushErr := writeBuffer.PushContext("readResult"); pushErr != nil {
 			return pushErr
 		}
-		propertyValue = m.PropertyValue
-		_propertyValueErr := propertyValue.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
+		readResult = m.ReadResult
+		_readResultErr := readResult.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("readResult"); popErr != nil {
 			return popErr
 		}
-		if _propertyValueErr != nil {
-			return errors.Wrap(_propertyValueErr, "Error serializing 'propertyValue' field")
-		}
-	}
-
-	// Optional Field (propertyAccessError) (Can be skipped, if the value is null)
-	var propertyAccessError *BACnetReadAccessPropertyError = nil
-	if m.PropertyAccessError != nil {
-		if pushErr := writeBuffer.PushContext("propertyAccessError"); pushErr != nil {
-			return pushErr
-		}
-		propertyAccessError = m.PropertyAccessError
-		_propertyAccessErrorErr := propertyAccessError.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("propertyAccessError"); popErr != nil {
-			return popErr
-		}
-		if _propertyAccessErrorErr != nil {
-			return errors.Wrap(_propertyAccessErrorErr, "Error serializing 'propertyAccessError' field")
+		if _readResultErr != nil {
+			return errors.Wrap(_readResultErr, "Error serializing 'readResult' field")
 		}
 	}
 

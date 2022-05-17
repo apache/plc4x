@@ -70,19 +70,19 @@ func (m *BACnetSegmentation) GetRawData() *BACnetApplicationTagEnumerated {
 ///////////////////////
 
 func (m *BACnetSegmentation) GetIsSegmentedBoth() bool {
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetPayload().GetActualValue()) == (0))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetActualValue()) == (0))))
 }
 
 func (m *BACnetSegmentation) GetIsSegmentedTransmit() bool {
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetPayload().GetActualValue()) == (1))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetActualValue()) == (1))))
 }
 
 func (m *BACnetSegmentation) GetIsSegmentedReceive() bool {
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetPayload().GetActualValue()) == (3))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetActualValue()) == (3))))
 }
 
 func (m *BACnetSegmentation) GetIsNoSegmentation() bool {
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetPayload().GetActualValue()) == (4))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetActualValue()) == (4))))
 }
 
 ///////////////////////
@@ -157,22 +157,22 @@ func BACnetSegmentationParse(readBuffer utils.ReadBuffer) (*BACnetSegmentation, 
 	}
 
 	// Virtual field
-	_isSegmentedBoth := bool(bool((rawData) != (nil))) && bool(bool((rawData.GetPayload().GetActualValue()) == (0)))
+	_isSegmentedBoth := bool(bool((rawData) != (nil))) && bool(bool((rawData.GetActualValue()) == (0)))
 	isSegmentedBoth := bool(_isSegmentedBoth)
 	_ = isSegmentedBoth
 
 	// Virtual field
-	_isSegmentedTransmit := bool(bool((rawData) != (nil))) && bool(bool((rawData.GetPayload().GetActualValue()) == (1)))
+	_isSegmentedTransmit := bool(bool((rawData) != (nil))) && bool(bool((rawData.GetActualValue()) == (1)))
 	isSegmentedTransmit := bool(_isSegmentedTransmit)
 	_ = isSegmentedTransmit
 
 	// Virtual field
-	_isSegmentedReceive := bool(bool((rawData) != (nil))) && bool(bool((rawData.GetPayload().GetActualValue()) == (3)))
+	_isSegmentedReceive := bool(bool((rawData) != (nil))) && bool(bool((rawData.GetActualValue()) == (3)))
 	isSegmentedReceive := bool(_isSegmentedReceive)
 	_ = isSegmentedReceive
 
 	// Virtual field
-	_isNoSegmentation := bool(bool((rawData) != (nil))) && bool(bool((rawData.GetPayload().GetActualValue()) == (4)))
+	_isNoSegmentation := bool(bool((rawData) != (nil))) && bool(bool((rawData.GetActualValue()) == (4)))
 	isNoSegmentation := bool(_isNoSegmentation)
 	_ = isNoSegmentation
 

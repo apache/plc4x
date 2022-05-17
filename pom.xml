@@ -804,6 +804,7 @@
             <!-- IntelliJ related files -->
             <exclude>**/.idea/**</exclude>
             <exclude>**/*.iml</exclude>
+            <exclude>**/.attach_pid*</exclude>
 
             <!-- Wireshark Captures -->
             <exclude>**/*.pcap</exclude>

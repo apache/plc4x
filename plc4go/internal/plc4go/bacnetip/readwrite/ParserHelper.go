@@ -45,8 +45,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetStatusFlagsParse(io, tagNumber)
-	case "BACnetReadAccessPropertyError":
-		return model.BACnetReadAccessPropertyErrorParse(io)
 	case "BACnetPropertyReferenceEnclosed":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -71,6 +69,10 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetDeviceObjectReferenceParse(io)
 	case "BVLCForeignDeviceTableEntry":
 		return model.BVLCForeignDeviceTableEntryParse(io)
+	case "BACnetReadAccessPropertyReadResult":
+		objectType := model.BACnetObjectTypeByName(arguments[0])
+		var propertyIdentifier model.BACnetContextTagPropertyIdentifier
+		return model.BACnetReadAccessPropertyReadResultParse(io, objectType, &propertyIdentifier)
 	case "NLM":
 		apduLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {
@@ -178,6 +180,13 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(io)
 	case "BVLC":
 		return model.BVLCParse(io)
+	case "BACnetReadAccessResultListOfResults":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		objectType := model.BACnetObjectTypeByName(arguments[1])
+		return model.BACnetReadAccessResultListOfResultsParse(io, tagNumber, objectType)
 	case "BACnetDateTimeEnclosed":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -308,6 +317,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "BACnetPropertyValue":
 		objectType := model.BACnetObjectTypeByName(arguments[0])
 		return model.BACnetPropertyValueParse(io, objectType)
+	case "BACnetActionList":
+		return model.BACnetActionListParse(io)
 	case "VTCloseErrorListOfVTSessionIdentifiers":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

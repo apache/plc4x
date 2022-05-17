@@ -306,6 +306,11 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUC
 		}
 	}
 
+	// Validation
+	if !(bool(bool(bool(!(segmentedMessage)) && bool(bool((serviceAck) != (nil))))) || bool(segmentedMessage)) {
+		return nil, utils.ParseValidationError{"service ack should be set"}
+	}
+
 	// Optional Field (segmentServiceChoice) (Can be skipped, if a given expression evaluates to false)
 	var segmentServiceChoice *uint8 = nil
 	if bool(segmentedMessage) && bool(bool((*sequenceNumber) != (0))) {

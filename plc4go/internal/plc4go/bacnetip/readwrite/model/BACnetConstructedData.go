@@ -183,12 +183,14 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	var _child BACnetConstructedDataChild
 	var typeSwitchError error
 	switch {
-	case objectType == BACnetObjectType_COMMAND: // BACnetConstructedDataCommand
-		_child, typeSwitchError = BACnetConstructedDataCommandParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case objectType == BACnetObjectType_LIFE_SAFETY_ZONE && propertyIdentifierEnum == BACnetPropertyIdentifier_ZONE_MEMBERS: // BACnetConstructedDataLifeSafetyZoneMembers
 		_child, typeSwitchError = BACnetConstructedDataLifeSafetyZoneMembersParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case objectType == BACnetObjectType_LIFE_SAFETY_ZONE && propertyIdentifierEnum == BACnetPropertyIdentifier_MEMBER_OF: // BACnetConstructedDataLifeSafetyZoneMemberOf
 		_child, typeSwitchError = BACnetConstructedDataLifeSafetyZoneMemberOfParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
+	case objectType == BACnetObjectType_LOOP && propertyIdentifierEnum == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataLoopAction
+		_child, typeSwitchError = BACnetConstructedDataLoopActionParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
+	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataAction
+		_child, typeSwitchError = BACnetConstructedDataActionParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_EVENT_TIME_STAMPS: // BACnetConstructedDataEventTimestamps
 		_child, typeSwitchError = BACnetConstructedDataEventTimestampsParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_LIST_OF_OBJECT_PROPERTY_REFERENCES: // BACnetConstructedDataListOfObjectPropertyReferences
