@@ -102,8 +102,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetTagPayloadEnumeratedParse(io, actualLength)
-	case "BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications":
-		return model.BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsParse(io)
 	case "BACnetTagPayloadOctetString":
 		actualLength, err := utils.StrToUint32(arguments[0])
 		if err != nil {
@@ -193,6 +191,9 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "BACnetPropertyWriteDefinition":
 		objectType := model.BACnetObjectTypeByName(arguments[0])
 		return model.BACnetPropertyWriteDefinitionParse(io, objectType)
+	case "ListOfCovNotificationsValue":
+		objectType := model.BACnetObjectTypeByName(arguments[0])
+		return model.ListOfCovNotificationsValueParse(io, objectType)
 	case "BACnetDateTime":
 		return model.BACnetDateTimeParse(io)
 	case "ErrorEnclosed":
@@ -207,9 +208,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.APDUParse(io, apduLength)
-	case "BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue":
-		objectType := model.BACnetObjectTypeByName(arguments[0])
-		return model.BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValueParse(io, objectType)
 	case "BACnetTagPayloadCharacterString":
 		actualLength, err := utils.StrToUint32(arguments[0])
 		if err != nil {
@@ -221,12 +219,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "BACnetError":
 		errorChoice := model.BACnetConfirmedServiceChoiceByName(arguments[0])
 		return model.BACnetErrorParse(io, errorChoice)
-	case "BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsList":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsListParse(io, tagNumber)
 	case "BACnetTimeStamp":
 		return model.BACnetTimeStampParse(io)
 	case "BACnetNotificationParameters":
@@ -254,6 +246,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetEventProritiesParse(io, tagNumber)
+	case "ListOfCovNotificationsList":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.ListOfCovNotificationsListParse(io, tagNumber)
 	case "BACnetEventSummariesList":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -340,6 +338,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetBinaryPVParse(io, tagNumber)
+	case "ListOfCovNotifications":
+		return model.ListOfCovNotificationsParse(io)
 	case "Error":
 		return model.ErrorParse(io)
 	case "BACnetAction":

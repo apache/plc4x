@@ -379,8 +379,7 @@
             [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier  ]
             [simple   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')          timeRemaining               ]
             [optional BACnetTimeStampEnclosed('3')                                                     timestamp                   ]
-            [simple   BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsList('4')
-                                                                                                       listOfCovNotifications      ]
+            [simple   ListOfCovNotificationsList('4')                                                  listOfCovNotifications      ]
         ]
         ['CONFIRMED_EVENT_NOTIFICATION' BACnetConfirmedServiceRequestConfirmedEventNotification // Spec complete
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          processIdentifier            ]
@@ -645,10 +644,10 @@
     ////
 ]
 
-[type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsList(uint 8 tagNumber)
+[type ListOfCovNotificationsList(uint 8 tagNumber)
     [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                      openingTag                                                                         ]
-    [array    BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications
+    [array    ListOfCovNotifications
                      specifications
                         terminated
                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
@@ -656,12 +655,12 @@
                         closingTag                                                                      ]
 ]
 
-[type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications
+[type ListOfCovNotifications
     [simple     BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                         monitoredObjectIdentifier                                                       ]
     [simple     BACnetOpeningTag('1', 'BACnetDataType.OPENING_TAG')
                         openingTag                                                                      ]
-    [array      BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue('monitoredObjectIdentifier.objectType')
+    [array      ListOfCovNotificationsValue('monitoredObjectIdentifier.objectType')
                         listOfValues
                             terminated
                             'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'    ]
@@ -669,7 +668,7 @@
                         closingTag                                                                      ]
 ]
 
-[type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue(BACnetObjectType objectType)
+[type ListOfCovNotificationsValue(BACnetObjectType objectType)
     [simple   BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
                                 propertyIdentifier                                                      ]
     [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
@@ -909,8 +908,11 @@
             [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['UNCONFIRMED_COV_NOTIFICATION_MULTIPLE' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
+            [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier  ]
+            [simple   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')          timeRemaining               ]
+            [optional BACnetTimeStampEnclosed('3')                                                     timestamp                   ]
+            [simple   ListOfCovNotificationsList('4')                                                  listOfCovNotifications      ]
         ]
         [BACnetUnconfirmedServiceRequestUnconfirmedUnknown
             [array  byte    unknownBytes length '(serviceRequestLength>0)?(serviceRequestLength - 1):0']
