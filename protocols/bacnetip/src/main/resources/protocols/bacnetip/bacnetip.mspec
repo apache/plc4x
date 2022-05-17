@@ -379,7 +379,7 @@
             [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier  ]
             [simple   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')          timeRemaining               ]
             [optional BACnetTimeStampEnclosed('3')                                                     timestamp                   ]
-            [simple   BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications('4')
+            [simple   BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsList('4')
                                                                                                        listOfCovNotifications      ]
         ]
         ['CONFIRMED_EVENT_NOTIFICATION' BACnetConfirmedServiceRequestConfirmedEventNotification // Spec complete
@@ -423,8 +423,12 @@
             [optional BACnetContextTagReal('5', 'BACnetDataType.REAL')                                 covIncrement                 ]
         ]
         ['SUBSCRIBE_COV_PROPERTY_MULTIPLE' BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier  ]
+            [optional BACnetContextTagBoolean('1', 'BACnetDataType.BOOLEAN')                           issueConfirmedNotifications  ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')          lifetime                     ]
+            [optional BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          maxNotificationDelay         ]
+            [simple   BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList('4')
+                                                                                                       listOfCovSubscriptionSpecifications ]
         ]
         //
         ////
@@ -641,46 +645,85 @@
     ////
 ]
 
-[type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications(uint 8 tagNumber)
+[type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsList(uint 8 tagNumber)
     [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
-                     openingTag                     ]
-    [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
-    [simple     BACnetOpeningTag('1', 'BACnetDataType.OPENING_TAG')
-                         innerOpeningTag            ]
-    [array    BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue('monitoredObjectIdentifier.objectType')
-                        listOfValues
+                     openingTag                                                                         ]
+    [array    BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications
+                     specifications
                         terminated
-                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'
-    ]
-    [simple     BACnetClosingTag('1', 'BACnetDataType.CLOSING_TAG')
-                     innerClosingTag                ]
+                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
     [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
-                     closingTag                     ]
+                        closingTag                                                                      ]
+]
+
+[type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications
+    [simple     BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                        monitoredObjectIdentifier                                                       ]
+    [simple     BACnetOpeningTag('1', 'BACnetDataType.OPENING_TAG')
+                        openingTag                                                                      ]
+    [array      BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue('monitoredObjectIdentifier.objectType')
+                        listOfValues
+                            terminated
+                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'    ]
+    [simple     BACnetClosingTag('1', 'BACnetDataType.CLOSING_TAG')
+                        closingTag                                                                      ]
 ]
 
 [type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue(BACnetObjectType objectType)
     [simple   BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
-                                propertyIdentifier      ]
+                                propertyIdentifier                                                      ]
     [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
-                                arrayIndex              ]
+                                arrayIndex                                                              ]
     [simple   BACnetConstructedData('2', 'objectType', 'propertyIdentifier')
-                                propertyValue           ]
+                                propertyValue                                                           ]
     [optional BACnetContextTagTime('3', 'BACnetDataType.TIME')
-                                timeOfChange            ]
+                                timeOfChange                                                            ]
+]
+
+[type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList(uint 8 tagNumber)
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                     openingTag                                                                         ]
+    [array    BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications
+                     specifications
+                        terminated
+                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+    [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                     closingTag                                                                         ]
+]
+
+[type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications
+    [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                    monitoredObjectIdentifier                                                           ]
+    [simple   BACnetOpeningTag('1', 'BACnetDataType.OPENING_TAG')
+                    openingTag                                                                          ]
+    [array    BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference
+                    listOfCovReferences
+                        terminated
+                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'        ]
+    [simple     BACnetClosingTag('1', 'BACnetDataType.CLOSING_TAG')
+                    closingTag                                                                          ]
+]
+
+[type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference
+    [simple   BACnetPropertyReferenceEnclosed('1')
+                    monitoredProperty                                                                   ]
+    [optional BACnetContextTagReal('1', 'BACnetDataType.REAL')
+                    covIncrement                                                                        ]
+    [simple   BACnetContextTagBoolean('2', 'BACnetDataType.BOOLEAN')
+                    timestamped                                                                         ]
 ]
 
 [type BACnetReadAccessSpecification
     [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
-                    objectIdentifier                ]
+                    objectIdentifier                                                                    ]
     [simple     BACnetOpeningTag('1', 'BACnetDataType.OPENING_TAG')
-                     openingTag                     ]
+                     openingTag                                                                         ]
     [array    BACnetPropertyReference
                     listOfPropertyReferences
-                    terminated
-                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'
-    ]
+                        terminated
+                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'        ]
     [simple     BACnetClosingTag('1', 'BACnetDataType.CLOSING_TAG')
-                     closingTag                     ]
+                     closingTag                                                                         ]
 ]
 
 [type BACnetPropertyReferenceEnclosed(uint 8 tagNumber)
@@ -931,10 +974,10 @@
             [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['GET_EVENT_INFORMATION' BACnetServiceAckGetEventInformation
-            [simple BACnetEventSummaries
-                        listOfEventSummaries        ]
-            [simple BACnetContextTagBoolean('0', 'BACnetDataType.BOOLEAN')
-                        moreEvents                  ]
+            [simple BACnetEventSummariesList('0')
+                        listOfEventSummaries            ]
+            [simple BACnetContextTagBoolean('1', 'BACnetDataType.BOOLEAN')
+                        moreEvents                       ]
         ]
         ['LIFE_SAFETY_OPERATION' BACnetServiceAckLifeSafetyOperation
             // TODO: implement me
@@ -1086,15 +1129,15 @@
 ]
 
 // TODO: check if we should embed this type into BACnetServiceAckGetEventInformation as we double map
-[type BACnetEventSummaries
-    [simple     BACnetOpeningTag('0', 'BACnetDataType.OPENING_TAG')
+[type BACnetEventSummariesList(uint 8 tagNumber)
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                      openingTag                     ]
     [array    BACnetEventSummary
                          listOfEventSummaries
                          terminated
                          'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'
     ]
-    [simple     BACnetClosingTag('0', 'BACnetDataType.CLOSING_TAG')
+    [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                      closingTag                     ]
 ]
 

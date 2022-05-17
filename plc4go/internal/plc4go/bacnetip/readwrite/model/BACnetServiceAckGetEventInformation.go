@@ -29,7 +29,7 @@ import (
 // BACnetServiceAckGetEventInformation is the data-structure of this message
 type BACnetServiceAckGetEventInformation struct {
 	*BACnetServiceAck
-	ListOfEventSummaries *BACnetEventSummaries
+	ListOfEventSummaries *BACnetEventSummariesList
 	MoreEvents           *BACnetContextTagBoolean
 
 	// Arguments.
@@ -40,7 +40,7 @@ type BACnetServiceAckGetEventInformation struct {
 type IBACnetServiceAckGetEventInformation interface {
 	IBACnetServiceAck
 	// GetListOfEventSummaries returns ListOfEventSummaries (property field)
-	GetListOfEventSummaries() *BACnetEventSummaries
+	GetListOfEventSummaries() *BACnetEventSummariesList
 	// GetMoreEvents returns MoreEvents (property field)
 	GetMoreEvents() *BACnetContextTagBoolean
 	// GetLengthInBytes returns the length in bytes
@@ -76,7 +76,7 @@ func (m *BACnetServiceAckGetEventInformation) GetParent() *BACnetServiceAck {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetServiceAckGetEventInformation) GetListOfEventSummaries() *BACnetEventSummaries {
+func (m *BACnetServiceAckGetEventInformation) GetListOfEventSummaries() *BACnetEventSummariesList {
 	return m.ListOfEventSummaries
 }
 
@@ -90,7 +90,7 @@ func (m *BACnetServiceAckGetEventInformation) GetMoreEvents() *BACnetContextTagB
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckGetEventInformation factory function for BACnetServiceAckGetEventInformation
-func NewBACnetServiceAckGetEventInformation(listOfEventSummaries *BACnetEventSummaries, moreEvents *BACnetContextTagBoolean, serviceRequestLength uint16) *BACnetServiceAckGetEventInformation {
+func NewBACnetServiceAckGetEventInformation(listOfEventSummaries *BACnetEventSummariesList, moreEvents *BACnetContextTagBoolean, serviceRequestLength uint16) *BACnetServiceAckGetEventInformation {
 	_result := &BACnetServiceAckGetEventInformation{
 		ListOfEventSummaries: listOfEventSummaries,
 		MoreEvents:           moreEvents,
@@ -153,11 +153,11 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 	if pullErr := readBuffer.PullContext("listOfEventSummaries"); pullErr != nil {
 		return nil, pullErr
 	}
-	_listOfEventSummaries, _listOfEventSummariesErr := BACnetEventSummariesParse(readBuffer)
+	_listOfEventSummaries, _listOfEventSummariesErr := BACnetEventSummariesListParse(readBuffer, uint8(uint8(0)))
 	if _listOfEventSummariesErr != nil {
 		return nil, errors.Wrap(_listOfEventSummariesErr, "Error parsing 'listOfEventSummaries' field")
 	}
-	listOfEventSummaries := CastBACnetEventSummaries(_listOfEventSummaries)
+	listOfEventSummaries := CastBACnetEventSummariesList(_listOfEventSummaries)
 	if closeErr := readBuffer.CloseContext("listOfEventSummaries"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -166,7 +166,7 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 	if pullErr := readBuffer.PullContext("moreEvents"); pullErr != nil {
 		return nil, pullErr
 	}
-	_moreEvents, _moreEventsErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_moreEvents, _moreEventsErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _moreEventsErr != nil {
 		return nil, errors.Wrap(_moreEventsErr, "Error parsing 'moreEvents' field")
 	}
@@ -181,7 +181,7 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckGetEventInformation{
-		ListOfEventSummaries: CastBACnetEventSummaries(listOfEventSummaries),
+		ListOfEventSummaries: CastBACnetEventSummariesList(listOfEventSummaries),
 		MoreEvents:           CastBACnetContextTagBoolean(moreEvents),
 		BACnetServiceAck:     &BACnetServiceAck{},
 	}
