@@ -1147,6 +1147,11 @@ public class StaticHelper {
         return RejectReason.enumForValue(rawRejectReason);
     }
 
+    public static BACnetLifeSafetyState mapBACnetLifeSafetyState(BACnetApplicationTagEnumerated rawData, boolean proprietary) {
+        if (proprietary) return null;
+        return BACnetLifeSafetyState.enumForValue((int) rawData.getActualValue());
+    }
+
     public static BACnetObjectType mapBACnetObjectType(BACnetContextTagEnumerated rawObjectType) {
         if (rawObjectType == null) return null;
         BACnetObjectType baCnetObjectType = BACnetObjectType.enumForValue((int) rawObjectType.getActualValue());

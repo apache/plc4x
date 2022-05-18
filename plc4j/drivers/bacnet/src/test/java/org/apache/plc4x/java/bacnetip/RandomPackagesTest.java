@@ -280,9 +280,9 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.LIFE_SAFETY_ZONE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(1, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.ZONE_MEMBERS, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
-                    BACnetConstructedDataLifeSafetyZoneMembers baCnetConstructedDataLifeSafetyZoneMembers = (BACnetConstructedDataLifeSafetyZoneMembers) baCnetServiceAckReadProperty.getValues();
+                    BACnetConstructedDataZoneMembers baCnetConstructedDataZoneMembers = (BACnetConstructedDataZoneMembers) baCnetServiceAckReadProperty.getValues();
 
-                    List<BACnetDeviceObjectReference> members = baCnetConstructedDataLifeSafetyZoneMembers.getMembers();
+                    List<BACnetDeviceObjectReference> members = baCnetConstructedDataZoneMembers.getMembers();
                     assertThat(members.get(0)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 3L);
                     assertThat(members.get(1)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 4L);
                     assertThat(members.get(2)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 5L);
@@ -324,9 +324,9 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.LIFE_SAFETY_ZONE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(1, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.MEMBER_OF, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
-                    BACnetConstructedDataLifeSafetyZoneMemberOf baCnetConstructedDataLifeSafetyZoneMemberOf = (BACnetConstructedDataLifeSafetyZoneMemberOf) baCnetServiceAckReadProperty.getValues();
+                    BACnetConstructedDataMemberOf baCnetConstructedDataMemberOf = (BACnetConstructedDataMemberOf) baCnetServiceAckReadProperty.getValues();
 
-                    List<BACnetDeviceObjectReference> zones = baCnetConstructedDataLifeSafetyZoneMemberOf.getZones();
+                    List<BACnetDeviceObjectReference> zones = baCnetConstructedDataMemberOf.getZones();
                     assertThat(zones.get(0)).extracting(BACnetDeviceObjectReference::getObjectIdentifier).extracting("objectType", "instanceNumber").contains(BACnetObjectType.LIFE_SAFETY_ZONE, 1L);
                 })
         );

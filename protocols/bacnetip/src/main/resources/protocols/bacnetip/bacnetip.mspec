@@ -1842,6 +1842,43 @@
     ]
 ]
 
+[type BACnetConstructedDataLifeSafetyAlarmValuesEntry
+    [optional BACnetApplicationTagEnumerated
+                        rawData                                                                                 ]
+    [virtual  bit       isLifeSafetyStateProprietary 'rawData.actualValue > 255'                                ]
+    [virtual  BACnetLifeSafetyState
+                        lifeSafetyState 
+                            'STATIC_CALL("mapBACnetLifeSafetyState", rawData, isLifeSafetyStateProprietary)'    ]
+    [virtual  uint 16    lifeSafetyStateProprietary 'isLifeSafetyStateProprietary?rawData.actualValue:0'        ]
+]
+
+[enum uint 16 BACnetLifeSafetyState
+    ['0'    QUIET]
+    ['1'    PRE_ALARM]
+    ['2'    ALARM]
+    ['3'    FAULT]
+    ['4'    FAULT_PRE_ALARM]
+    ['5'    FAULT_ALARM]
+    ['6'    NOT_READY]
+    ['7'    ACTIVE]
+    ['8'    TAMPER]
+    ['9'    TEST_ALARM]
+    ['10'   TEST_ACTIVE]
+    ['11'   TEST_FAULT]
+    ['12'   TEST_FAULT_ALARM]
+    ['13'   HOLDUP]
+    ['14'   DURESS]
+    ['15'   TAMPER_ALARM]
+    ['16'   ABNORMAL]
+    ['17'   EMERGENCY_POWER]
+    ['18'   DELAYED]
+    ['19'   BLOCKED]
+    ['20'   LOCAL_ALARM]
+    ['21'   GENERAL_ALARM]
+    ['22'   SUPERVISORY]
+    ['23'   TEST_SUPERVISORY]
+]
+
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
 [type BACnetStatusFlags(uint 8 tagNumber)
     [simple BACnetContextTagBitString('tagNumber', 'BACnetDataType.BIT_STRING')
@@ -1857,8 +1894,7 @@
 // TODO: fixme... this is only in context a context tag... otherwise it can be and application tag
 [type BACnetAction(uint 8 tagNumber)
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
-                rawData
-    ]
+                rawData                                                           ]
     [virtual    bit isDirect         'rawData != null && rawData.actualValue == 0']
     [virtual    bit isReverse        'rawData != null && rawData.actualValue == 1']
 ]
@@ -2394,26 +2430,6 @@
     [virtual    BACnetPropertyIdentifier
                         propertyIdentifierEnum  'propertyIdentifierArgument.propertyIdentifier']
     [typeSwitch objectType, propertyIdentifierEnum
-        /////
-        // LifeSafetyZone
-
-        ['LIFE_SAFETY_ZONE', 'ZONE_MEMBERS'             BACnetConstructedDataLifeSafetyZoneMembers
-            [array  BACnetDeviceObjectReference
-                        members
-                    terminated
-                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
-        ]
-        ['LIFE_SAFETY_ZONE', 'MEMBER_OF'                BACnetConstructedDataLifeSafetyZoneMemberOf
-            [array  BACnetDeviceObjectReference
-                        zones
-                            terminated
-                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
-        ]
-        //
-        /////
-
-        /////
-        // Generic Mapping
         //[*, 'ABSENTEE_LIMIT'                          BACnetConstructedDataAbsenteeLimit [validation    '1 == 2'    "TODO: implement me ABSENTEE_LIMIT BACnetConstructedDataAbsenteeLimit"]]
         //[*, 'ACCEPTED_MODES'                          BACnetConstructedDataAcceptedModes [validation    '1 == 2'    "TODO: implement me ACCEPTED_MODES BACnetConstructedDataAcceptedModes"]]
         //[*, 'ACCESS_ALARM_EVENTS'                     BACnetConstructedDataAccessAlarmEvents [validation    '1 == 2'    "TODO: implement me ACCESS_ALARM_EVENTS BACnetConstructedDataAccessAlarmEvents"]]
@@ -2663,7 +2679,11 @@
         //[*, 'LAST_RESTORE_TIME'                       BACnetConstructedDataLastRestoreTime [validation    '1 == 2'    "TODO: implement me LAST_RESTORE_TIME BACnetConstructedDataLastRestoreTime"]]
         //[*, 'LAST_STATE_CHANGE'                       BACnetConstructedDataLastStateChange [validation    '1 == 2'    "TODO: implement me LAST_STATE_CHANGE BACnetConstructedDataLastStateChange"]]
         //[*, 'LAST_USE_TIME'                           BACnetConstructedDataLastUseTime [validation    '1 == 2'    "TODO: implement me LAST_USE_TIME BACnetConstructedDataLastUseTime"]]
-        //[*, 'LIFE_SAFETY_ALARM_VALUES'                BACnetConstructedDataLifeSafetyAlarmValues [validation    '1 == 2'    "TODO: implement me LIFE_SAFETY_ALARM_VALUES BACnetConstructedDataLifeSafetyAlarmValues"]]
+        [*, 'LIFE_SAFETY_ALARM_VALUES'                BACnetConstructedDataLifeSafetyAlarmValues
+            [array    BACnetConstructedDataLifeSafetyAlarmValuesEntry
+                            alarmValues              terminated
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         //[*, 'LIGHTING_COMMAND'                        BACnetConstructedDataLightingCommand [validation    '1 == 2'    "TODO: implement me LIGHTING_COMMAND BACnetConstructedDataLightingCommand"]]
         //[*, 'LIGHTING_COMMAND_DEFAULT_PRIORITY'       BACnetConstructedDataLightingCommandDefaultPriority [validation    '1 == 2'    "TODO: implement me LIGHTING_COMMAND_DEFAULT_PRIORITY BACnetConstructedDataLightingCommandDefaultPriority"]]
         //[*, 'LIMIT_ENABLE'                            BACnetConstructedDataLimitEnable [validation    '1 == 2'    "TODO: implement me LIMIT_ENABLE BACnetConstructedDataLimitEnable"]]
@@ -2909,8 +2929,6 @@
                             data                    terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
-        //
-        /////
     ]
     [simple       BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                         closingTag                                                                              ]

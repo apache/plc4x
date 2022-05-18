@@ -18,19 +18,13 @@
  */
 package org.apache.plc4x.java.bacnetip;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.junit.jupiter.api.Test;
 
-import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.apache.plc4x.java.bacnetip.Utils.PAYLOAD_START_INDEX;
+import static org.apache.plc4x.java.bacnetip.Utils.tryParseBytes;
 
 public class TrickyPackagesTest {
-
-    public static final boolean dumpPackages = false;
 
     // from plugfest-tridium-1.pcap
     @Test
@@ -101,7 +95,7 @@ public class TrickyPackagesTest {
             /*0150*/   0x01, 0x59, 0x05, 0x69, 0x01, 0x79, 0x07, 0x8e, 0x0a, 0x26, 0xe1, 0x19, 0x00, 0x2a, 0x25, 0xb9,
             /*0160*/   0x39, 0x00, 0x49, 0x00, 0x8f, 0x9c, 0x00, 0x00, 0x00, 0x00, 0x4f, 0x1f,
         };
-        tryParseBytes(rawBytesAsInts);
+        tryParseBytes(rawBytesAsInts, PAYLOAD_START_INDEX);
     }
 
     // from TrendLogMultipleReadRangeSimple.pcap
@@ -236,16 +230,9 @@ public class TrickyPackagesTest {
             /*000000f0*/  0x44, 0x00, 0x00, 0x00, 0x00, 0x4f, 0x29, 0x1b, 0x4e, 0x91, 0x49, 0x4f, 0x29, 0x0e, 0x4e, 0x44,  //|D....O).N.IO).ND|
             /*00000100*/  0x00, 0x00, 0x00, 0x00, 0x4f, 0x29, 0x3d, 0x4e, 0x44, 0x42, 0xc8, 0x00, 0x00, 0x4f, 0x29, 0x44,  //|....O)=NDB...O)D|
             /*00000110*/  0x4e, 0x44, 0x00, 0x00, 0x00, 0x00, 0x4f, 0x29, 0x16, 0x4e, 0x44, 0x00, 0x00, 0x00, 0x00, 0x4f,  //|ND....O).ND....O|
-            /*00000120*/  0x1f,                                                //|.|
+            /*00000120*/  0x1f,                                                                                            //|.|
         };
         tryParseBytes(rawBytesAsInts);
     }
 
-    private void tryParseBytes(int[] rawBytesAsInts) throws ParseException {
-        var rawBytes = (byte[]) ArrayUtils.toPrimitive(IntStream.of(rawBytesAsInts).boxed().map(Integer::byteValue).toArray(Byte[]::new));
-        rawBytes = ArrayUtils.subarray(rawBytes, 42, rawBytes.length);
-        BVLC bvlc = BVLC.staticParse(new ReadBufferByteBased(rawBytes));
-        assertNotNull(bvlc);
-        if (dumpPackages) System.out.println(bvlc);
-    }
 }

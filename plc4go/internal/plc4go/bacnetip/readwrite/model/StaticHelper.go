@@ -676,6 +676,13 @@ func MapRejectReason(rawRejectReason uint8, proprietary bool) RejectReason {
 	return RejectReason(rawRejectReason)
 }
 
+func MapBACnetLifeSafetyState(enumerated BACnetApplicationTagEnumerated, proprietary bool) BACnetLifeSafetyState {
+	if proprietary {
+		return 0
+	}
+	return BACnetLifeSafetyState(enumerated.GetActualValue())
+}
+
 func MapBACnetObjectType(rawObjectType BACnetContextTagEnumerated) BACnetObjectType {
 	baCnetObjectType := BACnetObjectTypeByValue(uint16(rawObjectType.GetActualValue()))
 	if baCnetObjectType == 0 {
