@@ -1157,6 +1157,11 @@ public class StaticHelper {
         return BACnetLifeSafetyMode.enumForValue((int) rawData.getActualValue());
     }
 
+    public static BACnetReliability mapBACnetReliability(BACnetApplicationTagEnumerated rawData, boolean proprietary) {
+        if (proprietary) return null;
+        return BACnetReliability.enumForValue((int) rawData.getActualValue());
+    }
+
     public static BACnetObjectType mapBACnetObjectType(BACnetContextTagEnumerated rawObjectType) {
         if (rawObjectType == null) return null;
         BACnetObjectType baCnetObjectType = BACnetObjectType.enumForValue((int) rawObjectType.getActualValue());

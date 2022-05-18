@@ -203,6 +203,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "ListOfCovNotificationsValue":
 		objectType := model.BACnetObjectTypeByName(arguments[0])
 		return model.ListOfCovNotificationsValueParse(io, objectType)
+	case "BACnetConstructedDataReliabilityEntry":
+		return model.BACnetConstructedDataReliabilityEntryParse(io)
 	case "BACnetDateTime":
 		return model.BACnetDateTimeParse(io)
 	case "ErrorEnclosed":

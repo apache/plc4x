@@ -235,6 +235,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "ListOfCovNotificationsValue":
 		objectType := model.BACnetObjectTypeByName(parserArguments[0])
 		return model.ListOfCovNotificationsValueParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectType)
+	case "BACnetConstructedDataReliabilityEntry":
+		return model.BACnetConstructedDataReliabilityEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetDateTime":
 		return model.BACnetDateTimeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ErrorEnclosed":

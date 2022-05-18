@@ -1877,7 +1877,7 @@
                         rawData                                                                                 ]
     [virtual  bit       isLifeSafetyStateProprietary 'rawData.actualValue > 255'                                ]
     [virtual  BACnetLifeSafetyState
-                        lifeSafetyState 
+                        lifeSafetyState
                             'STATIC_CALL("mapBACnetLifeSafetyState", rawData, isLifeSafetyStateProprietary)'    ]
     [virtual  uint 16   lifeSafetyStateProprietary 'isLifeSafetyStateProprietary?rawData.actualValue:0'         ]
 ]
@@ -1907,6 +1907,44 @@
     ['21'   GENERAL_ALARM]
     ['22'   SUPERVISORY]
     ['23'   TEST_SUPERVISORY]
+]
+
+// TODO: try with manual fields
+[type BACnetConstructedDataReliabilityEntry
+    [simple   BACnetApplicationTagEnumerated
+                        rawData                                                                               ]
+    [virtual  bit       isBACnetReliabilityProprietary 'rawData.actualValue > 255'                            ]
+    [virtual  BACnetReliability
+                        reliability
+                            'STATIC_CALL("mapBACnetReliability", rawData, isBACnetReliabilityProprietary)'    ]
+    [virtual  uint 16   reliabilityProprietary 'isBACnetReliabilityProprietary?rawData.actualValue:0'         ]
+]
+
+[enum uint 16 BACnetReliability
+    ['0'    NO_FAULT_DETECTED                 ]
+    ['1'    NO_SENSOR                         ]
+    ['2'    OVER_RANGE                        ]
+    ['3'    UNDER_RANGE                       ]
+    ['4'    OPEN_LOOP                         ]
+    ['5'    SHORTED_LOOP                      ]
+    ['6'    NO_OUTPUT                         ]
+    ['7'    UNRELIABLE_OTHER                  ]
+    ['8'    PROCESS_ERROR                     ]
+    ['9'    MULTI_STATE_FAULT                 ]
+    ['10'   CONFIGURATION_ERROR               ]
+    ['12'   COMMUNICATION_FAILURE             ]
+    ['13'   MEMBER_FAULT                      ]
+    ['14'   MONITORED_OBJECT_FAULT            ]
+    ['15'   TRIPPED                           ]
+    ['16'   LAMP_FAILURE                      ]
+    ['17'   ACTIVATION_FAILURE                ]
+    ['18'   RENEW_DHCP_FAILURE                ]
+    ['19'   RENEW_FD_REGISTRATION_FAILURE     ]
+    ['20'   RESTART_AUTO_NEGOTIATION_FAILURE  ]
+    ['21'   RESTART_FAILURE                   ]
+    ['22'   PROPRIETARY_COMMAND_FAILURE       ]
+    ['23'   FAULTS_LISTED                     ]
+    ['24'   REFERENCED_OBJECT_FAULT           ]
 ]
 
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
@@ -2869,7 +2907,9 @@
         //[*, 'RECORDS_SINCE_NOTIFICATION'              BACnetConstructedDataRecordsSinceNotification [validation    '1 == 2'    "TODO: implement me RECORDS_SINCE_NOTIFICATION BACnetConstructedDataRecordsSinceNotification"]]
         //[*, 'REFERENCE_PORT'                          BACnetConstructedDataReferencePort [validation    '1 == 2'    "TODO: implement me REFERENCE_PORT BACnetConstructedDataReferencePort"]]
         //[*, 'REGISTERED_CAR_CALL'                     BACnetConstructedDataRegisteredCarCall [validation    '1 == 2'    "TODO: implement me REGISTERED_CAR_CALL BACnetConstructedDataRegisteredCarCall"]]
-        //[*, 'RELIABILITY'                             BACnetConstructedDataReliability [validation    '1 == 2'    "TODO: implement me RELIABILITY BACnetConstructedDataReliability"]]
+        [*, 'RELIABILITY'                             BACnetConstructedDataReliability
+            [simple BACnetConstructedDataReliabilityEntry reliability]
+        ]
         //[*, 'RELIABILITY_EVALUATION_INHIBIT'          BACnetConstructedDataReliabilityEvaluationInhibit [validation    '1 == 2'    "TODO: implement me RELIABILITY_EVALUATION_INHIBIT BACnetConstructedDataReliabilityEvaluationInhibit"]]
         //[*, 'RELINQUISH_DEFAULT'                      BACnetConstructedDataRelinquishDefault [validation    '1 == 2'    "TODO: implement me RELINQUISH_DEFAULT BACnetConstructedDataRelinquishDefault"]]
         //[*, 'REPRESENTS'                              BACnetConstructedDataRepresents [validation    '1 == 2'    "TODO: implement me REPRESENTS BACnetConstructedDataRepresents"]]
@@ -3143,7 +3183,7 @@
     ['20' NONE                                  ]
     ['21' CHANGE_OF_DISCRETE_VALUE              ]
     ['22' CHANGE_OF_TIMER                       ]
-    
+
     // plc4x definition
     ['0xFFFF' VENDOR_PROPRIETARY_VALUE          ]
 ]
@@ -3155,7 +3195,7 @@
     ['3'  HIGH_LIMIT                            ]
     ['4'  LOW_LIMIT                             ]
     ['5'  LIFE_SAVETY_ALARM                     ]
-    
+
     // plc4x definition
     ['0xFFFF' VENDOR_PROPRIETARY_VALUE          ]
 ]

@@ -690,6 +690,13 @@ func MapBACnetLifeSafetyMode(enumerated *BACnetApplicationTagEnumerated, proprie
 	return BACnetLifeSafetyMode(enumerated.GetActualValue())
 }
 
+func MapBACnetReliability(enumerated *BACnetApplicationTagEnumerated, proprietary bool) BACnetReliability {
+	if proprietary {
+		return 0
+	}
+	return BACnetReliability(enumerated.GetActualValue())
+}
+
 func MapBACnetObjectType(rawObjectType BACnetContextTagEnumerated) BACnetObjectType {
 	baCnetObjectType := BACnetObjectTypeByValue(uint16(rawObjectType.GetActualValue()))
 	if baCnetObjectType == 0 {
