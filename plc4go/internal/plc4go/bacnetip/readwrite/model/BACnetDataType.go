@@ -53,6 +53,7 @@ const (
 	BACnetDataType_EVENT_TYPE                 BACnetDataType = 30
 	BACnetDataType_EVENT_STATE                BACnetDataType = 31
 	BACnetDataType_NOTIFY_TYPE                BACnetDataType = 32
+	BACnetDataType_UNKNOWN                    BACnetDataType = 33
 )
 
 var BACnetDataTypeValues []BACnetDataType
@@ -80,6 +81,7 @@ func init() {
 		BACnetDataType_EVENT_TYPE,
 		BACnetDataType_EVENT_STATE,
 		BACnetDataType_NOTIFY_TYPE,
+		BACnetDataType_UNKNOWN,
 	}
 }
 
@@ -113,6 +115,8 @@ func BACnetDataTypeByValue(value uint8) BACnetDataType {
 		return BACnetDataType_EVENT_STATE
 	case 32:
 		return BACnetDataType_NOTIFY_TYPE
+	case 33:
+		return BACnetDataType_UNKNOWN
 	case 4:
 		return BACnetDataType_REAL
 	case 5:
@@ -159,6 +163,8 @@ func BACnetDataTypeByName(value string) BACnetDataType {
 		return BACnetDataType_EVENT_STATE
 	case "NOTIFY_TYPE":
 		return BACnetDataType_NOTIFY_TYPE
+	case "UNKNOWN":
+		return BACnetDataType_UNKNOWN
 	case "REAL":
 		return BACnetDataType_REAL
 	case "DOUBLE":
@@ -244,6 +250,8 @@ func (e BACnetDataType) name() string {
 		return "EVENT_STATE"
 	case BACnetDataType_NOTIFY_TYPE:
 		return "NOTIFY_TYPE"
+	case BACnetDataType_UNKNOWN:
+		return "UNKNOWN"
 	case BACnetDataType_REAL:
 		return "REAL"
 	case BACnetDataType_DOUBLE:

@@ -1842,14 +1842,44 @@
     ]
 ]
 
+// TODO: try with manual fields
+[type BACnetConstructedDataAcceptedModesEntry
+    [simple   BACnetApplicationTagEnumerated
+                        rawData                                                                              ]
+    [virtual  bit       isAcceptedModeProprietary 'rawData.actualValue > 255'                                ]
+    [virtual  BACnetLifeSafetyMode
+                        acceptedMode
+                            'STATIC_CALL("mapBACnetLifeSafetyMode", rawData, isAcceptedModeProprietary)'    ]
+    [virtual  uint 16   acceptedModeProprietary 'isAcceptedModeProprietary?rawData.actualValue:0'           ]
+]
+
+[enum uint 16 BACnetLifeSafetyMode
+    ['0'    OFF                         ]
+    ['1'    ON                          ]
+    ['2'    TEST                        ]
+    ['3'    MANNED                      ]
+    ['4'    UNMANNED                    ]
+    ['5'    ARMED                       ]
+    ['6'    DISARMED                    ]
+    ['7'    PREARMED                    ]
+    ['8'    SLOW                        ]
+    ['9'    FAST                        ]
+    ['10'   DISCONNECTED                ]
+    ['11'   ENABLED                     ]
+    ['12'   DISABLED                    ]
+    ['13'   AUTOMATIC_RELEASE_DISABLED  ]
+    ['14'   DEFAULT                     ]
+]
+
+// TODO: try with manual fields
 [type BACnetConstructedDataLifeSafetyAlarmValuesEntry
-    [optional BACnetApplicationTagEnumerated
+    [simple   BACnetApplicationTagEnumerated
                         rawData                                                                                 ]
     [virtual  bit       isLifeSafetyStateProprietary 'rawData.actualValue > 255'                                ]
     [virtual  BACnetLifeSafetyState
                         lifeSafetyState 
                             'STATIC_CALL("mapBACnetLifeSafetyState", rawData, isLifeSafetyStateProprietary)'    ]
-    [virtual  uint 16    lifeSafetyStateProprietary 'isLifeSafetyStateProprietary?rawData.actualValue:0'        ]
+    [virtual  uint 16   lifeSafetyStateProprietary 'isLifeSafetyStateProprietary?rawData.actualValue:0'         ]
 ]
 
 [enum uint 16 BACnetLifeSafetyState
@@ -2301,6 +2331,9 @@
         ['CLOSING_TAG' BACnetClosingTag(uint 32 actualLength)
             [validation 'actualLength == 7' "closing tag should have a value of 7"]
         ]
+        ['UNKNOWN' BACnetContextTagUnknown(uint 32 actualLength)
+            [array byte unknownData length 'actualLength'          ]
+        ]
         [BACnetContextTagEmpty
         ]
     ]
@@ -2431,7 +2464,11 @@
                         propertyIdentifierEnum  'propertyIdentifierArgument.propertyIdentifier']
     [typeSwitch objectType, propertyIdentifierEnum
         //[*, 'ABSENTEE_LIMIT'                          BACnetConstructedDataAbsenteeLimit [validation    '1 == 2'    "TODO: implement me ABSENTEE_LIMIT BACnetConstructedDataAbsenteeLimit"]]
-        //[*, 'ACCEPTED_MODES'                          BACnetConstructedDataAcceptedModes [validation    '1 == 2'    "TODO: implement me ACCEPTED_MODES BACnetConstructedDataAcceptedModes"]]
+        [*, 'ACCEPTED_MODES'                          BACnetConstructedDataAcceptedModes
+            [array    BACnetConstructedDataAcceptedModesEntry
+                            acceptedModes              terminated
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         //[*, 'ACCESS_ALARM_EVENTS'                     BACnetConstructedDataAccessAlarmEvents [validation    '1 == 2'    "TODO: implement me ACCESS_ALARM_EVENTS BACnetConstructedDataAccessAlarmEvents"]]
         //[*, 'ACCESS_DOORS'                            BACnetConstructedDataAccessDoors [validation    '1 == 2'    "TODO: implement me ACCESS_DOORS BACnetConstructedDataAccessDoors"]]
         //[*, 'ACCESS_EVENT'                            BACnetConstructedDataAccessEvent [validation    '1 == 2'    "TODO: implement me ACCESS_EVENT BACnetConstructedDataAccessEvent"]]
@@ -3003,6 +3040,7 @@
     ['30' EVENT_TYPE                            ]
     ['31' EVENT_STATE                           ]
     ['32' NOTIFY_TYPE                           ]
+    ['33' UNKNOWN                               ]
     //
     //////////
     //////////

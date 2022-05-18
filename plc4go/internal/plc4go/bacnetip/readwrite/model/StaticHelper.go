@@ -294,7 +294,7 @@ func IsBACnetConstructedDataClosingTag(readBuffer utils.ReadBuffer, instantTermi
 
 func GuessDataType(objectType BACnetObjectType, propertyIdentifier *BACnetContextTagPropertyIdentifier) BACnetDataType {
 	// TODO: implement me
-	return BACnetDataType_ENUMERATED
+	return BACnetDataType_UNKNOWN
 }
 
 func ParseVarUint(data []byte) uint32 {
@@ -676,11 +676,18 @@ func MapRejectReason(rawRejectReason uint8, proprietary bool) RejectReason {
 	return RejectReason(rawRejectReason)
 }
 
-func MapBACnetLifeSafetyState(enumerated BACnetApplicationTagEnumerated, proprietary bool) BACnetLifeSafetyState {
+func MapBACnetLifeSafetyState(enumerated *BACnetApplicationTagEnumerated, proprietary bool) BACnetLifeSafetyState {
 	if proprietary {
 		return 0
 	}
 	return BACnetLifeSafetyState(enumerated.GetActualValue())
+}
+
+func MapBACnetLifeSafetyMode(enumerated *BACnetApplicationTagEnumerated, proprietary bool) BACnetLifeSafetyMode {
+	if proprietary {
+		return 0
+	}
+	return BACnetLifeSafetyMode(enumerated.GetActualValue())
 }
 
 func MapBACnetObjectType(rawObjectType BACnetContextTagEnumerated) BACnetObjectType {

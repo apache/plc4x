@@ -798,7 +798,7 @@ public class StaticHelper {
             case TREND_LOG_MULTIPLE:
                 return BACnetDataType.ENUMERATED;
         }
-        return BACnetDataType.ENUMERATED;
+        return BACnetDataType.UNKNOWN;
     }
 
     public static long parseVarUint(byte[] data) {
@@ -1150,6 +1150,11 @@ public class StaticHelper {
     public static BACnetLifeSafetyState mapBACnetLifeSafetyState(BACnetApplicationTagEnumerated rawData, boolean proprietary) {
         if (proprietary) return null;
         return BACnetLifeSafetyState.enumForValue((int) rawData.getActualValue());
+    }
+
+    public static BACnetLifeSafetyMode mapBACnetLifeSafetyMode(BACnetApplicationTagEnumerated rawData, boolean proprietary) {
+        if (proprietary) return null;
+        return BACnetLifeSafetyMode.enumForValue((int) rawData.getActualValue());
     }
 
     public static BACnetObjectType mapBACnetObjectType(BACnetContextTagEnumerated rawObjectType) {

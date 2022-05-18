@@ -248,6 +248,8 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 		_child, typeSwitchError = BACnetOpeningTagParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case dataType == BACnetDataType_CLOSING_TAG: // BACnetClosingTag
 		_child, typeSwitchError = BACnetClosingTagParse(readBuffer, tagNumberArgument, dataType, actualLength)
+	case dataType == BACnetDataType_UNKNOWN: // BACnetContextTagUnknown
+		_child, typeSwitchError = BACnetContextTagUnknownParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case true: // BACnetContextTagEmpty
 		_child, typeSwitchError = BACnetContextTagEmptyParse(readBuffer, tagNumberArgument, dataType)
 	default:

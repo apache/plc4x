@@ -183,6 +183,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	var _child BACnetConstructedDataChild
 	var typeSwitchError error
 	switch {
+	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_ACCEPTED_MODES: // BACnetConstructedDataAcceptedModes
+		_child, typeSwitchError = BACnetConstructedDataAcceptedModesParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case objectType == BACnetObjectType_LOOP && propertyIdentifierEnum == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataLoopAction
 		_child, typeSwitchError = BACnetConstructedDataLoopActionParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataAction
