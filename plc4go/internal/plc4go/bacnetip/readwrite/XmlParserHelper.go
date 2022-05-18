@@ -280,8 +280,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return model.BACnetTimeStampsEnclosedParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
-	case "BACnetConstructedDataLifeSafetyAlarmValuesEntry":
-		return model.BACnetConstructedDataLifeSafetyAlarmValuesEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceRequest":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
@@ -388,6 +386,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConstructedDataAcceptedModesEntry":
 		return model.BACnetConstructedDataAcceptedModesEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetConstructedDataLifeSafetyStateEntry":
+		return model.BACnetConstructedDataLifeSafetyStateEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetWriteAccessSpecification":
 		return model.BACnetWriteAccessSpecificationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetServiceAck":

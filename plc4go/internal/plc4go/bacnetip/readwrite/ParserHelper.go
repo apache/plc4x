@@ -243,8 +243,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetTimeStampsEnclosedParse(io, tagNumber)
-	case "BACnetConstructedDataLifeSafetyAlarmValuesEntry":
-		return model.BACnetConstructedDataLifeSafetyAlarmValuesEntryParse(io)
 	case "BACnetConfirmedServiceRequest":
 		serviceRequestLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {
@@ -339,6 +337,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsParse(io)
 	case "BACnetConstructedDataAcceptedModesEntry":
 		return model.BACnetConstructedDataAcceptedModesEntryParse(io)
+	case "BACnetConstructedDataLifeSafetyStateEntry":
+		return model.BACnetConstructedDataLifeSafetyStateEntryParse(io)
 	case "BACnetWriteAccessSpecification":
 		return model.BACnetWriteAccessSpecificationParse(io)
 	case "BACnetServiceAck":

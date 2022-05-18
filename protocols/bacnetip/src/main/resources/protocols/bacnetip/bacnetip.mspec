@@ -1872,7 +1872,7 @@
 ]
 
 // TODO: try with manual fields
-[type BACnetConstructedDataLifeSafetyAlarmValuesEntry
+[type BACnetConstructedDataLifeSafetyStateEntry
     [simple   BACnetApplicationTagEnumerated
                         rawData                                                                                 ]
     [virtual  bit       isLifeSafetyStateProprietary 'rawData.actualValue > 255'                                ]
@@ -2505,6 +2505,11 @@
         //[*, 'ACTUAL_SHED_LEVEL'                       BACnetConstructedDataActualShedLevel [validation    '1 == 2'    "TODO: implement me ACTUAL_SHED_LEVEL BACnetConstructedDataActualShedLevel"]]
         //[*, 'ADJUST_VALUE'                            BACnetConstructedDataAdjustValue [validation    '1 == 2'    "TODO: implement me ADJUST_VALUE BACnetConstructedDataAdjustValue"]]
         //[*, 'ALARM_VALUE'                             BACnetConstructedDataAlarmValue [validation    '1 == 2'    "TODO: implement me ALARM_VALUE BACnetConstructedDataAlarmValue"]]
+        ['LIFE_SAFETY_POINT', 'ALARM_VALUES'                            BACnetConstructedDataLifeSafetyPointAlarmValues
+            [array    BACnetConstructedDataLifeSafetyStateEntry
+                            alarmValues              terminated
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         //[*, 'ALARM_VALUES'                            BACnetConstructedDataAlarmValues [validation    '1 == 2'    "TODO: implement me ALARM_VALUES BACnetConstructedDataAlarmValues"]]
         //[*, 'ALIGN_INTERVALS'                         BACnetConstructedDataAlignIntervals [validation    '1 == 2'    "TODO: implement me ALIGN_INTERVALS BACnetConstructedDataAlignIntervals"]]
         //[*, 'ALL'                                     BACnetConstructedDataAll [validation    '1 == 2'    "TODO: implement me ALL BACnetConstructedDataAll"]]
@@ -2651,6 +2656,12 @@
         //[*, 'FAULT_PARAMETERS'                        BACnetConstructedDataFaultParameters [validation    '1 == 2'    "TODO: implement me FAULT_PARAMETERS BACnetConstructedDataFaultParameters"]]
         //[*, 'FAULT_SIGNALS'                           BACnetConstructedDataFaultSignals [validation    '1 == 2'    "TODO: implement me FAULT_SIGNALS BACnetConstructedDataFaultSignals"]]
         //[*, 'FAULT_TYPE'                              BACnetConstructedDataFaultType [validation    '1 == 2'    "TODO: implement me FAULT_TYPE BACnetConstructedDataFaultType"]]
+        ['LIFE_SAFETY_POINT', 'FAULT_VALUES'                            BACnetConstructedDataLifeSafetyPointFaultValues
+            [array    BACnetConstructedDataLifeSafetyStateEntry
+                            faultValues
+                                terminated
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         //[*, 'FAULT_VALUES'                            BACnetConstructedDataFaultValues [validation    '1 == 2'    "TODO: implement me FAULT_VALUES BACnetConstructedDataFaultValues"]]
         //[*, 'FD_BBMD_ADDRESS'                         BACnetConstructedDataFdBbmdAddress [validation    '1 == 2'    "TODO: implement me FD_BBMD_ADDRESS BACnetConstructedDataFdBbmdAddress"]]
         //[*, 'FD_SUBSCRIPTION_LIFETIME'                BACnetConstructedDataFdSubscriptionLifetime [validation    '1 == 2'    "TODO: implement me FD_SUBSCRIPTION_LIFETIME BACnetConstructedDataFdSubscriptionLifetime"]]
@@ -2717,7 +2728,7 @@
         //[*, 'LAST_STATE_CHANGE'                       BACnetConstructedDataLastStateChange [validation    '1 == 2'    "TODO: implement me LAST_STATE_CHANGE BACnetConstructedDataLastStateChange"]]
         //[*, 'LAST_USE_TIME'                           BACnetConstructedDataLastUseTime [validation    '1 == 2'    "TODO: implement me LAST_USE_TIME BACnetConstructedDataLastUseTime"]]
         [*, 'LIFE_SAFETY_ALARM_VALUES'                BACnetConstructedDataLifeSafetyAlarmValues
-            [array    BACnetConstructedDataLifeSafetyAlarmValuesEntry
+            [array    BACnetConstructedDataLifeSafetyStateEntry
                             alarmValues              terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]

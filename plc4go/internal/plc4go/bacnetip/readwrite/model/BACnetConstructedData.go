@@ -189,8 +189,12 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataLoopActionParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataAction
 		_child, typeSwitchError = BACnetConstructedDataActionParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
+	case objectType == BACnetObjectType_LIFE_SAFETY_POINT && propertyIdentifierEnum == BACnetPropertyIdentifier_ALARM_VALUES: // BACnetConstructedDataLifeSafetyPointAlarmValues
+		_child, typeSwitchError = BACnetConstructedDataLifeSafetyPointAlarmValuesParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_EVENT_TIME_STAMPS: // BACnetConstructedDataEventTimestamps
 		_child, typeSwitchError = BACnetConstructedDataEventTimestampsParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
+	case objectType == BACnetObjectType_LIFE_SAFETY_POINT && propertyIdentifierEnum == BACnetPropertyIdentifier_FAULT_VALUES: // BACnetConstructedDataLifeSafetyPointFaultValues
+		_child, typeSwitchError = BACnetConstructedDataLifeSafetyPointFaultValuesParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_LIFE_SAFETY_ALARM_VALUES: // BACnetConstructedDataLifeSafetyAlarmValues
 		_child, typeSwitchError = BACnetConstructedDataLifeSafetyAlarmValuesParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_LIST_OF_OBJECT_PROPERTY_REFERENCES: // BACnetConstructedDataListOfObjectPropertyReferences
