@@ -526,7 +526,7 @@ public class SecureChannel {
             expandedNodeId,
             null,
             activateSessionRequest,
-            false);
+            true);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
@@ -618,7 +618,7 @@ public class SecureChannel {
             expandedNodeId,
             null,
             closeSessionRequest,
-            false);
+            true);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
@@ -702,7 +702,7 @@ public class SecureChannel {
                 expandedNodeId,
                 null,
                 closeSecureChannelRequest,
-                false));
+                true));
 
         Consumer<Integer> requestConsumer = t -> {
             context.sendRequest(new OpcuaAPU(closeRequest, false))
@@ -775,7 +775,7 @@ public class SecureChannel {
                 expandedNodeId,
                 null,
                 openSecureChannelRequest,
-                false).serialize(buffer);
+                true).serialize(buffer);
 
             OpcuaOpenRequest openRequest = new OpcuaOpenRequest(FINAL_CHUNK,
                 0,
@@ -858,7 +858,7 @@ public class SecureChannel {
                 expandedNodeId,
                 null,
                 endpointsRequest,
-                false).serialize(buffer);
+                true).serialize(buffer);
 
             OpcuaMessageRequest messageRequest = new OpcuaMessageRequest(FINAL_CHUNK,
                 channelId.get(),
@@ -940,7 +940,7 @@ public class SecureChannel {
                 expandedNodeId,
                 null,
                 closeSecureChannelRequest,
-                false));
+                true));
 
         Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(closeRequest, false))
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
@@ -1208,7 +1208,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken), false);
+                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken), true);
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
                 byte[] passwordBytes = this.password == null ? new byte[0] : this.password.getBytes();
@@ -1237,7 +1237,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken), false);
+                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken), true);
         }
         return null;
     }

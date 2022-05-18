@@ -280,7 +280,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                                     } else {
                                         serviceFault = (ServiceFault) unknownExtensionObject;
                                         ResponseHeader header = (ResponseHeader) serviceFault.getResponseHeader();
-                                        LOGGER.error("Subscription ServiceFault returned from server with error code,  '{}'", header.getServiceResult().toString());
+                                        LOGGER.debug("Subscription ServiceFault returned from server with error code,  '{}', ignoring as it is probably just a result of a Delete Subscription Request", header.getServiceResult().toString());
                                         //plcSubscriber.onDisconnect(context);
                                     }
                                 } catch (ParseException e) {
@@ -389,7 +389,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                     } else {
                         ServiceFault serviceFault = (ServiceFault) unknownExtensionObject;
                         ResponseHeader header = (ResponseHeader) serviceFault.getResponseHeader();
-                        LOGGER.error("Fault when deleteing Subscription ServiceFault return from server with error code,  '{}'", header.getServiceResult().toString());
+                        LOGGER.debug("Fault when deleting Subscription ServiceFault return from server with error code,  '{}', ignoring as it is probably just a result of a Delete Subscription Request", header.getServiceResult().toString());
                     }
                 } catch (ParseException e) {
                     LOGGER.error("Unable to parse the returned Delete Subscriptions Response", e);

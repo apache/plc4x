@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -108,6 +109,11 @@ public class OpcuaSubscriptionHandleTest {
             assert opcuaConnection.isConnected();
         } catch (Exception e) {
             e.printStackTrace();
+            try {
+                exampleServer.shutdown().get();
+            } catch (Exception j) {
+                j.printStackTrace();
+            }
         }
     }
 
