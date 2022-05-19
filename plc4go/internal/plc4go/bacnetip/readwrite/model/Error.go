@@ -28,28 +28,16 @@ import (
 
 // Error is the data-structure of this message
 type Error struct {
-	RawErrorClass *BACnetApplicationTagEnumerated
-	RawErrorCode  *BACnetApplicationTagEnumerated
+	ErrorClass *ErrorClassTagged
+	ErrorCode  *ErrorCodeTagged
 }
 
 // IError is the corresponding interface of Error
 type IError interface {
-	// GetRawErrorClass returns RawErrorClass (property field)
-	GetRawErrorClass() *BACnetApplicationTagEnumerated
-	// GetRawErrorCode returns RawErrorCode (property field)
-	GetRawErrorCode() *BACnetApplicationTagEnumerated
-	// GetErrorClass returns ErrorClass (virtual field)
-	GetErrorClass() ErrorClass
-	// GetIsErrorClassProprietary returns IsErrorClassProprietary (virtual field)
-	GetIsErrorClassProprietary() bool
-	// GetErrorClassProprietary returns ErrorClassProprietary (virtual field)
-	GetErrorClassProprietary() uint16
-	// GetErrorCode returns ErrorCode (virtual field)
-	GetErrorCode() ErrorCode
-	// GetIsErrorCodeProprietary returns IsErrorCodeProprietary (virtual field)
-	GetIsErrorCodeProprietary() bool
-	// GetErrorCodeProprietary returns ErrorCodeProprietary (virtual field)
-	GetErrorCodeProprietary() uint16
+	// GetErrorClass returns ErrorClass (property field)
+	GetErrorClass() *ErrorClassTagged
+	// GetErrorCode returns ErrorCode (property field)
+	GetErrorCode() *ErrorCodeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -63,45 +51,12 @@ type IError interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *Error) GetRawErrorClass() *BACnetApplicationTagEnumerated {
-	return m.RawErrorClass
+func (m *Error) GetErrorClass() *ErrorClassTagged {
+	return m.ErrorClass
 }
 
-func (m *Error) GetRawErrorCode() *BACnetApplicationTagEnumerated {
-	return m.RawErrorCode
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *Error) GetErrorClass() ErrorClass {
-	return ErrorClass(MapErrorClass(m.GetRawErrorClass()))
-}
-
-func (m *Error) GetIsErrorClassProprietary() bool {
-	return bool(bool((m.GetRawErrorClass().GetActualValue()) > (63)))
-}
-
-func (m *Error) GetErrorClassProprietary() uint16 {
-	return uint16(m.GetRawErrorClass().GetActualValue())
-}
-
-func (m *Error) GetErrorCode() ErrorCode {
-	return ErrorCode(MapErrorCode(m.GetRawErrorCode()))
-}
-
-func (m *Error) GetIsErrorCodeProprietary() bool {
-	return bool(bool((m.GetRawErrorCode().GetActualValue()) > (255)))
-}
-
-func (m *Error) GetErrorCodeProprietary() uint16 {
-	return uint16(m.GetRawErrorCode().GetActualValue())
+func (m *Error) GetErrorCode() *ErrorCodeTagged {
+	return m.ErrorCode
 }
 
 ///////////////////////
@@ -110,8 +65,8 @@ func (m *Error) GetErrorCodeProprietary() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewError factory function for Error
-func NewError(rawErrorClass *BACnetApplicationTagEnumerated, rawErrorCode *BACnetApplicationTagEnumerated) *Error {
-	return &Error{RawErrorClass: rawErrorClass, RawErrorCode: rawErrorCode}
+func NewError(errorClass *ErrorClassTagged, errorCode *ErrorCodeTagged) *Error {
+	return &Error{ErrorClass: errorClass, ErrorCode: errorCode}
 }
 
 func CastError(structType interface{}) *Error {
@@ -135,23 +90,11 @@ func (m *Error) GetLengthInBits() uint16 {
 func (m *Error) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
-	// Simple field (rawErrorClass)
-	lengthInBits += m.RawErrorClass.GetLengthInBits()
+	// Simple field (errorClass)
+	lengthInBits += m.ErrorClass.GetLengthInBits()
 
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// Simple field (rawErrorCode)
-	lengthInBits += m.RawErrorCode.GetLengthInBits()
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
+	// Simple field (errorCode)
+	lengthInBits += m.ErrorCode.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -169,68 +112,38 @@ func ErrorParse(readBuffer utils.ReadBuffer) (*Error, error) {
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (rawErrorClass)
-	if pullErr := readBuffer.PullContext("rawErrorClass"); pullErr != nil {
+	// Simple Field (errorClass)
+	if pullErr := readBuffer.PullContext("errorClass"); pullErr != nil {
 		return nil, pullErr
 	}
-	_rawErrorClass, _rawErrorClassErr := BACnetApplicationTagParse(readBuffer)
-	if _rawErrorClassErr != nil {
-		return nil, errors.Wrap(_rawErrorClassErr, "Error parsing 'rawErrorClass' field")
+	_errorClass, _errorClassErr := ErrorClassTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	if _errorClassErr != nil {
+		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
 	}
-	rawErrorClass := CastBACnetApplicationTagEnumerated(_rawErrorClass)
-	if closeErr := readBuffer.CloseContext("rawErrorClass"); closeErr != nil {
+	errorClass := CastErrorClassTagged(_errorClass)
+	if closeErr := readBuffer.CloseContext("errorClass"); closeErr != nil {
 		return nil, closeErr
 	}
 
-	// Virtual field
-	_errorClass := MapErrorClass(rawErrorClass)
-	errorClass := ErrorClass(_errorClass)
-	_ = errorClass
-
-	// Virtual field
-	_isErrorClassProprietary := bool((rawErrorClass.GetActualValue()) > (63))
-	isErrorClassProprietary := bool(_isErrorClassProprietary)
-	_ = isErrorClassProprietary
-
-	// Virtual field
-	_errorClassProprietary := rawErrorClass.GetActualValue()
-	errorClassProprietary := uint16(_errorClassProprietary)
-	_ = errorClassProprietary
-
-	// Simple Field (rawErrorCode)
-	if pullErr := readBuffer.PullContext("rawErrorCode"); pullErr != nil {
+	// Simple Field (errorCode)
+	if pullErr := readBuffer.PullContext("errorCode"); pullErr != nil {
 		return nil, pullErr
 	}
-	_rawErrorCode, _rawErrorCodeErr := BACnetApplicationTagParse(readBuffer)
-	if _rawErrorCodeErr != nil {
-		return nil, errors.Wrap(_rawErrorCodeErr, "Error parsing 'rawErrorCode' field")
+	_errorCode, _errorCodeErr := ErrorCodeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	if _errorCodeErr != nil {
+		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}
-	rawErrorCode := CastBACnetApplicationTagEnumerated(_rawErrorCode)
-	if closeErr := readBuffer.CloseContext("rawErrorCode"); closeErr != nil {
+	errorCode := CastErrorCodeTagged(_errorCode)
+	if closeErr := readBuffer.CloseContext("errorCode"); closeErr != nil {
 		return nil, closeErr
 	}
-
-	// Virtual field
-	_errorCode := MapErrorCode(rawErrorCode)
-	errorCode := ErrorCode(_errorCode)
-	_ = errorCode
-
-	// Virtual field
-	_isErrorCodeProprietary := bool((rawErrorCode.GetActualValue()) > (255))
-	isErrorCodeProprietary := bool(_isErrorCodeProprietary)
-	_ = isErrorCodeProprietary
-
-	// Virtual field
-	_errorCodeProprietary := rawErrorCode.GetActualValue()
-	errorCodeProprietary := uint16(_errorCodeProprietary)
-	_ = errorCodeProprietary
 
 	if closeErr := readBuffer.CloseContext("Error"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewError(rawErrorClass, rawErrorCode), nil
+	return NewError(errorClass, errorCode), nil
 }
 
 func (m *Error) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -240,52 +153,28 @@ func (m *Error) Serialize(writeBuffer utils.WriteBuffer) error {
 		return pushErr
 	}
 
-	// Simple Field (rawErrorClass)
-	if pushErr := writeBuffer.PushContext("rawErrorClass"); pushErr != nil {
+	// Simple Field (errorClass)
+	if pushErr := writeBuffer.PushContext("errorClass"); pushErr != nil {
 		return pushErr
 	}
-	_rawErrorClassErr := m.RawErrorClass.Serialize(writeBuffer)
-	if popErr := writeBuffer.PopContext("rawErrorClass"); popErr != nil {
+	_errorClassErr := m.ErrorClass.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("errorClass"); popErr != nil {
 		return popErr
 	}
-	if _rawErrorClassErr != nil {
-		return errors.Wrap(_rawErrorClassErr, "Error serializing 'rawErrorClass' field")
-	}
-	// Virtual field
-	if _errorClassErr := writeBuffer.WriteVirtual("errorClass", m.GetErrorClass()); _errorClassErr != nil {
+	if _errorClassErr != nil {
 		return errors.Wrap(_errorClassErr, "Error serializing 'errorClass' field")
 	}
-	// Virtual field
-	if _isErrorClassProprietaryErr := writeBuffer.WriteVirtual("isErrorClassProprietary", m.GetIsErrorClassProprietary()); _isErrorClassProprietaryErr != nil {
-		return errors.Wrap(_isErrorClassProprietaryErr, "Error serializing 'isErrorClassProprietary' field")
-	}
-	// Virtual field
-	if _errorClassProprietaryErr := writeBuffer.WriteVirtual("errorClassProprietary", m.GetErrorClassProprietary()); _errorClassProprietaryErr != nil {
-		return errors.Wrap(_errorClassProprietaryErr, "Error serializing 'errorClassProprietary' field")
-	}
 
-	// Simple Field (rawErrorCode)
-	if pushErr := writeBuffer.PushContext("rawErrorCode"); pushErr != nil {
+	// Simple Field (errorCode)
+	if pushErr := writeBuffer.PushContext("errorCode"); pushErr != nil {
 		return pushErr
 	}
-	_rawErrorCodeErr := m.RawErrorCode.Serialize(writeBuffer)
-	if popErr := writeBuffer.PopContext("rawErrorCode"); popErr != nil {
+	_errorCodeErr := m.ErrorCode.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("errorCode"); popErr != nil {
 		return popErr
 	}
-	if _rawErrorCodeErr != nil {
-		return errors.Wrap(_rawErrorCodeErr, "Error serializing 'rawErrorCode' field")
-	}
-	// Virtual field
-	if _errorCodeErr := writeBuffer.WriteVirtual("errorCode", m.GetErrorCode()); _errorCodeErr != nil {
+	if _errorCodeErr != nil {
 		return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
-	}
-	// Virtual field
-	if _isErrorCodeProprietaryErr := writeBuffer.WriteVirtual("isErrorCodeProprietary", m.GetIsErrorCodeProprietary()); _isErrorCodeProprietaryErr != nil {
-		return errors.Wrap(_isErrorCodeProprietaryErr, "Error serializing 'isErrorCodeProprietary' field")
-	}
-	// Virtual field
-	if _errorCodeProprietaryErr := writeBuffer.WriteVirtual("errorCodeProprietary", m.GetErrorCodeProprietary()); _errorCodeProprietaryErr != nil {
-		return errors.Wrap(_errorCodeProprietaryErr, "Error serializing 'errorCodeProprietary' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Error"); popErr != nil {

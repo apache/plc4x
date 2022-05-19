@@ -33,8 +33,7 @@ type BACnetConstructedDataLoopAction struct {
 	RawData *BACnetApplicationTagEnumerated
 
 	// Arguments.
-	TagNumber                  uint8
-	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
+	TagNumber uint8
 }
 
 // IBACnetConstructedDataLoopAction is the corresponding interface of BACnetConstructedDataLoopAction
@@ -61,6 +60,10 @@ type IBACnetConstructedDataLoopAction interface {
 
 func (m *BACnetConstructedDataLoopAction) GetObjectType() BACnetObjectType {
 	return BACnetObjectType_LOOP
+}
+
+func (m *BACnetConstructedDataLoopAction) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return BACnetPropertyIdentifier_ACTION
 }
 
 ///////////////////////
@@ -113,10 +116,10 @@ func (m *BACnetConstructedDataLoopAction) GetIsReverse() bool {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLoopAction factory function for BACnetConstructedDataLoopAction
-func NewBACnetConstructedDataLoopAction(rawData *BACnetApplicationTagEnumerated, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedDataLoopAction {
+func NewBACnetConstructedDataLoopAction(rawData *BACnetApplicationTagEnumerated, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLoopAction {
 	_result := &BACnetConstructedDataLoopAction{
 		RawData:               rawData,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result
@@ -165,7 +168,7 @@ func (m *BACnetConstructedDataLoopAction) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLoopActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataLoopAction, error) {
+func BACnetConstructedDataLoopActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLoopAction, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoopAction"); pullErr != nil {

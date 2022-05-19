@@ -29,18 +29,17 @@ import (
 // BACnetConstructedDataLifeSafetyPointAlarmValues is the data-structure of this message
 type BACnetConstructedDataLifeSafetyPointAlarmValues struct {
 	*BACnetConstructedData
-	AlarmValues []*BACnetConstructedDataLifeSafetyStateEntry
+	AlarmValues []*BACnetLifeSafetyStateTagged
 
 	// Arguments.
-	TagNumber                  uint8
-	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
+	TagNumber uint8
 }
 
 // IBACnetConstructedDataLifeSafetyPointAlarmValues is the corresponding interface of BACnetConstructedDataLifeSafetyPointAlarmValues
 type IBACnetConstructedDataLifeSafetyPointAlarmValues interface {
 	IBACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
-	GetAlarmValues() []*BACnetConstructedDataLifeSafetyStateEntry
+	GetAlarmValues() []*BACnetLifeSafetyStateTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -56,6 +55,10 @@ type IBACnetConstructedDataLifeSafetyPointAlarmValues interface {
 
 func (m *BACnetConstructedDataLifeSafetyPointAlarmValues) GetObjectType() BACnetObjectType {
 	return BACnetObjectType_LIFE_SAFETY_POINT
+}
+
+func (m *BACnetConstructedDataLifeSafetyPointAlarmValues) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return BACnetPropertyIdentifier_ALARM_VALUES
 }
 
 ///////////////////////
@@ -77,7 +80,7 @@ func (m *BACnetConstructedDataLifeSafetyPointAlarmValues) GetParent() *BACnetCon
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetConstructedDataLifeSafetyPointAlarmValues) GetAlarmValues() []*BACnetConstructedDataLifeSafetyStateEntry {
+func (m *BACnetConstructedDataLifeSafetyPointAlarmValues) GetAlarmValues() []*BACnetLifeSafetyStateTagged {
 	return m.AlarmValues
 }
 
@@ -87,10 +90,10 @@ func (m *BACnetConstructedDataLifeSafetyPointAlarmValues) GetAlarmValues() []*BA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLifeSafetyPointAlarmValues factory function for BACnetConstructedDataLifeSafetyPointAlarmValues
-func NewBACnetConstructedDataLifeSafetyPointAlarmValues(alarmValues []*BACnetConstructedDataLifeSafetyStateEntry, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedDataLifeSafetyPointAlarmValues {
+func NewBACnetConstructedDataLifeSafetyPointAlarmValues(alarmValues []*BACnetLifeSafetyStateTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLifeSafetyPointAlarmValues {
 	_result := &BACnetConstructedDataLifeSafetyPointAlarmValues{
 		AlarmValues:           alarmValues,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +140,7 @@ func (m *BACnetConstructedDataLifeSafetyPointAlarmValues) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLifeSafetyPointAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataLifeSafetyPointAlarmValues, error) {
+func BACnetConstructedDataLifeSafetyPointAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLifeSafetyPointAlarmValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyPointAlarmValues"); pullErr != nil {
@@ -151,14 +154,14 @@ func BACnetConstructedDataLifeSafetyPointAlarmValuesParse(readBuffer utils.ReadB
 		return nil, pullErr
 	}
 	// Terminated array
-	alarmValues := make([]*BACnetConstructedDataLifeSafetyStateEntry, 0)
+	alarmValues := make([]*BACnetLifeSafetyStateTagged, 0)
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetConstructedDataLifeSafetyStateEntryParse(readBuffer)
+			_item, _err := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field")
 			}
-			alarmValues = append(alarmValues, CastBACnetConstructedDataLifeSafetyStateEntry(_item))
+			alarmValues = append(alarmValues, CastBACnetLifeSafetyStateTagged(_item))
 
 		}
 	}

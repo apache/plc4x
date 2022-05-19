@@ -32,8 +32,7 @@ type BACnetConstructedDataAction struct {
 	ActionLists []*BACnetActionList
 
 	// Arguments.
-	TagNumber                  uint8
-	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
+	TagNumber uint8
 }
 
 // IBACnetConstructedDataAction is the corresponding interface of BACnetConstructedDataAction
@@ -56,6 +55,10 @@ type IBACnetConstructedDataAction interface {
 
 func (m *BACnetConstructedDataAction) GetObjectType() BACnetObjectType {
 	return 0
+}
+
+func (m *BACnetConstructedDataAction) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return BACnetPropertyIdentifier_ACTION
 }
 
 ///////////////////////
@@ -87,10 +90,10 @@ func (m *BACnetConstructedDataAction) GetActionLists() []*BACnetActionList {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAction factory function for BACnetConstructedDataAction
-func NewBACnetConstructedDataAction(actionLists []*BACnetActionList, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedDataAction {
+func NewBACnetConstructedDataAction(actionLists []*BACnetActionList, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAction {
 	_result := &BACnetConstructedDataAction{
 		ActionLists:           actionLists,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +140,7 @@ func (m *BACnetConstructedDataAction) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataAction, error) {
+func BACnetConstructedDataActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAction, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAction"); pullErr != nil {

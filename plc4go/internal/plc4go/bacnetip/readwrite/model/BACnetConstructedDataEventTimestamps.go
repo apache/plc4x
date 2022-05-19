@@ -34,8 +34,7 @@ type BACnetConstructedDataEventTimestamps struct {
 	ToNormal    *BACnetTimeStamp
 
 	// Arguments.
-	TagNumber                  uint8
-	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
+	TagNumber uint8
 }
 
 // IBACnetConstructedDataEventTimestamps is the corresponding interface of BACnetConstructedDataEventTimestamps
@@ -62,6 +61,10 @@ type IBACnetConstructedDataEventTimestamps interface {
 
 func (m *BACnetConstructedDataEventTimestamps) GetObjectType() BACnetObjectType {
 	return 0
+}
+
+func (m *BACnetConstructedDataEventTimestamps) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return BACnetPropertyIdentifier_EVENT_TIME_STAMPS
 }
 
 ///////////////////////
@@ -101,12 +104,12 @@ func (m *BACnetConstructedDataEventTimestamps) GetToNormal() *BACnetTimeStamp {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventTimestamps factory function for BACnetConstructedDataEventTimestamps
-func NewBACnetConstructedDataEventTimestamps(toOffnormal *BACnetTimeStamp, toFault *BACnetTimeStamp, toNormal *BACnetTimeStamp, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedDataEventTimestamps {
+func NewBACnetConstructedDataEventTimestamps(toOffnormal *BACnetTimeStamp, toFault *BACnetTimeStamp, toNormal *BACnetTimeStamp, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEventTimestamps {
 	_result := &BACnetConstructedDataEventTimestamps{
 		ToOffnormal:           toOffnormal,
 		ToFault:               toFault,
 		ToNormal:              toNormal,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result
@@ -155,7 +158,7 @@ func (m *BACnetConstructedDataEventTimestamps) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataEventTimestamps, error) {
+func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEventTimestamps, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventTimestamps"); pullErr != nil {

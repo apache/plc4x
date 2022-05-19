@@ -224,10 +224,11 @@
                                 serviceRequest       '!segmentedMessage' ]
             [validation '(!segmentedMessage && serviceRequest != null) || segmentedMessage' "service request should be set" ]
             // TODO: maybe we should put this in the discriminated types below
-            [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
+            [optional uint 8    segmentServiceChoice
+                                    'segmentedMessage && sequenceNumber != 0']
             [array    byte      segment
-                                length
-                                'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?6:5)):0):0'
+                                    length
+                                    'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?6:5)):0):0'
         ]
         ['0x1' APDUUnconfirmedRequest
             [reserved uint 4                          '0'               ]
@@ -252,8 +253,8 @@
             // TODO: maybe we should put this in the discriminated types below
             [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
             [array    byte      segment
-                                length
-                                'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?5:4)):0):0'
+                                    length
+                                    'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?5:4)):0):0'
                                                                         ]
         ]
         ['0x4' APDUSegmentAck
@@ -275,21 +276,15 @@
         ['0x6' APDUReject
             [reserved uint 4    '0x00'                                  ]
             [simple   uint 8    originalInvokeId                        ]
-            [simple   uint 8    rawRejectReason                         ]
-            [virtual  bit       isRejectReasonProprietary 'rawRejectReason > 63'                                            ]
-            [virtual  RejectReason
-                                rejectReason 'STATIC_CALL("mapRejectReason", rawRejectReason, isRejectReasonProprietary)'   ]
-            [virtual  uint 8    rejectReasonProprietary 'isRejectReasonProprietary?rawRejectReason:0'                       ]
+            [simple   RejectReasonTagged('1')
+                                rejectReason                            ]
         ]
         ['0x7' APDUAbort
             [reserved uint 3    '0x00'                                  ]
             [simple   bit       server                                  ]
             [simple   uint 8    originalInvokeId                        ]
-            [simple   uint 8    rawAbortReason                          ]
-            [virtual  bit       isAbortReasonProprietary 'rawAbortReason > 63'                                              ]
-            [virtual  AbortReason
-                                abortReason 'STATIC_CALL("mapAbortReason", rawAbortReason, isAbortReasonProprietary)'       ]
-            [virtual  uint 8    abortReasonProprietary 'isAbortReasonProprietary?rawAbortReason:0'                          ]
+            [simple   AbortReasonTagged('1')
+                                abortReason                             ]
         ]
         [APDUUnknown
             [array    byte      unknownBytes length '(apduLength>0)?(apduLength - 1):0'    ]
@@ -297,6 +292,7 @@
     ]
 ]
 
+// Attention: 0-63 ASHRAE. 64-255 proprietary
 [enum uint 8 RejectReason
     ['0x0' OTHER                        ]
     ['0x1' BUFFER_OVERFLOW              ]
@@ -308,8 +304,28 @@
     ['0x7' TOO_MANY_ARGUMENTS           ]
     ['0x8' UNDEFINED_ENUMERATION        ]
     ['0x9' UNRECOGNIZED_SERVICE         ]
+
+    // plc4x definition
+    ['0xFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
+// Not really tagged as it has no header but is consistent with naming schema enum+Tagged
+[type RejectReasonTagged(uint 32 actualLength)
+    [manual   RejectReason
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, actualLength, RejectReason.VENDOR_PROPRIETARY_VALUE)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'actualLength * 8'                                  ]
+    [virtual  bit   isProprietary
+                        'value == RejectReason.VENDOR_PROPRIETARY_VALUE'    ]
+    [manual   uint 32
+                    proprietaryValue
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, actualLength, isProprietary)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                        '_value.isProprietary?actualLength * 8:0'                  ]
+]
+
+// Attention: 0-63 ASHRAE. 64-255 proprietary
 [enum uint 8 AbortReason
     ['0'  OTHER                             ]
     ['1'  BUFFER_OVERFLOW                   ]
@@ -323,6 +339,25 @@
     ['9'  OUT_OF_RESOURCES                  ]
     ['10' TSM_TIMEOUT                       ]
     ['11' APDU_TOO_LONG                     ]
+
+    // plc4x definition
+    ['0xFF' VENDOR_PROPRIETARY_VALUE            ]
+]
+
+// Not really tagged as it has no header but is consistent with naming schema enum+Tagged
+[type AbortReasonTagged(uint 32 actualLength)
+    [manual   AbortReason
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, actualLength, AbortReason.VENDOR_PROPRIETARY_VALUE)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'actualLength * 8'                                  ]
+    [virtual  bit   isProprietary
+                        'value == AbortReason.VENDOR_PROPRIETARY_VALUE'     ]
+    [manual   uint 32
+                    proprietaryValue
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, actualLength, isProprietary)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                        '_value.isProprietary?actualLength * 8:0'                  ]
 ]
 
 [enum uint 3 MaxSegmentsAccepted
@@ -364,7 +399,7 @@
         ['ACKNOWLEDGE_ALARM' BACnetConfirmedServiceRequestAcknowledgeAlarm
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          acknowledgingProcessIdentifier ]
             [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') eventObjectIdentifier          ]
-            [simple   BACnetContextTagEventState('2', 'BACnetDataType.EVENT_STATE')                    eventStateAcknowledged         ]
+            [simple   BACnetEventStateTagged('2', 'TagClass.CONTEXT_SPECIFIC_TAGS')                    eventStateAcknowledged         ]
             [simple   BACnetTimeStampEnclosed('3')                                                     timestamp                      ]
             [simple   BACnetContextTagCharacterString('4', 'BACnetDataType.CHARACTER_STRING')          acknowledgmentSource           ]
             [simple   BACnetTimeStampEnclosed('5')                                                     timeOfAcknowledgment           ]
@@ -390,12 +425,12 @@
             [simple   BACnetTimeStampEnclosed('3')                                                     timestamp                    ]
             [simple   BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')          notificationClass            ]
             [simple   BACnetContextTagUnsignedInteger('5', 'BACnetDataType.UNSIGNED_INTEGER')          priority                     ]
-            [simple   BACnetContextTagEventType('6', 'BACnetDataType.EVENT_TYPE')                      eventType                    ]
+            [simple   BACnetEventTypeTagged('6', 'TagClass.CONTEXT_SPECIFIC_TAGS')                     eventType                    ]
             [optional BACnetContextTagCharacterString('7', 'BACnetDataType.CHARACTER_STRING')          messageText                  ]
-            [simple   BACnetContextTagNotifyType('8', 'BACnetDataType.NOTIFY_TYPE')                    notifyType                   ]
+            [simple   BACnetNotifyTypeTagged('8', 'TagClass.CONTEXT_SPECIFIC_TAGS')                    notifyType                   ]
             [optional BACnetContextTagBoolean('9', 'BACnetDataType.BOOLEAN')                           ackRequired                  ]
-            [optional BACnetContextTagEventState('10', 'BACnetDataType.EVENT_STATE')                   fromState                    ]
-            [simple   BACnetContextTagEventState('11', 'BACnetDataType.EVENT_STATE')                   toState                      ]
+            [optional BACnetEventStateTagged('10', 'TagClass.CONTEXT_SPECIFIC_TAGS')                    fromState                    ]
+            [simple   BACnetEventStateTagged('11', 'TagClass.CONTEXT_SPECIFIC_TAGS')                    toState                      ]
             [optional BACnetNotificationParameters('12', 'eventObjectIdentifier.objectType')           eventValues                  ]
         ]
         ['GET_ENROLLMENT_SUMMARY' BACnetConfirmedServiceRequestGetEnrollmentSummary
@@ -454,16 +489,16 @@
         ////
         // Object Access Services
         ['ADD_LIST_ELEMENT' BACnetConfirmedServiceRequestAddListElement
-            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
-            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              arrayIndex          ]
-            [optional BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')      listOfElements      ]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier    ]
+            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier  ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               arrayIndex          ]
+            [optional BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier.value') listOfElements      ]
         ]
         ['REMOVE_LIST_ELEMENT' BACnetConfirmedServiceRequestRemoveListElement
-            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
-            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              arrayIndex          ]
-            [optional BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')      listOfElements      ]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier    ]
+            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier  ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               arrayIndex          ]
+            [optional BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier.value') listOfElements      ]
         ]
         ['CREATE_OBJECT' BACnetConfirmedServiceRequestCreateObject
             [simple       BACnetConfirmedServiceRequestCreateObjectObjectSpecifier('0')                    objectSpecifier     ]
@@ -476,7 +511,7 @@
         ['READ_PROPERTY' BACnetConfirmedServiceRequestReadProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                             objectIdentifier        ]
-            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
                             propertyIdentifier      ]
             [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
                             arrayIndex              ]
@@ -488,18 +523,18 @@
                             'serviceRequestLength'                   ]
         ]
         ['READ_RANGE' BACnetConfirmedServiceRequestReadRange
-            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
-            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              propertyArrayIndex  ]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier    ]
+            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier  ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               propertyArrayIndex  ]
             // TODO: this attribute should be named range but this is a keyword in golang (so at this point we should build a language translator which makes keywords safe)
-            [optional BACnetConfirmedServiceRequestReadRangeRange                                          readRange           ]
+            [optional BACnetConfirmedServiceRequestReadRangeRange                                           readRange           ]
         ]
         ['WRITE_PROPERTY' BACnetConfirmedServiceRequestWriteProperty
-            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
-            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              arrayIndex          ]
-            [simple   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')      propertyValue       ]
-            [optional BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')              priority            ]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier    ]
+            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier  ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               arrayIndex          ]
+            [simple   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier.value') propertyValue       ]
+            [optional BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')               priority            ]
         ]
         ['WRITE_PROPERTY_MULTIPLE' BACnetConfirmedServiceRequestWritePropertyMultiple
             [array    BACnetWriteAccessSpecification
@@ -514,24 +549,29 @@
         // Remote Device Management Services
 
         ['DEVICE_COMMUNICATION_CONTROL' BACnetConfirmedServiceRequestDeviceCommunicationControl
-            [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')              timeDuration        ]
-            [simple   BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable('1')                    enableDisable       ]
-            [optional BACnetContextTagCharacterString('2', 'BACnetDataType.CHARACTER_STRING')              password            ]
+            [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')
+                                timeDuration                                                        ]
+            [simple   BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                enableDisable                                                       ]
+            [optional BACnetContextTagCharacterString('2', 'BACnetDataType.CHARACTER_STRING')
+                                password                                                            ]
 
         ]
         ['CONFIRMED_PRIVATE_TRANSFER' BACnetConfirmedServiceRequestConfirmedPrivateTransfer
             [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
             [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
             // TODO: temporary dummy property identifier... get rid of that
-            [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'STATIC_CALL("dummyPropertyIdentifier")') serviceParameters           ]
+            [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE') serviceParameters           ]
         ]
         ['CONFIRMED_TEXT_MESSAGE' BACnetConfirmedServiceRequestConfirmedTextMessage
              // TODO: implement me
             [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['REINITIALIZE_DEVICE' BACnetConfirmedServiceRequestReinitializeDevice
-          [simple BACnetContextTagDeviceState('0', 'BACnetDataType.BACNET_DEVICE_STATE')     reinitializedStateOfDevice  ]
-          [optional BACnetContextTagCharacterString('1', 'BACnetDataType.CHARACTER_STRING')  password                    ]
+          [simple   BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                reinitializedStateOfDevice                                          ]
+          [optional BACnetContextTagCharacterString('1', 'BACnetDataType.CHARACTER_STRING')
+                                password                                                            ]
         ]
 
         ////
@@ -653,7 +693,7 @@
                      rawObjectType                                                                      ]
     [virtual    bit  isObjectType   'rawObjectType != null'                                             ]
     [virtual    BACnetObjectType
-                     objectType     'STATIC_CALL('mapBACnetObjectType', rawObjectType)'                 ]
+                     objectType     'STATIC_CALL("mapBACnetObjectType", rawObjectType)'                 ]
     [optional   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                      objectIdentifier                                                                   ]
     [virtual    bit  isObjectIdentifier   'objectIdentifier != null'                                    ]
@@ -687,11 +727,11 @@
 ]
 
 [type ListOfCovNotificationsValue(BACnetObjectType objectType)
-    [simple   BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+    [simple   BACnetPropertyIdentifierTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
                                 propertyIdentifier                                                      ]
     [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
                                 arrayIndex                                                              ]
-    [simple   BACnetConstructedData('2', 'objectType', 'propertyIdentifier')
+    [simple   BACnetConstructedData('2', 'objectType', 'propertyIdentifier.value')
                                 propertyValue                                                           ]
     [optional BACnetContextTagTime('3', 'BACnetDataType.TIME')
                                 timeOfChange                                                            ]
@@ -753,7 +793,7 @@
 ]
 
 [type BACnetPropertyReference
-    [simple     BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+    [simple     BACnetPropertyIdentifierTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
                     propertyIdentifier              ]
     [optional   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
                     arrayIndex                      ]
@@ -771,7 +811,7 @@
 [type BACnetObjectPropertyReference
     [simple     BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                     objectIdentifier                ]
-    [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+    [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
                     propertyIdentifier              ]
     [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
                     arrayIndex                      ]
@@ -817,23 +857,71 @@
 ]
 
 [type BACnetPropertyWriteDefinition(BACnetObjectType objectType)
-    [simple     BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+    [simple     BACnetPropertyIdentifierTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
                     propertyIdentifier              ]
     [optional   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
                     arrayIndex                      ]
-    [optional   BACnetConstructedData('2', 'objectType', 'propertyIdentifier')
+    [optional   BACnetConstructedData('2', 'objectType', 'propertyIdentifier.value')
                     propertyValue                   ]
     [optional   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
                     priority                        ]
 ]
 
-// TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
-[type BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(uint 8 tagNumber)
-    [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
-                    rawData                         ]
-    [virtual    bit isEnable            'rawData != null && rawData.actualValue == 0']
-    [virtual    bit isDisable           'rawData != null && rawData.actualValue == 1']
-    [virtual    bit isDisableInitiation 'rawData != null && rawData.actualValue == 2']
+[type BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                         header                                                                               ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                      ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                     "tagnumber doesn't match" shouldFail=false               ]
+    [manual   BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable
+                     value
+                         'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.VENDOR_PROPRIETARY_VALUE)'
+                         'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                         'header.actualLength * 8'                                                            ]
+    [validation 'value != BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.VENDOR_PROPRIETARY_VALUE']
+]
+
+[enum uint 8 BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable
+    ['0' ENABLE                                 ]
+    ['1' DISABLE                                ]
+    ['2' DISABLE_INITIATION                     ]
+
+    // This state should never occur as this is fixed. The generic approach however demands a fallback enum
+    ['0xFF' VENDOR_PROPRIETARY_VALUE            ]
+]
+
+[enum uint 8 BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
+    ['0x0' COLDSTART                            ]
+    ['0x1' WARMSTART                            ]
+    ['0x2' ACTIVATE_CHANGES                     ]
+    ['0x3' STARTBACKUP                          ]
+    ['0x4' ENDBACKUP                            ]
+    ['0x5' STARTRESTORE                         ]
+    ['0x6' ENDRESTORE                           ]
+    ['0x7' ABORTRESTORE                         ]
+
+    // This state should never occur as this is fixed. The generic approach however demands a fallback enum
+    ['0xFF' VENDOR_PROPRIETARY_VALUE            ]
+]
+
+[type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                        header                                                                              ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                               ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                    "tagnumber doesn't match" shouldFail=false              ]
+    [manual   BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.VENDOR_PROPRIETARY_VALUE)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'header.actualLength * 8'                                                           ]
+    [virtual  bit   isProprietary
+                        'value == BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.VENDOR_PROPRIETARY_VALUE']
+    [manual   uint 32
+                    proprietaryValue
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                        '_value.isProprietary?header.actualLength * 8:0'                                    ]
 ]
 
 [type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
@@ -861,15 +949,15 @@
     [discriminator BACnetUnconfirmedServiceChoice serviceChoice]
     [typeSwitch serviceChoice
         ['I_AM' BACnetUnconfirmedServiceRequestIAm
-            [simple     BACnetApplicationTagObjectIdentifier    deviceIdentifier                ]
-            [simple     BACnetApplicationTagUnsignedInteger     maximumApduLengthAcceptedLength ]
-            [simple     BACnetSegmentation                      segmentationSupported           ]
-            [simple     BACnetApplicationTagUnsignedInteger     vendorId                        ] // TODO: vendor list?
+            [simple     BACnetApplicationTagObjectIdentifier                        deviceIdentifier                ]
+            [simple     BACnetApplicationTagUnsignedInteger                         maximumApduLengthAcceptedLength ]
+            [simple     BACnetSegmentationTagged('0', 'TagClass.APPLICATION_TAGS')  segmentationSupported           ]
+            [simple     BACnetApplicationTagUnsignedInteger                         vendorId                        ] // TODO: vendor list?
         ]
         ['I_HAVE' BACnetUnconfirmedServiceRequestIHave
-            [simple     BACnetApplicationTagObjectIdentifier    deviceIdentifier    ]
-            [simple     BACnetApplicationTagObjectIdentifier    objectIdentifier    ]
-            [simple     BACnetApplicationTagCharacterString     objectName          ]
+            [simple     BACnetApplicationTagObjectIdentifier                        deviceIdentifier    ]
+            [simple     BACnetApplicationTagObjectIdentifier                        objectIdentifier    ]
+            [simple     BACnetApplicationTagCharacterString                         objectName          ]
         ]
         ['UNCONFIRMED_COV_NOTIFICATION' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
             [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
@@ -885,19 +973,19 @@
             [simple   BACnetTimeStampEnclosed('3')                                                     timestamp                    ]
             [simple   BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')          notificationClass            ]
             [simple   BACnetContextTagUnsignedInteger('5', 'BACnetDataType.UNSIGNED_INTEGER')          priority                     ]
-            [simple   BACnetContextTagEventType('6', 'BACnetDataType.EVENT_TYPE')                      eventType                    ]
+            [simple   BACnetEventTypeTagged('6', 'TagClass.CONTEXT_SPECIFIC_TAGS')                     eventType]
             [optional BACnetContextTagCharacterString('7', 'BACnetDataType.CHARACTER_STRING')          messageText                  ]
-            [simple   BACnetContextTagNotifyType('8', 'BACnetDataType.NOTIFY_TYPE')                    notifyType                   ]
+            [simple   BACnetNotifyTypeTagged('8', 'TagClass.CONTEXT_SPECIFIC_TAGS')                    notifyType                   ]
             [optional BACnetContextTagBoolean('9', 'BACnetDataType.BOOLEAN')                           ackRequired                  ]
-            [optional BACnetContextTagEventState('10', 'BACnetDataType.EVENT_STATE')                   fromState                    ]
-            [simple   BACnetContextTagEventState('11', 'BACnetDataType.EVENT_STATE')                   toState                      ]
+            [optional BACnetEventStateTagged('10', 'TagClass.CONTEXT_SPECIFIC_TAGS')                    fromState                    ]
+            [simple   BACnetEventStateTagged('11', 'TagClass.CONTEXT_SPECIFIC_TAGS')                    toState                      ]
             [optional BACnetNotificationParameters('12', 'eventObjectIdentifier.objectType')           eventValues                  ]
         ]
         ['UNCONFIRMED_PRIVATE_TRANSFER' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
             [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
             [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
             // TODO: temporary dummy property identifier... get rid of that
-            [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'STATIC_CALL("dummyPropertyIdentifier")') serviceParameters           ]
+            [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE') serviceParameters           ]
         ]
         ['UNCONFIRMED_TEXT_MESSAGE' BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
             // TODO: implement me
@@ -953,13 +1041,34 @@
     ['0x0B' UNCONFIRMED_COV_NOTIFICATION_MULTIPLE       ]
 ]
 
-// TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
-[type BACnetSegmentation
-    [simple BACnetApplicationTagEnumerated          rawData ]
-    [virtual    bit isSegmentedBoth           'rawData != null && rawData.actualValue == 0']
-    [virtual    bit isSegmentedTransmit       'rawData != null && rawData.actualValue == 1']
-    [virtual    bit isSegmentedReceive        'rawData != null && rawData.actualValue == 3']
-    [virtual    bit isNoSegmentation          'rawData != null && rawData.actualValue == 4']
+[enum uint 8 BACnetSegmentation
+    ['0' SEGMENTED_BOTH                 ]
+    ['1' SEGMENTED_TRANSMIT             ]
+    ['2' SEGMENTED_RECEIVE              ]
+    ['3' NO_SEGMENTATION                ]
+
+    // This state should never occur as this is fixed. The generic approach however demands a fallback enum
+    ['0xFF' VENDOR_PROPRIETARY_VALUE    ]
+]
+
+[type BACnetSegmentationTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                        header                                                                               ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                      ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                    "tagnumber doesn't match" shouldFail=false               ]
+    [manual   BACnetSegmentation
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetSegmentation.VENDOR_PROPRIETARY_VALUE)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'header.actualLength * 8'                                                            ]
+    [virtual  bit   isProprietary
+                        'value == BACnetSegmentation.VENDOR_PROPRIETARY_VALUE'                               ]
+    [manual   uint 32
+                    proprietaryValue
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                        '_value.isProprietary?header.actualLength * 8:0'                                                   ]
 ]
 
 [discriminatedType BACnetServiceAck(uint 16 serviceRequestLength)
@@ -1051,11 +1160,11 @@
         ['READ_PROPERTY' BACnetServiceAckReadProperty
             [simple     BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                             objectIdentifier        ]
-            [simple     BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+            [simple     BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
                             propertyIdentifier      ]
             [optional   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
                             arrayIndex              ]
-            [optional   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')
+            [optional   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier.value')
                             values                  ]
         ]
         ['READ_PROPERTY_MULTIPLE' BACnetServiceAckReadPropertyMultiple
@@ -1065,13 +1174,13 @@
                             'serviceRequestLength'                   ]
         ]
         ['READ_RANGE' BACnetServiceAckReadRange
-            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
-            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              propertyArrayIndex  ]
-            [simple   BACnetResultFlags('3')                                                               resultFlags         ]
-            [simple   BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')              itemCount           ]
-            [optional BACnetConstructedData('5', 'objectIdentifier.objectType', 'propertyIdentifier')      itemData            ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              firstSequenceNumber ]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier    ]
+            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier  ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               propertyArrayIndex  ]
+            [simple   BACnetResultFlags('3')                                                                resultFlags         ]
+            [simple   BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')               itemCount           ]
+            [optional BACnetConstructedData('5', 'objectIdentifier.objectType', 'propertyIdentifier.value') itemData            ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               firstSequenceNumber ]
         ]
         ['WRITE_PROPERTY' BACnetServiceAckWriteProperty
             // TODO: implement me
@@ -1096,7 +1205,7 @@
             [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
             [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
             // TODO: temporary dummy property identifier... get rid of that
-            [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'STATIC_CALL("dummyPropertyIdentifier")') resultBlock                 ]
+            [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE') resultBlock                 ]
         ]
         ['CONFIRMED_TEXT_MESSAGE' BACnetServiceAckConfirmedTextMessage
             // TODO: implement me
@@ -1164,13 +1273,13 @@
 [type BACnetEventSummary
     [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                     objectIdentifier                ]
-    [simple   BACnetContextTagEventState('1', 'BACnetDataType.EVENT_STATE')
+    [simple   BACnetEventStateTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                     eventState                      ]
     [simple   BACnetEventTransitionBits('2')
                     acknowledgedTransitions         ]
     [simple   BACnetEventTimestamps('3')
                     eventTimestamps                 ]
-    [simple   BACnetContextTagNotifyType('4', 'BACnetDataType.NOTIFY_TYPE')
+    [simple   BACnetNotifyTypeTagged('4', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                     notifyType                      ]
     [simple   BACnetEventTransitionBits('5')
                     eventEnable                     ]
@@ -1237,19 +1346,19 @@
 ]
 
 [type BACnetReadAccessProperty(BACnetObjectType objectType)
-    [simple     BACnetContextTagPropertyIdentifier('2', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+    [simple     BACnetPropertyIdentifierTagged('2', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
                     propertyIdentifier                                                          ]
     [optional   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
                     arrayIndex                                                                  ]
-    [optional   BACnetReadAccessPropertyReadResult('objectType', 'propertyIdentifier')
+    [optional   BACnetReadAccessPropertyReadResult('objectType', 'propertyIdentifier.value')
                     readResult                                                                  ]
 ]
 
-[type BACnetReadAccessPropertyReadResult(BACnetObjectType objectType, BACnetContextTagPropertyIdentifier propertyIdentifier)
+[type BACnetReadAccessPropertyReadResult(BACnetObjectType objectType, BACnetPropertyIdentifier propertyIdentifierArgument)
     [peek       BACnetTagHeader
                             peekedTagHeader                                                     ]
     [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber'               ]
-    [optional   BACnetConstructedData('4', 'objectType', 'propertyIdentifier')
+    [optional   BACnetConstructedData('4', 'objectType', 'propertyIdentifierArgument')
                     propertyValue           'peekedTagNumber == 4'                              ]
     [validation    '(peekedTagNumber == 4 && propertyValue != null) || peekedTagNumber != 4 '
                    "failure parsing field 4"                                                    ]
@@ -1343,7 +1452,7 @@
             [simple     BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
                             serviceNumber               ]
             // TODO: temporary dummy property identifier... get rid of that
-            [optional BACnetConstructedData('3', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'STATIC_CALL("dummyPropertyIdentifier")')
+            [optional BACnetConstructedData('3', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE')
                             errorParameters             ]
         ]
         ['VT_CLOSE'                         VTCloseError
@@ -1394,29 +1503,46 @@
 ]
 
 [type Error
-    [simple BACnetApplicationTagEnumerated
-                        rawErrorClass                                               ]
-    [virtual ErrorClass errorClass 'STATIC_CALL("mapErrorClass", rawErrorClass)'    ]
-    [virtual bit        isErrorClassProprietary 'rawErrorClass.actualValue > 63'    ]
-    [virtual uint 16    errorClassProprietary 'rawErrorClass.actualValue'           ]
-    [simple BACnetApplicationTagEnumerated
-                        rawErrorCode                                                ]
-    [virtual ErrorCode  errorCode 'STATIC_CALL("mapErrorCode", rawErrorCode)'       ]
-    [virtual bit        isErrorCodeProprietary 'rawErrorCode.actualValue > 255'     ]
-    [virtual uint 16    errorCodeProprietary 'rawErrorCode.actualValue'             ]
+    [simple ErrorClassTagged('0', 'TagClass.APPLICATION_TAGS') errorClass           ]
+    [simple ErrorCodeTagged('0', 'TagClass.APPLICATION_TAGS')  errorCode            ]
 ]
 
+// Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 ErrorClass
-     ['0x0000' DEVICE          ]
-     ['0x0001' OBJECT          ]
-     ['0x0002' PROPERTY        ]
-     ['0x0003' RESOURCES       ]
-     ['0x0004' SECURITY        ]
-     ['0x0005' SERVICES        ]
-     ['0x0006' VT              ]
-     ['0x0007' COMMUNICATION   ]
+    ['0x0000' DEVICE          ]
+    ['0x0001' OBJECT          ]
+    ['0x0002' PROPERTY        ]
+    ['0x0003' RESOURCES       ]
+    ['0x0004' SECURITY        ]
+    ['0x0005' SERVICES        ]
+    ['0x0006' VT              ]
+    ['0x0007' COMMUNICATION   ]
+
+    // plc4x definition
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
+[type ErrorClassTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                        header                                                                               ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                      ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                    "tagnumber doesn't match" shouldFail=false               ]
+    [manual   ErrorClass
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, ErrorClass.VENDOR_PROPRIETARY_VALUE)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'header.actualLength * 8'                                                            ]
+    [virtual  bit   isProprietary
+                        'value == ErrorClass.VENDOR_PROPRIETARY_VALUE'                                       ]
+    [manual   uint 32
+                    proprietaryValue
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                        '_value.isProprietary?header.actualLength * 8:0'                                                   ]   
+]
+
+// Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 ErrorCode
     ['123'  ABORT_APDU_TOO_LONG                       ]
     ['124'  ABORT_APPLICATION_EXCEEDED_REPLY_TIME     ]
@@ -1547,6 +1673,29 @@
     ['39'   VT_SESSION_TERMINATION_FAILURE            ]
     ['40'   WRITE_ACCESS_DENIED                       ]
     ['116'  WRITE_BDT_FAILED                          ]
+
+      // plc4x definition
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
+]
+
+[type ErrorCodeTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                        header                                                                               ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                      ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                    "tagnumber doesn't match" shouldFail=false               ]
+    [manual   ErrorCode
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, ErrorCode.VENDOR_PROPRIETARY_VALUE)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'header.actualLength * 8'                                                            ]
+    [virtual  bit   isProprietary
+                        'value == ErrorCode.VENDOR_PROPRIETARY_VALUE'                                        ]
+    [manual   uint 32
+                    proprietaryValue
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                        '_value.isProprietary?header.actualLength * 8:0'                                                   ]
 ]
 
 [type BACnetNotificationParameters(uint 8 tagNumber, BACnetObjectType objectType)
@@ -1605,14 +1754,14 @@
                     innerOpeningTag
             ]
             // TODO: temporary dummy property identifier... get rid of that
-            [simple BACnetConstructedData('0', 'objectType', 'STATIC_CALL("dummyPropertyIdentifier")')
+            [simple BACnetConstructedData('0', 'objectType', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE')
                     commandValue
             ]
             [simple BACnetStatusFlags('1')
                     statusFlags
             ]
             // TODO: temporary dummy property identifier... get rid of that
-            [simple BACnetConstructedData('2', 'objectType', 'STATIC_CALL("dummyPropertyIdentifier")')
+            [simple BACnetConstructedData('2', 'objectType', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE')
                     feedbackValue
             ]
             [simple BACnetClosingTag('peekedTagNumber', 'BACnetDataType.CLOSING_TAG')
@@ -1826,9 +1975,9 @@
 ]
 
 [type BACnetPropertyValue(BACnetObjectType objectType)
-    [simple   BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
+    [simple   BACnetPropertyIdentifierTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')                propertyIdentifier  ]
     [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')              propertyArrayIndex  ]
-    [optional BACnetConstructedDataElement('objectType', 'propertyIdentifier')                     propertyValue       ]
+    [optional BACnetConstructedDataElement('objectType', 'propertyIdentifier.value')               propertyValue       ]
     [optional BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')              priority            ]
 ]
 
@@ -1840,18 +1989,6 @@
     [simple   BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
               closingTag
     ]
-]
-
-// TODO: migrate like BACnetReliabilityTagged
-// TODO: maybe we transfrom that to a tandem of ApplicationTag and enum with manual fields
-[type BACnetConstructedDataAcceptedModesEntry
-    [simple   BACnetApplicationTagEnumerated
-                        rawData                                                                              ]
-    [virtual  bit       isAcceptedModeProprietary 'rawData.actualValue > 255'                                ]
-    [virtual  BACnetLifeSafetyMode
-                        acceptedMode
-                            'STATIC_CALL("mapBACnetLifeSafetyMode", rawData, isAcceptedModeProprietary)'    ]
-    [virtual  uint 16   acceptedModeProprietary 'isAcceptedModeProprietary?rawData.actualValue:0'           ]
 ]
 
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
@@ -1871,17 +2008,29 @@
     ['12'   DISABLED                    ]
     ['13'   AUTOMATIC_RELEASE_DISABLED  ]
     ['14'   DEFAULT                     ]
+
+      // plc4x definition
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE        ]
 ]
 
-// TODO: migrate like BACnetReliabilityTagged
-[type BACnetConstructedDataLifeSafetyStateEntry
-    [simple   BACnetApplicationTagEnumerated
-                        rawData                                                                                 ]
-    [virtual  bit       isLifeSafetyStateProprietary 'rawData.actualValue > 255'                                ]
-    [virtual  BACnetLifeSafetyState
-                        lifeSafetyState
-                            'STATIC_CALL("mapBACnetLifeSafetyState", rawData, isLifeSafetyStateProprietary)'    ]
-    [virtual  uint 16   lifeSafetyStateProprietary 'isLifeSafetyStateProprietary?rawData.actualValue:0'         ]
+[type BACnetLifeSafetyModeTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                        header                                                                               ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                      ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                    "tagnumber doesn't match" shouldFail=false               ]
+    [manual   BACnetLifeSafetyMode
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetLifeSafetyMode.VENDOR_PROPRIETARY_VALUE)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'header.actualLength * 8'                                                            ]
+    [virtual  bit   isProprietary
+                        'value == BACnetLifeSafetyMode.VENDOR_PROPRIETARY_VALUE'                             ]
+    [manual   uint 32
+                    proprietaryValue
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                        '_value.isProprietary?header.actualLength * 8:0'                                                   ]
 ]
 
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
@@ -1910,6 +2059,29 @@
     ['21'   GENERAL_ALARM]
     ['22'   SUPERVISORY]
     ['23'   TEST_SUPERVISORY]
+
+      // plc4x definition
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE        ]
+]
+
+[type BACnetLifeSafetyStateTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                        header                                                                               ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                      ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                    "tagnumber doesn't match" shouldFail=false               ]
+    [manual   BACnetLifeSafetyState
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetLifeSafetyState.VENDOR_PROPRIETARY_VALUE)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'header.actualLength * 8'                                                            ]
+    [virtual  bit   isProprietary
+                        'value == BACnetLifeSafetyState.VENDOR_PROPRIETARY_VALUE'                            ]
+    [manual   uint 32
+                    proprietaryValue
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                        '_value.isProprietary?header.actualLength * 8:0'                                                   ]
 ]
 
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
@@ -1940,13 +2112,13 @@
     ['24'   REFERENCED_OBJECT_FAULT           ]
 
       // plc4x definition
-    ['0XFFFF' VENDOR_PROPRIETARY_VALUE            ]
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE        ]
 ]
 
-[type BACnetReliabilityTagged(TagClass tagClass, uint 8 tagNumber)
+[type BACnetReliabilityTagged(uint 8 tagNumber, TagClass tagClass)
     [simple   BACnetTagHeader
                         header                                                                               ]
-    [validation    'header.tagClass == tagClass'    "tag doesn't match"                                      ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                      ]
     [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
                                                     "tagnumber doesn't match" shouldFail=false               ]
     [manual   BACnetReliability
@@ -1960,7 +2132,7 @@
                     proprietaryValue
                         'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
                         'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        'header.actualLength * 8'                                                            ]
+                        '_value.isProprietary?header.actualLength * 8:0'                                                   ]
 ]
 
 // TODO: migrate like BACnetReliabilityTagged
@@ -2004,13 +2176,13 @@
     [simple     BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                     objectIdentifier
     ]
-    [simple     BACnetContextTagPropertyIdentifier('2', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+    [simple     BACnetPropertyIdentifierTagged('2', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
                     propertyIdentifier
     ]
     [optional   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
                     arrayIndex
     ]
-    [optional   BACnetConstructedData('4', 'objectIdentifier.objectType', 'propertyIdentifier')
+    [optional   BACnetConstructedData('4', 'objectIdentifier.objectType', 'propertyIdentifier.value')
                     propertyValue
     ]
     [optional     BACnetContextTagUnsignedInteger('5', 'BACnetDataType.UNSIGNED_INTEGER')
@@ -2057,13 +2229,18 @@
         ]
         // TODO: add missing type
         ['7' BACnetPropertyStatesReliability(uint 8 peekedTagNumber)
-            [simple   BACnetReliabilityTagged('TagClass.CONTEXT_SPECIFIC_TAGS', '0') reliability]
+            [simple   BACnetReliabilityTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS') reliability  ]
         ]
         // TODO: add missing type
         ['16' BACnetPropertyStatesAction(uint 8 peekedTagNumber)
+            // TODO: migrate me
             [optional   BACnetAction('peekedTagNumber')
                         action
             ]
+        ]
+        // TODO: add missing type
+        ['42' BACnetPropertyStatesNetworkType(uint 8 peekedTagNumber)
+            [simple   BACnetNetworkTypeTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS') networkType ]
         ]
         // TODO: add missing type
         [BACnetPropertyStateActionUnmapped
@@ -2328,67 +2505,11 @@
             [virtual uint 22    instanceNumber
                                                'payload.instanceNumber'                                                 ]
         ]
-        ['BACNET_PROPERTY_IDENTIFIER' BACnetContextTagPropertyIdentifier(bit isNotOpeningOrClosingTag, uint 32 actualLength)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag" shouldFail=false]
-            [manual     BACnetPropertyIdentifier
-                                propertyIdentifier
-                                'STATIC_CALL("readPropertyIdentifier", readBuffer, actualLength)'
-                                'STATIC_CALL("writePropertyIdentifier", writeBuffer, propertyIdentifier)'
-                                '_value.actualLength*8'                                                                 ]
-            [manual     uint 32
-                                proprietaryValue
-                                'STATIC_CALL("readProprietaryPropertyIdentifier", readBuffer, propertyIdentifier, actualLength)'
-                                'STATIC_CALL("writeProprietaryPropertyIdentifier", writeBuffer, propertyIdentifier, proprietaryValue)'
-                                '0'                                                                                     ]
-            [virtual    bit
-                                isProprietary
-                                'propertyIdentifier == BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE'               ]
-        ]
-        ['EVENT_TYPE' BACnetContextTagEventType(bit isNotOpeningOrClosingTag, uint 32 actualLength)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [manual     BACnetEventType
-                                eventType
-                                'STATIC_CALL("readEventType", readBuffer, actualLength)'
-                                'STATIC_CALL("writeEventType", writeBuffer, eventType)'
-                                '_value.actualLength*8'                                                                 ]
-            [manual     uint 32
-                                proprietaryValue
-                                'STATIC_CALL("readProprietaryEventType", readBuffer, eventType, actualLength)'
-                                'STATIC_CALL("writeProprietaryEventType", writeBuffer, eventType, proprietaryValue)'
-                                '0'                                                                                     ]
-            [virtual    bit
-                                isProprietary
-                                'eventType == BACnetEventType.VENDOR_PROPRIETARY_VALUE'                                 ]
-        ]
-        ['EVENT_STATE' BACnetContextTagEventState(bit isNotOpeningOrClosingTag, uint 32 actualLength)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [manual     BACnetEventState
-                                eventState
-                                'STATIC_CALL("readEventState", readBuffer, actualLength)'
-                                'STATIC_CALL("writeEventState", writeBuffer, eventState)'
-                                '_value.actualLength*8'                                                                 ]
-            [manual     uint 32
-                                proprietaryValue
-                                'STATIC_CALL("readProprietaryEventState", readBuffer, eventState, actualLength)'
-                                'STATIC_CALL("writeProprietaryEventState", writeBuffer, eventState, proprietaryValue)'
-                                '0'                                                                                     ]
-            [virtual    bit
-                                isProprietary
-                                'eventState == BACnetEventState.VENDOR_PROPRIETARY_VALUE'                               ]
-        ]
-        ['NOTIFY_TYPE' BACnetContextTagNotifyType(bit isNotOpeningOrClosingTag, uint 32 actualLength)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [simple  BACnetNotifyType
-                                value                                                                                   ]
-        ]
-        ['BACNET_DEVICE_STATE' BACnetContextTagDeviceState(bit isNotOpeningOrClosingTag)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [simple BACnetDeviceState
-                                state                                                                                   ]
-        ]
+        // TODO: externalize
         ['OPENING_TAG' BACnetOpeningTag(uint 32 actualLength)
             [validation 'actualLength == 6' "opening tag should have a value of 6"]
         ]
+        // TODO: externalize
         ['CLOSING_TAG' BACnetClosingTag(uint 32 actualLength)
             [validation 'actualLength == 7' "closing tag should have a value of 7"]
         ]
@@ -2518,15 +2639,13 @@
     [simple     uint 22             instanceNumber  ]
 ]
 
-[type BACnetConstructedData(uint 8 tagNumber, BACnetObjectType objectType, BACnetContextTagPropertyIdentifier propertyIdentifierArgument)
+[type BACnetConstructedData(uint 8 tagNumber, BACnetObjectType objectType, BACnetPropertyIdentifier propertyIdentifierArgument)
     [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                         openingTag                                                                              ]
-    [virtual    BACnetPropertyIdentifier
-                        propertyIdentifierEnum  'propertyIdentifierArgument.propertyIdentifier']
-    [typeSwitch objectType, propertyIdentifierEnum
+    [typeSwitch objectType, propertyIdentifierArgument
         //[*, 'ABSENTEE_LIMIT'                          BACnetConstructedDataAbsenteeLimit [validation    '1 == 2'    "TODO: implement me ABSENTEE_LIMIT BACnetConstructedDataAbsenteeLimit"]]
         [*, 'ACCEPTED_MODES'                          BACnetConstructedDataAcceptedModes
-            [array    BACnetConstructedDataAcceptedModesEntry
+            [array    BACnetLifeSafetyModeTagged('0', 'TagClass.APPLICATION_TAGS')
                             acceptedModes              terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
@@ -2567,7 +2686,7 @@
         //[*, 'ADJUST_VALUE'                            BACnetConstructedDataAdjustValue [validation    '1 == 2'    "TODO: implement me ADJUST_VALUE BACnetConstructedDataAdjustValue"]]
         //[*, 'ALARM_VALUE'                             BACnetConstructedDataAlarmValue [validation    '1 == 2'    "TODO: implement me ALARM_VALUE BACnetConstructedDataAlarmValue"]]
         ['LIFE_SAFETY_POINT', 'ALARM_VALUES'                            BACnetConstructedDataLifeSafetyPointAlarmValues
-            [array    BACnetConstructedDataLifeSafetyStateEntry
+            [array    BACnetLifeSafetyStateTagged('0', 'TagClass.APPLICATION_TAGS')
                             alarmValues              terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
@@ -2718,7 +2837,7 @@
         //[*, 'FAULT_SIGNALS'                           BACnetConstructedDataFaultSignals [validation    '1 == 2'    "TODO: implement me FAULT_SIGNALS BACnetConstructedDataFaultSignals"]]
         //[*, 'FAULT_TYPE'                              BACnetConstructedDataFaultType [validation    '1 == 2'    "TODO: implement me FAULT_TYPE BACnetConstructedDataFaultType"]]
         ['LIFE_SAFETY_POINT', 'FAULT_VALUES'                            BACnetConstructedDataLifeSafetyPointFaultValues
-            [array    BACnetConstructedDataLifeSafetyStateEntry
+            [array    BACnetLifeSafetyStateTagged('0', 'TagClass.APPLICATION_TAGS')
                             faultValues
                                 terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
@@ -2789,7 +2908,7 @@
         //[*, 'LAST_STATE_CHANGE'                       BACnetConstructedDataLastStateChange [validation    '1 == 2'    "TODO: implement me LAST_STATE_CHANGE BACnetConstructedDataLastStateChange"]]
         //[*, 'LAST_USE_TIME'                           BACnetConstructedDataLastUseTime [validation    '1 == 2'    "TODO: implement me LAST_USE_TIME BACnetConstructedDataLastUseTime"]]
         [*, 'LIFE_SAFETY_ALARM_VALUES'                BACnetConstructedDataLifeSafetyAlarmValues
-            [array    BACnetConstructedDataLifeSafetyStateEntry
+            [array    BACnetLifeSafetyStateTagged('0', 'TagClass.APPLICATION_TAGS')
                             alarmValues              terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
@@ -2931,7 +3050,7 @@
         //[*, 'REFERENCE_PORT'                          BACnetConstructedDataReferencePort [validation    '1 == 2'    "TODO: implement me REFERENCE_PORT BACnetConstructedDataReferencePort"]]
         //[*, 'REGISTERED_CAR_CALL'                     BACnetConstructedDataRegisteredCarCall [validation    '1 == 2'    "TODO: implement me REGISTERED_CAR_CALL BACnetConstructedDataRegisteredCarCall"]]
         [*, 'RELIABILITY'                             BACnetConstructedDataReliability
-            [simple   BACnetReliabilityTagged('TagClass.APPLICATION_TAGS', '0') reliability]
+            [simple   BACnetReliabilityTagged('0', 'TagClass.APPLICATION_TAGS') reliability]
         ]
         //[*, 'RELIABILITY_EVALUATION_INHIBIT'          BACnetConstructedDataReliabilityEvaluationInhibit [validation    '1 == 2'    "TODO: implement me RELIABILITY_EVALUATION_INHIBIT BACnetConstructedDataReliabilityEvaluationInhibit"]]
         //[*, 'RELINQUISH_DEFAULT'                      BACnetConstructedDataRelinquishDefault [validation    '1 == 2'    "TODO: implement me RELINQUISH_DEFAULT BACnetConstructedDataRelinquishDefault"]]
@@ -3055,7 +3174,7 @@
 [type BACnetDeviceObjectPropertyReference
     [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                         objectIdentifier                                                                        ]
-    [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+    [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
                         propertyIdentifier                                                                      ]
     [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
                         arrayIndex                                                                              ]
@@ -3063,7 +3182,7 @@
                         deviceIdentifier                                                                        ]
 ]
 
-[type BACnetConstructedDataElement(BACnetObjectType objectType, BACnetContextTagPropertyIdentifier propertyIdentifier)
+[type BACnetConstructedDataElement(BACnetObjectType objectType, BACnetPropertyIdentifier propertyIdentifierArgument)
     [peek       BACnetTagHeader
                             peekedTagHeader                                                                     ]
     [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
@@ -3075,9 +3194,9 @@
     [optional   BACnetApplicationTag
                             applicationTag      'isApplicationTag'                                              ]
     [optional   BACnetContextTag('peekedTagNumber',
-                                 'STATIC_CALL("guessDataType", objectType, propertyIdentifier)')
+                                 'STATIC_CALL("guessDataType", objectType, propertyIdentifierArgument)')
                             contextTag          'isContextTag'                                                  ]
-    [optional   BACnetConstructedData('peekedTagNumber', 'objectType', 'propertyIdentifier')
+    [optional   BACnetConstructedData('peekedTagNumber', 'objectType', 'propertyIdentifierArgument')
                             constructedData     'isConstructedData'                                             ]
     [validation 'isApplicationTag || isContextTag || isConstructedData'
                 "BACnetConstructedDataElement could not parse anything"                                         ]
@@ -3106,14 +3225,10 @@
     //////////
     //
     // Custom plc4x helper values below here
-    ['16' BACNET_PROPERTY_IDENTIFIER            ]
-    ['17' BACNET_DEVICE_STATE                   ]
+    // TODO: we might get rid of that because of tagged
     ['20' OPENING_TAG                           ]
     ['21' CLOSING_TAG                           ]
     // Event Related tags
-    ['30' EVENT_TYPE                            ]
-    ['31' EVENT_STATE                           ]
-    ['32' NOTIFY_TYPE                           ]
     ['33' UNKNOWN                               ]
     //
     //////////
@@ -3129,7 +3244,8 @@
     ['0x5' ISO_8859_1                           ]
 ]
 
-[enum uint 4 BACnetNetworkType
+// Attention: 0-63 ASHRAE. 64-255 proprietary
+[enum uint 8 BACnetNetworkType
     ['0x0' ETHERNET                             ]
     ['0x1' ARCNET                               ]
     ['0x2' MSTP                                 ]
@@ -3141,17 +3257,29 @@
     ['0x8' REMOVED_NON_BACNET                   ]
     ['0x9' IPV6                                 ]
     ['0xA' SERIAL                               ]
+
+      // plc4x definition
+    ['0XFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-[enum uint 8 BACnetDeviceState
-    ['0x0' COLDSTART                            ]
-    ['0x1' WARMSTART                            ]
-    ['0x2' ACTIVATE_CHANGES                     ]
-    ['0x3' STARTBACKUP                          ]
-    ['0x4' ENDBACKUP                            ]
-    ['0x5' STARTRESTORE                         ]
-    ['0x6' ENDRESTORE                           ]
-    ['0x7' ABORTRESTORE                         ]
+[type BACnetNetworkTypeTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                     header                                                                               ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                             ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                 "tagnumber doesn't match" shouldFail=false               ]
+    [manual   BACnetNetworkType
+                 value
+                     'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetNetworkType.VENDOR_PROPRIETARY_VALUE)'
+                     'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                     'header.actualLength * 8'                                                            ]
+    [virtual  bit   isProprietary
+                     'value == BACnetNetworkType.VENDOR_PROPRIETARY_VALUE'                                ]
+    [manual   uint 32
+                 proprietaryValue
+                     'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
+                     'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                     'header.actualLength * 8'                                                            ]
 ]
 
 [enum uint 8 BACnetNodeType
@@ -3183,9 +3311,33 @@
     ['0x0' ALARM                                ]
     ['0x1' EVENT                                ]
     ['0x2' ACK_NOTIFICATION                     ]
+
+    // This state should never occur as this is fixed. The generic approach however demands a fallback enum
+    ['0xFF' VENDOR_PROPRIETARY_VALUE          ]
 ]
 
-[enum uint 9 BACnetEventType
+[type BACnetNotifyTypeTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                        header                                                                              ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                     ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                    "tagnumber doesn't match" shouldFail=false              ]
+    [manual   BACnetNotifyType
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetNotifyType.VENDOR_PROPRIETARY_VALUE)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'header.actualLength * 8'                                                           ]
+    [virtual  bit   isProprietary
+                        'value == BACnetNotifyType.VENDOR_PROPRIETARY_VALUE'                                ]
+    [manual   uint 32
+                    proprietaryValue
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                        '_value.isProprietary?header.actualLength * 8:0'                                                  ]
+]
+
+// Attention: 0-63 ASHRAE. 64-65535 proprietary
+[enum uint 16 BACnetEventType
     ['0'  CHANGE_OF_BITSTRING                   ]
     ['1'  CHANGE_OF_STATE                       ]
     ['2'  CHANGE_OF_VALUE                       ]
@@ -3211,6 +3363,26 @@
     ['0xFFFF' VENDOR_PROPRIETARY_VALUE          ]
 ]
 
+[type BACnetEventTypeTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                        header                                                                              ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                     ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                    "tagnumber doesn't match" shouldFail=false              ]
+    [manual   BACnetEventType
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetEventType.VENDOR_PROPRIETARY_VALUE)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'header.actualLength * 8'                                                           ]
+    [virtual  bit   isProprietary
+                        'value == BACnetEventType.VENDOR_PROPRIETARY_VALUE'                                 ]
+    [manual   uint 32
+                    proprietaryValue
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                        '_value.isProprietary?header.actualLength * 8:0'                                                  ]
+]
+
 [enum uint 9 BACnetEventState
     ['0'  NORMAL                                ]
     ['1'  FAULT                                 ]
@@ -3221,6 +3393,26 @@
 
     // plc4x definition
     ['0xFFFF' VENDOR_PROPRIETARY_VALUE          ]
+]
+
+[type BACnetEventStateTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                        header                                                                              ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                     ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                    "tagnumber doesn't match" shouldFail=false              ]
+    [manual   BACnetEventState
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetEventState.VENDOR_PROPRIETARY_VALUE)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'header.actualLength * 8'                                                           ]
+    [virtual  bit   isProprietary
+                        'value == BACnetEventState.VENDOR_PROPRIETARY_VALUE'                                 ]
+    [manual   uint 32
+                    proprietaryValue
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                        '_value.isProprietary?header.actualLength * 8:0'                                                  ]
 ]
 
 [enum uint 10 BACnetObjectType
@@ -3750,4 +3942,24 @@
 
     // plc4x definition
     ['9999' VENDOR_PROPRIETARY_VALUE            ]
+]
+
+[type BACnetPropertyIdentifierTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                        header                                                                              ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                               ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                    "tagnumber doesn't match" shouldFail=false              ]
+    [manual   BACnetPropertyIdentifier
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'header.actualLength * 8'                                                           ]
+    [virtual  bit   isProprietary
+                        'value == BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE']
+    [manual   uint 32
+                    proprietaryValue
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                        '_value.isProprietary?header.actualLength * 8:0'                                    ]
 ]

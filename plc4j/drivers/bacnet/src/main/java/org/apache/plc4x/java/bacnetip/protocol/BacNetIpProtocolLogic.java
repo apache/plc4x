@@ -151,7 +151,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             // The actual value change is in the notifications ... iterate through them to get it.
             for (BACnetPropertyValue baCnetPropertyValue : valueChange.getListOfValues().getData()) {
                 // These are value change notifications. Ignore the rest.
-                if (baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier() == BACnetPropertyIdentifier.PRESENT_VALUE) {
+                if (baCnetPropertyValue.getPropertyIdentifier().getValue() == BACnetPropertyIdentifier.PRESENT_VALUE) {
                     BACnetConstructedDataElement propertyValue = baCnetPropertyValue.getPropertyValue();
 
                     // Initialize an enriched version of the PlcStruct.
@@ -202,7 +202,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             // The actual value change is in the notifications ... iterate through them to get it.
             for (BACnetPropertyValue baCnetPropertyValue : valueChange.getListOfValues().getData()) {
                 // These are value change notifications. Ignore the rest.
-                if (baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier() == BACnetPropertyIdentifier.PRESENT_VALUE) {
+                if (baCnetPropertyValue.getPropertyIdentifier().getValue() == BACnetPropertyIdentifier.PRESENT_VALUE) {
                     BACnetApplicationTag baCnetTag = ((BACnetConstructedDataUnspecified)baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
 
                     // Initialize an enriched version of the PlcStruct.

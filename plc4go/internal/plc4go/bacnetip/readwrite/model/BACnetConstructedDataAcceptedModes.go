@@ -29,18 +29,17 @@ import (
 // BACnetConstructedDataAcceptedModes is the data-structure of this message
 type BACnetConstructedDataAcceptedModes struct {
 	*BACnetConstructedData
-	AcceptedModes []*BACnetConstructedDataAcceptedModesEntry
+	AcceptedModes []*BACnetLifeSafetyModeTagged
 
 	// Arguments.
-	TagNumber                  uint8
-	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
+	TagNumber uint8
 }
 
 // IBACnetConstructedDataAcceptedModes is the corresponding interface of BACnetConstructedDataAcceptedModes
 type IBACnetConstructedDataAcceptedModes interface {
 	IBACnetConstructedData
 	// GetAcceptedModes returns AcceptedModes (property field)
-	GetAcceptedModes() []*BACnetConstructedDataAcceptedModesEntry
+	GetAcceptedModes() []*BACnetLifeSafetyModeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -56,6 +55,10 @@ type IBACnetConstructedDataAcceptedModes interface {
 
 func (m *BACnetConstructedDataAcceptedModes) GetObjectType() BACnetObjectType {
 	return 0
+}
+
+func (m *BACnetConstructedDataAcceptedModes) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return BACnetPropertyIdentifier_ACCEPTED_MODES
 }
 
 ///////////////////////
@@ -77,7 +80,7 @@ func (m *BACnetConstructedDataAcceptedModes) GetParent() *BACnetConstructedData 
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetConstructedDataAcceptedModes) GetAcceptedModes() []*BACnetConstructedDataAcceptedModesEntry {
+func (m *BACnetConstructedDataAcceptedModes) GetAcceptedModes() []*BACnetLifeSafetyModeTagged {
 	return m.AcceptedModes
 }
 
@@ -87,10 +90,10 @@ func (m *BACnetConstructedDataAcceptedModes) GetAcceptedModes() []*BACnetConstru
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAcceptedModes factory function for BACnetConstructedDataAcceptedModes
-func NewBACnetConstructedDataAcceptedModes(acceptedModes []*BACnetConstructedDataAcceptedModesEntry, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedDataAcceptedModes {
+func NewBACnetConstructedDataAcceptedModes(acceptedModes []*BACnetLifeSafetyModeTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAcceptedModes {
 	_result := &BACnetConstructedDataAcceptedModes{
 		AcceptedModes:         acceptedModes,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +140,7 @@ func (m *BACnetConstructedDataAcceptedModes) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAcceptedModesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataAcceptedModes, error) {
+func BACnetConstructedDataAcceptedModesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAcceptedModes, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAcceptedModes"); pullErr != nil {
@@ -151,14 +154,14 @@ func BACnetConstructedDataAcceptedModesParse(readBuffer utils.ReadBuffer, tagNum
 		return nil, pullErr
 	}
 	// Terminated array
-	acceptedModes := make([]*BACnetConstructedDataAcceptedModesEntry, 0)
+	acceptedModes := make([]*BACnetLifeSafetyModeTagged, 0)
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetConstructedDataAcceptedModesEntryParse(readBuffer)
+			_item, _err := BACnetLifeSafetyModeTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'acceptedModes' field")
 			}
-			acceptedModes = append(acceptedModes, CastBACnetConstructedDataAcceptedModesEntry(_item))
+			acceptedModes = append(acceptedModes, CastBACnetLifeSafetyModeTagged(_item))
 
 		}
 	}

@@ -29,7 +29,7 @@ import (
 
 // ListOfCovNotificationsValue is the data-structure of this message
 type ListOfCovNotificationsValue struct {
-	PropertyIdentifier *BACnetContextTagPropertyIdentifier
+	PropertyIdentifier *BACnetPropertyIdentifierTagged
 	ArrayIndex         *BACnetContextTagUnsignedInteger
 	PropertyValue      *BACnetConstructedData
 	TimeOfChange       *BACnetContextTagTime
@@ -41,7 +41,7 @@ type ListOfCovNotificationsValue struct {
 // IListOfCovNotificationsValue is the corresponding interface of ListOfCovNotificationsValue
 type IListOfCovNotificationsValue interface {
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
-	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	GetPropertyIdentifier() *BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetPropertyValue returns PropertyValue (property field)
@@ -61,7 +61,7 @@ type IListOfCovNotificationsValue interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *ListOfCovNotificationsValue) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+func (m *ListOfCovNotificationsValue) GetPropertyIdentifier() *BACnetPropertyIdentifierTagged {
 	return m.PropertyIdentifier
 }
 
@@ -83,7 +83,7 @@ func (m *ListOfCovNotificationsValue) GetTimeOfChange() *BACnetContextTagTime {
 ///////////////////////////////////////////////////////////
 
 // NewListOfCovNotificationsValue factory function for ListOfCovNotificationsValue
-func NewListOfCovNotificationsValue(propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, timeOfChange *BACnetContextTagTime, objectType BACnetObjectType) *ListOfCovNotificationsValue {
+func NewListOfCovNotificationsValue(propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, timeOfChange *BACnetContextTagTime, objectType BACnetObjectType) *ListOfCovNotificationsValue {
 	return &ListOfCovNotificationsValue{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, TimeOfChange: timeOfChange, ObjectType: objectType}
 }
 
@@ -144,11 +144,11 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectType BA
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
-	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
+	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -178,7 +178,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectType BA
 	if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectType), propertyIdentifier)
+	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectType), BACnetPropertyIdentifier(propertyIdentifier.GetValue()))
 	if _propertyValueErr != nil {
 		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field")
 	}

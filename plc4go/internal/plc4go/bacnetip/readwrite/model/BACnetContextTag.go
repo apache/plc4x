@@ -234,16 +234,6 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 		_child, typeSwitchError = BACnetContextTagTimeParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
 	case dataType == BACnetDataType_BACNET_OBJECT_IDENTIFIER: // BACnetContextTagObjectIdentifier
 		_child, typeSwitchError = BACnetContextTagObjectIdentifierParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
-	case dataType == BACnetDataType_BACNET_PROPERTY_IDENTIFIER: // BACnetContextTagPropertyIdentifier
-		_child, typeSwitchError = BACnetContextTagPropertyIdentifierParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
-	case dataType == BACnetDataType_EVENT_TYPE: // BACnetContextTagEventType
-		_child, typeSwitchError = BACnetContextTagEventTypeParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
-	case dataType == BACnetDataType_EVENT_STATE: // BACnetContextTagEventState
-		_child, typeSwitchError = BACnetContextTagEventStateParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
-	case dataType == BACnetDataType_NOTIFY_TYPE: // BACnetContextTagNotifyType
-		_child, typeSwitchError = BACnetContextTagNotifyTypeParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag, actualLength)
-	case dataType == BACnetDataType_BACNET_DEVICE_STATE: // BACnetContextTagDeviceState
-		_child, typeSwitchError = BACnetContextTagDeviceStateParse(readBuffer, tagNumberArgument, dataType, isNotOpeningOrClosingTag)
 	case dataType == BACnetDataType_OPENING_TAG: // BACnetOpeningTag
 		_child, typeSwitchError = BACnetOpeningTagParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case dataType == BACnetDataType_CLOSING_TAG: // BACnetClosingTag

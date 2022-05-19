@@ -30,7 +30,7 @@ import (
 // BACnetObjectPropertyReference is the data-structure of this message
 type BACnetObjectPropertyReference struct {
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
-	PropertyIdentifier *BACnetContextTagPropertyIdentifier
+	PropertyIdentifier *BACnetPropertyIdentifierTagged
 	ArrayIndex         *BACnetContextTagUnsignedInteger
 }
 
@@ -39,7 +39,7 @@ type IBACnetObjectPropertyReference interface {
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
-	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	GetPropertyIdentifier() *BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
@@ -59,7 +59,7 @@ func (m *BACnetObjectPropertyReference) GetObjectIdentifier() *BACnetContextTagO
 	return m.ObjectIdentifier
 }
 
-func (m *BACnetObjectPropertyReference) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+func (m *BACnetObjectPropertyReference) GetPropertyIdentifier() *BACnetPropertyIdentifierTagged {
 	return m.PropertyIdentifier
 }
 
@@ -73,7 +73,7 @@ func (m *BACnetObjectPropertyReference) GetArrayIndex() *BACnetContextTagUnsigne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetObjectPropertyReference factory function for BACnetObjectPropertyReference
-func NewBACnetObjectPropertyReference(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger) *BACnetObjectPropertyReference {
+func NewBACnetObjectPropertyReference(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger) *BACnetObjectPropertyReference {
 	return &BACnetObjectPropertyReference{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex}
 }
 
@@ -142,11 +142,11 @@ func BACnetObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BACnetObj
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
-	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
+	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}

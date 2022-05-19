@@ -46,18 +46,96 @@ public class StaticHelper {
         int bitsToRead = (int) (actualLength * 8);
         long rawValue = readBuffer.readUnsignedLong("value", bitsToRead);
         // TODO: map types here for better performance which doesn't use reflection
-        if (template.getDeclaringClass() == BACnetPropertyIdentifier.class) {
-            BACnetPropertyIdentifier baCnetPropertyIdentifier = BACnetPropertyIdentifier.enumForValue(rawValue);
-            if (baCnetPropertyIdentifier == null) {
+        if (template.getDeclaringClass() == AbortReason.class) {
+            AbortReason enumValue = AbortReason.enumForValue((short) rawValue);
+            if (enumValue == null) {
+                return AbortReason.VENDOR_PROPRIETARY_VALUE;
+            }
+            return enumValue;
+        } else if (template.getDeclaringClass() == BACnetEventState.class) {
+            BACnetEventState enumValue = BACnetEventState.enumForValue((int) rawValue);
+            if (enumValue == null) {
+                return BACnetEventState.VENDOR_PROPRIETARY_VALUE;
+            }
+            return enumValue;
+        } else if (template.getDeclaringClass() == BACnetEventType.class) {
+            BACnetEventType enumValue = BACnetEventType.enumForValue((int) rawValue);
+            if (enumValue == null) {
+                return BACnetEventType.VENDOR_PROPRIETARY_VALUE;
+            }
+            return enumValue;
+        } else if (template.getDeclaringClass() == BACnetLifeSafetyMode.class) {
+            BACnetLifeSafetyMode enumValue = BACnetLifeSafetyMode.enumForValue((int) rawValue);
+            if (enumValue == null) {
+                return BACnetLifeSafetyMode.VENDOR_PROPRIETARY_VALUE;
+            }
+            return enumValue;
+        } else if (template.getDeclaringClass() == BACnetLifeSafetyState.class) {
+            BACnetLifeSafetyState enumValue = BACnetLifeSafetyState.enumForValue((int) rawValue);
+            if (enumValue == null) {
+                return BACnetLifeSafetyState.VENDOR_PROPRIETARY_VALUE;
+            }
+            return enumValue;
+        } else if (template.getDeclaringClass() == BACnetNetworkType.class) {
+            BACnetNetworkType enumValue = BACnetNetworkType.enumForValue((short) rawValue);
+            if (enumValue == null) {
+                return BACnetNetworkType.VENDOR_PROPRIETARY_VALUE;
+            }
+            return enumValue;
+        } else if (template.getDeclaringClass() == BACnetNotifyType.class) {
+            BACnetNotifyType enumValue = BACnetNotifyType.enumForValue((short) rawValue);
+            if (enumValue == null) {
+                return BACnetNotifyType.VENDOR_PROPRIETARY_VALUE;
+            }
+            return enumValue;
+        } else if (template.getDeclaringClass() == BACnetObjectType.class) {
+            BACnetObjectType enumValue = BACnetObjectType.enumForValue((short) rawValue);
+            if (enumValue == null) {
+                return BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
+            }
+            return enumValue;
+        } else if (template.getDeclaringClass() == BACnetPropertyIdentifier.class) {
+            BACnetPropertyIdentifier enumValue = BACnetPropertyIdentifier.enumForValue((short) rawValue);
+            if (enumValue == null) {
                 return BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE;
             }
-            return baCnetPropertyIdentifier;
+            return enumValue;
         } else if (template.getDeclaringClass() == BACnetReliability.class) {
-            BACnetReliability baCnetReliability = BACnetReliability.enumForValue((int) rawValue);
-            if (baCnetReliability == null) {
+            BACnetReliability enumValue = BACnetReliability.enumForValue((short) rawValue);
+            if (enumValue == null) {
                 return BACnetReliability.VENDOR_PROPRIETARY_VALUE;
             }
-            return baCnetReliability;
+            return enumValue;
+        } else if (template.getDeclaringClass() == ErrorClass.class) {
+            ErrorClass enumValue = ErrorClass.enumForValue((short) rawValue);
+            if (enumValue == null) {
+                return ErrorClass.VENDOR_PROPRIETARY_VALUE;
+            }
+            return enumValue;
+        } else if (template.getDeclaringClass() == ErrorCode.class) {
+            ErrorCode enumValue = ErrorCode.enumForValue((short) rawValue);
+            if (enumValue == null) {
+                return ErrorCode.VENDOR_PROPRIETARY_VALUE;
+            }
+            return enumValue;
+        } else if (template.getDeclaringClass() == RejectReason.class) {
+            RejectReason enumValue = RejectReason.enumForValue((short) rawValue);
+            if (enumValue == null) {
+                return RejectReason.VENDOR_PROPRIETARY_VALUE;
+            }
+            return enumValue;
+        } else if (template.getDeclaringClass() == BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.class) {
+            BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice enumValue = BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.enumForValue((short) rawValue);
+            if (enumValue == null) {
+                return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.VENDOR_PROPRIETARY_VALUE;
+            }
+            return enumValue;
+        } else if (template.getDeclaringClass() == BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.class) {
+            BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable enumValue = BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.enumForValue((short) rawValue);
+            if (enumValue == null) {
+                return BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.VENDOR_PROPRIETARY_VALUE;
+            }
+            return enumValue;
         } else {
             LOGGER.warn("using reflection for {}", template.getDeclaringClass());
             Optional<Method> enumForValue = Arrays.stream(template.getDeclaringClass().getDeclaredMethods())
@@ -88,7 +166,7 @@ public class StaticHelper {
         }
     }
 
-    public static Long readProprietaryEnumGeneric(ReadBuffer readBuffer, Long actualLength, boolean shouldRead) throws ParseException {
+    public static long readProprietaryEnumGeneric(ReadBuffer readBuffer, Long actualLength, boolean shouldRead) throws ParseException {
         if (!shouldRead) {
             return 0L;
         }
@@ -98,6 +176,24 @@ public class StaticHelper {
         return readBuffer.readUnsignedLong("proprietaryValue", bitsToRead);
     }
 
+    /*
+	case :
+	case :
+	case :
+	case :
+	case :
+	case :
+	case :
+	case :
+	case :
+	case :
+	case :
+	case :
+	case :
+	case :
+	case :
+     */
+
     public static void writeEnumGeneric(WriteBuffer writeBuffer, Enum<?> value) throws SerializationException {
         if (value == null) {
             return;
@@ -105,10 +201,38 @@ public class StaticHelper {
         int bitsToWrite;
         long valueValue;
         // TODO: map types here for better performance which doesn't use reflection
-        if (value.getDeclaringClass() == BACnetPropertyIdentifier.class) {
+        if (value.getDeclaringClass() == AbortReason.class) {
+            valueValue = ((AbortReason) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetEventState.class) {
+            valueValue = ((BACnetEventState) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetEventType.class) {
+            valueValue = ((BACnetEventType) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetLifeSafetyMode.class) {
+            valueValue = ((BACnetLifeSafetyMode) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetLifeSafetyState.class) {
+            valueValue = ((BACnetLifeSafetyState) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetNetworkType.class) {
+            valueValue = ((BACnetNetworkType) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetNodeType.class) {
+            valueValue = ((BACnetNodeType) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetNotifyType.class) {
+            valueValue = ((BACnetNotifyType) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetObjectType.class) {
+            valueValue = ((BACnetObjectType) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetPropertyIdentifier.class) {
             valueValue = ((BACnetPropertyIdentifier) value).getValue();
         } else if (value.getDeclaringClass() == BACnetReliability.class) {
             valueValue = ((BACnetReliability) value).getValue();
+        } else if (value.getDeclaringClass() == ErrorClass.class) {
+            valueValue = ((ErrorClass) value).getValue();
+        } else if (value.getDeclaringClass() == ErrorCode.class) {
+            valueValue = ((ErrorCode) value).getValue();
+        } else if (value.getDeclaringClass() == RejectReason.class) {
+            valueValue = ((RejectReason) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.class) {
+            valueValue = ((BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.class) {
+            valueValue = ((BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) value).getValue();
         } else {
             LOGGER.warn("using reflection for {}", value.getDeclaringClass());
             try {
@@ -384,8 +508,8 @@ public class StaticHelper {
         }
     }
 
-    public static BACnetDataType guessDataType(BACnetObjectType objectType, BACnetContextTagPropertyIdentifier propertyIdentifier) {
-        switch (propertyIdentifier.getPropertyIdentifier()) {
+    public static BACnetDataType guessDataType(BACnetObjectType objectType, BACnetPropertyIdentifier propertyIdentifier) {
+        switch (propertyIdentifier) {
             case ABSENTEE_LIMIT:
             case ACCEPTED_MODES:
             case ACCESS_ALARM_EVENTS:
@@ -889,9 +1013,6 @@ public class StaticHelper {
             case INTEGER_VALUE:
                 return BACnetDataType.SIGNED_INTEGER;
             case LARGE_ANALOG_VALUE:
-            case LIFE_SAFETY_POINT:
-                // TODO: temporary
-                return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
             case LIFE_SAFETY_ZONE:
                 return BACnetDataType.BACNET_OBJECT_IDENTIFIER;
             case LIFT:
@@ -1036,7 +1157,7 @@ public class StaticHelper {
         return new BACnetContextTagObjectIdentifier(header, payload, (short) tagNum, true);
     }
 
-    public static BACnetContextTagPropertyIdentifier createBACnetContextTagPropertyIdentifier(byte tagNum, int propertyType) {
+    public static BACnetPropertyIdentifierTagged createBACnetPropertyIdentifierTagged(byte tagNum, int propertyType) {
         BACnetPropertyIdentifier propertyIdentifier = BACnetPropertyIdentifier.enumForValue(propertyType);
         int proprietaryValue = 0;
         if (!BACnetPropertyIdentifier.isDefined(propertyType)) {
@@ -1044,7 +1165,7 @@ public class StaticHelper {
             proprietaryValue = propertyType;
         }
         BACnetTagHeader header = new BACnetTagHeader(tagNum, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) requiredLength(propertyType), null, null, null, null);
-        return new BACnetContextTagPropertyIdentifier(header, propertyIdentifier, proprietaryValue, (short) tagNum, true, 0L);
+        return new BACnetPropertyIdentifierTagged(header, propertyIdentifier, proprietaryValue, (short) tagNum, TagClass.CONTEXT_SPECIFIC_TAGS);
     }
 
     public static BACnetApplicationTagBoolean createBACnetApplicationTagBoolean(boolean value) {
@@ -1249,50 +1370,6 @@ public class StaticHelper {
         else
             length = 4;
         return length;
-    }
-
-    public static BACnetContextTagPropertyIdentifier dummyPropertyIdentifier() {
-        return new BACnetContextTagPropertyIdentifier(null, BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, 0L, (short) 0, true, 0L);
-    }
-
-    @Deprecated
-    public static ErrorClass mapErrorClass(BACnetApplicationTagEnumerated rawErrorClass) {
-        return ErrorClass.enumForValue((int) rawErrorClass.getActualValue());
-    }
-
-    @Deprecated
-    public static ErrorCode mapErrorCode(BACnetApplicationTagEnumerated rawErrorCode) {
-        return ErrorCode.enumForValue((int) rawErrorCode.getActualValue());
-    }
-
-    @Deprecated
-    public static AbortReason mapAbortReason(short rawAbortReason, boolean proprietary) {
-        if (proprietary) return null;
-        return AbortReason.enumForValue(rawAbortReason);
-    }
-
-    @Deprecated
-    public static RejectReason mapRejectReason(short rawRejectReason, boolean proprietary) {
-        if (proprietary) return null;
-        return RejectReason.enumForValue(rawRejectReason);
-    }
-
-    @Deprecated
-    public static BACnetLifeSafetyState mapBACnetLifeSafetyState(BACnetApplicationTagEnumerated rawData, boolean proprietary) {
-        if (proprietary) return null;
-        return BACnetLifeSafetyState.enumForValue((int) rawData.getActualValue());
-    }
-
-    @Deprecated
-    public static BACnetLifeSafetyMode mapBACnetLifeSafetyMode(BACnetApplicationTagEnumerated rawData, boolean proprietary) {
-        if (proprietary) return null;
-        return BACnetLifeSafetyMode.enumForValue((int) rawData.getActualValue());
-    }
-
-    @Deprecated
-    public static BACnetReliability mapBACnetReliability(BACnetApplicationTagEnumerated rawData, boolean proprietary) {
-        if (proprietary) return null;
-        return BACnetReliability.enumForValue((int) rawData.getActualValue());
     }
 
     @Deprecated

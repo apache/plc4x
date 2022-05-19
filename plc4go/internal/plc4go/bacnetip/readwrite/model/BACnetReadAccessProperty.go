@@ -29,7 +29,7 @@ import (
 
 // BACnetReadAccessProperty is the data-structure of this message
 type BACnetReadAccessProperty struct {
-	PropertyIdentifier *BACnetContextTagPropertyIdentifier
+	PropertyIdentifier *BACnetPropertyIdentifierTagged
 	ArrayIndex         *BACnetContextTagUnsignedInteger
 	ReadResult         *BACnetReadAccessPropertyReadResult
 
@@ -40,7 +40,7 @@ type BACnetReadAccessProperty struct {
 // IBACnetReadAccessProperty is the corresponding interface of BACnetReadAccessProperty
 type IBACnetReadAccessProperty interface {
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
-	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	GetPropertyIdentifier() *BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetReadResult returns ReadResult (property field)
@@ -58,7 +58,7 @@ type IBACnetReadAccessProperty interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetReadAccessProperty) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+func (m *BACnetReadAccessProperty) GetPropertyIdentifier() *BACnetPropertyIdentifierTagged {
 	return m.PropertyIdentifier
 }
 
@@ -76,7 +76,7 @@ func (m *BACnetReadAccessProperty) GetReadResult() *BACnetReadAccessPropertyRead
 ///////////////////////////////////////////////////////////
 
 // NewBACnetReadAccessProperty factory function for BACnetReadAccessProperty
-func NewBACnetReadAccessProperty(propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, readResult *BACnetReadAccessPropertyReadResult, objectType BACnetObjectType) *BACnetReadAccessProperty {
+func NewBACnetReadAccessProperty(propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, readResult *BACnetReadAccessPropertyReadResult, objectType BACnetObjectType) *BACnetReadAccessProperty {
 	return &BACnetReadAccessProperty{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, ReadResult: readResult, ObjectType: objectType}
 }
 
@@ -134,11 +134,11 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectType BACne
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
-	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
+	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -171,7 +171,7 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectType BACne
 		if pullErr := readBuffer.PullContext("readResult"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetReadAccessPropertyReadResultParse(readBuffer, objectType, propertyIdentifier)
+		_val, _err := BACnetReadAccessPropertyReadResultParse(readBuffer, objectType, propertyIdentifier.GetValue())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

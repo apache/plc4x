@@ -29,10 +29,10 @@ import (
 // BACnetEventSummary is the data-structure of this message
 type BACnetEventSummary struct {
 	ObjectIdentifier        *BACnetContextTagObjectIdentifier
-	EventState              *BACnetContextTagEventState
+	EventState              *BACnetEventStateTagged
 	AcknowledgedTransitions *BACnetEventTransitionBits
 	EventTimestamps         *BACnetEventTimestamps
-	NotifyType              *BACnetContextTagNotifyType
+	NotifyType              *BACnetNotifyTypeTagged
 	EventEnable             *BACnetEventTransitionBits
 	EventPriorities         *BACnetEventProrities
 }
@@ -42,13 +42,13 @@ type IBACnetEventSummary interface {
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetEventState returns EventState (property field)
-	GetEventState() *BACnetContextTagEventState
+	GetEventState() *BACnetEventStateTagged
 	// GetAcknowledgedTransitions returns AcknowledgedTransitions (property field)
 	GetAcknowledgedTransitions() *BACnetEventTransitionBits
 	// GetEventTimestamps returns EventTimestamps (property field)
 	GetEventTimestamps() *BACnetEventTimestamps
 	// GetNotifyType returns NotifyType (property field)
-	GetNotifyType() *BACnetContextTagNotifyType
+	GetNotifyType() *BACnetNotifyTypeTagged
 	// GetEventEnable returns EventEnable (property field)
 	GetEventEnable() *BACnetEventTransitionBits
 	// GetEventPriorities returns EventPriorities (property field)
@@ -70,7 +70,7 @@ func (m *BACnetEventSummary) GetObjectIdentifier() *BACnetContextTagObjectIdenti
 	return m.ObjectIdentifier
 }
 
-func (m *BACnetEventSummary) GetEventState() *BACnetContextTagEventState {
+func (m *BACnetEventSummary) GetEventState() *BACnetEventStateTagged {
 	return m.EventState
 }
 
@@ -82,7 +82,7 @@ func (m *BACnetEventSummary) GetEventTimestamps() *BACnetEventTimestamps {
 	return m.EventTimestamps
 }
 
-func (m *BACnetEventSummary) GetNotifyType() *BACnetContextTagNotifyType {
+func (m *BACnetEventSummary) GetNotifyType() *BACnetNotifyTypeTagged {
 	return m.NotifyType
 }
 
@@ -100,7 +100,7 @@ func (m *BACnetEventSummary) GetEventPriorities() *BACnetEventProrities {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetEventSummary factory function for BACnetEventSummary
-func NewBACnetEventSummary(objectIdentifier *BACnetContextTagObjectIdentifier, eventState *BACnetContextTagEventState, acknowledgedTransitions *BACnetEventTransitionBits, eventTimestamps *BACnetEventTimestamps, notifyType *BACnetContextTagNotifyType, eventEnable *BACnetEventTransitionBits, eventPriorities *BACnetEventProrities) *BACnetEventSummary {
+func NewBACnetEventSummary(objectIdentifier *BACnetContextTagObjectIdentifier, eventState *BACnetEventStateTagged, acknowledgedTransitions *BACnetEventTransitionBits, eventTimestamps *BACnetEventTimestamps, notifyType *BACnetNotifyTypeTagged, eventEnable *BACnetEventTransitionBits, eventPriorities *BACnetEventProrities) *BACnetEventSummary {
 	return &BACnetEventSummary{ObjectIdentifier: objectIdentifier, EventState: eventState, AcknowledgedTransitions: acknowledgedTransitions, EventTimestamps: eventTimestamps, NotifyType: notifyType, EventEnable: eventEnable, EventPriorities: eventPriorities}
 }
 
@@ -179,11 +179,11 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (*BACnetEventSummary, 
 	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
 		return nil, pullErr
 	}
-	_eventState, _eventStateErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_EVENT_STATE))
+	_eventState, _eventStateErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventStateErr != nil {
 		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field")
 	}
-	eventState := CastBACnetContextTagEventState(_eventState)
+	eventState := CastBACnetEventStateTagged(_eventState)
 	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -218,11 +218,11 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (*BACnetEventSummary, 
 	if pullErr := readBuffer.PullContext("notifyType"); pullErr != nil {
 		return nil, pullErr
 	}
-	_notifyType, _notifyTypeErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_NOTIFY_TYPE))
+	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParse(readBuffer, uint8(uint8(4)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _notifyTypeErr != nil {
 		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field")
 	}
-	notifyType := CastBACnetContextTagNotifyType(_notifyType)
+	notifyType := CastBACnetNotifyTypeTagged(_notifyType)
 	if closeErr := readBuffer.CloseContext("notifyType"); closeErr != nil {
 		return nil, closeErr
 	}

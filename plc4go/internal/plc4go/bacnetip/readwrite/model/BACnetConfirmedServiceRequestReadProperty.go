@@ -31,7 +31,7 @@ import (
 type BACnetConfirmedServiceRequestReadProperty struct {
 	*BACnetConfirmedServiceRequest
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
-	PropertyIdentifier *BACnetContextTagPropertyIdentifier
+	PropertyIdentifier *BACnetPropertyIdentifierTagged
 	ArrayIndex         *BACnetContextTagUnsignedInteger
 
 	// Arguments.
@@ -44,7 +44,7 @@ type IBACnetConfirmedServiceRequestReadProperty interface {
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
-	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	GetPropertyIdentifier() *BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
@@ -85,7 +85,7 @@ func (m *BACnetConfirmedServiceRequestReadProperty) GetObjectIdentifier() *BACne
 	return m.ObjectIdentifier
 }
 
-func (m *BACnetConfirmedServiceRequestReadProperty) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+func (m *BACnetConfirmedServiceRequestReadProperty) GetPropertyIdentifier() *BACnetPropertyIdentifierTagged {
 	return m.PropertyIdentifier
 }
 
@@ -99,7 +99,7 @@ func (m *BACnetConfirmedServiceRequestReadProperty) GetArrayIndex() *BACnetConte
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestReadProperty factory function for BACnetConfirmedServiceRequestReadProperty
-func NewBACnetConfirmedServiceRequestReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *BACnetConfirmedServiceRequestReadProperty {
+func NewBACnetConfirmedServiceRequestReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *BACnetConfirmedServiceRequestReadProperty {
 	_result := &BACnetConfirmedServiceRequestReadProperty{
 		ObjectIdentifier:              objectIdentifier,
 		PropertyIdentifier:            propertyIdentifier,
@@ -181,11 +181,11 @@ func BACnetConfirmedServiceRequestReadPropertyParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
-	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
+	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -218,7 +218,7 @@ func BACnetConfirmedServiceRequestReadPropertyParse(readBuffer utils.ReadBuffer,
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReadProperty{
 		ObjectIdentifier:              CastBACnetContextTagObjectIdentifier(objectIdentifier),
-		PropertyIdentifier:            CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
+		PropertyIdentifier:            CastBACnetPropertyIdentifierTagged(propertyIdentifier),
 		ArrayIndex:                    CastBACnetContextTagUnsignedInteger(arrayIndex),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}

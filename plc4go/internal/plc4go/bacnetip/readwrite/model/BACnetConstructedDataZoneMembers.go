@@ -32,8 +32,7 @@ type BACnetConstructedDataZoneMembers struct {
 	Members []*BACnetDeviceObjectReference
 
 	// Arguments.
-	TagNumber                  uint8
-	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
+	TagNumber uint8
 }
 
 // IBACnetConstructedDataZoneMembers is the corresponding interface of BACnetConstructedDataZoneMembers
@@ -56,6 +55,10 @@ type IBACnetConstructedDataZoneMembers interface {
 
 func (m *BACnetConstructedDataZoneMembers) GetObjectType() BACnetObjectType {
 	return 0
+}
+
+func (m *BACnetConstructedDataZoneMembers) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return BACnetPropertyIdentifier_ZONE_MEMBERS
 }
 
 ///////////////////////
@@ -87,10 +90,10 @@ func (m *BACnetConstructedDataZoneMembers) GetMembers() []*BACnetDeviceObjectRef
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataZoneMembers factory function for BACnetConstructedDataZoneMembers
-func NewBACnetConstructedDataZoneMembers(members []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedDataZoneMembers {
+func NewBACnetConstructedDataZoneMembers(members []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataZoneMembers {
 	_result := &BACnetConstructedDataZoneMembers{
 		Members:               members,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +140,7 @@ func (m *BACnetConstructedDataZoneMembers) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataZoneMembersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataZoneMembers, error) {
+func BACnetConstructedDataZoneMembersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataZoneMembers, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataZoneMembers"); pullErr != nil {

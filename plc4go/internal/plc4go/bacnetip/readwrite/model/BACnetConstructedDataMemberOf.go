@@ -32,8 +32,7 @@ type BACnetConstructedDataMemberOf struct {
 	Zones []*BACnetDeviceObjectReference
 
 	// Arguments.
-	TagNumber                  uint8
-	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
+	TagNumber uint8
 }
 
 // IBACnetConstructedDataMemberOf is the corresponding interface of BACnetConstructedDataMemberOf
@@ -56,6 +55,10 @@ type IBACnetConstructedDataMemberOf interface {
 
 func (m *BACnetConstructedDataMemberOf) GetObjectType() BACnetObjectType {
 	return 0
+}
+
+func (m *BACnetConstructedDataMemberOf) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return BACnetPropertyIdentifier_MEMBER_OF
 }
 
 ///////////////////////
@@ -87,10 +90,10 @@ func (m *BACnetConstructedDataMemberOf) GetZones() []*BACnetDeviceObjectReferenc
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMemberOf factory function for BACnetConstructedDataMemberOf
-func NewBACnetConstructedDataMemberOf(zones []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedDataMemberOf {
+func NewBACnetConstructedDataMemberOf(zones []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMemberOf {
 	_result := &BACnetConstructedDataMemberOf{
 		Zones:                 zones,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +140,7 @@ func (m *BACnetConstructedDataMemberOf) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMemberOfParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataMemberOf, error) {
+func BACnetConstructedDataMemberOfParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataMemberOf, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMemberOf"); pullErr != nil {

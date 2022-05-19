@@ -32,8 +32,7 @@ type BACnetConstructedDataReliability struct {
 	Reliability *BACnetReliabilityTagged
 
 	// Arguments.
-	TagNumber                  uint8
-	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
+	TagNumber uint8
 }
 
 // IBACnetConstructedDataReliability is the corresponding interface of BACnetConstructedDataReliability
@@ -56,6 +55,10 @@ type IBACnetConstructedDataReliability interface {
 
 func (m *BACnetConstructedDataReliability) GetObjectType() BACnetObjectType {
 	return 0
+}
+
+func (m *BACnetConstructedDataReliability) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return BACnetPropertyIdentifier_RELIABILITY
 }
 
 ///////////////////////
@@ -87,10 +90,10 @@ func (m *BACnetConstructedDataReliability) GetReliability() *BACnetReliabilityTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReliability factory function for BACnetConstructedDataReliability
-func NewBACnetConstructedDataReliability(reliability *BACnetReliabilityTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedDataReliability {
+func NewBACnetConstructedDataReliability(reliability *BACnetReliabilityTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataReliability {
 	_result := &BACnetConstructedDataReliability{
 		Reliability:           reliability,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result
@@ -133,7 +136,7 @@ func (m *BACnetConstructedDataReliability) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataReliabilityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataReliability, error) {
+func BACnetConstructedDataReliabilityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataReliability, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReliability"); pullErr != nil {
@@ -146,7 +149,7 @@ func BACnetConstructedDataReliabilityParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("reliability"); pullErr != nil {
 		return nil, pullErr
 	}
-	_reliability, _reliabilityErr := BACnetReliabilityTaggedParse(readBuffer, TagClass(TagClass_APPLICATION_TAGS), uint8(uint8(0)))
+	_reliability, _reliabilityErr := BACnetReliabilityTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _reliabilityErr != nil {
 		return nil, errors.Wrap(_reliabilityErr, "Error parsing 'reliability' field")
 	}

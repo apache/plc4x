@@ -32,21 +32,20 @@ type BACnetConstructedData struct {
 	ClosingTag *BACnetClosingTag
 
 	// Arguments.
-	TagNumber                  uint8
-	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
-	Child                      IBACnetConstructedDataChild
+	TagNumber uint8
+	Child     IBACnetConstructedDataChild
 }
 
 // IBACnetConstructedData is the corresponding interface of BACnetConstructedData
 type IBACnetConstructedData interface {
 	// GetObjectType returns ObjectType (discriminator field)
 	GetObjectType() BACnetObjectType
+	// GetPropertyIdentifierArgument returns PropertyIdentifierArgument (discriminator field)
+	GetPropertyIdentifierArgument() BACnetPropertyIdentifier
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() *BACnetOpeningTag
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() *BACnetClosingTag
-	// GetPropertyIdentifierEnum returns PropertyIdentifierEnum (virtual field)
-	GetPropertyIdentifierEnum() BACnetPropertyIdentifier
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -86,23 +85,10 @@ func (m *BACnetConstructedData) GetClosingTag() *BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *BACnetConstructedData) GetPropertyIdentifierEnum() BACnetPropertyIdentifier {
-	return BACnetPropertyIdentifier(m.PropertyIdentifierArgument.GetPropertyIdentifier())
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedData factory function for BACnetConstructedData
-func NewBACnetConstructedData(openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedData {
-	return &BACnetConstructedData{OpeningTag: openingTag, ClosingTag: closingTag, TagNumber: tagNumber, PropertyIdentifierArgument: propertyIdentifierArgument}
+func NewBACnetConstructedData(openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedData {
+	return &BACnetConstructedData{OpeningTag: openingTag, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
 func CastBACnetConstructedData(structType interface{}) *BACnetConstructedData {
@@ -136,8 +122,6 @@ func (m *BACnetConstructedData) GetParentLengthInBits() uint16 {
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits()
 
-	// A virtual field doesn't have any in- or output.
-
 	// Simple field (closingTag)
 	lengthInBits += m.ClosingTag.GetLengthInBits()
 
@@ -148,7 +132,7 @@ func (m *BACnetConstructedData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedData, error) {
+func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedData"); pullErr != nil {
@@ -170,11 +154,6 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		return nil, closeErr
 	}
 
-	// Virtual field
-	_propertyIdentifierEnum := propertyIdentifierArgument.GetPropertyIdentifier()
-	propertyIdentifierEnum := BACnetPropertyIdentifier(_propertyIdentifierEnum)
-	_ = propertyIdentifierEnum
-
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type BACnetConstructedDataChild interface {
 		InitializeParent(*BACnetConstructedData, *BACnetOpeningTag, *BACnetClosingTag)
@@ -183,27 +162,27 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	var _child BACnetConstructedDataChild
 	var typeSwitchError error
 	switch {
-	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_ACCEPTED_MODES: // BACnetConstructedDataAcceptedModes
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCEPTED_MODES: // BACnetConstructedDataAcceptedModes
 		_child, typeSwitchError = BACnetConstructedDataAcceptedModesParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
-	case objectType == BACnetObjectType_LOOP && propertyIdentifierEnum == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataLoopAction
+	case objectType == BACnetObjectType_LOOP && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataLoopAction
 		_child, typeSwitchError = BACnetConstructedDataLoopActionParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
-	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataAction
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataAction
 		_child, typeSwitchError = BACnetConstructedDataActionParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
-	case objectType == BACnetObjectType_LIFE_SAFETY_POINT && propertyIdentifierEnum == BACnetPropertyIdentifier_ALARM_VALUES: // BACnetConstructedDataLifeSafetyPointAlarmValues
+	case objectType == BACnetObjectType_LIFE_SAFETY_POINT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALARM_VALUES: // BACnetConstructedDataLifeSafetyPointAlarmValues
 		_child, typeSwitchError = BACnetConstructedDataLifeSafetyPointAlarmValuesParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
-	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_EVENT_TIME_STAMPS: // BACnetConstructedDataEventTimestamps
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_EVENT_TIME_STAMPS: // BACnetConstructedDataEventTimestamps
 		_child, typeSwitchError = BACnetConstructedDataEventTimestampsParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
-	case objectType == BACnetObjectType_LIFE_SAFETY_POINT && propertyIdentifierEnum == BACnetPropertyIdentifier_FAULT_VALUES: // BACnetConstructedDataLifeSafetyPointFaultValues
+	case objectType == BACnetObjectType_LIFE_SAFETY_POINT && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_VALUES: // BACnetConstructedDataLifeSafetyPointFaultValues
 		_child, typeSwitchError = BACnetConstructedDataLifeSafetyPointFaultValuesParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
-	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_LIFE_SAFETY_ALARM_VALUES: // BACnetConstructedDataLifeSafetyAlarmValues
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LIFE_SAFETY_ALARM_VALUES: // BACnetConstructedDataLifeSafetyAlarmValues
 		_child, typeSwitchError = BACnetConstructedDataLifeSafetyAlarmValuesParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
-	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_LIST_OF_OBJECT_PROPERTY_REFERENCES: // BACnetConstructedDataListOfObjectPropertyReferences
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LIST_OF_OBJECT_PROPERTY_REFERENCES: // BACnetConstructedDataListOfObjectPropertyReferences
 		_child, typeSwitchError = BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
-	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_MEMBER_OF: // BACnetConstructedDataMemberOf
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MEMBER_OF: // BACnetConstructedDataMemberOf
 		_child, typeSwitchError = BACnetConstructedDataMemberOfParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
-	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_RELIABILITY: // BACnetConstructedDataReliability
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_RELIABILITY: // BACnetConstructedDataReliability
 		_child, typeSwitchError = BACnetConstructedDataReliabilityParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
-	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_ZONE_MEMBERS: // BACnetConstructedDataZoneMembers
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ZONE_MEMBERS: // BACnetConstructedDataZoneMembers
 		_child, typeSwitchError = BACnetConstructedDataZoneMembersParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true: // BACnetConstructedDataUnspecified
 		_child, typeSwitchError = BACnetConstructedDataUnspecifiedParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
@@ -258,10 +237,6 @@ func (m *BACnetConstructedData) SerializeParent(writeBuffer utils.WriteBuffer, c
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
-	}
-	// Virtual field
-	if _propertyIdentifierEnumErr := writeBuffer.WriteVirtual("propertyIdentifierEnum", m.GetPropertyIdentifierEnum()); _propertyIdentifierEnumErr != nil {
-		return errors.Wrap(_propertyIdentifierEnumErr, "Error serializing 'propertyIdentifierEnum' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

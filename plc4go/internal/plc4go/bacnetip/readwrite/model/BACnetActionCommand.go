@@ -31,7 +31,7 @@ import (
 type BACnetActionCommand struct {
 	DeviceIdentifier   *BACnetContextTagObjectIdentifier
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
-	PropertyIdentifier *BACnetContextTagPropertyIdentifier
+	PropertyIdentifier *BACnetPropertyIdentifierTagged
 	ArrayIndex         *BACnetContextTagUnsignedInteger
 	PropertyValue      *BACnetConstructedData
 	Priority           *BACnetContextTagUnsignedInteger
@@ -47,7 +47,7 @@ type IBACnetActionCommand interface {
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
-	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	GetPropertyIdentifier() *BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetPropertyValue returns PropertyValue (property field)
@@ -81,7 +81,7 @@ func (m *BACnetActionCommand) GetObjectIdentifier() *BACnetContextTagObjectIdent
 	return m.ObjectIdentifier
 }
 
-func (m *BACnetActionCommand) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+func (m *BACnetActionCommand) GetPropertyIdentifier() *BACnetPropertyIdentifierTagged {
 	return m.PropertyIdentifier
 }
 
@@ -115,7 +115,7 @@ func (m *BACnetActionCommand) GetWriteSuccessful() *BACnetContextTagBoolean {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetActionCommand factory function for BACnetActionCommand
-func NewBACnetActionCommand(deviceIdentifier *BACnetContextTagObjectIdentifier, objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, priority *BACnetContextTagUnsignedInteger, postDelay *BACnetContextTagBoolean, quitOnFailure *BACnetContextTagBoolean, writeSuccessful *BACnetContextTagBoolean) *BACnetActionCommand {
+func NewBACnetActionCommand(deviceIdentifier *BACnetContextTagObjectIdentifier, objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, priority *BACnetContextTagUnsignedInteger, postDelay *BACnetContextTagBoolean, quitOnFailure *BACnetContextTagBoolean, writeSuccessful *BACnetContextTagBoolean) *BACnetActionCommand {
 	return &BACnetActionCommand{DeviceIdentifier: deviceIdentifier, ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, PostDelay: postDelay, QuitOnFailure: quitOnFailure, WriteSuccessful: writeSuccessful}
 }
 
@@ -231,11 +231,11 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
-	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
+	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -268,7 +268,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), objectIdentifier.GetObjectType(), propertyIdentifier)
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

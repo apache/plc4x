@@ -31,7 +31,7 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
 	*BACnetConfirmedServiceRequest
 	AcknowledgingProcessIdentifier *BACnetContextTagUnsignedInteger
 	EventObjectIdentifier          *BACnetContextTagObjectIdentifier
-	EventStateAcknowledged         *BACnetContextTagEventState
+	EventStateAcknowledged         *BACnetEventStateTagged
 	Timestamp                      *BACnetTimeStampEnclosed
 	AcknowledgmentSource           *BACnetContextTagCharacterString
 	TimeOfAcknowledgment           *BACnetTimeStampEnclosed
@@ -48,7 +48,7 @@ type IBACnetConfirmedServiceRequestAcknowledgeAlarm interface {
 	// GetEventObjectIdentifier returns EventObjectIdentifier (property field)
 	GetEventObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetEventStateAcknowledged returns EventStateAcknowledged (property field)
-	GetEventStateAcknowledged() *BACnetContextTagEventState
+	GetEventStateAcknowledged() *BACnetEventStateTagged
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() *BACnetTimeStampEnclosed
 	// GetAcknowledgmentSource returns AcknowledgmentSource (property field)
@@ -97,7 +97,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetEventObjectIdentifier
 	return m.EventObjectIdentifier
 }
 
-func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetEventStateAcknowledged() *BACnetContextTagEventState {
+func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetEventStateAcknowledged() *BACnetEventStateTagged {
 	return m.EventStateAcknowledged
 }
 
@@ -119,7 +119,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTimeOfAcknowledgment(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestAcknowledgeAlarm factory function for BACnetConfirmedServiceRequestAcknowledgeAlarm
-func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdentifier *BACnetContextTagUnsignedInteger, eventObjectIdentifier *BACnetContextTagObjectIdentifier, eventStateAcknowledged *BACnetContextTagEventState, timestamp *BACnetTimeStampEnclosed, acknowledgmentSource *BACnetContextTagCharacterString, timeOfAcknowledgment *BACnetTimeStampEnclosed, serviceRequestLength uint16) *BACnetConfirmedServiceRequestAcknowledgeAlarm {
+func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdentifier *BACnetContextTagUnsignedInteger, eventObjectIdentifier *BACnetContextTagObjectIdentifier, eventStateAcknowledged *BACnetEventStateTagged, timestamp *BACnetTimeStampEnclosed, acknowledgmentSource *BACnetContextTagCharacterString, timeOfAcknowledgment *BACnetTimeStampEnclosed, serviceRequestLength uint16) *BACnetConfirmedServiceRequestAcknowledgeAlarm {
 	_result := &BACnetConfirmedServiceRequestAcknowledgeAlarm{
 		AcknowledgingProcessIdentifier: acknowledgingProcessIdentifier,
 		EventObjectIdentifier:          eventObjectIdentifier,
@@ -224,11 +224,11 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("eventStateAcknowledged"); pullErr != nil {
 		return nil, pullErr
 	}
-	_eventStateAcknowledged, _eventStateAcknowledgedErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_EVENT_STATE))
+	_eventStateAcknowledged, _eventStateAcknowledgedErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventStateAcknowledgedErr != nil {
 		return nil, errors.Wrap(_eventStateAcknowledgedErr, "Error parsing 'eventStateAcknowledged' field")
 	}
-	eventStateAcknowledged := CastBACnetContextTagEventState(_eventStateAcknowledged)
+	eventStateAcknowledged := CastBACnetEventStateTagged(_eventStateAcknowledged)
 	if closeErr := readBuffer.CloseContext("eventStateAcknowledged"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -280,7 +280,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	_child := &BACnetConfirmedServiceRequestAcknowledgeAlarm{
 		AcknowledgingProcessIdentifier: CastBACnetContextTagUnsignedInteger(acknowledgingProcessIdentifier),
 		EventObjectIdentifier:          CastBACnetContextTagObjectIdentifier(eventObjectIdentifier),
-		EventStateAcknowledged:         CastBACnetContextTagEventState(eventStateAcknowledged),
+		EventStateAcknowledged:         CastBACnetEventStateTagged(eventStateAcknowledged),
 		Timestamp:                      CastBACnetTimeStampEnclosed(timestamp),
 		AcknowledgmentSource:           CastBACnetContextTagCharacterString(acknowledgmentSource),
 		TimeOfAcknowledgment:           CastBACnetTimeStampEnclosed(timeOfAcknowledgment),

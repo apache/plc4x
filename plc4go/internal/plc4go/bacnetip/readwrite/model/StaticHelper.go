@@ -24,6 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"math/big"
+	"reflect"
 )
 
 func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template interface{}) (interface{}, error) {
@@ -32,20 +33,57 @@ func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template 
 	if err != nil {
 		return nil, err
 	}
+
 	switch template.(type) {
+	case AbortReason:
+		return AbortReason(rawValue), nil
+	case BACnetEventState:
+		return BACnetEventState(rawValue), nil
+	case BACnetEventType:
+		return BACnetEventState(rawValue), nil
+	case BACnetLifeSafetyMode:
+		return BACnetLifeSafetyMode(rawValue), nil
+	case BACnetLifeSafetyState:
+		return BACnetLifeSafetyState(rawValue), nil
+	case BACnetNetworkType:
+		return BACnetNetworkType(rawValue), nil
+	case BACnetNodeType:
+		return BACnetNodeType(rawValue), nil
+	case BACnetNotifyType:
+		return BACnetNotifyType(rawValue), nil
+	case BACnetObjectType:
+		return BACnetObjectType(rawValue), nil
+	case BACnetPropertyIdentifier:
+		return BACnetPropertyIdentifier(rawValue), nil
 	case BACnetReliability:
 		return BACnetReliability(rawValue), nil
+	case BACnetSegmentation:
+		return BACnetSegmentation(rawValue), err
+	case ErrorClass:
+		return ErrorClass(rawValue), nil
+	case ErrorCode:
+		return ErrorCode(rawValue), nil
+	case RejectReason:
+		return RejectReason(rawValue), nil
+	case BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice:
+		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice(rawValue), err
+	case BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable:
+		return BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(rawValue), err
 	default:
-		return rawValue, nil
+		panic(fmt.Sprintf("doesn't work yet... implement manually support for %T", template))
+		// TODO: this doesn't work
+		value := reflect.New(reflect.TypeOf(template)).Elem()
+		value.Set(reflect.ValueOf(rawValue))
+		return value.Interface(), nil
 	}
 }
 
 func ReadProprietaryEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, shouldRead bool) (interface{}, error) {
 	if !shouldRead {
-		return 0, nil
+		return uint32(0), nil
 	}
 	// We need to reset our reader to the position we read before
-	readBuffer.Reset(uint16(readBuffer.GetPos() - uint16(actualLength)))
+	readBuffer.Reset(readBuffer.GetPos() - uint16(actualLength))
 	bitsToRead := (uint8)(actualLength * 8)
 	return readBuffer.ReadUint32("proprietaryValue", bitsToRead)
 }
@@ -55,7 +93,47 @@ func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value interface{}) error {
 		return nil
 	}
 	bitsToWrite := uint8(0)
-	var valueValue = value.(uint32)
+	var valueValue uint32
+	// TODO: same here... how to do that generic???
+	//var valueValue = value.(uint32)
+	switch v := value.(type) {
+	case AbortReason:
+		valueValue = uint32(v)
+	case BACnetEventState:
+		valueValue = uint32(v)
+	case BACnetEventType:
+		valueValue = uint32(v)
+	case BACnetLifeSafetyMode:
+		valueValue = uint32(v)
+	case BACnetLifeSafetyState:
+		valueValue = uint32(v)
+	case BACnetNetworkType:
+		valueValue = uint32(v)
+	case BACnetNodeType:
+		valueValue = uint32(v)
+	case BACnetNotifyType:
+		valueValue = uint32(v)
+	case BACnetObjectType:
+		valueValue = uint32(v)
+	case BACnetPropertyIdentifier:
+		valueValue = uint32(v)
+	case BACnetReliability:
+		valueValue = uint32(v)
+	case BACnetSegmentation:
+		valueValue = uint32(v)
+	case ErrorClass:
+		valueValue = uint32(v)
+	case ErrorCode:
+		valueValue = uint32(v)
+	case RejectReason:
+		valueValue = uint32(v)
+	case BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice:
+		valueValue = uint32(v)
+	case BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable:
+		valueValue = uint32(v)
+	default:
+		panic(fmt.Sprintf("doesn't work yet... implement manually support for %T", value))
+	}
 
 	if valueValue <= 0xff {
 		bitsToWrite = 8
@@ -374,7 +452,7 @@ func IsBACnetConstructedDataClosingTag(readBuffer utils.ReadBuffer, instantTermi
 	return foundOurClosingTag
 }
 
-func GuessDataType(objectType BACnetObjectType, propertyIdentifier *BACnetContextTagPropertyIdentifier) BACnetDataType {
+func GuessDataType(_ BACnetObjectType, _ BACnetPropertyIdentifier) BACnetDataType {
 	// TODO: implement me
 	return BACnetDataType_UNKNOWN
 }
@@ -493,7 +571,7 @@ func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, ins
 	return NewBACnetContextTagObjectIdentifier(payload, header, tagNum, true)
 }
 
-func CreateBACnetContextTagPropertyIdentifier(tagNum uint8, propertyType uint32) *BACnetContextTagPropertyIdentifier {
+func CreateBACnetPropertyIdentifierTagged(tagNum uint8, propertyType uint32) *BACnetPropertyIdentifierTagged {
 	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(requiredLength(uint(propertyType))), nil, nil, nil, nil)
 	propertyTypeEnum := BACnetPropertyIdentifierByValue(propertyType)
 	proprietaryValue := uint32(0)
@@ -501,7 +579,7 @@ func CreateBACnetContextTagPropertyIdentifier(tagNum uint8, propertyType uint32)
 		propertyTypeEnum = BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE
 		proprietaryValue = propertyType
 	}
-	return NewBACnetContextTagPropertyIdentifier(propertyTypeEnum, proprietaryValue, header, tagNum, true, 0)
+	return NewBACnetPropertyIdentifierTagged(header, propertyTypeEnum, proprietaryValue, tagNum, TagClass_CONTEXT_SPECIFIC_TAGS)
 }
 
 func CreateBACnetApplicationTagUnsignedInteger(value uint) *BACnetApplicationTagUnsignedInteger {
@@ -717,10 +795,6 @@ func CreateBACnetContextTagTime(tagNumber uint8, hour, minute, second, fractiona
 	return NewBACnetContextTagTime(NewBACnetTagPayloadTime(hour, minute, second, fractional), header, tagNumber, true)
 }
 
-func DummyPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
-	return NewBACnetContextTagPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, 0, nil, 0, true, 0)
-}
-
 func requiredLength(value uint) uint32 {
 	var length uint32
 	switch {
@@ -734,56 +808,6 @@ func requiredLength(value uint) uint32 {
 		length = 4
 	}
 	return length
-}
-
-// Deprecated: use generic above
-func MapErrorClass(applicationTagEnumerated *BACnetApplicationTagEnumerated) ErrorClass {
-	return ErrorClassByValue(uint16(applicationTagEnumerated.GetActualValue()))
-}
-
-// Deprecated: use generic above
-func MapErrorCode(applicationTagEnumerated *BACnetApplicationTagEnumerated) ErrorCode {
-	return ErrorCodeByValue(uint16(applicationTagEnumerated.GetActualValue()))
-}
-
-// Deprecated: use generic above
-func MapAbortReason(rawAbortReason uint8, proprietary bool) AbortReason {
-	if proprietary {
-		return 0
-	}
-	return AbortReason(rawAbortReason)
-}
-
-// Deprecated: use generic above
-func MapRejectReason(rawRejectReason uint8, proprietary bool) RejectReason {
-	if proprietary {
-		return 0
-	}
-	return RejectReason(rawRejectReason)
-}
-
-// Deprecated: use generic above
-func MapBACnetLifeSafetyState(enumerated *BACnetApplicationTagEnumerated, proprietary bool) BACnetLifeSafetyState {
-	if proprietary {
-		return 0
-	}
-	return BACnetLifeSafetyState(enumerated.GetActualValue())
-}
-
-// Deprecated: use generic above
-func MapBACnetLifeSafetyMode(enumerated *BACnetApplicationTagEnumerated, proprietary bool) BACnetLifeSafetyMode {
-	if proprietary {
-		return 0
-	}
-	return BACnetLifeSafetyMode(enumerated.GetActualValue())
-}
-
-// Deprecated: use generic above
-func MapBACnetReliability(enumerated *BACnetApplicationTagEnumerated, proprietary bool) BACnetReliability {
-	if proprietary {
-		return 0
-	}
-	return BACnetReliability(enumerated.GetActualValue())
 }
 
 // Deprecated: use generic above

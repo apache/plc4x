@@ -113,7 +113,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(123, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(1476, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(260, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 6 - Unconfirmed-REQ i-Am device,123",
@@ -125,7 +125,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(123, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(1476, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(260, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 7 - Unconfirmed-REQ i-Am device,18",
@@ -137,7 +137,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(18, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(1476, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(18, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 8 - Unconfirmed-REQ i-Am device,18",
@@ -149,7 +149,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(18, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(1476, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(18, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 9 - Unconfirmed-REQ i-Am device,2401",
@@ -161,7 +161,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(2401, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(24, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 10 - Unconfirmed-REQ i-Am device,2401",
@@ -173,7 +173,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(2401, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(24, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 11 - Unconfirmed-REQ i-Am device,86114",
@@ -185,7 +185,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(86114, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(50, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(260, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 12 - Unconfirmed-REQ i-Am device,86114",
@@ -197,7 +197,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(86114, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(50, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(260, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 13 - Unconfirmed-REQ i-Am device,884456",
@@ -209,7 +209,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(884456, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(86, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 14 - Unconfirmed-REQ i-Am device,884456",
@@ -221,7 +221,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(884456, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(86, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 })
         );
@@ -266,7 +266,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.LIFE_SAFETY_ZONE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(1, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.ZONE_MEMBERS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.ZONE_MEMBERS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 2 - Complex-ACK     readProperty[  0] life-safety-zone,1 zone-members life-safety-zone,3 life-safety-zone,4 life-safety-zone,5 life-safety-zone,6 life-safety-zone,7 life-safety-zone,8 life-safety-zone,9 life-safety-zone,16 life-safety-zone,494 life-safety-zone,255 life-safety-zone,231 life-safety-zone,4193620 life-safety-zone,222 life-safety-zone,300 life-safety-zone,166",
                 () -> {
@@ -279,7 +279,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.LIFE_SAFETY_ZONE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(1, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.ZONE_MEMBERS, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.ZONE_MEMBERS, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetConstructedDataZoneMembers baCnetConstructedDataZoneMembers = (BACnetConstructedDataZoneMembers) baCnetServiceAckReadProperty.getValues();
 
                     List<BACnetDeviceObjectReference> members = baCnetConstructedDataZoneMembers.getMembers();
@@ -310,7 +310,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.LIFE_SAFETY_ZONE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(1, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MEMBER_OF, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MEMBER_OF, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 4 - Complex-ACK     readProperty[  0] life-safety-zone,1 member-of life-safety-zone,1",
                 () -> {
@@ -323,7 +323,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.LIFE_SAFETY_ZONE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(1, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MEMBER_OF, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MEMBER_OF, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetConstructedDataMemberOf baCnetConstructedDataMemberOf = (BACnetConstructedDataMemberOf) baCnetServiceAckReadProperty.getValues();
 
                     List<BACnetDeviceObjectReference> zones = baCnetConstructedDataMemberOf.getZones();
@@ -387,7 +387,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(12345, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(260L, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 4 - Unconfirmed-REQ who-Is 12345 12345",
@@ -426,7 +426,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(12345, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(260L, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 7 - Confirmed-REQ readProperty[ 1] analog-output,0 priority-array",
@@ -440,7 +440,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PRIORITY_ARRAY, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PRIORITY_ARRAY, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 8 - Complex-ACK readProperty[ 1] analog-output,0 priority-array",
                 () -> {
@@ -453,7 +453,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PRIORITY_ARRAY, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PRIORITY_ARRAY, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     /* FIXME: we get now a bunch of tags here (Priority Array)
                     BACnetPropertyValuePriorityValue baCnetPropertyValuePriorityValue = (BACnetPropertyValuePriorityValue) ((BACnetConstructedDataUnspecified)baCnetServiceAckReadProperty.getValues()).getData();
                     assertArrayEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, baCnetPropertyValuePriorityValue.getValues());
@@ -494,7 +494,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 18 - Complex-ACK readProperty[ 1] analog-output,0 present-value",
                 () -> {
@@ -507,7 +507,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     assertEquals(0, baCnetApplicationTagReal.getPayload().getValue());
                 }),
@@ -527,7 +527,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.RELINQUISH_DEFAULT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.RELINQUISH_DEFAULT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 28 - Complex-ACK readProperty[ 1] analog-output,0 relinquish-default",
                 () -> {
@@ -540,7 +540,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.RELINQUISH_DEFAULT, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.RELINQUISH_DEFAULT, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     /* FIXME: wrong data here too
                     BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) ((BACnetConstructedDataUnspecified)baCnetServiceAckReadProperty.getValues()).getData().get(0);
                     assertEquals(0f, baCnetApplicationTagReal);
@@ -563,8 +563,8 @@ public class RandomPackagesTest {
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
                     BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
-                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
-                    assertEquals(ErrorCode.WRITE_ACCESS_DENIED, baCnetErrorWriteProperty.getError().getErrorCode());
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass().getValue());
+                    assertEquals(ErrorCode.WRITE_ACCESS_DENIED, baCnetErrorWriteProperty.getError().getErrorCode().getValue());
                 }),
             DynamicTest.dynamicTest("No. 79-86 - Skip Misc 8 packages",
                 () -> {
@@ -582,7 +582,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestWriteProperty baCnetConfirmedServiceRequestWriteProperty = (BACnetConfirmedServiceRequestWriteProperty) serviceRequest;
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetConfirmedServiceRequestWriteProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetConfirmedServiceRequestWriteProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetConfirmedServiceRequestWriteProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetConfirmedServiceRequestWriteProperty.getPropertyIdentifier().getValue());
 
                     BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) ((BACnetConstructedDataUnspecified) baCnetConfirmedServiceRequestWriteProperty.getPropertyValue()).getData().get(0).getApplicationTag();
                     assertEquals(123.449997f, baCnetApplicationTagReal.getPayload().getValue());
@@ -596,8 +596,8 @@ public class RandomPackagesTest {
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
                     BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
-                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
-                    assertEquals(ErrorCode.VALUE_OUT_OF_RANGE, baCnetErrorWriteProperty.getError().getErrorCode());
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass().getValue());
+                    assertEquals(ErrorCode.VALUE_OUT_OF_RANGE, baCnetErrorWriteProperty.getError().getErrorCode().getValue());
                 }),
             DynamicTest.dynamicTest("No. 89-142 - Skip to 142 Misc packages",
                 () -> {
@@ -615,7 +615,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestWriteProperty baCnetConfirmedServiceRequestWriteProperty = (BACnetConfirmedServiceRequestWriteProperty) serviceRequest;
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetConfirmedServiceRequestWriteProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetConfirmedServiceRequestWriteProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetConfirmedServiceRequestWriteProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetConfirmedServiceRequestWriteProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTagNull baCnetApplicationTagNull = (BACnetApplicationTagNull) ((BACnetConstructedDataUnspecified) baCnetConfirmedServiceRequestWriteProperty.getPropertyValue()).getData().get(0).getApplicationTag();
                     assertNotNull(baCnetApplicationTagNull);
                     BACnetContextTagUnsignedInteger priority = baCnetConfirmedServiceRequestWriteProperty.getPriority();
@@ -644,7 +644,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(12345, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 202 - Complex-ACK   readProperty[  1] device,12345 object-identifier device,12345",
                 () -> {
@@ -657,7 +657,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(12345, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTagObjectIdentifier objectIdentifier = (BACnetApplicationTagObjectIdentifier) ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     assertEquals(BACnetObjectType.DEVICE, objectIdentifier.getObjectType());
                     assertEquals(12345, objectIdentifier.getInstanceNumber());
@@ -696,7 +696,7 @@ public class RandomPackagesTest {
                         assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getPriority().getPayload().getActualValue().longValue());
                     }
                     {
-                        assertEquals(BACnetEventType.UNSIGNED_RANGE, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getEventType());
+                        assertEquals(BACnetEventType.UNSIGNED_RANGE, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getValue());
                     }
                     {
                         assertEquals("My Message", baCnetConfirmedServiceRequestConfirmedEventNotification.getMessageText().getPayload().getValue());
@@ -708,10 +708,10 @@ public class RandomPackagesTest {
                         assertTrue(baCnetConfirmedServiceRequestConfirmedEventNotification.getAckRequired().getPayload().getIsFalse());
                     }
                     {
-                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getEventState());
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getValue());
                     }
                     {
-                        assertEquals(BACnetEventState.OFFNORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getEventState());
+                        assertEquals(BACnetEventState.OFFNORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getValue());
                     }
                     {
                         BACnetNotificationParametersUnsignedRange baCnetNotificationParametersUnsignedRange = (BACnetNotificationParametersUnsignedRange) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
@@ -757,7 +757,7 @@ public class RandomPackagesTest {
                         assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getPriority().getPayload().getActualValue().longValue());
                     }
                     {
-                        assertEquals(BACnetEventType.EXTENDED, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getEventType());
+                        assertEquals(BACnetEventType.EXTENDED, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getValue());
                     }
                     {
                         assertEquals("My Message", baCnetConfirmedServiceRequestConfirmedEventNotification.getMessageText().getPayload().getValue());
@@ -769,10 +769,10 @@ public class RandomPackagesTest {
                         assertTrue(baCnetConfirmedServiceRequestConfirmedEventNotification.getAckRequired().getPayload().getIsFalse());
                     }
                     {
-                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getEventState());
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getValue());
                     }
                     {
-                        assertEquals(BACnetEventState.OFFNORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getEventState());
+                        assertEquals(BACnetEventState.OFFNORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getValue());
                     }
                     {
                         BACnetNotificationParametersExtended baCnetNotificationParametersExtended = (BACnetNotificationParametersExtended) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
@@ -871,7 +871,7 @@ public class RandomPackagesTest {
                         assertEquals(15, baCnetConfirmedServiceRequestConfirmedEventNotification.getPriority().getPayload().getActualValue().longValue());
                     }
                     {
-                        assertEquals(BACnetEventType.BUFFER_READY, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getEventType());
+                        assertEquals(BACnetEventType.BUFFER_READY, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getValue());
                     }
                     {
                         assertEquals(BACnetNotifyType.EVENT, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotifyType().getValue());
@@ -880,15 +880,15 @@ public class RandomPackagesTest {
                         assertTrue(baCnetConfirmedServiceRequestConfirmedEventNotification.getAckRequired().getPayload().getIsTrue());
                     }
                     {
-                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getEventState());
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getValue());
                     }
                     {
-                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getEventState());
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getValue());
                     }
                     {
                         BACnetNotificationParametersBufferReady baCnetNotificationParametersBufferReady = (BACnetNotificationParametersBufferReady) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
                         assertEquals(BACnetObjectType.TREND_LOG, baCnetNotificationParametersBufferReady.getBufferProperty().getValue().getObjectIdentifier().getObjectType());
-                        assertEquals(BACnetPropertyIdentifier.LOG_BUFFER, baCnetNotificationParametersBufferReady.getBufferProperty().getValue().getPropertyIdentifier().getPropertyIdentifier());
+                        assertEquals(BACnetPropertyIdentifier.LOG_BUFFER, baCnetNotificationParametersBufferReady.getBufferProperty().getValue().getPropertyIdentifier().getValue());
                         assertEquals(BACnetObjectType.DEVICE, baCnetNotificationParametersBufferReady.getBufferProperty().getValue().getDeviceIdentifier().getObjectType());
                         assertEquals(1640, baCnetNotificationParametersBufferReady.getPreviousNotification().getPayload().getActualValue().longValue());
                         assertEquals(1653, baCnetNotificationParametersBufferReady.getCurrentNotification().getPayload().getActualValue().longValue());
@@ -941,16 +941,14 @@ public class RandomPackagesTest {
                     assertEquals(0, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getMonitoredObjectIdentifier().getInstanceNumber());
                     assertEquals(9, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getLifetimeInSeconds().getPayload().getActualValue().longValue() / 60);
                     {
-                        BACnetContextTagPropertyIdentifier baCnetContextTagPropertyIdentifier = baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(0).getPropertyIdentifier();
-                        assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetContextTagPropertyIdentifier.getPropertyIdentifier());
+                        assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE,baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(0).getPropertyIdentifier().getValue());
                     }
                     {
                         BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) ((BACnetConstructedDataUnspecified) baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(0).getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
                         assertEquals(0, baCnetApplicationTagEnumerated.getActualValue());
                     }
                     {
-                        BACnetContextTagPropertyIdentifier baCnetContextTagPropertyIdentifier = baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(1).getPropertyIdentifier();
-                        assertEquals(BACnetPropertyIdentifier.STATUS_FLAGS, baCnetContextTagPropertyIdentifier.getPropertyIdentifier());
+                        assertEquals(BACnetPropertyIdentifier.STATUS_FLAGS, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(1).getPropertyIdentifier().getValue());
                     }
                     {
                         BACnetApplicationTagBitString baCnetApplicationTagBitString = (BACnetApplicationTagBitString) ((BACnetConstructedDataUnspecified) baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(1).getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
@@ -993,7 +991,7 @@ public class RandomPackagesTest {
                         assertEquals(111, baCnetConfirmedServiceRequestConfirmedEventNotification.getPriority().getPayload().getActualValue().longValue());
                     }
                     {
-                        assertEquals(BACnetEventType.CHANGE_OF_STATE, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getEventType());
+                        assertEquals(BACnetEventType.CHANGE_OF_STATE, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getValue());
                     }
                     {
                         assertEquals(BACnetNotifyType.EVENT, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotifyType().getValue());
@@ -1002,10 +1000,10 @@ public class RandomPackagesTest {
                         assertTrue(baCnetConfirmedServiceRequestConfirmedEventNotification.getAckRequired().getPayload().getIsFalse());
                     }
                     {
-                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getEventState());
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getValue());
                     }
                     {
-                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getEventState());
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getValue());
                     }
                     {
                         BACnetNotificationParametersChangeOfState baCnetNotificationParametersChangeOfState = (BACnetNotificationParametersChangeOfState) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
@@ -1166,7 +1164,7 @@ public class RandomPackagesTest {
                         assertEquals(200, baCnetConfirmedServiceRequestConfirmedEventNotification.getPriority().getPayload().getActualValue().longValue());
                     }
                     {
-                        assertEquals(BACnetEventType.OUT_OF_RANGE, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getEventType());
+                        assertEquals(BACnetEventType.OUT_OF_RANGE, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getValue());
                     }
                     {
                         assertEquals(BACnetNotifyType.ALARM, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotifyType().getValue());
@@ -1175,76 +1173,76 @@ public class RandomPackagesTest {
                         assertTrue(baCnetConfirmedServiceRequestConfirmedEventNotification.getAckRequired().getPayload().getIsTrue());
                     }
                     {
-                        assertEquals(BACnetEventState.HIGH_LIMIT, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getEventState());
+                        assertEquals(BACnetEventState.HIGH_LIMIT, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getValue());
                     }
                     {
-                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getEventState());
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getValue());
                     }
                     {
                         BACnetNotificationParametersComplexEventType baCnetNotificationParametersComplexEventType = (BACnetNotificationParametersComplexEventType) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(0);
-                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier());
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             assertEquals(2200, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
                             BACnetApplicationTagCharacterString baCnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) ((BACnetConstructedDataUnspecified) baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
                             assertEquals("StockingNAE", baCnetApplicationTagCharacterString.getValue());
                         }
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(1);
-                            assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier());
+                            assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             BACnetApplicationTagCharacterString baCnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) ((BACnetConstructedDataUnspecified) baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
                             assertEquals("StockingNAE/N2-1.NAE4-N2A-DX1.OA-T", baCnetApplicationTagCharacterString.getValue());
                         }
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(2);
-                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier());
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             assertEquals(2201, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
                             BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) ((BACnetConstructedDataUnspecified) baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
                             assertEquals(85, baCnetApplicationTagEnumerated.getActualValue());
                         }
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(3);
-                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier());
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             assertEquals(2202, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
                             BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) ((BACnetConstructedDataUnspecified) baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
                             assertEquals(35.093750, baCnetApplicationTagReal.getPayload().getValue());
                         }
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(4);
-                            assertEquals(BACnetPropertyIdentifier.RELIABILITY, baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier());
+                            assertEquals(BACnetPropertyIdentifier.RELIABILITY, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             BACnetReliability reliability = ((BACnetConstructedDataReliability) baCnetPropertyValue.getPropertyValue().getConstructedData()).getReliability().getValue();
                             assertEquals(BACnetReliability.NO_FAULT_DETECTED, reliability);
                         }
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(5);
-                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier());
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             assertEquals(661, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
                             BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) ((BACnetConstructedDataUnspecified) baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
                             assertEquals(5, baCnetApplicationTagEnumerated.getActualValue());
                         }
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(6);
-                            assertEquals(BACnetPropertyIdentifier.UNITS, baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier());
+                            assertEquals(BACnetPropertyIdentifier.UNITS, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) ((BACnetConstructedDataUnspecified) baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
                             assertEquals(64, baCnetApplicationTagEnumerated.getActualValue());
                         }
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(7);
-                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier());
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             assertEquals(1659, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
                             BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) ((BACnetConstructedDataUnspecified) baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
                             assertEquals(0, baCnetApplicationTagEnumerated.getActualValue());
                         }
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(8);
-                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier());
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             assertEquals(2203, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
                             BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) ((BACnetConstructedDataUnspecified) baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
                             assertEquals(0, baCnetApplicationTagEnumerated.getActualValue());
                         }
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(9);
-                            assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier());
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             BACnetApplicationTagUnsignedInteger baCnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) ((BACnetConstructedDataUnspecified) baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
                             assertEquals(5, baCnetApplicationTagUnsignedInteger.getPayload().getActualValue().longValue());
                         }
@@ -1316,7 +1314,7 @@ public class RandomPackagesTest {
                     APDUConfirmedRequest apdu = (APDUConfirmedRequest) npdu.getApdu();
                     BACnetConfirmedServiceRequestReadProperty serviceRequest = (BACnetConfirmedServiceRequestReadProperty) apdu.getServiceRequest();
                     assertThat(serviceRequest.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.STRUCTURED_VIEW, 1L);
-                    assertThat(serviceRequest.getPropertyIdentifier()).extracting("propertyIdentifier").isEqualTo(BACnetPropertyIdentifier.SUBORDINATE_LIST);
+                    assertThat(serviceRequest.getPropertyIdentifier()).extracting("value").isEqualTo(BACnetPropertyIdentifier.SUBORDINATE_LIST);
                 }),
             DynamicTest.dynamicTest("No. 2 - Complex-ACK     readProperty[152] structured-view,1 subordinate-list device,128 analog-input,1 device,128 analog-input,3 device,128 analog-output,1 device,128 analog-output,3",
                 () -> {
@@ -1327,7 +1325,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) apduComplexAck.getServiceAck();
                     assertNotNull(baCnetServiceAckReadProperty);
                     assertThat(baCnetServiceAckReadProperty.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.STRUCTURED_VIEW, 1L);
-                    assertEquals(BACnetPropertyIdentifier.SUBORDINATE_LIST, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.SUBORDINATE_LIST, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     List<BACnetConstructedDataElement> data = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData();
                     assertThat(data)
                         .element(0)
@@ -1378,7 +1376,7 @@ public class RandomPackagesTest {
                     APDUConfirmedRequest apdu = (APDUConfirmedRequest) npdu.getApdu();
                     BACnetConfirmedServiceRequestReadProperty serviceRequest = (BACnetConfirmedServiceRequestReadProperty) apdu.getServiceRequest();
                     assertThat(serviceRequest.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.STRUCTURED_VIEW, 1L);
-                    assertThat(serviceRequest.getPropertyIdentifier()).extracting("propertyIdentifier").isEqualTo(BACnetPropertyIdentifier.SUBORDINATE_LIST);
+                    assertThat(serviceRequest.getPropertyIdentifier()).extracting("value").isEqualTo(BACnetPropertyIdentifier.SUBORDINATE_LIST);
                 }),
             DynamicTest.dynamicTest("No. 2 - Complex-ACK     readProperty[143] structured-view,1 subordinate-list device,4000 analog-input,1 analog-value,1 binary-input,1 binary-value,1",
                 () -> {
@@ -1389,7 +1387,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) apduComplexAck.getServiceAck();
                     assertNotNull(baCnetServiceAckReadProperty);
                     assertThat(baCnetServiceAckReadProperty.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.STRUCTURED_VIEW, 1L);
-                    assertEquals(BACnetPropertyIdentifier.SUBORDINATE_LIST, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.SUBORDINATE_LIST, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     List<BACnetConstructedDataElement> data = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData();
                     assertThat(data.get(0).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.DEVICE, 4000L);
                     assertThat(data.get(1).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.ANALOG_INPUT, 1L);
@@ -1405,7 +1403,7 @@ public class RandomPackagesTest {
                     APDUConfirmedRequest apdu = (APDUConfirmedRequest) npdu.getApdu();
                     BACnetConfirmedServiceRequestReadProperty serviceRequest = (BACnetConfirmedServiceRequestReadProperty) apdu.getServiceRequest();
                     assertThat(serviceRequest.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.STRUCTURED_VIEW, 1L);
-                    assertThat(serviceRequest.getPropertyIdentifier()).extracting("propertyIdentifier").isEqualTo(BACnetPropertyIdentifier.SUBORDINATE_ANNOTATIONS);
+                    assertThat(serviceRequest.getPropertyIdentifier()).extracting("value").isEqualTo(BACnetPropertyIdentifier.SUBORDINATE_ANNOTATIONS);
                 }),
             DynamicTest.dynamicTest("No. 4 - Complex-ACK     readProperty[144] structured-view,1 subordinate-annotations",
                 () -> {
@@ -1416,7 +1414,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) apduComplexAck.getServiceAck();
                     assertNotNull(baCnetServiceAckReadProperty);
                     assertThat(baCnetServiceAckReadProperty.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.STRUCTURED_VIEW, 1L);
-                    assertEquals(BACnetPropertyIdentifier.SUBORDINATE_ANNOTATIONS, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.SUBORDINATE_ANNOTATIONS, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     List<BACnetConstructedDataElement> data = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData();
                     assertThat(data.get(0).getApplicationTag()).extracting("value").isEqualTo("Subordinate 1");
                     assertThat(data.get(1).getApplicationTag()).extracting("value").isEqualTo("Subordinate 2");
@@ -1660,7 +1658,7 @@ public class RandomPackagesTest {
                         .extracting(BACnetTagPayloadObjectIdentifier::getObjectType, BACnetTagPayloadObjectIdentifier::getInstanceNumber)
                         .contains(BACnetObjectType.SCHEDULE, 1L);
                     assertThat(serviceRequest.getPropertyIdentifier())
-                        .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                        .extracting(BACnetPropertyIdentifierTagged::getValue)
                         .isEqualTo(BACnetPropertyIdentifier.EXCEPTION_SCHEDULE);
                     assertThat(serviceRequest.getArrayIndex()).extracting("payload").extracting("actualValue").isEqualTo(BigInteger.ZERO);
                 }),
@@ -1676,7 +1674,7 @@ public class RandomPackagesTest {
                         .extracting(BACnetContextTagObjectIdentifier::getPayload)
                         .extracting(BACnetTagPayloadObjectIdentifier::getObjectType, BACnetTagPayloadObjectIdentifier::getInstanceNumber)
                         .contains(BACnetObjectType.SCHEDULE, 1L);
-                    assertEquals(BACnetPropertyIdentifier.EXCEPTION_SCHEDULE, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.EXCEPTION_SCHEDULE, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     List<BACnetConstructedDataElement> data = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData();
                     assertThat(data.get(0).getApplicationTag()).extracting("payload").extracting("actualValue").isEqualTo(BigInteger.ZERO);
                 })
@@ -1724,7 +1722,7 @@ public class RandomPackagesTest {
                             .containsExactly(BACnetObjectType.COMMAND, 1L);
                         assertThat(baCnetConfirmedServiceRequestReadProperty)
                             .extracting(BACnetConfirmedServiceRequestReadProperty::getPropertyIdentifier)
-                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                            .extracting(BACnetPropertyIdentifierTagged::getValue)
                             .isEqualTo(BACnetPropertyIdentifier.ACTION);
                         assertThat(baCnetConfirmedServiceRequestReadProperty)
                             .extracting(BACnetConfirmedServiceRequestReadProperty::getArrayIndex)
@@ -1745,7 +1743,7 @@ public class RandomPackagesTest {
                             .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
                             .contains(BACnetObjectType.COMMAND, 1L);
                         assertThat(baCnetServiceAckReadProperty.getPropertyIdentifier())
-                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                            .extracting(BACnetPropertyIdentifierTagged::getValue)
                             .isEqualTo(BACnetPropertyIdentifier.ACTION);
                         assertThat(baCnetServiceAckReadProperty.getValues())
                             .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataAction.class))
@@ -1771,8 +1769,8 @@ public class RandomPackagesTest {
                                             .extracting(BACnetContextTagObjectIdentifier::getObjectType)
                                             .isEqualTo(BACnetObjectType.BINARY_VALUE),
                                         propertyIdentifier -> assertThat(propertyIdentifier)
-                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagPropertyIdentifier.class))
-                                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetPropertyIdentifierTagged.class))
+                                            .extracting(BACnetPropertyIdentifierTagged::getValue)
                                             .isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE),
                                         propertyValue -> assertThat(propertyValue)
                                             .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
@@ -1809,8 +1807,8 @@ public class RandomPackagesTest {
                                             .extracting(BACnetContextTagObjectIdentifier::getObjectType)
                                             .isEqualTo(BACnetObjectType.ANALOG_VALUE),
                                         propertyIdentifier -> assertThat(propertyIdentifier)
-                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagPropertyIdentifier.class))
-                                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetPropertyIdentifierTagged.class))
+                                            .extracting(BACnetPropertyIdentifierTagged::getValue)
                                             .isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE),
                                         propertyValue -> assertThat(propertyValue)
                                             .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
@@ -1847,8 +1845,8 @@ public class RandomPackagesTest {
                                             .extracting(BACnetContextTagObjectIdentifier::getObjectType)
                                             .isEqualTo(BACnetObjectType.BINARY_VALUE),
                                         propertyIdentifier -> assertThat(propertyIdentifier)
-                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagPropertyIdentifier.class))
-                                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetPropertyIdentifierTagged.class))
+                                            .extracting(BACnetPropertyIdentifierTagged::getValue)
                                             .isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE),
                                         propertyValue -> assertThat(propertyValue)
                                             .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
@@ -1902,7 +1900,7 @@ public class RandomPackagesTest {
                             .containsExactly(BACnetObjectType.DEVICE, 42222L);
                         assertThat(baCnetServiceAckReadProperty)
                             .extracting(BACnetServiceAckReadProperty::getPropertyIdentifier)
-                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                            .extracting(BACnetPropertyIdentifierTagged::getValue)
                             .isEqualTo(BACnetPropertyIdentifier.PROTOCOL_VERSION);
                         assertThat(baCnetServiceAckReadProperty)
                             .extracting(BACnetServiceAckReadProperty::getArrayIndex)
@@ -2225,7 +2223,7 @@ public class RandomPackagesTest {
                             .extracting(BACnetPropertyValues::getData)
                             .satisfies(baCnetPropertyValues -> {
                                 assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2241,7 +2239,7 @@ public class RandomPackagesTest {
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
                                 });
                                 assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2289,7 +2287,7 @@ public class RandomPackagesTest {
                             .extracting(BACnetPropertyValues::getData)
                             .satisfies(baCnetPropertyValues -> {
                                 assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2305,7 +2303,7 @@ public class RandomPackagesTest {
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
                                 });
                                 assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2353,7 +2351,7 @@ public class RandomPackagesTest {
                             .extracting(BACnetPropertyValues::getData)
                             .satisfies(baCnetPropertyValues -> {
                                 assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2369,7 +2367,7 @@ public class RandomPackagesTest {
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
                                 });
                                 assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2417,7 +2415,7 @@ public class RandomPackagesTest {
                             .extracting(BACnetPropertyValues::getData)
                             .satisfies(baCnetPropertyValues -> {
                                 assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2433,7 +2431,7 @@ public class RandomPackagesTest {
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
                                 });
                                 assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2481,7 +2479,7 @@ public class RandomPackagesTest {
                             .extracting(BACnetPropertyValues::getData)
                             .satisfies(baCnetPropertyValues -> {
                                 assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2497,7 +2495,7 @@ public class RandomPackagesTest {
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
                                 });
                                 assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2545,7 +2543,7 @@ public class RandomPackagesTest {
                             .extracting(BACnetPropertyValues::getData)
                             .satisfies(baCnetPropertyValues -> {
                                 assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2561,7 +2559,7 @@ public class RandomPackagesTest {
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
                                 });
                                 assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2629,7 +2627,7 @@ public class RandomPackagesTest {
                             .isEqualTo((short) 0);
                         assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
                             .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getEventType)
-                            .extracting(BACnetContextTagEventType::getEventType)
+                            .extracting(BACnetEventTypeTagged::getValue)
                             .isEqualTo(BACnetEventType.COMMAND_FAILURE);
                         assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
                             .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getMessageText)
@@ -2639,7 +2637,7 @@ public class RandomPackagesTest {
                             .isEqualTo("BO_1\u0000");
                         assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
                             .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getNotifyType)
-                            .extracting(BACnetContextTagNotifyType::getValue)
+                            .extracting(BACnetNotifyTypeTagged::getValue)
                             .isEqualTo(BACnetNotifyType.ALARM);
                         assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
                             .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getAckRequired)
@@ -2647,11 +2645,11 @@ public class RandomPackagesTest {
                             .isEqualTo(false);
                         assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
                             .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getFromState)
-                            .extracting(BACnetContextTagEventState::getEventState)
+                            .extracting(BACnetEventStateTagged::getValue)
                             .isEqualTo(BACnetEventState.NORMAL);
                         assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
                             .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getToState)
-                            .extracting(BACnetContextTagEventState::getEventState)
+                            .extracting(BACnetEventStateTagged::getValue)
                             .isEqualTo(BACnetEventState.OFFNORMAL);
                         assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
                             .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getEventValues)
@@ -2718,7 +2716,7 @@ public class RandomPackagesTest {
                             .extracting(BACnetPropertyValues::getData)
                             .satisfies(baCnetPropertyValues -> {
                                 assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2734,7 +2732,7 @@ public class RandomPackagesTest {
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
                                 });
                                 assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
-                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetPropertyIdentifierTagged::getValue).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
@@ -2844,7 +2842,7 @@ public class RandomPackagesTest {
                         assertEquals(200, baCnetConfirmedServiceRequestConfirmedEventNotification.getPriority().getPayload().getActualValue().longValue());
                     }
                     {
-                        assertEquals(BACnetEventType.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getEventType());
+                        assertEquals(BACnetEventType.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getValue());
                     }
                     {
                         assertEquals(BACnetNotifyType.ALARM, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotifyType().getValue());
@@ -2853,10 +2851,10 @@ public class RandomPackagesTest {
                         assertFalse(baCnetConfirmedServiceRequestConfirmedEventNotification.getAckRequired().getPayload().getIsFalse());
                     }
                     {
-                        assertEquals(BACnetEventState.HIGH_LIMIT, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getEventState());
+                        assertEquals(BACnetEventState.HIGH_LIMIT, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getValue());
                     }
                     {
-                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getEventState());
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getValue());
                     }
                     {
                         BACnetNotificationParametersComplexEventType baCnetNotificationParametersComplexEventType = (BACnetNotificationParametersComplexEventType) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
@@ -2945,7 +2943,7 @@ public class RandomPackagesTest {
                             .containsExactly(BACnetObjectType.LOAD_CONTROL, 1L);
                         assertThat(baCnetConfirmedServiceRequestReadProperty)
                             .extracting(BACnetConfirmedServiceRequestReadProperty::getPropertyIdentifier)
-                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                            .extracting(BACnetPropertyIdentifierTagged::getValue)
                             .isEqualTo(BACnetPropertyIdentifier.EVENT_TIME_STAMPS);
                         assertThat(baCnetConfirmedServiceRequestReadProperty)
                             .extracting(BACnetConfirmedServiceRequestReadProperty::getArrayIndex)
@@ -2966,7 +2964,7 @@ public class RandomPackagesTest {
                             .containsExactly(BACnetObjectType.LOAD_CONTROL, 1L);
                         assertThat(baCnetServiceAckReadProperty)
                             .extracting(BACnetServiceAckReadProperty::getPropertyIdentifier)
-                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                            .extracting(BACnetPropertyIdentifierTagged::getValue)
                             .isEqualTo(BACnetPropertyIdentifier.EVENT_TIME_STAMPS);
                         assertThat(baCnetServiceAckReadProperty)
                             .extracting(BACnetServiceAckReadProperty::getArrayIndex)
@@ -3531,7 +3529,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(111, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(50, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 2 - Unconfirmed-REQ who-Is",
@@ -3552,7 +3550,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(111, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(50, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertFalse(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedBoth());
+                    assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 8 - Unconfirmed-REQ i-Am device,201",
@@ -3565,7 +3563,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(201, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(1476, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedBoth());
+                    assertEquals(BACnetSegmentation.SEGMENTED_BOTH, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(18, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 8 - Unconfirmed-REQ i-Am device,61",
@@ -3578,7 +3576,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(61, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedBoth());
+                    assertEquals(BACnetSegmentation.SEGMENTED_BOTH, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicTest.dynamicTest("No. 11 - Confirmed-REQ   readProperty[ 29] device,201 object-identifier",
@@ -3592,7 +3590,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 12 - Complex-ACK     readProperty[ 29] device,201 object-identifier device,201",
                 () -> {
@@ -3605,7 +3603,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 13 - Confirmed-REQ   readProperty[ 30] device,201 object-name",
                 () -> {
@@ -3618,7 +3616,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 14 - Complex-ACK     readProperty[ 30] device,201 object-name device,201",
                 () -> {
@@ -3631,7 +3629,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagCharacterString baCnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("Lithonia Router", baCnetApplicationTagCharacterString.getValue());
@@ -3647,7 +3645,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_TYPE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_TYPE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 16 - Complex-ACK     readProperty[ 31] device,201 object-type device,201",
                 () -> {
@@ -3660,7 +3658,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_TYPE, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_TYPE, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 17 - Confirmed-REQ   readProperty[ 32] device,201 system-status",
                 () -> {
@@ -3673,7 +3671,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.SYSTEM_STATUS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.SYSTEM_STATUS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 18 - Complex-ACK     readProperty[ 32] device,201 system-status device,201",
                 () -> {
@@ -3686,7 +3684,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.SYSTEM_STATUS, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.SYSTEM_STATUS, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
                     assertEquals(0x0, baCnetApplicationTagEnumerated.getActualValue());
@@ -3702,7 +3700,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 20 - Complex-ACK     readProperty[ 33] device,201 vendor-name device,201",
                 () -> {
@@ -3715,7 +3713,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_NAME, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_NAME, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("Alerton Technologies, Inc.", BACnetApplicationTagCharacterString.getValue());
@@ -3731,7 +3729,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 22 - Complex-ACK     readProperty[ 34] device,201 vendor-identifier device,201",
                 () -> {
@@ -3744,7 +3742,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 23 - Confirmed-REQ   readProperty[ 35] device,201 model-name",
                 () -> {
@@ -3757,7 +3755,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MODEL_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MODEL_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 24 - Complex-ACK     readProperty[ 35] device,201 model-name device,201",
                 () -> {
@@ -3770,7 +3768,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MODEL_NAME, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MODEL_NAME, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("LSi Controller", BACnetApplicationTagCharacterString.getValue());
@@ -3786,7 +3784,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.FIRMWARE_REVISION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.FIRMWARE_REVISION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 26 - Complex-ACK     readProperty[ 36] device,201 model-name device,201",
                 () -> {
@@ -3799,7 +3797,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.FIRMWARE_REVISION, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.FIRMWARE_REVISION, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("BACtalk LSi   v3.10 A         ", BACnetApplicationTagCharacterString.getValue());
@@ -3815,7 +3813,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.APPLICATION_SOFTWARE_VERSION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.APPLICATION_SOFTWARE_VERSION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 28 - Complex-ACK     readProperty[ 37] device,201 application-software-version device,201",
                 () -> {
@@ -3828,7 +3826,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.APPLICATION_SOFTWARE_VERSION, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.APPLICATION_SOFTWARE_VERSION, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("LSi Controller v3.11 E", BACnetApplicationTagCharacterString.getValue());
@@ -3844,7 +3842,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 30 - Complex-ACK     readProperty[ 38] device,201 protocol-version device,201",
                 () -> {
@@ -3857,7 +3855,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(1, BACnetApplicationTagUnsignedInteger.getPayload().getActualValue().longValue());
@@ -3873,7 +3871,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_CONFORMANCE_CLASS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_CONFORMANCE_CLASS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 32 - Complex-ACK     readProperty[ 39] device,201 protocol-conformance-class device,201",
                 () -> {
@@ -3886,7 +3884,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_CONFORMANCE_CLASS, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_CONFORMANCE_CLASS, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(3, BACnetApplicationTagUnsignedInteger.getPayload().getActualValue().longValue());
@@ -3902,7 +3900,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_SERVICES_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_SERVICES_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 34 - Complex-ACK     readProperty[ 40] device,201 protocol-services-supported device,201",
                 () -> {
@@ -3915,7 +3913,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_SERVICES_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_SERVICES_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagBitString BACnetApplicationTagBitString = (BACnetApplicationTagBitString) value;
                     assertEquals(Arrays.asList(true, false, true, true, false, true, true, true, false, false, true, true, true, false, true, true, true, true, true, false, true, false, false, false, false, false, true, true, false, false, true, false, true, true, true), BACnetApplicationTagBitString.getPayload().getData());
@@ -3931,7 +3929,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_OBJECT_TYPES_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_OBJECT_TYPES_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 36 - Complex-ACK     readProperty[ 41] device,201 protocol-object-types-supported device,201",
                 () -> {
@@ -3944,7 +3942,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_OBJECT_TYPES_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_OBJECT_TYPES_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagBitString BACnetApplicationTagBitString = (BACnetApplicationTagBitString) value;
                     assertEquals(Arrays.asList(false, false, true, false, false, true, true, false, true, true, true, false, false, false, false, true, true, true), BACnetApplicationTagBitString.getPayload().getData());
@@ -3960,7 +3958,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MAX_APDU_LENGTH_ACCEPTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MAX_APDU_LENGTH_ACCEPTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 38 - Complex-ACK     readProperty[ 42] device,201 max-apdu-length-accepted device,201",
                 () -> {
@@ -3973,7 +3971,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MAX_APDU_LENGTH_ACCEPTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MAX_APDU_LENGTH_ACCEPTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(1476, BACnetApplicationTagUnsignedInteger.getPayload().getActualValue().longValue());
@@ -3989,7 +3987,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.SEGMENTATION_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.SEGMENTATION_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 40 - Complex-ACK     readProperty[ 43] device,201 segmentation-supported device,201",
                 () -> {
@@ -4002,7 +4000,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.SEGMENTATION_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.SEGMENTATION_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagEnumerated BACnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
                     assertEquals(0, BACnetApplicationTagEnumerated.getActualValue());
@@ -4018,7 +4016,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.LOCAL_TIME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.LOCAL_TIME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 42 - Complex-ACK     readProperty[ 44] device,201 local-time device,201",
                 () -> {
@@ -4031,7 +4029,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.LOCAL_TIME, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.LOCAL_TIME, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagTime BACnetApplicationTagTime = (BACnetApplicationTagTime) value;
                     assertEquals(15, BACnetApplicationTagTime.getPayload().getHour());
@@ -4049,7 +4047,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.LOCAL_DATE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.LOCAL_DATE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 44 - Complex-ACK     readProperty[ 45] device,201 local-date device,201",
                 () -> {
@@ -4062,7 +4060,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.LOCAL_DATE, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.LOCAL_DATE, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagDate BACnetApplicationTagDate = (BACnetApplicationTagDate) value;
                     assertEquals(2005, BACnetApplicationTagDate.getPayload().getYear());
@@ -4081,7 +4079,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.UTC_OFFSET, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.UTC_OFFSET, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 46 - Complex-ACK     readProperty[ 46] device,201 utc-offset device,201",
                 () -> {
@@ -4094,7 +4092,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.UTC_OFFSET, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.UTC_OFFSET, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagSignedInteger BACnetApplicationTagSignedInteger = (BACnetApplicationTagSignedInteger) value;
                     assertEquals(0, BACnetApplicationTagSignedInteger.getPayload().getActualValue().longValue());
@@ -4110,7 +4108,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.DAYLIGHT_SAVINGS_STATUS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.DAYLIGHT_SAVINGS_STATUS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 48 - Complex-ACK     readProperty[ 47] device,201 daylights-savings-status device,201",
                 () -> {
@@ -4123,7 +4121,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.DAYLIGHT_SAVINGS_STATUS, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.DAYLIGHT_SAVINGS_STATUS, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagBoolean BACnetApplicationTagBoolean = (BACnetApplicationTagBoolean) value;
                     assertFalse(BACnetApplicationTagBoolean.getActualValue());
@@ -4139,7 +4137,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.APDU_SEGMENT_TIMEOUT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.APDU_SEGMENT_TIMEOUT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 50 - Complex-ACK     readProperty[ 48] device,201 apdu-segment-timeout device,201",
                 () -> {
@@ -4152,7 +4150,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.APDU_SEGMENT_TIMEOUT, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.APDU_SEGMENT_TIMEOUT, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(6000, BACnetApplicationTagUnsignedInteger.getPayload().getValueUint16());
@@ -4168,7 +4166,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.APDU_TIMEOUT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.APDU_TIMEOUT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 52 - Complex-ACK     readProperty[ 49] device,201 apdu-timeout device,201",
                 () -> {
@@ -4181,7 +4179,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.APDU_TIMEOUT, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.APDU_TIMEOUT, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(6000, BACnetApplicationTagUnsignedInteger.getPayload().getValueUint16());
@@ -4197,7 +4195,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.NUMBER_OF_APDU_RETRIES, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.NUMBER_OF_APDU_RETRIES, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 54 - Complex-ACK     readProperty[ 50] device,201 number-of-APDU-retries device,201",
                 () -> {
@@ -4210,7 +4208,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.NUMBER_OF_APDU_RETRIES, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.NUMBER_OF_APDU_RETRIES, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals((short) 3, BACnetApplicationTagUnsignedInteger.getPayload().getValueUint8());
@@ -4226,7 +4224,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.TIME_SYNCHRONIZATION_RECIPIENTS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.TIME_SYNCHRONIZATION_RECIPIENTS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 56 - ERROR           readProperty[ 51] device,201",
                 () -> {
@@ -4235,8 +4233,8 @@ public class RandomPackagesTest {
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
                     BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
-                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
-                    assertEquals(ErrorCode.UNKNOWN_PROPERTY, baCnetErrorWriteProperty.getError().getErrorCode());
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass().getValue());
+                    assertEquals(ErrorCode.UNKNOWN_PROPERTY, baCnetErrorWriteProperty.getError().getErrorCode().getValue());
                 }),
             DynamicTest.dynamicTest("No. 57 - Confirmed-REQ   readProperty[ 52] device,201 max-master",
                 () -> {
@@ -4249,7 +4247,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MAX_MASTER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MAX_MASTER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 58 - Complex-ACK     readProperty[ 52] device,201 max-master device,201",
                 () -> {
@@ -4262,7 +4260,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MAX_MASTER, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MAX_MASTER, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals((short) 127, BACnetApplicationTagUnsignedInteger.getPayload().getValueUint8());
@@ -4278,7 +4276,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MAX_INFO_FRAMES, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MAX_INFO_FRAMES, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 60 - Complex-ACK     readProperty[ 53] device,201 max-info-frames device,201",
                 () -> {
@@ -4291,7 +4289,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MAX_INFO_FRAMES, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MAX_INFO_FRAMES, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals((short) 40, BACnetApplicationTagUnsignedInteger.getPayload().getValueUint8());
@@ -4307,7 +4305,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.DEVICE_ADDRESS_BINDING, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.DEVICE_ADDRESS_BINDING, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 62 - Complex-ACK     readProperty[ 54] device,201 device-address-binding device,201",
                 () -> {
@@ -4320,7 +4318,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.DEVICE_ADDRESS_BINDING, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.DEVICE_ADDRESS_BINDING, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 63 - Confirmed-REQ   readProperty[ 55] device,201 (514) Vendor Proprietary Value",
                 () -> {
@@ -4333,7 +4331,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 64 - Complex-ACK     readProperty[ 55] device,201 (514) Vendor Proprietary Value device,201",
                 () -> {
@@ -4346,7 +4344,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagBoolean BACnetApplicationTagBoolean = (BACnetApplicationTagBoolean) value;
                     assertTrue(BACnetApplicationTagBoolean.getPayload().getIsFalse());
@@ -4362,7 +4360,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 66 - Complex-ACK     readProperty[ 56] device,201 Error",
                 () -> {
@@ -4371,8 +4369,8 @@ public class RandomPackagesTest {
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
                     BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
-                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
-                    assertEquals(ErrorCode.UNKNOWN_PROPERTY, baCnetErrorWriteProperty.getError().getErrorCode());
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass().getValue());
+                    assertEquals(ErrorCode.UNKNOWN_PROPERTY, baCnetErrorWriteProperty.getError().getErrorCode().getValue());
                 }),
             DynamicTest.dynamicTest("No. 67 - Confirmed-REQ   readProperty[ 57] device,61 object-identifier",
                 () -> {
@@ -4385,7 +4383,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 68 - Complex-ACK     readProperty[ 57] object-identifier device,61",
                 () -> {
@@ -4398,7 +4396,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagObjectIdentifier BACnetApplicationTagObjectIdentifier = (BACnetApplicationTagObjectIdentifier) value;
                     assertEquals(BACnetObjectType.DEVICE, BACnetApplicationTagObjectIdentifier.getObjectType());
@@ -4415,7 +4413,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 70 - Complex-ACK     readProperty[ 58] object-name device,61",
                 () -> {
@@ -4428,7 +4426,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagCharacterString BACnetApplicationTagObjectIdentifier = (BACnetApplicationTagCharacterString) value;
                     assertEquals("SYNERGY", BACnetApplicationTagObjectIdentifier.getValue());
@@ -4444,7 +4442,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_TYPE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_TYPE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 72 - Complex-ACK     readProperty[ 59] object-type device,61",
                 () -> {
@@ -4457,7 +4455,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.OBJECT_TYPE, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_TYPE, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
                     assertEquals(8, baCnetApplicationTagEnumerated.getActualValue());
@@ -4473,7 +4471,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.SYSTEM_STATUS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.SYSTEM_STATUS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 74 - Complex-ACK     readProperty[ 60] device,61 system-status device,61",
                 () -> {
@@ -4486,7 +4484,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.SYSTEM_STATUS, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.SYSTEM_STATUS, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
                     assertEquals(0, baCnetApplicationTagEnumerated.getActualValue());
@@ -4502,7 +4500,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 76 - Complex-ACK     readProperty[ 61] device,61 vendor-name device,61",
                 () -> {
@@ -4515,7 +4513,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_NAME, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_NAME, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("Lithonia Lighting, Inc.", BACnetApplicationTagCharacterString.getValue());
@@ -4531,7 +4529,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 78 - Complex-ACK     readProperty[ 62] device,61 vendor-identifier device,61",
                 () -> {
@@ -4544,7 +4542,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 79 - Confirmed-REQ   readProperty[ 63] device,61 model-name",
                 () -> {
@@ -4557,7 +4555,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MODEL_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MODEL_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 80 - Complex-ACK     readProperty[ 63] device,61 model-name device,61",
                 () -> {
@@ -4570,7 +4568,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MODEL_NAME, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MODEL_NAME, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("SYSC MLX", BACnetApplicationTagCharacterString.getValue());
@@ -4586,7 +4584,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.FIRMWARE_REVISION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.FIRMWARE_REVISION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 82 - Complex-ACK     readProperty[ 64] device,61 model-name device,61",
                 () -> {
@@ -4599,7 +4597,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.FIRMWARE_REVISION, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.FIRMWARE_REVISION, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("2x62i", BACnetApplicationTagCharacterString.getValue());
@@ -4615,7 +4613,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.APPLICATION_SOFTWARE_VERSION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.APPLICATION_SOFTWARE_VERSION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 84 - Complex-ACK     readProperty[ 65] device,61 application-software-version device,61",
                 () -> {
@@ -4628,7 +4626,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.APPLICATION_SOFTWARE_VERSION, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.APPLICATION_SOFTWARE_VERSION, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("10-Nov-2004", BACnetApplicationTagCharacterString.getValue());
@@ -4644,7 +4642,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 86 - Complex-ACK     readProperty[ 66] device,61 protocol-version device,61",
                 () -> {
@@ -4657,7 +4655,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(1, BACnetApplicationTagUnsignedInteger.getPayload().getActualValue().longValue());
@@ -4673,7 +4671,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_CONFORMANCE_CLASS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_CONFORMANCE_CLASS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 88 - Complex-ACK     readProperty[ 67] device,61 protocol-conformance-class device,61",
                 () -> {
@@ -4686,7 +4684,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_CONFORMANCE_CLASS, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_CONFORMANCE_CLASS, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(2, BACnetApplicationTagUnsignedInteger.getPayload().getActualValue().longValue());
@@ -4702,7 +4700,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_SERVICES_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_SERVICES_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 90 - Complex-ACK     readProperty[ 68] device,61 protocol-services-supported device,61",
                 () -> {
@@ -4715,7 +4713,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_SERVICES_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_SERVICES_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagBitString BACnetApplicationTagBitString = (BACnetApplicationTagBitString) value;
                     assertEquals(Arrays.asList(false, false, false, false, false, false, true, true, false, false, false, false, true, false, true, true, false, true, false, false, true, false, false, false, false, false, true, true, false, false, false, false, true, true, true), BACnetApplicationTagBitString.getPayload().getData());
@@ -4731,7 +4729,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_OBJECT_TYPES_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_OBJECT_TYPES_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 92 - Complex-ACK     readProperty[ 69] device,61 protocol-object-types-supported device,61",
                 () -> {
@@ -4744,7 +4742,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_OBJECT_TYPES_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_OBJECT_TYPES_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagBitString BACnetApplicationTagBitString = (BACnetApplicationTagBitString) value;
                     assertEquals(Arrays.asList(true, true, true, true, true, true, false, false, true, false, true, false, false, false, false, false, false, false, false, false, false), BACnetApplicationTagBitString.getPayload().getData());
@@ -4760,7 +4758,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MAX_APDU_LENGTH_ACCEPTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MAX_APDU_LENGTH_ACCEPTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 94 - Complex-ACK     readProperty[ 70] device,61 max-apdu-length-accepted device,61",
                 () -> {
@@ -4773,7 +4771,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MAX_APDU_LENGTH_ACCEPTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MAX_APDU_LENGTH_ACCEPTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(480, BACnetApplicationTagUnsignedInteger.getPayload().getActualValue().longValue());
@@ -4789,7 +4787,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.SEGMENTATION_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.SEGMENTATION_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 96 - Complex-ACK     readProperty[ 71] device,61 segmentation-supported device,61",
                 () -> {
@@ -4802,7 +4800,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.SEGMENTATION_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.SEGMENTATION_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagEnumerated BACnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
                     assertEquals(0, BACnetApplicationTagEnumerated.getActualValue());
@@ -4818,7 +4816,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.LOCAL_TIME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.LOCAL_TIME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 98 - Complex-ACK     readProperty[ 72] device,61 local-time device,61",
                 () -> {
@@ -4831,7 +4829,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.LOCAL_TIME, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.LOCAL_TIME, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagTime BACnetApplicationTagTime = (BACnetApplicationTagTime) value;
                     assertEquals(15, BACnetApplicationTagTime.getPayload().getHour());
@@ -4849,7 +4847,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.LOCAL_DATE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.LOCAL_DATE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 100 - Complex-ACK     readProperty[ 73] device,61 local-date device,61",
                 () -> {
@@ -4862,7 +4860,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.LOCAL_DATE, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.LOCAL_DATE, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagDate BACnetApplicationTagDate = (BACnetApplicationTagDate) value;
                     assertEquals(2005, BACnetApplicationTagDate.getPayload().getYear());
@@ -4881,7 +4879,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.UTC_OFFSET, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.UTC_OFFSET, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 102 - Complex-ACK     readProperty[ 74] device,61 utc-offset device,61",
                 () -> {
@@ -4894,7 +4892,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.UTC_OFFSET, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.UTC_OFFSET, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagSignedInteger BACnetApplicationTagSignedInteger = (BACnetApplicationTagSignedInteger) value;
                     assertEquals(BigInteger.valueOf(-300), BACnetApplicationTagSignedInteger.getPayload().getActualValue());
@@ -4910,7 +4908,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.DAYLIGHT_SAVINGS_STATUS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.DAYLIGHT_SAVINGS_STATUS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 104 - Complex-ACK     readProperty[ 75] device,61 daylights-savings-status device,61",
                 () -> {
@@ -4923,7 +4921,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.DAYLIGHT_SAVINGS_STATUS, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.DAYLIGHT_SAVINGS_STATUS, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagBoolean BACnetApplicationTagBoolean = (BACnetApplicationTagBoolean) value;
                     assertTrue(BACnetApplicationTagBoolean.getPayload().getIsTrue());
@@ -4939,7 +4937,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.APDU_SEGMENT_TIMEOUT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.APDU_SEGMENT_TIMEOUT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 106 - Complex-ACK     readProperty[ 76] device,61 apdu-segment-timeout device,61",
                 () -> {
@@ -4952,7 +4950,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.APDU_SEGMENT_TIMEOUT, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.APDU_SEGMENT_TIMEOUT, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(8000, BACnetApplicationTagUnsignedInteger.getPayload().getValueUint16());
@@ -4968,7 +4966,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.APDU_TIMEOUT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.APDU_TIMEOUT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 108 - Complex-ACK     readProperty[ 77] device,61 apdu-timeout device,61",
                 () -> {
@@ -4981,7 +4979,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.APDU_TIMEOUT, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.APDU_TIMEOUT, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(8000, BACnetApplicationTagUnsignedInteger.getPayload().getValueUint16());
@@ -4997,7 +4995,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.NUMBER_OF_APDU_RETRIES, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.NUMBER_OF_APDU_RETRIES, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 100 - Complex-ACK     readProperty[ 78] device,61 number-of-APDU-retries device,61",
                 () -> {
@@ -5010,7 +5008,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.NUMBER_OF_APDU_RETRIES, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.NUMBER_OF_APDU_RETRIES, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals((short) 3, BACnetApplicationTagUnsignedInteger.getPayload().getValueUint8());
@@ -5026,7 +5024,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.TIME_SYNCHRONIZATION_RECIPIENTS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.TIME_SYNCHRONIZATION_RECIPIENTS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 112 - ERROR           readProperty[ 79] device,61",
                 () -> {
@@ -5035,8 +5033,8 @@ public class RandomPackagesTest {
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
                     BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
-                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
-                    assertEquals(ErrorCode.UNKNOWN_PROPERTY, baCnetErrorWriteProperty.getError().getErrorCode());
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass().getValue());
+                    assertEquals(ErrorCode.UNKNOWN_PROPERTY, baCnetErrorWriteProperty.getError().getErrorCode().getValue());
                 }),
             DynamicTest.dynamicTest("No. 113 - Confirmed-REQ   readProperty[ 80] device,61 max-master",
                 () -> {
@@ -5049,7 +5047,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MAX_MASTER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MAX_MASTER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 114 - Complex-ACK     readProperty[ 80] device,61 max-master device,61",
                 () -> {
@@ -5062,7 +5060,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MAX_MASTER, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MAX_MASTER, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals((short) 127, BACnetApplicationTagUnsignedInteger.getPayload().getValueUint8());
@@ -5078,7 +5076,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MAX_INFO_FRAMES, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MAX_INFO_FRAMES, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 116 - Complex-ACK     readProperty[ 81] device,61 max-info-frames device,61",
                 () -> {
@@ -5091,7 +5089,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.MAX_INFO_FRAMES, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.MAX_INFO_FRAMES, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals((short) 1, BACnetApplicationTagUnsignedInteger.getPayload().getValueUint8());
@@ -5107,7 +5105,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.DEVICE_ADDRESS_BINDING, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.DEVICE_ADDRESS_BINDING, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 118 - Complex-ACK     readProperty[ 82] device,61 device-address-binding device,61",
                 () -> {
@@ -5120,7 +5118,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.DEVICE_ADDRESS_BINDING, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.DEVICE_ADDRESS_BINDING, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 119 - Confirmed-REQ   readProperty[ 83] device,61 (514) Vendor Proprietary Value",
                 () -> {
@@ -5133,7 +5131,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 120 - Complex-ACK     readProperty[ 83] device,61 (514) Vendor Proprietary Value device,61",
                 () -> {
@@ -5146,7 +5144,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagTime baCnetApplicationTagTime = (BACnetApplicationTagTime) value;
                     assertEquals(7, baCnetApplicationTagTime.getPayload().getHour());
@@ -5164,7 +5162,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
                     assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
             DynamicTest.dynamicTest("No. 122 - Complex-ACK     readProperty[ 84] device,61 Error",
                 () -> {
@@ -5177,7 +5175,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
-                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
                     BACnetApplicationTagTime baCnetApplicationTagTime = (BACnetApplicationTagTime) value;
                     assertEquals(20, baCnetApplicationTagTime.getPayload().getHour());
@@ -5473,7 +5471,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedBoth());
+                    assertEquals(BACnetSegmentation.SEGMENTED_BOTH, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
                     assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
             DynamicContainer.dynamicContainer("Confirmed-REQ atomicWriteFile 1-30", () -> {

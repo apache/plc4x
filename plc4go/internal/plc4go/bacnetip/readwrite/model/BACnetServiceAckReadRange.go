@@ -31,7 +31,7 @@ import (
 type BACnetServiceAckReadRange struct {
 	*BACnetServiceAck
 	ObjectIdentifier    *BACnetContextTagObjectIdentifier
-	PropertyIdentifier  *BACnetContextTagPropertyIdentifier
+	PropertyIdentifier  *BACnetPropertyIdentifierTagged
 	PropertyArrayIndex  *BACnetContextTagUnsignedInteger
 	ResultFlags         *BACnetResultFlags
 	ItemCount           *BACnetContextTagUnsignedInteger
@@ -48,7 +48,7 @@ type IBACnetServiceAckReadRange interface {
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
-	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	GetPropertyIdentifier() *BACnetPropertyIdentifierTagged
 	// GetPropertyArrayIndex returns PropertyArrayIndex (property field)
 	GetPropertyArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetResultFlags returns ResultFlags (property field)
@@ -96,7 +96,7 @@ func (m *BACnetServiceAckReadRange) GetObjectIdentifier() *BACnetContextTagObjec
 	return m.ObjectIdentifier
 }
 
-func (m *BACnetServiceAckReadRange) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+func (m *BACnetServiceAckReadRange) GetPropertyIdentifier() *BACnetPropertyIdentifierTagged {
 	return m.PropertyIdentifier
 }
 
@@ -126,7 +126,7 @@ func (m *BACnetServiceAckReadRange) GetFirstSequenceNumber() *BACnetContextTagUn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadRange factory function for BACnetServiceAckReadRange
-func NewBACnetServiceAckReadRange(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, propertyArrayIndex *BACnetContextTagUnsignedInteger, resultFlags *BACnetResultFlags, itemCount *BACnetContextTagUnsignedInteger, itemData *BACnetConstructedData, firstSequenceNumber *BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *BACnetServiceAckReadRange {
+func NewBACnetServiceAckReadRange(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, propertyArrayIndex *BACnetContextTagUnsignedInteger, resultFlags *BACnetResultFlags, itemCount *BACnetContextTagUnsignedInteger, itemData *BACnetConstructedData, firstSequenceNumber *BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *BACnetServiceAckReadRange {
 	_result := &BACnetServiceAckReadRange{
 		ObjectIdentifier:    objectIdentifier,
 		PropertyIdentifier:  propertyIdentifier,
@@ -228,11 +228,11 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceRequestL
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
-	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
+	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -291,7 +291,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceRequestL
 		if pullErr := readBuffer.PullContext("itemData"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(5), objectIdentifier.GetObjectType(), propertyIdentifier)
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(5), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
@@ -333,7 +333,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceRequestL
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckReadRange{
 		ObjectIdentifier:    CastBACnetContextTagObjectIdentifier(objectIdentifier),
-		PropertyIdentifier:  CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
+		PropertyIdentifier:  CastBACnetPropertyIdentifierTagged(propertyIdentifier),
 		PropertyArrayIndex:  CastBACnetContextTagUnsignedInteger(propertyArrayIndex),
 		ResultFlags:         CastBACnetResultFlags(resultFlags),
 		ItemCount:           CastBACnetContextTagUnsignedInteger(itemCount),

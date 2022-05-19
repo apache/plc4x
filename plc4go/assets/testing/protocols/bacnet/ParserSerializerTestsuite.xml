@@ -763,28 +763,18 @@
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
                           <segmentationSupported>
-                            <BACnetSegmentation>
-                              <rawData>
-                                <BACnetApplicationTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x00</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawData>
-                            </BACnetSegmentation>
+                            <BACnetSegmentationTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="SEGMENTED_BOTH">0</value>
+                            </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
                             <BACnetApplicationTag>
@@ -3126,28 +3116,18 @@ make -f wp.mak clean</value>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
                           <segmentationSupported>
-                            <BACnetSegmentation>
-                              <rawData>
-                                <BACnetApplicationTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x00</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawData>
-                            </BACnetSegmentation>
+                            <BACnetSegmentationTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="SEGMENTED_BOTH">0</value>
+                            </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
                             <BACnetApplicationTag>
@@ -3238,7 +3218,7 @@ make -f wp.mak clean</value>
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestReinitializeDevice>
                           <reinitializedStateOfDevice>
-                            <BACnetContextTag>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -3248,12 +3228,8 @@ make -f wp.mak clean</value>
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetContextTagDeviceState>
-                                <state>
-                                  <BACnetDeviceState dataType="uint" bitLength="8" stringRepresentation="COLDSTART">0</BACnetDeviceState>
-                                </state>
-                              </BACnetContextTagDeviceState>
-                            </BACnetContextTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="COLDSTART">0</value>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged>
                           </reinitializedStateOfDevice>
                           <password>
                             <BACnetContextTag>
@@ -3340,8 +3316,8 @@ make -f wp.mak clean</value>
                         <BACnetErrorGeneral>
                           <error>
                             <Error>
-                              <rawErrorClass>
-                                <BACnetApplicationTag>
+                              <errorClass>
+                                <ErrorClassTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -3351,17 +3327,11 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x05</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorClass>
-                              <rawErrorCode>
-                                <BACnetApplicationTag>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="SERVICES">5</value>
+                                </ErrorClassTagged>
+                              </errorClass>
+                              <errorCode>
+                                <ErrorCodeTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -3371,15 +3341,9 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x1a</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorCode>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="PASSWORD_FAILURE">26</value>
+                                </ErrorCodeTagged>
+                              </errorCode>
                             </Error>
                           </error>
                         </BACnetErrorGeneral>
@@ -3581,28 +3545,18 @@ make -f wp.mak clean</value>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
                           <segmentationSupported>
-                            <BACnetSegmentation>
-                              <rawData>
-                                <BACnetApplicationTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x00</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawData>
-                            </BACnetSegmentation>
+                            <BACnetSegmentationTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="SEGMENTED_BOTH">0</value>
+                            </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
                             <BACnetApplicationTag>
@@ -3714,7 +3668,7 @@ make -f wp.mak clean</value>
                             </BACnetContextTag>
                           </objectIdentifier>
                           <propertyIdentifier>
-                            <BACnetContextTag>
+                            <BACnetPropertyIdentifierTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -3724,10 +3678,8 @@ make -f wp.mak clean</value>
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetContextTagPropertyIdentifier>
-                                <propertyIdentifier dataType="uint" bitLength="8" stringRepresentation="PRIORITY_ARRAY">87</propertyIdentifier>
-                              </BACnetContextTagPropertyIdentifier>
-                            </BACnetContextTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="PRIORITY_ARRAY">87</value>
+                            </BACnetPropertyIdentifierTagged>
                           </propertyIdentifier>
                         </BACnetConfirmedServiceRequestReadProperty>
                       </BACnetConfirmedServiceRequest>
@@ -3790,8 +3742,8 @@ make -f wp.mak clean</value>
                         <BACnetErrorGeneral>
                           <error>
                             <Error>
-                              <rawErrorClass>
-                                <BACnetApplicationTag>
+                              <errorClass>
+                                <ErrorClassTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -3801,17 +3753,11 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x02</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorClass>
-                              <rawErrorCode>
-                                <BACnetApplicationTag>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="PROPERTY">2</value>
+                                </ErrorClassTagged>
+                              </errorClass>
+                              <errorCode>
+                                <ErrorCodeTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -3821,15 +3767,9 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x20</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorCode>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="UNKNOWN_PROPERTY">32</value>
+                                </ErrorCodeTagged>
+                              </errorCode>
                             </Error>
                           </error>
                         </BACnetErrorGeneral>
@@ -4031,28 +3971,18 @@ make -f wp.mak clean</value>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
                           <segmentationSupported>
-                            <BACnetSegmentation>
-                              <rawData>
-                                <BACnetApplicationTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x00</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawData>
-                            </BACnetSegmentation>
+                            <BACnetSegmentationTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="SEGMENTED_BOTH">0</value>
+                            </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
                             <BACnetApplicationTag>
@@ -4164,7 +4094,7 @@ make -f wp.mak clean</value>
                             </BACnetContextTag>
                           </objectIdentifier>
                           <propertyIdentifier>
-                            <BACnetContextTag>
+                            <BACnetPropertyIdentifierTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -4174,10 +4104,8 @@ make -f wp.mak clean</value>
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetContextTagPropertyIdentifier>
-                                <propertyIdentifier dataType="uint" bitLength="8" stringRepresentation="PRIORITY_ARRAY">87</propertyIdentifier>
-                              </BACnetContextTagPropertyIdentifier>
-                            </BACnetContextTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="PRIORITY_ARRAY">87</value>
+                            </BACnetPropertyIdentifierTagged>
                           </propertyIdentifier>
                         </BACnetConfirmedServiceRequestReadProperty>
                       </BACnetConfirmedServiceRequest>
@@ -4240,8 +4168,8 @@ make -f wp.mak clean</value>
                         <BACnetErrorGeneral>
                           <error>
                             <Error>
-                              <rawErrorClass>
-                                <BACnetApplicationTag>
+                              <errorClass>
+                                <ErrorClassTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -4251,17 +4179,11 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x02</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorClass>
-                              <rawErrorCode>
-                                <BACnetApplicationTag>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="PROPERTY">2</value>
+                                </ErrorClassTagged>
+                              </errorClass>
+                              <errorCode>
+                                <ErrorCodeTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -4271,15 +4193,9 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x20</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorCode>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="UNKNOWN_PROPERTY">32</value>
+                                </ErrorCodeTagged>
+                              </errorCode>
                             </Error>
                           </error>
                         </BACnetErrorGeneral>
@@ -4481,28 +4397,18 @@ make -f wp.mak clean</value>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
                           <segmentationSupported>
-                            <BACnetSegmentation>
-                              <rawData>
-                                <BACnetApplicationTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x00</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawData>
-                            </BACnetSegmentation>
+                            <BACnetSegmentationTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="SEGMENTED_BOTH">0</value>
+                            </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
                             <BACnetApplicationTag>
@@ -4614,7 +4520,7 @@ make -f wp.mak clean</value>
                             </BACnetContextTag>
                           </objectIdentifier>
                           <propertyIdentifier>
-                            <BACnetContextTag>
+                            <BACnetPropertyIdentifierTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -4624,10 +4530,8 @@ make -f wp.mak clean</value>
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetContextTagPropertyIdentifier>
-                                <propertyIdentifier dataType="uint" bitLength="8" stringRepresentation="PRIORITY_ARRAY">87</propertyIdentifier>
-                              </BACnetContextTagPropertyIdentifier>
-                            </BACnetContextTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="PRIORITY_ARRAY">87</value>
+                            </BACnetPropertyIdentifierTagged>
                           </propertyIdentifier>
                         </BACnetConfirmedServiceRequestReadProperty>
                       </BACnetConfirmedServiceRequest>
@@ -4712,7 +4616,7 @@ make -f wp.mak clean</value>
                             </BACnetContextTag>
                           </objectIdentifier>
                           <propertyIdentifier>
-                            <BACnetContextTag>
+                            <BACnetPropertyIdentifierTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -4722,10 +4626,8 @@ make -f wp.mak clean</value>
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetContextTagPropertyIdentifier>
-                                <propertyIdentifier dataType="uint" bitLength="8" stringRepresentation="PRIORITY_ARRAY">87</propertyIdentifier>
-                              </BACnetContextTagPropertyIdentifier>
-                            </BACnetContextTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="PRIORITY_ARRAY">87</value>
+                            </BACnetPropertyIdentifierTagged>
                           </propertyIdentifier>
                           <values>
                             <BACnetConstructedData>
@@ -5197,7 +5099,7 @@ make -f wp.mak clean</value>
                               <data isList="true">
                                 <BACnetPropertyValue>
                                   <propertyIdentifier>
-                                    <BACnetContextTag>
+                                    <BACnetPropertyIdentifierTagged>
                                       <header>
                                         <BACnetTagHeader>
                                           <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -5207,10 +5109,8 @@ make -f wp.mak clean</value>
                                           <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                         </BACnetTagHeader>
                                       </header>
-                                      <BACnetContextTagPropertyIdentifier>
-                                        <propertyIdentifier dataType="uint" bitLength="8" stringRepresentation="PRESENT_VALUE">85</propertyIdentifier>
-                                      </BACnetContextTagPropertyIdentifier>
-                                    </BACnetContextTag>
+                                      <value dataType="uint" bitLength="8" stringRepresentation="PRESENT_VALUE">85</value>
+                                    </BACnetPropertyIdentifierTagged>
                                   </propertyIdentifier>
                                   <propertyValue>
                                     <BACnetConstructedDataElement>
@@ -5494,28 +5394,18 @@ make -f wp.mak clean</value>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
                           <segmentationSupported>
-                            <BACnetSegmentation>
-                              <rawData>
-                                <BACnetApplicationTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x00</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawData>
-                            </BACnetSegmentation>
+                            <BACnetSegmentationTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="SEGMENTED_BOTH">0</value>
+                            </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
                             <BACnetApplicationTag>
@@ -5627,7 +5517,7 @@ make -f wp.mak clean</value>
                             </BACnetContextTag>
                           </objectIdentifier>
                           <propertyIdentifier>
-                            <BACnetContextTag>
+                            <BACnetPropertyIdentifierTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -5637,10 +5527,8 @@ make -f wp.mak clean</value>
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetContextTagPropertyIdentifier>
-                                <propertyIdentifier dataType="uint" bitLength="8" stringRepresentation="PRESENT_VALUE">85</propertyIdentifier>
-                              </BACnetContextTagPropertyIdentifier>
-                            </BACnetContextTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="PRESENT_VALUE">85</value>
+                            </BACnetPropertyIdentifierTagged>
                           </propertyIdentifier>
                           <propertyValue>
                             <BACnetConstructedData>
@@ -5758,8 +5646,8 @@ make -f wp.mak clean</value>
                         <BACnetErrorGeneral>
                           <error>
                             <Error>
-                              <rawErrorClass>
-                                <BACnetApplicationTag>
+                              <errorClass>
+                                <ErrorClassTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -5769,17 +5657,11 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x01</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorClass>
-                              <rawErrorCode>
-                                <BACnetApplicationTag>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="OBJECT">1</value>
+                                </ErrorClassTagged>
+                              </errorClass>
+                              <errorCode>
+                                <ErrorCodeTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -5789,15 +5671,9 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x1f</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorCode>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="UNKNOWN_OBJECT">31</value>
+                                </ErrorCodeTagged>
+                              </errorCode>
                             </Error>
                           </error>
                         </BACnetErrorGeneral>
@@ -5999,28 +5875,18 @@ make -f wp.mak clean</value>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
                           <segmentationSupported>
-                            <BACnetSegmentation>
-                              <rawData>
-                                <BACnetApplicationTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x00</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawData>
-                            </BACnetSegmentation>
+                            <BACnetSegmentationTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="SEGMENTED_BOTH">0</value>
+                            </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
                             <BACnetApplicationTag>
@@ -6111,28 +5977,18 @@ make -f wp.mak clean</value>
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
-                              <rawData>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetContextTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x00</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetContextTagEnumerated>
-                                </BACnetContextTag>
-                              </rawData>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="ENABLE">0</value>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -6408,28 +6264,18 @@ make -f wp.mak clean</value>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
                           <segmentationSupported>
-                            <BACnetSegmentation>
-                              <rawData>
-                                <BACnetApplicationTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x00</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawData>
-                            </BACnetSegmentation>
+                            <BACnetSegmentationTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="SEGMENTED_BOTH">0</value>
+                            </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
                             <BACnetApplicationTag>
@@ -6520,28 +6366,18 @@ make -f wp.mak clean</value>
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
-                              <rawData>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetContextTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x00</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetContextTagEnumerated>
-                                </BACnetContextTag>
-                              </rawData>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="ENABLE">0</value>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -6628,8 +6464,8 @@ make -f wp.mak clean</value>
                         <BACnetErrorGeneral>
                           <error>
                             <Error>
-                              <rawErrorClass>
-                                <BACnetApplicationTag>
+                              <errorClass>
+                                <ErrorClassTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -6639,17 +6475,11 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x05</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorClass>
-                              <rawErrorCode>
-                                <BACnetApplicationTag>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="SERVICES">5</value>
+                                </ErrorClassTagged>
+                              </errorClass>
+                              <errorCode>
+                                <ErrorCodeTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -6659,15 +6489,9 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x1a</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorCode>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="PASSWORD_FAILURE">26</value>
+                                </ErrorCodeTagged>
+                              </errorCode>
                             </Error>
                           </error>
                         </BACnetErrorGeneral>
@@ -6769,28 +6593,18 @@ make -f wp.mak clean</value>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
                           <segmentationSupported>
-                            <BACnetSegmentation>
-                              <rawData>
-                                <BACnetApplicationTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x03</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawData>
-                            </BACnetSegmentation>
+                            <BACnetSegmentationTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="NO_SEGMENTATION">3</value>
+                            </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
                             <BACnetApplicationTag>
@@ -6880,28 +6694,18 @@ make -f wp.mak clean</value>
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
-                              <rawData>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetContextTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x01</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetContextTagEnumerated>
-                                </BACnetContextTag>
-                              </rawData>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="DISABLE">1</value>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -6996,28 +6800,18 @@ make -f wp.mak clean</value>
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
-                              <rawData>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetContextTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x01</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetContextTagEnumerated>
-                                </BACnetContextTag>
-                              </rawData>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="DISABLE">1</value>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -7112,28 +6906,18 @@ make -f wp.mak clean</value>
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
-                              <rawData>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetContextTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x01</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetContextTagEnumerated>
-                                </BACnetContextTag>
-                              </rawData>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="DISABLE">1</value>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -7228,28 +7012,18 @@ make -f wp.mak clean</value>
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
-                              <rawData>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetContextTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x01</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetContextTagEnumerated>
-                                </BACnetContextTag>
-                              </rawData>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="DISABLE">1</value>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -7375,28 +7149,18 @@ make -f wp.mak clean</value>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
                           <segmentationSupported>
-                            <BACnetSegmentation>
-                              <rawData>
-                                <BACnetApplicationTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x03</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawData>
-                            </BACnetSegmentation>
+                            <BACnetSegmentationTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="NO_SEGMENTATION">3</value>
+                            </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
                             <BACnetApplicationTag>
@@ -7486,28 +7250,18 @@ make -f wp.mak clean</value>
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
-                              <rawData>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetContextTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x01</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetContextTagEnumerated>
-                                </BACnetContextTag>
-                              </rawData>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="DISABLE">1</value>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -7595,8 +7349,8 @@ make -f wp.mak clean</value>
                         <BACnetErrorGeneral>
                           <error>
                             <Error>
-                              <rawErrorClass>
-                                <BACnetApplicationTag>
+                              <errorClass>
+                                <ErrorClassTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -7606,17 +7360,11 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x05</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorClass>
-                              <rawErrorCode>
-                                <BACnetApplicationTag>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="SERVICES">5</value>
+                                </ErrorClassTagged>
+                              </errorClass>
+                              <errorCode>
+                                <ErrorCodeTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -7626,15 +7374,9 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x1a</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorCode>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="PASSWORD_FAILURE">26</value>
+                                </ErrorCodeTagged>
+                              </errorCode>
                             </Error>
                           </error>
                         </BACnetErrorGeneral>
@@ -7705,28 +7447,18 @@ make -f wp.mak clean</value>
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
-                              <rawData>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetContextTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x01</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetContextTagEnumerated>
-                                </BACnetContextTag>
-                              </rawData>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="DISABLE">1</value>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -7903,28 +7635,18 @@ make -f wp.mak clean</value>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
                           <segmentationSupported>
-                            <BACnetSegmentation>
-                              <rawData>
-                                <BACnetApplicationTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">9</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x03</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawData>
-                            </BACnetSegmentation>
+                            <BACnetSegmentationTagged>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">9</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <value dataType="uint" bitLength="8" stringRepresentation="NO_SEGMENTATION">3</value>
+                            </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
                             <BACnetApplicationTag>
@@ -8324,7 +8046,7 @@ make -f wp.mak clean</value>
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestReinitializeDevice>
                           <reinitializedStateOfDevice>
-                            <BACnetContextTag>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -8334,12 +8056,8 @@ make -f wp.mak clean</value>
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetContextTagDeviceState>
-                                <state>
-                                  <BACnetDeviceState dataType="uint" bitLength="8" stringRepresentation="COLDSTART">0</BACnetDeviceState>
-                                </state>
-                              </BACnetContextTagDeviceState>
-                            </BACnetContextTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="COLDSTART">0</value>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged>
                           </reinitializedStateOfDevice>
                           <password>
                             <BACnetContextTag>
@@ -8427,8 +8145,8 @@ make -f wp.mak clean</value>
                         <BACnetErrorGeneral>
                           <error>
                             <Error>
-                              <rawErrorClass>
-                                <BACnetApplicationTag>
+                              <errorClass>
+                                <ErrorClassTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -8438,17 +8156,11 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x05</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorClass>
-                              <rawErrorCode>
-                                <BACnetApplicationTag>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="SERVICES">5</value>
+                                </ErrorClassTagged>
+                              </errorClass>
+                              <errorCode>
+                                <ErrorCodeTagged>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">9</tagNumber>
@@ -8458,15 +8170,9 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetApplicationTagEnumerated>
-                                    <payload>
-                                      <BACnetTagPayloadEnumerated>
-                                        <data dataType="byte" bitLength="8">0x1a</data>
-                                      </BACnetTagPayloadEnumerated>
-                                    </payload>
-                                  </BACnetApplicationTagEnumerated>
-                                </BACnetApplicationTag>
-                              </rawErrorCode>
+                                  <value dataType="uint" bitLength="8" stringRepresentation="PASSWORD_FAILURE">26</value>
+                                </ErrorCodeTagged>
+                              </errorCode>
                             </Error>
                           </error>
                         </BACnetErrorGeneral>
@@ -8537,7 +8243,7 @@ make -f wp.mak clean</value>
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestReinitializeDevice>
                           <reinitializedStateOfDevice>
-                            <BACnetContextTag>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -8547,12 +8253,8 @@ make -f wp.mak clean</value>
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetContextTagDeviceState>
-                                <state>
-                                  <BACnetDeviceState dataType="uint" bitLength="8" stringRepresentation="COLDSTART">0</BACnetDeviceState>
-                                </state>
-                              </BACnetContextTagDeviceState>
-                            </BACnetContextTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="COLDSTART">0</value>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged>
                           </reinitializedStateOfDevice>
                           <password>
                             <BACnetContextTag>
@@ -10258,7 +9960,11 @@ Test "BACnet Applicat</value>
                   <APDUReject>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">58</originalInvokeId>
-                    <rawRejectReason dataType="uint" bitLength="8">9</rawRejectReason>
+                    <rejectReason>
+                      <RejectReasonTagged>
+                        <value dataType="uint" bitLength="8" stringRepresentation="UNRECOGNIZED_SERVICE">9</value>
+                      </RejectReasonTagged>
+                    </rejectReason>
                   </APDUReject>
                 </APDU>
               </apdu>
@@ -10364,7 +10070,7 @@ Test "BACnet Applicat</value>
                               <listOfPropertyReferences isList="true">
                                 <BACnetPropertyReference>
                                   <propertyIdentifier>
-                                    <BACnetContextTag>
+                                    <BACnetPropertyIdentifierTagged>
                                       <header>
                                         <BACnetTagHeader>
                                           <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -10374,10 +10080,8 @@ Test "BACnet Applicat</value>
                                           <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                         </BACnetTagHeader>
                                       </header>
-                                      <BACnetContextTagPropertyIdentifier>
-                                        <propertyIdentifier dataType="uint" bitLength="8" stringRepresentation="ALL">8</propertyIdentifier>
-                                      </BACnetContextTagPropertyIdentifier>
-                                    </BACnetContextTag>
+                                      <value dataType="uint" bitLength="8" stringRepresentation="ALL">8</value>
+                                    </BACnetPropertyIdentifierTagged>
                                   </propertyIdentifier>
                                 </BACnetPropertyReference>
                               </listOfPropertyReferences>
@@ -10452,7 +10156,11 @@ Test "BACnet Applicat</value>
                   <APDUReject>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">59</originalInvokeId>
-                    <rawRejectReason dataType="uint" bitLength="8">9</rawRejectReason>
+                    <rejectReason>
+                      <RejectReasonTagged>
+                        <value dataType="uint" bitLength="8" stringRepresentation="UNRECOGNIZED_SERVICE">9</value>
+                      </RejectReasonTagged>
+                    </rejectReason>
                   </APDUReject>
                 </APDU>
               </apdu>

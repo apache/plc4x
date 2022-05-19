@@ -203,6 +203,8 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 		_child, typeSwitchError = BACnetPropertyStatesReliabilityParse(readBuffer, tagNumber, peekedTagNumber)
 	case peekedTagNumber == uint8(16): // BACnetPropertyStatesAction
 		_child, typeSwitchError = BACnetPropertyStatesActionParse(readBuffer, tagNumber, peekedTagNumber)
+	case peekedTagNumber == uint8(42): // BACnetPropertyStatesNetworkType
+		_child, typeSwitchError = BACnetPropertyStatesNetworkTypeParse(readBuffer, tagNumber, peekedTagNumber)
 	case true: // BACnetPropertyStateActionUnmapped
 		_child, typeSwitchError = BACnetPropertyStateActionUnmappedParse(readBuffer, tagNumber)
 	default:

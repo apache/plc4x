@@ -31,7 +31,7 @@ import (
 type BACnetConfirmedServiceRequestReadRange struct {
 	*BACnetConfirmedServiceRequest
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
-	PropertyIdentifier *BACnetContextTagPropertyIdentifier
+	PropertyIdentifier *BACnetPropertyIdentifierTagged
 	PropertyArrayIndex *BACnetContextTagUnsignedInteger
 	ReadRange          *BACnetConfirmedServiceRequestReadRangeRange
 
@@ -45,7 +45,7 @@ type IBACnetConfirmedServiceRequestReadRange interface {
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
-	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	GetPropertyIdentifier() *BACnetPropertyIdentifierTagged
 	// GetPropertyArrayIndex returns PropertyArrayIndex (property field)
 	GetPropertyArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetReadRange returns ReadRange (property field)
@@ -88,7 +88,7 @@ func (m *BACnetConfirmedServiceRequestReadRange) GetObjectIdentifier() *BACnetCo
 	return m.ObjectIdentifier
 }
 
-func (m *BACnetConfirmedServiceRequestReadRange) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+func (m *BACnetConfirmedServiceRequestReadRange) GetPropertyIdentifier() *BACnetPropertyIdentifierTagged {
 	return m.PropertyIdentifier
 }
 
@@ -106,7 +106,7 @@ func (m *BACnetConfirmedServiceRequestReadRange) GetReadRange() *BACnetConfirmed
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestReadRange factory function for BACnetConfirmedServiceRequestReadRange
-func NewBACnetConfirmedServiceRequestReadRange(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, propertyArrayIndex *BACnetContextTagUnsignedInteger, readRange *BACnetConfirmedServiceRequestReadRangeRange, serviceRequestLength uint16) *BACnetConfirmedServiceRequestReadRange {
+func NewBACnetConfirmedServiceRequestReadRange(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, propertyArrayIndex *BACnetContextTagUnsignedInteger, readRange *BACnetConfirmedServiceRequestReadRangeRange, serviceRequestLength uint16) *BACnetConfirmedServiceRequestReadRange {
 	_result := &BACnetConfirmedServiceRequestReadRange{
 		ObjectIdentifier:              objectIdentifier,
 		PropertyIdentifier:            propertyIdentifier,
@@ -194,11 +194,11 @@ func BACnetConfirmedServiceRequestReadRangeParse(readBuffer utils.ReadBuffer, se
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
-	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
+	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -252,7 +252,7 @@ func BACnetConfirmedServiceRequestReadRangeParse(readBuffer utils.ReadBuffer, se
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReadRange{
 		ObjectIdentifier:              CastBACnetContextTagObjectIdentifier(objectIdentifier),
-		PropertyIdentifier:            CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
+		PropertyIdentifier:            CastBACnetPropertyIdentifierTagged(propertyIdentifier),
 		PropertyArrayIndex:            CastBACnetContextTagUnsignedInteger(propertyArrayIndex),
 		ReadRange:                     CastBACnetConfirmedServiceRequestReadRangeRange(readRange),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},

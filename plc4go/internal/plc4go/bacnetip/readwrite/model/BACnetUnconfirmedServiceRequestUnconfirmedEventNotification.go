@@ -36,12 +36,12 @@ type BACnetUnconfirmedServiceRequestUnconfirmedEventNotification struct {
 	Timestamp                  *BACnetTimeStampEnclosed
 	NotificationClass          *BACnetContextTagUnsignedInteger
 	Priority                   *BACnetContextTagUnsignedInteger
-	EventType                  *BACnetContextTagEventType
+	EventType                  *BACnetEventTypeTagged
 	MessageText                *BACnetContextTagCharacterString
-	NotifyType                 *BACnetContextTagNotifyType
+	NotifyType                 *BACnetNotifyTypeTagged
 	AckRequired                *BACnetContextTagBoolean
-	FromState                  *BACnetContextTagEventState
-	ToState                    *BACnetContextTagEventState
+	FromState                  *BACnetEventStateTagged
+	ToState                    *BACnetEventStateTagged
 	EventValues                *BACnetNotificationParameters
 
 	// Arguments.
@@ -64,17 +64,17 @@ type IBACnetUnconfirmedServiceRequestUnconfirmedEventNotification interface {
 	// GetPriority returns Priority (property field)
 	GetPriority() *BACnetContextTagUnsignedInteger
 	// GetEventType returns EventType (property field)
-	GetEventType() *BACnetContextTagEventType
+	GetEventType() *BACnetEventTypeTagged
 	// GetMessageText returns MessageText (property field)
 	GetMessageText() *BACnetContextTagCharacterString
 	// GetNotifyType returns NotifyType (property field)
-	GetNotifyType() *BACnetContextTagNotifyType
+	GetNotifyType() *BACnetNotifyTypeTagged
 	// GetAckRequired returns AckRequired (property field)
 	GetAckRequired() *BACnetContextTagBoolean
 	// GetFromState returns FromState (property field)
-	GetFromState() *BACnetContextTagEventState
+	GetFromState() *BACnetEventStateTagged
 	// GetToState returns ToState (property field)
-	GetToState() *BACnetContextTagEventState
+	GetToState() *BACnetEventStateTagged
 	// GetEventValues returns EventValues (property field)
 	GetEventValues() *BACnetNotificationParameters
 	// GetLengthInBytes returns the length in bytes
@@ -135,7 +135,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetPriorit
 	return m.Priority
 }
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetEventType() *BACnetContextTagEventType {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetEventType() *BACnetEventTypeTagged {
 	return m.EventType
 }
 
@@ -143,7 +143,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetMessage
 	return m.MessageText
 }
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetNotifyType() *BACnetContextTagNotifyType {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetNotifyType() *BACnetNotifyTypeTagged {
 	return m.NotifyType
 }
 
@@ -151,11 +151,11 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetAckRequ
 	return m.AckRequired
 }
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetFromState() *BACnetContextTagEventState {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetFromState() *BACnetEventStateTagged {
 	return m.FromState
 }
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetToState() *BACnetContextTagEventState {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetToState() *BACnetEventStateTagged {
 	return m.ToState
 }
 
@@ -169,7 +169,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetEventVa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification factory function for BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
-func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(processIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, eventObjectIdentifier *BACnetContextTagObjectIdentifier, timestamp *BACnetTimeStampEnclosed, notificationClass *BACnetContextTagUnsignedInteger, priority *BACnetContextTagUnsignedInteger, eventType *BACnetContextTagEventType, messageText *BACnetContextTagCharacterString, notifyType *BACnetContextTagNotifyType, ackRequired *BACnetContextTagBoolean, fromState *BACnetContextTagEventState, toState *BACnetContextTagEventState, eventValues *BACnetNotificationParameters, serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(processIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, eventObjectIdentifier *BACnetContextTagObjectIdentifier, timestamp *BACnetTimeStampEnclosed, notificationClass *BACnetContextTagUnsignedInteger, priority *BACnetContextTagUnsignedInteger, eventType *BACnetEventTypeTagged, messageText *BACnetContextTagCharacterString, notifyType *BACnetNotifyTypeTagged, ackRequired *BACnetContextTagBoolean, fromState *BACnetEventStateTagged, toState *BACnetEventStateTagged, eventValues *BACnetNotificationParameters, serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
 	_result := &BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{
 		ProcessIdentifier:               processIdentifier,
 		InitiatingDeviceIdentifier:      initiatingDeviceIdentifier,
@@ -362,11 +362,11 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer
 	if pullErr := readBuffer.PullContext("eventType"); pullErr != nil {
 		return nil, pullErr
 	}
-	_eventType, _eventTypeErr := BACnetContextTagParse(readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_EVENT_TYPE))
+	_eventType, _eventTypeErr := BACnetEventTypeTaggedParse(readBuffer, uint8(uint8(6)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventTypeErr != nil {
 		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field")
 	}
-	eventType := CastBACnetContextTagEventType(_eventType)
+	eventType := CastBACnetEventTypeTagged(_eventType)
 	if closeErr := readBuffer.CloseContext("eventType"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -396,11 +396,11 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer
 	if pullErr := readBuffer.PullContext("notifyType"); pullErr != nil {
 		return nil, pullErr
 	}
-	_notifyType, _notifyTypeErr := BACnetContextTagParse(readBuffer, uint8(uint8(8)), BACnetDataType(BACnetDataType_NOTIFY_TYPE))
+	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParse(readBuffer, uint8(uint8(8)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _notifyTypeErr != nil {
 		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field")
 	}
-	notifyType := CastBACnetContextTagNotifyType(_notifyType)
+	notifyType := CastBACnetNotifyTypeTagged(_notifyType)
 	if closeErr := readBuffer.CloseContext("notifyType"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -427,20 +427,20 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer
 	}
 
 	// Optional Field (fromState) (Can be skipped, if a given expression evaluates to false)
-	var fromState *BACnetContextTagEventState = nil
+	var fromState *BACnetEventStateTagged = nil
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("fromState"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(10), BACnetDataType_EVENT_STATE)
+		_val, _err := BACnetEventStateTaggedParse(readBuffer, uint8(10), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'fromState' field")
 		default:
-			fromState = CastBACnetContextTagEventState(_val)
+			fromState = CastBACnetEventStateTagged(_val)
 			if closeErr := readBuffer.CloseContext("fromState"); closeErr != nil {
 				return nil, closeErr
 			}
@@ -451,11 +451,11 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer
 	if pullErr := readBuffer.PullContext("toState"); pullErr != nil {
 		return nil, pullErr
 	}
-	_toState, _toStateErr := BACnetContextTagParse(readBuffer, uint8(uint8(11)), BACnetDataType(BACnetDataType_EVENT_STATE))
+	_toState, _toStateErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(11)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _toStateErr != nil {
 		return nil, errors.Wrap(_toStateErr, "Error parsing 'toState' field")
 	}
-	toState := CastBACnetContextTagEventState(_toState)
+	toState := CastBACnetEventStateTagged(_toState)
 	if closeErr := readBuffer.CloseContext("toState"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -493,12 +493,12 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer
 		Timestamp:                       CastBACnetTimeStampEnclosed(timestamp),
 		NotificationClass:               CastBACnetContextTagUnsignedInteger(notificationClass),
 		Priority:                        CastBACnetContextTagUnsignedInteger(priority),
-		EventType:                       CastBACnetContextTagEventType(eventType),
+		EventType:                       CastBACnetEventTypeTagged(eventType),
 		MessageText:                     CastBACnetContextTagCharacterString(messageText),
-		NotifyType:                      CastBACnetContextTagNotifyType(notifyType),
+		NotifyType:                      CastBACnetNotifyTypeTagged(notifyType),
 		AckRequired:                     CastBACnetContextTagBoolean(ackRequired),
-		FromState:                       CastBACnetContextTagEventState(fromState),
-		ToState:                         CastBACnetContextTagEventState(toState),
+		FromState:                       CastBACnetEventStateTagged(fromState),
+		ToState:                         CastBACnetEventStateTagged(toState),
 		EventValues:                     CastBACnetNotificationParameters(eventValues),
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
@@ -643,7 +643,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) Serialize(
 		}
 
 		// Optional Field (fromState) (Can be skipped, if the value is null)
-		var fromState *BACnetContextTagEventState = nil
+		var fromState *BACnetEventStateTagged = nil
 		if m.FromState != nil {
 			if pushErr := writeBuffer.PushContext("fromState"); pushErr != nil {
 				return pushErr

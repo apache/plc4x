@@ -31,7 +31,7 @@ import (
 type BACnetConfirmedServiceRequestAddListElement struct {
 	*BACnetConfirmedServiceRequest
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
-	PropertyIdentifier *BACnetContextTagPropertyIdentifier
+	PropertyIdentifier *BACnetPropertyIdentifierTagged
 	ArrayIndex         *BACnetContextTagUnsignedInteger
 	ListOfElements     *BACnetConstructedData
 
@@ -45,7 +45,7 @@ type IBACnetConfirmedServiceRequestAddListElement interface {
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
-	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	GetPropertyIdentifier() *BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetListOfElements returns ListOfElements (property field)
@@ -88,7 +88,7 @@ func (m *BACnetConfirmedServiceRequestAddListElement) GetObjectIdentifier() *BAC
 	return m.ObjectIdentifier
 }
 
-func (m *BACnetConfirmedServiceRequestAddListElement) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+func (m *BACnetConfirmedServiceRequestAddListElement) GetPropertyIdentifier() *BACnetPropertyIdentifierTagged {
 	return m.PropertyIdentifier
 }
 
@@ -106,7 +106,7 @@ func (m *BACnetConfirmedServiceRequestAddListElement) GetListOfElements() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestAddListElement factory function for BACnetConfirmedServiceRequestAddListElement
-func NewBACnetConfirmedServiceRequestAddListElement(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, listOfElements *BACnetConstructedData, serviceRequestLength uint16) *BACnetConfirmedServiceRequestAddListElement {
+func NewBACnetConfirmedServiceRequestAddListElement(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, listOfElements *BACnetConstructedData, serviceRequestLength uint16) *BACnetConfirmedServiceRequestAddListElement {
 	_result := &BACnetConfirmedServiceRequestAddListElement{
 		ObjectIdentifier:              objectIdentifier,
 		PropertyIdentifier:            propertyIdentifier,
@@ -194,11 +194,11 @@ func BACnetConfirmedServiceRequestAddListElementParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
-	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
+	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -231,7 +231,7 @@ func BACnetConfirmedServiceRequestAddListElementParse(readBuffer utils.ReadBuffe
 		if pullErr := readBuffer.PullContext("listOfElements"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier)
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
@@ -252,7 +252,7 @@ func BACnetConfirmedServiceRequestAddListElementParse(readBuffer utils.ReadBuffe
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestAddListElement{
 		ObjectIdentifier:              CastBACnetContextTagObjectIdentifier(objectIdentifier),
-		PropertyIdentifier:            CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
+		PropertyIdentifier:            CastBACnetPropertyIdentifierTagged(propertyIdentifier),
 		ArrayIndex:                    CastBACnetContextTagUnsignedInteger(arrayIndex),
 		ListOfElements:                CastBACnetConstructedData(listOfElements),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},

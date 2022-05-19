@@ -31,7 +31,7 @@ import (
 type BACnetConfirmedServiceRequestRemoveListElement struct {
 	*BACnetConfirmedServiceRequest
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
-	PropertyIdentifier *BACnetContextTagPropertyIdentifier
+	PropertyIdentifier *BACnetPropertyIdentifierTagged
 	ArrayIndex         *BACnetContextTagUnsignedInteger
 	ListOfElements     *BACnetConstructedData
 
@@ -45,7 +45,7 @@ type IBACnetConfirmedServiceRequestRemoveListElement interface {
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
-	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	GetPropertyIdentifier() *BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetListOfElements returns ListOfElements (property field)
@@ -88,7 +88,7 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) GetObjectIdentifier() *
 	return m.ObjectIdentifier
 }
 
-func (m *BACnetConfirmedServiceRequestRemoveListElement) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+func (m *BACnetConfirmedServiceRequestRemoveListElement) GetPropertyIdentifier() *BACnetPropertyIdentifierTagged {
 	return m.PropertyIdentifier
 }
 
@@ -106,7 +106,7 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) GetListOfElements() *BA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestRemoveListElement factory function for BACnetConfirmedServiceRequestRemoveListElement
-func NewBACnetConfirmedServiceRequestRemoveListElement(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, listOfElements *BACnetConstructedData, serviceRequestLength uint16) *BACnetConfirmedServiceRequestRemoveListElement {
+func NewBACnetConfirmedServiceRequestRemoveListElement(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, listOfElements *BACnetConstructedData, serviceRequestLength uint16) *BACnetConfirmedServiceRequestRemoveListElement {
 	_result := &BACnetConfirmedServiceRequestRemoveListElement{
 		ObjectIdentifier:              objectIdentifier,
 		PropertyIdentifier:            propertyIdentifier,
@@ -194,11 +194,11 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
-	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
+	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -231,7 +231,7 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBu
 		if pullErr := readBuffer.PullContext("listOfElements"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier)
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
@@ -252,7 +252,7 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBu
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestRemoveListElement{
 		ObjectIdentifier:              CastBACnetContextTagObjectIdentifier(objectIdentifier),
-		PropertyIdentifier:            CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
+		PropertyIdentifier:            CastBACnetPropertyIdentifierTagged(propertyIdentifier),
 		ArrayIndex:                    CastBACnetContextTagUnsignedInteger(arrayIndex),
 		ListOfElements:                CastBACnetConstructedData(listOfElements),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},

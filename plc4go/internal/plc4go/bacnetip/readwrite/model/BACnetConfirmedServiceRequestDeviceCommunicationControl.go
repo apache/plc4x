@@ -31,7 +31,7 @@ import (
 type BACnetConfirmedServiceRequestDeviceCommunicationControl struct {
 	*BACnetConfirmedServiceRequest
 	TimeDuration  *BACnetContextTagUnsignedInteger
-	EnableDisable *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable
+	EnableDisable *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged
 	Password      *BACnetContextTagCharacterString
 
 	// Arguments.
@@ -44,7 +44,7 @@ type IBACnetConfirmedServiceRequestDeviceCommunicationControl interface {
 	// GetTimeDuration returns TimeDuration (property field)
 	GetTimeDuration() *BACnetContextTagUnsignedInteger
 	// GetEnableDisable returns EnableDisable (property field)
-	GetEnableDisable() *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable
+	GetEnableDisable() *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged
 	// GetPassword returns Password (property field)
 	GetPassword() *BACnetContextTagCharacterString
 	// GetLengthInBytes returns the length in bytes
@@ -85,7 +85,7 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetTimeDuratio
 	return m.TimeDuration
 }
 
-func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetEnableDisable() *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable {
+func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetEnableDisable() *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged {
 	return m.EnableDisable
 }
 
@@ -99,7 +99,7 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetPassword() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestDeviceCommunicationControl factory function for BACnetConfirmedServiceRequestDeviceCommunicationControl
-func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration *BACnetContextTagUnsignedInteger, enableDisable *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable, password *BACnetContextTagCharacterString, serviceRequestLength uint16) *BACnetConfirmedServiceRequestDeviceCommunicationControl {
+func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration *BACnetContextTagUnsignedInteger, enableDisable *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged, password *BACnetContextTagCharacterString, serviceRequestLength uint16) *BACnetConfirmedServiceRequestDeviceCommunicationControl {
 	_result := &BACnetConfirmedServiceRequestDeviceCommunicationControl{
 		TimeDuration:                  timeDuration,
 		EnableDisable:                 enableDisable,
@@ -191,11 +191,11 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("enableDisable"); pullErr != nil {
 		return nil, pullErr
 	}
-	_enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffer, uint8(uint8(1)))
+	_enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _enableDisableErr != nil {
 		return nil, errors.Wrap(_enableDisableErr, "Error parsing 'enableDisable' field")
 	}
-	enableDisable := CastBACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(_enableDisable)
+	enableDisable := CastBACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged(_enableDisable)
 	if closeErr := readBuffer.CloseContext("enableDisable"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -228,7 +228,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestDeviceCommunicationControl{
 		TimeDuration:                  CastBACnetContextTagUnsignedInteger(timeDuration),
-		EnableDisable:                 CastBACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(enableDisable),
+		EnableDisable:                 CastBACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged(enableDisable),
 		Password:                      CastBACnetContextTagCharacterString(password),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}

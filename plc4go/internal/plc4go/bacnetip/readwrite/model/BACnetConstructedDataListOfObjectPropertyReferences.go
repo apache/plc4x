@@ -32,8 +32,7 @@ type BACnetConstructedDataListOfObjectPropertyReferences struct {
 	References []*BACnetDeviceObjectPropertyReference
 
 	// Arguments.
-	TagNumber                  uint8
-	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
+	TagNumber uint8
 }
 
 // IBACnetConstructedDataListOfObjectPropertyReferences is the corresponding interface of BACnetConstructedDataListOfObjectPropertyReferences
@@ -56,6 +55,10 @@ type IBACnetConstructedDataListOfObjectPropertyReferences interface {
 
 func (m *BACnetConstructedDataListOfObjectPropertyReferences) GetObjectType() BACnetObjectType {
 	return 0
+}
+
+func (m *BACnetConstructedDataListOfObjectPropertyReferences) GetPropertyIdentifierArgument() BACnetPropertyIdentifier {
+	return BACnetPropertyIdentifier_LIST_OF_OBJECT_PROPERTY_REFERENCES
 }
 
 ///////////////////////
@@ -87,10 +90,10 @@ func (m *BACnetConstructedDataListOfObjectPropertyReferences) GetReferences() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataListOfObjectPropertyReferences factory function for BACnetConstructedDataListOfObjectPropertyReferences
-func NewBACnetConstructedDataListOfObjectPropertyReferences(references []*BACnetDeviceObjectPropertyReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedDataListOfObjectPropertyReferences {
+func NewBACnetConstructedDataListOfObjectPropertyReferences(references []*BACnetDeviceObjectPropertyReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataListOfObjectPropertyReferences {
 	_result := &BACnetConstructedDataListOfObjectPropertyReferences{
 		References:            references,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +140,7 @@ func (m *BACnetConstructedDataListOfObjectPropertyReferences) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataListOfObjectPropertyReferences, error) {
+func BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataListOfObjectPropertyReferences, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataListOfObjectPropertyReferences"); pullErr != nil {

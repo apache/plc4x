@@ -33,8 +33,8 @@ type BACnetReliabilityTagged struct {
 	ProprietaryValue uint32
 
 	// Arguments.
-	TagClass  TagClass
 	TagNumber uint8
+	TagClass  TagClass
 }
 
 // IBACnetReliabilityTagged is the corresponding interface of BACnetReliabilityTagged
@@ -91,8 +91,8 @@ func (m *BACnetReliabilityTagged) GetIsProprietary() bool {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetReliabilityTagged factory function for BACnetReliabilityTagged
-func NewBACnetReliabilityTagged(header *BACnetTagHeader, value BACnetReliability, proprietaryValue uint32, tagClass TagClass, tagNumber uint8) *BACnetReliabilityTagged {
-	return &BACnetReliabilityTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagClass: tagClass, TagNumber: tagNumber}
+func NewBACnetReliabilityTagged(header *BACnetTagHeader, value BACnetReliability, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *BACnetReliabilityTagged {
+	return &BACnetReliabilityTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 
 func CastBACnetReliabilityTagged(structType interface{}) *BACnetReliabilityTagged {
@@ -125,7 +125,7 @@ func (m *BACnetReliabilityTagged) GetLengthInBitsConditional(lastItem bool) uint
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8))) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
@@ -134,7 +134,7 @@ func (m *BACnetReliabilityTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetReliabilityTaggedParse(readBuffer utils.ReadBuffer, tagClass TagClass, tagNumber uint8) (*BACnetReliabilityTagged, error) {
+func BACnetReliabilityTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (*BACnetReliabilityTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReliabilityTagged"); pullErr != nil {
@@ -158,7 +158,7 @@ func BACnetReliabilityTaggedParse(readBuffer utils.ReadBuffer, tagClass TagClass
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, utils.ParseValidationError{"tag doesn't match"}
+		return nil, utils.ParseValidationError{"tag class doesn't match"}
 	}
 
 	// Validation
@@ -190,7 +190,7 @@ func BACnetReliabilityTaggedParse(readBuffer utils.ReadBuffer, tagClass TagClass
 	}
 
 	// Create the instance
-	return NewBACnetReliabilityTagged(header, value, proprietaryValue, tagClass, tagNumber), nil
+	return NewBACnetReliabilityTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
 }
 
 func (m *BACnetReliabilityTagged) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -30,7 +30,7 @@ import (
 // BACnetDeviceObjectPropertyReference is the data-structure of this message
 type BACnetDeviceObjectPropertyReference struct {
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
-	PropertyIdentifier *BACnetContextTagPropertyIdentifier
+	PropertyIdentifier *BACnetPropertyIdentifierTagged
 	ArrayIndex         *BACnetContextTagUnsignedInteger
 	DeviceIdentifier   *BACnetContextTagObjectIdentifier
 }
@@ -40,7 +40,7 @@ type IBACnetDeviceObjectPropertyReference interface {
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
-	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	GetPropertyIdentifier() *BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
@@ -62,7 +62,7 @@ func (m *BACnetDeviceObjectPropertyReference) GetObjectIdentifier() *BACnetConte
 	return m.ObjectIdentifier
 }
 
-func (m *BACnetDeviceObjectPropertyReference) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+func (m *BACnetDeviceObjectPropertyReference) GetPropertyIdentifier() *BACnetPropertyIdentifierTagged {
 	return m.PropertyIdentifier
 }
 
@@ -80,7 +80,7 @@ func (m *BACnetDeviceObjectPropertyReference) GetDeviceIdentifier() *BACnetConte
 ///////////////////////////////////////////////////////////
 
 // NewBACnetDeviceObjectPropertyReference factory function for BACnetDeviceObjectPropertyReference
-func NewBACnetDeviceObjectPropertyReference(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, deviceIdentifier *BACnetContextTagObjectIdentifier) *BACnetDeviceObjectPropertyReference {
+func NewBACnetDeviceObjectPropertyReference(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, deviceIdentifier *BACnetContextTagObjectIdentifier) *BACnetDeviceObjectPropertyReference {
 	return &BACnetDeviceObjectPropertyReference{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, DeviceIdentifier: deviceIdentifier}
 }
 
@@ -154,11 +154,11 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BAC
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
-	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
+	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}

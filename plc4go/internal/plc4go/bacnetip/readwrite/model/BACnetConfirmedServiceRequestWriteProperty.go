@@ -31,7 +31,7 @@ import (
 type BACnetConfirmedServiceRequestWriteProperty struct {
 	*BACnetConfirmedServiceRequest
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
-	PropertyIdentifier *BACnetContextTagPropertyIdentifier
+	PropertyIdentifier *BACnetPropertyIdentifierTagged
 	ArrayIndex         *BACnetContextTagUnsignedInteger
 	PropertyValue      *BACnetConstructedData
 	Priority           *BACnetContextTagUnsignedInteger
@@ -46,7 +46,7 @@ type IBACnetConfirmedServiceRequestWriteProperty interface {
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
-	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	GetPropertyIdentifier() *BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetPropertyValue returns PropertyValue (property field)
@@ -91,7 +91,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) GetObjectIdentifier() *BACn
 	return m.ObjectIdentifier
 }
 
-func (m *BACnetConfirmedServiceRequestWriteProperty) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+func (m *BACnetConfirmedServiceRequestWriteProperty) GetPropertyIdentifier() *BACnetPropertyIdentifierTagged {
 	return m.PropertyIdentifier
 }
 
@@ -113,7 +113,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) GetPriority() *BACnetContex
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestWriteProperty factory function for BACnetConfirmedServiceRequestWriteProperty
-func NewBACnetConfirmedServiceRequestWriteProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, priority *BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *BACnetConfirmedServiceRequestWriteProperty {
+func NewBACnetConfirmedServiceRequestWriteProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, priority *BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *BACnetConfirmedServiceRequestWriteProperty {
 	_result := &BACnetConfirmedServiceRequestWriteProperty{
 		ObjectIdentifier:              objectIdentifier,
 		PropertyIdentifier:            propertyIdentifier,
@@ -205,11 +205,11 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
-	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
+	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -239,7 +239,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(3)), BACnetObjectType(objectIdentifier.GetObjectType()), propertyIdentifier)
+	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(3)), BACnetObjectType(objectIdentifier.GetObjectType()), BACnetPropertyIdentifier(propertyIdentifier.GetValue()))
 	if _propertyValueErr != nil {
 		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field")
 	}
@@ -276,7 +276,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestWriteProperty{
 		ObjectIdentifier:              CastBACnetContextTagObjectIdentifier(objectIdentifier),
-		PropertyIdentifier:            CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
+		PropertyIdentifier:            CastBACnetPropertyIdentifierTagged(propertyIdentifier),
 		ArrayIndex:                    CastBACnetContextTagUnsignedInteger(arrayIndex),
 		PropertyValue:                 CastBACnetConstructedData(propertyValue),
 		Priority:                      CastBACnetContextTagUnsignedInteger(priority),

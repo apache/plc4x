@@ -217,7 +217,7 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 		if pullErr := readBuffer.PullContext("errorParameters"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, DummyPropertyIdentifier())
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

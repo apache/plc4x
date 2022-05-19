@@ -30,7 +30,7 @@ import (
 // BACnetConfirmedServiceRequestReinitializeDevice is the data-structure of this message
 type BACnetConfirmedServiceRequestReinitializeDevice struct {
 	*BACnetConfirmedServiceRequest
-	ReinitializedStateOfDevice *BACnetContextTagDeviceState
+	ReinitializedStateOfDevice *BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
 	Password                   *BACnetContextTagCharacterString
 
 	// Arguments.
@@ -41,7 +41,7 @@ type BACnetConfirmedServiceRequestReinitializeDevice struct {
 type IBACnetConfirmedServiceRequestReinitializeDevice interface {
 	IBACnetConfirmedServiceRequest
 	// GetReinitializedStateOfDevice returns ReinitializedStateOfDevice (property field)
-	GetReinitializedStateOfDevice() *BACnetContextTagDeviceState
+	GetReinitializedStateOfDevice() *BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
 	// GetPassword returns Password (property field)
 	GetPassword() *BACnetContextTagCharacterString
 	// GetLengthInBytes returns the length in bytes
@@ -78,7 +78,7 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetParent() *BACnetCon
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetReinitializedStateOfDevice() *BACnetContextTagDeviceState {
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetReinitializedStateOfDevice() *BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
 	return m.ReinitializedStateOfDevice
 }
 
@@ -92,7 +92,7 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetPassword() *BACnetC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestReinitializeDevice factory function for BACnetConfirmedServiceRequestReinitializeDevice
-func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice *BACnetContextTagDeviceState, password *BACnetContextTagCharacterString, serviceRequestLength uint16) *BACnetConfirmedServiceRequestReinitializeDevice {
+func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice *BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, password *BACnetContextTagCharacterString, serviceRequestLength uint16) *BACnetConfirmedServiceRequestReinitializeDevice {
 	_result := &BACnetConfirmedServiceRequestReinitializeDevice{
 		ReinitializedStateOfDevice:    reinitializedStateOfDevice,
 		Password:                      password,
@@ -157,11 +157,11 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("reinitializedStateOfDevice"); pullErr != nil {
 		return nil, pullErr
 	}
-	_reinitializedStateOfDevice, _reinitializedStateOfDeviceErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_DEVICE_STATE))
+	_reinitializedStateOfDevice, _reinitializedStateOfDeviceErr := BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _reinitializedStateOfDeviceErr != nil {
 		return nil, errors.Wrap(_reinitializedStateOfDeviceErr, "Error parsing 'reinitializedStateOfDevice' field")
 	}
-	reinitializedStateOfDevice := CastBACnetContextTagDeviceState(_reinitializedStateOfDevice)
+	reinitializedStateOfDevice := CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(_reinitializedStateOfDevice)
 	if closeErr := readBuffer.CloseContext("reinitializedStateOfDevice"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -193,7 +193,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReinitializeDevice{
-		ReinitializedStateOfDevice:    CastBACnetContextTagDeviceState(reinitializedStateOfDevice),
+		ReinitializedStateOfDevice:    CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(reinitializedStateOfDevice),
 		Password:                      CastBACnetContextTagCharacterString(password),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}

@@ -29,7 +29,7 @@ import (
 
 // BACnetPropertyWriteDefinition is the data-structure of this message
 type BACnetPropertyWriteDefinition struct {
-	PropertyIdentifier *BACnetContextTagPropertyIdentifier
+	PropertyIdentifier *BACnetPropertyIdentifierTagged
 	ArrayIndex         *BACnetContextTagUnsignedInteger
 	PropertyValue      *BACnetConstructedData
 	Priority           *BACnetContextTagUnsignedInteger
@@ -41,7 +41,7 @@ type BACnetPropertyWriteDefinition struct {
 // IBACnetPropertyWriteDefinition is the corresponding interface of BACnetPropertyWriteDefinition
 type IBACnetPropertyWriteDefinition interface {
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
-	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	GetPropertyIdentifier() *BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetPropertyValue returns PropertyValue (property field)
@@ -61,7 +61,7 @@ type IBACnetPropertyWriteDefinition interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetPropertyWriteDefinition) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+func (m *BACnetPropertyWriteDefinition) GetPropertyIdentifier() *BACnetPropertyIdentifierTagged {
 	return m.PropertyIdentifier
 }
 
@@ -83,7 +83,7 @@ func (m *BACnetPropertyWriteDefinition) GetPriority() *BACnetContextTagUnsignedI
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyWriteDefinition factory function for BACnetPropertyWriteDefinition
-func NewBACnetPropertyWriteDefinition(propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, priority *BACnetContextTagUnsignedInteger, objectType BACnetObjectType) *BACnetPropertyWriteDefinition {
+func NewBACnetPropertyWriteDefinition(propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, priority *BACnetContextTagUnsignedInteger, objectType BACnetObjectType) *BACnetPropertyWriteDefinition {
 	return &BACnetPropertyWriteDefinition{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, ObjectType: objectType}
 }
 
@@ -146,11 +146,11 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectType 
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_PROPERTY_IDENTIFIER))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
-	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
+	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -183,7 +183,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectType 
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), objectType, propertyIdentifier)
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), objectType, propertyIdentifier.GetValue())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

@@ -543,7 +543,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         // Unknown field
         lengthInBits += ${simpleTypeReference.sizeInBits};
     <#case "virtual">
-        <#assign virtualField = field>
+        <#assign virtualField = field.asVirtualField().orElseThrow()>
 
         // A virtual field doesn't have any in- or output.
         <#break>
@@ -762,7 +762,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 if (!(${helper.toParseExpression(validationField, helper.boolTypeReference, validationField.getValidationExpression(), null)})) {
                     <#assign errorType="ParseValidationException">
                     <#if !validationField.shouldFail()><#assign errorType="ParseAssertException"></#if>
-                    throw new ${errorType}(${validationField.getDescription().orElse("Validation failed")});
+                    throw new ${errorType}(${validationField.getDescription().orElse("\"Validation failed\"")});
                 }
                 <#break>
             <#case "peek">

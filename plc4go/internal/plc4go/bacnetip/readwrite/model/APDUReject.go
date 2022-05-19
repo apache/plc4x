@@ -31,7 +31,7 @@ import (
 type APDUReject struct {
 	*APDU
 	OriginalInvokeId uint8
-	RawRejectReason  uint8
+	RejectReason     *RejectReasonTagged
 
 	// Arguments.
 	ApduLength uint16
@@ -42,14 +42,8 @@ type IAPDUReject interface {
 	IAPDU
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
-	// GetRawRejectReason returns RawRejectReason (property field)
-	GetRawRejectReason() uint8
-	// GetIsRejectReasonProprietary returns IsRejectReasonProprietary (virtual field)
-	GetIsRejectReasonProprietary() bool
-	// GetRejectReason returns RejectReason (virtual field)
-	GetRejectReason() RejectReason
-	// GetRejectReasonProprietary returns RejectReasonProprietary (virtual field)
-	GetRejectReasonProprietary() uint8
+	// GetRejectReason returns RejectReason (property field)
+	GetRejectReason() *RejectReasonTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -87,29 +81,8 @@ func (m *APDUReject) GetOriginalInvokeId() uint8 {
 	return m.OriginalInvokeId
 }
 
-func (m *APDUReject) GetRawRejectReason() uint8 {
-	return m.RawRejectReason
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *APDUReject) GetIsRejectReasonProprietary() bool {
-	return bool(bool((m.GetRawRejectReason()) > (63)))
-}
-
-func (m *APDUReject) GetRejectReason() RejectReason {
-	return RejectReason(MapRejectReason(m.GetRawRejectReason(), m.GetIsRejectReasonProprietary()))
-}
-
-func (m *APDUReject) GetRejectReasonProprietary() uint8 {
-	return uint8(utils.InlineIf(m.GetIsRejectReasonProprietary(), func() interface{} { return uint8(m.GetRawRejectReason()) }, func() interface{} { return uint8(uint8(0)) }).(uint8))
+func (m *APDUReject) GetRejectReason() *RejectReasonTagged {
+	return m.RejectReason
 }
 
 ///////////////////////
@@ -118,10 +91,10 @@ func (m *APDUReject) GetRejectReasonProprietary() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUReject factory function for APDUReject
-func NewAPDUReject(originalInvokeId uint8, rawRejectReason uint8, apduLength uint16) *APDUReject {
+func NewAPDUReject(originalInvokeId uint8, rejectReason *RejectReasonTagged, apduLength uint16) *APDUReject {
 	_result := &APDUReject{
 		OriginalInvokeId: originalInvokeId,
-		RawRejectReason:  rawRejectReason,
+		RejectReason:     rejectReason,
 		APDU:             NewAPDU(apduLength),
 	}
 	_result.Child = _result
@@ -161,14 +134,8 @@ func (m *APDUReject) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Simple field (originalInvokeId)
 	lengthInBits += 8
 
-	// Simple field (rawRejectReason)
-	lengthInBits += 8
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
-
-	// A virtual field doesn't have any in- or output.
+	// Simple field (rejectReason)
+	lengthInBits += m.RejectReason.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -207,27 +174,18 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDURejec
 	}
 	originalInvokeId := _originalInvokeId
 
-	// Simple Field (rawRejectReason)
-	_rawRejectReason, _rawRejectReasonErr := readBuffer.ReadUint8("rawRejectReason", 8)
-	if _rawRejectReasonErr != nil {
-		return nil, errors.Wrap(_rawRejectReasonErr, "Error parsing 'rawRejectReason' field")
+	// Simple Field (rejectReason)
+	if pullErr := readBuffer.PullContext("rejectReason"); pullErr != nil {
+		return nil, pullErr
 	}
-	rawRejectReason := _rawRejectReason
-
-	// Virtual field
-	_isRejectReasonProprietary := bool((rawRejectReason) > (63))
-	isRejectReasonProprietary := bool(_isRejectReasonProprietary)
-	_ = isRejectReasonProprietary
-
-	// Virtual field
-	_rejectReason := MapRejectReason(rawRejectReason, isRejectReasonProprietary)
-	rejectReason := RejectReason(_rejectReason)
-	_ = rejectReason
-
-	// Virtual field
-	_rejectReasonProprietary := utils.InlineIf(isRejectReasonProprietary, func() interface{} { return uint8(rawRejectReason) }, func() interface{} { return uint8(uint8(0)) }).(uint8)
-	rejectReasonProprietary := uint8(_rejectReasonProprietary)
-	_ = rejectReasonProprietary
+	_rejectReason, _rejectReasonErr := RejectReasonTaggedParse(readBuffer, uint32(uint32(1)))
+	if _rejectReasonErr != nil {
+		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field")
+	}
+	rejectReason := CastRejectReasonTagged(_rejectReason)
+	if closeErr := readBuffer.CloseContext("rejectReason"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	if closeErr := readBuffer.CloseContext("APDUReject"); closeErr != nil {
 		return nil, closeErr
@@ -236,7 +194,7 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDURejec
 	// Create a partially initialized instance
 	_child := &APDUReject{
 		OriginalInvokeId: originalInvokeId,
-		RawRejectReason:  rawRejectReason,
+		RejectReason:     CastRejectReasonTagged(rejectReason),
 		APDU:             &APDU{},
 	}
 	_child.APDU.Child = _child
@@ -266,23 +224,16 @@ func (m *APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
-		// Simple Field (rawRejectReason)
-		rawRejectReason := uint8(m.RawRejectReason)
-		_rawRejectReasonErr := writeBuffer.WriteUint8("rawRejectReason", 8, (rawRejectReason))
-		if _rawRejectReasonErr != nil {
-			return errors.Wrap(_rawRejectReasonErr, "Error serializing 'rawRejectReason' field")
+		// Simple Field (rejectReason)
+		if pushErr := writeBuffer.PushContext("rejectReason"); pushErr != nil {
+			return pushErr
 		}
-		// Virtual field
-		if _isRejectReasonProprietaryErr := writeBuffer.WriteVirtual("isRejectReasonProprietary", m.GetIsRejectReasonProprietary()); _isRejectReasonProprietaryErr != nil {
-			return errors.Wrap(_isRejectReasonProprietaryErr, "Error serializing 'isRejectReasonProprietary' field")
+		_rejectReasonErr := m.RejectReason.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("rejectReason"); popErr != nil {
+			return popErr
 		}
-		// Virtual field
-		if _rejectReasonErr := writeBuffer.WriteVirtual("rejectReason", m.GetRejectReason()); _rejectReasonErr != nil {
+		if _rejectReasonErr != nil {
 			return errors.Wrap(_rejectReasonErr, "Error serializing 'rejectReason' field")
-		}
-		// Virtual field
-		if _rejectReasonProprietaryErr := writeBuffer.WriteVirtual("rejectReasonProprietary", m.GetRejectReasonProprietary()); _rejectReasonProprietaryErr != nil {
-			return errors.Wrap(_rejectReasonProprietaryErr, "Error serializing 'rejectReasonProprietary' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUReject"); popErr != nil {
