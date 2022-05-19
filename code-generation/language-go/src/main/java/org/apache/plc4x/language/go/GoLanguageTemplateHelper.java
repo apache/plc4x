@@ -94,22 +94,22 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             // TODO: shouldn't this be an error case
             return "";
         }
-        if (typeReference instanceof ArrayTypeReference) {
+        if (typeReference.isArrayTypeReference()) {
             final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
             TypeReference elementTypeReference = arrayTypeReference.getElementTypeReference();
             return "[]" + (elementTypeReference.isNonSimpleTypeReference() && !elementTypeReference.isEnumTypeReference() ? "*" : "") + getLanguageTypeNameForTypeReference(elementTypeReference);
         }
-        if (!(typeReference instanceof SimpleTypeReference)) {
-            return ((NonSimpleTypeReference) typeReference).getName();
+        if (typeReference.isNonSimpleTypeReference()) {
+            return typeReference.asNonSimpleTypeReference().orElseThrow().getName();
         }
-        SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+        SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
                 return "bool";
             case BYTE:
                 return "byte";
             case UINT:
-                IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                IntegerTypeReference unsignedIntegerTypeReference = simpleTypeReference.asIntegerTypeReference().orElseThrow();
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
                     return "uint8";
                 }
@@ -125,7 +125,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 emitRequiredImport("math/big");
                 return "*big.Int";
             case INT:
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                IntegerTypeReference integerTypeReference = simpleTypeReference.asIntegerTypeReference().orElseThrow();
                 if (integerTypeReference.getSizeInBits() <= 8) {
                     return "int8";
                 }
@@ -142,7 +142,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return "*big.Int";
             case FLOAT:
             case UFLOAT:
-                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
+                FloatTypeReference floatTypeReference = simpleTypeReference.asFloatTypeReference().orElseThrow();
                 int sizeInBits = floatTypeReference.getSizeInBits();
                 if (sizeInBits <= 32) {
                     return "float32";
@@ -729,8 +729,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             .filter(OptionalField.class::isInstance)
             .isPresent()
         ) {
+            tracer = tracer.dive("non serialize optional fields");
             return toOptionalVariableExpression(field, typeReference, variableLiteral, parserArguments, serializerArguments, suppressPointerAccess, tracer);
-        } // If we are accessing optional fields, (we might need to use pointer-access).
+        }
+        // If we are accessing optional fields, (we might need to use pointer-access).
         else if (thisType.isComplexTypeDefinition()
             && thisType.asComplexTypeDefinition()
             .orElseThrow(IllegalStateException::new)
@@ -738,7 +740,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             .filter(OptionalField.class::isInstance)
             .isPresent()
         ) {
-            tracer = tracer.dive("optional fields 2");
+            tracer = tracer.dive("optional fields");
             return tracer + "(" + (suppressPointerAccess ? "" : "*") + "m.Get" + capitalize(variableLiteral.getName()) + "())" +
                 variableLiteral.getChild().map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true))).orElse("");
         }

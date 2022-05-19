@@ -176,16 +176,18 @@ func BACnetContextTagEventTypeParse(readBuffer utils.ReadBuffer, tagNumberArgume
 	}
 
 	// Manual Field (eventType)
-	eventType, _eventTypeErr := ReadEventType(readBuffer, actualLength)
+	_eventType, _eventTypeErr := ReadEventType(readBuffer, actualLength)
 	if _eventTypeErr != nil {
 		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field")
 	}
+	eventType := _eventType.(BACnetEventType)
 
 	// Manual Field (proprietaryValue)
-	proprietaryValue, _proprietaryValueErr := ReadProprietaryEventType(readBuffer, eventType, actualLength)
+	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEventType(readBuffer, eventType, actualLength)
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
 	}
+	proprietaryValue := _proprietaryValue.(uint32)
 
 	// Virtual field
 	_isProprietary := bool((eventType) == (BACnetEventType_VENDOR_PROPRIETARY_VALUE))

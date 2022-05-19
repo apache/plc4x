@@ -176,16 +176,18 @@ func BACnetContextTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNum
 	}
 
 	// Manual Field (propertyIdentifier)
-	propertyIdentifier, _propertyIdentifierErr := ReadPropertyIdentifier(readBuffer, actualLength)
+	_propertyIdentifier, _propertyIdentifierErr := ReadPropertyIdentifier(readBuffer, actualLength)
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
+	propertyIdentifier := _propertyIdentifier.(BACnetPropertyIdentifier)
 
 	// Manual Field (proprietaryValue)
-	proprietaryValue, _proprietaryValueErr := ReadProprietaryPropertyIdentifier(readBuffer, propertyIdentifier, actualLength)
+	_proprietaryValue, _proprietaryValueErr := ReadProprietaryPropertyIdentifier(readBuffer, propertyIdentifier, actualLength)
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
 	}
+	proprietaryValue := _proprietaryValue.(uint32)
 
 	// Virtual field
 	_isProprietary := bool((propertyIdentifier) == (BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))

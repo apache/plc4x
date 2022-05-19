@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.bacnetip.readwrite.utils;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -27,9 +28,13 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithAdditionalStringRepresentation;
 
@@ -37,6 +42,112 @@ public class StaticHelper {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(StaticHelper.class);
 
+    public static Object readEnumGeneric(ReadBuffer readBuffer, Long actualLength, Enum<?> template) throws ParseException {
+        int bitsToRead = (int) (actualLength * 8);
+        long rawValue = readBuffer.readUnsignedLong("value", bitsToRead);
+        // TODO: map types here for better performance which doesn't use reflection
+        if (template.getDeclaringClass() == BACnetPropertyIdentifier.class) {
+            BACnetPropertyIdentifier baCnetPropertyIdentifier = BACnetPropertyIdentifier.enumForValue(rawValue);
+            if (baCnetPropertyIdentifier == null) {
+                return BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE;
+            }
+            return baCnetPropertyIdentifier;
+        } else if (template.getDeclaringClass() == BACnetReliability.class) {
+            BACnetReliability baCnetReliability = BACnetReliability.enumForValue((int) rawValue);
+            if (baCnetReliability == null) {
+                return BACnetReliability.VENDOR_PROPRIETARY_VALUE;
+            }
+            return baCnetReliability;
+        } else {
+            LOGGER.warn("using reflection for {}", template.getDeclaringClass());
+            Optional<Method> enumForValue = Arrays.stream(template.getDeclaringClass().getDeclaredMethods())
+                .filter(method -> method.getName().equals("enumForValue"))
+                .findAny();
+            if (!enumForValue.isPresent()) {
+                throw new ParseException("No enumForValue available");
+            }
+            Method method = enumForValue.get();
+            try {
+                Class<?> parameterType = method.getParameterTypes()[0];
+                Object paramValue = null;
+                if (parameterType == byte.class || parameterType == Byte.class) {
+                    paramValue = (byte) rawValue;
+                } else if (parameterType == short.class || parameterType == Short.class) {
+                    paramValue = (short) rawValue;
+                } else if (parameterType == int.class || parameterType == Integer.class) {
+                    paramValue = (int) rawValue;
+                }
+                Object result = method.invoke(null, paramValue);
+                if (result == null) {
+                    return Enum.valueOf(template.getDeclaringClass(), "VENDOR_PROPRIETARY_VALUE");
+                }
+                return result;
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new ParseException("error invoking method", e);
+            }
+        }
+    }
+
+    public static Long readProprietaryEnumGeneric(ReadBuffer readBuffer, Long actualLength, boolean shouldRead) throws ParseException {
+        if (!shouldRead) {
+            return 0L;
+        }
+        // We need to reset our reader to the position we read before
+        readBuffer.reset((int) (readBuffer.getPos() - actualLength));
+        int bitsToRead = (int) (actualLength * 8);
+        return readBuffer.readUnsignedLong("proprietaryValue", bitsToRead);
+    }
+
+    public static void writeEnumGeneric(WriteBuffer writeBuffer, Enum<?> value) throws SerializationException {
+        if (value == null) {
+            return;
+        }
+        int bitsToWrite;
+        long valueValue;
+        // TODO: map types here for better performance which doesn't use reflection
+        if (value.getDeclaringClass() == BACnetPropertyIdentifier.class) {
+            valueValue = ((BACnetPropertyIdentifier) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetReliability.class) {
+            valueValue = ((BACnetReliability) value).getValue();
+        } else {
+            LOGGER.warn("using reflection for {}", value.getDeclaringClass());
+            try {
+                valueValue = ((Number) FieldUtils.getDeclaredField(value.getDeclaringClass(), "value", true).get(value)).longValue();
+            } catch (IllegalAccessException e) {
+                throw new SerializationException("error accessing value", e);
+            }
+        }
+
+        if (valueValue <= 0xffL) {
+            bitsToWrite = 8;
+        } else if (valueValue <= 0xffffL) {
+            bitsToWrite = 16;
+        } else if (valueValue <= 0xffffffffL) {
+            bitsToWrite = 32;
+        } else {
+            bitsToWrite = 32;
+        }
+        writeBuffer.writeUnsignedLong("value", bitsToWrite, valueValue, WithAdditionalStringRepresentation(value.name()));
+    }
+
+    public static void writeProprietaryEnumGeneric(WriteBuffer writeBuffer, long value, boolean shouldWrite) throws SerializationException {
+        if (!shouldWrite) {
+            return;
+        }
+        int bitsToWrite;
+        if (value <= 0xffL) {
+            bitsToWrite = 8;
+        } else if (value <= 0xffffL) {
+            bitsToWrite = 16;
+        } else if (value <= 0xffffffffL) {
+            bitsToWrite = 32;
+        } else {
+            bitsToWrite = 32;
+        }
+        writeBuffer.writeUnsignedLong("proprietaryValue", bitsToWrite, value, WithAdditionalStringRepresentation("VENDOR_PROPRIETARY_VALUE"));
+    }
+
+    @Deprecated
     public static BACnetPropertyIdentifier readPropertyIdentifier(ReadBuffer readBuffer, Long actualLength) throws ParseException {
         int bitsToRead = (int) (actualLength * 8);
         long readUnsignedLong = readBuffer.readUnsignedLong("propertyIdentifier", bitsToRead);
@@ -46,6 +157,18 @@ public class StaticHelper {
         return BACnetPropertyIdentifier.enumForValue(readUnsignedLong);
     }
 
+    @Deprecated
+    public static Long readProprietaryPropertyIdentifier(ReadBuffer readBuffer, BACnetPropertyIdentifier value, Long actualLength) throws ParseException {
+        if (value != null && value != BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE) {
+            return 0L;
+        }
+        // We need to reset our reader to the position we read before
+        readBuffer.reset((int) (readBuffer.getPos() - actualLength));
+        int bitsToRead = (int) (actualLength * 8);
+        return readBuffer.readUnsignedLong("proprietaryPropertyIdentifier", bitsToRead);
+    }
+
+    @Deprecated
     public static void writePropertyIdentifier(WriteBuffer writeBuffer, BACnetPropertyIdentifier value) throws SerializationException {
         if (value == null || value == BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE) {
             return;
@@ -64,6 +187,7 @@ public class StaticHelper {
         writeBuffer.writeUnsignedLong("propertyIdentifier", bitsToWrite, valueValue, WithAdditionalStringRepresentation(value.name()));
     }
 
+    @Deprecated
     public static void writeProprietaryPropertyIdentifier(WriteBuffer writeBuffer, BACnetPropertyIdentifier baCnetPropertyIdentifier, long value) throws SerializationException {
         if (baCnetPropertyIdentifier != null && baCnetPropertyIdentifier != BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE) {
             return;
@@ -81,16 +205,7 @@ public class StaticHelper {
         writeBuffer.writeUnsignedLong("proprietaryPropertyIdentifier", bitsToWrite, value, WithAdditionalStringRepresentation(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE.name()));
     }
 
-    public static Long readProprietaryPropertyIdentifier(ReadBuffer readBuffer, BACnetPropertyIdentifier value, Long actualLength) throws ParseException {
-        if (value != null && value != BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE) {
-            return 0L;
-        }
-        // We need to reset our reader to the position we read before
-        readBuffer.reset((int) (readBuffer.getPos() - actualLength));
-        int bitsToRead = (int) (actualLength * 8);
-        return readBuffer.readUnsignedLong("proprietaryPropertyIdentifier", bitsToRead);
-    }
-
+    @Deprecated
     public static BACnetEventType readEventType(ReadBuffer readBuffer, Long actualLength) throws ParseException {
         int bitsToRead = (int) (actualLength * 8);
         int readUnsignedLong = readBuffer.readUnsignedInt("eventType", bitsToRead);
@@ -100,6 +215,7 @@ public class StaticHelper {
         return BACnetEventType.enumForValue(readUnsignedLong);
     }
 
+    @Deprecated
     public static void writeEventType(WriteBuffer writeBuffer, BACnetEventType value) throws SerializationException {
         if (value == null || value == BACnetEventType.VENDOR_PROPRIETARY_VALUE) {
             return;
@@ -118,6 +234,7 @@ public class StaticHelper {
         writeBuffer.writeUnsignedLong("eventType", bitsToWrite, valueValue, WithAdditionalStringRepresentation(value.name()));
     }
 
+    @Deprecated
     public static Long readProprietaryEventType(ReadBuffer readBuffer, BACnetEventType value, Long actualLength) throws ParseException {
         if (value != null && value != BACnetEventType.VENDOR_PROPRIETARY_VALUE) {
             return 0L;
@@ -128,6 +245,7 @@ public class StaticHelper {
         return readBuffer.readUnsignedLong("proprietaryEventType", bitsToRead);
     }
 
+    @Deprecated
     public static void writeProprietaryEventType(WriteBuffer writeBuffer, BACnetEventType eventType, long value) throws SerializationException {
         if (eventType != null && eventType != BACnetEventType.VENDOR_PROPRIETARY_VALUE) {
             return;
@@ -145,6 +263,7 @@ public class StaticHelper {
         writeBuffer.writeUnsignedLong("proprietaryEventType", bitsToWrite, value, WithAdditionalStringRepresentation(BACnetEventType.VENDOR_PROPRIETARY_VALUE.name()));
     }
 
+    @Deprecated
     public static BACnetEventState readEventState(ReadBuffer readBuffer, Long actualLength) throws ParseException {
         int bitsToRead = (int) (actualLength * 8);
         int readUnsignedLong = readBuffer.readUnsignedInt("eventState", bitsToRead);
@@ -154,6 +273,7 @@ public class StaticHelper {
         return BACnetEventState.enumForValue(readUnsignedLong);
     }
 
+    @Deprecated
     public static void writeEventState(WriteBuffer writeBuffer, BACnetEventState value) throws SerializationException {
         if (value == null || value == BACnetEventState.VENDOR_PROPRIETARY_VALUE) {
             return;
@@ -172,6 +292,7 @@ public class StaticHelper {
         writeBuffer.writeUnsignedLong("eventState", bitsToWrite, valueValue, WithAdditionalStringRepresentation(value.name()));
     }
 
+    @Deprecated
     public static Long readProprietaryEventState(ReadBuffer readBuffer, BACnetEventState value, Long actualLength) throws ParseException {
         if (value != null && value != BACnetEventState.VENDOR_PROPRIETARY_VALUE) {
             return 0L;
@@ -182,6 +303,7 @@ public class StaticHelper {
         return readBuffer.readUnsignedLong("proprietaryEventState", bitsToRead);
     }
 
+    @Deprecated
     public static void writeProprietaryEventState(WriteBuffer writeBuffer, BACnetEventState eventState, long value) throws SerializationException {
         if (eventState != null && eventState != BACnetEventState.VENDOR_PROPRIETARY_VALUE) {
             return;
@@ -199,6 +321,7 @@ public class StaticHelper {
         writeBuffer.writeUnsignedLong("proprietaryEventState", bitsToWrite, value, WithAdditionalStringRepresentation(BACnetEventState.VENDOR_PROPRIETARY_VALUE.name()));
     }
 
+    @Deprecated
     public static BACnetObjectType readObjectType(ReadBuffer readBuffer) throws ParseException {
         int readUnsignedLong = readBuffer.readUnsignedInt("objectType", 10);
         if (!BACnetObjectType.isDefined(readUnsignedLong)) {
@@ -207,6 +330,7 @@ public class StaticHelper {
         return BACnetObjectType.enumForValue(readUnsignedLong);
     }
 
+    @Deprecated
     public static void writeObjectType(WriteBuffer writeBuffer, BACnetObjectType value) throws SerializationException {
         if (value == null || value == BACnetObjectType.VENDOR_PROPRIETARY_VALUE) {
             return;
@@ -214,6 +338,7 @@ public class StaticHelper {
         writeBuffer.writeUnsignedLong("objectType", 10, value.getValue(), WithAdditionalStringRepresentation(value.name()));
     }
 
+    @Deprecated
     public static Integer readProprietaryObjectType(ReadBuffer readBuffer, BACnetObjectType value) throws ParseException {
         if (value != null && value != BACnetObjectType.VENDOR_PROPRIETARY_VALUE) {
             return 0;
@@ -226,6 +351,7 @@ public class StaticHelper {
         return readBuffer.readUnsignedInt("proprietaryObjectType", 10);
     }
 
+    @Deprecated
     public static void writeProprietaryObjectType(WriteBuffer writeBuffer, BACnetObjectType objectType, int value) throws SerializationException {
         if (objectType != null && objectType != BACnetObjectType.VENDOR_PROPRIETARY_VALUE) {
             return;
@@ -1129,39 +1255,47 @@ public class StaticHelper {
         return new BACnetContextTagPropertyIdentifier(null, BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, 0L, (short) 0, true, 0L);
     }
 
+    @Deprecated
     public static ErrorClass mapErrorClass(BACnetApplicationTagEnumerated rawErrorClass) {
         return ErrorClass.enumForValue((int) rawErrorClass.getActualValue());
     }
 
+    @Deprecated
     public static ErrorCode mapErrorCode(BACnetApplicationTagEnumerated rawErrorCode) {
         return ErrorCode.enumForValue((int) rawErrorCode.getActualValue());
     }
 
+    @Deprecated
     public static AbortReason mapAbortReason(short rawAbortReason, boolean proprietary) {
         if (proprietary) return null;
         return AbortReason.enumForValue(rawAbortReason);
     }
 
+    @Deprecated
     public static RejectReason mapRejectReason(short rawRejectReason, boolean proprietary) {
         if (proprietary) return null;
         return RejectReason.enumForValue(rawRejectReason);
     }
 
+    @Deprecated
     public static BACnetLifeSafetyState mapBACnetLifeSafetyState(BACnetApplicationTagEnumerated rawData, boolean proprietary) {
         if (proprietary) return null;
         return BACnetLifeSafetyState.enumForValue((int) rawData.getActualValue());
     }
 
+    @Deprecated
     public static BACnetLifeSafetyMode mapBACnetLifeSafetyMode(BACnetApplicationTagEnumerated rawData, boolean proprietary) {
         if (proprietary) return null;
         return BACnetLifeSafetyMode.enumForValue((int) rawData.getActualValue());
     }
 
+    @Deprecated
     public static BACnetReliability mapBACnetReliability(BACnetApplicationTagEnumerated rawData, boolean proprietary) {
         if (proprietary) return null;
         return BACnetReliability.enumForValue((int) rawData.getActualValue());
     }
 
+    @Deprecated
     public static BACnetObjectType mapBACnetObjectType(BACnetContextTagEnumerated rawObjectType) {
         if (rawObjectType == null) return null;
         BACnetObjectType baCnetObjectType = BACnetObjectType.enumForValue((int) rawObjectType.getActualValue());

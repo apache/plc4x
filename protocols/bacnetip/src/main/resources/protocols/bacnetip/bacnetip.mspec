@@ -1842,7 +1842,8 @@
     ]
 ]
 
-// TODO: try with manual fields
+// TODO: migrate like BACnetReliabilityTagged
+// TODO: maybe we transfrom that to a tandem of ApplicationTag and enum with manual fields
 [type BACnetConstructedDataAcceptedModesEntry
     [simple   BACnetApplicationTagEnumerated
                         rawData                                                                              ]
@@ -1853,6 +1854,7 @@
     [virtual  uint 16   acceptedModeProprietary 'isAcceptedModeProprietary?rawData.actualValue:0'           ]
 ]
 
+// Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetLifeSafetyMode
     ['0'    OFF                         ]
     ['1'    ON                          ]
@@ -1871,7 +1873,7 @@
     ['14'   DEFAULT                     ]
 ]
 
-// TODO: try with manual fields
+// TODO: migrate like BACnetReliabilityTagged
 [type BACnetConstructedDataLifeSafetyStateEntry
     [simple   BACnetApplicationTagEnumerated
                         rawData                                                                                 ]
@@ -1882,6 +1884,7 @@
     [virtual  uint 16   lifeSafetyStateProprietary 'isLifeSafetyStateProprietary?rawData.actualValue:0'         ]
 ]
 
+// Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetLifeSafetyState
     ['0'    QUIET]
     ['1'    PRE_ALARM]
@@ -1909,17 +1912,7 @@
     ['23'   TEST_SUPERVISORY]
 ]
 
-// TODO: try with manual fields
-[type BACnetConstructedDataReliabilityEntry
-    [simple   BACnetApplicationTagEnumerated
-                        rawData                                                                               ]
-    [virtual  bit       isBACnetReliabilityProprietary 'rawData.actualValue > 255'                            ]
-    [virtual  BACnetReliability
-                        reliability
-                            'STATIC_CALL("mapBACnetReliability", rawData, isBACnetReliabilityProprietary)'    ]
-    [virtual  uint 16   reliabilityProprietary 'isBACnetReliabilityProprietary?rawData.actualValue:0'         ]
-]
-
+// Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetReliability
     ['0'    NO_FAULT_DETECTED                 ]
     ['1'    NO_SENSOR                         ]
@@ -1945,8 +1938,32 @@
     ['22'   PROPRIETARY_COMMAND_FAILURE       ]
     ['23'   FAULTS_LISTED                     ]
     ['24'   REFERENCED_OBJECT_FAULT           ]
+
+      // plc4x definition
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE            ]
 ]
 
+[type BACnetReliabilityTagged(TagClass tagClass, uint 8 tagNumber)
+    [simple   BACnetTagHeader
+                        header                                                                               ]
+    [validation    'header.tagClass == tagClass'    "tag doesn't match"                                      ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                    "tagnumber doesn't match" shouldFail=false               ]
+    [manual   BACnetReliability
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetReliability.VENDOR_PROPRIETARY_VALUE)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'header.actualLength * 8'                                                            ]
+    [virtual  bit   isProprietary
+                        'value == BACnetReliability.VENDOR_PROPRIETARY_VALUE'                                ]
+    [manual   uint 32
+                    proprietaryValue
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
+                        'header.actualLength * 8'                                                            ]
+]
+
+// TODO: migrate like BACnetReliabilityTagged
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
 [type BACnetStatusFlags(uint 8 tagNumber)
     [simple BACnetContextTagBitString('tagNumber', 'BACnetDataType.BIT_STRING')
@@ -1958,6 +1975,8 @@
     [virtual    bit outOfService    'rawBits.payload.data[3]']
 ]
 
+// TODO: migrate like BACnetReliabilityTagged
+// TODO: fixme: convert to enum now as this is sometime a application tag, sometimes a context.tag
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
 // TODO: fixme... this is only in context a context tag... otherwise it can be and application tag
 [type BACnetAction(uint 8 tagNumber)
@@ -2035,6 +2054,10 @@
             [optional   BACnetBinaryPV('peekedTagNumber')
                         binaryValue
             ]
+        ]
+        // TODO: add missing type
+        ['7' BACnetPropertyStatesReliability(uint 8 peekedTagNumber)
+            [simple   BACnetReliabilityTagged('TagClass.CONTEXT_SPECIFIC_TAGS', '0') reliability]
         ]
         // TODO: add missing type
         ['16' BACnetPropertyStatesAction(uint 8 peekedTagNumber)
@@ -2908,7 +2931,7 @@
         //[*, 'REFERENCE_PORT'                          BACnetConstructedDataReferencePort [validation    '1 == 2'    "TODO: implement me REFERENCE_PORT BACnetConstructedDataReferencePort"]]
         //[*, 'REGISTERED_CAR_CALL'                     BACnetConstructedDataRegisteredCarCall [validation    '1 == 2'    "TODO: implement me REGISTERED_CAR_CALL BACnetConstructedDataRegisteredCarCall"]]
         [*, 'RELIABILITY'                             BACnetConstructedDataReliability
-            [simple BACnetConstructedDataReliabilityEntry reliability]
+            [simple   BACnetReliabilityTagged('TagClass.APPLICATION_TAGS', '0') reliability]
         ]
         //[*, 'RELIABILITY_EVALUATION_INHIBIT'          BACnetConstructedDataReliabilityEvaluationInhibit [validation    '1 == 2'    "TODO: implement me RELIABILITY_EVALUATION_INHIBIT BACnetConstructedDataReliabilityEvaluationInhibit"]]
         //[*, 'RELINQUISH_DEFAULT'                      BACnetConstructedDataRelinquishDefault [validation    '1 == 2'    "TODO: implement me RELINQUISH_DEFAULT BACnetConstructedDataRelinquishDefault"]]

@@ -81,6 +81,13 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.NLMParse(io, apduLength)
 	case "BACnetActionCommand":
 		return model.BACnetActionCommandParse(io)
+	case "BACnetReliabilityTagged":
+		tagClass := model.TagClassByName(arguments[0])
+		tagNumber, err := utils.StrToUint8(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetReliabilityTaggedParse(io, tagClass, tagNumber)
 	case "BACnetTagPayloadDate":
 		return model.BACnetTagPayloadDateParse(io)
 	case "BACnetNotificationParametersExtendedParameters":
@@ -203,8 +210,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "ListOfCovNotificationsValue":
 		objectType := model.BACnetObjectTypeByName(arguments[0])
 		return model.ListOfCovNotificationsValueParse(io, objectType)
-	case "BACnetConstructedDataReliabilityEntry":
-		return model.BACnetConstructedDataReliabilityEntryParse(io)
 	case "BACnetDateTime":
 		return model.BACnetDateTimeParse(io)
 	case "ErrorEnclosed":

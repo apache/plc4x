@@ -20,12 +20,78 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"math/big"
 )
 
-func ReadPropertyIdentifier(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetPropertyIdentifier, error) {
+func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template interface{}) (interface{}, error) {
+	bitsToRead := (uint8)(actualLength * 8)
+	rawValue, err := readBuffer.ReadUint32("value", bitsToRead)
+	if err != nil {
+		return nil, err
+	}
+	switch template.(type) {
+	case BACnetReliability:
+		return BACnetReliability(rawValue), nil
+	default:
+		return rawValue, nil
+	}
+}
+
+func ReadProprietaryEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, shouldRead bool) (interface{}, error) {
+	if !shouldRead {
+		return 0, nil
+	}
+	// We need to reset our reader to the position we read before
+	readBuffer.Reset(uint16(readBuffer.GetPos() - uint16(actualLength)))
+	bitsToRead := (uint8)(actualLength * 8)
+	return readBuffer.ReadUint32("proprietaryValue", bitsToRead)
+}
+
+func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value interface{}) error {
+	if value == nil {
+		return nil
+	}
+	bitsToWrite := uint8(0)
+	var valueValue = value.(uint32)
+
+	if valueValue <= 0xff {
+		bitsToWrite = 8
+	} else if valueValue <= 0xffff {
+		bitsToWrite = 16
+	} else if valueValue <= 0xffffffff {
+		bitsToWrite = 32
+	} else {
+		bitsToWrite = 32
+	}
+	var withWriterArgs []utils.WithWriterArgs
+	if stringer, ok := value.(fmt.Stringer); ok {
+		withWriterArgs = append(withWriterArgs, utils.WithAdditionalStringRepresentation(stringer.String()))
+	}
+	return writeBuffer.WriteUint32("value", bitsToWrite, valueValue, withWriterArgs...)
+}
+
+func WriteProprietaryEnumGeneric(writeBuffer utils.WriteBuffer, value uint32, shouldWrite bool) error {
+	if !shouldWrite {
+		return nil
+	}
+	bitsToWrite := uint8(0)
+	if value <= 0xff {
+		bitsToWrite = 8
+	} else if value <= 0xffff {
+		bitsToWrite = 16
+	} else if value <= 0xffffffff {
+		bitsToWrite = 32
+	} else {
+		bitsToWrite = 32
+	}
+	return writeBuffer.WriteUint32("proprietaryValue", bitsToWrite, value, utils.WithAdditionalStringRepresentation("VENDOR_PROPRIETARY_VALUE"))
+}
+
+// Deprecated: use generic above
+func ReadPropertyIdentifier(readBuffer utils.ReadBuffer, actualLength uint32) (interface{}, error) {
 	bitsToRead := actualLength * 8
 	var readUnsignedLong uint32
 	var err error
@@ -51,6 +117,7 @@ func ReadPropertyIdentifier(readBuffer utils.ReadBuffer, actualLength uint32) (B
 	return BACnetPropertyIdentifier(readUnsignedLong), nil
 }
 
+// Deprecated: use generic above
 func WritePropertyIdentifier(writeBuffer utils.WriteBuffer, value BACnetPropertyIdentifier) error {
 	if value == BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE {
 		return nil
@@ -69,6 +136,7 @@ func WritePropertyIdentifier(writeBuffer utils.WriteBuffer, value BACnetProperty
 	return writeBuffer.WriteUint32("propertyIdentifier", bitsToWrite, uint32(value), utils.WithAdditionalStringRepresentation(value.name()))
 }
 
+// Deprecated: use generic above
 func WriteProprietaryPropertyIdentifier(writeBuffer utils.WriteBuffer, baCnetPropertyIdentifier BACnetPropertyIdentifier, value uint32) error {
 	if baCnetPropertyIdentifier != BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE {
 		return nil
@@ -86,9 +154,10 @@ func WriteProprietaryPropertyIdentifier(writeBuffer utils.WriteBuffer, baCnetPro
 	return writeBuffer.WriteUint32("proprietaryPropertyIdentifier", bitsToWrite, value, utils.WithAdditionalStringRepresentation(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE.name()))
 }
 
-func ReadProprietaryPropertyIdentifier(readBuffer utils.ReadBuffer, value BACnetPropertyIdentifier, actualLength uint32) (uint32, error) {
+// Deprecated: use generic above
+func ReadProprietaryPropertyIdentifier(readBuffer utils.ReadBuffer, value BACnetPropertyIdentifier, actualLength uint32) (interface{}, error) {
 	if value != BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE {
-		return 0, nil
+		return uint32(0), nil
 	}
 	// We need to reset our reader to the position we read before
 	readBuffer.Reset(readBuffer.GetPos() - uint16(actualLength))
@@ -96,7 +165,8 @@ func ReadProprietaryPropertyIdentifier(readBuffer utils.ReadBuffer, value BACnet
 	return readBuffer.ReadUint32("proprietaryPropertyIdentifier", bitsToRead)
 }
 
-func ReadEventState(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetEventState, error) {
+// Deprecated: use generic above
+func ReadEventState(readBuffer utils.ReadBuffer, actualLength uint32) (interface{}, error) {
 	bitsToRead := actualLength * 8
 	var readUnsignedLong uint32
 	var err error
@@ -122,6 +192,7 @@ func ReadEventState(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetEve
 	return BACnetEventState(readUnsignedLong), nil
 }
 
+// Deprecated: use generic above
 func WriteEventState(writeBuffer utils.WriteBuffer, value BACnetEventState) error {
 	if value == BACnetEventState_VENDOR_PROPRIETARY_VALUE {
 		return nil
@@ -140,6 +211,7 @@ func WriteEventState(writeBuffer utils.WriteBuffer, value BACnetEventState) erro
 	return writeBuffer.WriteUint32("eventState", bitsToWrite, uint32(value), utils.WithAdditionalStringRepresentation(value.name()))
 }
 
+// Deprecated: use generic above
 func WriteProprietaryEventState(writeBuffer utils.WriteBuffer, baCnetEventState BACnetEventState, value uint32) error {
 	if baCnetEventState != BACnetEventState_VENDOR_PROPRIETARY_VALUE {
 		return nil
@@ -157,9 +229,10 @@ func WriteProprietaryEventState(writeBuffer utils.WriteBuffer, baCnetEventState 
 	return writeBuffer.WriteUint32("proprietaryEventState", bitsToWrite, value, utils.WithAdditionalStringRepresentation(BACnetEventState_VENDOR_PROPRIETARY_VALUE.name()))
 }
 
-func ReadProprietaryEventState(readBuffer utils.ReadBuffer, value BACnetEventState, actualLength uint32) (uint32, error) {
+// Deprecated: use generic above
+func ReadProprietaryEventState(readBuffer utils.ReadBuffer, value BACnetEventState, actualLength uint32) (interface{}, error) {
 	if value != BACnetEventState_VENDOR_PROPRIETARY_VALUE {
-		return 0, nil
+		return uint32(0), nil
 	}
 	// We need to reset our reader to the position we read before
 	readBuffer.Reset(readBuffer.GetPos() - uint16(actualLength))
@@ -167,7 +240,8 @@ func ReadProprietaryEventState(readBuffer utils.ReadBuffer, value BACnetEventSta
 	return readBuffer.ReadUint32("proprietaryEventState", bitsToRead)
 }
 
-func ReadEventType(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetEventType, error) {
+// Deprecated: use generic above
+func ReadEventType(readBuffer utils.ReadBuffer, actualLength uint32) (interface{}, error) {
 	bitsToRead := actualLength * 8
 	var readUnsignedLong uint32
 	var err error
@@ -193,6 +267,7 @@ func ReadEventType(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetEven
 	return BACnetEventType(readUnsignedLong), nil
 }
 
+// Deprecated: use generic above
 func WriteEventType(writeBuffer utils.WriteBuffer, value BACnetEventType) error {
 	if value == BACnetEventType_VENDOR_PROPRIETARY_VALUE {
 		return nil
@@ -211,6 +286,7 @@ func WriteEventType(writeBuffer utils.WriteBuffer, value BACnetEventType) error 
 	return writeBuffer.WriteUint32("eventType", bitsToWrite, uint32(value), utils.WithAdditionalStringRepresentation(value.name()))
 }
 
+// Deprecated: use generic above
 func WriteProprietaryEventType(writeBuffer utils.WriteBuffer, baCnetEventType BACnetEventType, value uint32) error {
 	if baCnetEventType != BACnetEventType_VENDOR_PROPRIETARY_VALUE {
 		return nil
@@ -228,16 +304,19 @@ func WriteProprietaryEventType(writeBuffer utils.WriteBuffer, baCnetEventType BA
 	return writeBuffer.WriteUint32("proprietaryEventType", bitsToWrite, value, utils.WithAdditionalStringRepresentation(BACnetEventType_VENDOR_PROPRIETARY_VALUE.name()))
 }
 
-func ReadProprietaryEventType(readBuffer utils.ReadBuffer, value BACnetEventType, actualLength uint32) (uint32, error) {
+// Deprecated: use generic above
+func ReadProprietaryEventType(readBuffer utils.ReadBuffer, value BACnetEventType, actualLength uint32) (interface{}, error) {
 	if value != BACnetEventType_VENDOR_PROPRIETARY_VALUE {
-		return 0, nil
+		return uint32(0), nil
 	}
 	// We need to reset our reader to the position we read before
 	readBuffer.Reset(readBuffer.GetPos() - uint16(actualLength))
 	bitsToRead := (uint8)(actualLength * 8)
 	return readBuffer.ReadUint32("proprietaryEventType", bitsToRead)
 }
-func ReadObjectType(readBuffer utils.ReadBuffer) (BACnetObjectType, error) {
+
+// Deprecated: use generic above
+func ReadObjectType(readBuffer utils.ReadBuffer) (interface{}, error) {
 	readValue, err := readBuffer.ReadUint16("objectType", 10)
 	if err != nil {
 		return 0, err
@@ -245,6 +324,7 @@ func ReadObjectType(readBuffer utils.ReadBuffer) (BACnetObjectType, error) {
 	return BACnetObjectType(readValue), nil
 }
 
+// Deprecated: use generic above
 func WriteObjectType(writeBuffer utils.WriteBuffer, value BACnetObjectType) error {
 	if value == BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
 		return nil
@@ -252,6 +332,7 @@ func WriteObjectType(writeBuffer utils.WriteBuffer, value BACnetObjectType) erro
 	return writeBuffer.WriteUint16("objectType", 10, uint16(value), utils.WithAdditionalStringRepresentation(value.name()))
 }
 
+// Deprecated: use generic above
 func WriteProprietaryObjectType(writeBuffer utils.WriteBuffer, baCnetObjectType BACnetObjectType, value uint16) error {
 	if baCnetObjectType != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
 		return nil
@@ -259,9 +340,10 @@ func WriteProprietaryObjectType(writeBuffer utils.WriteBuffer, baCnetObjectType 
 	return writeBuffer.WriteUint16("proprietaryObjectType", 10, value, utils.WithAdditionalStringRepresentation(BACnetObjectType_VENDOR_PROPRIETARY_VALUE.name()))
 }
 
-func ReadProprietaryObjectType(readBuffer utils.ReadBuffer, value BACnetObjectType) (uint16, error) {
+// Deprecated: use generic above
+func ReadProprietaryObjectType(readBuffer utils.ReadBuffer, value BACnetObjectType) (interface{}, error) {
 	if value != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
-		return 0, nil
+		return uint16(0), nil
 	}
 	// We need to reset our reader to the position we read before
 	readBuffer.Reset(readBuffer.GetPos() - 2)
@@ -654,14 +736,17 @@ func requiredLength(value uint) uint32 {
 	return length
 }
 
+// Deprecated: use generic above
 func MapErrorClass(applicationTagEnumerated *BACnetApplicationTagEnumerated) ErrorClass {
 	return ErrorClassByValue(uint16(applicationTagEnumerated.GetActualValue()))
 }
 
+// Deprecated: use generic above
 func MapErrorCode(applicationTagEnumerated *BACnetApplicationTagEnumerated) ErrorCode {
 	return ErrorCodeByValue(uint16(applicationTagEnumerated.GetActualValue()))
 }
 
+// Deprecated: use generic above
 func MapAbortReason(rawAbortReason uint8, proprietary bool) AbortReason {
 	if proprietary {
 		return 0
@@ -669,6 +754,7 @@ func MapAbortReason(rawAbortReason uint8, proprietary bool) AbortReason {
 	return AbortReason(rawAbortReason)
 }
 
+// Deprecated: use generic above
 func MapRejectReason(rawRejectReason uint8, proprietary bool) RejectReason {
 	if proprietary {
 		return 0
@@ -676,6 +762,7 @@ func MapRejectReason(rawRejectReason uint8, proprietary bool) RejectReason {
 	return RejectReason(rawRejectReason)
 }
 
+// Deprecated: use generic above
 func MapBACnetLifeSafetyState(enumerated *BACnetApplicationTagEnumerated, proprietary bool) BACnetLifeSafetyState {
 	if proprietary {
 		return 0
@@ -683,6 +770,7 @@ func MapBACnetLifeSafetyState(enumerated *BACnetApplicationTagEnumerated, propri
 	return BACnetLifeSafetyState(enumerated.GetActualValue())
 }
 
+// Deprecated: use generic above
 func MapBACnetLifeSafetyMode(enumerated *BACnetApplicationTagEnumerated, proprietary bool) BACnetLifeSafetyMode {
 	if proprietary {
 		return 0
@@ -690,6 +778,7 @@ func MapBACnetLifeSafetyMode(enumerated *BACnetApplicationTagEnumerated, proprie
 	return BACnetLifeSafetyMode(enumerated.GetActualValue())
 }
 
+// Deprecated: use generic above
 func MapBACnetReliability(enumerated *BACnetApplicationTagEnumerated, proprietary bool) BACnetReliability {
 	if proprietary {
 		return 0
@@ -697,6 +786,7 @@ func MapBACnetReliability(enumerated *BACnetApplicationTagEnumerated, proprietar
 	return BACnetReliability(enumerated.GetActualValue())
 }
 
+// Deprecated: use generic above
 func MapBACnetObjectType(rawObjectType BACnetContextTagEnumerated) BACnetObjectType {
 	baCnetObjectType := BACnetObjectTypeByValue(uint16(rawObjectType.GetActualValue()))
 	if baCnetObjectType == 0 {

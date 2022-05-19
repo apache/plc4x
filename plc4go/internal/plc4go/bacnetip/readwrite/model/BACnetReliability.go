@@ -57,6 +57,7 @@ const (
 	BACnetReliability_PROPRIETARY_COMMAND_FAILURE      BACnetReliability = 22
 	BACnetReliability_FAULTS_LISTED                    BACnetReliability = 23
 	BACnetReliability_REFERENCED_OBJECT_FAULT          BACnetReliability = 24
+	BACnetReliability_VENDOR_PROPRIETARY_VALUE         BACnetReliability = 0xFFFF
 )
 
 var BACnetReliabilityValues []BACnetReliability
@@ -88,6 +89,7 @@ func init() {
 		BACnetReliability_PROPRIETARY_COMMAND_FAILURE,
 		BACnetReliability_FAULTS_LISTED,
 		BACnetReliability_REFERENCED_OBJECT_FAULT,
+		BACnetReliability_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
@@ -95,6 +97,8 @@ func BACnetReliabilityByValue(value uint16) BACnetReliability {
 	switch value {
 	case 0:
 		return BACnetReliability_NO_FAULT_DETECTED
+	case 0xFFFF:
+		return BACnetReliability_VENDOR_PROPRIETARY_VALUE
 	case 1:
 		return BACnetReliability_NO_SENSOR
 	case 10:
@@ -149,6 +153,8 @@ func BACnetReliabilityByName(value string) BACnetReliability {
 	switch value {
 	case "NO_FAULT_DETECTED":
 		return BACnetReliability_NO_FAULT_DETECTED
+	case "VENDOR_PROPRIETARY_VALUE":
+		return BACnetReliability_VENDOR_PROPRIETARY_VALUE
 	case "NO_SENSOR":
 		return BACnetReliability_NO_SENSOR
 	case "CONFIGURATION_ERROR":
@@ -242,6 +248,8 @@ func (e BACnetReliability) name() string {
 	switch e {
 	case BACnetReliability_NO_FAULT_DETECTED:
 		return "NO_FAULT_DETECTED"
+	case BACnetReliability_VENDOR_PROPRIETARY_VALUE:
+		return "VENDOR_PROPRIETARY_VALUE"
 	case BACnetReliability_NO_SENSOR:
 		return "NO_SENSOR"
 	case BACnetReliability_CONFIGURATION_ERROR:

@@ -173,46 +173,53 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	_ = currentPos
 
 	// Manual Field (year)
-	year, _yearErr := BcdToInt(readBuffer)
+	_year, _yearErr := BcdToInt(readBuffer)
 	if _yearErr != nil {
 		return nil, errors.Wrap(_yearErr, "Error parsing 'year' field")
 	}
+	year := _year.(uint8)
 
 	// Manual Field (month)
-	month, _monthErr := BcdToInt(readBuffer)
+	_month, _monthErr := BcdToInt(readBuffer)
 	if _monthErr != nil {
 		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
 	}
+	month := _month.(uint8)
 
 	// Manual Field (day)
-	day, _dayErr := BcdToInt(readBuffer)
+	_day, _dayErr := BcdToInt(readBuffer)
 	if _dayErr != nil {
 		return nil, errors.Wrap(_dayErr, "Error parsing 'day' field")
 	}
+	day := _day.(uint8)
 
 	// Manual Field (hour)
-	hour, _hourErr := BcdToInt(readBuffer)
+	_hour, _hourErr := BcdToInt(readBuffer)
 	if _hourErr != nil {
 		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
 	}
+	hour := _hour.(uint8)
 
 	// Manual Field (minutes)
-	minutes, _minutesErr := BcdToInt(readBuffer)
+	_minutes, _minutesErr := BcdToInt(readBuffer)
 	if _minutesErr != nil {
 		return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field")
 	}
+	minutes := _minutes.(uint8)
 
 	// Manual Field (seconds)
-	seconds, _secondsErr := BcdToInt(readBuffer)
+	_seconds, _secondsErr := BcdToInt(readBuffer)
 	if _secondsErr != nil {
 		return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field")
 	}
+	seconds := _seconds.(uint8)
 
 	// Manual Field (msec)
-	msec, _msecErr := S7msecToInt(readBuffer)
+	_msec, _msecErr := S7msecToInt(readBuffer)
 	if _msecErr != nil {
 		return nil, errors.Wrap(_msecErr, "Error parsing 'msec' field")
 	}
+	msec := _msec.(uint16)
 
 	// Simple Field (dow)
 	_dow, _dowErr := readBuffer.ReadUint8("dow", 4)

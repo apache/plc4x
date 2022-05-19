@@ -140,16 +140,18 @@ func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BACnet
 	_ = currentPos
 
 	// Manual Field (objectType)
-	objectType, _objectTypeErr := ReadObjectType(readBuffer)
+	_objectType, _objectTypeErr := ReadObjectType(readBuffer)
 	if _objectTypeErr != nil {
 		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
 	}
+	objectType := _objectType.(BACnetObjectType)
 
 	// Manual Field (proprietaryValue)
-	proprietaryValue, _proprietaryValueErr := ReadProprietaryObjectType(readBuffer, objectType)
+	_proprietaryValue, _proprietaryValueErr := ReadProprietaryObjectType(readBuffer, objectType)
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
 	}
+	proprietaryValue := _proprietaryValue.(uint16)
 
 	// Virtual field
 	_isProprietary := bool((objectType) == (BACnetObjectType_VENDOR_PROPRIETARY_VALUE))

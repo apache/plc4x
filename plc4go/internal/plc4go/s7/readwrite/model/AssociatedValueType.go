@@ -161,10 +161,11 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType
 	}
 
 	// Manual Field (valueLength)
-	valueLength, _valueLengthErr := RightShift3(readBuffer)
+	_valueLength, _valueLengthErr := RightShift3(readBuffer)
 	if _valueLengthErr != nil {
 		return nil, errors.Wrap(_valueLengthErr, "Error parsing 'valueLength' field")
 	}
+	valueLength := _valueLength.(uint16)
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {

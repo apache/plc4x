@@ -1212,7 +1212,7 @@ public class RandomPackagesTest {
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(4);
                             assertEquals(BACnetPropertyIdentifier.RELIABILITY, baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier());
-                            BACnetReliability reliability = ((BACnetConstructedDataReliability) baCnetPropertyValue.getPropertyValue().getConstructedData()).getReliability().getReliability();
+                            BACnetReliability reliability = ((BACnetConstructedDataReliability) baCnetPropertyValue.getPropertyValue().getConstructedData()).getReliability().getValue();
                             assertEquals(BACnetReliability.NO_FAULT_DETECTED, reliability);
                         }
                         {
