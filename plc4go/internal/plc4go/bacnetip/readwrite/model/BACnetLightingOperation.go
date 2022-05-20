@@ -34,6 +34,17 @@ type IBACnetLightingOperation interface {
 }
 
 const (
+	BACnetLightingOperation_NONE                     BACnetLightingOperation = 0
+	BACnetLightingOperation_FADE_TO                  BACnetLightingOperation = 1
+	BACnetLightingOperation_RAMP_TO                  BACnetLightingOperation = 2
+	BACnetLightingOperation_STEP_UP                  BACnetLightingOperation = 3
+	BACnetLightingOperation_STEP_DOWN                BACnetLightingOperation = 4
+	BACnetLightingOperation_STEP_ON                  BACnetLightingOperation = 5
+	BACnetLightingOperation_STEP_OFF                 BACnetLightingOperation = 6
+	BACnetLightingOperation_WARN                     BACnetLightingOperation = 7
+	BACnetLightingOperation_WARN_OFF                 BACnetLightingOperation = 8
+	BACnetLightingOperation_WARN_RELINQUISH          BACnetLightingOperation = 9
+	BACnetLightingOperation_STOP                     BACnetLightingOperation = 10
 	BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE BACnetLightingOperation = 0xFFFF
 )
 
@@ -42,22 +53,77 @@ var BACnetLightingOperationValues []BACnetLightingOperation
 func init() {
 	_ = errors.New
 	BACnetLightingOperationValues = []BACnetLightingOperation{
+		BACnetLightingOperation_NONE,
+		BACnetLightingOperation_FADE_TO,
+		BACnetLightingOperation_RAMP_TO,
+		BACnetLightingOperation_STEP_UP,
+		BACnetLightingOperation_STEP_DOWN,
+		BACnetLightingOperation_STEP_ON,
+		BACnetLightingOperation_STEP_OFF,
+		BACnetLightingOperation_WARN,
+		BACnetLightingOperation_WARN_OFF,
+		BACnetLightingOperation_WARN_RELINQUISH,
+		BACnetLightingOperation_STOP,
 		BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetLightingOperationByValue(value uint16) BACnetLightingOperation {
 	switch value {
+	case 0:
+		return BACnetLightingOperation_NONE
 	case 0xFFFF:
 		return BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetLightingOperation_FADE_TO
+	case 10:
+		return BACnetLightingOperation_STOP
+	case 2:
+		return BACnetLightingOperation_RAMP_TO
+	case 3:
+		return BACnetLightingOperation_STEP_UP
+	case 4:
+		return BACnetLightingOperation_STEP_DOWN
+	case 5:
+		return BACnetLightingOperation_STEP_ON
+	case 6:
+		return BACnetLightingOperation_STEP_OFF
+	case 7:
+		return BACnetLightingOperation_WARN
+	case 8:
+		return BACnetLightingOperation_WARN_OFF
+	case 9:
+		return BACnetLightingOperation_WARN_RELINQUISH
 	}
 	return 0
 }
 
 func BACnetLightingOperationByName(value string) BACnetLightingOperation {
 	switch value {
+	case "NONE":
+		return BACnetLightingOperation_NONE
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE
+	case "FADE_TO":
+		return BACnetLightingOperation_FADE_TO
+	case "STOP":
+		return BACnetLightingOperation_STOP
+	case "RAMP_TO":
+		return BACnetLightingOperation_RAMP_TO
+	case "STEP_UP":
+		return BACnetLightingOperation_STEP_UP
+	case "STEP_DOWN":
+		return BACnetLightingOperation_STEP_DOWN
+	case "STEP_ON":
+		return BACnetLightingOperation_STEP_ON
+	case "STEP_OFF":
+		return BACnetLightingOperation_STEP_OFF
+	case "WARN":
+		return BACnetLightingOperation_WARN
+	case "WARN_OFF":
+		return BACnetLightingOperation_WARN_OFF
+	case "WARN_RELINQUISH":
+		return BACnetLightingOperation_WARN_RELINQUISH
 	}
 	return 0
 }
@@ -103,8 +169,30 @@ func (e BACnetLightingOperation) Serialize(writeBuffer utils.WriteBuffer) error 
 
 func (e BACnetLightingOperation) name() string {
 	switch e {
+	case BACnetLightingOperation_NONE:
+		return "NONE"
 	case BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetLightingOperation_FADE_TO:
+		return "FADE_TO"
+	case BACnetLightingOperation_STOP:
+		return "STOP"
+	case BACnetLightingOperation_RAMP_TO:
+		return "RAMP_TO"
+	case BACnetLightingOperation_STEP_UP:
+		return "STEP_UP"
+	case BACnetLightingOperation_STEP_DOWN:
+		return "STEP_DOWN"
+	case BACnetLightingOperation_STEP_ON:
+		return "STEP_ON"
+	case BACnetLightingOperation_STEP_OFF:
+		return "STEP_OFF"
+	case BACnetLightingOperation_WARN:
+		return "WARN"
+	case BACnetLightingOperation_WARN_OFF:
+		return "WARN_OFF"
+	case BACnetLightingOperation_WARN_RELINQUISH:
+		return "WARN_RELINQUISH"
 	}
 	return ""
 }

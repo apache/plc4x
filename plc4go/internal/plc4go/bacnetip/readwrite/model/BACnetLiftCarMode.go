@@ -34,6 +34,20 @@ type IBACnetLiftCarMode interface {
 }
 
 const (
+	BACnetLiftCarMode_UNKNOWN                  BACnetLiftCarMode = 0
+	BACnetLiftCarMode_NORMAL                   BACnetLiftCarMode = 1
+	BACnetLiftCarMode_VIP                      BACnetLiftCarMode = 2
+	BACnetLiftCarMode_HOMING                   BACnetLiftCarMode = 3
+	BACnetLiftCarMode_PARKING                  BACnetLiftCarMode = 4
+	BACnetLiftCarMode_ATTENDANT_CONTROL        BACnetLiftCarMode = 5
+	BACnetLiftCarMode_FIREFIGHTER_CONTROL      BACnetLiftCarMode = 6
+	BACnetLiftCarMode_EMERGENCY_POWER          BACnetLiftCarMode = 7
+	BACnetLiftCarMode_INSPECTION               BACnetLiftCarMode = 8
+	BACnetLiftCarMode_CABINET_RECALL           BACnetLiftCarMode = 9
+	BACnetLiftCarMode_EARTHQUAKE_OPERATION     BACnetLiftCarMode = 10
+	BACnetLiftCarMode_FIRE_OPERATION           BACnetLiftCarMode = 11
+	BACnetLiftCarMode_OUT_OF_SERVICE           BACnetLiftCarMode = 12
+	BACnetLiftCarMode_OCCUPANT_EVACUATION      BACnetLiftCarMode = 13
 	BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE BACnetLiftCarMode = 0xFFFF
 )
 
@@ -42,22 +56,92 @@ var BACnetLiftCarModeValues []BACnetLiftCarMode
 func init() {
 	_ = errors.New
 	BACnetLiftCarModeValues = []BACnetLiftCarMode{
+		BACnetLiftCarMode_UNKNOWN,
+		BACnetLiftCarMode_NORMAL,
+		BACnetLiftCarMode_VIP,
+		BACnetLiftCarMode_HOMING,
+		BACnetLiftCarMode_PARKING,
+		BACnetLiftCarMode_ATTENDANT_CONTROL,
+		BACnetLiftCarMode_FIREFIGHTER_CONTROL,
+		BACnetLiftCarMode_EMERGENCY_POWER,
+		BACnetLiftCarMode_INSPECTION,
+		BACnetLiftCarMode_CABINET_RECALL,
+		BACnetLiftCarMode_EARTHQUAKE_OPERATION,
+		BACnetLiftCarMode_FIRE_OPERATION,
+		BACnetLiftCarMode_OUT_OF_SERVICE,
+		BACnetLiftCarMode_OCCUPANT_EVACUATION,
 		BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetLiftCarModeByValue(value uint16) BACnetLiftCarMode {
 	switch value {
+	case 0:
+		return BACnetLiftCarMode_UNKNOWN
 	case 0xFFFF:
 		return BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetLiftCarMode_NORMAL
+	case 10:
+		return BACnetLiftCarMode_EARTHQUAKE_OPERATION
+	case 11:
+		return BACnetLiftCarMode_FIRE_OPERATION
+	case 12:
+		return BACnetLiftCarMode_OUT_OF_SERVICE
+	case 13:
+		return BACnetLiftCarMode_OCCUPANT_EVACUATION
+	case 2:
+		return BACnetLiftCarMode_VIP
+	case 3:
+		return BACnetLiftCarMode_HOMING
+	case 4:
+		return BACnetLiftCarMode_PARKING
+	case 5:
+		return BACnetLiftCarMode_ATTENDANT_CONTROL
+	case 6:
+		return BACnetLiftCarMode_FIREFIGHTER_CONTROL
+	case 7:
+		return BACnetLiftCarMode_EMERGENCY_POWER
+	case 8:
+		return BACnetLiftCarMode_INSPECTION
+	case 9:
+		return BACnetLiftCarMode_CABINET_RECALL
 	}
 	return 0
 }
 
 func BACnetLiftCarModeByName(value string) BACnetLiftCarMode {
 	switch value {
+	case "UNKNOWN":
+		return BACnetLiftCarMode_UNKNOWN
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE
+	case "NORMAL":
+		return BACnetLiftCarMode_NORMAL
+	case "EARTHQUAKE_OPERATION":
+		return BACnetLiftCarMode_EARTHQUAKE_OPERATION
+	case "FIRE_OPERATION":
+		return BACnetLiftCarMode_FIRE_OPERATION
+	case "OUT_OF_SERVICE":
+		return BACnetLiftCarMode_OUT_OF_SERVICE
+	case "OCCUPANT_EVACUATION":
+		return BACnetLiftCarMode_OCCUPANT_EVACUATION
+	case "VIP":
+		return BACnetLiftCarMode_VIP
+	case "HOMING":
+		return BACnetLiftCarMode_HOMING
+	case "PARKING":
+		return BACnetLiftCarMode_PARKING
+	case "ATTENDANT_CONTROL":
+		return BACnetLiftCarMode_ATTENDANT_CONTROL
+	case "FIREFIGHTER_CONTROL":
+		return BACnetLiftCarMode_FIREFIGHTER_CONTROL
+	case "EMERGENCY_POWER":
+		return BACnetLiftCarMode_EMERGENCY_POWER
+	case "INSPECTION":
+		return BACnetLiftCarMode_INSPECTION
+	case "CABINET_RECALL":
+		return BACnetLiftCarMode_CABINET_RECALL
 	}
 	return 0
 }
@@ -103,8 +187,36 @@ func (e BACnetLiftCarMode) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetLiftCarMode) name() string {
 	switch e {
+	case BACnetLiftCarMode_UNKNOWN:
+		return "UNKNOWN"
 	case BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetLiftCarMode_NORMAL:
+		return "NORMAL"
+	case BACnetLiftCarMode_EARTHQUAKE_OPERATION:
+		return "EARTHQUAKE_OPERATION"
+	case BACnetLiftCarMode_FIRE_OPERATION:
+		return "FIRE_OPERATION"
+	case BACnetLiftCarMode_OUT_OF_SERVICE:
+		return "OUT_OF_SERVICE"
+	case BACnetLiftCarMode_OCCUPANT_EVACUATION:
+		return "OCCUPANT_EVACUATION"
+	case BACnetLiftCarMode_VIP:
+		return "VIP"
+	case BACnetLiftCarMode_HOMING:
+		return "HOMING"
+	case BACnetLiftCarMode_PARKING:
+		return "PARKING"
+	case BACnetLiftCarMode_ATTENDANT_CONTROL:
+		return "ATTENDANT_CONTROL"
+	case BACnetLiftCarMode_FIREFIGHTER_CONTROL:
+		return "FIREFIGHTER_CONTROL"
+	case BACnetLiftCarMode_EMERGENCY_POWER:
+		return "EMERGENCY_POWER"
+	case BACnetLiftCarMode_INSPECTION:
+		return "INSPECTION"
+	case BACnetLiftCarMode_CABINET_RECALL:
+		return "CABINET_RECALL"
 	}
 	return ""
 }

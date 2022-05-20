@@ -34,7 +34,24 @@ type IBACnetLiftFault interface {
 }
 
 const (
-	BACnetLiftFault_VENDOR_PROPRIETARY_VALUE BACnetLiftFault = 0xFFFF
+	BACnetLiftFault_CONTROLLER_FAULT                 BACnetLiftFault = 0
+	BACnetLiftFault_DRIVE_AND_MOTOR_FAULT            BACnetLiftFault = 1
+	BACnetLiftFault_GOVERNOR_AND_SAFETY_GEAR_FAULT   BACnetLiftFault = 2
+	BACnetLiftFault_LIFT_SHAFT_DEVICE_FAULT          BACnetLiftFault = 3
+	BACnetLiftFault_POWER_SUPPLY_FAULT               BACnetLiftFault = 4
+	BACnetLiftFault_SAFETY_INTERLOCK_FAULT           BACnetLiftFault = 5
+	BACnetLiftFault_DOOR_CLOSING_FAULT               BACnetLiftFault = 6
+	BACnetLiftFault_DOOR_OPENING_FAULT               BACnetLiftFault = 7
+	BACnetLiftFault_CAR_STOPPED_OUTSIDE_LANDING_ZONE BACnetLiftFault = 8
+	BACnetLiftFault_CALL_BUTTON_STUCK                BACnetLiftFault = 9
+	BACnetLiftFault_START_FAILURE                    BACnetLiftFault = 10
+	BACnetLiftFault_CONTROLLER_SUPPLY_FAULT          BACnetLiftFault = 11
+	BACnetLiftFault_SELF_TEST_FAILURE                BACnetLiftFault = 12
+	BACnetLiftFault_RUNTIME_LIMIT_EXCEEDED           BACnetLiftFault = 13
+	BACnetLiftFault_POSITION_LOST                    BACnetLiftFault = 14
+	BACnetLiftFault_DRIVE_TEMPERATURE_EXCEEDED       BACnetLiftFault = 15
+	BACnetLiftFault_LOAD_MEASUREMENT_FAULT           BACnetLiftFault = 16
+	BACnetLiftFault_VENDOR_PROPRIETARY_VALUE         BACnetLiftFault = 0xFFFF
 )
 
 var BACnetLiftFaultValues []BACnetLiftFault
@@ -42,22 +59,107 @@ var BACnetLiftFaultValues []BACnetLiftFault
 func init() {
 	_ = errors.New
 	BACnetLiftFaultValues = []BACnetLiftFault{
+		BACnetLiftFault_CONTROLLER_FAULT,
+		BACnetLiftFault_DRIVE_AND_MOTOR_FAULT,
+		BACnetLiftFault_GOVERNOR_AND_SAFETY_GEAR_FAULT,
+		BACnetLiftFault_LIFT_SHAFT_DEVICE_FAULT,
+		BACnetLiftFault_POWER_SUPPLY_FAULT,
+		BACnetLiftFault_SAFETY_INTERLOCK_FAULT,
+		BACnetLiftFault_DOOR_CLOSING_FAULT,
+		BACnetLiftFault_DOOR_OPENING_FAULT,
+		BACnetLiftFault_CAR_STOPPED_OUTSIDE_LANDING_ZONE,
+		BACnetLiftFault_CALL_BUTTON_STUCK,
+		BACnetLiftFault_START_FAILURE,
+		BACnetLiftFault_CONTROLLER_SUPPLY_FAULT,
+		BACnetLiftFault_SELF_TEST_FAILURE,
+		BACnetLiftFault_RUNTIME_LIMIT_EXCEEDED,
+		BACnetLiftFault_POSITION_LOST,
+		BACnetLiftFault_DRIVE_TEMPERATURE_EXCEEDED,
+		BACnetLiftFault_LOAD_MEASUREMENT_FAULT,
 		BACnetLiftFault_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetLiftFaultByValue(value uint16) BACnetLiftFault {
 	switch value {
+	case 0:
+		return BACnetLiftFault_CONTROLLER_FAULT
 	case 0xFFFF:
 		return BACnetLiftFault_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetLiftFault_DRIVE_AND_MOTOR_FAULT
+	case 10:
+		return BACnetLiftFault_START_FAILURE
+	case 11:
+		return BACnetLiftFault_CONTROLLER_SUPPLY_FAULT
+	case 12:
+		return BACnetLiftFault_SELF_TEST_FAILURE
+	case 13:
+		return BACnetLiftFault_RUNTIME_LIMIT_EXCEEDED
+	case 14:
+		return BACnetLiftFault_POSITION_LOST
+	case 15:
+		return BACnetLiftFault_DRIVE_TEMPERATURE_EXCEEDED
+	case 16:
+		return BACnetLiftFault_LOAD_MEASUREMENT_FAULT
+	case 2:
+		return BACnetLiftFault_GOVERNOR_AND_SAFETY_GEAR_FAULT
+	case 3:
+		return BACnetLiftFault_LIFT_SHAFT_DEVICE_FAULT
+	case 4:
+		return BACnetLiftFault_POWER_SUPPLY_FAULT
+	case 5:
+		return BACnetLiftFault_SAFETY_INTERLOCK_FAULT
+	case 6:
+		return BACnetLiftFault_DOOR_CLOSING_FAULT
+	case 7:
+		return BACnetLiftFault_DOOR_OPENING_FAULT
+	case 8:
+		return BACnetLiftFault_CAR_STOPPED_OUTSIDE_LANDING_ZONE
+	case 9:
+		return BACnetLiftFault_CALL_BUTTON_STUCK
 	}
 	return 0
 }
 
 func BACnetLiftFaultByName(value string) BACnetLiftFault {
 	switch value {
+	case "CONTROLLER_FAULT":
+		return BACnetLiftFault_CONTROLLER_FAULT
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetLiftFault_VENDOR_PROPRIETARY_VALUE
+	case "DRIVE_AND_MOTOR_FAULT":
+		return BACnetLiftFault_DRIVE_AND_MOTOR_FAULT
+	case "START_FAILURE":
+		return BACnetLiftFault_START_FAILURE
+	case "CONTROLLER_SUPPLY_FAULT":
+		return BACnetLiftFault_CONTROLLER_SUPPLY_FAULT
+	case "SELF_TEST_FAILURE":
+		return BACnetLiftFault_SELF_TEST_FAILURE
+	case "RUNTIME_LIMIT_EXCEEDED":
+		return BACnetLiftFault_RUNTIME_LIMIT_EXCEEDED
+	case "POSITION_LOST":
+		return BACnetLiftFault_POSITION_LOST
+	case "DRIVE_TEMPERATURE_EXCEEDED":
+		return BACnetLiftFault_DRIVE_TEMPERATURE_EXCEEDED
+	case "LOAD_MEASUREMENT_FAULT":
+		return BACnetLiftFault_LOAD_MEASUREMENT_FAULT
+	case "GOVERNOR_AND_SAFETY_GEAR_FAULT":
+		return BACnetLiftFault_GOVERNOR_AND_SAFETY_GEAR_FAULT
+	case "LIFT_SHAFT_DEVICE_FAULT":
+		return BACnetLiftFault_LIFT_SHAFT_DEVICE_FAULT
+	case "POWER_SUPPLY_FAULT":
+		return BACnetLiftFault_POWER_SUPPLY_FAULT
+	case "SAFETY_INTERLOCK_FAULT":
+		return BACnetLiftFault_SAFETY_INTERLOCK_FAULT
+	case "DOOR_CLOSING_FAULT":
+		return BACnetLiftFault_DOOR_CLOSING_FAULT
+	case "DOOR_OPENING_FAULT":
+		return BACnetLiftFault_DOOR_OPENING_FAULT
+	case "CAR_STOPPED_OUTSIDE_LANDING_ZONE":
+		return BACnetLiftFault_CAR_STOPPED_OUTSIDE_LANDING_ZONE
+	case "CALL_BUTTON_STUCK":
+		return BACnetLiftFault_CALL_BUTTON_STUCK
 	}
 	return 0
 }
@@ -103,8 +205,42 @@ func (e BACnetLiftFault) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetLiftFault) name() string {
 	switch e {
+	case BACnetLiftFault_CONTROLLER_FAULT:
+		return "CONTROLLER_FAULT"
 	case BACnetLiftFault_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetLiftFault_DRIVE_AND_MOTOR_FAULT:
+		return "DRIVE_AND_MOTOR_FAULT"
+	case BACnetLiftFault_START_FAILURE:
+		return "START_FAILURE"
+	case BACnetLiftFault_CONTROLLER_SUPPLY_FAULT:
+		return "CONTROLLER_SUPPLY_FAULT"
+	case BACnetLiftFault_SELF_TEST_FAILURE:
+		return "SELF_TEST_FAILURE"
+	case BACnetLiftFault_RUNTIME_LIMIT_EXCEEDED:
+		return "RUNTIME_LIMIT_EXCEEDED"
+	case BACnetLiftFault_POSITION_LOST:
+		return "POSITION_LOST"
+	case BACnetLiftFault_DRIVE_TEMPERATURE_EXCEEDED:
+		return "DRIVE_TEMPERATURE_EXCEEDED"
+	case BACnetLiftFault_LOAD_MEASUREMENT_FAULT:
+		return "LOAD_MEASUREMENT_FAULT"
+	case BACnetLiftFault_GOVERNOR_AND_SAFETY_GEAR_FAULT:
+		return "GOVERNOR_AND_SAFETY_GEAR_FAULT"
+	case BACnetLiftFault_LIFT_SHAFT_DEVICE_FAULT:
+		return "LIFT_SHAFT_DEVICE_FAULT"
+	case BACnetLiftFault_POWER_SUPPLY_FAULT:
+		return "POWER_SUPPLY_FAULT"
+	case BACnetLiftFault_SAFETY_INTERLOCK_FAULT:
+		return "SAFETY_INTERLOCK_FAULT"
+	case BACnetLiftFault_DOOR_CLOSING_FAULT:
+		return "DOOR_CLOSING_FAULT"
+	case BACnetLiftFault_DOOR_OPENING_FAULT:
+		return "DOOR_OPENING_FAULT"
+	case BACnetLiftFault_CAR_STOPPED_OUTSIDE_LANDING_ZONE:
+		return "CAR_STOPPED_OUTSIDE_LANDING_ZONE"
+	case BACnetLiftFault_CALL_BUTTON_STUCK:
+		return "CALL_BUTTON_STUCK"
 	}
 	return ""
 }

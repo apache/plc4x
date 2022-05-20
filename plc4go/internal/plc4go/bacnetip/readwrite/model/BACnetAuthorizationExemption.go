@@ -34,6 +34,13 @@ type IBACnetAuthorizationExemption interface {
 }
 
 const (
+	BACnetAuthorizationExemption_PASSBACK                 BACnetAuthorizationExemption = 0
+	BACnetAuthorizationExemption_OCCUPANCY_CHECK          BACnetAuthorizationExemption = 1
+	BACnetAuthorizationExemption_ACCESS_RIGHTS            BACnetAuthorizationExemption = 2
+	BACnetAuthorizationExemption_LOCKOUT                  BACnetAuthorizationExemption = 3
+	BACnetAuthorizationExemption_DENY                     BACnetAuthorizationExemption = 4
+	BACnetAuthorizationExemption_VERIFICATION             BACnetAuthorizationExemption = 5
+	BACnetAuthorizationExemption_AUTHORIZATION_DELAY      BACnetAuthorizationExemption = 6
 	BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE BACnetAuthorizationExemption = 0xFF
 )
 
@@ -42,22 +49,57 @@ var BACnetAuthorizationExemptionValues []BACnetAuthorizationExemption
 func init() {
 	_ = errors.New
 	BACnetAuthorizationExemptionValues = []BACnetAuthorizationExemption{
+		BACnetAuthorizationExemption_PASSBACK,
+		BACnetAuthorizationExemption_OCCUPANCY_CHECK,
+		BACnetAuthorizationExemption_ACCESS_RIGHTS,
+		BACnetAuthorizationExemption_LOCKOUT,
+		BACnetAuthorizationExemption_DENY,
+		BACnetAuthorizationExemption_VERIFICATION,
+		BACnetAuthorizationExemption_AUTHORIZATION_DELAY,
 		BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetAuthorizationExemptionByValue(value uint8) BACnetAuthorizationExemption {
 	switch value {
+	case 0:
+		return BACnetAuthorizationExemption_PASSBACK
 	case 0xFF:
 		return BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetAuthorizationExemption_OCCUPANCY_CHECK
+	case 2:
+		return BACnetAuthorizationExemption_ACCESS_RIGHTS
+	case 3:
+		return BACnetAuthorizationExemption_LOCKOUT
+	case 4:
+		return BACnetAuthorizationExemption_DENY
+	case 5:
+		return BACnetAuthorizationExemption_VERIFICATION
+	case 6:
+		return BACnetAuthorizationExemption_AUTHORIZATION_DELAY
 	}
 	return 0
 }
 
 func BACnetAuthorizationExemptionByName(value string) BACnetAuthorizationExemption {
 	switch value {
+	case "PASSBACK":
+		return BACnetAuthorizationExemption_PASSBACK
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE
+	case "OCCUPANCY_CHECK":
+		return BACnetAuthorizationExemption_OCCUPANCY_CHECK
+	case "ACCESS_RIGHTS":
+		return BACnetAuthorizationExemption_ACCESS_RIGHTS
+	case "LOCKOUT":
+		return BACnetAuthorizationExemption_LOCKOUT
+	case "DENY":
+		return BACnetAuthorizationExemption_DENY
+	case "VERIFICATION":
+		return BACnetAuthorizationExemption_VERIFICATION
+	case "AUTHORIZATION_DELAY":
+		return BACnetAuthorizationExemption_AUTHORIZATION_DELAY
 	}
 	return 0
 }
@@ -103,8 +145,22 @@ func (e BACnetAuthorizationExemption) Serialize(writeBuffer utils.WriteBuffer) e
 
 func (e BACnetAuthorizationExemption) name() string {
 	switch e {
+	case BACnetAuthorizationExemption_PASSBACK:
+		return "PASSBACK"
 	case BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetAuthorizationExemption_OCCUPANCY_CHECK:
+		return "OCCUPANCY_CHECK"
+	case BACnetAuthorizationExemption_ACCESS_RIGHTS:
+		return "ACCESS_RIGHTS"
+	case BACnetAuthorizationExemption_LOCKOUT:
+		return "LOCKOUT"
+	case BACnetAuthorizationExemption_DENY:
+		return "DENY"
+	case BACnetAuthorizationExemption_VERIFICATION:
+		return "VERIFICATION"
+	case BACnetAuthorizationExemption_AUTHORIZATION_DELAY:
+		return "AUTHORIZATION_DELAY"
 	}
 	return ""
 }

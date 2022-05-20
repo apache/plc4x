@@ -34,6 +34,12 @@ type IBACnetAccessAuthenticationFactorDisable interface {
 }
 
 const (
+	BACnetAccessAuthenticationFactorDisable_NONE                     BACnetAccessAuthenticationFactorDisable = 0
+	BACnetAccessAuthenticationFactorDisable_DISABLED                 BACnetAccessAuthenticationFactorDisable = 1
+	BACnetAccessAuthenticationFactorDisable_DISABLED_LOST            BACnetAccessAuthenticationFactorDisable = 2
+	BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN          BACnetAccessAuthenticationFactorDisable = 3
+	BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED         BACnetAccessAuthenticationFactorDisable = 4
+	BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED       BACnetAccessAuthenticationFactorDisable = 5
 	BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE BACnetAccessAuthenticationFactorDisable = 0xFFFF
 )
 
@@ -42,22 +48,52 @@ var BACnetAccessAuthenticationFactorDisableValues []BACnetAccessAuthenticationFa
 func init() {
 	_ = errors.New
 	BACnetAccessAuthenticationFactorDisableValues = []BACnetAccessAuthenticationFactorDisable{
+		BACnetAccessAuthenticationFactorDisable_NONE,
+		BACnetAccessAuthenticationFactorDisable_DISABLED,
+		BACnetAccessAuthenticationFactorDisable_DISABLED_LOST,
+		BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN,
+		BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED,
+		BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED,
 		BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetAccessAuthenticationFactorDisableByValue(value uint16) BACnetAccessAuthenticationFactorDisable {
 	switch value {
+	case 0:
+		return BACnetAccessAuthenticationFactorDisable_NONE
 	case 0xFFFF:
 		return BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetAccessAuthenticationFactorDisable_DISABLED
+	case 2:
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_LOST
+	case 3:
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN
+	case 4:
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED
+	case 5:
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED
 	}
 	return 0
 }
 
 func BACnetAccessAuthenticationFactorDisableByName(value string) BACnetAccessAuthenticationFactorDisable {
 	switch value {
+	case "NONE":
+		return BACnetAccessAuthenticationFactorDisable_NONE
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE
+	case "DISABLED":
+		return BACnetAccessAuthenticationFactorDisable_DISABLED
+	case "DISABLED_LOST":
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_LOST
+	case "DISABLED_STOLEN":
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN
+	case "DISABLED_DAMAGED":
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED
+	case "DISABLED_DESTROYED":
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED
 	}
 	return 0
 }
@@ -103,8 +139,20 @@ func (e BACnetAccessAuthenticationFactorDisable) Serialize(writeBuffer utils.Wri
 
 func (e BACnetAccessAuthenticationFactorDisable) name() string {
 	switch e {
+	case BACnetAccessAuthenticationFactorDisable_NONE:
+		return "NONE"
 	case BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetAccessAuthenticationFactorDisable_DISABLED:
+		return "DISABLED"
+	case BACnetAccessAuthenticationFactorDisable_DISABLED_LOST:
+		return "DISABLED_LOST"
+	case BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN:
+		return "DISABLED_STOLEN"
+	case BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED:
+		return "DISABLED_DAMAGED"
+	case BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED:
+		return "DISABLED_DESTROYED"
 	}
 	return ""
 }

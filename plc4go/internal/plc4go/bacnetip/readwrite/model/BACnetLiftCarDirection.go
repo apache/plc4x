@@ -34,6 +34,12 @@ type IBACnetLiftCarDirection interface {
 }
 
 const (
+	BACnetLiftCarDirection_UNKNOWN                  BACnetLiftCarDirection = 0
+	BACnetLiftCarDirection_NONE                     BACnetLiftCarDirection = 1
+	BACnetLiftCarDirection_STOPPED                  BACnetLiftCarDirection = 2
+	BACnetLiftCarDirection_UP                       BACnetLiftCarDirection = 3
+	BACnetLiftCarDirection_DOWN                     BACnetLiftCarDirection = 4
+	BACnetLiftCarDirection_UP_AND_DOWN              BACnetLiftCarDirection = 5
 	BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE BACnetLiftCarDirection = 0xFFFF
 )
 
@@ -42,22 +48,52 @@ var BACnetLiftCarDirectionValues []BACnetLiftCarDirection
 func init() {
 	_ = errors.New
 	BACnetLiftCarDirectionValues = []BACnetLiftCarDirection{
+		BACnetLiftCarDirection_UNKNOWN,
+		BACnetLiftCarDirection_NONE,
+		BACnetLiftCarDirection_STOPPED,
+		BACnetLiftCarDirection_UP,
+		BACnetLiftCarDirection_DOWN,
+		BACnetLiftCarDirection_UP_AND_DOWN,
 		BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetLiftCarDirectionByValue(value uint16) BACnetLiftCarDirection {
 	switch value {
+	case 0:
+		return BACnetLiftCarDirection_UNKNOWN
 	case 0xFFFF:
 		return BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetLiftCarDirection_NONE
+	case 2:
+		return BACnetLiftCarDirection_STOPPED
+	case 3:
+		return BACnetLiftCarDirection_UP
+	case 4:
+		return BACnetLiftCarDirection_DOWN
+	case 5:
+		return BACnetLiftCarDirection_UP_AND_DOWN
 	}
 	return 0
 }
 
 func BACnetLiftCarDirectionByName(value string) BACnetLiftCarDirection {
 	switch value {
+	case "UNKNOWN":
+		return BACnetLiftCarDirection_UNKNOWN
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE
+	case "NONE":
+		return BACnetLiftCarDirection_NONE
+	case "STOPPED":
+		return BACnetLiftCarDirection_STOPPED
+	case "UP":
+		return BACnetLiftCarDirection_UP
+	case "DOWN":
+		return BACnetLiftCarDirection_DOWN
+	case "UP_AND_DOWN":
+		return BACnetLiftCarDirection_UP_AND_DOWN
 	}
 	return 0
 }
@@ -103,8 +139,20 @@ func (e BACnetLiftCarDirection) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetLiftCarDirection) name() string {
 	switch e {
+	case BACnetLiftCarDirection_UNKNOWN:
+		return "UNKNOWN"
 	case BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetLiftCarDirection_NONE:
+		return "NONE"
+	case BACnetLiftCarDirection_STOPPED:
+		return "STOPPED"
+	case BACnetLiftCarDirection_UP:
+		return "UP"
+	case BACnetLiftCarDirection_DOWN:
+		return "DOWN"
+	case BACnetLiftCarDirection_UP_AND_DOWN:
+		return "UP_AND_DOWN"
 	}
 	return ""
 }

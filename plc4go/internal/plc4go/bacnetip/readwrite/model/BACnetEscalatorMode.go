@@ -34,6 +34,12 @@ type IBACnetEscalatorMode interface {
 }
 
 const (
+	BACnetEscalatorMode_UNKNOWN                  BACnetEscalatorMode = 0
+	BACnetEscalatorMode_STOP                     BACnetEscalatorMode = 1
+	BACnetEscalatorMode_UP                       BACnetEscalatorMode = 2
+	BACnetEscalatorMode_DOWN                     BACnetEscalatorMode = 3
+	BACnetEscalatorMode_INSPECTION               BACnetEscalatorMode = 4
+	BACnetEscalatorMode_OUT_OF_SERVICE           BACnetEscalatorMode = 5
 	BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE BACnetEscalatorMode = 0xFFFF
 )
 
@@ -42,22 +48,52 @@ var BACnetEscalatorModeValues []BACnetEscalatorMode
 func init() {
 	_ = errors.New
 	BACnetEscalatorModeValues = []BACnetEscalatorMode{
+		BACnetEscalatorMode_UNKNOWN,
+		BACnetEscalatorMode_STOP,
+		BACnetEscalatorMode_UP,
+		BACnetEscalatorMode_DOWN,
+		BACnetEscalatorMode_INSPECTION,
+		BACnetEscalatorMode_OUT_OF_SERVICE,
 		BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetEscalatorModeByValue(value uint16) BACnetEscalatorMode {
 	switch value {
+	case 0:
+		return BACnetEscalatorMode_UNKNOWN
 	case 0xFFFF:
 		return BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetEscalatorMode_STOP
+	case 2:
+		return BACnetEscalatorMode_UP
+	case 3:
+		return BACnetEscalatorMode_DOWN
+	case 4:
+		return BACnetEscalatorMode_INSPECTION
+	case 5:
+		return BACnetEscalatorMode_OUT_OF_SERVICE
 	}
 	return 0
 }
 
 func BACnetEscalatorModeByName(value string) BACnetEscalatorMode {
 	switch value {
+	case "UNKNOWN":
+		return BACnetEscalatorMode_UNKNOWN
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE
+	case "STOP":
+		return BACnetEscalatorMode_STOP
+	case "UP":
+		return BACnetEscalatorMode_UP
+	case "DOWN":
+		return BACnetEscalatorMode_DOWN
+	case "INSPECTION":
+		return BACnetEscalatorMode_INSPECTION
+	case "OUT_OF_SERVICE":
+		return BACnetEscalatorMode_OUT_OF_SERVICE
 	}
 	return 0
 }
@@ -103,8 +139,20 @@ func (e BACnetEscalatorMode) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetEscalatorMode) name() string {
 	switch e {
+	case BACnetEscalatorMode_UNKNOWN:
+		return "UNKNOWN"
 	case BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetEscalatorMode_STOP:
+		return "STOP"
+	case BACnetEscalatorMode_UP:
+		return "UP"
+	case BACnetEscalatorMode_DOWN:
+		return "DOWN"
+	case BACnetEscalatorMode_INSPECTION:
+		return "INSPECTION"
+	case BACnetEscalatorMode_OUT_OF_SERVICE:
+		return "OUT_OF_SERVICE"
 	}
 	return ""
 }

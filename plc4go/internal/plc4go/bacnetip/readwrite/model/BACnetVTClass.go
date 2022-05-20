@@ -34,6 +34,13 @@ type IBACnetVTClass interface {
 }
 
 const (
+	BACnetVTClass_DEFAULT_TERMINAL         BACnetVTClass = 0
+	BACnetVTClass_ANSI_X3_64               BACnetVTClass = 1
+	BACnetVTClass_DEC_VT52                 BACnetVTClass = 2
+	BACnetVTClass_DEC_VT100                BACnetVTClass = 3
+	BACnetVTClass_DEC_VT220                BACnetVTClass = 4
+	BACnetVTClass_HP_700_94                BACnetVTClass = 5
+	BACnetVTClass_IBM_3130                 BACnetVTClass = 6
 	BACnetVTClass_VENDOR_PROPRIETARY_VALUE BACnetVTClass = 0xFFFF
 )
 
@@ -42,22 +49,57 @@ var BACnetVTClassValues []BACnetVTClass
 func init() {
 	_ = errors.New
 	BACnetVTClassValues = []BACnetVTClass{
+		BACnetVTClass_DEFAULT_TERMINAL,
+		BACnetVTClass_ANSI_X3_64,
+		BACnetVTClass_DEC_VT52,
+		BACnetVTClass_DEC_VT100,
+		BACnetVTClass_DEC_VT220,
+		BACnetVTClass_HP_700_94,
+		BACnetVTClass_IBM_3130,
 		BACnetVTClass_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetVTClassByValue(value uint16) BACnetVTClass {
 	switch value {
+	case 0:
+		return BACnetVTClass_DEFAULT_TERMINAL
 	case 0xFFFF:
 		return BACnetVTClass_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetVTClass_ANSI_X3_64
+	case 2:
+		return BACnetVTClass_DEC_VT52
+	case 3:
+		return BACnetVTClass_DEC_VT100
+	case 4:
+		return BACnetVTClass_DEC_VT220
+	case 5:
+		return BACnetVTClass_HP_700_94
+	case 6:
+		return BACnetVTClass_IBM_3130
 	}
 	return 0
 }
 
 func BACnetVTClassByName(value string) BACnetVTClass {
 	switch value {
+	case "DEFAULT_TERMINAL":
+		return BACnetVTClass_DEFAULT_TERMINAL
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetVTClass_VENDOR_PROPRIETARY_VALUE
+	case "ANSI_X3_64":
+		return BACnetVTClass_ANSI_X3_64
+	case "DEC_VT52":
+		return BACnetVTClass_DEC_VT52
+	case "DEC_VT100":
+		return BACnetVTClass_DEC_VT100
+	case "DEC_VT220":
+		return BACnetVTClass_DEC_VT220
+	case "HP_700_94":
+		return BACnetVTClass_HP_700_94
+	case "IBM_3130":
+		return BACnetVTClass_IBM_3130
 	}
 	return 0
 }
@@ -103,8 +145,22 @@ func (e BACnetVTClass) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetVTClass) name() string {
 	switch e {
+	case BACnetVTClass_DEFAULT_TERMINAL:
+		return "DEFAULT_TERMINAL"
 	case BACnetVTClass_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetVTClass_ANSI_X3_64:
+		return "ANSI_X3_64"
+	case BACnetVTClass_DEC_VT52:
+		return "DEC_VT52"
+	case BACnetVTClass_DEC_VT100:
+		return "DEC_VT100"
+	case BACnetVTClass_DEC_VT220:
+		return "DEC_VT220"
+	case BACnetVTClass_HP_700_94:
+		return "HP_700_94"
+	case BACnetVTClass_IBM_3130:
+		return "IBM_3130"
 	}
 	return ""
 }

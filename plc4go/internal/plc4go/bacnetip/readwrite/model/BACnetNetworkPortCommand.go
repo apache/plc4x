@@ -34,6 +34,14 @@ type IBACnetNetworkPortCommand interface {
 }
 
 const (
+	BACnetNetworkPortCommand_IDLE                     BACnetNetworkPortCommand = 0
+	BACnetNetworkPortCommand_DISCARD_CHANGES          BACnetNetworkPortCommand = 1
+	BACnetNetworkPortCommand_RENEW_FD_REGISTRATION    BACnetNetworkPortCommand = 2
+	BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY  BACnetNetworkPortCommand = 3
+	BACnetNetworkPortCommand_RENEW_DHCP               BACnetNetworkPortCommand = 4
+	BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION  BACnetNetworkPortCommand = 5
+	BACnetNetworkPortCommand_DISCONNECT               BACnetNetworkPortCommand = 6
+	BACnetNetworkPortCommand_RESTART_PORT             BACnetNetworkPortCommand = 7
 	BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE BACnetNetworkPortCommand = 0xFF
 )
 
@@ -42,22 +50,62 @@ var BACnetNetworkPortCommandValues []BACnetNetworkPortCommand
 func init() {
 	_ = errors.New
 	BACnetNetworkPortCommandValues = []BACnetNetworkPortCommand{
+		BACnetNetworkPortCommand_IDLE,
+		BACnetNetworkPortCommand_DISCARD_CHANGES,
+		BACnetNetworkPortCommand_RENEW_FD_REGISTRATION,
+		BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY,
+		BACnetNetworkPortCommand_RENEW_DHCP,
+		BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION,
+		BACnetNetworkPortCommand_DISCONNECT,
+		BACnetNetworkPortCommand_RESTART_PORT,
 		BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetNetworkPortCommandByValue(value uint8) BACnetNetworkPortCommand {
 	switch value {
+	case 0:
+		return BACnetNetworkPortCommand_IDLE
 	case 0xFF:
 		return BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetNetworkPortCommand_DISCARD_CHANGES
+	case 2:
+		return BACnetNetworkPortCommand_RENEW_FD_REGISTRATION
+	case 3:
+		return BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY
+	case 4:
+		return BACnetNetworkPortCommand_RENEW_DHCP
+	case 5:
+		return BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION
+	case 6:
+		return BACnetNetworkPortCommand_DISCONNECT
+	case 7:
+		return BACnetNetworkPortCommand_RESTART_PORT
 	}
 	return 0
 }
 
 func BACnetNetworkPortCommandByName(value string) BACnetNetworkPortCommand {
 	switch value {
+	case "IDLE":
+		return BACnetNetworkPortCommand_IDLE
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE
+	case "DISCARD_CHANGES":
+		return BACnetNetworkPortCommand_DISCARD_CHANGES
+	case "RENEW_FD_REGISTRATION":
+		return BACnetNetworkPortCommand_RENEW_FD_REGISTRATION
+	case "RESTART_SLAVE_DISCOVERY":
+		return BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY
+	case "RENEW_DHCP":
+		return BACnetNetworkPortCommand_RENEW_DHCP
+	case "RESTART_AUTONEGOTIATION":
+		return BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION
+	case "DISCONNECT":
+		return BACnetNetworkPortCommand_DISCONNECT
+	case "RESTART_PORT":
+		return BACnetNetworkPortCommand_RESTART_PORT
 	}
 	return 0
 }
@@ -103,8 +151,24 @@ func (e BACnetNetworkPortCommand) Serialize(writeBuffer utils.WriteBuffer) error
 
 func (e BACnetNetworkPortCommand) name() string {
 	switch e {
+	case BACnetNetworkPortCommand_IDLE:
+		return "IDLE"
 	case BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetNetworkPortCommand_DISCARD_CHANGES:
+		return "DISCARD_CHANGES"
+	case BACnetNetworkPortCommand_RENEW_FD_REGISTRATION:
+		return "RENEW_FD_REGISTRATION"
+	case BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY:
+		return "RESTART_SLAVE_DISCOVERY"
+	case BACnetNetworkPortCommand_RENEW_DHCP:
+		return "RENEW_DHCP"
+	case BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION:
+		return "RESTART_AUTONEGOTIATION"
+	case BACnetNetworkPortCommand_DISCONNECT:
+		return "DISCONNECT"
+	case BACnetNetworkPortCommand_RESTART_PORT:
+		return "RESTART_PORT"
 	}
 	return ""
 }

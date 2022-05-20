@@ -34,6 +34,12 @@ type IBACnetAuthorizationMode interface {
 }
 
 const (
+	BACnetAuthorizationMode_AUTHORIZE                BACnetAuthorizationMode = 0
+	BACnetAuthorizationMode_GRANT_ACTIVE             BACnetAuthorizationMode = 1
+	BACnetAuthorizationMode_DENY_ALL                 BACnetAuthorizationMode = 2
+	BACnetAuthorizationMode_VERIFICATION_REQUIRED    BACnetAuthorizationMode = 3
+	BACnetAuthorizationMode_AUTHORIZATION_DELAYED    BACnetAuthorizationMode = 4
+	BACnetAuthorizationMode_NONE                     BACnetAuthorizationMode = 5
 	BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE BACnetAuthorizationMode = 0xFFFF
 )
 
@@ -42,22 +48,52 @@ var BACnetAuthorizationModeValues []BACnetAuthorizationMode
 func init() {
 	_ = errors.New
 	BACnetAuthorizationModeValues = []BACnetAuthorizationMode{
+		BACnetAuthorizationMode_AUTHORIZE,
+		BACnetAuthorizationMode_GRANT_ACTIVE,
+		BACnetAuthorizationMode_DENY_ALL,
+		BACnetAuthorizationMode_VERIFICATION_REQUIRED,
+		BACnetAuthorizationMode_AUTHORIZATION_DELAYED,
+		BACnetAuthorizationMode_NONE,
 		BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetAuthorizationModeByValue(value uint16) BACnetAuthorizationMode {
 	switch value {
+	case 0:
+		return BACnetAuthorizationMode_AUTHORIZE
 	case 0xFFFF:
 		return BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetAuthorizationMode_GRANT_ACTIVE
+	case 2:
+		return BACnetAuthorizationMode_DENY_ALL
+	case 3:
+		return BACnetAuthorizationMode_VERIFICATION_REQUIRED
+	case 4:
+		return BACnetAuthorizationMode_AUTHORIZATION_DELAYED
+	case 5:
+		return BACnetAuthorizationMode_NONE
 	}
 	return 0
 }
 
 func BACnetAuthorizationModeByName(value string) BACnetAuthorizationMode {
 	switch value {
+	case "AUTHORIZE":
+		return BACnetAuthorizationMode_AUTHORIZE
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE
+	case "GRANT_ACTIVE":
+		return BACnetAuthorizationMode_GRANT_ACTIVE
+	case "DENY_ALL":
+		return BACnetAuthorizationMode_DENY_ALL
+	case "VERIFICATION_REQUIRED":
+		return BACnetAuthorizationMode_VERIFICATION_REQUIRED
+	case "AUTHORIZATION_DELAYED":
+		return BACnetAuthorizationMode_AUTHORIZATION_DELAYED
+	case "NONE":
+		return BACnetAuthorizationMode_NONE
 	}
 	return 0
 }
@@ -103,8 +139,20 @@ func (e BACnetAuthorizationMode) Serialize(writeBuffer utils.WriteBuffer) error 
 
 func (e BACnetAuthorizationMode) name() string {
 	switch e {
+	case BACnetAuthorizationMode_AUTHORIZE:
+		return "AUTHORIZE"
 	case BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetAuthorizationMode_GRANT_ACTIVE:
+		return "GRANT_ACTIVE"
+	case BACnetAuthorizationMode_DENY_ALL:
+		return "DENY_ALL"
+	case BACnetAuthorizationMode_VERIFICATION_REQUIRED:
+		return "VERIFICATION_REQUIRED"
+	case BACnetAuthorizationMode_AUTHORIZATION_DELAYED:
+		return "AUTHORIZATION_DELAYED"
+	case BACnetAuthorizationMode_NONE:
+		return "NONE"
 	}
 	return ""
 }

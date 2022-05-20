@@ -34,6 +34,16 @@ type IBACnetLiftCarDriveStatus interface {
 }
 
 const (
+	BACnetLiftCarDriveStatus_UNKNOWN                  BACnetLiftCarDriveStatus = 0
+	BACnetLiftCarDriveStatus_STATIONARY               BACnetLiftCarDriveStatus = 1
+	BACnetLiftCarDriveStatus_BRAKING                  BACnetLiftCarDriveStatus = 2
+	BACnetLiftCarDriveStatus_ACCELERATE               BACnetLiftCarDriveStatus = 3
+	BACnetLiftCarDriveStatus_DECELERATE               BACnetLiftCarDriveStatus = 4
+	BACnetLiftCarDriveStatus_RATED_SPEED              BACnetLiftCarDriveStatus = 5
+	BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP        BACnetLiftCarDriveStatus = 6
+	BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP           BACnetLiftCarDriveStatus = 7
+	BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP         BACnetLiftCarDriveStatus = 8
+	BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP         BACnetLiftCarDriveStatus = 9
 	BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE BACnetLiftCarDriveStatus = 0xFFFF
 )
 
@@ -42,22 +52,72 @@ var BACnetLiftCarDriveStatusValues []BACnetLiftCarDriveStatus
 func init() {
 	_ = errors.New
 	BACnetLiftCarDriveStatusValues = []BACnetLiftCarDriveStatus{
+		BACnetLiftCarDriveStatus_UNKNOWN,
+		BACnetLiftCarDriveStatus_STATIONARY,
+		BACnetLiftCarDriveStatus_BRAKING,
+		BACnetLiftCarDriveStatus_ACCELERATE,
+		BACnetLiftCarDriveStatus_DECELERATE,
+		BACnetLiftCarDriveStatus_RATED_SPEED,
+		BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP,
+		BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP,
+		BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP,
+		BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP,
 		BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetLiftCarDriveStatusByValue(value uint16) BACnetLiftCarDriveStatus {
 	switch value {
+	case 0:
+		return BACnetLiftCarDriveStatus_UNKNOWN
 	case 0xFFFF:
 		return BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetLiftCarDriveStatus_STATIONARY
+	case 2:
+		return BACnetLiftCarDriveStatus_BRAKING
+	case 3:
+		return BACnetLiftCarDriveStatus_ACCELERATE
+	case 4:
+		return BACnetLiftCarDriveStatus_DECELERATE
+	case 5:
+		return BACnetLiftCarDriveStatus_RATED_SPEED
+	case 6:
+		return BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP
+	case 7:
+		return BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP
+	case 8:
+		return BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP
+	case 9:
+		return BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP
 	}
 	return 0
 }
 
 func BACnetLiftCarDriveStatusByName(value string) BACnetLiftCarDriveStatus {
 	switch value {
+	case "UNKNOWN":
+		return BACnetLiftCarDriveStatus_UNKNOWN
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE
+	case "STATIONARY":
+		return BACnetLiftCarDriveStatus_STATIONARY
+	case "BRAKING":
+		return BACnetLiftCarDriveStatus_BRAKING
+	case "ACCELERATE":
+		return BACnetLiftCarDriveStatus_ACCELERATE
+	case "DECELERATE":
+		return BACnetLiftCarDriveStatus_DECELERATE
+	case "RATED_SPEED":
+		return BACnetLiftCarDriveStatus_RATED_SPEED
+	case "SINGLE_FLOOR_JUMP":
+		return BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP
+	case "TWO_FLOOR_JUMP":
+		return BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP
+	case "THREE_FLOOR_JUMP":
+		return BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP
+	case "MULTI_FLOOR_JUMP":
+		return BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP
 	}
 	return 0
 }
@@ -103,8 +163,28 @@ func (e BACnetLiftCarDriveStatus) Serialize(writeBuffer utils.WriteBuffer) error
 
 func (e BACnetLiftCarDriveStatus) name() string {
 	switch e {
+	case BACnetLiftCarDriveStatus_UNKNOWN:
+		return "UNKNOWN"
 	case BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetLiftCarDriveStatus_STATIONARY:
+		return "STATIONARY"
+	case BACnetLiftCarDriveStatus_BRAKING:
+		return "BRAKING"
+	case BACnetLiftCarDriveStatus_ACCELERATE:
+		return "ACCELERATE"
+	case BACnetLiftCarDriveStatus_DECELERATE:
+		return "DECELERATE"
+	case BACnetLiftCarDriveStatus_RATED_SPEED:
+		return "RATED_SPEED"
+	case BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP:
+		return "SINGLE_FLOOR_JUMP"
+	case BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP:
+		return "TWO_FLOOR_JUMP"
+	case BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP:
+		return "THREE_FLOOR_JUMP"
+	case BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP:
+		return "MULTI_FLOOR_JUMP"
 	}
 	return ""
 }

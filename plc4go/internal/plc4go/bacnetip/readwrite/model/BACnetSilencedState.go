@@ -34,6 +34,10 @@ type IBACnetSilencedState interface {
 }
 
 const (
+	BACnetSilencedState_UNSILENCED               BACnetSilencedState = 0
+	BACnetSilencedState_AUDIBLE_SILENCED         BACnetSilencedState = 1
+	BACnetSilencedState_VISIBLE_SILENCED         BACnetSilencedState = 2
+	BACnetSilencedState_ALL_SILENCED             BACnetSilencedState = 3
 	BACnetSilencedState_VENDOR_PROPRIETARY_VALUE BACnetSilencedState = 0xFFFF
 )
 
@@ -42,22 +46,42 @@ var BACnetSilencedStateValues []BACnetSilencedState
 func init() {
 	_ = errors.New
 	BACnetSilencedStateValues = []BACnetSilencedState{
+		BACnetSilencedState_UNSILENCED,
+		BACnetSilencedState_AUDIBLE_SILENCED,
+		BACnetSilencedState_VISIBLE_SILENCED,
+		BACnetSilencedState_ALL_SILENCED,
 		BACnetSilencedState_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetSilencedStateByValue(value uint16) BACnetSilencedState {
 	switch value {
+	case 0:
+		return BACnetSilencedState_UNSILENCED
 	case 0xFFFF:
 		return BACnetSilencedState_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetSilencedState_AUDIBLE_SILENCED
+	case 2:
+		return BACnetSilencedState_VISIBLE_SILENCED
+	case 3:
+		return BACnetSilencedState_ALL_SILENCED
 	}
 	return 0
 }
 
 func BACnetSilencedStateByName(value string) BACnetSilencedState {
 	switch value {
+	case "UNSILENCED":
+		return BACnetSilencedState_UNSILENCED
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetSilencedState_VENDOR_PROPRIETARY_VALUE
+	case "AUDIBLE_SILENCED":
+		return BACnetSilencedState_AUDIBLE_SILENCED
+	case "VISIBLE_SILENCED":
+		return BACnetSilencedState_VISIBLE_SILENCED
+	case "ALL_SILENCED":
+		return BACnetSilencedState_ALL_SILENCED
 	}
 	return 0
 }
@@ -103,8 +127,16 @@ func (e BACnetSilencedState) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetSilencedState) name() string {
 	switch e {
+	case BACnetSilencedState_UNSILENCED:
+		return "UNSILENCED"
 	case BACnetSilencedState_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetSilencedState_AUDIBLE_SILENCED:
+		return "AUDIBLE_SILENCED"
+	case BACnetSilencedState_VISIBLE_SILENCED:
+		return "VISIBLE_SILENCED"
+	case BACnetSilencedState_ALL_SILENCED:
+		return "ALL_SILENCED"
 	}
 	return ""
 }

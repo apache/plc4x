@@ -34,6 +34,12 @@ type IBACnetDeviceStatus interface {
 }
 
 const (
+	BACnetDeviceStatus_OPERATIONAL              BACnetDeviceStatus = 0
+	BACnetDeviceStatus_OPERATIONAL_READ_ONLY    BACnetDeviceStatus = 1
+	BACnetDeviceStatus_DOWNLOAD_REQUIRED        BACnetDeviceStatus = 2
+	BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS     BACnetDeviceStatus = 3
+	BACnetDeviceStatus_NON_OPERATIONAL          BACnetDeviceStatus = 4
+	BACnetDeviceStatus_BACKUP_IN_PROGRESS       BACnetDeviceStatus = 5
 	BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE BACnetDeviceStatus = 0xFFFF
 )
 
@@ -42,22 +48,52 @@ var BACnetDeviceStatusValues []BACnetDeviceStatus
 func init() {
 	_ = errors.New
 	BACnetDeviceStatusValues = []BACnetDeviceStatus{
+		BACnetDeviceStatus_OPERATIONAL,
+		BACnetDeviceStatus_OPERATIONAL_READ_ONLY,
+		BACnetDeviceStatus_DOWNLOAD_REQUIRED,
+		BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS,
+		BACnetDeviceStatus_NON_OPERATIONAL,
+		BACnetDeviceStatus_BACKUP_IN_PROGRESS,
 		BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetDeviceStatusByValue(value uint16) BACnetDeviceStatus {
 	switch value {
+	case 0:
+		return BACnetDeviceStatus_OPERATIONAL
 	case 0xFFFF:
 		return BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetDeviceStatus_OPERATIONAL_READ_ONLY
+	case 2:
+		return BACnetDeviceStatus_DOWNLOAD_REQUIRED
+	case 3:
+		return BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS
+	case 4:
+		return BACnetDeviceStatus_NON_OPERATIONAL
+	case 5:
+		return BACnetDeviceStatus_BACKUP_IN_PROGRESS
 	}
 	return 0
 }
 
 func BACnetDeviceStatusByName(value string) BACnetDeviceStatus {
 	switch value {
+	case "OPERATIONAL":
+		return BACnetDeviceStatus_OPERATIONAL
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE
+	case "OPERATIONAL_READ_ONLY":
+		return BACnetDeviceStatus_OPERATIONAL_READ_ONLY
+	case "DOWNLOAD_REQUIRED":
+		return BACnetDeviceStatus_DOWNLOAD_REQUIRED
+	case "DOWNLOAD_IN_PROGRESS":
+		return BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS
+	case "NON_OPERATIONAL":
+		return BACnetDeviceStatus_NON_OPERATIONAL
+	case "BACKUP_IN_PROGRESS":
+		return BACnetDeviceStatus_BACKUP_IN_PROGRESS
 	}
 	return 0
 }
@@ -103,8 +139,20 @@ func (e BACnetDeviceStatus) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetDeviceStatus) name() string {
 	switch e {
+	case BACnetDeviceStatus_OPERATIONAL:
+		return "OPERATIONAL"
 	case BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetDeviceStatus_OPERATIONAL_READ_ONLY:
+		return "OPERATIONAL_READ_ONLY"
+	case BACnetDeviceStatus_DOWNLOAD_REQUIRED:
+		return "DOWNLOAD_REQUIRED"
+	case BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS:
+		return "DOWNLOAD_IN_PROGRESS"
+	case BACnetDeviceStatus_NON_OPERATIONAL:
+		return "NON_OPERATIONAL"
+	case BACnetDeviceStatus_BACKUP_IN_PROGRESS:
+		return "BACKUP_IN_PROGRESS"
 	}
 	return ""
 }

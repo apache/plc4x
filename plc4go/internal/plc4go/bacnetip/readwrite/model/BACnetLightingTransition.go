@@ -34,6 +34,9 @@ type IBACnetLightingTransition interface {
 }
 
 const (
+	BACnetLightingTransition_NONE                     BACnetLightingTransition = 0
+	BACnetLightingTransition_FADE                     BACnetLightingTransition = 1
+	BACnetLightingTransition_RAMP                     BACnetLightingTransition = 2
 	BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE BACnetLightingTransition = 0xFF
 )
 
@@ -42,22 +45,37 @@ var BACnetLightingTransitionValues []BACnetLightingTransition
 func init() {
 	_ = errors.New
 	BACnetLightingTransitionValues = []BACnetLightingTransition{
+		BACnetLightingTransition_NONE,
+		BACnetLightingTransition_FADE,
+		BACnetLightingTransition_RAMP,
 		BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetLightingTransitionByValue(value uint8) BACnetLightingTransition {
 	switch value {
+	case 0:
+		return BACnetLightingTransition_NONE
 	case 0xFF:
 		return BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetLightingTransition_FADE
+	case 2:
+		return BACnetLightingTransition_RAMP
 	}
 	return 0
 }
 
 func BACnetLightingTransitionByName(value string) BACnetLightingTransition {
 	switch value {
+	case "NONE":
+		return BACnetLightingTransition_NONE
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE
+	case "FADE":
+		return BACnetLightingTransition_FADE
+	case "RAMP":
+		return BACnetLightingTransition_RAMP
 	}
 	return 0
 }
@@ -103,8 +121,14 @@ func (e BACnetLightingTransition) Serialize(writeBuffer utils.WriteBuffer) error
 
 func (e BACnetLightingTransition) name() string {
 	switch e {
+	case BACnetLightingTransition_NONE:
+		return "NONE"
 	case BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetLightingTransition_FADE:
+		return "FADE"
+	case BACnetLightingTransition_RAMP:
+		return "RAMP"
 	}
 	return ""
 }

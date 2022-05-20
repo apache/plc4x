@@ -34,6 +34,11 @@ type IBACnetProgramError interface {
 }
 
 const (
+	BACnetProgramError_NORMAL                   BACnetProgramError = 0
+	BACnetProgramError_LOAD_FAILED              BACnetProgramError = 1
+	BACnetProgramError_INTERNAL                 BACnetProgramError = 2
+	BACnetProgramError_PROGRAM                  BACnetProgramError = 3
+	BACnetProgramError_OTHER                    BACnetProgramError = 4
 	BACnetProgramError_VENDOR_PROPRIETARY_VALUE BACnetProgramError = 0xFFFF
 )
 
@@ -42,22 +47,47 @@ var BACnetProgramErrorValues []BACnetProgramError
 func init() {
 	_ = errors.New
 	BACnetProgramErrorValues = []BACnetProgramError{
+		BACnetProgramError_NORMAL,
+		BACnetProgramError_LOAD_FAILED,
+		BACnetProgramError_INTERNAL,
+		BACnetProgramError_PROGRAM,
+		BACnetProgramError_OTHER,
 		BACnetProgramError_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetProgramErrorByValue(value uint16) BACnetProgramError {
 	switch value {
+	case 0:
+		return BACnetProgramError_NORMAL
 	case 0xFFFF:
 		return BACnetProgramError_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetProgramError_LOAD_FAILED
+	case 2:
+		return BACnetProgramError_INTERNAL
+	case 3:
+		return BACnetProgramError_PROGRAM
+	case 4:
+		return BACnetProgramError_OTHER
 	}
 	return 0
 }
 
 func BACnetProgramErrorByName(value string) BACnetProgramError {
 	switch value {
+	case "NORMAL":
+		return BACnetProgramError_NORMAL
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetProgramError_VENDOR_PROPRIETARY_VALUE
+	case "LOAD_FAILED":
+		return BACnetProgramError_LOAD_FAILED
+	case "INTERNAL":
+		return BACnetProgramError_INTERNAL
+	case "PROGRAM":
+		return BACnetProgramError_PROGRAM
+	case "OTHER":
+		return BACnetProgramError_OTHER
 	}
 	return 0
 }
@@ -103,8 +133,18 @@ func (e BACnetProgramError) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetProgramError) name() string {
 	switch e {
+	case BACnetProgramError_NORMAL:
+		return "NORMAL"
 	case BACnetProgramError_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetProgramError_LOAD_FAILED:
+		return "LOAD_FAILED"
+	case BACnetProgramError_INTERNAL:
+		return "INTERNAL"
+	case BACnetProgramError_PROGRAM:
+		return "PROGRAM"
+	case BACnetProgramError_OTHER:
+		return "OTHER"
 	}
 	return ""
 }

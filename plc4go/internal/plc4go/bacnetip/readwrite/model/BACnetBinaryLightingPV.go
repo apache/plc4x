@@ -34,6 +34,12 @@ type IBACnetBinaryLightingPV interface {
 }
 
 const (
+	BACnetBinaryLightingPV_OFF                      BACnetBinaryLightingPV = 0
+	BACnetBinaryLightingPV_ON                       BACnetBinaryLightingPV = 1
+	BACnetBinaryLightingPV_WARN                     BACnetBinaryLightingPV = 2
+	BACnetBinaryLightingPV_WARN_OFF                 BACnetBinaryLightingPV = 3
+	BACnetBinaryLightingPV_WARN_RELINQUISH          BACnetBinaryLightingPV = 4
+	BACnetBinaryLightingPV_STOP                     BACnetBinaryLightingPV = 5
 	BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE BACnetBinaryLightingPV = 0xFF
 )
 
@@ -42,22 +48,52 @@ var BACnetBinaryLightingPVValues []BACnetBinaryLightingPV
 func init() {
 	_ = errors.New
 	BACnetBinaryLightingPVValues = []BACnetBinaryLightingPV{
+		BACnetBinaryLightingPV_OFF,
+		BACnetBinaryLightingPV_ON,
+		BACnetBinaryLightingPV_WARN,
+		BACnetBinaryLightingPV_WARN_OFF,
+		BACnetBinaryLightingPV_WARN_RELINQUISH,
+		BACnetBinaryLightingPV_STOP,
 		BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetBinaryLightingPVByValue(value uint8) BACnetBinaryLightingPV {
 	switch value {
+	case 0:
+		return BACnetBinaryLightingPV_OFF
 	case 0xFF:
 		return BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetBinaryLightingPV_ON
+	case 2:
+		return BACnetBinaryLightingPV_WARN
+	case 3:
+		return BACnetBinaryLightingPV_WARN_OFF
+	case 4:
+		return BACnetBinaryLightingPV_WARN_RELINQUISH
+	case 5:
+		return BACnetBinaryLightingPV_STOP
 	}
 	return 0
 }
 
 func BACnetBinaryLightingPVByName(value string) BACnetBinaryLightingPV {
 	switch value {
+	case "OFF":
+		return BACnetBinaryLightingPV_OFF
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE
+	case "ON":
+		return BACnetBinaryLightingPV_ON
+	case "WARN":
+		return BACnetBinaryLightingPV_WARN
+	case "WARN_OFF":
+		return BACnetBinaryLightingPV_WARN_OFF
+	case "WARN_RELINQUISH":
+		return BACnetBinaryLightingPV_WARN_RELINQUISH
+	case "STOP":
+		return BACnetBinaryLightingPV_STOP
 	}
 	return 0
 }
@@ -103,8 +139,20 @@ func (e BACnetBinaryLightingPV) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetBinaryLightingPV) name() string {
 	switch e {
+	case BACnetBinaryLightingPV_OFF:
+		return "OFF"
 	case BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetBinaryLightingPV_ON:
+		return "ON"
+	case BACnetBinaryLightingPV_WARN:
+		return "WARN"
+	case BACnetBinaryLightingPV_WARN_OFF:
+		return "WARN_OFF"
+	case BACnetBinaryLightingPV_WARN_RELINQUISH:
+		return "WARN_RELINQUISH"
+	case BACnetBinaryLightingPV_STOP:
+		return "STOP"
 	}
 	return ""
 }

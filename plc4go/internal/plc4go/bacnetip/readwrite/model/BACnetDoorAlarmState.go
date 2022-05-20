@@ -34,6 +34,15 @@ type IBACnetDoorAlarmState interface {
 }
 
 const (
+	BACnetDoorAlarmState_NORMAL                   BACnetDoorAlarmState = 0
+	BACnetDoorAlarmState_ALARM                    BACnetDoorAlarmState = 1
+	BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG       BACnetDoorAlarmState = 2
+	BACnetDoorAlarmState_FORCED_OPEN              BACnetDoorAlarmState = 3
+	BACnetDoorAlarmState_TAMPER                   BACnetDoorAlarmState = 4
+	BACnetDoorAlarmState_DOOR_FAULT               BACnetDoorAlarmState = 5
+	BACnetDoorAlarmState_LOCK_DOWN                BACnetDoorAlarmState = 6
+	BACnetDoorAlarmState_FREE_ACCESS              BACnetDoorAlarmState = 7
+	BACnetDoorAlarmState_EGRESS_OPEN              BACnetDoorAlarmState = 8
 	BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE BACnetDoorAlarmState = 0xFF
 )
 
@@ -42,22 +51,67 @@ var BACnetDoorAlarmStateValues []BACnetDoorAlarmState
 func init() {
 	_ = errors.New
 	BACnetDoorAlarmStateValues = []BACnetDoorAlarmState{
+		BACnetDoorAlarmState_NORMAL,
+		BACnetDoorAlarmState_ALARM,
+		BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG,
+		BACnetDoorAlarmState_FORCED_OPEN,
+		BACnetDoorAlarmState_TAMPER,
+		BACnetDoorAlarmState_DOOR_FAULT,
+		BACnetDoorAlarmState_LOCK_DOWN,
+		BACnetDoorAlarmState_FREE_ACCESS,
+		BACnetDoorAlarmState_EGRESS_OPEN,
 		BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetDoorAlarmStateByValue(value uint8) BACnetDoorAlarmState {
 	switch value {
+	case 0:
+		return BACnetDoorAlarmState_NORMAL
 	case 0xFF:
 		return BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetDoorAlarmState_ALARM
+	case 2:
+		return BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG
+	case 3:
+		return BACnetDoorAlarmState_FORCED_OPEN
+	case 4:
+		return BACnetDoorAlarmState_TAMPER
+	case 5:
+		return BACnetDoorAlarmState_DOOR_FAULT
+	case 6:
+		return BACnetDoorAlarmState_LOCK_DOWN
+	case 7:
+		return BACnetDoorAlarmState_FREE_ACCESS
+	case 8:
+		return BACnetDoorAlarmState_EGRESS_OPEN
 	}
 	return 0
 }
 
 func BACnetDoorAlarmStateByName(value string) BACnetDoorAlarmState {
 	switch value {
+	case "NORMAL":
+		return BACnetDoorAlarmState_NORMAL
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE
+	case "ALARM":
+		return BACnetDoorAlarmState_ALARM
+	case "DOOR_OPEN_TOO_LONG":
+		return BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG
+	case "FORCED_OPEN":
+		return BACnetDoorAlarmState_FORCED_OPEN
+	case "TAMPER":
+		return BACnetDoorAlarmState_TAMPER
+	case "DOOR_FAULT":
+		return BACnetDoorAlarmState_DOOR_FAULT
+	case "LOCK_DOWN":
+		return BACnetDoorAlarmState_LOCK_DOWN
+	case "FREE_ACCESS":
+		return BACnetDoorAlarmState_FREE_ACCESS
+	case "EGRESS_OPEN":
+		return BACnetDoorAlarmState_EGRESS_OPEN
 	}
 	return 0
 }
@@ -103,8 +157,26 @@ func (e BACnetDoorAlarmState) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetDoorAlarmState) name() string {
 	switch e {
+	case BACnetDoorAlarmState_NORMAL:
+		return "NORMAL"
 	case BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetDoorAlarmState_ALARM:
+		return "ALARM"
+	case BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG:
+		return "DOOR_OPEN_TOO_LONG"
+	case BACnetDoorAlarmState_FORCED_OPEN:
+		return "FORCED_OPEN"
+	case BACnetDoorAlarmState_TAMPER:
+		return "TAMPER"
+	case BACnetDoorAlarmState_DOOR_FAULT:
+		return "DOOR_FAULT"
+	case BACnetDoorAlarmState_LOCK_DOWN:
+		return "LOCK_DOWN"
+	case BACnetDoorAlarmState_FREE_ACCESS:
+		return "FREE_ACCESS"
+	case BACnetDoorAlarmState_EGRESS_OPEN:
+		return "EGRESS_OPEN"
 	}
 	return ""
 }

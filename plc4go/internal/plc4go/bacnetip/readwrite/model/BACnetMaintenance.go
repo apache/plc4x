@@ -34,6 +34,10 @@ type IBACnetMaintenance interface {
 }
 
 const (
+	BACnetMaintenance_NONE                     BACnetMaintenance = 0
+	BACnetMaintenance_PERIODIC_TEST            BACnetMaintenance = 1
+	BACnetMaintenance_NEED_SERVICE_OPERATIONAL BACnetMaintenance = 2
+	BACnetMaintenance_NEED_SERVICE_INOPERATIVE BACnetMaintenance = 3
 	BACnetMaintenance_VENDOR_PROPRIETARY_VALUE BACnetMaintenance = 0xFF
 )
 
@@ -42,22 +46,42 @@ var BACnetMaintenanceValues []BACnetMaintenance
 func init() {
 	_ = errors.New
 	BACnetMaintenanceValues = []BACnetMaintenance{
+		BACnetMaintenance_NONE,
+		BACnetMaintenance_PERIODIC_TEST,
+		BACnetMaintenance_NEED_SERVICE_OPERATIONAL,
+		BACnetMaintenance_NEED_SERVICE_INOPERATIVE,
 		BACnetMaintenance_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetMaintenanceByValue(value uint8) BACnetMaintenance {
 	switch value {
+	case 0:
+		return BACnetMaintenance_NONE
 	case 0xFF:
 		return BACnetMaintenance_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetMaintenance_PERIODIC_TEST
+	case 2:
+		return BACnetMaintenance_NEED_SERVICE_OPERATIONAL
+	case 3:
+		return BACnetMaintenance_NEED_SERVICE_INOPERATIVE
 	}
 	return 0
 }
 
 func BACnetMaintenanceByName(value string) BACnetMaintenance {
 	switch value {
+	case "NONE":
+		return BACnetMaintenance_NONE
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetMaintenance_VENDOR_PROPRIETARY_VALUE
+	case "PERIODIC_TEST":
+		return BACnetMaintenance_PERIODIC_TEST
+	case "NEED_SERVICE_OPERATIONAL":
+		return BACnetMaintenance_NEED_SERVICE_OPERATIONAL
+	case "NEED_SERVICE_INOPERATIVE":
+		return BACnetMaintenance_NEED_SERVICE_INOPERATIVE
 	}
 	return 0
 }
@@ -103,8 +127,16 @@ func (e BACnetMaintenance) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetMaintenance) name() string {
 	switch e {
+	case BACnetMaintenance_NONE:
+		return "NONE"
 	case BACnetMaintenance_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetMaintenance_PERIODIC_TEST:
+		return "PERIODIC_TEST"
+	case BACnetMaintenance_NEED_SERVICE_OPERATIONAL:
+		return "NEED_SERVICE_OPERATIONAL"
+	case BACnetMaintenance_NEED_SERVICE_INOPERATIVE:
+		return "NEED_SERVICE_INOPERATIVE"
 	}
 	return ""
 }

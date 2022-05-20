@@ -34,6 +34,16 @@ type IBACnetDoorStatus interface {
 }
 
 const (
+	BACnetDoorStatus_CLOSED                   BACnetDoorStatus = 0
+	BACnetDoorStatus_OPENED                   BACnetDoorStatus = 1
+	BACnetDoorStatus_UNKNOWN                  BACnetDoorStatus = 2
+	BACnetDoorStatus_DOOR_FAULT               BACnetDoorStatus = 3
+	BACnetDoorStatus_UNUSED                   BACnetDoorStatus = 4
+	BACnetDoorStatus_NONE                     BACnetDoorStatus = 5
+	BACnetDoorStatus_CLOSING                  BACnetDoorStatus = 6
+	BACnetDoorStatus_OPENING                  BACnetDoorStatus = 7
+	BACnetDoorStatus_SAFETY_LOCKED            BACnetDoorStatus = 8
+	BACnetDoorStatus_LIMITED_OPENED           BACnetDoorStatus = 9
 	BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE BACnetDoorStatus = 0xFFFF
 )
 
@@ -42,22 +52,72 @@ var BACnetDoorStatusValues []BACnetDoorStatus
 func init() {
 	_ = errors.New
 	BACnetDoorStatusValues = []BACnetDoorStatus{
+		BACnetDoorStatus_CLOSED,
+		BACnetDoorStatus_OPENED,
+		BACnetDoorStatus_UNKNOWN,
+		BACnetDoorStatus_DOOR_FAULT,
+		BACnetDoorStatus_UNUSED,
+		BACnetDoorStatus_NONE,
+		BACnetDoorStatus_CLOSING,
+		BACnetDoorStatus_OPENING,
+		BACnetDoorStatus_SAFETY_LOCKED,
+		BACnetDoorStatus_LIMITED_OPENED,
 		BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetDoorStatusByValue(value uint16) BACnetDoorStatus {
 	switch value {
+	case 0:
+		return BACnetDoorStatus_CLOSED
 	case 0xFFFF:
 		return BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetDoorStatus_OPENED
+	case 2:
+		return BACnetDoorStatus_UNKNOWN
+	case 3:
+		return BACnetDoorStatus_DOOR_FAULT
+	case 4:
+		return BACnetDoorStatus_UNUSED
+	case 5:
+		return BACnetDoorStatus_NONE
+	case 6:
+		return BACnetDoorStatus_CLOSING
+	case 7:
+		return BACnetDoorStatus_OPENING
+	case 8:
+		return BACnetDoorStatus_SAFETY_LOCKED
+	case 9:
+		return BACnetDoorStatus_LIMITED_OPENED
 	}
 	return 0
 }
 
 func BACnetDoorStatusByName(value string) BACnetDoorStatus {
 	switch value {
+	case "CLOSED":
+		return BACnetDoorStatus_CLOSED
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE
+	case "OPENED":
+		return BACnetDoorStatus_OPENED
+	case "UNKNOWN":
+		return BACnetDoorStatus_UNKNOWN
+	case "DOOR_FAULT":
+		return BACnetDoorStatus_DOOR_FAULT
+	case "UNUSED":
+		return BACnetDoorStatus_UNUSED
+	case "NONE":
+		return BACnetDoorStatus_NONE
+	case "CLOSING":
+		return BACnetDoorStatus_CLOSING
+	case "OPENING":
+		return BACnetDoorStatus_OPENING
+	case "SAFETY_LOCKED":
+		return BACnetDoorStatus_SAFETY_LOCKED
+	case "LIMITED_OPENED":
+		return BACnetDoorStatus_LIMITED_OPENED
 	}
 	return 0
 }
@@ -103,8 +163,28 @@ func (e BACnetDoorStatus) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetDoorStatus) name() string {
 	switch e {
+	case BACnetDoorStatus_CLOSED:
+		return "CLOSED"
 	case BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetDoorStatus_OPENED:
+		return "OPENED"
+	case BACnetDoorStatus_UNKNOWN:
+		return "UNKNOWN"
+	case BACnetDoorStatus_DOOR_FAULT:
+		return "DOOR_FAULT"
+	case BACnetDoorStatus_UNUSED:
+		return "UNUSED"
+	case BACnetDoorStatus_NONE:
+		return "NONE"
+	case BACnetDoorStatus_CLOSING:
+		return "CLOSING"
+	case BACnetDoorStatus_OPENING:
+		return "OPENING"
+	case BACnetDoorStatus_SAFETY_LOCKED:
+		return "SAFETY_LOCKED"
+	case BACnetDoorStatus_LIMITED_OPENED:
+		return "LIMITED_OPENED"
 	}
 	return ""
 }

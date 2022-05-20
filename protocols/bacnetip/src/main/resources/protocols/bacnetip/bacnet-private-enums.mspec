@@ -24,6 +24,64 @@
 ]
 
 // Attention: No proprietary extension allowed
+[enum uint 8 BACnetAccessPassbackMode
+    ['0'    PASSBACK_OFF                            ]
+    ['1'    HARD_PASSBACK                           ]
+    ['2'    SOFT_PASSBACK                           ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetAuthenticationFactorType
+    ['0'    UNDEFINED                               ]
+    ['1'    ERROR                                   ]
+    ['2'    CUSTOM                                  ]
+    ['3'    SIMPLE_NUMBER16                         ]
+    ['4'    SIMPLE_NUMBER32                         ]
+    ['5'    SIMPLE_NUMBER56                         ]
+    ['6'    SIMPLE_ALPHA_NUMERIC                    ]
+    ['7'    ABA_TRACK2                              ]
+    ['8'    WIEGAND26                               ]
+    ['9'    WIEGAND37                               ]
+    ['10'   WIEGAND37_FACILITY                      ]
+    ['11'   FACILITY16_CARD32                       ]
+    ['12'   FACILITY32_CARD32                       ]
+    ['13'   FASC_N                                  ]
+    ['14'   FASC_N_BCD                              ]
+    ['15'   FASC_N_LARGE                            ]
+    ['16'   FASC_N_LARGE_BCD                        ]
+    ['17'   GSA75                                   ]
+    ['18'   CHUID                                   ]
+    ['19'   CHUID_FULL                              ]
+    ['20'   GUID                                    ]
+    ['21'   CBEFF_A                                 ]
+    ['22'   CBEFF_B                                 ]
+    ['23'   CBEFF_C                                 ]
+    ['24'   USER_PASSWORD                           ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetAuthenticationStatus
+    ['0'    NOT_READY                               ]
+    ['1'    READY                                   ]
+    ['2'    DISABLED                                ]
+    ['3'    WAITING_FOR_AUTHENTICATION_FACTOR       ]
+    ['4'    WAITING_FOR_ACCOMPANIMENT               ]
+    ['5'    WAITING_FOR_VERIFICATION                ]
+    ['6'    IN_PROGRESS                             ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetBackupState
+    ['0'    IDLE                                    ]
+    ['1'    PREPARING_FOR_BACKUP                    ]
+    ['2'    PREPARING_FOR_RESTORE                   ]
+    ['3'    PERFORMING_A_BACKUP                     ]
+    ['4'    PERFORMING_A_RESTORE                    ]
+    ['5'    BACKUP_FAILURE                          ]
+    ['6'    RESTORE_FAILURE                         ]
+]
+
+// Attention: No proprietary extension allowed
 [enum uint 8 BACnetBinaryPV
     ['0'    INACTIVE    ]
     ['1'    ACTIVE      ]
@@ -123,6 +181,90 @@
 ]
 
 // Attention: No proprietary extension allowed
+[enum uint 8 BACnetDoorSecuredStatus
+    ['0'  SECURED                                   ]
+    ['1'  UNSECURED                                 ]
+    ['2'  UNKNOWN                                   ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetDoorValue
+    ['0'  LOCK                                      ]
+    ['1'  UNLOCK                                    ]
+    ['2'  PULSE_UNLOCK                              ]
+    ['3'  EXTENDED_PULSE_UNLOCK                     ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetFaultType
+    ['0'  NONE                                      ]
+    ['1'  FAULT_CHARACTERSTRING                     ]
+    ['2'  FAULT_EXTENDED                            ]
+    ['3'  FAULT_LIFE_SAFETY                         ]
+    ['4'  FAULT_STATE                               ]
+    ['5'  FAULT_STATUS_FLAGS                        ]
+    ['6'  FAULT_OUT_OF_RANGE                        ]
+    ['7'  FAULT_LISTED                              ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetFileAccessMethod
+    ['0'  RECORD_ACCESS                             ]
+    ['1'  STREAM_ACCESS                             ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetIPMode
+    ['0'  NORMAL                                    ]
+    ['1'  FOREIGN                                   ]
+    ['2'  BBMD                                      ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetLiftCarDoorCommand
+    ['0'  NONE                                      ]
+    ['1'  OPEN                                      ]
+    ['2'  CLOSE                                     ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetLiftGroupMode
+    ['0'  UNKNOWN                                   ]
+    ['1'  NORMAL                                    ]
+    ['2'  DOWN_PEAK                                 ]
+    ['3'  TWO_WAY                                   ]
+    ['4'  FOUR_WAY                                  ]
+    ['5'  EMERGENCY_POWER                           ]
+    ['6'  UP_PEAK                                   ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetLightingInProgress
+    ['0'  IDLE                                      ]
+    ['1'  FADE_ACTIVE                               ]
+    ['2'  RAMP_ACTIVE                               ]
+    ['3'  NOT_CONTROLLED                            ]
+    ['4'  OTHER                                     ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetLockStatus
+    ['0'  LOCKED                                    ]
+    ['1'  UNLOCKED                                  ]
+    ['2'  LOCK_FAULT                                ]
+    ['3'  UNUSED                                    ]
+    ['4'  UNKNOWN                                   ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetNetworkNumberQuality
+    ['0'  UNKNOWN                               ]
+    ['1'  LEARNED                               ]
+    ['2'  LEARNED_CONFIGURED                    ]
+    ['3'  CONFIGURED                            ]
+]
+
+// Attention: No proprietary extension allowed
 [enum uint 8 BACnetNodeType
     ['0x00' UNKNOWN                             ]
     ['0x01' SYSTEM                              ]
@@ -155,11 +297,90 @@
 ]
 
 // Attention: No proprietary extension allowed
+[enum uint 8 BACnetPolarity
+    ['0'  NORMAL                                ]
+    ['1'  REVERSE                               ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetProgramRequest
+    ['0'  READY                                 ]
+    ['1'  LOAD                                  ]
+    ['2'  RUN                                   ]
+    ['3'  HALT                                  ]
+    ['4'  RESTART                               ]
+    ['5'  UNLOAD                                ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetProgramState
+    ['0'  IDLE                                  ]
+    ['1'  LOADING                               ]
+    ['2'  RUNNING                               ]
+    ['3'  WAITING                               ]
+    ['4'  HALTED                                ]
+    ['5'  UNLOADING                             ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetProtocolLevel
+    ['0'  PHYSICAL                              ]
+    ['1'  PROTOCOL                              ]
+    ['2'  BACNET_APPLICATION                    ]
+    ['3'  NON_BACNET_APPLICATION                ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetSecurityLevel
+    ['0'  INCAPABLE                             ] // indicates that the device is configured to not use security
+    ['1'  PLAIN                                 ]
+    ['2'  SIGNED                                ]
+    ['3'  ENCRYPTED                             ]
+    ['4'  SIGNED_END_TO_END                     ]
+    ['5'  ENCRYPTED_END_TO_END                  ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetSecurityPolicy
+    ['0'  PLAIN_NON_TRUSTED                     ]
+    ['1'  PLAIN_TRUSTED                         ]
+    ['2'  SIGNED_TRUSTED                        ]
+    ['3'  ENCRYPTED_TRUSTED                     ]
+]
+
+// Attention: No proprietary extension allowed
 [enum uint 8 BACnetSegmentation
-    ['0' SEGMENTED_BOTH                 ]
-    ['1' SEGMENTED_TRANSMIT             ]
-    ['2' SEGMENTED_RECEIVE              ]
-    ['3' NO_SEGMENTATION                ]
+    ['0' SEGMENTED_BOTH                         ]
+    ['1' SEGMENTED_TRANSMIT                     ]
+    ['2' SEGMENTED_RECEIVE                      ]
+    ['3' NO_SEGMENTATION                        ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetShedState
+    ['0'  SHED_INACTIVE                         ]
+    ['1'  SHED_REQUEST_PENDING                  ]
+    ['2'  SHED_COMPLIANT                        ]
+    ['3'  SHED_NON_COMPLIANT                    ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetTimerState
+    ['0'  IDLE                                  ]
+    ['1'  RUNNING                               ]
+    ['2'  EXPIRED                               ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetTimerTransition
+    ['0'  NONE                                  ]
+    ['1'  IDLE_TO_RUNNING                       ]
+    ['2'  RUNNING_TO_IDLE                       ]
+    ['3'  RUNNING_TO_RUNNING                    ]
+    ['4'  RUNNING_TO_EXPIRED                    ]
+    ['5'  FORCED_TO_EXPIRED                     ]
+    ['6'  EXPIRED_TO_IDLE                       ]
+    ['7'  EXPIRED_TO_RUNNING                    ]
 ]
 
 // Attention: No proprietary extension allowed
@@ -176,6 +397,14 @@
     ['0x09' UTC_TIME_SYNCHRONIZATION                    ]
     ['0x0A' WRITE_GROUP                                 ]
     ['0x0B' UNCONFIRMED_COV_NOTIFICATION_MULTIPLE       ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetWriteStatus
+    ['0'  IDLE                                          ]
+    ['1'  IN_PROGRESS                                   ]
+    ['2'  SUCCESSFUL                                    ]
+    ['3'  FAILED                                        ]
 ]
 
 // Attention: No proprietary extension allowed

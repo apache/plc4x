@@ -34,6 +34,15 @@ type IBACnetRestartReason interface {
 }
 
 const (
+	BACnetRestartReason_UNKNOWN                  BACnetRestartReason = 0
+	BACnetRestartReason_COLDSTART                BACnetRestartReason = 1
+	BACnetRestartReason_WARMSTART                BACnetRestartReason = 2
+	BACnetRestartReason_DETECTED_POWER_LOST      BACnetRestartReason = 3
+	BACnetRestartReason_DETECTED_POWERED_OFF     BACnetRestartReason = 4
+	BACnetRestartReason_HARDWARE_WATCHDOG        BACnetRestartReason = 5
+	BACnetRestartReason_SOFTWARE_WATCHDOG        BACnetRestartReason = 6
+	BACnetRestartReason_SUSPENDED                BACnetRestartReason = 7
+	BACnetRestartReason_ACTIVATE_CHANGES         BACnetRestartReason = 8
 	BACnetRestartReason_VENDOR_PROPRIETARY_VALUE BACnetRestartReason = 0xFF
 )
 
@@ -42,22 +51,67 @@ var BACnetRestartReasonValues []BACnetRestartReason
 func init() {
 	_ = errors.New
 	BACnetRestartReasonValues = []BACnetRestartReason{
+		BACnetRestartReason_UNKNOWN,
+		BACnetRestartReason_COLDSTART,
+		BACnetRestartReason_WARMSTART,
+		BACnetRestartReason_DETECTED_POWER_LOST,
+		BACnetRestartReason_DETECTED_POWERED_OFF,
+		BACnetRestartReason_HARDWARE_WATCHDOG,
+		BACnetRestartReason_SOFTWARE_WATCHDOG,
+		BACnetRestartReason_SUSPENDED,
+		BACnetRestartReason_ACTIVATE_CHANGES,
 		BACnetRestartReason_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetRestartReasonByValue(value uint8) BACnetRestartReason {
 	switch value {
+	case 0:
+		return BACnetRestartReason_UNKNOWN
 	case 0xFF:
 		return BACnetRestartReason_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetRestartReason_COLDSTART
+	case 2:
+		return BACnetRestartReason_WARMSTART
+	case 3:
+		return BACnetRestartReason_DETECTED_POWER_LOST
+	case 4:
+		return BACnetRestartReason_DETECTED_POWERED_OFF
+	case 5:
+		return BACnetRestartReason_HARDWARE_WATCHDOG
+	case 6:
+		return BACnetRestartReason_SOFTWARE_WATCHDOG
+	case 7:
+		return BACnetRestartReason_SUSPENDED
+	case 8:
+		return BACnetRestartReason_ACTIVATE_CHANGES
 	}
 	return 0
 }
 
 func BACnetRestartReasonByName(value string) BACnetRestartReason {
 	switch value {
+	case "UNKNOWN":
+		return BACnetRestartReason_UNKNOWN
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetRestartReason_VENDOR_PROPRIETARY_VALUE
+	case "COLDSTART":
+		return BACnetRestartReason_COLDSTART
+	case "WARMSTART":
+		return BACnetRestartReason_WARMSTART
+	case "DETECTED_POWER_LOST":
+		return BACnetRestartReason_DETECTED_POWER_LOST
+	case "DETECTED_POWERED_OFF":
+		return BACnetRestartReason_DETECTED_POWERED_OFF
+	case "HARDWARE_WATCHDOG":
+		return BACnetRestartReason_HARDWARE_WATCHDOG
+	case "SOFTWARE_WATCHDOG":
+		return BACnetRestartReason_SOFTWARE_WATCHDOG
+	case "SUSPENDED":
+		return BACnetRestartReason_SUSPENDED
+	case "ACTIVATE_CHANGES":
+		return BACnetRestartReason_ACTIVATE_CHANGES
 	}
 	return 0
 }
@@ -103,8 +157,26 @@ func (e BACnetRestartReason) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetRestartReason) name() string {
 	switch e {
+	case BACnetRestartReason_UNKNOWN:
+		return "UNKNOWN"
 	case BACnetRestartReason_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetRestartReason_COLDSTART:
+		return "COLDSTART"
+	case BACnetRestartReason_WARMSTART:
+		return "WARMSTART"
+	case BACnetRestartReason_DETECTED_POWER_LOST:
+		return "DETECTED_POWER_LOST"
+	case BACnetRestartReason_DETECTED_POWERED_OFF:
+		return "DETECTED_POWERED_OFF"
+	case BACnetRestartReason_HARDWARE_WATCHDOG:
+		return "HARDWARE_WATCHDOG"
+	case BACnetRestartReason_SOFTWARE_WATCHDOG:
+		return "SOFTWARE_WATCHDOG"
+	case BACnetRestartReason_SUSPENDED:
+		return "SUSPENDED"
+	case BACnetRestartReason_ACTIVATE_CHANGES:
+		return "ACTIVATE_CHANGES"
 	}
 	return ""
 }

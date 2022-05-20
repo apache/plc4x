@@ -34,7 +34,16 @@ type IBACnetEscalatorFault interface {
 }
 
 const (
-	BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE BACnetEscalatorFault = 0xFFFF
+	BACnetEscalatorFault_CONTROLLER_FAULT           BACnetEscalatorFault = 0
+	BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT      BACnetEscalatorFault = 1
+	BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT BACnetEscalatorFault = 2
+	BACnetEscalatorFault_OVERSPEED_FAULT            BACnetEscalatorFault = 3
+	BACnetEscalatorFault_POWER_SUPPLY_FAULT         BACnetEscalatorFault = 4
+	BACnetEscalatorFault_SAFETY_DEVICE_FAULT        BACnetEscalatorFault = 5
+	BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT    BACnetEscalatorFault = 6
+	BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED BACnetEscalatorFault = 7
+	BACnetEscalatorFault_COMB_PLATE_FAULT           BACnetEscalatorFault = 8
+	BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE   BACnetEscalatorFault = 0xFFFF
 )
 
 var BACnetEscalatorFaultValues []BACnetEscalatorFault
@@ -42,22 +51,67 @@ var BACnetEscalatorFaultValues []BACnetEscalatorFault
 func init() {
 	_ = errors.New
 	BACnetEscalatorFaultValues = []BACnetEscalatorFault{
+		BACnetEscalatorFault_CONTROLLER_FAULT,
+		BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT,
+		BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT,
+		BACnetEscalatorFault_OVERSPEED_FAULT,
+		BACnetEscalatorFault_POWER_SUPPLY_FAULT,
+		BACnetEscalatorFault_SAFETY_DEVICE_FAULT,
+		BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT,
+		BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED,
+		BACnetEscalatorFault_COMB_PLATE_FAULT,
 		BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetEscalatorFaultByValue(value uint16) BACnetEscalatorFault {
 	switch value {
+	case 0:
+		return BACnetEscalatorFault_CONTROLLER_FAULT
 	case 0xFFFF:
 		return BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT
+	case 2:
+		return BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT
+	case 3:
+		return BACnetEscalatorFault_OVERSPEED_FAULT
+	case 4:
+		return BACnetEscalatorFault_POWER_SUPPLY_FAULT
+	case 5:
+		return BACnetEscalatorFault_SAFETY_DEVICE_FAULT
+	case 6:
+		return BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT
+	case 7:
+		return BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED
+	case 8:
+		return BACnetEscalatorFault_COMB_PLATE_FAULT
 	}
 	return 0
 }
 
 func BACnetEscalatorFaultByName(value string) BACnetEscalatorFault {
 	switch value {
+	case "CONTROLLER_FAULT":
+		return BACnetEscalatorFault_CONTROLLER_FAULT
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE
+	case "DRIVE_AND_MOTOR_FAULT":
+		return BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT
+	case "MECHANICAL_COMPONENT_FAULT":
+		return BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT
+	case "OVERSPEED_FAULT":
+		return BACnetEscalatorFault_OVERSPEED_FAULT
+	case "POWER_SUPPLY_FAULT":
+		return BACnetEscalatorFault_POWER_SUPPLY_FAULT
+	case "SAFETY_DEVICE_FAULT":
+		return BACnetEscalatorFault_SAFETY_DEVICE_FAULT
+	case "CONTROLLER_SUPPLY_FAULT":
+		return BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT
+	case "DRIVE_TEMPERATURE_EXCEEDED":
+		return BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED
+	case "COMB_PLATE_FAULT":
+		return BACnetEscalatorFault_COMB_PLATE_FAULT
 	}
 	return 0
 }
@@ -103,8 +157,26 @@ func (e BACnetEscalatorFault) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetEscalatorFault) name() string {
 	switch e {
+	case BACnetEscalatorFault_CONTROLLER_FAULT:
+		return "CONTROLLER_FAULT"
 	case BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT:
+		return "DRIVE_AND_MOTOR_FAULT"
+	case BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT:
+		return "MECHANICAL_COMPONENT_FAULT"
+	case BACnetEscalatorFault_OVERSPEED_FAULT:
+		return "OVERSPEED_FAULT"
+	case BACnetEscalatorFault_POWER_SUPPLY_FAULT:
+		return "POWER_SUPPLY_FAULT"
+	case BACnetEscalatorFault_SAFETY_DEVICE_FAULT:
+		return "SAFETY_DEVICE_FAULT"
+	case BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT:
+		return "CONTROLLER_SUPPLY_FAULT"
+	case BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED:
+		return "DRIVE_TEMPERATURE_EXCEEDED"
+	case BACnetEscalatorFault_COMB_PLATE_FAULT:
+		return "COMB_PLATE_FAULT"
 	}
 	return ""
 }

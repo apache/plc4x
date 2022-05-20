@@ -34,6 +34,12 @@ type IBACnetEscalatorOperationDirection interface {
 }
 
 const (
+	BACnetEscalatorOperationDirection_UNKNOWN                  BACnetEscalatorOperationDirection = 0
+	BACnetEscalatorOperationDirection_STOPPED                  BACnetEscalatorOperationDirection = 1
+	BACnetEscalatorOperationDirection_UP_RATED_SPEED           BACnetEscalatorOperationDirection = 2
+	BACnetEscalatorOperationDirection_UP_REDUCED_SPEED         BACnetEscalatorOperationDirection = 3
+	BACnetEscalatorOperationDirection_DOWN_RATED_SPEED         BACnetEscalatorOperationDirection = 4
+	BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED       BACnetEscalatorOperationDirection = 5
 	BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE BACnetEscalatorOperationDirection = 0xFFFF
 )
 
@@ -42,22 +48,52 @@ var BACnetEscalatorOperationDirectionValues []BACnetEscalatorOperationDirection
 func init() {
 	_ = errors.New
 	BACnetEscalatorOperationDirectionValues = []BACnetEscalatorOperationDirection{
+		BACnetEscalatorOperationDirection_UNKNOWN,
+		BACnetEscalatorOperationDirection_STOPPED,
+		BACnetEscalatorOperationDirection_UP_RATED_SPEED,
+		BACnetEscalatorOperationDirection_UP_REDUCED_SPEED,
+		BACnetEscalatorOperationDirection_DOWN_RATED_SPEED,
+		BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED,
 		BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetEscalatorOperationDirectionByValue(value uint16) BACnetEscalatorOperationDirection {
 	switch value {
+	case 0:
+		return BACnetEscalatorOperationDirection_UNKNOWN
 	case 0xFFFF:
 		return BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetEscalatorOperationDirection_STOPPED
+	case 2:
+		return BACnetEscalatorOperationDirection_UP_RATED_SPEED
+	case 3:
+		return BACnetEscalatorOperationDirection_UP_REDUCED_SPEED
+	case 4:
+		return BACnetEscalatorOperationDirection_DOWN_RATED_SPEED
+	case 5:
+		return BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED
 	}
 	return 0
 }
 
 func BACnetEscalatorOperationDirectionByName(value string) BACnetEscalatorOperationDirection {
 	switch value {
+	case "UNKNOWN":
+		return BACnetEscalatorOperationDirection_UNKNOWN
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE
+	case "STOPPED":
+		return BACnetEscalatorOperationDirection_STOPPED
+	case "UP_RATED_SPEED":
+		return BACnetEscalatorOperationDirection_UP_RATED_SPEED
+	case "UP_REDUCED_SPEED":
+		return BACnetEscalatorOperationDirection_UP_REDUCED_SPEED
+	case "DOWN_RATED_SPEED":
+		return BACnetEscalatorOperationDirection_DOWN_RATED_SPEED
+	case "DOWN_REDUCED_SPEED":
+		return BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED
 	}
 	return 0
 }
@@ -103,8 +139,20 @@ func (e BACnetEscalatorOperationDirection) Serialize(writeBuffer utils.WriteBuff
 
 func (e BACnetEscalatorOperationDirection) name() string {
 	switch e {
+	case BACnetEscalatorOperationDirection_UNKNOWN:
+		return "UNKNOWN"
 	case BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetEscalatorOperationDirection_STOPPED:
+		return "STOPPED"
+	case BACnetEscalatorOperationDirection_UP_RATED_SPEED:
+		return "UP_RATED_SPEED"
+	case BACnetEscalatorOperationDirection_UP_REDUCED_SPEED:
+		return "UP_REDUCED_SPEED"
+	case BACnetEscalatorOperationDirection_DOWN_RATED_SPEED:
+		return "DOWN_RATED_SPEED"
+	case BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED:
+		return "DOWN_REDUCED_SPEED"
 	}
 	return ""
 }

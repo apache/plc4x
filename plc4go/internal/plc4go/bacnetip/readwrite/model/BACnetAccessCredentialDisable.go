@@ -34,6 +34,10 @@ type IBACnetAccessCredentialDisable interface {
 }
 
 const (
+	BACnetAccessCredentialDisable_NONE                     BACnetAccessCredentialDisable = 0
+	BACnetAccessCredentialDisable_DISABLE                  BACnetAccessCredentialDisable = 1
+	BACnetAccessCredentialDisable_DISABLE_MANUAL           BACnetAccessCredentialDisable = 2
+	BACnetAccessCredentialDisable_DISABLE_LOCKOUT          BACnetAccessCredentialDisable = 3
 	BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE BACnetAccessCredentialDisable = 0xFFFF
 )
 
@@ -42,22 +46,42 @@ var BACnetAccessCredentialDisableValues []BACnetAccessCredentialDisable
 func init() {
 	_ = errors.New
 	BACnetAccessCredentialDisableValues = []BACnetAccessCredentialDisable{
+		BACnetAccessCredentialDisable_NONE,
+		BACnetAccessCredentialDisable_DISABLE,
+		BACnetAccessCredentialDisable_DISABLE_MANUAL,
+		BACnetAccessCredentialDisable_DISABLE_LOCKOUT,
 		BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetAccessCredentialDisableByValue(value uint16) BACnetAccessCredentialDisable {
 	switch value {
+	case 0:
+		return BACnetAccessCredentialDisable_NONE
 	case 0xFFFF:
 		return BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetAccessCredentialDisable_DISABLE
+	case 2:
+		return BACnetAccessCredentialDisable_DISABLE_MANUAL
+	case 3:
+		return BACnetAccessCredentialDisable_DISABLE_LOCKOUT
 	}
 	return 0
 }
 
 func BACnetAccessCredentialDisableByName(value string) BACnetAccessCredentialDisable {
 	switch value {
+	case "NONE":
+		return BACnetAccessCredentialDisable_NONE
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE
+	case "DISABLE":
+		return BACnetAccessCredentialDisable_DISABLE
+	case "DISABLE_MANUAL":
+		return BACnetAccessCredentialDisable_DISABLE_MANUAL
+	case "DISABLE_LOCKOUT":
+		return BACnetAccessCredentialDisable_DISABLE_LOCKOUT
 	}
 	return 0
 }
@@ -103,8 +127,16 @@ func (e BACnetAccessCredentialDisable) Serialize(writeBuffer utils.WriteBuffer) 
 
 func (e BACnetAccessCredentialDisable) name() string {
 	switch e {
+	case BACnetAccessCredentialDisable_NONE:
+		return "NONE"
 	case BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetAccessCredentialDisable_DISABLE:
+		return "DISABLE"
+	case BACnetAccessCredentialDisable_DISABLE_MANUAL:
+		return "DISABLE_MANUAL"
+	case BACnetAccessCredentialDisable_DISABLE_LOCKOUT:
+		return "DISABLE_LOCKOUT"
 	}
 	return ""
 }

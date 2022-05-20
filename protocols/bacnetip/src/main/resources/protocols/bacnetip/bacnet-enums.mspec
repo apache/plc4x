@@ -186,151 +186,537 @@
     ['11' APDU_TOO_LONG                     ]
 
     // plc4x definition
-    ['0xFF' VENDOR_PROPRIETARY_VALUE         ]
+    ['0xFF' VENDOR_PROPRIETARY_VALUE        ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetAccessAuthenticationFactorDisable
-
+    ['0'  NONE                            ]
+    ['1'  DISABLED                        ]
+    ['2'  DISABLED_LOST                   ]
+    ['3'  DISABLED_STOLEN                 ]
+    ['4'  DISABLED_DAMAGED                ]
+    ['5'  DISABLED_DESTROYED              ]
 
     // plc4x definition
     ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetAccessCredentialDisable
-
+    ['0'  NONE                            ]
+    ['1'  DISABLE                         ]
+    ['2'  DISABLE_MANUAL                  ]
+    ['3'  DISABLE_LOCKOUT                 ]
 
     // plc4x definition
     ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetAccessCredentialDisableReason
-
+    ['0'  DISABLED                        ]
+    ['1'  DISABLED_NEEDS_PROVISIONING     ]
+    ['2'  DISABLED_UNASSIGNED             ]
+    ['3'  DISABLED_NOT_YET_ACTIVE         ]
+    ['4'  DISABLED_EXPIRED                ]
+    ['5'  DISABLED_LOCKOUT                ]
+    ['6'  DISABLED_MAX_DAYS               ]
+    ['7'  DISABLED_MAX_USES               ]
+    ['8'  DISABLED_INACTIVITY             ]
+    ['9'  DISABLED_MANUAL                 ]
 
     // plc4x definition
     ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-511 ASHRAE. 512-65535 proprietary
 [enum uint 16 BACnetAccessEvent
-
+    ['0'    NONE                                        ]
+    ['1'    GRANTED                                     ]
+    ['2'    MUSTER                                      ]
+    ['3'    PASSBACK_DETECTED                           ]
+    ['4'    DURESS                                      ]
+    ['5'    TRACE                                       ]
+    ['6'    LOCKOUT_MAX_ATTEMPTS                        ]
+    ['7'    LOCKOUT_OTHER                               ]
+    ['8'    LOCKOUT_RELINQUISHED                        ]
+    ['9'    LOCKED_BY_HIGHER_PRIORITY                   ]
+    ['10'   OUT_OF_SERVICE                              ]
+    ['11'   OUT_OF_SERVICE_RELINQUISHED                 ]
+    ['12'   ACCOMPANIMENT_BY                            ]
+    ['13'   AUTHENTICATION_FACTOR_READ                  ]
+    ['14'   AUTHORIZATION_DELAYED                       ]
+    ['15'   VERIFICATION_REQUIRED                       ]
+    ['16'   NO_ENTRY_AFTER_GRANTED                      ]
+    ['128'  DENIED_DENY_ALL                             ]
+    ['129'  DENIED_UNKNOWN_CREDENTIAL                   ]
+    ['130'  DENIED_AUTHENTICATION_UNAVAILABLE           ]
+    ['131'  DENIED_AUTHENTICATION_FACTOR_TIMEOUT        ]
+    ['132'  DENIED_INCORRECT_AUTHENTICATION_FACTOR      ]
+    ['133'  DENIED_ZONE_NO_ACCESS_RIGHTS                ]
+    ['134'  DENIED_POINT_NO_ACCESS_RIGHTS               ]
+    ['135'  DENIED_NO_ACCESS_RIGHTS                     ]
+    ['136'  DENIED_OUT_OF_TIME_RANGE                    ]
+    ['137'  DENIED_THREAT_LEVEL                         ]
+    ['138'  DENIED_PASSBACK                             ]
+    ['139'  DENIED_UNEXPECTED_LOCATION_USAGE            ]
+    ['140'  DENIED_MAX_ATTEMPTS                         ]
+    ['141'  DENIED_LOWER_OCCUPANCY_LIMIT                ]
+    ['142'  DENIED_UPPER_OCCUPANCY_LIMIT                ]
+    ['143'  DENIED_AUTHENTICATION_FACTOR_LOST           ]
+    ['144'  DENIED_AUTHENTICATION_FACTOR_STOLEN         ]
+    ['145'  DENIED_AUTHENTICATION_FACTOR_DAMAGED        ]
+    ['146'  DENIED_AUTHENTICATION_FACTOR_DESTROYED      ]
+    ['147'  DENIED_AUTHENTICATION_FACTOR_DISABLED       ]
+    ['148'  DENIED_AUTHENTICATION_FACTOR_ERROR          ]
+    ['149'  DENIED_CREDENTIAL_UNASSIGNED                ]
+    ['150'  DENIED_CREDENTIAL_NOT_PROVISIONED           ]
+    ['151'  DENIED_CREDENTIAL_NOT_YET_ACTIVE            ]
+    ['152'  DENIED_CREDENTIAL_EXPIRED                   ]
+    ['153'  DENIED_CREDENTIAL_MANUAL_DISABLE            ]
+    ['154'  DENIED_CREDENTIAL_LOCKOUT                   ]
+    ['155'  DENIED_CREDENTIAL_MAX_DAYS                  ]
+    ['156'  DENIED_CREDENTIAL_MAX_USES                  ]
+    ['157'  DENIED_CREDENTIAL_INACTIVITY                ]
+    ['158'  DENIED_CREDENTIAL_DISABLED                  ]
+    ['159'  DENIED_NO_ACCOMPANIMENT                     ]
+    ['160'  DENIED_INCORRECT_ACCOMPANIMENT              ]
+    ['161'  DENIED_LOCKOUT                              ]
+    ['162'  DENIED_VERIFICATION_FAILED                  ]
+    ['163'  DENIED_VERIFICATION_TIMEOUT                 ]
+    ['164'  DENIED_OTHER                                ]
 
     // plc4x definition
-    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE                  ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetAccessUserType
-
+    ['0'  ASSET                           ]
+    ['1'  GROUP                           ]
+    ['2'  PERSON                          ]
 
     // plc4x definition
     ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetAccessZoneOccupancyState
-
+    ['0'  NORMAL                          ]
+    ['1'  BELOW_LOWER_LIMIT               ]
+    ['2'  AT_LOWER_LIMIT                  ]
+    ['3'  AT_UPPER_LIMIT                  ]
+    ['4'  ABOVE_UPPER_LIMIT               ]
+    ['5'  DISABLED                        ]
+    ['6'  NOT_SUPPORTED                   ]
 
     // plc4x definition
     ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-255 proprietary
 [enum uint 8 BACnetAuthorizationExemption
-
+    ['0'  PASSBACK                      ]
+    ['1'  OCCUPANCY_CHECK               ]
+    ['2'  ACCESS_RIGHTS                 ]
+    ['3'  LOCKOUT                       ]
+    ['4'  DENY                          ]
+    ['5'  VERIFICATION                  ]
+    ['6'  AUTHORIZATION_DELAY           ]
 
     // plc4x definition
     ['0XFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetAuthorizationMode
-
+    ['0'  AUTHORIZE                       ]
+    ['1'  GRANT_ACTIVE                    ]
+    ['2'  DENY_ALL                        ]
+    ['3'  VERIFICATION_REQUIRED           ]
+    ['4'  AUTHORIZATION_DELAYED           ]
+    ['5'  NONE                            ]
 
     // plc4x definition
     ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-255 proprietary
 [enum uint 8 BACnetBinaryLightingPV
-
+    ['0'  OFF                           ]
+    ['1'  ON                            ]
+    ['2'  WARN                          ]
+    ['3'  WARN_OFF                      ]
+    ['4'  WARN_RELINQUISH               ]
+    ['5'  STOP                          ]
 
     // plc4x definition
     ['0XFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetDeviceStatus
-
+    ['0'  OPERATIONAL                     ]
+    ['1'  OPERATIONAL_READ_ONLY           ]
+    ['2'  DOWNLOAD_REQUIRED               ]
+    ['3'  DOWNLOAD_IN_PROGRESS            ]
+    ['4'  NON_OPERATIONAL                 ]
+    ['5'  BACKUP_IN_PROGRESS              ]
 
     // plc4x definition
     ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-255 ASHRAE. 256-65535 proprietary
 [enum uint 8 BACnetDoorAlarmState
-
+    ['0'  NORMAL                        ]
+    ['1'  ALARM                         ]
+    ['2'  DOOR_OPEN_TOO_LONG            ]
+    ['3'  FORCED_OPEN                   ]
+    ['4'  TAMPER                        ]
+    ['5'  DOOR_FAULT                    ]
+    ['6'  LOCK_DOWN                     ]
+    ['7'  FREE_ACCESS                   ]
+    ['8'  EGRESS_OPEN                   ]
 
     // plc4x definition
     ['0XFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-1023 ASHRAE. 1024-65535 proprietary
 [enum uint 16 BACnetDoorStatus
-
+    ['0'  CLOSED                          ]
+    ['1'  OPENED                          ]
+    ['2'  UNKNOWN                         ]
+    ['3'  DOOR_FAULT                      ]
+    ['4'  UNUSED                          ]
+    ['5'  NONE                            ]
+    ['6'  CLOSING                         ]
+    ['7'  OPENING                         ]
+    ['8'  SAFETY_LOCKED                   ]
+    ['9'  LIMITED_OPENED                  ]
 
     // plc4x definition
     ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-255 ASHRAE. 47808-49999 ASHRAE. 50000-65535 proprietary
-[enum uint 8 BACnetEngineeringUnits
-
-
+[enum uint 32 BACnetEngineeringUnits
+// Acceleration
+    ['166'      METERS_PER_SECOND_PER_SECOND                ]
+//Area    
+    ['0'        SQUARE_METERS                               ]
+    ['116'      SQUARE_CENTIMETERS                          ]
+    ['1'        SQUARE_FEET                                 ]
+    ['115'      SQUARE_INCHES                               ]
+//Currency    
+    ['105'      CURRENCY1                                   ]
+    ['106'      CURRENCY2                                   ]
+    ['107'      CURRENCY3                                   ]
+    ['108'      CURRENCY4                                   ]
+    ['109'      CURRENCY5                                   ]
+    ['110'      CURRENCY6                                   ]
+    ['111'      CURRENCY7                                   ]
+    ['112'      CURRENCY8                                   ]
+    ['113'      CURRENCY9                                   ]
+    ['114'      CURRENCY10                                  ]
+//Electrical
+    ['2'        MILLIAMPERES                                ]  
+    ['3'        AMPERES                                     ]  
+    ['167'      AMPERES_PER_METER                           ]
+    ['168'      AMPERES_PER_SQUARE_METER                    ]
+    ['169'      AMPERE_SQUARE_METERS                        ]
+    ['199'      DECIBELS                                    ]
+    ['200'      DECIBELS_MILLIVOLT                          ]
+    ['201'      DECIBELS_VOLT                               ]
+    ['170'      FARADS                                      ]
+    ['171'      HENRYS                                      ]
+    ['4'        OHMS                                        ]  
+    ['237'      OHM_METER_SQUARED_PER_METER                 ]  
+    ['172'      OHM_METERS                                  ]
+    ['145'      MILLIOHMS                                   ]
+    ['122'      KILOHMS                                     ]
+    ['123'      MEGOHMS                                     ]
+    ['190'      MICROSIEMENS                                ]
+    ['202'      MILLISIEMENS                                ]
+    ['173'      SIEMENS                                     ]
+    ['174'      SIEMENS_PER_METER                           ]
+    ['175'      TESLAS                                      ]
+    ['5'        VOLTS                                       ]  
+    ['124'      MILLIVOLTS                                  ]
+    ['6'        KILOVOLTS                                   ]  
+    ['7'        MEGAVOLTS                                   ]  
+    ['8'        VOLT_AMPERES                                ]  
+    ['9'        KILOVOLT_AMPERES                            ]  
+    ['10'       MEGAVOLT_AMPERES                            ] 
+    ['11'       VOLT_AMPERES_REACTIVE                       ] 
+    ['12'       KILOVOLT_AMPERES_REACTIVE                   ] 
+    ['13'       MEGAVOLT_AMPERES_REACTIVE                   ] 
+    ['176'      VOLTS_PER_DEGREE_KELVIN                     ]
+    ['177'      VOLTS_PER_METER                             ]
+    ['14'       DEGREES_PHASE                               ] 
+    ['15'       POWER_FACTOR                                ] 
+    ['178'      WEBERS                                      ]
+//Energy  
+    ['238'      AMPERE_SECONDS                              ]
+    ['239'      VOLT_AMPERE_HOURS                           ] //  i.e. VAh
+    ['240'      KILOVOLT_AMPERE_HOURS                       ]
+    ['241'      MEGAVOLT_AMPERE_HOURS                       ]
+    ['242'      VOLT_AMPERE_HOURS_REACTIVE                  ] //  i.e. varh
+    ['243'      KILOVOLT_AMPERE_HOURS_REACTIVE              ]
+    ['244'      MEGAVOLT_AMPERE_HOURS_REACTIVE              ]
+    ['245'      VOLT_SQUARE_HOURS                           ]
+    ['246'      AMPERE_SQUARE_HOURS                         ]
+    ['16'       JOULES                                      ] 
+    ['17'       KILOJOULES                                  ] 
+    ['125'      KILOJOULES_PER_KILOGRAM                     ]
+    ['126'      MEGAJOULES                                  ]
+    ['18'       WATT_HOURS                                  ] 
+    ['19'       KILOWATT_HOURS                              ] 
+    ['146'      MEGAWATT_HOURS                              ]
+    ['203'      WATT_HOURS_REACTIVE                         ]
+    ['204'      KILOWATT_HOURS_REACTIVE                     ]
+    ['205'      MEGAWATT_HOURS_REACTIVE                     ]
+    ['20'       BTUS                                        ] 
+    ['147'      KILO_BTUS                                   ]
+    ['148'      MEGA_BTUS                                   ]
+    ['21'       THERMS                                      ] 
+    ['22'       TON_HOURS                                   ] 
+//Enthalpy    
+    ['23'       JOULES_PER_KILOGRAM_DRY_AIR                 ]
+    ['149'      KILOJOULES_PER_KILOGRAM_DRY_AIR             ]
+    ['150'      MEGAJOULES_PER_KILOGRAM_DRY_AIR             ]
+    ['24'       BTUS_PER_POUND_DRY_AIR                      ]
+    ['117'      BTUS_PER_POUND                              ]
+//Humidity    
+    ['28'       GRAMS_OF_WATER_PER_KILOGRAM_DRY_AIR         ]
+    ['29'       PERCENT_RELATIVE_HUMIDITY                   ]
+//Length  
+    ['194'      MICROMETERS                                 ]
+    ['30'       MILLIMETERS                                 ]
+    ['118'      CENTIMETERS                                 ]
+    ['193'      KILOMETERS                                  ]
+    ['31'       METERS                                      ]
+    ['32'       INCHES                                      ]
+    ['33'       FEET                                        ]
+//Light   
+    ['179'      CANDELAS                                    ]
+    ['180'      CANDELAS_PER_SQUARE_METER                   ]
+    ['34'       WATTS_PER_SQUARE_FOOT                       ]
+    ['35'       WATTS_PER_SQUARE_METER                      ]
+    ['36'       LUMENS                                      ]
+    ['37'       LUXES                                       ]
+    ['38'       FOOT_CANDLES                                ]
+//Mass    
+    ['196'      MILLIGRAMS                                  ]
+    ['195'      GRAMS                                       ]
+    ['39'       KILOGRAMS                                   ]
+    ['40'       POUNDS_MASS                                 ]
+    ['41'      TONS                                         ]
+//Mass FloW
+    ['154'      GRAMS_PER_SECOND                            ]
+    ['155'      GRAMS_PER_MINUTE                            ]
+    ['42'       KILOGRAMS_PER_SECOND                        ]
+    ['43'       KILOGRAMS_PER_MINUTE                        ]
+    ['44'       KILOGRAMS_PER_HOUR                          ]
+    ['119'      POUNDS_MASS_PER_SECOND                      ]
+    ['45'       POUNDS_MASS_PER_MINUTE                      ]
+    ['46'       POUNDS_MASS_PER_HOUR                        ]
+    ['156'      TONS_PER_HOUR                               ]
+    ['132'      IWATTS                                      ]
+    ['47'       WATTS                                       ]
+    ['48'       KILOWATTS                                   ]
+    ['49'       MEGAWATTS                                   ]
+    ['50'       BTUS_PER_HOUR                               ]
+    ['157'      KILO_BTUS_PER_HOUR                          ]
+    ['247'      JOULE_PER_HOURS                             ]
+    ['51'       HORSEPOWER                                  ]
+    ['52'       TONS_REFRIGERATION                          ]
+//Pressure    
+    ['53'       PASCALS                                     ]
+    ['133'      HECTOPASCALS                                ]
+    ['54'       KILOPASCALS                                 ]
+    ['134'      MILLIBARS                                   ]
+    ['55'       BARS                                        ]
+    ['56'       POUNDS_FORCE_PER_SQUARE_INCH                ]
+    ['206'      MILLIMETERS_OF_WATER                        ]
+    ['57'       CENTIMETERS_OF_WATER                        ]
+    ['58'       INCHES_OF_WATER                             ]
+    ['59'       MILLIMETERS_OF_MERCURY                      ]
+    ['60'       CENTIMETERS_OF_MERCURY                      ]
+    ['61'       INCHES_OF_MERCURY                           ]
+//Temperature
+    ['62'       DEGREES_CELSIUS                             ]
+    ['63'       DEGREES_KELVIN                              ]
+    ['181'      DEGREES_KELVIN_PER_HOUR                     ]
+    ['182'      DEGREES_KELVIN_PER_MINUTE                   ]
+    ['64'       DEGREES_FAHRENHEIT                          ]
+    ['65'       DEGREE_DAYS_CELSIUS                         ]
+    ['66'       DEGREE_DAYS_FAHRENHEIT                      ]
+    ['120'      DELTA_DEGREES_FAHRENHEIT                    ]
+    ['121'      DELTA_DEGREES_KELVIN                        ]
+//Time    
+    ['67'       YEARS                                       ]
+    ['68'       MONTHS                                      ]
+    ['69'       WEEKS                                       ]
+    ['70'       DAYS                                        ]
+    ['71'       HOURS                                       ]
+    ['72'       MINUTES                                     ]
+    ['73'       SECONDS                                     ]
+    ['158'      HUNDREDTHS_SECONDS                          ]
+    ['159'      MILLISECONDS                                ]
+//Torque  
+    ['160'      NEWTON_METERS                               ]
+//Velocity    
+    ['161'      MILLIMETERS_PER_SECOND                      ]
+    ['162'      MILLIMETERS_PER_MINUTE                      ]
+    ['74'       METERS_PER_SECOND                           ]
+    ['163'      METERS_PER_MINUTE                           ]
+    ['164'      METERS_PER_HOUR                             ]
+    ['75'       KILOMETERS_PER_HOUR                         ]
+    ['76'       FEET_PER_SECOND                             ]
+    ['77'       FEET_PER_MINUTE                             ]
+    ['78'       MILES_PER_HOUR                              ]
+//Volume
+    ['79'       CUBIC_FEET                                  ]  
+    ['80'       CUBIC_METERS                                ]  
+    ['81'       IMPERIAL_GALLONS                            ]  
+    ['197'      MILLILITERS                                 ] 
+    ['82'       LITERS                                      ]  
+    ['83'       US_GALLONS                                  ]  
+//Volumetric FLOW
+    ['142'      CUBIC_FEET_PER_SECOND                       ] 
+    ['84'       CUBIC_FEET_PER_MINUTE                       ]  
+    ['254'      MILLION_STANDARD_CUBIC_FEET_PER_MINUTE      ] 
+    ['191'      CUBIC_FEET_PER_HOUR                         ] 
+    ['248'      CUBIC_FEET_PER_DAY                          ] 
+    ['47808'    STANDARD_CUBIC_FEET_PER_DAY                 ]
+    ['47809'    MILLION_STANDARD_CUBIC_FEET_PER_DAY         ]
+    ['47810'    THOUSAND_CUBIC_FEET_PER_DAY                 ]
+    ['47811'    THOUSAND_STANDARD_CUBIC_FEET_PER_DAY        ]
+    ['47812'    POUNDS_MASS_PER_DAY                         ]
+    ['85'       CUBIC_METERS_PER_SECOND                     ]  
+    ['165'      CUBIC_METERS_PER_MINUTE                     ] 
+    ['135'      CUBIC_METERS_PER_HOUR                       ] 
+    ['249'      CUBIC_METERS_PER_DAY                        ] 
+    ['86'       IMPERIAL_GALLONS_PER_MINUTE                 ]  
+    ['198'      MILLILITERS_PER_SECOND                      ] 
+    ['87'       LITERS_PER_SECOND                           ]  
+    ['88'       LITERS_PER_MINUTE                           ]  
+    ['136'      LITERS_PER_HOUR                             ] 
+    ['89'       US_GALLONS_PER_MINUTE                       ]  
+    ['192'      US_GALLONS_PER_HOUR                         ] 
+//Other
+    ['90'       DEGREES_ANGULAR                             ]  
+    ['91'       DEGREES_CELSIUS_PER_HOUR                    ]  
+    ['92'       DEGREES_CELSIUS_PER_MINUTE                  ]  
+    ['93'       DEGREES_FAHRENHEIT_PER_HOUR                 ]  
+    ['94'       DEGREES_FAHRENHEIT_PER_MINUTE               ]  
+    ['183'      JOULE_SECONDS                               ] 
+    ['186'      KILOGRAMS_PER_CUBIC_METER                   ] 
+    ['137'      KILOWATT_HOURS_PER_SQUARE_METER             ] 
+    ['138'      KILOWATT_HOURS_PER_SQUARE_FOOT              ] 
+    ['250'      WATT_HOURS_PER_CUBIC_METER                  ] 
+    ['251'      JOULES_PER_CUBIC_METER                      ] 
+    ['139'      MEGAJOULES_PER_SQUARE_METER                 ] 
+    ['140'      MEGAJOULES_PER_SQUARE_FOOT                  ] 
+    ['252'      MOLE_PERCENT                                ] 
+    ['95'       NO_UNITS                                    ]  
+    ['187'      NEWTON_SECONDS                              ] 
+    ['188'      NEWTONS_PER_METER                           ] 
+    ['96'       PARTS_PER_MILLION                           ]  
+    ['97'       PARTS_PER_BILLION                           ]  
+    ['253'      PASCAL_SECONDS                              ] 
+    ['98'       PERCENT                                     ]  
+    ['143'      PERCENT_OBSCURATION_PER_FOOT                ] 
+    ['144'      PERCENT_OBSCURATION_PER_METER               ] 
+    ['99'       PERCENT_PER_SECOND                          ]  
+    ['100'      PER_MINUTE                                  ] 
+    ['101'      PER_SECOND                                  ] 
+    ['102'      PSI_PER_DEGREE_FAHRENHEIT                   ] 
+    ['103'      RADIANS                                     ] 
+    ['184'      RADIANS_PER_SECOND                          ] 
+    ['104'      REVOLUTIONS_PER_MINUTE                      ] 
+    ['185'      SQUARE_METERS_PER_NEWTON                    ] 
+    ['189'      WATTS_PER_METER_PER_DEGREE_KELVIN           ] 
+    ['141'      WATTS_PER_SQUARE_METER_DEGREE_KELVIN        ] 
+    ['207'      PER_MILLE                                   ] 
+    ['208'      GRAMS_PER_GRAM                              ] 
+    ['209'      KILOGRAMS_PER_KILOGRAM                      ] 
+    ['210'      GRAMS_PER_KILOGRAM                          ] 
+    ['211'      MILLIGRAMS_PER_GRAM                         ] 
+    ['212'      MILLIGRAMS_PER_KILOGRAM                     ] 
+    ['213'      GRAMS_PER_MILLILITER                        ] 
+    ['214'      GRAMS_PER_LITER                             ] 
+    ['215'      MILLIGRAMS_PER_LITER                        ] 
+    ['216'      MICROGRAMS_PER_LITER                        ] 
+    ['217'      GRAMS_PER_CUBIC_METER                       ] 
+    ['218'      MILLIGRAMS_PER_CUBIC_METER                  ] 
+    ['219'      MICROGRAMS_PER_CUBIC_METER                  ] 
+    ['220'      NANOGRAMS_PER_CUBIC_METER                   ] 
+    ['221'      GRAMS_PER_CUBIC_CENTIMETER                  ] 
+    ['222'      BECQUERELS                                  ] 
+    ['223'      KILOBECQUERELS                              ] 
+    ['224'      MEGABECQUERELS                              ] 
+    ['225'      GRAY                                        ] 
+    ['226'      MILLIGRAY                                   ] 
+    ['227'      MICROGRAY                                   ] 
+    ['228'      SIEVERTS                                    ] 
+    ['229'      MILLISIEVERTS                               ] 
+    ['230'      MICROSIEVERTS                               ] 
+    ['231'      MICROSIEVERTS_PER_HOUR                      ] 
+    ['47814'    MILLIREMS                                   ]
+    ['47815'    MILLIREMS_PER_HOUR                          ]
+    ['232'      DECIBELS_A                                  ] 
+    ['233'      NEPHELOMETRIC_TURBIDITY_UNIT                ] 
+    ['234'      P_H                                         ]  
+    ['235'      GRAMS_PER_SQUARE_METER                      ] 
+    ['236'      MINUTES_PER_DEGREE_KELVIN                   ] 
     // plc4x definition
-    ['0XFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFF' VENDOR_PROPRIETARY_VALUE                        ]
 ]
 
-// TODO: define me
 // Attention: 0-1023 ASHRAE. 1024-65535 proprietary
 [enum uint 16 BACnetEscalatorFault
-
+    ['0'  CONTROLLER_FAULT                                  ]      
+    ['1'  DRIVE_AND_MOTOR_FAULT                             ]      
+    ['2'  MECHANICAL_COMPONENT_FAULT                        ]      
+    ['3'  OVERSPEED_FAULT                                   ]      
+    ['4'  POWER_SUPPLY_FAULT                                ]      
+    ['5'  SAFETY_DEVICE_FAULT                               ]      
+    ['6'  CONTROLLER_SUPPLY_FAULT                           ]      
+    ['7'  DRIVE_TEMPERATURE_EXCEEDED                        ]      
+    ['8'  COMB_PLATE_FAULT                                  ]      
 
     // plc4x definition
-    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE                      ]
 ]
 
-// TODO: define me
 // Attention: 0-1023 ASHRAE. 1024-65535 proprietary
 [enum uint 16 BACnetEscalatorMode
-
+    ['0'  UNKNOWN                                           ]                 
+    ['1'  STOP                                              ]                 
+    ['2'  UP                                                ]                 
+    ['3'  DOWN                                              ]                 
+    ['4'  INSPECTION                                        ]                 
+    ['5'  OUT_OF_SERVICE                                    ]                 
 
     // plc4x definition
-    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE                      ]
 ]
 
-// TODO: define me
 // Attention: 0-1023 ASHRAE. 1024-65535 proprietary
 [enum uint 16 BACnetEscalatorOperationDirection
-
+    ['0'  UNKNOWN                                           ]              
+    ['1'  STOPPED                                           ]              
+    ['2'  UP_RATED_SPEED                                    ]              
+    ['3'  UP_REDUCED_SPEED                                  ]              
+    ['4'  DOWN_RATED_SPEED                                  ]              
+    ['5'  DOWN_REDUCED_SPEED                                ]              
 
     // plc4x definition
-    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE                      ]
 ]
 
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
@@ -395,10 +781,18 @@
     ['0XFFFF' VENDOR_PROPRIETARY_VALUE          ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetLifeSafetyOperation
-
+    ['0'  NONE                            ]     
+    ['1'  SILENCE                         ]     
+    ['2'  SILENCE_AUDIBLE                 ]     
+    ['3'  SILENCE_VISUAL                  ]     
+    ['4'  RESET                           ]     
+    ['5'  RESET_ALARM                     ]     
+    ['6'  RESET_FAULT                     ]     
+    ['7'  UNSILENCE                       ]     
+    ['8'  UNSILENCE_AUDIBLE               ]     
+    ['9'  UNSILENCE_VISUAL                ]     
 
     // plc4x definition
     ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
@@ -435,82 +829,140 @@
     ['0XFFFF' VENDOR_PROPRIETARY_VALUE        ]
 ]
 
-// TODO: define me
 // Attention: 0-1023 ASHRAE. 1024-65535 proprietary
 [enum uint 16 BACnetLiftCarDirection
-
+    ['0'  UNKNOWN                           ]
+    ['1'  NONE                              ]
+    ['2'  STOPPED                           ]
+    ['3'  UP                                ]
+    ['4'  DOWN                              ]
+    ['5'  UP_AND_DOWN                       ]
 
     // plc4x definition
-    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE      ]
 ]
 
-// TODO: define me
 // Attention: 0-1023 ASHRAE. 1024-65535 proprietary
 [enum uint 16 BACnetLiftCarDriveStatus
-
+    ['0'  UNKNOWN                         ]
+    ['1'  STATIONARY                      ]
+    ['2'  BRAKING                         ]
+    ['3'  ACCELERATE                      ]
+    ['4'  DECELERATE                      ]
+    ['5'  RATED_SPEED                     ]
+    ['6'  SINGLE_FLOOR_JUMP               ]
+    ['7'  TWO_FLOOR_JUMP                  ]
+    ['8'  THREE_FLOOR_JUMP                ]
+    ['9'  MULTI_FLOOR_JUMP                ]
 
     // plc4x definition
     ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-1023 ASHRAE. 1024-65535 proprietary
 [enum uint 16 BACnetLiftCarMode
-
+    ['0'    UNKNOWN                         ]
+    ['1'    NORMAL                          ] //  in service
+    ['2'    VIP                             ]
+    ['3'    HOMING                          ]
+    ['4'    PARKING                         ]
+    ['5'    ATTENDANT_CONTROL               ]
+    ['6'    FIREFIGHTER_CONTROL             ]
+    ['7'    EMERGENCY_POWER                 ]
+    ['8'    INSPECTION                      ]
+    ['9'    CABINET_RECALL                  ]
+    ['10'   EARTHQUAKE_OPERATION            ]
+    ['11'   FIRE_OPERATION                  ]
+    ['12'   OUT_OF_SERVICE                  ]
+    ['13'   OCCUPANT_EVACUATION             ]
 
     // plc4x definition
-    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE      ]
 ]
 
-// TODO: define me
 // Attention: 0-1023 ASHRAE. 1024-65535 proprietary
 [enum uint 16 BACnetLiftFault
-
+    ['0'    CONTROLLER_FAULT                    ]
+    ['1'    DRIVE_AND_MOTOR_FAULT               ]
+    ['2'    GOVERNOR_AND_SAFETY_GEAR_FAULT      ]
+    ['3'    LIFT_SHAFT_DEVICE_FAULT             ]
+    ['4'    POWER_SUPPLY_FAULT                  ]
+    ['5'    SAFETY_INTERLOCK_FAULT              ]
+    ['6'    DOOR_CLOSING_FAULT                  ]
+    ['7'    DOOR_OPENING_FAULT                  ]
+    ['8'    CAR_STOPPED_OUTSIDE_LANDING_ZONE    ]
+    ['9'    CALL_BUTTON_STUCK                   ]
+    ['10'   START_FAILURE                       ]
+    ['11'   CONTROLLER_SUPPLY_FAULT             ]
+    ['12'   SELF_TEST_FAILURE                   ]
+    ['13'   RUNTIME_LIMIT_EXCEEDED              ]
+    ['14'   POSITION_LOST                       ]
+    ['15'   DRIVE_TEMPERATURE_EXCEEDED          ]
+    ['16'   LOAD_MEASUREMENT_FAULT              ]
 
     // plc4x definition
-    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE          ]
 ]
 
-// TODO: define me
 // Attention: 0-255 ASHRAE. 256-65535 proprietary
 [enum uint 16 BACnetLightingOperation
-
+    ['0'    NONE                            ]
+    ['1'    FADE_TO                         ]
+    ['2'    RAMP_TO                         ]
+    ['3'    STEP_UP                         ]
+    ['4'    STEP_DOWN                       ]
+    ['5'    STEP_ON                         ]
+    ['6'    STEP_OFF                        ]
+    ['7'    WARN                            ]
+    ['8'    WARN_OFF                        ]
+    ['9'    WARN_RELINQUISH                 ]
+    ['10'   STOP                            ]
 
     // plc4x definition
-    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE      ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-255 proprietary
 [enum uint 8 BACnetLightingTransition
-
+    ['0'  NONE                              ]
+    ['1'  FADE                              ]
+    ['2'  RAMP                              ]
 
     // plc4x definition
-    ['0XFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFF' VENDOR_PROPRIETARY_VALUE        ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-255 proprietary
 [enum uint 8 BACnetLoggingType
-
+    ['0'  POLLED                        ]
+    ['1'  COV                           ]
+    ['2'  TRIGGERED                     ]
 
     // plc4x definition
     ['0XFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-255 proprietary
 [enum uint 8 BACnetMaintenance
-
+    ['0'  NONE                          ]
+    ['1'  PERIODIC_TEST                 ]
+    ['2'  NEED_SERVICE_OPERATIONAL      ]
+    ['3'  NEED_SERVICE_INOPERATIVE      ]
 
     // plc4x definition
     ['0XFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-255 proprietary
 [enum uint 8 BACnetNetworkPortCommand
-
+    ['0'  IDLE                          ]
+    ['1'  DISCARD_CHANGES               ]
+    ['2'  RENEW_FD_REGISTRATION         ]
+    ['3'  RESTART_SLAVE_DISCOVERY       ]
+    ['4'  RENEW_DHCP                    ]
+    ['5'  RESTART_AUTONEGOTIATION       ]
+    ['6'  DISCONNECT                    ]
+    ['7'  RESTART_PORT                  ]
 
     // plc4x definition
     ['0XFF' VENDOR_PROPRIETARY_VALUE    ]
@@ -601,13 +1053,16 @@
     ['0x3FF' VENDOR_PROPRIETARY_VALUE           ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetProgramError
-
+    ['0'  NORMAL                            ]
+    ['1'  LOAD_FAILED                       ]
+    ['2'  INTERNAL                          ]
+    ['3'  PROGRAM                           ]
+    ['4'  OTHER                             ]
 
     // plc4x definition
-    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE      ]
 ]
 
 // Attention: 0-511 ASHRAE. 512-4194303 proprietary
@@ -1075,7 +1530,6 @@
 ]
 
 /* FIXME: this is defined in Table 23-1 as enum but indeed it is a complex object. So name collision from ASHRAE
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-254 proprietary
 [enum uint 8 BACnetPropertyStates
 
@@ -1102,13 +1556,41 @@
     ['0xFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-1023 ASHRAE. 1024-65535 proprietary
 [enum uint 16 BACnetRelationship
-
+    ['0'    UNKNOWN                         ]
+    ['1'    DEFAULT                         ]
+    ['2'    CONTAINS                        ]
+    ['3'    CONTAINED_BY                    ]
+    ['4'    USES                            ]
+    ['5'    USED_BY                         ]
+    ['6'    COMMANDS                        ]
+    ['7'    COMMANDED_BY                    ]
+    ['8'    ADJUSTS                         ]
+    ['9'    ADJUSTED_BY                     ]
+    ['10'   INGRESS                         ]
+    ['11'   EGRESS                          ]
+    ['12'   SUPPLIES_AIR                    ]
+    ['13'   RECEIVES_AIR                    ]
+    ['14'   SUPPLIES_HOT_AIR                ]
+    ['15'   RECEIVES_HOT_AIR                ]
+    ['16'   SUPPLIES_COOL_AIR               ]
+    ['17'   RECEIVES_COOL_AIR               ]
+    ['18'   SUPPLIES_POWER                  ]
+    ['19'   RECEIVES_POWER                  ]
+    ['20'   SUPPLIES_GAS                    ]
+    ['21'   RECEIVES_GAS                    ]
+    ['22'   SUPPLIES_WATER                  ]
+    ['23'   RECEIVES_WATER                  ]
+    ['24'   SUPPLIES_HOT_WATER              ]
+    ['25'   RECEIVES_HOT_WATER              ]
+    ['26'   SUPPLIES_COOL_WATER             ]
+    ['27'   RECEIVES_COOL_WATER             ]
+    ['28'   SUPPLIES_STEAM                  ]
+    ['29'   RECEIVES_STEAM                  ]
 
     // plc4x definition
-    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE      ]
 ]
 
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
@@ -1142,29 +1624,43 @@
     ['0XFFFF' VENDOR_PROPRIETARY_VALUE        ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 8 BACnetRestartReason
-
+    ['0'  UNKNOWN                       ]
+    ['1'  COLDSTART                     ]
+    ['2'  WARMSTART                     ]
+    ['3'  DETECTED_POWER_LOST           ]
+    ['4'  DETECTED_POWERED_OFF          ]
+    ['5'  HARDWARE_WATCHDOG             ]
+    ['6'  SOFTWARE_WATCHDOG             ]
+    ['7'  SUSPENDED                     ]
+    ['8'  ACTIVATE_CHANGES              ]
 
     // plc4x definition
     ['0XFF' VENDOR_PROPRIETARY_VALUE    ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetSilencedState
-
+    ['0'  UNSILENCED                        ]
+    ['1'  AUDIBLE_SILENCED                  ]
+    ['2'  VISIBLE_SILENCED                  ]
+    ['3'  ALL_SILENCED                      ]
 
     // plc4x definition
-    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE      ]
 ]
 
-// TODO: define me
 // Attention: 0-63 ASHRAE. 64-65535 proprietary
 [enum uint 16 BACnetVTClass
-
+    ['0'  DEFAULT_TERMINAL                  ]
+    ['1'  ANSI_X3_64                        ]
+    ['2'  DEC_VT52                          ]
+    ['3'  DEC_VT100                         ]
+    ['4'  DEC_VT220                         ]
+    ['5'  HP_700_94                         ]
+    ['6'  IBM_3130                          ]
 
     // plc4x definition
-    ['0XFFFF' VENDOR_PROPRIETARY_VALUE    ]
+    ['0XFFFF' VENDOR_PROPRIETARY_VALUE      ]
 ]

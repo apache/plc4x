@@ -34,6 +34,9 @@ type IBACnetLoggingType interface {
 }
 
 const (
+	BACnetLoggingType_POLLED                   BACnetLoggingType = 0
+	BACnetLoggingType_COV                      BACnetLoggingType = 1
+	BACnetLoggingType_TRIGGERED                BACnetLoggingType = 2
 	BACnetLoggingType_VENDOR_PROPRIETARY_VALUE BACnetLoggingType = 0xFF
 )
 
@@ -42,22 +45,37 @@ var BACnetLoggingTypeValues []BACnetLoggingType
 func init() {
 	_ = errors.New
 	BACnetLoggingTypeValues = []BACnetLoggingType{
+		BACnetLoggingType_POLLED,
+		BACnetLoggingType_COV,
+		BACnetLoggingType_TRIGGERED,
 		BACnetLoggingType_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetLoggingTypeByValue(value uint8) BACnetLoggingType {
 	switch value {
+	case 0:
+		return BACnetLoggingType_POLLED
 	case 0xFF:
 		return BACnetLoggingType_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetLoggingType_COV
+	case 2:
+		return BACnetLoggingType_TRIGGERED
 	}
 	return 0
 }
 
 func BACnetLoggingTypeByName(value string) BACnetLoggingType {
 	switch value {
+	case "POLLED":
+		return BACnetLoggingType_POLLED
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetLoggingType_VENDOR_PROPRIETARY_VALUE
+	case "COV":
+		return BACnetLoggingType_COV
+	case "TRIGGERED":
+		return BACnetLoggingType_TRIGGERED
 	}
 	return 0
 }
@@ -103,8 +121,14 @@ func (e BACnetLoggingType) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetLoggingType) name() string {
 	switch e {
+	case BACnetLoggingType_POLLED:
+		return "POLLED"
 	case BACnetLoggingType_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetLoggingType_COV:
+		return "COV"
+	case BACnetLoggingType_TRIGGERED:
+		return "TRIGGERED"
 	}
 	return ""
 }

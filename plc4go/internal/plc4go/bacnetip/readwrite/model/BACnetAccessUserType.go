@@ -34,6 +34,9 @@ type IBACnetAccessUserType interface {
 }
 
 const (
+	BACnetAccessUserType_ASSET                    BACnetAccessUserType = 0
+	BACnetAccessUserType_GROUP                    BACnetAccessUserType = 1
+	BACnetAccessUserType_PERSON                   BACnetAccessUserType = 2
 	BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE BACnetAccessUserType = 0xFFFF
 )
 
@@ -42,22 +45,37 @@ var BACnetAccessUserTypeValues []BACnetAccessUserType
 func init() {
 	_ = errors.New
 	BACnetAccessUserTypeValues = []BACnetAccessUserType{
+		BACnetAccessUserType_ASSET,
+		BACnetAccessUserType_GROUP,
+		BACnetAccessUserType_PERSON,
 		BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
 func BACnetAccessUserTypeByValue(value uint16) BACnetAccessUserType {
 	switch value {
+	case 0:
+		return BACnetAccessUserType_ASSET
 	case 0xFFFF:
 		return BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE
+	case 1:
+		return BACnetAccessUserType_GROUP
+	case 2:
+		return BACnetAccessUserType_PERSON
 	}
 	return 0
 }
 
 func BACnetAccessUserTypeByName(value string) BACnetAccessUserType {
 	switch value {
+	case "ASSET":
+		return BACnetAccessUserType_ASSET
 	case "VENDOR_PROPRIETARY_VALUE":
 		return BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE
+	case "GROUP":
+		return BACnetAccessUserType_GROUP
+	case "PERSON":
+		return BACnetAccessUserType_PERSON
 	}
 	return 0
 }
@@ -103,8 +121,14 @@ func (e BACnetAccessUserType) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (e BACnetAccessUserType) name() string {
 	switch e {
+	case BACnetAccessUserType_ASSET:
+		return "ASSET"
 	case BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
+	case BACnetAccessUserType_GROUP:
+		return "GROUP"
+	case BACnetAccessUserType_PERSON:
+		return "PERSON"
 	}
 	return ""
 }
