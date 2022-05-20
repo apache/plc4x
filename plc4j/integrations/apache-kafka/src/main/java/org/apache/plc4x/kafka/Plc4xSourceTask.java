@@ -153,7 +153,7 @@ public class Plc4xSourceTask extends SourceTask {
         ScraperConfigurationTriggeredImpl scraperConfig = builder.build();
 
         try {
-            PlcDriverManager manager = new PlcDriverManager(Plc4xSourceTask.class.getClassLoader());
+            PlcDriverManager manager = new PlcDriverManager();
             PlcDriverManager plcDriverManager = new CachedDriverManager(plc4xConnectionString,() -> manager.getConnection(plc4xConnectionString));
             TriggerCollector triggerCollector = new TriggerCollectorImpl(plcDriverManager);
             scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
