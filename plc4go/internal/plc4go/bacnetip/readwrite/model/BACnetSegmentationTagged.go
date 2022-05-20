@@ -28,9 +28,8 @@ import (
 
 // BACnetSegmentationTagged is the data-structure of this message
 type BACnetSegmentationTagged struct {
-	Header           *BACnetTagHeader
-	Value            BACnetSegmentation
-	ProprietaryValue uint32
+	Header *BACnetTagHeader
+	Value  BACnetSegmentation
 
 	// Arguments.
 	TagNumber uint8
@@ -43,10 +42,6 @@ type IBACnetSegmentationTagged interface {
 	GetHeader() *BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetSegmentation
-	// GetProprietaryValue returns ProprietaryValue (property field)
-	GetProprietaryValue() uint32
-	// GetIsProprietary returns IsProprietary (virtual field)
-	GetIsProprietary() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -68,31 +63,14 @@ func (m *BACnetSegmentationTagged) GetValue() BACnetSegmentation {
 	return m.Value
 }
 
-func (m *BACnetSegmentationTagged) GetProprietaryValue() uint32 {
-	return m.ProprietaryValue
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *BACnetSegmentationTagged) GetIsProprietary() bool {
-	return bool(bool((m.GetValue()) == (BACnetSegmentation_VENDOR_PROPRIETARY_VALUE)))
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewBACnetSegmentationTagged factory function for BACnetSegmentationTagged
-func NewBACnetSegmentationTagged(header *BACnetTagHeader, value BACnetSegmentation, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *BACnetSegmentationTagged {
-	return &BACnetSegmentationTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+func NewBACnetSegmentationTagged(header *BACnetTagHeader, value BACnetSegmentation, tagNumber uint8, tagClass TagClass) *BACnetSegmentationTagged {
+	return &BACnetSegmentationTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 
 func CastBACnetSegmentationTagged(structType interface{}) *BACnetSegmentationTagged {
@@ -121,11 +99,6 @@ func (m *BACnetSegmentationTagged) GetLengthInBitsConditional(lastItem bool) uin
 
 	// Manual Field (value)
 	lengthInBits += uint16(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
-
-	// A virtual field doesn't have any in- or output.
-
-	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8))) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
@@ -167,30 +140,18 @@ func BACnetSegmentationTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(readBuffer, header.GetActualLength(), BACnetSegmentation_VENDOR_PROPRIETARY_VALUE)
+	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetSegmentation_SEGMENTED_BOTH)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 	value := _value.(BACnetSegmentation)
-
-	// Virtual field
-	_isProprietary := bool((value) == (BACnetSegmentation_VENDOR_PROPRIETARY_VALUE))
-	isProprietary := bool(_isProprietary)
-	_ = isProprietary
-
-	// Manual Field (proprietaryValue)
-	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(readBuffer, header.GetActualLength(), isProprietary)
-	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
-	}
-	proprietaryValue := _proprietaryValue.(uint32)
 
 	if closeErr := readBuffer.CloseContext("BACnetSegmentationTagged"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetSegmentationTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return NewBACnetSegmentationTagged(header, value, tagNumber, tagClass), nil
 }
 
 func (m *BACnetSegmentationTagged) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -216,16 +177,6 @@ func (m *BACnetSegmentationTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
-	}
-	// Virtual field
-	if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
-		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
-	}
-
-	// Manual Field (proprietaryValue)
-	_proprietaryValueErr := WriteProprietaryEnumGeneric(writeBuffer, m.GetProprietaryValue(), m.GetIsProprietary())
-	if _proprietaryValueErr != nil {
-		return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetSegmentationTagged"); popErr != nil {

@@ -28,9 +28,8 @@ import (
 
 // BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged is the data-structure of this message
 type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged struct {
-	Header           *BACnetTagHeader
-	Value            BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
-	ProprietaryValue uint32
+	Header *BACnetTagHeader
+	Value  BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
 
 	// Arguments.
 	TagNumber uint8
@@ -43,10 +42,6 @@ type IBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceT
 	GetHeader() *BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
-	// GetProprietaryValue returns ProprietaryValue (property field)
-	GetProprietaryValue() uint32
-	// GetIsProprietary returns IsProprietary (virtual field)
-	GetIsProprietary() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -68,31 +63,14 @@ func (m *BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevi
 	return m.Value
 }
 
-func (m *BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) GetProprietaryValue() uint32 {
-	return m.ProprietaryValue
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) GetIsProprietary() bool {
-	return bool(bool((m.GetValue()) == (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_VENDOR_PROPRIETARY_VALUE)))
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged factory function for BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
-func NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(header *BACnetTagHeader, value BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
-	return &BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+func NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(header *BACnetTagHeader, value BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, tagNumber uint8, tagClass TagClass) *BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
+	return &BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 
 func CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(structType interface{}) *BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
@@ -121,11 +99,6 @@ func (m *BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevi
 
 	// Manual Field (value)
 	lengthInBits += uint16(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
-
-	// A virtual field doesn't have any in- or output.
-
-	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8))) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
@@ -167,30 +140,18 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_VENDOR_PROPRIETARY_VALUE)
+	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_COLDSTART)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 	value := _value.(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice)
-
-	// Virtual field
-	_isProprietary := bool((value) == (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_VENDOR_PROPRIETARY_VALUE))
-	isProprietary := bool(_isProprietary)
-	_ = isProprietary
-
-	// Manual Field (proprietaryValue)
-	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(readBuffer, header.GetActualLength(), isProprietary)
-	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
-	}
-	proprietaryValue := _proprietaryValue.(uint32)
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(header, value, tagNumber, tagClass), nil
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -216,16 +177,6 @@ func (m *BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevi
 	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
-	}
-	// Virtual field
-	if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
-		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
-	}
-
-	// Manual Field (proprietaryValue)
-	_proprietaryValueErr := WriteProprietaryEnumGeneric(writeBuffer, m.GetProprietaryValue(), m.GetIsProprietary())
-	if _proprietaryValueErr != nil {
-		return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged"); popErr != nil {

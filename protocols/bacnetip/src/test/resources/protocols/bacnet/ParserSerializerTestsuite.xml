@@ -9961,9 +9961,9 @@ Test "BACnet Applicat</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">58</originalInvokeId>
                     <rejectReason>
-                      <RejectReasonTagged>
+                      <BACnetRejectReasonTagged>
                         <value dataType="uint" bitLength="8" stringRepresentation="UNRECOGNIZED_SERVICE">9</value>
-                      </RejectReasonTagged>
+                      </BACnetRejectReasonTagged>
                     </rejectReason>
                   </APDUReject>
                 </APDU>
@@ -10157,9 +10157,9 @@ Test "BACnet Applicat</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">59</originalInvokeId>
                     <rejectReason>
-                      <RejectReasonTagged>
+                      <BACnetRejectReasonTagged>
                         <value dataType="uint" bitLength="8" stringRepresentation="UNRECOGNIZED_SERVICE">9</value>
-                      </RejectReasonTagged>
+                      </BACnetRejectReasonTagged>
                     </rejectReason>
                   </APDUReject>
                 </APDU>

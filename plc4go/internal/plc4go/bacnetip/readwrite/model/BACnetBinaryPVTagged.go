@@ -28,9 +28,8 @@ import (
 
 // BACnetBinaryPVTagged is the data-structure of this message
 type BACnetBinaryPVTagged struct {
-	Header           *BACnetTagHeader
-	Value            BACnetBinaryPV
-	ProprietaryValue uint32
+	Header *BACnetTagHeader
+	Value  BACnetBinaryPV
 
 	// Arguments.
 	TagNumber uint8
@@ -43,10 +42,6 @@ type IBACnetBinaryPVTagged interface {
 	GetHeader() *BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetBinaryPV
-	// GetProprietaryValue returns ProprietaryValue (property field)
-	GetProprietaryValue() uint32
-	// GetIsProprietary returns IsProprietary (virtual field)
-	GetIsProprietary() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -68,31 +63,14 @@ func (m *BACnetBinaryPVTagged) GetValue() BACnetBinaryPV {
 	return m.Value
 }
 
-func (m *BACnetBinaryPVTagged) GetProprietaryValue() uint32 {
-	return m.ProprietaryValue
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *BACnetBinaryPVTagged) GetIsProprietary() bool {
-	return bool(bool((m.GetValue()) == (BACnetBinaryPV_VENDOR_PROPRIETARY_VALUE)))
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewBACnetBinaryPVTagged factory function for BACnetBinaryPVTagged
-func NewBACnetBinaryPVTagged(header *BACnetTagHeader, value BACnetBinaryPV, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *BACnetBinaryPVTagged {
-	return &BACnetBinaryPVTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+func NewBACnetBinaryPVTagged(header *BACnetTagHeader, value BACnetBinaryPV, tagNumber uint8, tagClass TagClass) *BACnetBinaryPVTagged {
+	return &BACnetBinaryPVTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 
 func CastBACnetBinaryPVTagged(structType interface{}) *BACnetBinaryPVTagged {
@@ -121,11 +99,6 @@ func (m *BACnetBinaryPVTagged) GetLengthInBitsConditional(lastItem bool) uint16 
 
 	// Manual Field (value)
 	lengthInBits += uint16(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
-
-	// A virtual field doesn't have any in- or output.
-
-	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8))) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
@@ -167,30 +140,18 @@ func BACnetBinaryPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(readBuffer, header.GetActualLength(), BACnetBinaryPV_VENDOR_PROPRIETARY_VALUE)
+	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetBinaryPV_INACTIVE)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 	value := _value.(BACnetBinaryPV)
-
-	// Virtual field
-	_isProprietary := bool((value) == (BACnetBinaryPV_VENDOR_PROPRIETARY_VALUE))
-	isProprietary := bool(_isProprietary)
-	_ = isProprietary
-
-	// Manual Field (proprietaryValue)
-	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(readBuffer, header.GetActualLength(), isProprietary)
-	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
-	}
-	proprietaryValue := _proprietaryValue.(uint32)
 
 	if closeErr := readBuffer.CloseContext("BACnetBinaryPVTagged"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetBinaryPVTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return NewBACnetBinaryPVTagged(header, value, tagNumber, tagClass), nil
 }
 
 func (m *BACnetBinaryPVTagged) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -216,16 +177,6 @@ func (m *BACnetBinaryPVTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
-	}
-	// Virtual field
-	if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
-		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
-	}
-
-	// Manual Field (proprietaryValue)
-	_proprietaryValueErr := WriteProprietaryEnumGeneric(writeBuffer, m.GetProprietaryValue(), m.GetIsProprietary())
-	if _proprietaryValueErr != nil {
-		return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetBinaryPVTagged"); popErr != nil {

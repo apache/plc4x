@@ -34,10 +34,9 @@ type IBACnetConfirmedServiceRequestReinitializeDeviceEnableDisable interface {
 }
 
 const (
-	BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_ENABLE                   BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable = 0
-	BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_DISABLE                  BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable = 1
-	BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_DISABLE_INITIATION       BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable = 2
-	BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_VENDOR_PROPRIETARY_VALUE BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable = 0xFF
+	BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_ENABLE             BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable = 0
+	BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_DISABLE            BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable = 1
+	BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_DISABLE_INITIATION BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable = 2
 )
 
 var BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableValues []BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable
@@ -48,7 +47,6 @@ func init() {
 		BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_ENABLE,
 		BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_DISABLE,
 		BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_DISABLE_INITIATION,
-		BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
@@ -56,8 +54,6 @@ func BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableByValue(value u
 	switch value {
 	case 0:
 		return BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_ENABLE
-	case 0xFF:
-		return BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_VENDOR_PROPRIETARY_VALUE
 	case 1:
 		return BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_DISABLE
 	case 2:
@@ -70,8 +66,6 @@ func BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableByName(value st
 	switch value {
 	case "ENABLE":
 		return BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_ENABLE
-	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_VENDOR_PROPRIETARY_VALUE
 	case "DISABLE":
 		return BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_DISABLE
 	case "DISABLE_INITIATION":
@@ -123,8 +117,6 @@ func (e BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) name() str
 	switch e {
 	case BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_ENABLE:
 		return "ENABLE"
-	case BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_VENDOR_PROPRIETARY_VALUE:
-		return "VENDOR_PROPRIETARY_VALUE"
 	case BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_DISABLE:
 		return "DISABLE"
 	case BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_DISABLE_INITIATION:

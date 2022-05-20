@@ -56,13 +56,22 @@ public class BacNetIpProtocol implements Protocol {
         typeContext = new MessageFormatParser().parse(bacnetVendorIdsSchemaInputStream);
         typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
 
+        LOGGER.info("Parsing: bacnet-private-enums.mspec");
+        InputStream bacnetPrivateEnumsSchemaInputStream = BacNetIpProtocol.class.getResourceAsStream(
+            "/protocols/bacnetip/bacnet-private-enums.mspec");
+        if (bacnetPrivateEnumsSchemaInputStream == null) {
+            throw new GenerationException("Error loading private enum schema for protocol '" + getName() + "'");
+        }
+        typeContext = new MessageFormatParser().parse(bacnetPrivateEnumsSchemaInputStream, typeDefinitionMap, typeContext.getUnresolvedTypeReferences());
+        typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
+
         LOGGER.info("Parsing: bacnet-enums.mspec");
-        InputStream bacnetipEnumsSchemaInputStream = BacNetIpProtocol.class.getResourceAsStream(
+        InputStream bacnetEnumsSchemaInputStream = BacNetIpProtocol.class.getResourceAsStream(
             "/protocols/bacnetip/bacnet-enums.mspec");
-        if (bacnetipEnumsSchemaInputStream == null) {
+        if (bacnetEnumsSchemaInputStream == null) {
             throw new GenerationException("Error loading enum schema for protocol '" + getName() + "'");
         }
-        typeContext = new MessageFormatParser().parse(bacnetipEnumsSchemaInputStream, typeDefinitionMap, typeContext.getUnresolvedTypeReferences());
+        typeContext = new MessageFormatParser().parse(bacnetEnumsSchemaInputStream, typeDefinitionMap, typeContext.getUnresolvedTypeReferences());
         typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
 
         LOGGER.info("Parsing: bacnetip.mspec");

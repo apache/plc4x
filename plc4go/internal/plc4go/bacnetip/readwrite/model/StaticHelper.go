@@ -27,6 +27,30 @@ import (
 	"reflect"
 )
 
+func ReadEnumGenericFailing(readBuffer utils.ReadBuffer, actualLength uint32, template interface{}) (interface{}, error) {
+	bitsToRead := (uint8)(actualLength * 8)
+	rawValue, err := readBuffer.ReadUint32("value", bitsToRead)
+	if err != nil {
+		return nil, err
+	}
+	switch template.(type) {
+	case BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable:
+		return BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(rawValue), nil
+	case BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice:
+		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice(rawValue), nil
+	case BACnetSegmentation:
+		return BACnetSegmentation(rawValue), nil
+	case BACnetAction:
+		return BACnetAction(rawValue), nil
+	case BACnetNotifyType:
+		return BACnetNotifyType(rawValue), nil
+	case BACnetBinaryPV:
+		return BACnetBinaryPV(rawValue), nil
+	default:
+		panic(fmt.Sprintf("support for %T not yet implemented", template))
+	}
+}
+
 func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template interface{}) (interface{}, error) {
 	bitsToRead := (uint8)(actualLength * 8)
 	rawValue, err := readBuffer.ReadUint32("value", bitsToRead)

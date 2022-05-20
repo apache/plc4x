@@ -28,9 +28,8 @@ import (
 
 // BACnetNotifyTypeTagged is the data-structure of this message
 type BACnetNotifyTypeTagged struct {
-	Header           *BACnetTagHeader
-	Value            BACnetNotifyType
-	ProprietaryValue uint32
+	Header *BACnetTagHeader
+	Value  BACnetNotifyType
 
 	// Arguments.
 	TagNumber uint8
@@ -43,10 +42,6 @@ type IBACnetNotifyTypeTagged interface {
 	GetHeader() *BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetNotifyType
-	// GetProprietaryValue returns ProprietaryValue (property field)
-	GetProprietaryValue() uint32
-	// GetIsProprietary returns IsProprietary (virtual field)
-	GetIsProprietary() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -68,31 +63,14 @@ func (m *BACnetNotifyTypeTagged) GetValue() BACnetNotifyType {
 	return m.Value
 }
 
-func (m *BACnetNotifyTypeTagged) GetProprietaryValue() uint32 {
-	return m.ProprietaryValue
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *BACnetNotifyTypeTagged) GetIsProprietary() bool {
-	return bool(bool((m.GetValue()) == (BACnetNotifyType_VENDOR_PROPRIETARY_VALUE)))
-}
-
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotifyTypeTagged factory function for BACnetNotifyTypeTagged
-func NewBACnetNotifyTypeTagged(header *BACnetTagHeader, value BACnetNotifyType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *BACnetNotifyTypeTagged {
-	return &BACnetNotifyTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+func NewBACnetNotifyTypeTagged(header *BACnetTagHeader, value BACnetNotifyType, tagNumber uint8, tagClass TagClass) *BACnetNotifyTypeTagged {
+	return &BACnetNotifyTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 
 func CastBACnetNotifyTypeTagged(structType interface{}) *BACnetNotifyTypeTagged {
@@ -121,11 +99,6 @@ func (m *BACnetNotifyTypeTagged) GetLengthInBitsConditional(lastItem bool) uint1
 
 	// Manual Field (value)
 	lengthInBits += uint16(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
-
-	// A virtual field doesn't have any in- or output.
-
-	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8))) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }
@@ -167,30 +140,18 @@ func BACnetNotifyTypeTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, t
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(readBuffer, header.GetActualLength(), BACnetNotifyType_VENDOR_PROPRIETARY_VALUE)
+	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetNotifyType_ALARM)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 	value := _value.(BACnetNotifyType)
-
-	// Virtual field
-	_isProprietary := bool((value) == (BACnetNotifyType_VENDOR_PROPRIETARY_VALUE))
-	isProprietary := bool(_isProprietary)
-	_ = isProprietary
-
-	// Manual Field (proprietaryValue)
-	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(readBuffer, header.GetActualLength(), isProprietary)
-	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
-	}
-	proprietaryValue := _proprietaryValue.(uint32)
 
 	if closeErr := readBuffer.CloseContext("BACnetNotifyTypeTagged"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetNotifyTypeTagged(header, value, proprietaryValue, tagNumber, tagClass), nil
+	return NewBACnetNotifyTypeTagged(header, value, tagNumber, tagClass), nil
 }
 
 func (m *BACnetNotifyTypeTagged) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -216,16 +177,6 @@ func (m *BACnetNotifyTypeTagged) Serialize(writeBuffer utils.WriteBuffer) error 
 	_valueErr := WriteEnumGeneric(writeBuffer, m.GetValue())
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
-	}
-	// Virtual field
-	if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
-		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
-	}
-
-	// Manual Field (proprietaryValue)
-	_proprietaryValueErr := WriteProprietaryEnumGeneric(writeBuffer, m.GetProprietaryValue(), m.GetIsProprietary())
-	if _proprietaryValueErr != nil {
-		return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetNotifyTypeTagged"); popErr != nil {

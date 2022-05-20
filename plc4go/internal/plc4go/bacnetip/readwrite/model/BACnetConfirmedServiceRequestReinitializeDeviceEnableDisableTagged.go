@@ -140,16 +140,11 @@ func BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTaggedParse(rea
 	}
 
 	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_VENDOR_PROPRIETARY_VALUE)
+	_value, _valueErr := ReadEnumGenericFailing(readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_ENABLE)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 	value := _value.(BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable)
-
-	// Validation
-	if !(bool((value) != (BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable_VENDOR_PROPRIETARY_VALUE))) {
-		return nil, utils.ParseValidationError{"Validation failed"}
-	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged"); closeErr != nil {
 		return nil, closeErr

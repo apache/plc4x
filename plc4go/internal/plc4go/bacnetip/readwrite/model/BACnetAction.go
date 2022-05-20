@@ -34,9 +34,8 @@ type IBACnetAction interface {
 }
 
 const (
-	BACnetAction_DIRECT                   BACnetAction = 0
-	BACnetAction_REVERSE                  BACnetAction = 1
-	BACnetAction_VENDOR_PROPRIETARY_VALUE BACnetAction = 0xFF
+	BACnetAction_DIRECT  BACnetAction = 0
+	BACnetAction_REVERSE BACnetAction = 1
 )
 
 var BACnetActionValues []BACnetAction
@@ -46,7 +45,6 @@ func init() {
 	BACnetActionValues = []BACnetAction{
 		BACnetAction_DIRECT,
 		BACnetAction_REVERSE,
-		BACnetAction_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
@@ -54,8 +52,6 @@ func BACnetActionByValue(value uint8) BACnetAction {
 	switch value {
 	case 0:
 		return BACnetAction_DIRECT
-	case 0xFF:
-		return BACnetAction_VENDOR_PROPRIETARY_VALUE
 	case 1:
 		return BACnetAction_REVERSE
 	}
@@ -66,8 +62,6 @@ func BACnetActionByName(value string) BACnetAction {
 	switch value {
 	case "DIRECT":
 		return BACnetAction_DIRECT
-	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAction_VENDOR_PROPRIETARY_VALUE
 	case "REVERSE":
 		return BACnetAction_REVERSE
 	}
@@ -117,8 +111,6 @@ func (e BACnetAction) name() string {
 	switch e {
 	case BACnetAction_DIRECT:
 		return "DIRECT"
-	case BACnetAction_VENDOR_PROPRIETARY_VALUE:
-		return "VENDOR_PROPRIETARY_VALUE"
 	case BACnetAction_REVERSE:
 		return "REVERSE"
 	}

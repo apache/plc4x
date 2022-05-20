@@ -34,11 +34,10 @@ type IBACnetSegmentation interface {
 }
 
 const (
-	BACnetSegmentation_SEGMENTED_BOTH           BACnetSegmentation = 0
-	BACnetSegmentation_SEGMENTED_TRANSMIT       BACnetSegmentation = 1
-	BACnetSegmentation_SEGMENTED_RECEIVE        BACnetSegmentation = 2
-	BACnetSegmentation_NO_SEGMENTATION          BACnetSegmentation = 3
-	BACnetSegmentation_VENDOR_PROPRIETARY_VALUE BACnetSegmentation = 0xFF
+	BACnetSegmentation_SEGMENTED_BOTH     BACnetSegmentation = 0
+	BACnetSegmentation_SEGMENTED_TRANSMIT BACnetSegmentation = 1
+	BACnetSegmentation_SEGMENTED_RECEIVE  BACnetSegmentation = 2
+	BACnetSegmentation_NO_SEGMENTATION    BACnetSegmentation = 3
 )
 
 var BACnetSegmentationValues []BACnetSegmentation
@@ -50,7 +49,6 @@ func init() {
 		BACnetSegmentation_SEGMENTED_TRANSMIT,
 		BACnetSegmentation_SEGMENTED_RECEIVE,
 		BACnetSegmentation_NO_SEGMENTATION,
-		BACnetSegmentation_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
@@ -58,8 +56,6 @@ func BACnetSegmentationByValue(value uint8) BACnetSegmentation {
 	switch value {
 	case 0:
 		return BACnetSegmentation_SEGMENTED_BOTH
-	case 0xFF:
-		return BACnetSegmentation_VENDOR_PROPRIETARY_VALUE
 	case 1:
 		return BACnetSegmentation_SEGMENTED_TRANSMIT
 	case 2:
@@ -74,8 +70,6 @@ func BACnetSegmentationByName(value string) BACnetSegmentation {
 	switch value {
 	case "SEGMENTED_BOTH":
 		return BACnetSegmentation_SEGMENTED_BOTH
-	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetSegmentation_VENDOR_PROPRIETARY_VALUE
 	case "SEGMENTED_TRANSMIT":
 		return BACnetSegmentation_SEGMENTED_TRANSMIT
 	case "SEGMENTED_RECEIVE":
@@ -129,8 +123,6 @@ func (e BACnetSegmentation) name() string {
 	switch e {
 	case BACnetSegmentation_SEGMENTED_BOTH:
 		return "SEGMENTED_BOTH"
-	case BACnetSegmentation_VENDOR_PROPRIETARY_VALUE:
-		return "VENDOR_PROPRIETARY_VALUE"
 	case BACnetSegmentation_SEGMENTED_TRANSMIT:
 		return "SEGMENTED_TRANSMIT"
 	case BACnetSegmentation_SEGMENTED_RECEIVE:

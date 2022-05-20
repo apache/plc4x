@@ -34,9 +34,8 @@ type IBACnetBinaryPV interface {
 }
 
 const (
-	BACnetBinaryPV_INACTIVE                 BACnetBinaryPV = 0
-	BACnetBinaryPV_ACTIVE                   BACnetBinaryPV = 1
-	BACnetBinaryPV_VENDOR_PROPRIETARY_VALUE BACnetBinaryPV = 0xFF
+	BACnetBinaryPV_INACTIVE BACnetBinaryPV = 0
+	BACnetBinaryPV_ACTIVE   BACnetBinaryPV = 1
 )
 
 var BACnetBinaryPVValues []BACnetBinaryPV
@@ -46,7 +45,6 @@ func init() {
 	BACnetBinaryPVValues = []BACnetBinaryPV{
 		BACnetBinaryPV_INACTIVE,
 		BACnetBinaryPV_ACTIVE,
-		BACnetBinaryPV_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
@@ -54,8 +52,6 @@ func BACnetBinaryPVByValue(value uint8) BACnetBinaryPV {
 	switch value {
 	case 0:
 		return BACnetBinaryPV_INACTIVE
-	case 0xFF:
-		return BACnetBinaryPV_VENDOR_PROPRIETARY_VALUE
 	case 1:
 		return BACnetBinaryPV_ACTIVE
 	}
@@ -66,8 +62,6 @@ func BACnetBinaryPVByName(value string) BACnetBinaryPV {
 	switch value {
 	case "INACTIVE":
 		return BACnetBinaryPV_INACTIVE
-	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetBinaryPV_VENDOR_PROPRIETARY_VALUE
 	case "ACTIVE":
 		return BACnetBinaryPV_ACTIVE
 	}
@@ -117,8 +111,6 @@ func (e BACnetBinaryPV) name() string {
 	switch e {
 	case BACnetBinaryPV_INACTIVE:
 		return "INACTIVE"
-	case BACnetBinaryPV_VENDOR_PROPRIETARY_VALUE:
-		return "VENDOR_PROPRIETARY_VALUE"
 	case BACnetBinaryPV_ACTIVE:
 		return "ACTIVE"
 	}

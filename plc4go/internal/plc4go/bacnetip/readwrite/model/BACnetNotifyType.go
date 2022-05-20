@@ -34,10 +34,9 @@ type IBACnetNotifyType interface {
 }
 
 const (
-	BACnetNotifyType_ALARM                    BACnetNotifyType = 0x0
-	BACnetNotifyType_EVENT                    BACnetNotifyType = 0x1
-	BACnetNotifyType_ACK_NOTIFICATION         BACnetNotifyType = 0x2
-	BACnetNotifyType_VENDOR_PROPRIETARY_VALUE BACnetNotifyType = 0xFF
+	BACnetNotifyType_ALARM            BACnetNotifyType = 0x0
+	BACnetNotifyType_EVENT            BACnetNotifyType = 0x1
+	BACnetNotifyType_ACK_NOTIFICATION BACnetNotifyType = 0x2
 )
 
 var BACnetNotifyTypeValues []BACnetNotifyType
@@ -48,7 +47,6 @@ func init() {
 		BACnetNotifyType_ALARM,
 		BACnetNotifyType_EVENT,
 		BACnetNotifyType_ACK_NOTIFICATION,
-		BACnetNotifyType_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
@@ -60,8 +58,6 @@ func BACnetNotifyTypeByValue(value uint8) BACnetNotifyType {
 		return BACnetNotifyType_EVENT
 	case 0x2:
 		return BACnetNotifyType_ACK_NOTIFICATION
-	case 0xFF:
-		return BACnetNotifyType_VENDOR_PROPRIETARY_VALUE
 	}
 	return 0
 }
@@ -74,8 +70,6 @@ func BACnetNotifyTypeByName(value string) BACnetNotifyType {
 		return BACnetNotifyType_EVENT
 	case "ACK_NOTIFICATION":
 		return BACnetNotifyType_ACK_NOTIFICATION
-	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetNotifyType_VENDOR_PROPRIETARY_VALUE
 	}
 	return 0
 }
@@ -127,8 +121,6 @@ func (e BACnetNotifyType) name() string {
 		return "EVENT"
 	case BACnetNotifyType_ACK_NOTIFICATION:
 		return "ACK_NOTIFICATION"
-	case BACnetNotifyType_VENDOR_PROPRIETARY_VALUE:
-		return "VENDOR_PROPRIETARY_VALUE"
 	}
 	return ""
 }
