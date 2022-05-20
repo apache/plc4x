@@ -32,8 +32,7 @@ type BACnetContextTagEnumerated struct {
 	Payload *BACnetTagPayloadEnumerated
 
 	// Arguments.
-	TagNumberArgument        uint8
-	IsNotOpeningOrClosingTag bool
+	TagNumberArgument uint8
 }
 
 // IBACnetContextTagEnumerated is the corresponding interface of BACnetContextTagEnumerated
@@ -101,7 +100,7 @@ func (m *BACnetContextTagEnumerated) GetActualValue() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagEnumerated factory function for BACnetContextTagEnumerated
-func NewBACnetContextTagEnumerated(payload *BACnetTagPayloadEnumerated, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagEnumerated {
+func NewBACnetContextTagEnumerated(payload *BACnetTagPayloadEnumerated, header *BACnetTagHeader, tagNumberArgument uint8) *BACnetContextTagEnumerated {
 	_result := &BACnetContextTagEnumerated{
 		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
@@ -149,7 +148,7 @@ func (m *BACnetContextTagEnumerated) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, header *BACnetTagHeader) (*BACnetContextTagEnumerated, error) {
+func BACnetContextTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, header *BACnetTagHeader) (*BACnetContextTagEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagEnumerated"); pullErr != nil {
@@ -157,11 +156,6 @@ func BACnetContextTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgum
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-
-	// Validation
-	if !(isNotOpeningOrClosingTag) {
-		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
-	}
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {

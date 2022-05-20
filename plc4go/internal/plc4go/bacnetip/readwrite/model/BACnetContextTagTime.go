@@ -32,8 +32,7 @@ type BACnetContextTagTime struct {
 	Payload *BACnetTagPayloadTime
 
 	// Arguments.
-	TagNumberArgument        uint8
-	IsNotOpeningOrClosingTag bool
+	TagNumberArgument uint8
 }
 
 // IBACnetContextTagTime is the corresponding interface of BACnetContextTagTime
@@ -86,7 +85,7 @@ func (m *BACnetContextTagTime) GetPayload() *BACnetTagPayloadTime {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagTime factory function for BACnetContextTagTime
-func NewBACnetContextTagTime(payload *BACnetTagPayloadTime, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagTime {
+func NewBACnetContextTagTime(payload *BACnetTagPayloadTime, header *BACnetTagHeader, tagNumberArgument uint8) *BACnetContextTagTime {
 	_result := &BACnetContextTagTime{
 		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
@@ -132,7 +131,7 @@ func (m *BACnetContextTagTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagTimeParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool) (*BACnetContextTagTime, error) {
+func BACnetContextTagTimeParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetContextTagTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagTime"); pullErr != nil {
@@ -140,11 +139,6 @@ func BACnetContextTagTimeParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-
-	// Validation
-	if !(isNotOpeningOrClosingTag) {
-		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
-	}
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {

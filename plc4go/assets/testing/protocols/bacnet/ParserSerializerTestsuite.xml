@@ -886,7 +886,7 @@
                             </BACnetApplicationTag>
                           </deviceIdentifier>
                           <openingTag>
-                            <BACnetContextTag>
+                            <BACnetOpeningTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -896,9 +896,7 @@
                                   <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetOpeningTag>
-                              </BACnetOpeningTag>
-                            </BACnetContextTag>
+                            </BACnetOpeningTag>
                           </openingTag>
                           <fileStartPosition>
                             <BACnetApplicationTag>
@@ -969,7 +967,7 @@ make -f demo/object/ai</value>
                             </BACnetApplicationTag>
                           </fileData>
                           <closingTag>
-                            <BACnetContextTag>
+                            <BACnetClosingTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -979,9 +977,7 @@ make -f demo/object/ai</value>
                                   <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetClosingTag>
-                              </BACnetClosingTag>
-                            </BACnetContextTag>
+                            </BACnetClosingTag>
                           </closingTag>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
@@ -1155,7 +1151,7 @@ make -f demo/object/ai</value>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
                           <openingTag>
-                            <BACnetContextTag>
+                            <BACnetOpeningTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -1165,9 +1161,7 @@ make -f demo/object/ai</value>
                                   <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetOpeningTag>
-                              </BACnetOpeningTag>
-                            </BACnetContextTag>
+                            </BACnetOpeningTag>
                           </openingTag>
                           <fileStartPosition>
                             <BACnetApplicationTag>
@@ -1232,7 +1226,7 @@ make -f awf.mak</value>
                             </BACnetApplicationTag>
                           </fileData>
                           <closingTag>
-                            <BACnetContextTag>
+                            <BACnetClosingTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -1242,9 +1236,7 @@ make -f awf.mak</value>
                                   <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetClosingTag>
-                              </BACnetClosingTag>
-                            </BACnetContextTag>
+                            </BACnetClosingTag>
                           </closingTag>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
@@ -1418,7 +1410,7 @@ make -f awf.mak</value>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
                           <openingTag>
-                            <BACnetContextTag>
+                            <BACnetOpeningTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -1428,9 +1420,7 @@ make -f awf.mak</value>
                                   <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetOpeningTag>
-                              </BACnetOpeningTag>
-                            </BACnetContextTag>
+                            </BACnetOpeningTag>
                           </openingTag>
                           <fileStartPosition>
                             <BACnetApplicationTag>
@@ -1498,7 +1488,7 @@ make -f bacstr.mak</value>
                             </BACnetApplicationTag>
                           </fileData>
                           <closingTag>
-                            <BACnetContextTag>
+                            <BACnetClosingTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -1508,9 +1498,7 @@ make -f bacstr.mak</value>
                                   <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetClosingTag>
-                              </BACnetClosingTag>
-                            </BACnetContextTag>
+                            </BACnetClosingTag>
                           </closingTag>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
@@ -1684,7 +1672,7 @@ make -f bacstr.mak</value>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
                           <openingTag>
-                            <BACnetContextTag>
+                            <BACnetOpeningTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -1694,9 +1682,7 @@ make -f bacstr.mak</value>
                                   <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetOpeningTag>
-                              </BACnetOpeningTag>
-                            </BACnetContextTag>
+                            </BACnetOpeningTag>
                           </openingTag>
                           <fileStartPosition>
                             <BACnetApplicationTag>
@@ -1761,7 +1747,7 @@ make -f crc.mak clean</value>
                             </BACnetApplicationTag>
                           </fileData>
                           <closingTag>
-                            <BACnetContextTag>
+                            <BACnetClosingTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -1771,9 +1757,7 @@ make -f crc.mak clean</value>
                                   <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetClosingTag>
-                              </BACnetClosingTag>
-                            </BACnetContextTag>
+                            </BACnetClosingTag>
                           </closingTag>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
@@ -1947,7 +1931,7 @@ make -f crc.mak clean</value>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
                           <openingTag>
-                            <BACnetContextTag>
+                            <BACnetOpeningTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -1957,9 +1941,7 @@ make -f crc.mak clean</value>
                                   <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetOpeningTag>
-                              </BACnetOpeningTag>
-                            </BACnetContextTag>
+                            </BACnetOpeningTag>
                           </openingTag>
                           <fileStartPosition>
                             <BACnetApplicationTag>
@@ -2025,7 +2007,7 @@ make -f demo/object/lsp.</value>
                             </BACnetApplicationTag>
                           </fileData>
                           <closingTag>
-                            <BACnetContextTag>
+                            <BACnetClosingTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -2035,9 +2017,7 @@ make -f demo/object/lsp.</value>
                                   <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetClosingTag>
-                              </BACnetClosingTag>
-                            </BACnetContextTag>
+                            </BACnetClosingTag>
                           </closingTag>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
@@ -2211,7 +2191,7 @@ make -f demo/object/lsp.</value>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
                           <openingTag>
-                            <BACnetContextTag>
+                            <BACnetOpeningTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -2221,9 +2201,7 @@ make -f demo/object/lsp.</value>
                                   <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetOpeningTag>
-                              </BACnetOpeningTag>
-                            </BACnetContextTag>
+                            </BACnetOpeningTag>
                           </openingTag>
                           <fileStartPosition>
                             <BACnetApplicationTag>
@@ -2292,7 +2270,7 @@ make</value>
                             </BACnetApplicationTag>
                           </fileData>
                           <closingTag>
-                            <BACnetContextTag>
+                            <BACnetClosingTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -2302,9 +2280,7 @@ make</value>
                                   <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetClosingTag>
-                              </BACnetClosingTag>
-                            </BACnetContextTag>
+                            </BACnetClosingTag>
                           </closingTag>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
@@ -2478,7 +2454,7 @@ make</value>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
                           <openingTag>
-                            <BACnetContextTag>
+                            <BACnetOpeningTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -2488,9 +2464,7 @@ make</value>
                                   <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetOpeningTag>
-                              </BACnetOpeningTag>
-                            </BACnetContextTag>
+                            </BACnetOpeningTag>
                           </openingTag>
                           <fileStartPosition>
                             <BACnetApplicationTag>
@@ -2560,7 +2534,7 @@ make -f tsm.mak cle</value>
                             </BACnetApplicationTag>
                           </fileData>
                           <closingTag>
-                            <BACnetContextTag>
+                            <BACnetClosingTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -2570,9 +2544,7 @@ make -f tsm.mak cle</value>
                                   <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetClosingTag>
-                              </BACnetClosingTag>
-                            </BACnetContextTag>
+                            </BACnetClosingTag>
                           </closingTag>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
@@ -2746,7 +2718,7 @@ make -f tsm.mak cle</value>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
                           <openingTag>
-                            <BACnetContextTag>
+                            <BACnetOpeningTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -2756,9 +2728,7 @@ make -f tsm.mak cle</value>
                                   <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetOpeningTag>
-                              </BACnetOpeningTag>
-                            </BACnetContextTag>
+                            </BACnetOpeningTag>
                           </openingTag>
                           <fileStartPosition>
                             <BACnetApplicationTag>
@@ -2821,7 +2791,7 @@ make -f wp.mak clean</value>
                             </BACnetApplicationTag>
                           </fileData>
                           <closingTag>
-                            <BACnetContextTag>
+                            <BACnetClosingTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -2831,9 +2801,7 @@ make -f wp.mak clean</value>
                                   <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetClosingTag>
-                              </BACnetClosingTag>
-                            </BACnetContextTag>
+                            </BACnetClosingTag>
                           </closingTag>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
@@ -4632,7 +4600,7 @@ make -f wp.mak clean</value>
                           <values>
                             <BACnetConstructedData>
                               <openingTag>
-                                <BACnetContextTag>
+                                <BACnetOpeningTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">3</tagNumber>
@@ -4642,9 +4610,7 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
+                                </BACnetOpeningTag>
                               </openingTag>
                               <BACnetConstructedDataUnspecified>
                                 <data isList="true">
@@ -4923,7 +4889,7 @@ make -f wp.mak clean</value>
                                 </data>
                               </BACnetConstructedDataUnspecified>
                               <closingTag>
-                                <BACnetContextTag>
+                                <BACnetClosingTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">3</tagNumber>
@@ -4933,9 +4899,7 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
+                                </BACnetClosingTag>
                               </closingTag>
                             </BACnetConstructedData>
                           </values>
@@ -5082,7 +5046,7 @@ make -f wp.mak clean</value>
                           <listOfValues>
                             <BACnetPropertyValues>
                               <innerOpeningTag>
-                                <BACnetContextTag>
+                                <BACnetOpeningTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">4</tagNumber>
@@ -5092,9 +5056,7 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
+                                </BACnetOpeningTag>
                               </innerOpeningTag>
                               <data isList="true">
                                 <BACnetPropertyValue>
@@ -5117,7 +5079,7 @@ make -f wp.mak clean</value>
                                       <constructedData>
                                         <BACnetConstructedData>
                                           <openingTag>
-                                            <BACnetContextTag>
+                                            <BACnetOpeningTag>
                                               <header>
                                                 <BACnetTagHeader>
                                                   <tagNumber dataType="uint" bitLength="4">2</tagNumber>
@@ -5127,9 +5089,7 @@ make -f wp.mak clean</value>
                                                   <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                                 </BACnetTagHeader>
                                               </header>
-                                              <BACnetOpeningTag>
-                                              </BACnetOpeningTag>
-                                            </BACnetContextTag>
+                                            </BACnetOpeningTag>
                                           </openingTag>
                                           <BACnetConstructedDataUnspecified>
                                             <data isList="true">
@@ -5158,7 +5118,7 @@ make -f wp.mak clean</value>
                                             </data>
                                           </BACnetConstructedDataUnspecified>
                                           <closingTag>
-                                            <BACnetContextTag>
+                                            <BACnetClosingTag>
                                               <header>
                                                 <BACnetTagHeader>
                                                   <tagNumber dataType="uint" bitLength="4">2</tagNumber>
@@ -5168,9 +5128,7 @@ make -f wp.mak clean</value>
                                                   <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                                 </BACnetTagHeader>
                                               </header>
-                                              <BACnetClosingTag>
-                                              </BACnetClosingTag>
-                                            </BACnetContextTag>
+                                            </BACnetClosingTag>
                                           </closingTag>
                                         </BACnetConstructedData>
                                       </constructedData>
@@ -5179,7 +5137,7 @@ make -f wp.mak clean</value>
                                 </BACnetPropertyValue>
                               </data>
                               <innerClosingTag>
-                                <BACnetContextTag>
+                                <BACnetClosingTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">4</tagNumber>
@@ -5189,9 +5147,7 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
+                                </BACnetClosingTag>
                               </innerClosingTag>
                             </BACnetPropertyValues>
                           </listOfValues>
@@ -5533,7 +5489,7 @@ make -f wp.mak clean</value>
                           <propertyValue>
                             <BACnetConstructedData>
                               <openingTag>
-                                <BACnetContextTag>
+                                <BACnetOpeningTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">3</tagNumber>
@@ -5543,9 +5499,7 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
+                                </BACnetOpeningTag>
                               </openingTag>
                               <BACnetConstructedDataUnspecified>
                                 <data isList="true">
@@ -5569,7 +5523,7 @@ make -f wp.mak clean</value>
                                 </data>
                               </BACnetConstructedDataUnspecified>
                               <closingTag>
-                                <BACnetContextTag>
+                                <BACnetClosingTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">3</tagNumber>
@@ -5579,9 +5533,7 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
+                                </BACnetClosingTag>
                               </closingTag>
                             </BACnetConstructedData>
                           </propertyValue>
@@ -8423,7 +8375,7 @@ make -f wp.mak clean</value>
                           <accessMethod>
                             <BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord>
                               <openingTag>
-                                <BACnetContextTag>
+                                <BACnetOpeningTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -8433,9 +8385,7 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
+                                </BACnetOpeningTag>
                               </openingTag>
                               <BACnetConfirmedServiceRequestAtomicReadFileStream>
                                 <fileStartPosition>
@@ -8480,7 +8430,7 @@ make -f wp.mak clean</value>
                                 </requestOctetCount>
                               </BACnetConfirmedServiceRequestAtomicReadFileStream>
                               <closingTag>
-                                <BACnetContextTag>
+                                <BACnetClosingTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -8490,9 +8440,7 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
+                                </BACnetClosingTag>
                               </closingTag>
                             </BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord>
                           </accessMethod>
@@ -8580,7 +8528,7 @@ make -f wp.mak clean</value>
                           <accessMethod>
                             <BACnetServiceAckAtomicReadFileStreamOrRecord>
                               <openingTag>
-                                <BACnetContextTag>
+                                <BACnetOpeningTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -8590,9 +8538,7 @@ make -f wp.mak clean</value>
                                       <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
+                                </BACnetOpeningTag>
                               </openingTag>
                               <BACnetServiceAckAtomicReadFileStream>
                                 <fileStartPosition>
@@ -8663,7 +8609,7 @@ Test "BACnet Applicat</value>
                                 </fileData>
                               </BACnetServiceAckAtomicReadFileStream>
                               <closingTag>
-                                <BACnetContextTag>
+                                <BACnetClosingTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -8673,9 +8619,7 @@ Test "BACnet Applicat</value>
                                       <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
+                                </BACnetClosingTag>
                               </closingTag>
                             </BACnetServiceAckAtomicReadFileStreamOrRecord>
                           </accessMethod>
@@ -8771,7 +8715,7 @@ Test "BACnet Applicat</value>
                           <accessMethod>
                             <BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord>
                               <openingTag>
-                                <BACnetContextTag>
+                                <BACnetOpeningTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -8781,9 +8725,7 @@ Test "BACnet Applicat</value>
                                       <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
+                                </BACnetOpeningTag>
                               </openingTag>
                               <BACnetConfirmedServiceRequestAtomicReadFileStream>
                                 <fileStartPosition>
@@ -8828,7 +8770,7 @@ Test "BACnet Applicat</value>
                                 </requestOctetCount>
                               </BACnetConfirmedServiceRequestAtomicReadFileStream>
                               <closingTag>
-                                <BACnetContextTag>
+                                <BACnetClosingTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -8838,9 +8780,7 @@ Test "BACnet Applicat</value>
                                       <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
+                                </BACnetClosingTag>
                               </closingTag>
                             </BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord>
                           </accessMethod>
@@ -8928,7 +8868,7 @@ Test "BACnet Applicat</value>
                           <accessMethod>
                             <BACnetServiceAckAtomicReadFileStreamOrRecord>
                               <openingTag>
-                                <BACnetContextTag>
+                                <BACnetOpeningTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -8938,9 +8878,7 @@ Test "BACnet Applicat</value>
                                       <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
+                                </BACnetOpeningTag>
                               </openingTag>
                               <BACnetServiceAckAtomicReadFileStream>
                                 <fileStartPosition>
@@ -9016,7 +8954,7 @@ Test "BACnet I-Am":
                                 </fileData>
                               </BACnetServiceAckAtomicReadFileStream>
                               <closingTag>
-                                <BACnetContextTag>
+                                <BACnetClosingTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -9026,9 +8964,7 @@ Test "BACnet I-Am":
                                       <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
+                                </BACnetClosingTag>
                               </closingTag>
                             </BACnetServiceAckAtomicReadFileStreamOrRecord>
                           </accessMethod>
@@ -9124,7 +9060,7 @@ Test "BACnet I-Am":
                           <accessMethod>
                             <BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord>
                               <openingTag>
-                                <BACnetContextTag>
+                                <BACnetOpeningTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -9134,9 +9070,7 @@ Test "BACnet I-Am":
                                       <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
+                                </BACnetOpeningTag>
                               </openingTag>
                               <BACnetConfirmedServiceRequestAtomicReadFileStream>
                                 <fileStartPosition>
@@ -9181,7 +9115,7 @@ Test "BACnet I-Am":
                                 </requestOctetCount>
                               </BACnetConfirmedServiceRequestAtomicReadFileStream>
                               <closingTag>
-                                <BACnetContextTag>
+                                <BACnetClosingTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -9191,9 +9125,7 @@ Test "BACnet I-Am":
                                       <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
+                                </BACnetClosingTag>
                               </closingTag>
                             </BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord>
                           </accessMethod>
@@ -9281,7 +9213,7 @@ Test "BACnet I-Am":
                           <accessMethod>
                             <BACnetServiceAckAtomicReadFileStreamOrRecord>
                               <openingTag>
-                                <BACnetContextTag>
+                                <BACnetOpeningTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -9291,9 +9223,7 @@ Test "BACnet I-Am":
                                       <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
+                                </BACnetOpeningTag>
                               </openingTag>
                               <BACnetServiceAckAtomicReadFileStream>
                                 <fileStartPosition>
@@ -9366,7 +9296,7 @@ Test "BACnet ReadProperty":
                                 </fileData>
                               </BACnetServiceAckAtomicReadFileStream>
                               <closingTag>
-                                <BACnetContextTag>
+                                <BACnetClosingTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -9376,9 +9306,7 @@ Test "BACnet ReadProperty":
                                       <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
+                                </BACnetClosingTag>
                               </closingTag>
                             </BACnetServiceAckAtomicReadFileStreamOrRecord>
                           </accessMethod>
@@ -9474,7 +9402,7 @@ Test "BACnet ReadProperty":
                           <accessMethod>
                             <BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord>
                               <openingTag>
-                                <BACnetContextTag>
+                                <BACnetOpeningTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -9484,9 +9412,7 @@ Test "BACnet ReadProperty":
                                       <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
+                                </BACnetOpeningTag>
                               </openingTag>
                               <BACnetConfirmedServiceRequestAtomicReadFileStream>
                                 <fileStartPosition>
@@ -9531,7 +9457,7 @@ Test "BACnet ReadProperty":
                                 </requestOctetCount>
                               </BACnetConfirmedServiceRequestAtomicReadFileStream>
                               <closingTag>
-                                <BACnetContextTag>
+                                <BACnetClosingTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -9541,9 +9467,7 @@ Test "BACnet ReadProperty":
                                       <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
+                                </BACnetClosingTag>
                               </closingTag>
                             </BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord>
                           </accessMethod>
@@ -9631,7 +9555,7 @@ Test "BACnet ReadProperty":
                           <accessMethod>
                             <BACnetServiceAckAtomicReadFileStreamOrRecord>
                               <openingTag>
-                                <BACnetContextTag>
+                                <BACnetOpeningTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -9641,9 +9565,7 @@ Test "BACnet ReadProperty":
                                       <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
+                                </BACnetOpeningTag>
                               </openingTag>
                               <BACnetServiceAckAtomicReadFileStream>
                                 <fileStartPosition>
@@ -9705,7 +9627,7 @@ Test "BACnet WriteProperty":
                                 </fileData>
                               </BACnetServiceAckAtomicReadFileStream>
                               <closingTag>
-                                <BACnetContextTag>
+                                <BACnetClosingTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -9715,9 +9637,7 @@ Test "BACnet WriteProperty":
                                       <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
+                                </BACnetClosingTag>
                               </closingTag>
                             </BACnetServiceAckAtomicReadFileStreamOrRecord>
                           </accessMethod>
@@ -9811,7 +9731,7 @@ Test "BACnet WriteProperty":
                             </BACnetApplicationTag>
                           </deviceIdentifier>
                           <openingTag>
-                            <BACnetContextTag>
+                            <BACnetOpeningTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -9821,9 +9741,7 @@ Test "BACnet WriteProperty":
                                   <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetOpeningTag>
-                              </BACnetOpeningTag>
-                            </BACnetContextTag>
+                            </BACnetOpeningTag>
                           </openingTag>
                           <fileStartPosition>
                             <BACnetApplicationTag>
@@ -9892,7 +9810,7 @@ Test "BACnet Applicat</value>
                             </BACnetApplicationTag>
                           </fileData>
                           <closingTag>
-                            <BACnetContextTag>
+                            <BACnetClosingTag>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">0</tagNumber>
@@ -9902,9 +9820,7 @@ Test "BACnet Applicat</value>
                                   <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetClosingTag>
-                              </BACnetClosingTag>
-                            </BACnetContextTag>
+                            </BACnetClosingTag>
                           </closingTag>
                         </BACnetConfirmedServiceRequestAtomicWriteFile>
                       </BACnetConfirmedServiceRequest>
@@ -10053,7 +9969,7 @@ Test "BACnet Applicat</value>
                                 </BACnetContextTag>
                               </objectIdentifier>
                               <openingTag>
-                                <BACnetContextTag>
+                                <BACnetOpeningTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -10063,9 +9979,7 @@ Test "BACnet Applicat</value>
                                       <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
+                                </BACnetOpeningTag>
                               </openingTag>
                               <listOfPropertyReferences isList="true">
                                 <BACnetPropertyReference>
@@ -10086,7 +10000,7 @@ Test "BACnet Applicat</value>
                                 </BACnetPropertyReference>
                               </listOfPropertyReferences>
                               <closingTag>
-                                <BACnetContextTag>
+                                <BACnetClosingTag>
                                   <header>
                                     <BACnetTagHeader>
                                       <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -10096,9 +10010,7 @@ Test "BACnet Applicat</value>
                                       <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
                                     </BACnetTagHeader>
                                   </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
+                                </BACnetClosingTag>
                               </closingTag>
                             </BACnetReadAccessSpecification>
                           </data>

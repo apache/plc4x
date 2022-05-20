@@ -198,7 +198,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_OPENING_TAG))
+	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
 	}
@@ -263,7 +263,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_CLOSING_TAG))
+	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
 	}

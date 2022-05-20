@@ -32,8 +32,7 @@ type BACnetContextTagUnsignedInteger struct {
 	Payload *BACnetTagPayloadUnsignedInteger
 
 	// Arguments.
-	TagNumberArgument        uint8
-	IsNotOpeningOrClosingTag bool
+	TagNumberArgument uint8
 }
 
 // IBACnetContextTagUnsignedInteger is the corresponding interface of BACnetContextTagUnsignedInteger
@@ -101,7 +100,7 @@ func (m *BACnetContextTagUnsignedInteger) GetActualValue() uint64 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagUnsignedInteger factory function for BACnetContextTagUnsignedInteger
-func NewBACnetContextTagUnsignedInteger(payload *BACnetTagPayloadUnsignedInteger, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagUnsignedInteger {
+func NewBACnetContextTagUnsignedInteger(payload *BACnetTagPayloadUnsignedInteger, header *BACnetTagHeader, tagNumberArgument uint8) *BACnetContextTagUnsignedInteger {
 	_result := &BACnetContextTagUnsignedInteger{
 		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
@@ -149,7 +148,7 @@ func (m *BACnetContextTagUnsignedInteger) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, header *BACnetTagHeader) (*BACnetContextTagUnsignedInteger, error) {
+func BACnetContextTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, header *BACnetTagHeader) (*BACnetContextTagUnsignedInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagUnsignedInteger"); pullErr != nil {
@@ -157,11 +156,6 @@ func BACnetContextTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-
-	// Validation
-	if !(isNotOpeningOrClosingTag) {
-		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
-	}
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {

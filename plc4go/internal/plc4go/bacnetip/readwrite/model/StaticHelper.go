@@ -542,7 +542,7 @@ func CreateBACnetApplicationTagNull() *BACnetApplicationTagNull {
 
 func CreateBACnetContextTagNull(tagNumber uint8) *BACnetContextTagNull {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 0)
-	return NewBACnetContextTagNull(header, tagNumber, true)
+	return NewBACnetContextTagNull(header, tagNumber)
 }
 
 func CreateBACnetOpeningTag(tagNum uint8) *BACnetOpeningTag {
@@ -555,7 +555,7 @@ func CreateBACnetOpeningTag(tagNum uint8) *BACnetOpeningTag {
 		extTagNumber = &tagNum
 	}
 	header := NewBACnetTagHeader(tagNumber, TagClass_CONTEXT_SPECIFIC_TAGS, 0x6, extTagNumber, nil, nil, nil)
-	return NewBACnetOpeningTag(header, tagNum, 6)
+	return NewBACnetOpeningTag(header, tagNum)
 }
 
 func CreateBACnetClosingTag(tagNum uint8) *BACnetClosingTag {
@@ -568,7 +568,7 @@ func CreateBACnetClosingTag(tagNum uint8) *BACnetClosingTag {
 		extTagNumber = &tagNum
 	}
 	header := NewBACnetTagHeader(tagNumber, TagClass_CONTEXT_SPECIFIC_TAGS, 0x7, extTagNumber, nil, nil, nil)
-	return NewBACnetClosingTag(header, tagNum, 7)
+	return NewBACnetClosingTag(header, tagNum)
 }
 
 func CreateBACnetApplicationTagObjectIdentifier(objectType uint16, instance uint32) *BACnetApplicationTagObjectIdentifier {
@@ -592,7 +592,7 @@ func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, ins
 		proprietaryValue = objectType
 	}
 	payload := NewBACnetTagPayloadObjectIdentifier(objectTypeEnum, proprietaryValue, instance)
-	return NewBACnetContextTagObjectIdentifier(payload, header, tagNum, true)
+	return NewBACnetContextTagObjectIdentifier(payload, header, tagNum)
 }
 
 func CreateBACnetPropertyIdentifierTagged(tagNum uint8, propertyType uint32) *BACnetPropertyIdentifierTagged {
@@ -615,7 +615,7 @@ func CreateBACnetApplicationTagUnsignedInteger(value uint) *BACnetApplicationTag
 func CreateBACnetContextTagUnsignedInteger(tagNumber uint8, value uint) *BACnetContextTagUnsignedInteger {
 	length, payload := CreateUnsignedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, length)
-	return NewBACnetContextTagUnsignedInteger(payload, header, tagNumber, true)
+	return NewBACnetContextTagUnsignedInteger(payload, header, tagNumber)
 }
 
 func CreateUnsignedPayload(value uint) (uint32, *BACnetTagPayloadUnsignedInteger) {
@@ -660,7 +660,7 @@ func CreateBACnetApplicationTagSignedInteger(value int) *BACnetApplicationTagSig
 func CreateBACnetContextTagSignedInteger(tagNumber uint8, value int) *BACnetContextTagSignedInteger {
 	length, payload := CreateSignedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, length)
-	return NewBACnetContextTagSignedInteger(payload, header, tagNumber, true)
+	return NewBACnetContextTagSignedInteger(payload, header, tagNumber)
 }
 
 func CreateSignedPayload(value int) (uint32, *BACnetTagPayloadSignedInteger) {
@@ -707,7 +707,7 @@ func CreateBACnetContextTagBoolean(tagNumber uint8, value bool) *BACnetContextTa
 	if value {
 		_value = 1
 	}
-	return NewBACnetContextTagBoolean(_value, NewBACnetTagPayloadBoolean(uint32(_value)), header, tagNumber, true)
+	return NewBACnetContextTagBoolean(_value, NewBACnetTagPayloadBoolean(uint32(_value)), header, tagNumber)
 }
 
 func CreateBACnetApplicationTagReal(value float32) *BACnetApplicationTagReal {
@@ -717,7 +717,7 @@ func CreateBACnetApplicationTagReal(value float32) *BACnetApplicationTagReal {
 
 func CreateBACnetContextTagReal(tagNumber uint8, value float32) *BACnetContextTagReal {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 4)
-	return NewBACnetContextTagReal(NewBACnetTagPayloadReal(value), header, tagNumber, true)
+	return NewBACnetContextTagReal(NewBACnetTagPayloadReal(value), header, tagNumber)
 }
 
 func CreateBACnetApplicationTagDouble(value float64) *BACnetApplicationTagDouble {
@@ -727,7 +727,7 @@ func CreateBACnetApplicationTagDouble(value float64) *BACnetApplicationTagDouble
 
 func CreateBACnetContextTagDouble(tagNumber uint8, value float64) *BACnetContextTagDouble {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 8)
-	return NewBACnetContextTagDouble(NewBACnetTagPayloadDouble(value), header, tagNumber, true)
+	return NewBACnetContextTagDouble(NewBACnetTagPayloadDouble(value), header, tagNumber)
 }
 
 func CreateBACnetApplicationTagOctetString(value string) *BACnetApplicationTagOctetString {
@@ -737,7 +737,7 @@ func CreateBACnetApplicationTagOctetString(value string) *BACnetApplicationTagOc
 
 func CreateBACnetContextTagOctetString(tagNumber uint8, value string) *BACnetContextTagOctetString {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, uint32(len(value)+1))
-	return NewBACnetContextTagOctetString(NewBACnetTagPayloadOctetString(value, uint32(len(value)+1)), header, tagNumber, true)
+	return NewBACnetContextTagOctetString(NewBACnetTagPayloadOctetString(value, uint32(len(value)+1)), header, tagNumber)
 }
 
 func CreateBACnetApplicationTagCharacterString(baCnetCharacterEncoding BACnetCharacterEncoding, value string) *BACnetApplicationTagCharacterString {
@@ -747,7 +747,7 @@ func CreateBACnetApplicationTagCharacterString(baCnetCharacterEncoding BACnetCha
 
 func CreateBACnetContextTagCharacterString(tagNumber uint8, baCnetCharacterEncoding BACnetCharacterEncoding, value string) *BACnetContextTagCharacterString {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, uint32(len(value)+1))
-	return NewBACnetContextTagCharacterString(NewBACnetTagPayloadCharacterString(baCnetCharacterEncoding, value, uint32(len(value)+1)), header, tagNumber, true)
+	return NewBACnetContextTagCharacterString(NewBACnetTagPayloadCharacterString(baCnetCharacterEncoding, value, uint32(len(value)+1)), header, tagNumber)
 }
 
 func CreateBACnetApplicationTagBitString(value []bool) *BACnetApplicationTagBitString {
@@ -767,7 +767,7 @@ func CreateBACnetContextTagBitString(tagNumber uint8, value []bool) *BACnetConte
 		unusedBits = 0
 	}
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, uint32(numberOfBytesNeeded+1))
-	return NewBACnetContextTagBitString(NewBACnetTagPayloadBitString(uint8(unusedBits), value, make([]bool, unusedBits), uint32(numberOfBytesNeeded+1)), header, tagNumber, true)
+	return NewBACnetContextTagBitString(NewBACnetTagPayloadBitString(uint8(unusedBits), value, make([]bool, unusedBits), uint32(numberOfBytesNeeded+1)), header, tagNumber)
 }
 
 func CreateBACnetApplicationTagEnumerated(value uint32) *BACnetApplicationTagEnumerated {
@@ -780,7 +780,7 @@ func CreateBACnetApplicationTagEnumerated(value uint32) *BACnetApplicationTagEnu
 func CreateBACnetContextTagEnumerated(tagNumber uint8, value uint32) *BACnetContextTagEnumerated {
 	length, payload := CreateEnumeratedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, length)
-	result := NewBACnetContextTagEnumerated(payload, header, tagNumber, true)
+	result := NewBACnetContextTagEnumerated(payload, header, tagNumber)
 	return CastBACnetContextTagEnumerated(result)
 }
 
@@ -806,7 +806,7 @@ func CreateBACnetContextTagDate(tagNumber uint8, year uint16, month, dayOfMonth,
 	if year == 0xFF {
 		yearMinus1900 = 0xFF
 	}
-	return NewBACnetContextTagDate(NewBACnetTagPayloadDate(yearMinus1900, month, dayOfMonth, dayOfWeek), header, tagNumber, true)
+	return NewBACnetContextTagDate(NewBACnetTagPayloadDate(yearMinus1900, month, dayOfMonth, dayOfWeek), header, tagNumber)
 }
 
 func CreateBACnetApplicationTagTime(hour, minute, second, fractional uint8) *BACnetApplicationTagTime {
@@ -816,7 +816,7 @@ func CreateBACnetApplicationTagTime(hour, minute, second, fractional uint8) *BAC
 
 func CreateBACnetContextTagTime(tagNumber uint8, hour, minute, second, fractional uint8) *BACnetContextTagTime {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 4)
-	return NewBACnetContextTagTime(NewBACnetTagPayloadTime(hour, minute, second, fractional), header, tagNumber, true)
+	return NewBACnetContextTagTime(NewBACnetTagPayloadTime(hour, minute, second, fractional), header, tagNumber)
 }
 
 func requiredLength(value uint) uint32 {

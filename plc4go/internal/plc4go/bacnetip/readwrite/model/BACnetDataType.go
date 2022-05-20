@@ -47,8 +47,6 @@ const (
 	BACnetDataType_DATE                     BACnetDataType = 10
 	BACnetDataType_TIME                     BACnetDataType = 11
 	BACnetDataType_BACNET_OBJECT_IDENTIFIER BACnetDataType = 12
-	BACnetDataType_OPENING_TAG              BACnetDataType = 20
-	BACnetDataType_CLOSING_TAG              BACnetDataType = 21
 	BACnetDataType_UNKNOWN                  BACnetDataType = 33
 )
 
@@ -70,8 +68,6 @@ func init() {
 		BACnetDataType_DATE,
 		BACnetDataType_TIME,
 		BACnetDataType_BACNET_OBJECT_IDENTIFIER,
-		BACnetDataType_OPENING_TAG,
-		BACnetDataType_CLOSING_TAG,
 		BACnetDataType_UNKNOWN,
 	}
 }
@@ -90,10 +86,6 @@ func BACnetDataTypeByValue(value uint8) BACnetDataType {
 		return BACnetDataType_BACNET_OBJECT_IDENTIFIER
 	case 2:
 		return BACnetDataType_UNSIGNED_INTEGER
-	case 20:
-		return BACnetDataType_OPENING_TAG
-	case 21:
-		return BACnetDataType_CLOSING_TAG
 	case 3:
 		return BACnetDataType_SIGNED_INTEGER
 	case 33:
@@ -128,10 +120,6 @@ func BACnetDataTypeByName(value string) BACnetDataType {
 		return BACnetDataType_BACNET_OBJECT_IDENTIFIER
 	case "UNSIGNED_INTEGER":
 		return BACnetDataType_UNSIGNED_INTEGER
-	case "OPENING_TAG":
-		return BACnetDataType_OPENING_TAG
-	case "CLOSING_TAG":
-		return BACnetDataType_CLOSING_TAG
 	case "SIGNED_INTEGER":
 		return BACnetDataType_SIGNED_INTEGER
 	case "UNKNOWN":
@@ -205,10 +193,6 @@ func (e BACnetDataType) name() string {
 		return "BACNET_OBJECT_IDENTIFIER"
 	case BACnetDataType_UNSIGNED_INTEGER:
 		return "UNSIGNED_INTEGER"
-	case BACnetDataType_OPENING_TAG:
-		return "OPENING_TAG"
-	case BACnetDataType_CLOSING_TAG:
-		return "CLOSING_TAG"
 	case BACnetDataType_SIGNED_INTEGER:
 		return "SIGNED_INTEGER"
 	case BACnetDataType_UNKNOWN:

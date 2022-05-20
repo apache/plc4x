@@ -208,7 +208,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 		if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_OPENING_TAG)
+		_val, _err := BACnetOpeningTagParse(readBuffer, uint8(0))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
@@ -255,7 +255,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 		if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_CLOSING_TAG)
+		_val, _err := BACnetClosingTagParse(readBuffer, uint8(0))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

@@ -32,8 +32,7 @@ type BACnetContextTagObjectIdentifier struct {
 	Payload *BACnetTagPayloadObjectIdentifier
 
 	// Arguments.
-	TagNumberArgument        uint8
-	IsNotOpeningOrClosingTag bool
+	TagNumberArgument uint8
 }
 
 // IBACnetContextTagObjectIdentifier is the corresponding interface of BACnetContextTagObjectIdentifier
@@ -107,7 +106,7 @@ func (m *BACnetContextTagObjectIdentifier) GetInstanceNumber() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagObjectIdentifier factory function for BACnetContextTagObjectIdentifier
-func NewBACnetContextTagObjectIdentifier(payload *BACnetTagPayloadObjectIdentifier, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagObjectIdentifier {
+func NewBACnetContextTagObjectIdentifier(payload *BACnetTagPayloadObjectIdentifier, header *BACnetTagHeader, tagNumberArgument uint8) *BACnetContextTagObjectIdentifier {
 	_result := &BACnetContextTagObjectIdentifier{
 		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
@@ -157,7 +156,7 @@ func (m *BACnetContextTagObjectIdentifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool) (*BACnetContextTagObjectIdentifier, error) {
+func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetContextTagObjectIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagObjectIdentifier"); pullErr != nil {
@@ -165,11 +164,6 @@ func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-
-	// Validation
-	if !(isNotOpeningOrClosingTag) {
-		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
-	}
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {

@@ -170,7 +170,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()), BACnetDataType(BACnetDataType_OPENING_TAG))
+	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
 	}
@@ -210,7 +210,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()), BACnetDataType(BACnetDataType_CLOSING_TAG))
+	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
 	}

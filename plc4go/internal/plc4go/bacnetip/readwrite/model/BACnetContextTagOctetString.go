@@ -32,8 +32,7 @@ type BACnetContextTagOctetString struct {
 	Payload *BACnetTagPayloadOctetString
 
 	// Arguments.
-	TagNumberArgument        uint8
-	IsNotOpeningOrClosingTag bool
+	TagNumberArgument uint8
 }
 
 // IBACnetContextTagOctetString is the corresponding interface of BACnetContextTagOctetString
@@ -101,7 +100,7 @@ func (m *BACnetContextTagOctetString) GetValue() string {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagOctetString factory function for BACnetContextTagOctetString
-func NewBACnetContextTagOctetString(payload *BACnetTagPayloadOctetString, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagOctetString {
+func NewBACnetContextTagOctetString(payload *BACnetTagPayloadOctetString, header *BACnetTagHeader, tagNumberArgument uint8) *BACnetContextTagOctetString {
 	_result := &BACnetContextTagOctetString{
 		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
@@ -149,7 +148,7 @@ func (m *BACnetContextTagOctetString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, header *BACnetTagHeader) (*BACnetContextTagOctetString, error) {
+func BACnetContextTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, header *BACnetTagHeader) (*BACnetContextTagOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagOctetString"); pullErr != nil {
@@ -157,11 +156,6 @@ func BACnetContextTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgu
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-
-	// Validation
-	if !(isNotOpeningOrClosingTag) {
-		return nil, utils.ParseValidationError{"length 6 and 7 reserved for opening and closing tag"}
-	}
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {

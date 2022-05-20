@@ -33,8 +33,7 @@ type BACnetContextTagBoolean struct {
 	Payload *BACnetTagPayloadBoolean
 
 	// Arguments.
-	TagNumberArgument        uint8
-	IsNotOpeningOrClosingTag bool
+	TagNumberArgument uint8
 }
 
 // IBACnetContextTagBoolean is the corresponding interface of BACnetContextTagBoolean
@@ -108,7 +107,7 @@ func (m *BACnetContextTagBoolean) GetActualValue() bool {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagBoolean factory function for BACnetContextTagBoolean
-func NewBACnetContextTagBoolean(value uint8, payload *BACnetTagPayloadBoolean, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagBoolean {
+func NewBACnetContextTagBoolean(value uint8, payload *BACnetTagPayloadBoolean, header *BACnetTagHeader, tagNumberArgument uint8) *BACnetContextTagBoolean {
 	_result := &BACnetContextTagBoolean{
 		Value:            value,
 		Payload:          payload,
@@ -160,7 +159,7 @@ func (m *BACnetContextTagBoolean) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, header *BACnetTagHeader) (*BACnetContextTagBoolean, error) {
+func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, header *BACnetTagHeader) (*BACnetContextTagBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagBoolean"); pullErr != nil {
@@ -168,11 +167,6 @@ func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-
-	// Validation
-	if !(isNotOpeningOrClosingTag) {
-		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
-	}
 
 	// Validation
 	if !(bool((header.GetActualLength()) == (1))) {

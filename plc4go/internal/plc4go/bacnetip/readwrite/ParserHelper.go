@@ -53,6 +53,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.ErrorClassTaggedParse(io, tagNumber, tagClass)
+	case "BACnetOpeningTag":
+		tagNumberArgument, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetOpeningTagParse(io, tagNumberArgument)
 	case "BACnetStatusFlags":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -318,6 +324,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetTimeStampsEnclosedParse(io, tagNumber)
+	case "BACnetClosingTag":
+		tagNumberArgument, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetClosingTagParse(io, tagNumberArgument)
 	case "BACnetConfirmedServiceRequest":
 		serviceRequestLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {
