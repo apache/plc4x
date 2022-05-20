@@ -24,11 +24,18 @@ import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class BacNetIpProtocol implements Protocol {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BacNetIpProtocol.class);
 
     @Override
     public String getName() {
@@ -37,15 +44,42 @@ public class BacNetIpProtocol implements Protocol {
 
     @Override
     public TypeContext getTypeContext() throws GenerationException {
-        InputStream schemaInputStream = BacNetIpProtocol.class.getResourceAsStream("/protocols/bacnetip/bacnetip.mspec");
-        if(schemaInputStream == null) {
-            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
+        LOGGER.info("Parsing: bacnet-vendorids.mspec");
+        InputStream bacnetVendorIdsSchemaInputStream = BacNetIpProtocol.class.getResourceAsStream(
+            "/protocols/bacnetip/bacnet-vendorids.mspec");
+        if (bacnetVendorIdsSchemaInputStream == null) {
+            throw new GenerationException("Error loading vendorId schema for protocol '" + getName() + "'");
         }
-        TypeContext typeContext = new MessageFormatParser().parse(schemaInputStream);
+        Map<String, TypeDefinition> typeDefinitionMap = new LinkedHashMap<>();
+        TypeContext typeContext;
+
+        typeContext = new MessageFormatParser().parse(bacnetVendorIdsSchemaInputStream);
+        typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
+
+        LOGGER.info("Parsing: bacnetip.mspec");
+        InputStream bacnetipSchemaInputStream = BacNetIpProtocol.class.getResourceAsStream(
+            "/protocols/bacnetip/bacnetip.mspec");
+        if (bacnetipSchemaInputStream == null) {
+            throw new GenerationException("Error loading schema for protocol '" + getName() + "'");
+        }
+        typeContext = new MessageFormatParser().parse(bacnetipSchemaInputStream, typeDefinitionMap, typeContext.getUnresolvedTypeReferences());
+        typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
+
         if (typeContext.getUnresolvedTypeReferences().size() > 0) {
             throw new GenerationException("Unresolved types left: " + typeContext.getUnresolvedTypeReferences());
         }
-        return typeContext;
+
+        return new TypeContext() {
+            @Override
+            public Map<String, TypeDefinition> getTypeDefinitions() {
+                return typeDefinitionMap;
+            }
+
+            @Override
+            public Map<String, List<Consumer<TypeDefinition>>> getUnresolvedTypeReferences() {
+                return Collections.emptyMap();
+            }
+        };
     }
 
 }

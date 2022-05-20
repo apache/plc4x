@@ -40,4 +40,47 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <!-- Fetch the vendor ids which will be used to translate venmdor ids to readable names -->
+      <!--
+        We're intentionally not using the download plugin as this would either download only once
+        and not get any updates or it would try downloading for every build. This however might result
+        in getting banned on the bacnet server.
+
+        So this script makes sure the bacnet-vendorid.mspec is updated at most every 24h
+      -->
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <version>2.1.1</version>
+        <executions>
+          <!-- Do some pre-build checks and report any findings to the user -->
+          <execution>
+            <id>fetch-bacnet-vendor-ids</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>${project.basedir}/src/main/script/getVendorIds.groovy</source>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>${groovy.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.15.1</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
