@@ -118,7 +118,7 @@ func CastBACnetEventState(structType interface{}) BACnetEventState {
 }
 
 func (m BACnetEventState) GetLengthInBits() uint16 {
-	return 9
+	return 16
 }
 
 func (m BACnetEventState) GetLengthInBytes() uint16 {
@@ -126,7 +126,7 @@ func (m BACnetEventState) GetLengthInBytes() uint16 {
 }
 
 func BACnetEventStateParse(readBuffer utils.ReadBuffer) (BACnetEventState, error) {
-	val, err := readBuffer.ReadUint16("BACnetEventState", 9)
+	val, err := readBuffer.ReadUint16("BACnetEventState", 16)
 	if err != nil {
 		return 0, nil
 	}
@@ -134,7 +134,7 @@ func BACnetEventStateParse(readBuffer utils.ReadBuffer) (BACnetEventState, error
 }
 
 func (e BACnetEventState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetEventState", 9, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetEventState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
 func (e BACnetEventState) name() string {

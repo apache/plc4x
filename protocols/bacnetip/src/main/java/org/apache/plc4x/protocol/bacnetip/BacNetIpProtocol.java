@@ -56,6 +56,15 @@ public class BacNetIpProtocol implements Protocol {
         typeContext = new MessageFormatParser().parse(bacnetVendorIdsSchemaInputStream);
         typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
 
+        LOGGER.info("Parsing: bacnet-enums.mspec");
+        InputStream bacnetipEnumsSchemaInputStream = BacNetIpProtocol.class.getResourceAsStream(
+            "/protocols/bacnetip/bacnet-enums.mspec");
+        if (bacnetipEnumsSchemaInputStream == null) {
+            throw new GenerationException("Error loading enum schema for protocol '" + getName() + "'");
+        }
+        typeContext = new MessageFormatParser().parse(bacnetipEnumsSchemaInputStream, typeDefinitionMap, typeContext.getUnresolvedTypeReferences());
+        typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
+
         LOGGER.info("Parsing: bacnetip.mspec");
         InputStream bacnetipSchemaInputStream = BacNetIpProtocol.class.getResourceAsStream(
             "/protocols/bacnetip/bacnetip.mspec");

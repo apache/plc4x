@@ -46,10 +46,10 @@ public class StaticHelper {
         int bitsToRead = (int) (actualLength * 8);
         long rawValue = readBuffer.readUnsignedLong("value", bitsToRead);
         // TODO: map types here for better performance which doesn't use reflection
-        if (template.getDeclaringClass() == AbortReason.class) {
-            AbortReason enumValue = AbortReason.enumForValue((short) rawValue);
+        if (template.getDeclaringClass() == BACnetAbortReason.class) {
+            BACnetAbortReason enumValue = BACnetAbortReason.enumForValue((short) rawValue);
             if (enumValue == null) {
-                return AbortReason.VENDOR_PROPRIETARY_VALUE;
+                return BACnetAbortReason.VENDOR_PROPRIETARY_VALUE;
             }
             return enumValue;
         } else if (template.getDeclaringClass() == BACnetEventState.class) {
@@ -118,10 +118,10 @@ public class StaticHelper {
                 return ErrorCode.VENDOR_PROPRIETARY_VALUE;
             }
             return enumValue;
-        } else if (template.getDeclaringClass() == RejectReason.class) {
-            RejectReason enumValue = RejectReason.enumForValue((short) rawValue);
+        } else if (template.getDeclaringClass() == BACnetRejectReason.class) {
+            BACnetRejectReason enumValue = BACnetRejectReason.enumForValue((short) rawValue);
             if (enumValue == null) {
-                return RejectReason.VENDOR_PROPRIETARY_VALUE;
+                return BACnetRejectReason.VENDOR_PROPRIETARY_VALUE;
             }
             return enumValue;
         } else if (template.getDeclaringClass() == BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.class) {
@@ -176,24 +176,6 @@ public class StaticHelper {
         return readBuffer.readUnsignedLong("proprietaryValue", bitsToRead);
     }
 
-    /*
-	case :
-	case :
-	case :
-	case :
-	case :
-	case :
-	case :
-	case :
-	case :
-	case :
-	case :
-	case :
-	case :
-	case :
-	case :
-     */
-
     public static void writeEnumGeneric(WriteBuffer writeBuffer, Enum<?> value) throws SerializationException {
         if (value == null) {
             return;
@@ -201,8 +183,8 @@ public class StaticHelper {
         int bitsToWrite;
         long valueValue;
         // TODO: map types here for better performance which doesn't use reflection
-        if (value.getDeclaringClass() == AbortReason.class) {
-            valueValue = ((AbortReason) value).getValue();
+        if (value.getDeclaringClass() == BACnetAbortReason.class) {
+            valueValue = ((BACnetAbortReason) value).getValue();
         } else if (value.getDeclaringClass() == BACnetEventState.class) {
             valueValue = ((BACnetEventState) value).getValue();
         } else if (value.getDeclaringClass() == BACnetEventType.class) {
@@ -227,8 +209,8 @@ public class StaticHelper {
             valueValue = ((ErrorClass) value).getValue();
         } else if (value.getDeclaringClass() == ErrorCode.class) {
             valueValue = ((ErrorCode) value).getValue();
-        } else if (value.getDeclaringClass() == RejectReason.class) {
-            valueValue = ((RejectReason) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetRejectReason.class) {
+            valueValue = ((BACnetRejectReason) value).getValue();
         } else if (value.getDeclaringClass() == BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.class) {
             valueValue = ((BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) value).getValue();
         } else if (value.getDeclaringClass() == BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.class) {

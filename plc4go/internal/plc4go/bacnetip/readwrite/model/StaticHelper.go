@@ -35,8 +35,8 @@ func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template 
 	}
 
 	switch template.(type) {
-	case AbortReason:
-		return AbortReason(rawValue), nil
+	case BACnetAbortReason:
+		return BACnetAbortReason(rawValue), nil
 	case BACnetEventState:
 		return BACnetEventState(rawValue), nil
 	case BACnetEventType:
@@ -63,8 +63,8 @@ func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template 
 		return ErrorClass(rawValue), nil
 	case ErrorCode:
 		return ErrorCode(rawValue), nil
-	case RejectReason:
-		return RejectReason(rawValue), nil
+	case BACnetRejectReason:
+		return BACnetRejectReason(rawValue), nil
 	case BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice:
 		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice(rawValue), err
 	case BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable:
@@ -97,7 +97,7 @@ func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value interface{}) error {
 	// TODO: same here... how to do that generic???
 	//var valueValue = value.(uint32)
 	switch v := value.(type) {
-	case AbortReason:
+	case BACnetAbortReason:
 		valueValue = uint32(v)
 	case BACnetEventState:
 		valueValue = uint32(v)
@@ -125,7 +125,7 @@ func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value interface{}) error {
 		valueValue = uint32(v)
 	case ErrorCode:
 		valueValue = uint32(v)
-	case RejectReason:
+	case BACnetRejectReason:
 		valueValue = uint32(v)
 	case BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice:
 		valueValue = uint32(v)

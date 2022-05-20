@@ -31,7 +31,7 @@ import (
 type APDUReject struct {
 	*APDU
 	OriginalInvokeId uint8
-	RejectReason     *RejectReasonTagged
+	RejectReason     *BACnetRejectReasonTagged
 
 	// Arguments.
 	ApduLength uint16
@@ -43,7 +43,7 @@ type IAPDUReject interface {
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
 	// GetRejectReason returns RejectReason (property field)
-	GetRejectReason() *RejectReasonTagged
+	GetRejectReason() *BACnetRejectReasonTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -81,7 +81,7 @@ func (m *APDUReject) GetOriginalInvokeId() uint8 {
 	return m.OriginalInvokeId
 }
 
-func (m *APDUReject) GetRejectReason() *RejectReasonTagged {
+func (m *APDUReject) GetRejectReason() *BACnetRejectReasonTagged {
 	return m.RejectReason
 }
 
@@ -91,7 +91,7 @@ func (m *APDUReject) GetRejectReason() *RejectReasonTagged {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUReject factory function for APDUReject
-func NewAPDUReject(originalInvokeId uint8, rejectReason *RejectReasonTagged, apduLength uint16) *APDUReject {
+func NewAPDUReject(originalInvokeId uint8, rejectReason *BACnetRejectReasonTagged, apduLength uint16) *APDUReject {
 	_result := &APDUReject{
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
@@ -178,11 +178,11 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDURejec
 	if pullErr := readBuffer.PullContext("rejectReason"); pullErr != nil {
 		return nil, pullErr
 	}
-	_rejectReason, _rejectReasonErr := RejectReasonTaggedParse(readBuffer, uint32(uint32(1)))
+	_rejectReason, _rejectReasonErr := BACnetRejectReasonTaggedParse(readBuffer, uint32(uint32(1)))
 	if _rejectReasonErr != nil {
 		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field")
 	}
-	rejectReason := CastRejectReasonTagged(_rejectReason)
+	rejectReason := CastBACnetRejectReasonTagged(_rejectReason)
 	if closeErr := readBuffer.CloseContext("rejectReason"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -194,7 +194,7 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDURejec
 	// Create a partially initialized instance
 	_child := &APDUReject{
 		OriginalInvokeId: originalInvokeId,
-		RejectReason:     CastRejectReasonTagged(rejectReason),
+		RejectReason:     CastBACnetRejectReasonTagged(rejectReason),
 		APDU:             &APDU{},
 	}
 	_child.APDU.Child = _child

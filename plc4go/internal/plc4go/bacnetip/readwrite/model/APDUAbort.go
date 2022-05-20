@@ -32,7 +32,7 @@ type APDUAbort struct {
 	*APDU
 	Server           bool
 	OriginalInvokeId uint8
-	AbortReason      *AbortReasonTagged
+	AbortReason      *BACnetAbortReasonTagged
 
 	// Arguments.
 	ApduLength uint16
@@ -46,7 +46,7 @@ type IAPDUAbort interface {
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
 	// GetAbortReason returns AbortReason (property field)
-	GetAbortReason() *AbortReasonTagged
+	GetAbortReason() *BACnetAbortReasonTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -88,7 +88,7 @@ func (m *APDUAbort) GetOriginalInvokeId() uint8 {
 	return m.OriginalInvokeId
 }
 
-func (m *APDUAbort) GetAbortReason() *AbortReasonTagged {
+func (m *APDUAbort) GetAbortReason() *BACnetAbortReasonTagged {
 	return m.AbortReason
 }
 
@@ -98,7 +98,7 @@ func (m *APDUAbort) GetAbortReason() *AbortReasonTagged {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUAbort factory function for APDUAbort
-func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason *AbortReasonTagged, apduLength uint16) *APDUAbort {
+func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason *BACnetAbortReasonTagged, apduLength uint16) *APDUAbort {
 	_result := &APDUAbort{
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
@@ -196,11 +196,11 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUAbort,
 	if pullErr := readBuffer.PullContext("abortReason"); pullErr != nil {
 		return nil, pullErr
 	}
-	_abortReason, _abortReasonErr := AbortReasonTaggedParse(readBuffer, uint32(uint32(1)))
+	_abortReason, _abortReasonErr := BACnetAbortReasonTaggedParse(readBuffer, uint32(uint32(1)))
 	if _abortReasonErr != nil {
 		return nil, errors.Wrap(_abortReasonErr, "Error parsing 'abortReason' field")
 	}
-	abortReason := CastAbortReasonTagged(_abortReason)
+	abortReason := CastBACnetAbortReasonTagged(_abortReason)
 	if closeErr := readBuffer.CloseContext("abortReason"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -213,7 +213,7 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUAbort,
 	_child := &APDUAbort{
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
-		AbortReason:      CastAbortReasonTagged(abortReason),
+		AbortReason:      CastBACnetAbortReasonTagged(abortReason),
 		APDU:             &APDU{},
 	}
 	_child.APDU.Child = _child

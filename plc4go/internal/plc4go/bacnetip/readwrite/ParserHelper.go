@@ -241,6 +241,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetDateTimeEnclosedParse(io, tagNumber)
+	case "BACnetRejectReasonTagged":
+		actualLength, err := utils.StrToUint32(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetRejectReasonTaggedParse(io, actualLength)
 	case "BACnetTagPayloadObjectIdentifier":
 		return model.BACnetTagPayloadObjectIdentifierParse(io)
 	case "BVLCBroadcastDistributionTableEntry":
@@ -251,6 +257,13 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "ListOfCovNotificationsValue":
 		objectType := model.BACnetObjectTypeByName(arguments[0])
 		return model.ListOfCovNotificationsValueParse(io, objectType)
+	case "BACnetBinaryPVTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetBinaryPVTaggedParse(io, tagNumber, tagClass)
 	case "BACnetDateTime":
 		return model.BACnetDateTimeParse(io)
 	case "ErrorEnclosed":
@@ -329,12 +342,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetEventSummariesListParse(io, tagNumber)
-	case "AbortReasonTagged":
-		actualLength, err := utils.StrToUint32(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.AbortReasonTaggedParse(io, actualLength)
 	case "BACnetAddress":
 		return model.BACnetAddressParse(io)
 	case "BACnetTagPayloadUnsignedInteger":
@@ -432,20 +439,14 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetServiceAckParse(io, serviceRequestLength)
-	case "BACnetBinaryPV":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetBinaryPVParse(io, tagNumber)
-	case "RejectReasonTagged":
+	case "ListOfCovNotifications":
+		return model.ListOfCovNotificationsParse(io)
+	case "BACnetAbortReasonTagged":
 		actualLength, err := utils.StrToUint32(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.RejectReasonTaggedParse(io, actualLength)
-	case "ListOfCovNotifications":
-		return model.ListOfCovNotificationsParse(io)
+		return model.BACnetAbortReasonTaggedParse(io, actualLength)
 	case "BACnetConfirmedServiceRequestCreateObjectObjectSpecifier":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
