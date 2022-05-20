@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,10 @@ public class MessageFormatParser {
     }
 
     public TypeContext parse(InputStream source, Map<String, List<Consumer<TypeDefinition>>> unresolvedTypeReferences) {
+        return parse(source, Collections.emptyMap(), unresolvedTypeReferences);
+    }
+
+    public TypeContext parse(InputStream source, Map<String, TypeDefinition> parsedTypedReferences, Map<String, List<Consumer<TypeDefinition>>> unresolvedTypeReferences) {
         LOGGER.debug("Parsing: {}", source);
         MSpecLexer lexer;
         try {
@@ -57,6 +62,10 @@ public class MessageFormatParser {
             listener.typeDefinitionConsumers = unresolvedTypeReferences;
         }
         new ParseTreeWalker().walk(listener, new MSpecParser(new CommonTokenStream(lexer)).file());
+        if (!parsedTypedReferences.isEmpty()) {
+            LOGGER.info("connecting open consumers with passed types");
+            parsedTypedReferences.forEach(listener::dispatchType);
+        }
         LOGGER.info("Checking for open consumers");
         listener.typeDefinitionConsumers.forEach((key, value) -> LOGGER.warn("{} has {} open consumers", key, value.size()));
         return new TypeContext() {
