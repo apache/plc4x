@@ -16,29 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.protocol.cbus;
+package org.apache.plc4x.plugins.codegenerator.language.mspec.protocol;
 
-import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ProtocolHelpers;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ValidatableTypeContext;
-import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
-import java.io.InputStream;
+public interface ValidatableTypeContext extends TypeContext {
 
-public class CBusProtocol implements Protocol, ProtocolHelpers {
-
-    @Override
-    public String getName() {
-        return "c-bus";
+    /**
+     * validates the {@link TypeContext}
+     *
+     * @throws GenerationException if {@link TypeContext}
+     */
+    default void validate() throws GenerationException {
+        // TODO: check that we have at least of parsed type
+        if (getUnresolvedTypeReferences().size() > 0) {
+            throw new GenerationException("Unresolved types left: " + getUnresolvedTypeReferences());
+        }
     }
-
-    @Override
-    public TypeContext getTypeContext() throws GenerationException {
-        ValidatableTypeContext typeContext = new MessageFormatParser().parse(getMspecStream());
-        typeContext.validate();
-        return typeContext;
-    }
-
 }

@@ -29,6 +29,7 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.D
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.WildcardTerm;
+import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
@@ -60,9 +61,9 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     protected Map<String, TypeDefinition> types;
 
-    protected Map<String, List<Consumer<TypeDefinition>>> typeDefinitionConsumers = new HashMap<>();
+    protected Map<String, List<Consumer<TypeDefinition>>> typeDefinitionConsumers;
 
-    private Stack<Map<String, Term>> batchSetAttributes = new Stack<>();
+    private final Stack<Map<String, Term>> batchSetAttributes = new Stack<>();
 
     public Deque<List<Field>> getParserContexts() {
         return parserContexts;
@@ -74,11 +75,20 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     private String currentTypeName;
 
+    public MessageFormatListener() {
+        types = new HashMap<>();
+        typeDefinitionConsumers = new HashMap<>();
+    }
+
+    public MessageFormatListener(TypeContext exitingTypeContext) {
+        types = new HashMap<>(exitingTypeContext.getTypeDefinitions());
+        typeDefinitionConsumers = new HashMap<>(exitingTypeContext.getUnresolvedTypeReferences());
+    }
+
     @Override
     public void enterFile(MSpecParser.FileContext ctx) {
         parserContexts = new LinkedList<>();
         enumContexts = new LinkedList<>();
-        types = new HashMap<>();
     }
 
     @Override

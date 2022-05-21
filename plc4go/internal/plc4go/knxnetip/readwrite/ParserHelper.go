@@ -47,6 +47,9 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.DeviceDescriptorType2Parse(io)
 	case "ChannelInformation":
 		return model.ChannelInformationParse(io)
+	case "KnxDatapoint":
+		datapointType := model.KnxDatapointTypeByName(arguments[0])
+		return model.KnxDatapointParse(io, datapointType)
 	case "DeviceConfigurationAckDataBlock":
 		return model.DeviceConfigurationAckDataBlockParse(io)
 	case "ConnectionRequestInformation":
@@ -130,9 +133,6 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.ApduDataParse(io, dataLength)
 	case "GroupObjectDescriptorRealisationType1":
 		return model.GroupObjectDescriptorRealisationType1Parse(io)
-	case "KnxDatapoint":
-		datapointType := model.KnxDatapointTypeByName(arguments[0])
-		return model.KnxDatapointParse(io, datapointType)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

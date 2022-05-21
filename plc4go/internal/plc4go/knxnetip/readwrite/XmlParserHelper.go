@@ -58,6 +58,9 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.DeviceDescriptorType2Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ChannelInformation":
 		return model.ChannelInformationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "KnxDatapoint":
+		datapointType := model.KnxDatapointTypeByName(parserArguments[0])
+		return model.KnxDatapointParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), datapointType)
 	case "DeviceConfigurationAckDataBlock":
 		return model.DeviceConfigurationAckDataBlockParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ConnectionRequestInformation":
@@ -146,9 +149,6 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.ApduDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength)
 	case "GroupObjectDescriptorRealisationType1":
 		return model.GroupObjectDescriptorRealisationType1Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "KnxDatapoint":
-		datapointType := model.KnxDatapointTypeByName(parserArguments[0])
-		return model.KnxDatapointParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), datapointType)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

@@ -19,6 +19,8 @@
 package org.apache.plc4x.protocol.genericcan;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ProtocolHelpers;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ValidatableTypeContext;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
@@ -27,7 +29,7 @@ import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationExcepti
 import java.io.InputStream;
 import java.util.Map;
 
-public class GenericCANProtocol implements Protocol {
+public class GenericCANProtocol implements Protocol, ProtocolHelpers {
 
     @Override
     public String getName() {
@@ -36,15 +38,14 @@ public class GenericCANProtocol implements Protocol {
 
     @Override
     public TypeContext getTypeContext() throws GenerationException {
-        InputStream schemaInputStream = GenericCANProtocol.class.getResourceAsStream("/protocols/can/genericcan.mspec");
-        if(schemaInputStream == null) {
-            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
-        }
-        TypeContext typeContext = new MessageFormatParser().parse(schemaInputStream);
-        if (typeContext.getUnresolvedTypeReferences().size() > 0) {
-            throw new GenerationException("Unresolved types left: " + typeContext.getUnresolvedTypeReferences());
-        }
+        ValidatableTypeContext typeContext = new MessageFormatParser().parse(getMspecStream());
+        typeContext.validate();
         return typeContext;
     }
 
+
+    @Override
+    public String getPackageName() {
+        return "can";
+    }
 }

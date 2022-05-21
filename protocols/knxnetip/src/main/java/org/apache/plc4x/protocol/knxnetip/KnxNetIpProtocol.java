@@ -19,6 +19,8 @@
 package org.apache.plc4x.protocol.knxnetip;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ProtocolHelpers;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ValidatableTypeContext;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
@@ -33,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class KnxNetIpProtocol implements Protocol {
+public class KnxNetIpProtocol implements Protocol, ProtocolHelpers {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KnxNetIpProtocol.class);
 
@@ -44,51 +46,19 @@ public class KnxNetIpProtocol implements Protocol {
 
     @Override
     public TypeContext getTypeContext() throws GenerationException {
-        LOGGER.info("Parsing: knxnetip.mspec");
-        InputStream schemaInputStream = KnxNetIpProtocol.class.getResourceAsStream(
-            "/protocols/knxnetip/knxnetip.mspec");
-        if (schemaInputStream == null) {
-            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
-        }
-        Map<String, TypeDefinition> typeDefinitionMap = new LinkedHashMap<>();
-        TypeContext typeContext;
+        ValidatableTypeContext typeContext;
 
-        typeContext = new MessageFormatParser().parse(schemaInputStream);
-        typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
+        LOGGER.info("Parsing: knxnetip.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream());
 
         LOGGER.info("Parsing: knx-master-data.mspec");
-        InputStream masterDataInputStream = KnxNetIpProtocol.class.getResourceAsStream(
-            "/protocols/knxnetip/knx-master-data.mspec");
-        if (masterDataInputStream == null) {
-            throw new GenerationException("Error loading knx-master-data schema for protocol '" + getName() + "'");
-        }
-        typeContext = new MessageFormatParser().parse(masterDataInputStream, typeContext.getUnresolvedTypeReferences());
-        typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
+        typeContext = new MessageFormatParser().parse(getMspecStream("knx-master-data"), typeContext);
 
         LOGGER.info("Parsing: device-info.mspec");
-        InputStream deviceDataInputStream = KnxNetIpProtocol.class.getResourceAsStream(
-            "/protocols/knxnetip/device-info.mspec");
-        if (deviceDataInputStream == null) {
-            throw new GenerationException("Error loading device-info schema for protocol '" + getName() + "'");
-        }
-        typeContext = new MessageFormatParser().parse(deviceDataInputStream, typeContext.getUnresolvedTypeReferences());
-        typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
+        typeContext = new MessageFormatParser().parse(getMspecStream("device-info"), typeContext);
 
-        if (typeContext.getUnresolvedTypeReferences().size() > 0) {
-            throw new GenerationException("Unresolved types left: " + typeContext.getUnresolvedTypeReferences());
-        }
-
-        return new TypeContext() {
-            @Override
-            public Map<String, TypeDefinition> getTypeDefinitions() {
-                return typeDefinitionMap;
-            }
-
-            @Override
-            public Map<String, List<Consumer<TypeDefinition>>> getUnresolvedTypeReferences() {
-                return Collections.emptyMap();
-            }
-        };
+        typeContext.validate();
+        return typeContext;
     }
 
 }
