@@ -798,6 +798,11 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     public void dispatchType(String typeName, TypeDefinition type) {
         LOGGER.debug("dispatching {}:{}", typeName, type);
 
+        if (types.containsKey(typeName)) {
+            LOGGER.warn("{} being overridden", typeName);
+            // TODO: we need to implement replace logic... means we need to replace all old references with the new one in that case otherwise we just get an exception
+        }
+
         types.put(typeName, type);
 
         List<Consumer<TypeDefinition>> waitingConsumers = typeDefinitionConsumers.getOrDefault(typeName, new LinkedList<>());

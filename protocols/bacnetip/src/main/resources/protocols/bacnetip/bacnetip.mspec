@@ -704,32 +704,6 @@
                     priority                        ]
 ]
 
-[type BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                         header                                                                               ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                      ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                     "tagnumber doesn't match" shouldFail=false               ]
-    [manual   BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable
-                     value
-                         'STATIC_CALL("readEnumGenericFailing", readBuffer, header.actualLength, BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.ENABLE)'
-                         'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                         'header.actualLength * 8'                                                            ]
-]
-
-[type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                        header                                                                              ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                               ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                    "tagnumber doesn't match" shouldFail=false              ]
-    [manual   BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
-                    value
-                        'STATIC_CALL("readEnumGenericFailing", readBuffer, header.actualLength, BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.COLDSTART)'
-                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                           ]
-]
-
 [type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
     [peek       BACnetTagHeader
                     peekedTagHeader                 ]
@@ -829,19 +803,6 @@
             [array  byte    unknownBytes length '(serviceRequestLength>0)?(serviceRequestLength - 1):0']
         ]
     ]
-]
-
-[type BACnetSegmentationTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                        header                                                                               ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                      ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                    "tagnumber doesn't match" shouldFail=false               ]
-    [manual   BACnetSegmentation
-                    value
-                        'STATIC_CALL("readEnumGenericFailing", readBuffer, header.actualLength, BACnetSegmentation.SEGMENTED_BOTH)'
-                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                            ]
 ]
 
 [discriminatedType BACnetServiceAck(uint 16 serviceRequestLength)
@@ -1276,46 +1237,6 @@
     [simple ErrorCodeTagged('0', 'TagClass.APPLICATION_TAGS')  errorCode            ]
 ]
 
-[type ErrorClassTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                        header                                                                               ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                    "tagnumber doesn't match" shouldFail=false               ]
-    [manual   ErrorClass
-                    value
-                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, ErrorClass.VENDOR_PROPRIETARY_VALUE)'
-                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                            ]
-    [virtual  bit   isProprietary
-                        'value == ErrorClass.VENDOR_PROPRIETARY_VALUE'                                       ]
-    [manual   uint 32
-                    proprietaryValue
-                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
-                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?header.actualLength * 8:0'                                     ]
-]
-
-[type ErrorCodeTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                        header                                                                                  ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                   ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                    "tagnumber doesn't match" shouldFail=false                  ]
-    [manual   ErrorCode
-                    value
-                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, ErrorCode.VENDOR_PROPRIETARY_VALUE)'
-                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                               ]
-    [virtual  bit   isProprietary
-                        'value == ErrorCode.VENDOR_PROPRIETARY_VALUE'                                           ]
-    [manual   uint 32
-                    proprietaryValue
-                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
-                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?header.actualLength * 8:0'                                        ]
-]
-
 [type BACnetNotificationParameters(uint 8 tagNumber, BACnetObjectType objectType)
     [simple     BACnetOpeningTag('tagNumber')
                             openingTag                                              ]
@@ -1544,66 +1465,6 @@
     [simple   BACnetClosingTag('tagNumber')                                                         closingTag          ]
 ]
 
-[type BACnetLifeSafetyModeTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                        header                                                                                  ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                   ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                    "tagnumber doesn't match" shouldFail=false                  ]
-    [manual   BACnetLifeSafetyMode
-                    value
-                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetLifeSafetyMode.VENDOR_PROPRIETARY_VALUE)'
-                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                               ]
-    [virtual  bit   isProprietary
-                        'value == BACnetLifeSafetyMode.VENDOR_PROPRIETARY_VALUE'                                ]
-    [manual   uint 32
-                    proprietaryValue
-                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
-                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?header.actualLength * 8:0'                                        ]
-]
-
-[type BACnetLifeSafetyStateTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                        header                                                                                  ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                   ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                    "tagnumber doesn't match" shouldFail=false                  ]
-    [manual   BACnetLifeSafetyState
-                    value
-                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetLifeSafetyState.VENDOR_PROPRIETARY_VALUE)'
-                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                               ]
-    [virtual  bit   isProprietary
-                        'value == BACnetLifeSafetyState.VENDOR_PROPRIETARY_VALUE'                               ]
-    [manual   uint 32
-                    proprietaryValue
-                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
-                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?header.actualLength * 8:0'                                        ]
-]
-
-[type BACnetReliabilityTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                        header                                                                                  ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                   ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                    "tagnumber doesn't match" shouldFail=false                  ]
-    [manual   BACnetReliability
-                    value
-                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetReliability.VENDOR_PROPRIETARY_VALUE)'
-                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                               ]
-    [virtual  bit   isProprietary
-                        'value == BACnetReliability.VENDOR_PROPRIETARY_VALUE'                                   ]
-    [manual   uint 32
-                    proprietaryValue
-                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
-                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?header.actualLength * 8:0'                                        ]
-]
-
 [type BACnetStatusFlags(uint 8 tagNumber)
     [simple BACnetContextTagBitString('tagNumber', 'BACnetDataType.BIT_STRING')
         rawBits
@@ -1612,19 +1473,6 @@
     [virtual    bit fault           'rawBits.payload.data[1]']
     [virtual    bit overriden       'rawBits.payload.data[2]']
     [virtual    bit outOfService    'rawBits.payload.data[3]']
-]
-
-[type BACnetActionTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                        header                                                                                  ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                   ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                    "tagnumber doesn't match" shouldFail=false                  ]
-    [manual   BACnetAction
-                    value
-                        'STATIC_CALL("readEnumGenericFailing", readBuffer, header.actualLength, BACnetAction.DIRECT)'
-                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                               ]
 ]
 
 [type BACnetActionList
@@ -1657,19 +1505,6 @@
                         quitOnFailure                                                           ]
     [simple     BACnetContextTagBoolean('8', 'BACnetDataType.BOOLEAN')
                         writeSuccessful                                                         ]
-]
-
-[type BACnetBinaryPVTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                        header                                                                                  ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                   ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                    "tagnumber doesn't match" shouldFail=false                  ]
-    [manual   BACnetBinaryPV
-                    value
-                        'STATIC_CALL("readEnumGenericFailing", readBuffer, header.actualLength, BACnetBinaryPV.INACTIVE)'
-                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                               ]
 ]
 
 [type BACnetPropertyStates(uint 8 tagNumber)
@@ -2670,97 +2505,4 @@
     ['0x3' ISO_10646_4                          ] // (UCS-4)
     ['0x4' ISO_10646_2                          ] // (UCS-2)
     ['0x5' ISO_8859_1                           ]
-]
-
-[type BACnetNetworkTypeTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                     header                                                                               ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                             ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                 "tagnumber doesn't match" shouldFail=false               ]
-    [manual   BACnetNetworkType
-                 value
-                     'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetNetworkType.VENDOR_PROPRIETARY_VALUE)'
-                     'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                     'header.actualLength * 8'                                                            ]
-    [virtual  bit   isProprietary
-                     'value == BACnetNetworkType.VENDOR_PROPRIETARY_VALUE'                                ]
-    [manual   uint 32
-                 proprietaryValue
-                     'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
-                     'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                     'header.actualLength * 8'                                                            ]
-]
-
-[type BACnetNotifyTypeTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                        header                                                                              ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                     ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                    "tagnumber doesn't match" shouldFail=false              ]
-    [manual   BACnetNotifyType
-                    value
-                        'STATIC_CALL("readEnumGenericFailing", readBuffer, header.actualLength, BACnetNotifyType.ALARM)'
-                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                           ]
-]
-
-[type BACnetEventTypeTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                        header                                                                              ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                     ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                    "tagnumber doesn't match" shouldFail=false              ]
-    [manual   BACnetEventType
-                    value
-                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetEventType.VENDOR_PROPRIETARY_VALUE)'
-                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                           ]
-    [virtual  bit   isProprietary
-                        'value == BACnetEventType.VENDOR_PROPRIETARY_VALUE'                                 ]
-    [manual   uint 32
-                    proprietaryValue
-                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
-                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?header.actualLength * 8:0'                                                  ]
-]
-
-[type BACnetEventStateTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                        header                                                                              ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                     ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                    "tagnumber doesn't match" shouldFail=false              ]
-    [manual   BACnetEventState
-                    value
-                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetEventState.VENDOR_PROPRIETARY_VALUE)'
-                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                           ]
-    [virtual  bit   isProprietary
-                        'value == BACnetEventState.VENDOR_PROPRIETARY_VALUE'                                 ]
-    [manual   uint 32
-                    proprietaryValue
-                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
-                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?header.actualLength * 8:0'                                                  ]
-]
-
-[type BACnetPropertyIdentifierTagged(uint 8 tagNumber, TagClass tagClass)
-    [simple   BACnetTagHeader
-                        header                                                                              ]
-    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                               ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
-                                                    "tagnumber doesn't match" shouldFail=false              ]
-    [manual   BACnetPropertyIdentifier
-                    value
-                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE)'
-                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                           ]
-    [virtual  bit   isProprietary
-                        'value == BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE']
-    [manual   uint 32
-                    proprietaryValue
-                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
-                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?header.actualLength * 8:0'                                    ]
 ]

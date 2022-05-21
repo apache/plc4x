@@ -61,6 +61,13 @@ public class BacNetIpProtocol implements Protocol, ProtocolHelpers {
         LOGGER.info("Parsing: bacnetip.mspec");
         typeContext = new MessageFormatParser().parse(getMspecStream(), typeContext);
 
+        // TODO: those should work above bacnetip.mspec but somehow if we move them we get a concurrent modification exception... debug that.
+        LOGGER.info("Parsing: bacnet-private-enums-tagged.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-private-enums-tagged"), typeContext);
+
+        LOGGER.info("Parsing: bacnet-enums-tagged.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-enums-tagged"), typeContext);
+
         typeContext.validate();
 
         return typeContext;

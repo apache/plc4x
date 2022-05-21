@@ -32,13 +32,20 @@ type BacnetipParserHelper struct {
 
 func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
-	case "BACnetContextTag":
-		tagNumberArgument, err := utils.StrToUint8(arguments[0])
+	case "BACnetAuthenticationStatusTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		dataType := model.BACnetDataTypeByName(arguments[1])
-		return model.BACnetContextTagParse(io, tagNumberArgument, dataType)
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAuthenticationStatusTaggedParse(io, tagNumber, tagClass)
+	case "BACnetLiftGroupModeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetLiftGroupModeTaggedParse(io, tagNumber, tagClass)
 	case "BACnetNotifyTypeTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -46,25 +53,19 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetNotifyTypeTaggedParse(io, tagNumber, tagClass)
-	case "ErrorClassTagged":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		tagClass := model.TagClassByName(arguments[1])
-		return model.ErrorClassTaggedParse(io, tagNumber, tagClass)
 	case "BACnetOpeningTag":
 		tagNumberArgument, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetOpeningTagParse(io, tagNumberArgument)
-	case "BACnetStatusFlags":
+	case "BACnetAuthorizationExemptionTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.BACnetStatusFlagsParse(io, tagNumber)
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAuthorizationExemptionTaggedParse(io, tagNumber, tagClass)
 	case "BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -72,6 +73,27 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedParse(io, tagNumber, tagClass)
+	case "BACnetAuthenticationFactorTypeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAuthenticationFactorTypeTaggedParse(io, tagNumber, tagClass)
+	case "BACnetAccessAuthenticationFactorDisableTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAccessAuthenticationFactorDisableTaggedParse(io, tagNumber, tagClass)
+	case "BACnetAuthorizationModeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAuthorizationModeTaggedParse(io, tagNumber, tagClass)
 	case "BACnetPropertyReferenceEnclosed":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -84,6 +106,13 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetEventTransitionBitsParse(io, tagNumber)
+	case "BACnetDoorStatusTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetDoorStatusTaggedParse(io, tagNumber, tagClass)
 	case "BACnetEventTimestamps":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -92,31 +121,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetEventTimestampsParse(io, tagNumber)
 	case "BACnetTagPayloadReal":
 		return model.BACnetTagPayloadRealParse(io)
-	case "BACnetDeviceObjectReference":
-		return model.BACnetDeviceObjectReferenceParse(io)
-	case "BVLCForeignDeviceTableEntry":
-		return model.BVLCForeignDeviceTableEntryParse(io)
-	case "BACnetReadAccessPropertyReadResult":
-		objectType := model.BACnetObjectTypeByName(arguments[0])
-		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(arguments[1])
-		return model.BACnetReadAccessPropertyReadResultParse(io, objectType, propertyIdentifierArgument)
-	case "NLM":
-		apduLength, err := utils.StrToUint16(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.NLMParse(io, apduLength)
-	case "BACnetActionCommand":
-		return model.BACnetActionCommandParse(io)
-	case "BACnetReliabilityTagged":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		tagClass := model.TagClassByName(arguments[1])
-		return model.BACnetReliabilityTaggedParse(io, tagNumber, tagClass)
-	case "BACnetTagPayloadDate":
-		return model.BACnetTagPayloadDateParse(io)
 	case "BACnetNotificationParametersExtendedParameters":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -130,22 +134,13 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTaggedParse(io, tagNumber, tagClass)
-	case "BACnetReadAccessProperty":
-		objectType := model.BACnetObjectTypeByName(arguments[0])
-		return model.BACnetReadAccessPropertyParse(io, objectType)
-	case "BACnetNotificationParametersChangeOfValueNewValue":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetNotificationParametersChangeOfValueNewValueParse(io, tagNumber)
-	case "ErrorCodeTagged":
+	case "BACnetLoggingTypeTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		tagClass := model.TagClassByName(arguments[1])
-		return model.ErrorCodeTaggedParse(io, tagNumber, tagClass)
+		return model.BACnetLoggingTypeTaggedParse(io, tagNumber, tagClass)
 	case "BACnetTagPayloadEnumerated":
 		actualLength, err := utils.StrToUint32(arguments[0])
 		if err != nil {
@@ -158,72 +153,70 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetTagPayloadOctetStringParse(io, actualLength)
-	case "BACnetServiceAckAtomicReadFileStreamOrRecord":
-		return model.BACnetServiceAckAtomicReadFileStreamOrRecordParse(io)
+	case "BACnetDoorAlarmStateTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetDoorAlarmStateTaggedParse(io, tagNumber, tagClass)
+	case "BACnetWriteStatusTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetWriteStatusTaggedParse(io, tagNumber, tagClass)
+	case "BACnetEscalatorOperationDirectionTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetEscalatorOperationDirectionTaggedParse(io, tagNumber, tagClass)
 	case "NPDUControl":
 		return model.NPDUControlParse(io)
-	case "BACnetDeviceObjectPropertyReferenceEnclosed":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetDeviceObjectPropertyReferenceEnclosedParse(io, tagNumber)
-	case "BACnetPropertyStates":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetPropertyStatesParse(io, tagNumber)
 	case "BACnetReadAccessSpecification":
 		return model.BACnetReadAccessSpecificationParse(io)
-	case "BACnetReadAccessResult":
-		return model.BACnetReadAccessResultParse(io)
-	case "BACnetConstructedData":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		objectType := model.BACnetObjectTypeByName(arguments[1])
-		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(arguments[2])
-		return model.BACnetConstructedDataParse(io, tagNumber, objectType, propertyIdentifierArgument)
 	case "BACnetTimeStampEnclosed":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetTimeStampEnclosedParse(io, tagNumber)
-	case "BACnetEventTypeTagged":
+	case "BACnetTimerStateTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		tagClass := model.TagClassByName(arguments[1])
-		return model.BACnetEventTypeTaggedParse(io, tagNumber, tagClass)
-	case "BACnetObjectPropertyReference":
-		return model.BACnetObjectPropertyReferenceParse(io)
-	case "BACnetLifeSafetyStateTagged":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		tagClass := model.TagClassByName(arguments[1])
-		return model.BACnetLifeSafetyStateTaggedParse(io, tagNumber, tagClass)
+		return model.BACnetTimerStateTaggedParse(io, tagNumber, tagClass)
 	case "BACnetResultFlags":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetResultFlagsParse(io, tagNumber)
-	case "BACnetTagPayloadTime":
-		return model.BACnetTagPayloadTimeParse(io)
+	case "BACnetLiftCarDriveStatusTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetLiftCarDriveStatusTaggedParse(io, tagNumber, tagClass)
 	case "BACnetTagPayloadSignedInteger":
 		actualLength, err := utils.StrToUint32(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetTagPayloadSignedIntegerParse(io, actualLength)
-	case "BACnetEventSummary":
-		return model.BACnetEventSummaryParse(io)
+	case "BACnetSecurityPolicyTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetSecurityPolicyTaggedParse(io, tagNumber, tagClass)
 	case "BACnetUnconfirmedServiceRequest":
 		serviceRequestLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {
@@ -232,6 +225,13 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetUnconfirmedServiceRequestParse(io, serviceRequestLength)
 	case "BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord":
 		return model.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(io)
+	case "BACnetObjectTypeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetObjectTypeTaggedParse(io, tagNumber, tagClass)
 	case "BVLC":
 		return model.BVLCParse(io)
 	case "BACnetReadAccessResultListOfResults":
@@ -241,37 +241,32 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		objectType := model.BACnetObjectTypeByName(arguments[1])
 		return model.BACnetReadAccessResultListOfResultsParse(io, tagNumber, objectType)
-	case "BACnetDateTimeEnclosed":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetDateTimeEnclosedParse(io, tagNumber)
-	case "BACnetRejectReasonTagged":
-		actualLength, err := utils.StrToUint32(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetRejectReasonTaggedParse(io, actualLength)
-	case "BACnetTagPayloadObjectIdentifier":
-		return model.BACnetTagPayloadObjectIdentifierParse(io)
-	case "BVLCBroadcastDistributionTableEntry":
-		return model.BVLCBroadcastDistributionTableEntryParse(io)
-	case "BACnetPropertyWriteDefinition":
-		objectType := model.BACnetObjectTypeByName(arguments[0])
-		return model.BACnetPropertyWriteDefinitionParse(io, objectType)
-	case "ListOfCovNotificationsValue":
-		objectType := model.BACnetObjectTypeByName(arguments[0])
-		return model.ListOfCovNotificationsValueParse(io, objectType)
-	case "BACnetBinaryPVTagged":
+	case "BACnetLiftCarDirectionTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		tagClass := model.TagClassByName(arguments[1])
-		return model.BACnetBinaryPVTaggedParse(io, tagNumber, tagClass)
-	case "BACnetDateTime":
-		return model.BACnetDateTimeParse(io)
+		return model.BACnetLiftCarDirectionTaggedParse(io, tagNumber, tagClass)
+	case "BVLCBroadcastDistributionTableEntry":
+		return model.BVLCBroadcastDistributionTableEntryParse(io)
+	case "BACnetBackupStateTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetBackupStateTaggedParse(io, tagNumber, tagClass)
+	case "ListOfCovNotificationsValue":
+		objectType := model.BACnetObjectTypeByName(arguments[0])
+		return model.ListOfCovNotificationsValueParse(io, objectType)
+	case "BACnetDeviceStatusTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetDeviceStatusTaggedParse(io, tagNumber, tagClass)
 	case "ErrorEnclosed":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -291,12 +286,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetSegmentationTaggedParse(io, tagNumber, tagClass)
-	case "BACnetTagPayloadCharacterString":
-		actualLength, err := utils.StrToUint32(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetTagPayloadCharacterStringParse(io, actualLength)
 	case "BACnetConfirmedServiceRequestReadRangeRange":
 		return model.BACnetConfirmedServiceRequestReadRangeRangeParse(io)
 	case "BACnetError":
@@ -309,27 +298,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetPropertyIdentifierTaggedParse(io, tagNumber, tagClass)
-	case "BACnetTimeStamp":
-		return model.BACnetTimeStampParse(io)
-	case "BACnetNotificationParameters":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		objectType := model.BACnetObjectTypeByName(arguments[1])
-		return model.BACnetNotificationParametersParse(io, tagNumber, objectType)
-	case "BACnetTimeStampsEnclosed":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetTimeStampsEnclosedParse(io, tagNumber)
-	case "BACnetClosingTag":
-		tagNumberArgument, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetClosingTagParse(io, tagNumberArgument)
 	case "BACnetConfirmedServiceRequest":
 		serviceRequestLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {
@@ -354,38 +322,39 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetEventSummariesListParse(io, tagNumber)
-	case "BACnetAddress":
-		return model.BACnetAddressParse(io)
 	case "BACnetTagPayloadUnsignedInteger":
 		actualLength, err := utils.StrToUint32(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetTagPayloadUnsignedIntegerParse(io, actualLength)
-	case "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference":
-		return model.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceParse(io)
-	case "BACnetApplicationTag":
-		return model.BACnetApplicationTagParse(io)
+	case "BACnetVTClassTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetVTClassTaggedParse(io, tagNumber, tagClass)
+	case "BACnetAccessUserTypeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAccessUserTypeTaggedParse(io, tagNumber, tagClass)
+	case "BACnetRestartReasonTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetRestartReasonTaggedParse(io, tagNumber, tagClass)
 	case "BACnetTagPayloadBitString":
 		actualLength, err := utils.StrToUint32(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetTagPayloadBitStringParse(io, actualLength)
-	case "BACnetNetworkTypeTagged":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		tagClass := model.TagClassByName(arguments[1])
-		return model.BACnetNetworkTypeTaggedParse(io, tagNumber, tagClass)
-	case "BACnetActionTagged":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		tagClass := model.TagClassByName(arguments[1])
-		return model.BACnetActionTaggedParse(io, tagNumber, tagClass)
 	case "BACnetObjectPropertyReferenceEnclosed":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -394,10 +363,13 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetObjectPropertyReferenceEnclosedParse(io, tagNumber)
 	case "BACnetDeviceObjectPropertyReference":
 		return model.BACnetDeviceObjectPropertyReferenceParse(io)
-	case "BACnetConstructedDataElement":
-		objectType := model.BACnetObjectTypeByName(arguments[0])
-		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(arguments[1])
-		return model.BACnetConstructedDataElementParse(io, objectType, propertyIdentifierArgument)
+	case "BACnetEscalatorFaultTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetEscalatorFaultTaggedParse(io, tagNumber, tagClass)
 	case "BACnetEventStateTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -405,13 +377,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetEventStateTaggedParse(io, tagNumber, tagClass)
-	case "BACnetPropertyValues":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		objectType := model.BACnetObjectTypeByName(arguments[1])
-		return model.BACnetPropertyValuesParse(io, tagNumber, objectType)
 	case "BACnetTagHeader":
 		return model.BACnetTagHeaderParse(io)
 	case "BACnetTagPayloadBoolean":
@@ -422,35 +387,42 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetTagPayloadBooleanParse(io, actualLength)
 	case "BACnetTagPayloadDouble":
 		return model.BACnetTagPayloadDoubleParse(io)
-	case "BACnetPropertyValue":
-		objectType := model.BACnetObjectTypeByName(arguments[0])
-		return model.BACnetPropertyValueParse(io, objectType)
-	case "BACnetActionList":
-		return model.BACnetActionListParse(io)
+	case "BACnetFaultTypeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetFaultTypeTaggedParse(io, tagNumber, tagClass)
 	case "VTCloseErrorListOfVTSessionIdentifiers":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.VTCloseErrorListOfVTSessionIdentifiersParse(io, tagNumber)
-	case "NLMInitalizeRoutingTablePortMapping":
-		return model.NLMInitalizeRoutingTablePortMappingParse(io)
-	case "SubscribeCOVPropertyMultipleErrorFirstFailedSubscription":
+	case "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications":
+		return model.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsParse(io)
+	case "BACnetIPModeTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(io, tagNumber)
-	case "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications":
-		return model.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsParse(io)
-	case "BACnetWriteAccessSpecification":
-		return model.BACnetWriteAccessSpecificationParse(io)
-	case "BACnetServiceAck":
-		serviceRequestLength, err := utils.StrToUint16(arguments[0])
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetIPModeTaggedParse(io, tagNumber, tagClass)
+	case "BACnetNetworkNumberQualityTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.BACnetServiceAckParse(io, serviceRequestLength)
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetNetworkNumberQualityTaggedParse(io, tagNumber, tagClass)
+	case "BACnetEngineeringUnitsTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetEngineeringUnitsTaggedParse(io, tagNumber, tagClass)
 	case "ListOfCovNotifications":
 		return model.ListOfCovNotificationsParse(io)
 	case "BACnetAbortReasonTagged":
@@ -459,6 +431,13 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetAbortReasonTaggedParse(io, actualLength)
+	case "BACnetProgramErrorTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetProgramErrorTaggedParse(io, tagNumber, tagClass)
 	case "BACnetConfirmedServiceRequestCreateObjectObjectSpecifier":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -481,6 +460,461 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.NPDUParse(io, npduLength)
 	case "BACnetPropertyReference":
 		return model.BACnetPropertyReferenceParse(io)
+	case "BACnetProgramStateTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetProgramStateTaggedParse(io, tagNumber, tagClass)
+	case "BACnetContextTag":
+		tagNumberArgument, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		dataType := model.BACnetDataTypeByName(arguments[1])
+		return model.BACnetContextTagParse(io, tagNumberArgument, dataType)
+	case "BACnetDoorSecuredStatusTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetDoorSecuredStatusTaggedParse(io, tagNumber, tagClass)
+	case "BACnetUnconfirmedServiceChoiceTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetUnconfirmedServiceChoiceTaggedParse(io, tagNumber, tagClass)
+	case "BVLCResultCodeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BVLCResultCodeTaggedParse(io, tagNumber, tagClass)
+	case "ErrorClassTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.ErrorClassTaggedParse(io, tagNumber, tagClass)
+	case "BACnetStatusFlags":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetStatusFlagsParse(io, tagNumber)
+	case "BACnetMaintenanceTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetMaintenanceTaggedParse(io, tagNumber, tagClass)
+	case "BACnetAccessPassbackModeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAccessPassbackModeTaggedParse(io, tagNumber, tagClass)
+	case "BACnetDeviceObjectReference":
+		return model.BACnetDeviceObjectReferenceParse(io)
+	case "BVLCForeignDeviceTableEntry":
+		return model.BVLCForeignDeviceTableEntryParse(io)
+	case "BACnetReadAccessPropertyReadResult":
+		objectType := model.BACnetObjectTypeByName(arguments[0])
+		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(arguments[1])
+		return model.BACnetReadAccessPropertyReadResultParse(io, objectType, propertyIdentifierArgument)
+	case "NLM":
+		apduLength, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.NLMParse(io, apduLength)
+	case "BACnetActionCommand":
+		return model.BACnetActionCommandParse(io)
+	case "NPDUNetworkPriorityTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.NPDUNetworkPriorityTaggedParse(io, tagNumber, tagClass)
+	case "BACnetReliabilityTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetReliabilityTaggedParse(io, tagNumber, tagClass)
+	case "BACnetTagPayloadDate":
+		return model.BACnetTagPayloadDateParse(io)
+	case "BACnetDoorValueTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetDoorValueTaggedParse(io, tagNumber, tagClass)
+	case "BACnetReadAccessProperty":
+		objectType := model.BACnetObjectTypeByName(arguments[0])
+		return model.BACnetReadAccessPropertyParse(io, objectType)
+	case "BACnetNotificationParametersChangeOfValueNewValue":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetNotificationParametersChangeOfValueNewValueParse(io, tagNumber)
+	case "BACnetLifeSafetyOperationTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetLifeSafetyOperationTaggedParse(io, tagNumber, tagClass)
+	case "ErrorCodeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.ErrorCodeTaggedParse(io, tagNumber, tagClass)
+	case "BACnetPolarityTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetPolarityTaggedParse(io, tagNumber, tagClass)
+	case "BACnetLockStatusTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetLockStatusTaggedParse(io, tagNumber, tagClass)
+	case "BACnetServiceAckAtomicReadFileStreamOrRecord":
+		return model.BACnetServiceAckAtomicReadFileStreamOrRecordParse(io)
+	case "BACnetDeviceObjectPropertyReferenceEnclosed":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetDeviceObjectPropertyReferenceEnclosedParse(io, tagNumber)
+	case "BACnetPropertyStates":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetPropertyStatesParse(io, tagNumber)
+	case "BACnetReadAccessResult":
+		return model.BACnetReadAccessResultParse(io)
+	case "BACnetConstructedData":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		objectType := model.BACnetObjectTypeByName(arguments[1])
+		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(arguments[2])
+		return model.BACnetConstructedDataParse(io, tagNumber, objectType, propertyIdentifierArgument)
+	case "BACnetEventTypeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetEventTypeTaggedParse(io, tagNumber, tagClass)
+	case "BACnetObjectPropertyReference":
+		return model.BACnetObjectPropertyReferenceParse(io)
+	case "BACnetAccessCredentialDisableReasonTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAccessCredentialDisableReasonTaggedParse(io, tagNumber, tagClass)
+	case "BACnetBinaryLightingPVTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetBinaryLightingPVTaggedParse(io, tagNumber, tagClass)
+	case "BACnetLightingInProgressTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetLightingInProgressTaggedParse(io, tagNumber, tagClass)
+	case "BACnetLifeSafetyStateTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetLifeSafetyStateTaggedParse(io, tagNumber, tagClass)
+	case "BACnetTagPayloadTime":
+		return model.BACnetTagPayloadTimeParse(io)
+	case "BACnetEventSummary":
+		return model.BACnetEventSummaryParse(io)
+	case "BACnetAccessZoneOccupancyStateTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAccessZoneOccupancyStateTaggedParse(io, tagNumber, tagClass)
+	case "BACnetSecurityLevelTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetSecurityLevelTaggedParse(io, tagNumber, tagClass)
+	case "BACnetNetworkPortCommandTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetNetworkPortCommandTaggedParse(io, tagNumber, tagClass)
+	case "BACnetDateTimeEnclosed":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetDateTimeEnclosedParse(io, tagNumber)
+	case "BACnetTimerTransitionTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetTimerTransitionTaggedParse(io, tagNumber, tagClass)
+	case "BACnetRejectReasonTagged":
+		actualLength, err := utils.StrToUint32(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetRejectReasonTaggedParse(io, actualLength)
+	case "BACnetEscalatorModeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetEscalatorModeTaggedParse(io, tagNumber, tagClass)
+	case "BACnetTagPayloadObjectIdentifier":
+		return model.BACnetTagPayloadObjectIdentifierParse(io)
+	case "BACnetPropertyWriteDefinition":
+		objectType := model.BACnetObjectTypeByName(arguments[0])
+		return model.BACnetPropertyWriteDefinitionParse(io, objectType)
+	case "BACnetProgramRequestTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetProgramRequestTaggedParse(io, tagNumber, tagClass)
+	case "BACnetBinaryPVTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetBinaryPVTaggedParse(io, tagNumber, tagClass)
+	case "BACnetDateTime":
+		return model.BACnetDateTimeParse(io)
+	case "BACnetLightingOperationTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetLightingOperationTaggedParse(io, tagNumber, tagClass)
+	case "BACnetLiftFaultTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetLiftFaultTaggedParse(io, tagNumber, tagClass)
+	case "MaxApduLengthAcceptedTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.MaxApduLengthAcceptedTaggedParse(io, tagNumber, tagClass)
+	case "BACnetFileAccessMethodTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetFileAccessMethodTaggedParse(io, tagNumber, tagClass)
+	case "BACnetTagPayloadCharacterString":
+		actualLength, err := utils.StrToUint32(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetTagPayloadCharacterStringParse(io, actualLength)
+	case "BACnetTimeStamp":
+		return model.BACnetTimeStampParse(io)
+	case "BACnetNotificationParameters":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		objectType := model.BACnetObjectTypeByName(arguments[1])
+		return model.BACnetNotificationParametersParse(io, tagNumber, objectType)
+	case "BACnetNodeTypeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetNodeTypeTaggedParse(io, tagNumber, tagClass)
+	case "BACnetTimeStampsEnclosed":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetTimeStampsEnclosedParse(io, tagNumber)
+	case "BACnetClosingTag":
+		tagNumberArgument, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetClosingTagParse(io, tagNumberArgument)
+	case "BACnetAddress":
+		return model.BACnetAddressParse(io)
+	case "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference":
+		return model.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceParse(io)
+	case "BACnetApplicationTag":
+		return model.BACnetApplicationTagParse(io)
+	case "BACnetNetworkTypeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetNetworkTypeTaggedParse(io, tagNumber, tagClass)
+	case "BACnetActionTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetActionTaggedParse(io, tagNumber, tagClass)
+	case "BACnetConstructedDataElement":
+		objectType := model.BACnetObjectTypeByName(arguments[0])
+		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(arguments[1])
+		return model.BACnetConstructedDataElementParse(io, objectType, propertyIdentifierArgument)
+	case "BACnetPropertyValues":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		objectType := model.BACnetObjectTypeByName(arguments[1])
+		return model.BACnetPropertyValuesParse(io, tagNumber, objectType)
+	case "BACnetProtocolLevelTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetProtocolLevelTaggedParse(io, tagNumber, tagClass)
+	case "BACnetPropertyValue":
+		objectType := model.BACnetObjectTypeByName(arguments[0])
+		return model.BACnetPropertyValueParse(io, objectType)
+	case "BACnetActionList":
+		return model.BACnetActionListParse(io)
+	case "BACnetRelationshipTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetRelationshipTaggedParse(io, tagNumber, tagClass)
+	case "NLMInitalizeRoutingTablePortMapping":
+		return model.NLMInitalizeRoutingTablePortMappingParse(io)
+	case "SubscribeCOVPropertyMultipleErrorFirstFailedSubscription":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(io, tagNumber)
+	case "MaxSegmentsAcceptedTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.MaxSegmentsAcceptedTaggedParse(io, tagNumber, tagClass)
+	case "BACnetShedStateTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetShedStateTaggedParse(io, tagNumber, tagClass)
+	case "BACnetWriteAccessSpecification":
+		return model.BACnetWriteAccessSpecificationParse(io)
+	case "BACnetAccessEventTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAccessEventTaggedParse(io, tagNumber, tagClass)
+	case "BACnetServiceAck":
+		serviceRequestLength, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetServiceAckParse(io, serviceRequestLength)
+	case "BACnetAccessCredentialDisableTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAccessCredentialDisableTaggedParse(io, tagNumber, tagClass)
+	case "BACnetLightingTransitionTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetLightingTransitionTaggedParse(io, tagNumber, tagClass)
+	case "BACnetLiftCarDoorCommandTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetLiftCarDoorCommandTaggedParse(io, tagNumber, tagClass)
+	case "BACnetLiftCarModeTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetLiftCarModeTaggedParse(io, tagNumber, tagClass)
+	case "BACnetSilencedStateTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetSilencedStateTaggedParse(io, tagNumber, tagClass)
 	case "BACnetLifeSafetyModeTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
