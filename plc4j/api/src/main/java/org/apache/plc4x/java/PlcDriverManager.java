@@ -69,9 +69,16 @@ public class PlcDriverManager {
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
     public PlcConnection getConnection(String url) throws PlcConnectionException {
-        PlcDriver driver = getDriverForUrl(url);
-        PlcConnection connection = driver.getConnection(url);
-        connection.connect();
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(this.classLoader);
+        PlcConnection connection;
+        try {
+            PlcDriver driver = getDriverForUrl(url);
+            connection = driver.getConnection(url);
+            connection.connect();
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
         return connection;
     }
 
@@ -84,9 +91,16 @@ public class PlcDriverManager {
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        PlcDriver driver = getDriverForUrl(url);
-        PlcConnection connection = driver.getConnection(url, authentication);
-        connection.connect();
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(this.classLoader);
+        PlcConnection connection;
+        try {
+            PlcDriver driver = getDriverForUrl(url);
+            connection = driver.getConnection(url, authentication);
+            connection.connect();
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
         return connection;
     }
 
