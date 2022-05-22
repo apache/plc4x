@@ -154,8 +154,7 @@ public class Plc4xSourceTask extends SourceTask {
 
         try {
             PlcDriverManager manager = new PooledDriverManager();
-            PlcDriverManager plcDriverManager = new CachedDriverManager(plc4xConnectionString,() -> manager.getConnection(plc4xConnectionString));
-            TriggerCollector triggerCollector = new TriggerCollectorImpl(plcDriverManager);
+            TriggerCollector triggerCollector = new TriggerCollectorImpl(manager);
             scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
                 try {
                     Long timestamp = System.currentTimeMillis();
@@ -235,6 +234,7 @@ public class Plc4xSourceTask extends SourceTask {
             triggerCollector.start();
         } catch (ScraperException e) {
             log.error("Error starting the scraper", e);
+
         }
     }
 

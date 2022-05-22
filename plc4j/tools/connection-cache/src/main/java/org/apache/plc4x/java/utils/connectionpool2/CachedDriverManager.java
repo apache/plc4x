@@ -178,8 +178,10 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
         try {
             return future.get(timeoutMillis, TimeUnit.MILLISECONDS);
         } catch (ExecutionException | TimeoutException e) {
+            handleBrokenConnection();
             throw new PlcConnectionException("No Connection Available, timed out while waiting in queue.", e);
         } catch (InterruptedException e) {
+            handleBrokenConnection();
             Thread.currentThread().interrupt();
             throw new PlcConnectionException("No Connection Available, interrupted while waiting in queue.", e);
         } finally {
@@ -283,7 +285,9 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
     }
 
     private void cancelWatchdog() {
-        borrowWatchdog.cancel(false);
+        if (borrowWatchdog != null ) {
+            borrowWatchdog.cancel(false);
+        }
     }
 
     @Override
