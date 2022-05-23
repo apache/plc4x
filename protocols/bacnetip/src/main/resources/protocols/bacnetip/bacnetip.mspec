@@ -2465,7 +2465,7 @@
     [optional   BACnetApplicationTag
                             applicationTag      'isApplicationTag'                                              ]
     [optional   BACnetContextTag('peekedTagNumber',
-                                 'STATIC_CALL("guessDataType", objectType, propertyIdentifierArgument)')
+                                 'STATIC_CALL("BACnetDataType.UNKNOWN", objectType, propertyIdentifierArgument)')
                             contextTag          'isContextTag'                                                  ]
     [optional   BACnetConstructedData('peekedTagNumber', 'objectType', 'propertyIdentifierArgument')
                             constructedData     'isConstructedData'                                             ]
