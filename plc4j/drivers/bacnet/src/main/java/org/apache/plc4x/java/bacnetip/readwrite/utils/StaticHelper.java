@@ -1133,6 +1133,11 @@ public class StaticHelper {
         return new BACnetPropertyIdentifierTagged(header, propertyIdentifier, proprietaryValue, (short) tagNum, TagClass.CONTEXT_SPECIFIC_TAGS);
     }
 
+    public static BACnetSegmentationTagged creatBACnetSegmentationTagged(BACnetSegmentation value) {
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 0, 1);
+        return new BACnetSegmentationTagged(header, value, (short) 0, TagClass.APPLICATION_TAGS);
+    }
+
     public static BACnetApplicationTagBoolean createBACnetApplicationTagBoolean(boolean value) {
         BACnetTagHeader header = createBACnetTagHeaderBalanced(false, BACnetDataType.BOOLEAN.getValue(), value ? 1L : 0L);
         return new BACnetApplicationTagBoolean(header, new BACnetTagPayloadBoolean(value ? 1L : 0L));

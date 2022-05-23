@@ -692,6 +692,11 @@ func CreateSignedPayload(value int) (uint32, *BACnetTagPayloadSignedInteger) {
 	return length, payload
 }
 
+func CreatBACnetSegmentationTagged(value BACnetSegmentation) *BACnetSegmentationTagged {
+	header := CreateBACnetTagHeaderBalanced(false, 0, 1)
+	return NewBACnetSegmentationTagged(header, value, 0, TagClass_APPLICATION_TAGS)
+}
+
 func CreateBACnetApplicationTagBoolean(value bool) *BACnetApplicationTagBoolean {
 	_value := uint32(0)
 	if value {
