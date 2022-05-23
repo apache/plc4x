@@ -129,7 +129,7 @@ mspecTemplate = """
     [simple   BACnetTagHeader
                         header                                                                               ]
     [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                ]
-    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS && header.actualTagNumber == 2) || (header.actualTagNumber == tagNumber)'
                                                     "tagnumber doesn't match" shouldFail=false               ]
     [manual   BACnetVendorId
                     value

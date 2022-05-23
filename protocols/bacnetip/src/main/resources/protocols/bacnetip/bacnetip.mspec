@@ -734,7 +734,7 @@
             [simple     BACnetApplicationTagObjectIdentifier                        deviceIdentifier                ]
             [simple     BACnetApplicationTagUnsignedInteger                         maximumApduLengthAcceptedLength ]
             [simple     BACnetSegmentationTagged('0', 'TagClass.APPLICATION_TAGS')  segmentationSupported           ]
-            [simple     BACnetVendorIdTagged('0', 'TagClass.APPLICATION_TAGS')      vendorId                        ]
+            [simple     BACnetVendorIdTagged('2', 'TagClass.APPLICATION_TAGS')      vendorId                        ]
         ]
         ['I_HAVE' BACnetUnconfirmedServiceRequestIHave
             [simple     BACnetApplicationTagObjectIdentifier                        deviceIdentifier    ]

@@ -215,7 +215,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, servic
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 		return nil, pullErr
 	}
-	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_APPLICATION_TAGS))
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}

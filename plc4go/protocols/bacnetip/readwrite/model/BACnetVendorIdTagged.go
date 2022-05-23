@@ -162,7 +162,7 @@ func BACnetVendorIdTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	}
 
 	// Validation
-	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
+	if !(bool(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS))) && bool(bool((header.GetActualTagNumber()) == (2))))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
 		return nil, utils.ParseAssertError{"tagnumber doesn't match"}
 	}
 
