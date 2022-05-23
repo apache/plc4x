@@ -58,40 +58,84 @@ func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template 
 	}
 
 	switch template.(type) {
-	case BACnetAbortReason:
-		return BACnetAbortReason(rawValue), nil
+	case BACnetAccessAuthenticationFactorDisable:
+		return BACnetAccessAuthenticationFactorDisable(rawValue), nil
+	case BACnetAccessCredentialDisable:
+		return BACnetAccessCredentialDisable(rawValue), nil
+	case BACnetAccessCredentialDisableReason:
+		return BACnetAccessCredentialDisableReason(rawValue), nil
+	case BACnetAccessEvent:
+		return BACnetAccessEvent(rawValue), nil
+	case BACnetAccessUserType:
+		return BACnetAccessUserType(rawValue), nil
+	case BACnetAccessZoneOccupancyState:
+		return BACnetAccessZoneOccupancyState(rawValue), nil
+	case BACnetAuthorizationExemption:
+		return BACnetAuthorizationExemption(rawValue), nil
+	case BACnetAuthorizationMode:
+		return BACnetAuthorizationMode(rawValue), nil
+	case BACnetBinaryLightingPV:
+		return BACnetBinaryLightingPV(rawValue), nil
+	case BACnetDeviceStatus:
+		return BACnetDeviceStatus(rawValue), nil
+	case BACnetDoorAlarmState:
+		return BACnetDoorAlarmState(rawValue), nil
+	case BACnetDoorStatus:
+		return BACnetDoorStatus(rawValue), nil
+	case BACnetEngineeringUnits:
+		return BACnetEngineeringUnits(rawValue), nil
+	case BACnetEscalatorFault:
+		return BACnetEscalatorFault(rawValue), nil
+	case BACnetEscalatorMode:
+		return BACnetEscalatorMode(rawValue), nil
+	case BACnetEscalatorOperationDirection:
+		return BACnetEscalatorOperationDirection(rawValue), nil
 	case BACnetEventState:
 		return BACnetEventState(rawValue), nil
 	case BACnetEventType:
-		return BACnetEventState(rawValue), nil
+		return BACnetEventType(rawValue), nil
 	case BACnetLifeSafetyMode:
 		return BACnetLifeSafetyMode(rawValue), nil
+	case BACnetLifeSafetyOperation:
+		return BACnetLifeSafetyOperation(rawValue), nil
 	case BACnetLifeSafetyState:
 		return BACnetLifeSafetyState(rawValue), nil
+	case BACnetLiftCarDirection:
+		return BACnetLiftCarDirection(rawValue), nil
+	case BACnetLiftCarDriveStatus:
+		return BACnetLiftCarDriveStatus(rawValue), nil
+	case BACnetLiftCarMode:
+		return BACnetLiftCarMode(rawValue), nil
+	case BACnetLiftFault:
+		return BACnetLiftFault(rawValue), nil
+	case BACnetLightingOperation:
+		return BACnetLightingOperation(rawValue), nil
+	case BACnetLightingTransition:
+		return BACnetLightingTransition(rawValue), nil
+	case BACnetLoggingType:
+		return BACnetLoggingType(rawValue), nil
+	case BACnetMaintenance:
+		return BACnetMaintenance(rawValue), nil
+	case BACnetNetworkPortCommand:
+		return BACnetNetworkPortCommand(rawValue), nil
 	case BACnetNetworkType:
 		return BACnetNetworkType(rawValue), nil
-	case BACnetNodeType:
-		return BACnetNodeType(rawValue), nil
-	case BACnetNotifyType:
-		return BACnetNotifyType(rawValue), nil
 	case BACnetObjectType:
 		return BACnetObjectType(rawValue), nil
+	case BACnetProgramError:
+		return BACnetProgramError(rawValue), nil
 	case BACnetPropertyIdentifier:
 		return BACnetPropertyIdentifier(rawValue), nil
+	case BACnetRelationship:
+		return BACnetRelationship(rawValue), nil
 	case BACnetReliability:
 		return BACnetReliability(rawValue), nil
-	case BACnetSegmentation:
-		return BACnetSegmentation(rawValue), err
-	case ErrorClass:
-		return ErrorClass(rawValue), nil
-	case ErrorCode:
-		return ErrorCode(rawValue), nil
-	case BACnetRejectReason:
-		return BACnetRejectReason(rawValue), nil
-	case BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice:
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice(rawValue), err
-	case BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable:
-		return BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(rawValue), err
+	case BACnetRestartReason:
+		return BACnetRestartReason(rawValue), nil
+	case BACnetSilencedState:
+		return BACnetSilencedState(rawValue), nil
+	case BACnetVTClass:
+		return BACnetVTClass(rawValue), nil
 	default:
 		panic(fmt.Sprintf("doesn't work yet... implement manually support for %T", template))
 		// TODO: this doesn't work
@@ -120,39 +164,204 @@ func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value interface{}) error {
 	// TODO: same here... how to do that generic???
 	//var valueValue = value.(uint32)
 	switch v := value.(type) {
-	case BACnetAbortReason:
-		valueValue = uint32(v)
-	case BACnetEventState:
-		valueValue = uint32(v)
-	case BACnetEventType:
-		valueValue = uint32(v)
-	case BACnetLifeSafetyMode:
-		valueValue = uint32(v)
-	case BACnetLifeSafetyState:
-		valueValue = uint32(v)
-	case BACnetNetworkType:
-		valueValue = uint32(v)
-	case BACnetNodeType:
-		valueValue = uint32(v)
-	case BACnetNotifyType:
-		valueValue = uint32(v)
-	case BACnetObjectType:
-		valueValue = uint32(v)
-	case BACnetPropertyIdentifier:
-		valueValue = uint32(v)
-	case BACnetReliability:
-		valueValue = uint32(v)
-	case BACnetSegmentation:
-		valueValue = uint32(v)
 	case ErrorClass:
 		valueValue = uint32(v)
 	case ErrorCode:
 		valueValue = uint32(v)
-	case BACnetRejectReason:
+	case BACnetAccessAuthenticationFactorDisable:
+		if v == BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
 		valueValue = uint32(v)
-	case BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice:
+	case BACnetAccessCredentialDisable:
+		if v == BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
 		valueValue = uint32(v)
-	case BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable:
+	case BACnetAccessCredentialDisableReason:
+		if v == BACnetAccessCredentialDisableReason_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetAccessEvent:
+		if v == BACnetAccessEvent_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetAccessUserType:
+		if v == BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetAccessZoneOccupancyState:
+		if v == BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetAuthorizationExemption:
+		if v == BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetAuthorizationMode:
+		if v == BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetBinaryLightingPV:
+		if v == BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetDeviceStatus:
+		if v == BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetDoorAlarmState:
+		if v == BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetDoorStatus:
+		if v == BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetEngineeringUnits:
+		if v == BACnetEngineeringUnits_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetEscalatorFault:
+		if v == BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetEscalatorMode:
+		if v == BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetEscalatorOperationDirection:
+		if v == BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetEventState:
+		if v == BACnetEventState_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetEventType:
+		if v == BACnetEventType_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetLifeSafetyMode:
+		if v == BACnetLifeSafetyMode_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetLifeSafetyOperation:
+		if v == BACnetLifeSafetyOperation_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetLifeSafetyState:
+		if v == BACnetLifeSafetyState_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetLiftCarDirection:
+		if v == BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetLiftCarDriveStatus:
+		if v == BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetLiftCarMode:
+		if v == BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetLiftFault:
+		if v == BACnetLiftFault_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetLightingOperation:
+		if v == BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetLightingTransition:
+		if v == BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetLoggingType:
+		if v == BACnetLoggingType_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetMaintenance:
+		if v == BACnetMaintenance_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetNetworkPortCommand:
+		if v == BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetNetworkType:
+		if v == BACnetNetworkType_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetObjectType:
+		if v == BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetProgramError:
+		if v == BACnetProgramError_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetPropertyIdentifier:
+		if v == BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetRelationship:
+		if v == BACnetRelationship_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetReliability:
+		if v == BACnetReliability_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetRestartReason:
+		if v == BACnetRestartReason_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetSilencedState:
+		if v == BACnetSilencedState_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetVTClass:
+		if v == BACnetVTClass_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
 		valueValue = uint32(v)
 	default:
 		panic(fmt.Sprintf("doesn't work yet... implement manually support for %T", value))
