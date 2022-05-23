@@ -23,22 +23,32 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 )
 
+// ReadBufferByteBased is a byte based read buffer
+type ReadBufferByteBased interface {
+	utils.ReadBufferByteBased
+}
+
 // NewReadBufferByteBased creates a byte based read buffer
-func NewReadBufferByteBased(data []byte) utils.ReadBufferByteBased {
+func NewReadBufferByteBased(data []byte) ReadBufferByteBased {
 	return utils.NewReadBufferByteBased(data)
 }
 
 // NewLittleEndianReadBufferByteBased creates a little endian byte based read buffer
-func NewLittleEndianReadBufferByteBased(data []byte) utils.ReadBufferByteBased {
+func NewLittleEndianReadBufferByteBased(data []byte) ReadBufferByteBased {
 	return utils.NewLittleEndianReadBufferByteBased(data)
 }
 
+// WriteBufferByteBased is a byte based write buffer
+type WriteBufferByteBased interface {
+	utils.WriteBufferByteBased
+}
+
 // NewWriteBufferByteBased creates a byte based write buffer
-func NewWriteBufferByteBased() utils.WriteBufferByteBased {
+func NewWriteBufferByteBased() WriteBufferByteBased {
 	return utils.NewWriteBufferByteBased()
 }
 
 // NewLittleEndianWriteBufferByteBased creates a little endian byte write read buffer
-func NewLittleEndianWriteBufferByteBased() utils.WriteBufferByteBased {
+func NewLittleEndianWriteBufferByteBased() WriteBufferByteBased {
 	return utils.NewLittleEndianWriteBufferByteBased()
 }
