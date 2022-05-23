@@ -25,6 +25,11 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 )
 
+// Serializable indicates that something is serializable
+type Serializable interface {
+	utils.Serializable
+}
+
 // ReadBufferByteBased is a byte based read buffer
 type ReadBufferByteBased interface {
 	utils.ReadBufferByteBased
