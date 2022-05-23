@@ -363,6 +363,78 @@ func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value interface{}) error {
 			return nil
 		}
 		valueValue = uint32(v)
+	case BACnetAction: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetAccessPassbackMode: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetAuthenticationFactorType: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetAuthenticationStatus: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetBackupState: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetBinaryPV: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetDoorSecuredStatus: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetDoorValue: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetFaultType: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetFileAccessMethod: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetIPMode: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetLiftCarDoorCommand: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetLiftGroupMode: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetLightingInProgress: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetLockStatus: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetNetworkNumberQuality: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetNodeType: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetNotifyType: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetPolarity: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetProgramRequest: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetProgramState: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetProtocolLevel: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetSecurityLevel: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetSecurityPolicy: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetSegmentation: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetShedState: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetTimerState: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetTimerTransition: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetUnconfirmedServiceChoice: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetWriteStatus: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BVLCResultCode: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case NPDUNetworkPriority: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case MaxSegmentsAccepted: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case MaxApduLengthAccepted: // <<-- private enum is always defined
+		valueValue = uint32(v)
 	default:
 		panic(fmt.Sprintf("doesn't work yet... implement manually support for %T", value))
 	}
