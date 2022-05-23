@@ -49,11 +49,8 @@ public class BacNetIpProtocol implements Protocol, ProtocolHelpers {
     public TypeContext getTypeContext() throws GenerationException {
         ValidatableTypeContext typeContext;
 
-        LOGGER.info("Parsing: bacnet-vendorids.mspec");
-        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-vendorids"));
-
         LOGGER.info("Parsing: bacnet-private-enums.mspec");
-        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-private-enums"), typeContext);
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-private-enums"));
 
         LOGGER.info("Parsing: bacnet-enums.mspec");
         typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-enums"), typeContext);
@@ -62,6 +59,9 @@ public class BacNetIpProtocol implements Protocol, ProtocolHelpers {
         typeContext = new MessageFormatParser().parse(getMspecStream(), typeContext);
 
         // TODO: those should work above bacnetip.mspec but somehow if we move them we get a concurrent modification exception... debug that.
+        LOGGER.info("Parsing: bacnet-vendorids.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-vendorids"), typeContext);
+
         LOGGER.info("Parsing: bacnet-private-enums-tagged.mspec");
         typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-private-enums-tagged"), typeContext);
 

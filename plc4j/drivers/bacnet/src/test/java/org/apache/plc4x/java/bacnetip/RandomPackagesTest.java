@@ -114,7 +114,7 @@ public class RandomPackagesTest {
                     assertEquals(123, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(1476, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(260, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.BA_CNET_STACKAT_SOURCE_FORGE, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 6 - Unconfirmed-REQ i-Am device,123",
                 () -> {
@@ -126,7 +126,7 @@ public class RandomPackagesTest {
                     assertEquals(123, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(1476, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(260, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.BA_CNET_STACKAT_SOURCE_FORGE, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 7 - Unconfirmed-REQ i-Am device,18",
                 () -> {
@@ -138,7 +138,7 @@ public class RandomPackagesTest {
                     assertEquals(18, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(1476, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(18, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.ALERTON_HONEYWELL, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 8 - Unconfirmed-REQ i-Am device,18",
                 () -> {
@@ -150,7 +150,7 @@ public class RandomPackagesTest {
                     assertEquals(18, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(1476, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(18, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.ALERTON_HONEYWELL, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 9 - Unconfirmed-REQ i-Am device,2401",
                 () -> {
@@ -162,7 +162,7 @@ public class RandomPackagesTest {
                     assertEquals(2401, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(24, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.AUTOMATED_LOGIC_CORPORATION, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 10 - Unconfirmed-REQ i-Am device,2401",
                 () -> {
@@ -174,7 +174,7 @@ public class RandomPackagesTest {
                     assertEquals(2401, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(24, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.AUTOMATED_LOGIC_CORPORATION, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 11 - Unconfirmed-REQ i-Am device,86114",
                 () -> {
@@ -186,7 +186,7 @@ public class RandomPackagesTest {
                     assertEquals(86114, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(50, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(260, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.BA_CNET_STACKAT_SOURCE_FORGE, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 12 - Unconfirmed-REQ i-Am device,86114",
                 () -> {
@@ -198,7 +198,7 @@ public class RandomPackagesTest {
                     assertEquals(86114, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(50, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(260, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.BA_CNET_STACKAT_SOURCE_FORGE, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 13 - Unconfirmed-REQ i-Am device,884456",
                 () -> {
@@ -210,7 +210,7 @@ public class RandomPackagesTest {
                     assertEquals(884456, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(86, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.THE_WATT_STOPPER_INC, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 14 - Unconfirmed-REQ i-Am device,884456",
                 () -> {
@@ -222,7 +222,7 @@ public class RandomPackagesTest {
                     assertEquals(884456, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(86, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.THE_WATT_STOPPER_INC, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 })
         );
     }
@@ -388,7 +388,7 @@ public class RandomPackagesTest {
                     assertEquals(12345, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(260L, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.BA_CNET_STACKAT_SOURCE_FORGE, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 4 - Unconfirmed-REQ who-Is 12345 12345",
                 () -> {
@@ -427,7 +427,7 @@ public class RandomPackagesTest {
                     assertEquals(12345, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(260L, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.BA_CNET_STACKAT_SOURCE_FORGE, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 7 - Confirmed-REQ readProperty[ 1] analog-output,0 priority-array",
                 () -> {
@@ -776,7 +776,7 @@ public class RandomPackagesTest {
                     }
                     {
                         BACnetNotificationParametersExtended baCnetNotificationParametersExtended = (BACnetNotificationParametersExtended) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
-                        assertEquals(24, baCnetNotificationParametersExtended.getVendorId().getPayload().getActualValue().longValue());
+                        assertEquals(BACnetVendorId.AUTOMATED_LOGIC_CORPORATION, baCnetNotificationParametersExtended.getVendorId().getValue());
                         assertEquals(33, baCnetNotificationParametersExtended.getExtendedEventType().getPayload().getActualValue().longValue());
                     }
                 }),
@@ -3531,7 +3531,7 @@ public class RandomPackagesTest {
                     assertEquals(111, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(50, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.ACUITY_BRANDS_LIGHTING_INC, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 2 - Unconfirmed-REQ who-Is",
                 () -> {
@@ -3552,7 +3552,7 @@ public class RandomPackagesTest {
                     assertEquals(111, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(50, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.NO_SEGMENTATION, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.ACUITY_BRANDS_LIGHTING_INC, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 8 - Unconfirmed-REQ i-Am device,201",
                 () -> {
@@ -3565,7 +3565,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(1476, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.SEGMENTED_BOTH, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(18, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.ALERTON_HONEYWELL, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 8 - Unconfirmed-REQ i-Am device,61",
                 () -> {
@@ -3578,7 +3578,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.SEGMENTED_BOTH, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.ACUITY_BRANDS_LIGHTING_INC, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicTest.dynamicTest("No. 11 - Confirmed-REQ   readProperty[ 29] device,201 object-identifier",
                 () -> {
@@ -5480,7 +5480,7 @@ public class RandomPackagesTest {
                     assertEquals(133, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
                     assertEquals(BACnetSegmentation.SEGMENTED_BOTH, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getValue());
-                    assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
+                    assertEquals(BACnetVendorId.ACUITY_BRANDS_LIGHTING_INC, baCnetUnconfirmedServiceRequestIAm.getVendorId().getValue());
                 }),
             DynamicContainer.dynamicContainer("Confirmed-REQ atomicWriteFile 1-30", () -> {
                 Collection<DynamicNode> nodes = new LinkedList<>();

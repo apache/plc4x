@@ -1388,6 +1388,7 @@ const (
 	BACnetVendorId_THERMOPLASTIC_ENGINEERING_LTDTPE                                             BACnetVendorId = 1356
 	BACnetVendorId_WIRTH_RESEARCH_LTD                                                           BACnetVendorId = 1357
 	BACnetVendorId_SST_AUTOMATION                                                               BACnetVendorId = 1358
+	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
 var BACnetVendorIdValues []BACnetVendorId
@@ -2747,6 +2748,7 @@ func init() {
 		BACnetVendorId_THERMOPLASTIC_ENGINEERING_LTDTPE,
 		BACnetVendorId_WIRTH_RESEARCH_LTD,
 		BACnetVendorId_SST_AUTOMATION,
+		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
 
@@ -2755,6 +2757,10 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 0:
 		{ /* '0' */
 			return 0
+		}
+	case 0xFFFF:
+		{ /* '0xFFFF' */
+			return 0xFFFF
 		}
 	case 1:
 		{ /* '1' */
@@ -8182,6 +8188,10 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '0' */
 			return "ASHRAE"
 		}
+	case 0xFFFF:
+		{ /* '0xFFFF' */
+			return "Unknown"
+		}
 	case 1:
 		{ /* '1' */
 			return "NIST"
@@ -13605,6 +13615,8 @@ func BACnetVendorIdByValue(value uint16) BACnetVendorId {
 	switch value {
 	case 0:
 		return BACnetVendorId_ASHRAE
+	case 0xFFFF:
+		return BACnetVendorId_UNKNOWN_VENDOR
 	case 1:
 		return BACnetVendorId_NIST
 	case 10:
@@ -16315,6 +16327,8 @@ func BACnetVendorIdByName(value string) BACnetVendorId {
 	switch value {
 	case "ASHRAE":
 		return BACnetVendorId_ASHRAE
+	case "UNKNOWN_VENDOR":
+		return BACnetVendorId_UNKNOWN_VENDOR
 	case "NIST":
 		return BACnetVendorId_NIST
 	case "SCHNEIDER_ELECTRIC":
@@ -19064,6 +19078,8 @@ func (e BACnetVendorId) name() string {
 	switch e {
 	case BACnetVendorId_ASHRAE:
 		return "ASHRAE"
+	case BACnetVendorId_UNKNOWN_VENDOR:
+		return "UNKNOWN_VENDOR"
 	case BACnetVendorId_NIST:
 		return "NIST"
 	case BACnetVendorId_SCHNEIDER_ELECTRIC:

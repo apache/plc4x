@@ -113,6 +113,13 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetDoorStatusTaggedParse(io, tagNumber, tagClass)
+	case "BACnetVendorIdTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetVendorIdTaggedParse(io, tagNumber, tagClass)
 	case "BACnetEventTimestamps":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

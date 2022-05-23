@@ -65,7 +65,7 @@ func (m *NLMICouldBeRouterToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *NLMICouldBeRouterToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
+func (m *NLMICouldBeRouterToNetwork) InitializeParent(parent *NLM, vendorId *BACnetVendorId) {
 	m.NLM.VendorId = vendorId
 }
 
@@ -92,7 +92,7 @@ func (m *NLMICouldBeRouterToNetwork) GetPerformanceIndex() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMICouldBeRouterToNetwork factory function for NLMICouldBeRouterToNetwork
-func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, vendorId *uint16, apduLength uint16) *NLMICouldBeRouterToNetwork {
+func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, vendorId *BACnetVendorId, apduLength uint16) *NLMICouldBeRouterToNetwork {
 	_result := &NLMICouldBeRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		PerformanceIndex:          performanceIndex,

@@ -65,7 +65,7 @@ func (m *NLMRejectRouterToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *NLMRejectRouterToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
+func (m *NLMRejectRouterToNetwork) InitializeParent(parent *NLM, vendorId *BACnetVendorId) {
 	m.NLM.VendorId = vendorId
 }
 
@@ -92,7 +92,7 @@ func (m *NLMRejectRouterToNetwork) GetDestinationNetworkAddress() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMRejectRouterToNetwork factory function for NLMRejectRouterToNetwork
-func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReason, destinationNetworkAddress uint16, vendorId *uint16, apduLength uint16) *NLMRejectRouterToNetwork {
+func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReason, destinationNetworkAddress uint16, vendorId *BACnetVendorId, apduLength uint16) *NLMRejectRouterToNetwork {
 	_result := &NLMRejectRouterToNetwork{
 		RejectReason:              rejectReason,
 		DestinationNetworkAddress: destinationNetworkAddress,

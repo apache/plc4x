@@ -30,7 +30,7 @@ import (
 type BACnetNotificationParametersExtended struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag   *BACnetOpeningTag
-	VendorId          *BACnetContextTagUnsignedInteger
+	VendorId          *BACnetVendorIdTagged
 	ExtendedEventType *BACnetContextTagUnsignedInteger
 	Parameters        *BACnetNotificationParametersExtendedParameters
 	InnerClosingTag   *BACnetClosingTag
@@ -46,7 +46,7 @@ type IBACnetNotificationParametersExtended interface {
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() *BACnetOpeningTag
 	// GetVendorId returns VendorId (property field)
-	GetVendorId() *BACnetContextTagUnsignedInteger
+	GetVendorId() *BACnetVendorIdTagged
 	// GetExtendedEventType returns ExtendedEventType (property field)
 	GetExtendedEventType() *BACnetContextTagUnsignedInteger
 	// GetParameters returns Parameters (property field)
@@ -90,7 +90,7 @@ func (m *BACnetNotificationParametersExtended) GetInnerOpeningTag() *BACnetOpeni
 	return m.InnerOpeningTag
 }
 
-func (m *BACnetNotificationParametersExtended) GetVendorId() *BACnetContextTagUnsignedInteger {
+func (m *BACnetNotificationParametersExtended) GetVendorId() *BACnetVendorIdTagged {
 	return m.VendorId
 }
 
@@ -112,7 +112,7 @@ func (m *BACnetNotificationParametersExtended) GetInnerClosingTag() *BACnetClosi
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersExtended factory function for BACnetNotificationParametersExtended
-func NewBACnetNotificationParametersExtended(innerOpeningTag *BACnetOpeningTag, vendorId *BACnetContextTagUnsignedInteger, extendedEventType *BACnetContextTagUnsignedInteger, parameters *BACnetNotificationParametersExtendedParameters, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersExtended {
+func NewBACnetNotificationParametersExtended(innerOpeningTag *BACnetOpeningTag, vendorId *BACnetVendorIdTagged, extendedEventType *BACnetContextTagUnsignedInteger, parameters *BACnetNotificationParametersExtendedParameters, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersExtended {
 	_result := &BACnetNotificationParametersExtended{
 		InnerOpeningTag:              innerOpeningTag,
 		VendorId:                     vendorId,
@@ -200,11 +200,11 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 		return nil, pullErr
 	}
-	_vendorId, _vendorIdErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
-	vendorId := CastBACnetContextTagUnsignedInteger(_vendorId)
+	vendorId := CastBACnetVendorIdTagged(_vendorId)
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -255,7 +255,7 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	// Create a partially initialized instance
 	_child := &BACnetNotificationParametersExtended{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
-		VendorId:                     CastBACnetContextTagUnsignedInteger(vendorId),
+		VendorId:                     CastBACnetVendorIdTagged(vendorId),
 		ExtendedEventType:            CastBACnetContextTagUnsignedInteger(extendedEventType),
 		Parameters:                   CastBACnetNotificationParametersExtendedParameters(parameters),
 		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),

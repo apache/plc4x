@@ -32,7 +32,7 @@ type BACnetUnconfirmedServiceRequestIAm struct {
 	DeviceIdentifier                *BACnetApplicationTagObjectIdentifier
 	MaximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger
 	SegmentationSupported           *BACnetSegmentationTagged
-	VendorId                        *BACnetApplicationTagUnsignedInteger
+	VendorId                        *BACnetVendorIdTagged
 
 	// Arguments.
 	ServiceRequestLength uint16
@@ -48,7 +48,7 @@ type IBACnetUnconfirmedServiceRequestIAm interface {
 	// GetSegmentationSupported returns SegmentationSupported (property field)
 	GetSegmentationSupported() *BACnetSegmentationTagged
 	// GetVendorId returns VendorId (property field)
-	GetVendorId() *BACnetApplicationTagUnsignedInteger
+	GetVendorId() *BACnetVendorIdTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -95,7 +95,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) GetSegmentationSupported() *BACnetS
 	return m.SegmentationSupported
 }
 
-func (m *BACnetUnconfirmedServiceRequestIAm) GetVendorId() *BACnetApplicationTagUnsignedInteger {
+func (m *BACnetUnconfirmedServiceRequestIAm) GetVendorId() *BACnetVendorIdTagged {
 	return m.VendorId
 }
 
@@ -105,7 +105,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) GetVendorId() *BACnetApplicationTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetUnconfirmedServiceRequestIAm factory function for BACnetUnconfirmedServiceRequestIAm
-func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger, segmentationSupported *BACnetSegmentationTagged, vendorId *BACnetApplicationTagUnsignedInteger, serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestIAm {
+func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger, segmentationSupported *BACnetSegmentationTagged, vendorId *BACnetVendorIdTagged, serviceRequestLength uint16) *BACnetUnconfirmedServiceRequestIAm {
 	_result := &BACnetUnconfirmedServiceRequestIAm{
 		DeviceIdentifier:                deviceIdentifier,
 		MaximumApduLengthAcceptedLength: maximumApduLengthAcceptedLength,
@@ -215,11 +215,11 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, servic
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 		return nil, pullErr
 	}
-	_vendorId, _vendorIdErr := BACnetApplicationTagParse(readBuffer)
+	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
-	vendorId := CastBACnetApplicationTagUnsignedInteger(_vendorId)
+	vendorId := CastBACnetVendorIdTagged(_vendorId)
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -233,7 +233,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, servic
 		DeviceIdentifier:                CastBACnetApplicationTagObjectIdentifier(deviceIdentifier),
 		MaximumApduLengthAcceptedLength: CastBACnetApplicationTagUnsignedInteger(maximumApduLengthAcceptedLength),
 		SegmentationSupported:           CastBACnetSegmentationTagged(segmentationSupported),
-		VendorId:                        CastBACnetApplicationTagUnsignedInteger(vendorId),
+		VendorId:                        CastBACnetVendorIdTagged(vendorId),
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
 	_child.BACnetUnconfirmedServiceRequest.Child = _child

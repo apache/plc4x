@@ -122,6 +122,27 @@ mspecTemplate = """
  */
 [enum uint 16 BACnetVendorId(uint 16 vendorId, string 8 vendorName)
 <% for (item in values) { %> ['<%= item.vendorId %>' <%= item.organizationSanitized %> ['<%= item.vendorId %>', '"<%= item.organization %>"']]\\n <% } %>
+  ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
+]
+
+[type BACnetVendorIdTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                        header                                                                               ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                    "tagnumber doesn't match" shouldFail=false               ]
+    [manual   BACnetVendorId
+                    value
+                        'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetVendorId.UNKNOWN_VENDOR)'
+                        'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
+                        'header.actualLength * 8'                                                            ]
+    [virtual  bit   isUnknownId
+                        'value == BACnetVendorId.UNKNOWN_VENDOR'                                           ]
+    [manual   uint 32
+                    unknownId
+                        'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isUnknownId)'
+                        'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, unknownId, isUnknownId)'
+                        '_value.isUnknownId?header.actualLength * 8:0'                                     ]
 ]
 """
 SimpleTemplateEngine templateEngine = new SimpleTemplateEngine()

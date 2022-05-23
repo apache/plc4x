@@ -31,7 +31,7 @@ import (
 type ConfirmedPrivateTransferError struct {
 	*BACnetError
 	ErrorType       *ErrorEnclosed
-	VendorId        *BACnetContextTagUnsignedInteger
+	VendorId        *BACnetVendorIdTagged
 	ServiceNumber   *BACnetContextTagUnsignedInteger
 	ErrorParameters *BACnetConstructedData
 }
@@ -42,7 +42,7 @@ type IConfirmedPrivateTransferError interface {
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() *ErrorEnclosed
 	// GetVendorId returns VendorId (property field)
-	GetVendorId() *BACnetContextTagUnsignedInteger
+	GetVendorId() *BACnetVendorIdTagged
 	// GetServiceNumber returns ServiceNumber (property field)
 	GetServiceNumber() *BACnetContextTagUnsignedInteger
 	// GetErrorParameters returns ErrorParameters (property field)
@@ -84,7 +84,7 @@ func (m *ConfirmedPrivateTransferError) GetErrorType() *ErrorEnclosed {
 	return m.ErrorType
 }
 
-func (m *ConfirmedPrivateTransferError) GetVendorId() *BACnetContextTagUnsignedInteger {
+func (m *ConfirmedPrivateTransferError) GetVendorId() *BACnetVendorIdTagged {
 	return m.VendorId
 }
 
@@ -102,7 +102,7 @@ func (m *ConfirmedPrivateTransferError) GetErrorParameters() *BACnetConstructedD
 ///////////////////////////////////////////////////////////
 
 // NewConfirmedPrivateTransferError factory function for ConfirmedPrivateTransferError
-func NewConfirmedPrivateTransferError(errorType *ErrorEnclosed, vendorId *BACnetContextTagUnsignedInteger, serviceNumber *BACnetContextTagUnsignedInteger, errorParameters *BACnetConstructedData) *ConfirmedPrivateTransferError {
+func NewConfirmedPrivateTransferError(errorType *ErrorEnclosed, vendorId *BACnetVendorIdTagged, serviceNumber *BACnetContextTagUnsignedInteger, errorParameters *BACnetConstructedData) *ConfirmedPrivateTransferError {
 	_result := &ConfirmedPrivateTransferError{
 		ErrorType:       errorType,
 		VendorId:        vendorId,
@@ -188,11 +188,11 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 		return nil, pullErr
 	}
-	_vendorId, _vendorIdErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
-	vendorId := CastBACnetContextTagUnsignedInteger(_vendorId)
+	vendorId := CastBACnetVendorIdTagged(_vendorId)
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -238,7 +238,7 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 	// Create a partially initialized instance
 	_child := &ConfirmedPrivateTransferError{
 		ErrorType:       CastErrorEnclosed(errorType),
-		VendorId:        CastBACnetContextTagUnsignedInteger(vendorId),
+		VendorId:        CastBACnetVendorIdTagged(vendorId),
 		ServiceNumber:   CastBACnetContextTagUnsignedInteger(serviceNumber),
 		ErrorParameters: CastBACnetConstructedData(errorParameters),
 		BACnetError:     &BACnetError{},

@@ -142,6 +142,8 @@ func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template 
 		return BACnetRestartReason(rawValue), nil
 	case BACnetSilencedState:
 		return BACnetSilencedState(rawValue), nil
+	case BACnetVendorId:
+		return BACnetVendorId(rawValue), nil
 	case BACnetVTClass:
 		return BACnetVTClass(rawValue), nil
 	default:
@@ -363,6 +365,11 @@ func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value interface{}) error {
 		valueValue = uint32(v)
 	case BACnetSilencedState:
 		if v == BACnetSilencedState_VENDOR_PROPRIETARY_VALUE {
+			return nil
+		}
+		valueValue = uint32(v)
+	case BACnetVendorId:
+		if v == BACnetVendorId_UNKNOWN_VENDOR {
 			return nil
 		}
 		valueValue = uint32(v)

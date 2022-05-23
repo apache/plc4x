@@ -65,7 +65,7 @@ func (m *NLMInitalizeRoutingTable) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *NLMInitalizeRoutingTable) InitializeParent(parent *NLM, vendorId *uint16) {
+func (m *NLMInitalizeRoutingTable) InitializeParent(parent *NLM, vendorId *BACnetVendorId) {
 	m.NLM.VendorId = vendorId
 }
 
@@ -92,7 +92,7 @@ func (m *NLMInitalizeRoutingTable) GetPortMappings() []*NLMInitalizeRoutingTable
 ///////////////////////////////////////////////////////////
 
 // NewNLMInitalizeRoutingTable factory function for NLMInitalizeRoutingTable
-func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *uint16, apduLength uint16) *NLMInitalizeRoutingTable {
+func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *BACnetVendorId, apduLength uint16) *NLMInitalizeRoutingTable {
 	_result := &NLMInitalizeRoutingTable{
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,

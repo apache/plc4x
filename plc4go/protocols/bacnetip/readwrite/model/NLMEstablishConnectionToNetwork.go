@@ -65,7 +65,7 @@ func (m *NLMEstablishConnectionToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *NLMEstablishConnectionToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
+func (m *NLMEstablishConnectionToNetwork) InitializeParent(parent *NLM, vendorId *BACnetVendorId) {
 	m.NLM.VendorId = vendorId
 }
 
@@ -92,7 +92,7 @@ func (m *NLMEstablishConnectionToNetwork) GetTerminationTime() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMEstablishConnectionToNetwork factory function for NLMEstablishConnectionToNetwork
-func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, vendorId *uint16, apduLength uint16) *NLMEstablishConnectionToNetwork {
+func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, vendorId *BACnetVendorId, apduLength uint16) *NLMEstablishConnectionToNetwork {
 	_result := &NLMEstablishConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		TerminationTime:           terminationTime,

@@ -125,8 +125,9 @@
 ]
 
 [discriminatedType NLM(uint 16 apduLength)
-    [discriminator uint 8  messageType]
-    [optional      uint 16 vendorId '(messageType >= 128) && (messageType <= 255)']
+    [discriminator uint 8   messageType                     ]
+    [optional      BACnetVendorId
+                            vendorId '(messageType >= 128) && (messageType <= 255)']
     [typeSwitch messageType
         ['0x00' NLMWhoIsRouterToNetwork(uint 8 messageType)
             [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
@@ -465,10 +466,12 @@
 
         ]
         ['CONFIRMED_PRIVATE_TRANSFER' BACnetConfirmedServiceRequestConfirmedPrivateTransfer
-            [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
-            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
-            // TODO: temporary dummy property identifier... get rid of that
-            [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE') serviceParameters           ]
+            [simple     BACnetVendorIdTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                vendorId                                                            ]
+            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+                                serviceNumber                                                       ]
+            [optional   BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE')
+                                serviceParameters                                                   ]
         ]
         ['CONFIRMED_TEXT_MESSAGE' BACnetConfirmedServiceRequestConfirmedTextMessage
              // TODO: implement me
@@ -731,7 +734,7 @@
             [simple     BACnetApplicationTagObjectIdentifier                        deviceIdentifier                ]
             [simple     BACnetApplicationTagUnsignedInteger                         maximumApduLengthAcceptedLength ]
             [simple     BACnetSegmentationTagged('0', 'TagClass.APPLICATION_TAGS')  segmentationSupported           ]
-            [simple     BACnetApplicationTagUnsignedInteger                         vendorId                        ] // TODO: vendor list?
+            [simple     BACnetVendorIdTagged('0', 'TagClass.APPLICATION_TAGS')      vendorId                        ]
         ]
         ['I_HAVE' BACnetUnconfirmedServiceRequestIHave
             [simple     BACnetApplicationTagObjectIdentifier                        deviceIdentifier    ]
@@ -752,18 +755,17 @@
             [simple   BACnetTimeStampEnclosed('3')                                                     timestamp                    ]
             [simple   BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')          notificationClass            ]
             [simple   BACnetContextTagUnsignedInteger('5', 'BACnetDataType.UNSIGNED_INTEGER')          priority                     ]
-            [simple   BACnetEventTypeTagged('6', 'TagClass.CONTEXT_SPECIFIC_TAGS')                     eventType]
+            [simple   BACnetEventTypeTagged('6', 'TagClass.CONTEXT_SPECIFIC_TAGS')                     eventType                    ]
             [optional BACnetContextTagCharacterString('7', 'BACnetDataType.CHARACTER_STRING')          messageText                  ]
             [simple   BACnetNotifyTypeTagged('8', 'TagClass.CONTEXT_SPECIFIC_TAGS')                    notifyType                   ]
             [optional BACnetContextTagBoolean('9', 'BACnetDataType.BOOLEAN')                           ackRequired                  ]
-            [optional BACnetEventStateTagged('10', 'TagClass.CONTEXT_SPECIFIC_TAGS')                    fromState                    ]
-            [simple   BACnetEventStateTagged('11', 'TagClass.CONTEXT_SPECIFIC_TAGS')                    toState                      ]
+            [optional BACnetEventStateTagged('10', 'TagClass.CONTEXT_SPECIFIC_TAGS')                   fromState                    ]
+            [simple   BACnetEventStateTagged('11', 'TagClass.CONTEXT_SPECIFIC_TAGS')                   toState                      ]
             [optional BACnetNotificationParameters('12', 'eventObjectIdentifier.objectType')           eventValues                  ]
         ]
         ['UNCONFIRMED_PRIVATE_TRANSFER' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-            [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
-            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
-            // TODO: temporary dummy property identifier... get rid of that
+            [simple     BACnetVendorIdTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')                    vendorId                     ]
+            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')        serviceNumber                ]
             [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE') serviceParameters           ]
         ]
         ['UNCONFIRMED_TEXT_MESSAGE' BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
@@ -936,9 +938,8 @@
             [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['CONFIRMED_PRIVATE_TRANSFER' BACnetServiceAckConfirmedPrivateTransfer
-            [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
+            [simple     BACnetVendorIdTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')                      vendorId                    ]
             [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
-            // TODO: temporary dummy property identifier... get rid of that
             [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE') resultBlock                 ]
         ]
         ['CONFIRMED_TEXT_MESSAGE' BACnetServiceAckConfirmedTextMessage
@@ -1178,8 +1179,8 @@
         ['CONFIRMED_PRIVATE_TRANSFER'       ConfirmedPrivateTransferError
             [simple     ErrorEnclosed('0')
                             errorType                   ]
-            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
-                            vendorId                    ]// TODO: vendor list?
+            [simple     BACnetVendorIdTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                            vendorId                    ]
             [simple     BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
                             serviceNumber               ]
             [optional BACnetConstructedData('3', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE')
@@ -1322,7 +1323,7 @@
         ['9' BACnetNotificationParametersExtended(uint 8 peekedTagNumber)
             [simple BACnetOpeningTag('peekedTagNumber')
                             innerOpeningTag ]
-            [simple BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')
+            [simple BACnetVendorIdTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                             vendorId ]
             [simple BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
                             extendedEventType ]

@@ -62,7 +62,7 @@ func (m *NLMDisconnectConnectionToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *NLMDisconnectConnectionToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
+func (m *NLMDisconnectConnectionToNetwork) InitializeParent(parent *NLM, vendorId *BACnetVendorId) {
 	m.NLM.VendorId = vendorId
 }
 
@@ -85,7 +85,7 @@ func (m *NLMDisconnectConnectionToNetwork) GetDestinationNetworkAddress() uint16
 ///////////////////////////////////////////////////////////
 
 // NewNLMDisconnectConnectionToNetwork factory function for NLMDisconnectConnectionToNetwork
-func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, vendorId *uint16, apduLength uint16) *NLMDisconnectConnectionToNetwork {
+func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, vendorId *BACnetVendorId, apduLength uint16) *NLMDisconnectConnectionToNetwork {
 	_result := &NLMDisconnectConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		NLM:                       NewNLM(vendorId, apduLength),

@@ -28,7 +28,7 @@ import (
 
 // NLM is the data-structure of this message
 type NLM struct {
-	VendorId *uint16
+	VendorId *BACnetVendorId
 
 	// Arguments.
 	ApduLength uint16
@@ -40,7 +40,7 @@ type INLM interface {
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 	// GetVendorId returns VendorId (property field)
-	GetVendorId() *uint16
+	GetVendorId() *BACnetVendorId
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -56,7 +56,7 @@ type INLMParent interface {
 
 type INLMChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *NLM, vendorId *uint16)
+	InitializeParent(parent *NLM, vendorId *BACnetVendorId)
 	GetParent() *NLM
 
 	GetTypeName() string
@@ -68,7 +68,7 @@ type INLMChild interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *NLM) GetVendorId() *uint16 {
+func (m *NLM) GetVendorId() *BACnetVendorId {
 	return m.VendorId
 }
 
@@ -78,7 +78,7 @@ func (m *NLM) GetVendorId() *uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewNLM factory function for NLM
-func NewNLM(vendorId *uint16, apduLength uint16) *NLM {
+func NewNLM(vendorId *BACnetVendorId, apduLength uint16) *NLM {
 	return &NLM{VendorId: vendorId, ApduLength: apduLength}
 }
 
@@ -140,18 +140,24 @@ func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	}
 
 	// Optional Field (vendorId) (Can be skipped, if a given expression evaluates to false)
-	var vendorId *uint16 = nil
+	var vendorId *BACnetVendorId = nil
 	if bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255)))) {
-		_val, _err := readBuffer.ReadUint16("vendorId", 16)
+		if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
+			return nil, pullErr
+		}
+		_val, _err := BACnetVendorIdParse(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'vendorId' field")
 		}
 		vendorId = &_val
+		if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
+			return nil, closeErr
+		}
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type NLMChild interface {
-		InitializeParent(*NLM, *uint16)
+		InitializeParent(*NLM, *BACnetVendorId)
 		GetParent() *NLM
 	}
 	var _child NLMChild
@@ -214,10 +220,16 @@ func (m *NLM) SerializeParent(writeBuffer utils.WriteBuffer, child INLM, seriali
 	}
 
 	// Optional Field (vendorId) (Can be skipped, if the value is null)
-	var vendorId *uint16 = nil
+	var vendorId *BACnetVendorId = nil
 	if m.VendorId != nil {
+		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
+			return pushErr
+		}
 		vendorId = m.VendorId
-		_vendorIdErr := writeBuffer.WriteUint16("vendorId", 16, *(vendorId))
+		_vendorIdErr := vendorId.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
+			return popErr
+		}
 		if _vendorIdErr != nil {
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
 		}

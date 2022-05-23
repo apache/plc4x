@@ -780,7 +780,7 @@
                             </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
-                            <BACnetApplicationTag>
+                            <BACnetVendorIdTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">2</tagNumber>
@@ -790,14 +790,8 @@
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetApplicationTagUnsignedInteger>
-                                <payload>
-                                  <BACnetTagPayloadUnsignedInteger>
-                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
-                                  </BACnetTagPayloadUnsignedInteger>
-                                </payload>
-                              </BACnetApplicationTagUnsignedInteger>
-                            </BACnetApplicationTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="ACUITY_BRANDS_LIGHTING_INC">42</value>
+                            </BACnetVendorIdTagged>
                           </vendorId>
                         </BACnetUnconfirmedServiceRequestIAm>
                       </BACnetUnconfirmedServiceRequest>
@@ -2924,7 +2918,7 @@
                             </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
-                            <BACnetApplicationTag>
+                            <BACnetVendorIdTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">2</tagNumber>
@@ -2934,14 +2928,8 @@
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetApplicationTagUnsignedInteger>
-                                <payload>
-                                  <BACnetTagPayloadUnsignedInteger>
-                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
-                                  </BACnetTagPayloadUnsignedInteger>
-                                </payload>
-                              </BACnetApplicationTagUnsignedInteger>
-                            </BACnetApplicationTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="ACUITY_BRANDS_LIGHTING_INC">42</value>
+                            </BACnetVendorIdTagged>
                           </vendorId>
                         </BACnetUnconfirmedServiceRequestIAm>
                       </BACnetUnconfirmedServiceRequest>
@@ -3353,7 +3341,7 @@
                             </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
-                            <BACnetApplicationTag>
+                            <BACnetVendorIdTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">2</tagNumber>
@@ -3363,14 +3351,8 @@
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetApplicationTagUnsignedInteger>
-                                <payload>
-                                  <BACnetTagPayloadUnsignedInteger>
-                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
-                                  </BACnetTagPayloadUnsignedInteger>
-                                </payload>
-                              </BACnetApplicationTagUnsignedInteger>
-                            </BACnetApplicationTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="ACUITY_BRANDS_LIGHTING_INC">42</value>
+                            </BACnetVendorIdTagged>
                           </vendorId>
                         </BACnetUnconfirmedServiceRequestIAm>
                       </BACnetUnconfirmedServiceRequest>
@@ -3779,7 +3761,7 @@
                             </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
-                            <BACnetApplicationTag>
+                            <BACnetVendorIdTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">2</tagNumber>
@@ -3789,14 +3771,8 @@
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetApplicationTagUnsignedInteger>
-                                <payload>
-                                  <BACnetTagPayloadUnsignedInteger>
-                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
-                                  </BACnetTagPayloadUnsignedInteger>
-                                </payload>
-                              </BACnetApplicationTagUnsignedInteger>
-                            </BACnetApplicationTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="ACUITY_BRANDS_LIGHTING_INC">42</value>
+                            </BACnetVendorIdTagged>
                           </vendorId>
                         </BACnetUnconfirmedServiceRequestIAm>
                       </BACnetUnconfirmedServiceRequest>
@@ -4205,7 +4181,7 @@
                             </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
-                            <BACnetApplicationTag>
+                            <BACnetVendorIdTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">2</tagNumber>
@@ -4215,14 +4191,8 @@
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetApplicationTagUnsignedInteger>
-                                <payload>
-                                  <BACnetTagPayloadUnsignedInteger>
-                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
-                                  </BACnetTagPayloadUnsignedInteger>
-                                </payload>
-                              </BACnetApplicationTagUnsignedInteger>
-                            </BACnetApplicationTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="ACUITY_BRANDS_LIGHTING_INC">42</value>
+                            </BACnetVendorIdTagged>
                           </vendorId>
                         </BACnetUnconfirmedServiceRequestIAm>
                       </BACnetUnconfirmedServiceRequest>
@@ -5190,7 +5160,7 @@
                             </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
-                            <BACnetApplicationTag>
+                            <BACnetVendorIdTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">2</tagNumber>
@@ -5200,14 +5170,8 @@
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetApplicationTagUnsignedInteger>
-                                <payload>
-                                  <BACnetTagPayloadUnsignedInteger>
-                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
-                                  </BACnetTagPayloadUnsignedInteger>
-                                </payload>
-                              </BACnetApplicationTagUnsignedInteger>
-                            </BACnetApplicationTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="ACUITY_BRANDS_LIGHTING_INC">42</value>
+                            </BACnetVendorIdTagged>
                           </vendorId>
                         </BACnetUnconfirmedServiceRequestIAm>
                       </BACnetUnconfirmedServiceRequest>
@@ -5667,7 +5631,7 @@
                             </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
-                            <BACnetApplicationTag>
+                            <BACnetVendorIdTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">2</tagNumber>
@@ -5677,14 +5641,8 @@
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetApplicationTagUnsignedInteger>
-                                <payload>
-                                  <BACnetTagPayloadUnsignedInteger>
-                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
-                                  </BACnetTagPayloadUnsignedInteger>
-                                </payload>
-                              </BACnetApplicationTagUnsignedInteger>
-                            </BACnetApplicationTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="ACUITY_BRANDS_LIGHTING_INC">42</value>
+                            </BACnetVendorIdTagged>
                           </vendorId>
                         </BACnetUnconfirmedServiceRequestIAm>
                       </BACnetUnconfirmedServiceRequest>
@@ -6056,7 +6014,7 @@
                             </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
-                            <BACnetApplicationTag>
+                            <BACnetVendorIdTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">2</tagNumber>
@@ -6066,14 +6024,8 @@
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetApplicationTagUnsignedInteger>
-                                <payload>
-                                  <BACnetTagPayloadUnsignedInteger>
-                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
-                                  </BACnetTagPayloadUnsignedInteger>
-                                </payload>
-                              </BACnetApplicationTagUnsignedInteger>
-                            </BACnetApplicationTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="ACUITY_BRANDS_LIGHTING_INC">42</value>
+                            </BACnetVendorIdTagged>
                           </vendorId>
                         </BACnetUnconfirmedServiceRequestIAm>
                       </BACnetUnconfirmedServiceRequest>
@@ -6385,7 +6337,7 @@
                             </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
-                            <BACnetApplicationTag>
+                            <BACnetVendorIdTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">2</tagNumber>
@@ -6395,14 +6347,8 @@
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetApplicationTagUnsignedInteger>
-                                <payload>
-                                  <BACnetTagPayloadUnsignedInteger>
-                                    <valueUint8 dataType="uint" bitLength="8">0</valueUint8>
-                                  </BACnetTagPayloadUnsignedInteger>
-                                </payload>
-                              </BACnetApplicationTagUnsignedInteger>
-                            </BACnetApplicationTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="ASHRAE">0</value>
+                            </BACnetVendorIdTagged>
                           </vendorId>
                         </BACnetUnconfirmedServiceRequestIAm>
                       </BACnetUnconfirmedServiceRequest>
@@ -6941,7 +6887,7 @@
                             </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
-                            <BACnetApplicationTag>
+                            <BACnetVendorIdTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">2</tagNumber>
@@ -6951,14 +6897,8 @@
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetApplicationTagUnsignedInteger>
-                                <payload>
-                                  <BACnetTagPayloadUnsignedInteger>
-                                    <valueUint8 dataType="uint" bitLength="8">0</valueUint8>
-                                  </BACnetTagPayloadUnsignedInteger>
-                                </payload>
-                              </BACnetApplicationTagUnsignedInteger>
-                            </BACnetApplicationTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="ASHRAE">0</value>
+                            </BACnetVendorIdTagged>
                           </vendorId>
                         </BACnetUnconfirmedServiceRequestIAm>
                       </BACnetUnconfirmedServiceRequest>
@@ -7427,7 +7367,7 @@
                             </BACnetSegmentationTagged>
                           </segmentationSupported>
                           <vendorId>
-                            <BACnetApplicationTag>
+                            <BACnetVendorIdTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">2</tagNumber>
@@ -7437,14 +7377,8 @@
                                   <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetApplicationTagUnsignedInteger>
-                                <payload>
-                                  <BACnetTagPayloadUnsignedInteger>
-                                    <valueUint8 dataType="uint" bitLength="8">0</valueUint8>
-                                  </BACnetTagPayloadUnsignedInteger>
-                                </payload>
-                              </BACnetApplicationTagUnsignedInteger>
-                            </BACnetApplicationTag>
+                              <value dataType="uint" bitLength="8" stringRepresentation="ASHRAE">0</value>
+                            </BACnetVendorIdTagged>
                           </vendorId>
                         </BACnetUnconfirmedServiceRequestIAm>
                       </BACnetUnconfirmedServiceRequest>

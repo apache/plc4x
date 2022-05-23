@@ -62,7 +62,7 @@ func (m *NLMRouterAvailableToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *NLMRouterAvailableToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
+func (m *NLMRouterAvailableToNetwork) InitializeParent(parent *NLM, vendorId *BACnetVendorId) {
 	m.NLM.VendorId = vendorId
 }
 
@@ -85,7 +85,7 @@ func (m *NLMRouterAvailableToNetwork) GetDestinationNetworkAddress() []uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMRouterAvailableToNetwork factory function for NLMRouterAvailableToNetwork
-func NewNLMRouterAvailableToNetwork(destinationNetworkAddress []uint16, vendorId *uint16, apduLength uint16) *NLMRouterAvailableToNetwork {
+func NewNLMRouterAvailableToNetwork(destinationNetworkAddress []uint16, vendorId *BACnetVendorId, apduLength uint16) *NLMRouterAvailableToNetwork {
 	_result := &NLMRouterAvailableToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		NLM:                       NewNLM(vendorId, apduLength),

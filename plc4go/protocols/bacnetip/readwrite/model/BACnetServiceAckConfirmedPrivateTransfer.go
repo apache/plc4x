@@ -30,7 +30,7 @@ import (
 // BACnetServiceAckConfirmedPrivateTransfer is the data-structure of this message
 type BACnetServiceAckConfirmedPrivateTransfer struct {
 	*BACnetServiceAck
-	VendorId      *BACnetContextTagUnsignedInteger
+	VendorId      *BACnetVendorIdTagged
 	ServiceNumber *BACnetContextTagUnsignedInteger
 	ResultBlock   *BACnetConstructedData
 
@@ -42,7 +42,7 @@ type BACnetServiceAckConfirmedPrivateTransfer struct {
 type IBACnetServiceAckConfirmedPrivateTransfer interface {
 	IBACnetServiceAck
 	// GetVendorId returns VendorId (property field)
-	GetVendorId() *BACnetContextTagUnsignedInteger
+	GetVendorId() *BACnetVendorIdTagged
 	// GetServiceNumber returns ServiceNumber (property field)
 	GetServiceNumber() *BACnetContextTagUnsignedInteger
 	// GetResultBlock returns ResultBlock (property field)
@@ -80,7 +80,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) GetParent() *BACnetServiceAck
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetServiceAckConfirmedPrivateTransfer) GetVendorId() *BACnetContextTagUnsignedInteger {
+func (m *BACnetServiceAckConfirmedPrivateTransfer) GetVendorId() *BACnetVendorIdTagged {
 	return m.VendorId
 }
 
@@ -98,7 +98,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) GetResultBlock() *BACnetConst
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckConfirmedPrivateTransfer factory function for BACnetServiceAckConfirmedPrivateTransfer
-func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId *BACnetContextTagUnsignedInteger, serviceNumber *BACnetContextTagUnsignedInteger, resultBlock *BACnetConstructedData, serviceRequestLength uint16) *BACnetServiceAckConfirmedPrivateTransfer {
+func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId *BACnetVendorIdTagged, serviceNumber *BACnetContextTagUnsignedInteger, resultBlock *BACnetConstructedData, serviceRequestLength uint16) *BACnetServiceAckConfirmedPrivateTransfer {
 	_result := &BACnetServiceAckConfirmedPrivateTransfer{
 		VendorId:         vendorId,
 		ServiceNumber:    serviceNumber,
@@ -167,11 +167,11 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 		return nil, pullErr
 	}
-	_vendorId, _vendorIdErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
-	vendorId := CastBACnetContextTagUnsignedInteger(_vendorId)
+	vendorId := CastBACnetVendorIdTagged(_vendorId)
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -216,7 +216,7 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckConfirmedPrivateTransfer{
-		VendorId:         CastBACnetContextTagUnsignedInteger(vendorId),
+		VendorId:         CastBACnetVendorIdTagged(vendorId),
 		ServiceNumber:    CastBACnetContextTagUnsignedInteger(serviceNumber),
 		ResultBlock:      CastBACnetConstructedData(resultBlock),
 		BACnetServiceAck: &BACnetServiceAck{},
