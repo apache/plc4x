@@ -178,7 +178,7 @@
               <protocolName>ab-eth</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
            <execution>
@@ -191,7 +191,7 @@
               <protocolName>ads</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -204,7 +204,7 @@
               <protocolName>bacnetip</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -217,7 +217,7 @@
               <protocolName>c-bus</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -230,7 +230,7 @@
               <protocolName>df1</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -243,7 +243,7 @@
               <protocolName>eip</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -256,7 +256,7 @@
               <protocolName>firmata</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -269,7 +269,7 @@
               <protocolName>knxnetip</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -282,7 +282,7 @@
               <protocolName>modbus</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -295,7 +295,7 @@
               <protocolName>s7</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
           <execution>
@@ -308,7 +308,7 @@
               <protocolName>simulated</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/internal</outputDir>
+              <outputDir>${project.basedir}/protocols</outputDir>
             </configuration>
           </execution>
         </executions>
@@ -378,7 +378,7 @@
                 <flag>Apache Software Foundation (ASF)</flag>
               </buildFlags>
               <packages>
-                <package>internal/plc4go/modbus/fieldtype_string.go</package>
+                <package>internal/modbus/fieldtype_string.go</package>
               </packages>
             </configuration>
           </execution>
@@ -395,7 +395,7 @@
                 <flag>Apache Software Foundation (ASF)</flag>
               </buildFlags>
               <packages>
-                <package>internal/plc4go/ads/fieldtype_string.go</package>
+                <package>internal/ads/fieldtype_string.go</package>
               </packages>
             </configuration>
           </execution>
@@ -412,7 +412,7 @@
                 <flag>Apache Software Foundation (ASF)</flag>
               </buildFlags>
               <packages>
-                <package>internal/plc4go/s7/fieldtype_string.go</package>
+                <package>internal/s7/fieldtype_string.go</package>
               </packages>
             </configuration>
           </execution>
@@ -429,7 +429,7 @@
                 <flag>Apache Software Foundation (ASF)</flag>
               </buildFlags>
               <packages>
-                <package>internal/plc4go/spi/testutils/steptype_string.go</package>
+                <package>internal/spi/testutils/steptype_string.go</package>
               </packages>
             </configuration>
           </execution>

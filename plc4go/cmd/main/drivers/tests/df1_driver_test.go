@@ -21,9 +21,9 @@ package tests
 
 import (
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/ads"
-	df1IO "github.com/apache/plc4x/plc4go/internal/plc4go/df1/readwrite"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/internal/ads"
+	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
+	df1IO "github.com/apache/plc4x/plc4go/protocols/df1/readwrite"
 	"testing"
 )
 

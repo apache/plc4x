@@ -21,8 +21,8 @@ package cache
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	_default "github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/internal/spi"
+	_default "github.com/apache/plc4x/plc4go/internal/spi/default"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"

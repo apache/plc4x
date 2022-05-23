@@ -21,11 +21,11 @@ package tests
 
 import (
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
-	modbusIO "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
-	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/internal/modbus"
+	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
+	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	modbusIO "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite"
+	modbusModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"testing"
 )
 

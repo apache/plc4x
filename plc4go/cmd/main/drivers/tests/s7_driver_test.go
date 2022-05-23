@@ -21,11 +21,11 @@ package tests
 
 import (
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/s7"
-	s7IO "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite"
-	s7Model "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/internal/s7"
+	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
+	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	s7IO "github.com/apache/plc4x/plc4go/protocols/s7/readwrite"
+	s7Model "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"testing"
 )
 

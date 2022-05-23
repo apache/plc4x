@@ -21,11 +21,11 @@ package tests
 
 import (
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/eip"
-	eipIO "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite"
-	eipModel "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/internal/eip"
+	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
+	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	eipIO "github.com/apache/plc4x/plc4go/protocols/eip/readwrite"
+	eipModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"testing"
 )
 

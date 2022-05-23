@@ -48,8 +48,8 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/X
 package ${outputFlavor?replace("-","")}
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/${helper.getSanitizedProtocolName()}/${outputFlavor?replace("-","")}/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/protocols/${helper.getSanitizedProtocolName()}/${outputFlavor?replace("-","")}/model"
+	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
     "strings"
     "strconv"

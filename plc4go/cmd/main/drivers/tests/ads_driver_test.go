@@ -21,11 +21,11 @@ package tests
 
 import (
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/ads"
-	adsIO "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
-	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/internal/ads"
+	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
+	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	adsIO "github.com/apache/plc4x/plc4go/protocols/ads/readwrite"
+	adsModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"testing"
 )
 

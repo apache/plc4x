@@ -20,9 +20,9 @@
 package tests
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/bacnetip"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/pcap"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/internal/spi"
+	"github.com/apache/plc4x/plc4go/internal/spi/transports/pcap"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/config"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/logging"

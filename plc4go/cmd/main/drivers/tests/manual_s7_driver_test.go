@@ -21,8 +21,8 @@ package tests
 
 import (
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/s7"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/internal/s7"
+	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 	"testing"

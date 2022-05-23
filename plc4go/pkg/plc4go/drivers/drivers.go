@@ -20,11 +20,11 @@
 package drivers
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/ads"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/eip"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/s7"
+	"github.com/apache/plc4x/plc4go/internal/ads"
+	"github.com/apache/plc4x/plc4go/internal/eip"
+	"github.com/apache/plc4x/plc4go/internal/knxnetip"
+	modbus2 "github.com/apache/plc4x/plc4go/internal/modbus"
+	"github.com/apache/plc4x/plc4go/internal/s7"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 )
@@ -45,18 +45,18 @@ func RegisterKnxDriver(driverManager plc4go.PlcDriverManager) {
 }
 
 func RegisterModbusTcpDriver(driverManager plc4go.PlcDriverManager) {
-	driverManager.RegisterDriver(modbus.NewModbusTcpDriver())
+	driverManager.RegisterDriver(modbus2.NewModbusTcpDriver())
 	transports.RegisterTcpTransport(driverManager)
 }
 
 func RegisterModbusRtuDriver(driverManager plc4go.PlcDriverManager) {
-	driverManager.RegisterDriver(modbus.NewModbusRtuDriver())
+	driverManager.RegisterDriver(modbus2.NewModbusRtuDriver())
 	transports.RegisterSerialTransport(driverManager)
 	transports.RegisterTcpTransport(driverManager)
 }
 
 func RegisterModbusAsciiDriver(driverManager plc4go.PlcDriverManager) {
-	driverManager.RegisterDriver(modbus.NewModbusAsciiDriver())
+	driverManager.RegisterDriver(modbus2.NewModbusAsciiDriver())
 	transports.RegisterSerialTransport(driverManager)
 	transports.RegisterTcpTransport(driverManager)
 }

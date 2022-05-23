@@ -20,10 +20,10 @@
 package transports
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/serial"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/tcp"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
+	"github.com/apache/plc4x/plc4go/internal/spi"
+	"github.com/apache/plc4x/plc4go/internal/spi/transports/serial"
+	"github.com/apache/plc4x/plc4go/internal/spi/transports/tcp"
+	"github.com/apache/plc4x/plc4go/internal/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 )
 

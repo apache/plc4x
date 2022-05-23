@@ -53,7 +53,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String fileName(String protocolName, String languageName, String languageFlavorName) {
-        return "plc4go." + String.join("", protocolName.split("\\-")) + "." +
+        return String.join("", protocolName.split("\\-")) + "." +
             String.join("", languageFlavorName.split("\\-"));
     }
 

@@ -22,8 +22,8 @@ package drivers
 import (
 	"encoding/hex"
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"testing"
 )
 

@@ -21,9 +21,9 @@ package tests
 
 import (
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	firmataIO "github.com/apache/plc4x/plc4go/internal/plc4go/firmata/readwrite"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/internal/knxnetip"
+	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
+	firmataIO "github.com/apache/plc4x/plc4go/protocols/firmata/readwrite"
 	"testing"
 )
 

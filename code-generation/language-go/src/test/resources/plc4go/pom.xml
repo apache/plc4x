@@ -71,7 +71,7 @@
             <resources>
               <resource>
                 <targetPath>.</targetPath>
-                <directory>../../../../../plc4go/internal/plc4go/spi</directory>
+                <directory>../../../../../internal/spi</directory>
                 <excludes>
                   <exclude>testutils/**</exclude>
                 </excludes>
