@@ -58,6 +58,10 @@ func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template 
 	}
 
 	switch template.(type) {
+	case ErrorClass:
+		return ErrorClass(rawValue), nil
+	case ErrorCode:
+		return ErrorCode(rawValue), nil
 	case BACnetAccessAuthenticationFactorDisable:
 		return BACnetAccessAuthenticationFactorDisable(rawValue), nil
 	case BACnetAccessCredentialDisable:
