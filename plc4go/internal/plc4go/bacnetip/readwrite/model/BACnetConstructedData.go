@@ -182,6 +182,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataMemberOfParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_RELIABILITY: // BACnetConstructedDataReliability
 		_child, typeSwitchError = BACnetConstructedDataReliabilityParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SUBORDINATE_LIST: // BACnetConstructedDataSubordinateList
+		_child, typeSwitchError = BACnetConstructedDataSubordinateListParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ZONE_MEMBERS: // BACnetConstructedDataZoneMembers
 		_child, typeSwitchError = BACnetConstructedDataZoneMembersParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true: // BACnetConstructedDataUnspecified

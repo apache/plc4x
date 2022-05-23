@@ -266,7 +266,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 		if pullErr := readBuffer.PullContext("contextTag"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, peekedTagNumber, GuessDataType(objectType, propertyIdentifierArgument))
+		_val, _err := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_UNKNOWN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

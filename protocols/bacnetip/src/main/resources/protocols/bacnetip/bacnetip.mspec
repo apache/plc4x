@@ -2361,7 +2361,12 @@
         //[*, 'STRIKE_COUNT'                            BACnetConstructedDataStrikeCount [validation    '1 == 2'    "TODO: implement me STRIKE_COUNT BACnetConstructedDataStrikeCount"]]
         //[*, 'STRUCTURED_OBJECT_LIST'                  BACnetConstructedDataStructuredObjectList [validation    '1 == 2'    "TODO: implement me STRUCTURED_OBJECT_LIST BACnetConstructedDataStructuredObjectList"]]
         //[*, 'SUBORDINATE_ANNOTATIONS'                 BACnetConstructedDataSubordinateAnnotations [validation    '1 == 2'    "TODO: implement me SUBORDINATE_ANNOTATIONS BACnetConstructedDataSubordinateAnnotations"]]
-        //[*, 'SUBORDINATE_LIST'                        BACnetConstructedDataSubordinateList [validation    '1 == 2'    "TODO: implement me SUBORDINATE_LIST BACnetConstructedDataSubordinateList"]]
+        [*, 'SUBORDINATE_LIST'                        BACnetConstructedDataSubordinateList
+            [array  BACnetDeviceObjectReference
+                        subordinateList
+                                terminated
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         //[*, 'SUBORDINATE_NODE_TYPES'                  BACnetConstructedDataSubordinateNodeTypes [validation    '1 == 2'    "TODO: implement me SUBORDINATE_NODE_TYPES BACnetConstructedDataSubordinateNodeTypes"]]
         //[*, 'SUBORDINATE_RELATIONSHIPS'               BACnetConstructedDataSubordinateRelationships [validation    '1 == 2'    "TODO: implement me SUBORDINATE_RELATIONSHIPS BACnetConstructedDataSubordinateRelationships"]]
         //[*, 'SUBORDINATE_TAGS'                        BACnetConstructedDataSubordinateTags [validation    '1 == 2'    "TODO: implement me SUBORDINATE_TAGS BACnetConstructedDataSubordinateTags"]]
@@ -2464,8 +2469,7 @@
                 "unexpected closing tag"                                                                        ]
     [optional   BACnetApplicationTag
                             applicationTag      'isApplicationTag'                                              ]
-    [optional   BACnetContextTag('peekedTagNumber',
-                                 'STATIC_CALL("BACnetDataType.UNKNOWN", objectType, propertyIdentifierArgument)')
+    [optional   BACnetContextTag('peekedTagNumber', 'BACnetDataType.UNKNOWN')
                             contextTag          'isContextTag'                                                  ]
     [optional   BACnetConstructedData('peekedTagNumber', 'objectType', 'propertyIdentifierArgument')
                             constructedData     'isConstructedData'                                             ]
