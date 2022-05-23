@@ -37,8 +37,6 @@ type IBACnetApplicationTagOctetString interface {
 	IBACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() *BACnetTagPayloadOctetString
-	// GetValue returns Value (virtual field)
-	GetValue() string
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -72,19 +70,6 @@ func (m *BACnetApplicationTagOctetString) GetParent() *BACnetApplicationTag {
 
 func (m *BACnetApplicationTagOctetString) GetPayload() *BACnetTagPayloadOctetString {
 	return m.Payload
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *BACnetApplicationTagOctetString) GetValue() string {
-	return string(m.GetPayload().GetValue())
 }
 
 ///////////////////////
@@ -132,8 +117,6 @@ func (m *BACnetApplicationTagOctetString) GetLengthInBitsConditional(lastItem bo
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits()
 
-	// A virtual field doesn't have any in- or output.
-
 	return lengthInBits
 }
 
@@ -162,11 +145,6 @@ func BACnetApplicationTagOctetStringParse(readBuffer utils.ReadBuffer, header *B
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
 		return nil, closeErr
 	}
-
-	// Virtual field
-	_value := payload.GetValue()
-	value := string(_value)
-	_ = value
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagOctetString"); closeErr != nil {
 		return nil, closeErr
@@ -199,10 +177,6 @@ func (m *BACnetApplicationTagOctetString) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
-		}
-		// Virtual field
-		if _valueErr := writeBuffer.WriteVirtual("value", m.GetValue()); _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetApplicationTagOctetString"); popErr != nil {

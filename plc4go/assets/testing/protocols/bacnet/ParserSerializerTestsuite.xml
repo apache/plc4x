@@ -128,13 +128,16 @@
                                   <extLength dataType="uint" bitLength="8">8</extLength>
                                 </BACnetTagHeader>
                               </header>
-                              <BACnetContextTagOctetString>
+                              <BACnetContextTagCharacterString>
                                 <payload>
-                                  <BACnetTagPayloadOctetString>
-                                    <value dataType="string" bitLength="64" encoding="ASCII">SYNERGY</value>
-                                  </BACnetTagPayloadOctetString>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="56" encoding="UTF-8">SYNERGY</value>
+                                  </BACnetTagPayloadCharacterString>
                                 </payload>
-                              </BACnetContextTagOctetString>
+                              </BACnetContextTagCharacterString>
                             </BACnetContextTag>
                           </objectName>
                         </BACnetUnconfirmedServiceRequestWhoHas>
@@ -881,8 +884,8 @@
                                     <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
                                     <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
                                   </BACnetTagPayloadObjectIdentifier>
-                                 </payload>
-                               </BACnetApplicationTagObjectIdentifier>
+                                </payload>
+                              </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
                           <openingTag>
@@ -934,33 +937,7 @@
                               <BACnetApplicationTagOctetString>
                                 <payload>
                                   <BACnetTagPayloadOctetString>
-                                    <value dataType="string" bitLength="3584" encoding="ASCII">#!/bin/sh
-# Unit tests builder / runner for this project
-
-rm test.log
-touch test.log
-
-make -f abort.mak clean
-make -f abort.mak
-./abort >> test.log
-make -f abort.mak clean
-
-make -f address.mak clean
-make -f address.mak
-./address >> test.log
-make -f address.mak clean
-
-make -f cov.mak clean
-make -f cov.mak
-./cov >> test.log
-make -f cov.mak clean
-
-make -f dcc.mak clean
-make -f dcc.mak
-./dcc >> test.log
-make -f dcc.mak clean
-
-make -f demo/object/ai</value>
+                                    <octets dataType="byte" bitLength="3584">0x23212f62696e2f73680a2320556e6974207465737473206275696c646572202f2072756e6e657220666f7220746869732070726f6a6563740a0a726d20746573742e6c6f670a746f75636820746573742e6c6f670a0a6d616b65202d662061626f72742e6d616b20636c65616e0a6d616b65202d662061626f72742e6d616b0a2e2f61626f7274203e3e20746573742e6c6f670a6d616b65202d662061626f72742e6d616b20636c65616e0a0a6d616b65202d6620616464726573732e6d616b20636c65616e0a6d616b65202d6620616464726573732e6d616b0a2e2f61646472657373203e3e20746573742e6c6f670a6d616b65202d6620616464726573732e6d616b20636c65616e0a0a6d616b65202d6620636f762e6d616b20636c65616e0a6d616b65202d6620636f762e6d616b0a2e2f636f76203e3e20746573742e6c6f670a6d616b65202d6620636f762e6d616b20636c65616e0a0a6d616b65202d66206463632e6d616b20636c65616e0a6d616b65202d66206463632e6d616b0a2e2f646363203e3e20746573742e6c6f670a6d616b65202d66206463632e6d616b20636c65616e0a0a6d616b65202d662064656d6f2f6f626a6563742f6169</octets>
                                   </BACnetTagPayloadOctetString>
                                 </payload>
                               </BACnetApplicationTagOctetString>
@@ -1199,27 +1176,7 @@ make -f demo/object/ai</value>
                               <BACnetApplicationTagOctetString>
                                 <payload>
                                   <BACnetTagPayloadOctetString>
-                                    <value dataType="string" bitLength="3584" encoding="ASCII">.mak clean
-make -f demo/object/ai.mak
-./analog_input >> test.log
-make -f demo/object/ai.mak clean
-
-make -f demo/object/ao.mak clean
-make -f demo/object/ao.mak
-./analog_output >> test.log
-make -f demo/object/ao.mak clean
-
-make -f demo/object/av.mak clean
-make -f demo/object/av.mak
-./analog_value >> test.log
-make -f demo/object/av.mak clean
-
-make -f arf.mak clean
-make -f arf.mak
-./atomicreadfile >> test.log
-make -f arf.mak clean
-
-make -f awf.mak</value>
+                                    <octets dataType="byte" bitLength="3584">0x2e6d616b20636c65616e0a6d616b65202d662064656d6f2f6f626a6563742f61692e6d616b0a2e2f616e616c6f675f696e707574203e3e20746573742e6c6f670a6d616b65202d662064656d6f2f6f626a6563742f61692e6d616b20636c65616e0a0a6d616b65202d662064656d6f2f6f626a6563742f616f2e6d616b20636c65616e0a6d616b65202d662064656d6f2f6f626a6563742f616f2e6d616b0a2e2f616e616c6f675f6f7574707574203e3e20746573742e6c6f670a6d616b65202d662064656d6f2f6f626a6563742f616f2e6d616b20636c65616e0a0a6d616b65202d662064656d6f2f6f626a6563742f61762e6d616b20636c65616e0a6d616b65202d662064656d6f2f6f626a6563742f61762e6d616b0a2e2f616e616c6f675f76616c7565203e3e20746573742e6c6f670a6d616b65202d662064656d6f2f6f626a6563742f61762e6d616b20636c65616e0a0a6d616b65202d66206172662e6d616b20636c65616e0a6d616b65202d66206172662e6d616b0a2e2f61746f6d69637265616466696c65203e3e20746573742e6c6f670a6d616b65202d66206172662e6d616b20636c65616e0a0a6d616b65202d66206177662e6d616b20</octets>
                                   </BACnetTagPayloadOctetString>
                                 </payload>
                               </BACnetApplicationTagOctetString>
@@ -1458,30 +1415,7 @@ make -f awf.mak</value>
                               <BACnetApplicationTagOctetString>
                                 <payload>
                                   <BACnetTagPayloadOctetString>
-                                    <value dataType="string" bitLength="3584" encoding="ASCII">clean
-make -f awf.mak
-./atomicwritefile >> test.log
-make -f awf.mak clean
-
-make -f bacapp.mak clean
-make -f bacapp.mak
-./bacapp >> test.log
-make -f bacapp.mak clean
-
-make -f bacdcode.mak clean
-make -f bacdcode.mak
-./bacdcode >> test.log
-make -f bacdcode.mak clean
-
-make -f bacerror.mak clean
-make -f bacerror.mak
-./bacerror >> test.log
-make -f bacerror.mak clean
-
-make -f bacstr.mak clean
-make -f bacstr.mak
-./bacstr >> test.log
-make -f bacstr.mak</value>
+                                    <octets dataType="byte" bitLength="3584">0x636c65616e0a6d616b65202d66206177662e6d616b0a2e2f61746f6d6963777269746566696c65203e3e20746573742e6c6f670a6d616b65202d66206177662e6d616b20636c65616e0a0a6d616b65202d66206261636170702e6d616b20636c65616e0a6d616b65202d66206261636170702e6d616b0a2e2f626163617070203e3e20746573742e6c6f670a6d616b65202d66206261636170702e6d616b20636c65616e0a0a6d616b65202d662062616364636f64652e6d616b20636c65616e0a6d616b65202d662062616364636f64652e6d616b0a2e2f62616364636f6465203e3e20746573742e6c6f670a6d616b65202d662062616364636f64652e6d616b20636c65616e0a0a6d616b65202d66206261636572726f722e6d616b20636c65616e0a6d616b65202d66206261636572726f722e6d616b0a2e2f6261636572726f72203e3e20746573742e6c6f670a6d616b65202d66206261636572726f722e6d616b20636c65616e0a0a6d616b65202d66206261637374722e6d616b20636c65616e0a6d616b65202d66206261637374722e6d616b0a2e2f626163737472203e3e20746573742e6c6f670a6d616b65202d66206261637374722e6d616b20</octets>
                                   </BACnetTagPayloadOctetString>
                                 </payload>
                               </BACnetApplicationTagOctetString>
@@ -1720,27 +1654,7 @@ make -f bacstr.mak</value>
                               <BACnetApplicationTagOctetString>
                                 <payload>
                                   <BACnetTagPayloadOctetString>
-                                    <value dataType="string" bitLength="3584" encoding="ASCII">clean
-
-make -f demo/object/bi.mak clean
-make -f demo/object/bi.mak
-./binary_input >> test.log
-make -f demo/object/bi.mak clean
-
-make -f demo/object/bo.mak clean
-make -f demo/object/bo.mak
-./binary_output >> test.log
-make -f demo/object/bo.mak clean
-
-make -f demo/object/bv.mak clean
-make -f demo/object/bv.mak
-./binary_value >> test.log
-make -f demo/object/bv.mak clean
-
-make -f crc.mak clean
-make -f crc.mak
-./crc >> test.log
-make -f crc.mak clean</value>
+                                    <octets dataType="byte" bitLength="3584">0x636c65616e0a0a6d616b65202d662064656d6f2f6f626a6563742f62692e6d616b20636c65616e0a6d616b65202d662064656d6f2f6f626a6563742f62692e6d616b0a2e2f62696e6172795f696e707574203e3e20746573742e6c6f670a6d616b65202d662064656d6f2f6f626a6563742f62692e6d616b20636c65616e0a0a6d616b65202d662064656d6f2f6f626a6563742f626f2e6d616b20636c65616e0a6d616b65202d662064656d6f2f6f626a6563742f626f2e6d616b0a2e2f62696e6172795f6f7574707574203e3e20746573742e6c6f670a6d616b65202d662064656d6f2f6f626a6563742f626f2e6d616b20636c65616e0a0a6d616b65202d662064656d6f2f6f626a6563742f62762e6d616b20636c65616e0a6d616b65202d662064656d6f2f6f626a6563742f62762e6d616b0a2e2f62696e6172795f76616c7565203e3e20746573742e6c6f670a6d616b65202d662064656d6f2f6f626a6563742f62762e6d616b20636c65616e0a0a6d616b65202d66206372632e6d616b20636c65616e0a6d616b65202d66206372632e6d616b0a2e2f637263203e3e20746573742e6c6f670a6d616b65202d66206372632e6d616b20636c65616e</octets>
                                   </BACnetTagPayloadOctetString>
                                 </payload>
                               </BACnetApplicationTagOctetString>
@@ -1979,28 +1893,7 @@ make -f crc.mak clean</value>
                               <BACnetApplicationTagOctetString>
                                 <payload>
                                   <BACnetTagPayloadOctetString>
-                                    <value dataType="string" bitLength="3584" encoding="ASCII">make -f demo/object/device.mak clean
-make -f demo/object/device.mak
-./device >> test.log
-make -f demo/object/device.mak clean
-
-make -f iam.mak clean
-make -f iam.mak
-./iam >> test.log
-make -f iam.mak clean
-
-make -f ihave.mak clean
-make -f ihave.mak
-./ihave >> test.log
-make -f ihave.mak clean
-
-make -f indtext.mak clean
-make -f indtext.mak
-./indtext >> test.log
-make -f indtext.mak clean
-
-make -f demo/object/lsp.mak clean
-make -f demo/object/lsp.</value>
+                                    <octets dataType="byte" bitLength="3584">0x0a0a6d616b65202d662064656d6f2f6f626a6563742f6465766963652e6d616b20636c65616e0a6d616b65202d662064656d6f2f6f626a6563742f6465766963652e6d616b0a2e2f646576696365203e3e20746573742e6c6f670a6d616b65202d662064656d6f2f6f626a6563742f6465766963652e6d616b20636c65616e0a0a6d616b65202d662069616d2e6d616b20636c65616e0a6d616b65202d662069616d2e6d616b0a2e2f69616d203e3e20746573742e6c6f670a6d616b65202d662069616d2e6d616b20636c65616e0a0a6d616b65202d662069686176652e6d616b20636c65616e0a6d616b65202d662069686176652e6d616b0a2e2f6968617665203e3e20746573742e6c6f670a6d616b65202d662069686176652e6d616b20636c65616e0a0a6d616b65202d6620696e64746578742e6d616b20636c65616e0a6d616b65202d6620696e64746578742e6d616b0a2e2f696e6474657874203e3e20746573742e6c6f670a6d616b65202d6620696e64746578742e6d616b20636c65616e0a0a6d616b65202d662064656d6f2f6f626a6563742f6c73702e6d616b20636c65616e0a6d616b65202d662064656d6f2f6f626a6563742f6c73702e</octets>
                                   </BACnetTagPayloadOctetString>
                                 </payload>
                               </BACnetApplicationTagOctetString>
@@ -2239,31 +2132,7 @@ make -f demo/object/lsp.</value>
                               <BACnetApplicationTagOctetString>
                                 <payload>
                                   <BACnetTagPayloadOctetString>
-                                    <value dataType="string" bitLength="3584" encoding="ASCII">mak
-./lsp >> test.log
-make -f demo/object/lsp.mak clean
-
-make -f demo/object/mso.mak clean
-make -f demo/object/mso.mak
-./multistate_output >> test.log
-make -f demo/object/mso.mak clean
-
-make -f mstp.mak clean
-make -f mstp.mak
-./mstp >> test.log
-make -f mstp.mak clean
-
-make -f npdu.mak clean
-make -f npdu.mak
-./npdu >> test.log
-make -f npdu.mak clean
-
-make -f rd.mak clean
-make -f rd.mak
-./reinitialize_device >> test.log
-make -f rd.mak clean
-
-make</value>
+                                    <octets dataType="byte" bitLength="3584">0x6d616b0a2e2f6c7370203e3e20746573742e6c6f670a6d616b65202d662064656d6f2f6f626a6563742f6c73702e6d616b20636c65616e0a0a6d616b65202d662064656d6f2f6f626a6563742f6d736f2e6d616b20636c65616e0a6d616b65202d662064656d6f2f6f626a6563742f6d736f2e6d616b0a2e2f6d756c746973746174655f6f7574707574203e3e20746573742e6c6f670a6d616b65202d662064656d6f2f6f626a6563742f6d736f2e6d616b20636c65616e0a0a6d616b65202d66206d7374702e6d616b20636c65616e0a6d616b65202d66206d7374702e6d616b0a2e2f6d737470203e3e20746573742e6c6f670a6d616b65202d66206d7374702e6d616b20636c65616e0a0a6d616b65202d66206e7064752e6d616b20636c65616e0a6d616b65202d66206e7064752e6d616b0a2e2f6e706475203e3e20746573742e6c6f670a6d616b65202d66206e7064752e6d616b20636c65616e0a0a6d616b65202d662072642e6d616b20636c65616e0a6d616b65202d662072642e6d616b0a2e2f7265696e697469616c697a655f646576696365203e3e20746573742e6c6f670a6d616b65202d662072642e6d616b20636c65616e0a0a6d616b65</octets>
                                   </BACnetTagPayloadOctetString>
                                 </payload>
                               </BACnetApplicationTagOctetString>
@@ -2502,32 +2371,7 @@ make</value>
                               <BACnetApplicationTagOctetString>
                                 <payload>
                                   <BACnetTagPayloadOctetString>
-                                    <value dataType="string" bitLength="3584" encoding="ASCII">-f reject.mak clean
-make -f reject.mak
-./reject >> test.log
-make -f reject.mak clean
-
-make -f ringbuf.mak clean
-make -f ringbuf.mak
-./ringbuf >> test.log
-make -f ringbuf.mak clean
-
-make -f rp.mak clean
-make -f rp.mak
-./readproperty >> test.log
-make -f rp.mak clean
-
-make -f rpm.mak clean
-make -f rpm.mak
-./rpm >> test.log
-make -f rpm.mak clean
-
-make -f sbuf.mak clean
-make -f sbuf.mak
-./sbuf >> test.log
-make -f sbuf.mak clean
-
-make -f tsm.mak cle</value>
+                                    <octets dataType="byte" bitLength="3584">0x202d662072656a6563742e6d616b20636c65616e0a6d616b65202d662072656a6563742e6d616b0a2e2f72656a656374203e3e20746573742e6c6f670a6d616b65202d662072656a6563742e6d616b20636c65616e0a0a6d616b65202d662072696e676275662e6d616b20636c65616e0a6d616b65202d662072696e676275662e6d616b0a2e2f72696e67627566203e3e20746573742e6c6f670a6d616b65202d662072696e676275662e6d616b20636c65616e0a0a6d616b65202d662072702e6d616b20636c65616e0a6d616b65202d662072702e6d616b0a2e2f7265616470726f7065727479203e3e20746573742e6c6f670a6d616b65202d662072702e6d616b20636c65616e0a0a6d616b65202d662072706d2e6d616b20636c65616e0a6d616b65202d662072706d2e6d616b0a2e2f72706d203e3e20746573742e6c6f670a6d616b65202d662072706d2e6d616b20636c65616e0a0a6d616b65202d6620736275662e6d616b20636c65616e0a6d616b65202d6620736275662e6d616b0a2e2f73627566203e3e20746573742e6c6f670a6d616b65202d6620736275662e6d616b20636c65616e0a0a6d616b65202d662074736d2e6d616b20636c65</octets>
                                   </BACnetTagPayloadOctetString>
                                 </payload>
                               </BACnetApplicationTagOctetString>
@@ -2766,25 +2610,7 @@ make -f tsm.mak cle</value>
                               <BACnetApplicationTagOctetString>
                                 <payload>
                                   <BACnetTagPayloadOctetString>
-                                    <value dataType="string" bitLength="2584" encoding="ASCII">an
-make -f tsm.mak
-./tsm >> test.log
-make -f tsm.mak clean
-
-make -f whois.mak clean
-make -f whois.mak
-./whois >> test.log
-make -f whois.mak clean
-
-make -f whohas.mak clean
-make -f whohas.mak
-./whohas >> test.log
-make -f whohas.mak clean
-
-make -f wp.mak clean
-make -f wp.mak
-./writeproperty >> test.log
-make -f wp.mak clean</value>
+                                    <octets dataType="byte" bitLength="2584">0x616e0a6d616b65202d662074736d2e6d616b0a2e2f74736d203e3e20746573742e6c6f670a6d616b65202d662074736d2e6d616b20636c65616e0a0a6d616b65202d662077686f69732e6d616b20636c65616e0a6d616b65202d662077686f69732e6d616b0a2e2f77686f6973203e3e20746573742e6c6f670a6d616b65202d662077686f69732e6d616b20636c65616e0a0a6d616b65202d662077686f6861732e6d616b20636c65616e0a6d616b65202d662077686f6861732e6d616b0a2e2f77686f686173203e3e20746573742e6c6f670a6d616b65202d662077686f6861732e6d616b20636c65616e0a0a6d616b65202d662077702e6d616b20636c65616e0a6d616b65202d662077702e6d616b0a2e2f777269746570726f7065727479203e3e20746573742e6c6f670a6d616b65202d662077702e6d616b20636c65616e0a</octets>
                                   </BACnetTagPayloadOctetString>
                                 </payload>
                               </BACnetApplicationTagOctetString>
@@ -8577,31 +8403,7 @@ make -f wp.mak clean</value>
                                     <BACnetApplicationTagOctetString>
                                       <payload>
                                         <BACnetTagPayloadOctetString>
-                                          <value dataType="string" bitLength="3520" encoding="ASCII">Test "BACnet Abort":
-	Passed: 260107
-	Failed: 0
-Test "BACnet Address":
-	Passed: 2805
-	Failed: 0
-Test "BACnet DeviceCommunicationControl":
-	Passed: 12
-	Failed: 0
-Test "BACnet Analog Input":
-	Passed: 4
-	Failed: 0
-Test "BACnet Analog Output":
-	Passed: 4
-	Failed: 0
-Test "BACnet Analog Value":
-	Passed: 4
-	Failed: 0
-Test "BACnet AtomicReadFile":
-	Passed: 29
-	Failed: 0
-Test "BACnet AtomicWriteFile":
-	Passed: 25
-	Failed: 0
-Test "BACnet Applicat</value>
+                                          <octets dataType="byte" bitLength="3520">0x5465737420224241436e65742041626f7274223a0a095061737365643a203236303130370a094661696c65643a20300a5465737420224241436e65742041646472657373223a0a095061737365643a20323830350a094661696c65643a20300a5465737420224241436e657420446576696365436f6d6d756e69636174696f6e436f6e74726f6c223a0a095061737365643a2031320a094661696c65643a20300a5465737420224241436e657420416e616c6f6720496e707574223a0a095061737365643a20340a094661696c65643a20300a5465737420224241436e657420416e616c6f67204f7574707574223a0a095061737365643a20340a094661696c65643a20300a5465737420224241436e657420416e616c6f672056616c7565223a0a095061737365643a20340a094661696c65643a20300a5465737420224241436e65742041746f6d69635265616446696c65223a0a095061737365643a2032390a094661696c65643a20300a5465737420224241436e65742041746f6d6963577269746546696c65223a0a095061737365643a2032350a094661696c65643a20300a5465737420224241436e6574204170706c69636174</octets>
                                         </BACnetTagPayloadOctetString>
                                       </payload>
                                     </BACnetApplicationTagOctetString>
@@ -8917,36 +8719,7 @@ Test "BACnet Applicat</value>
                                     <BACnetApplicationTagOctetString>
                                       <payload>
                                         <BACnetTagPayloadOctetString>
-                                          <value dataType="string" bitLength="3520" encoding="ASCII">ion Data":
-	Passed: 66
-	Failed: 0
-Test "BACDCode":
-	Passed: 12617539
-	Failed: 0
-Test "BACnet Error":
-	Passed: 64275
-	Failed: 0
-Test "BACnet Strings":
-	Passed: 1153
-	Failed: 0
-Test "BACnet Binary Input":
-	Passed: 4
-	Failed: 0
-Test "BACnet Binary Output":
-	Passed: 4
-	Failed: 0
-Test "BACnet Binary_Value":
-	Passed: 4
-	Failed: 0
-Test "crc":
-	Passed: 13
-	Failed: 0
-Test "BACnet Device":
-	Passed: 12
-	Failed: 0
-Test "BACnet I-Am":
-	Passed: 6
-	Fa</value>
+                                          <octets dataType="byte" bitLength="3520">0x696f6e2044617461223a0a095061737365643a2036360a094661696c65643a20300a54657374202242414344436f6465223a0a095061737365643a2031323631373533390a094661696c65643a20300a5465737420224241436e6574204572726f72223a0a095061737365643a2036343237350a094661696c65643a20300a5465737420224241436e657420537472696e6773223a0a095061737365643a20313135330a094661696c65643a20300a5465737420224241436e65742042696e61727920496e707574223a0a095061737365643a20340a094661696c65643a20300a5465737420224241436e65742042696e617279204f7574707574223a0a095061737365643a20340a094661696c65643a20300a5465737420224241436e65742042696e6172795f56616c7565223a0a095061737365643a20340a094661696c65643a20300a546573742022637263223a0a095061737365643a2031330a094661696c65643a20300a5465737420224241436e657420446576696365223a0a095061737365643a2031320a094661696c65643a20300a5465737420224241436e657420492d416d223a0a095061737365643a20360a094661</octets>
                                         </BACnetTagPayloadOctetString>
                                       </payload>
                                     </BACnetApplicationTagOctetString>
@@ -9262,33 +9035,7 @@ Test "BACnet I-Am":
                                     <BACnetApplicationTagOctetString>
                                       <payload>
                                         <BACnetTagPayloadOctetString>
-                                          <value dataType="string" bitLength="3520" encoding="ASCII">iled: 0
-Test "BACnet I-Have":
-	Passed: 3469312
-	Failed: 0
-Test "index text":
-	Passed: 25
-	Failed: 0
-Test "BACnet Life Safety Point":
-	Passed: 4
-	Failed: 0
-Test "BACnet Multi-state Output":
-	Passed: 4
-	Failed: 0
-Test "BACnet NPDU":
-	Passed: 27
-	Failed: 0
-Test "BACnet ReinitializeDevice":
-	Passed: 5
-	Failed: 0
-Test "BACnet Reject":
-	Passed: 260107
-	Failed: 0
-Test "ringbuf":
-	Passed: 769
-	Failed: 0
-Test "BACnet ReadProperty":
-	Passed: 17</value>
+                                          <octets dataType="byte" bitLength="3520">0x696c65643a20300a5465737420224241436e657420492d48617665223a0a095061737365643a20333436393331320a094661696c65643a20300a546573742022696e6465782074657874223a0a095061737365643a2032350a094661696c65643a20300a5465737420224241436e6574204c6966652053616665747920506f696e74223a0a095061737365643a20340a094661696c65643a20300a5465737420224241436e6574204d756c74692d7374617465204f7574707574223a0a095061737365643a20340a094661696c65643a20300a5465737420224241436e6574204e504455223a0a095061737365643a2032370a094661696c65643a20300a5465737420224241436e6574205265696e697469616c697a65446576696365223a0a095061737365643a20350a094661696c65643a20300a5465737420224241436e65742052656a656374223a0a095061737365643a203236303130370a094661696c65643a20300a54657374202272696e67627566223a0a095061737365643a203736390a094661696c65643a20300a5465737420224241436e6574205265616450726f7065727479223a0a095061737365643a2031370a09</octets>
                                         </BACnetTagPayloadOctetString>
                                       </payload>
                                     </BACnetApplicationTagOctetString>
@@ -9604,22 +9351,7 @@ Test "BACnet ReadProperty":
                                     <BACnetApplicationTagOctetString>
                                       <payload>
                                         <BACnetTagPayloadOctetString>
-                                          <value dataType="string" bitLength="2112" encoding="ASCII">Failed: 0
-Test "BACnet ReadPropertyMultiple":
-	Passed: 73
-	Failed: 0
-Test "static buffer":
-	Passed: 22
-	Failed: 0
-Test "BACnet Who-Is":
-	Passed: 104
-	Failed: 0
-Test "BACnet Who-Has":
-	Passed: 3942557
-	Failed: 0
-Test "BACnet WriteProperty":
-	Passed: 183
-	Failed: 0</value>
+                                          <octets dataType="byte" bitLength="2112">0x4661696c65643a20300a5465737420224241436e6574205265616450726f70657274794d756c7469706c65223a0a095061737365643a2037330a094661696c65643a20300a54657374202273746174696320627566666572223a0a095061737365643a2032320a094661696c65643a20300a5465737420224241436e65742057686f2d4973223a0a095061737365643a203130340a094661696c65643a20300a5465737420224241436e65742057686f2d486173223a0a095061737365643a20333934323535370a094661696c65643a20300a5465737420224241436e657420577269746550726f7065727479223a0a095061737365643a203138330a094661696c65643a20300a</octets>
                                         </BACnetTagPayloadOctetString>
                                       </payload>
                                     </BACnetApplicationTagOctetString>
@@ -9779,31 +9511,7 @@ Test "BACnet WriteProperty":
                               <BACnetApplicationTagOctetString>
                                 <payload>
                                   <BACnetTagPayloadOctetString>
-                                    <value dataType="string" bitLength="3520" encoding="ASCII">Test "BACnet Abort":
-	Passed: 260107
-	Failed: 0
-Test "BACnet Address":
-	Passed: 2805
-	Failed: 0
-Test "BACnet DeviceCommunicationControl":
-	Passed: 12
-	Failed: 0
-Test "BACnet Analog Input":
-	Passed: 4
-	Failed: 0
-Test "BACnet Analog Output":
-	Passed: 4
-	Failed: 0
-Test "BACnet Analog Value":
-	Passed: 4
-	Failed: 0
-Test "BACnet AtomicReadFile":
-	Passed: 29
-	Failed: 0
-Test "BACnet AtomicWriteFile":
-	Passed: 25
-	Failed: 0
-Test "BACnet Applicat</value>
+                                    <octets dataType="byte" bitLength="3520">0x5465737420224241436e65742041626f7274223a0a095061737365643a203236303130370a094661696c65643a20300a5465737420224241436e65742041646472657373223a0a095061737365643a20323830350a094661696c65643a20300a5465737420224241436e657420446576696365436f6d6d756e69636174696f6e436f6e74726f6c223a0a095061737365643a2031320a094661696c65643a20300a5465737420224241436e657420416e616c6f6720496e707574223a0a095061737365643a20340a094661696c65643a20300a5465737420224241436e657420416e616c6f67204f7574707574223a0a095061737365643a20340a094661696c65643a20300a5465737420224241436e657420416e616c6f672056616c7565223a0a095061737365643a20340a094661696c65643a20300a5465737420224241436e65742041746f6d69635265616446696c65223a0a095061737365643a2032390a094661696c65643a20300a5465737420224241436e65742041746f6d6963577269746546696c65223a0a095061737365643a2032350a094661696c65643a20300a5465737420224241436e6574204170706c69636174</octets>
                                   </BACnetTagPayloadOctetString>
                                 </payload>
                               </BACnetApplicationTagOctetString>

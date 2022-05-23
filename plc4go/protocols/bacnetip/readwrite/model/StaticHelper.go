@@ -62,6 +62,8 @@ func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template 
 		return ErrorClass(rawValue), nil
 	case ErrorCode:
 		return ErrorCode(rawValue), nil
+	case BACnetAbortReason:
+		return BACnetAbortReason(rawValue), nil
 	case BACnetAccessAuthenticationFactorDisable:
 		return BACnetAccessAuthenticationFactorDisable(rawValue), nil
 	case BACnetAccessCredentialDisable:
@@ -134,6 +136,8 @@ func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template 
 		return BACnetRelationship(rawValue), nil
 	case BACnetReliability:
 		return BACnetReliability(rawValue), nil
+	case BACnetRejectReason:
+		return BACnetRejectReason(rawValue), nil
 	case BACnetRestartReason:
 		return BACnetRestartReason(rawValue), nil
 	case BACnetSilencedState:
@@ -367,6 +371,8 @@ func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value interface{}) error {
 			return nil
 		}
 		valueValue = uint32(v)
+	case BACnetAbortReason: // <<-- private enum is always defined
+		valueValue = uint32(v)
 	case BACnetAction: // <<-- private enum is always defined
 		valueValue = uint32(v)
 	case BACnetAccessPassbackMode: // <<-- private enum is always defined
@@ -414,6 +420,8 @@ func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value interface{}) error {
 	case BACnetProgramState: // <<-- private enum is always defined
 		valueValue = uint32(v)
 	case BACnetProtocolLevel: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetRejectReason: // <<-- private enum is always defined
 		valueValue = uint32(v)
 	case BACnetSecurityLevel: // <<-- private enum is always defined
 		valueValue = uint32(v)
@@ -798,12 +806,12 @@ func CreateBACnetContextTagDouble(tagNumber uint8, value float64) *BACnetContext
 	return NewBACnetContextTagDouble(NewBACnetTagPayloadDouble(value), header, tagNumber)
 }
 
-func CreateBACnetApplicationTagOctetString(value string) *BACnetApplicationTagOctetString {
+func CreateBACnetApplicationTagOctetString(value []byte) *BACnetApplicationTagOctetString {
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_OCTET_STRING), uint32(len(value)+1))
 	return NewBACnetApplicationTagOctetString(NewBACnetTagPayloadOctetString(value, uint32(len(value)+1)), header)
 }
 
-func CreateBACnetContextTagOctetString(tagNumber uint8, value string) *BACnetContextTagOctetString {
+func CreateBACnetContextTagOctetString(tagNumber uint8, value []byte) *BACnetContextTagOctetString {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, uint32(len(value)+1))
 	return NewBACnetContextTagOctetString(NewBACnetTagPayloadOctetString(value, uint32(len(value)+1)), header, tagNumber)
 }

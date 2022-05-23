@@ -3507,7 +3507,7 @@ public class RandomPackagesTest {
                             .extracting(BACnetServiceAckAtomicReadFile::getAccessMethod)
                             .asInstanceOf(InstanceOfAssertFactories.type(BACnetServiceAckAtomicReadFileStream.class))
                             .extracting(BACnetServiceAckAtomicReadFileStream::getFileData)
-                            .extracting(BACnetApplicationTagOctetString::getValue)
+                            .extracting(BACnetApplicationTagOctetString::getPayload)
                             .isNotNull();
                     })
             )

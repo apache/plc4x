@@ -778,7 +778,7 @@
             [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')           deviceInstanceRangeLowLimit                                         ]
             [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')           deviceInstanceRangeHighLimit  'deviceInstanceRangeLowLimit != null' ]
             [optional BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')  objectIdentifier                                                    ]
-            [optional BACnetContextTagOctetString('3', 'BACnetDataType.OCTET_STRING')                   objectName                    'objectIdentifier == null'            ]
+            [optional BACnetContextTagCharacterString('3', 'BACnetDataType.CHARACTER_STRING')           objectName                    'objectIdentifier == null'            ]
         ]
         ['WHO_IS' BACnetUnconfirmedServiceRequestWhoIs
             [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')   deviceInstanceRangeLowLimit                                                 ]
@@ -1665,7 +1665,6 @@
         ['0x6' BACnetApplicationTagOctetString(BACnetTagHeader header)
             [simple BACnetTagPayloadOctetString('header.actualLength')
                                 payload                                                                                 ]
-            [virtual vstring     value             'payload.value'                                                      ]
         ]
         ['0x7' BACnetApplicationTagCharacterString(BACnetTagHeader header)
             [simple BACnetTagPayloadCharacterString('header.actualLength')
@@ -1745,7 +1744,6 @@
         ['OCTET_STRING' BACnetContextTagOctetString(BACnetTagHeader header)
             [simple BACnetTagPayloadOctetString('header.actualLength')
                                 payload                                                                                 ]
-            [virtual vstring     value             'payload.value'                                                      ]
         ]
         ['CHARACTER_STRING' BACnetContextTagCharacterString(BACnetTagHeader header)
             [simple BACnetTagPayloadCharacterString('header.actualLength')
@@ -1854,9 +1852,7 @@
 ]
 
 [type BACnetTagPayloadOctetString(uint 32 actualLength)
-    // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
-    [virtual    uint     16                   actualLengthInBit 'actualLength * 8']
-    [simple     vstring 'actualLengthInBit'  value encoding='"ASCII"']
+    [array   byte    octets  length 'actualLength'              ]
 ]
 
 [type BACnetTagPayloadCharacterString(uint 32 actualLength)
