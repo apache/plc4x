@@ -20,6 +20,8 @@
 package utils
 
 import (
+	"bytes"
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 )
 
@@ -51,4 +53,9 @@ func NewWriteBufferByteBased() WriteBufferByteBased {
 // NewLittleEndianWriteBufferByteBased creates a little endian byte write read buffer
 func NewLittleEndianWriteBufferByteBased() WriteBufferByteBased {
 	return utils.NewLittleEndianWriteBufferByteBased()
+}
+
+// NewCustomWriteBufferByteBased creates a byte base write buffer with a custom underlying bytes.Buffer
+func NewCustomWriteBufferByteBased(buffer *bytes.Buffer, byteOrder binary.ByteOrder) WriteBufferByteBased {
+	return utils.NewCustomWriteBufferByteBased(buffer, byteOrder)
 }
