@@ -684,6 +684,28 @@ func CreateBACnetPropertyIdentifierTagged(tagNum uint8, propertyType uint32) *BA
 	return NewBACnetPropertyIdentifierTagged(header, propertyTypeEnum, proprietaryValue, tagNum, TagClass_CONTEXT_SPECIFIC_TAGS)
 }
 
+func CreateBACnetVendorIdApplicationTagged(vendorId uint16) *BACnetVendorIdTagged {
+	header := NewBACnetTagHeader(0x2, TagClass_APPLICATION_TAGS, uint8(requiredLength(uint(vendorId))), nil, nil, nil, nil)
+	baCnetVendorId := BACnetVendorIdByValue(vendorId)
+	unknownVendorId := uint32(0)
+	if !BACnetVendorIdKnows(vendorId) {
+		baCnetVendorId = BACnetVendorId_UNKNOWN_VENDOR
+		unknownVendorId = uint32(vendorId)
+	}
+	return NewBACnetVendorIdTagged(header, baCnetVendorId, unknownVendorId, 0x2, TagClass_APPLICATION_TAGS)
+}
+
+func CreateBACnetVendorIdContextTagged(tagNum uint8, vendorId uint16) *BACnetVendorIdTagged {
+	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(requiredLength(uint(vendorId))), nil, nil, nil, nil)
+	baCnetVendorId := BACnetVendorIdByValue(vendorId)
+	unknownVendorId := uint32(0)
+	if !BACnetVendorIdKnows(vendorId) {
+		baCnetVendorId = BACnetVendorId_UNKNOWN_VENDOR
+		unknownVendorId = uint32(vendorId)
+	}
+	return NewBACnetVendorIdTagged(header, baCnetVendorId, unknownVendorId, tagNum, TagClass_CONTEXT_SPECIFIC_TAGS)
+}
+
 func CreateBACnetApplicationTagUnsignedInteger(value uint) *BACnetApplicationTagUnsignedInteger {
 	length, payload := CreateUnsignedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_UNSIGNED_INTEGER), length)

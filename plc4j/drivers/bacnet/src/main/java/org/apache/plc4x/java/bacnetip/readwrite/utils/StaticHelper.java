@@ -427,6 +427,28 @@ public class StaticHelper {
         return new BACnetPropertyIdentifierTagged(header, propertyIdentifier, proprietaryValue, (short) tagNum, TagClass.CONTEXT_SPECIFIC_TAGS);
     }
 
+    public static BACnetVendorIdTagged createBACnetVendorIdApplicationTagged(int vendorId) {
+        BACnetVendorId baCnetVendorId = BACnetVendorId.enumForValue(vendorId);
+        int unknownVendorId = 0;
+        if (!BACnetVendorId.isDefined(vendorId)) {
+            baCnetVendorId = BACnetVendorId.UNKNOWN_VENDOR;
+            unknownVendorId = vendorId;
+        }
+        BACnetTagHeader header = new BACnetTagHeader((byte) 0x2, TagClass.APPLICATION_TAGS, (byte) requiredLength(vendorId), null, null, null, null);
+        return new BACnetVendorIdTagged(header, baCnetVendorId, unknownVendorId, (short) 0x2, TagClass.APPLICATION_TAGS);
+    }
+
+    public static BACnetVendorIdTagged createBACnetVendorIdContextTagged(byte tagNum, int vendorId) {
+        BACnetVendorId baCnetVendorId = BACnetVendorId.enumForValue(vendorId);
+        int unknownVendorId = 0;
+        if (!BACnetVendorId.isDefined(vendorId)) {
+            baCnetVendorId = BACnetVendorId.UNKNOWN_VENDOR;
+            unknownVendorId = vendorId;
+        }
+        BACnetTagHeader header = new BACnetTagHeader(tagNum, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) requiredLength(vendorId), null, null, null, null);
+        return new BACnetVendorIdTagged(header, baCnetVendorId, unknownVendorId, (short) tagNum, TagClass.CONTEXT_SPECIFIC_TAGS);
+    }
+
     public static BACnetSegmentationTagged creatBACnetSegmentationTagged(BACnetSegmentation value) {
         BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 0, 1);
         return new BACnetSegmentationTagged(header, value, (short) 0, TagClass.APPLICATION_TAGS);
@@ -543,7 +565,7 @@ public class StaticHelper {
 
     public static BACnetContextTagOctetString createBACnetContextTagOctetString(byte tagNumber, byte[] octets) {
         BACnetTagHeader header = createBACnetTagHeaderBalanced(true, tagNumber, octets.length + 1);
-        return new BACnetContextTagOctetString(header, new BACnetTagPayloadOctetString(octets, (long) octets.length  + 1), (short) tagNumber);
+        return new BACnetContextTagOctetString(header, new BACnetTagPayloadOctetString(octets, (long) octets.length + 1), (short) tagNumber);
     }
 
     public static BACnetApplicationTagCharacterString createBACnetApplicationTagCharacterString(BACnetCharacterEncoding baCnetCharacterEncoding, String value) {
