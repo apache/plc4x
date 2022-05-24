@@ -28,16 +28,20 @@ import (
 
 // BACnetAddress is the data-structure of this message
 type BACnetAddress struct {
-	Address []uint8
-	Port    uint16
+	NetworkNumber *BACnetApplicationTagUnsignedInteger
+	MacAddress    *BACnetApplicationTagOctetString
 }
 
 // IBACnetAddress is the corresponding interface of BACnetAddress
 type IBACnetAddress interface {
-	// GetAddress returns Address (property field)
-	GetAddress() []uint8
-	// GetPort returns Port (property field)
-	GetPort() uint16
+	// GetNetworkNumber returns NetworkNumber (property field)
+	GetNetworkNumber() *BACnetApplicationTagUnsignedInteger
+	// GetMacAddress returns MacAddress (property field)
+	GetMacAddress() *BACnetApplicationTagOctetString
+	// GetIsLocalNetwork returns IsLocalNetwork (virtual field)
+	GetIsLocalNetwork() bool
+	// GetIsBroadcast returns IsBroadcast (virtual field)
+	GetIsBroadcast() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -51,12 +55,29 @@ type IBACnetAddress interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetAddress) GetAddress() []uint8 {
-	return m.Address
+func (m *BACnetAddress) GetNetworkNumber() *BACnetApplicationTagUnsignedInteger {
+	return m.NetworkNumber
 }
 
-func (m *BACnetAddress) GetPort() uint16 {
-	return m.Port
+func (m *BACnetAddress) GetMacAddress() *BACnetApplicationTagOctetString {
+	return m.MacAddress
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetAddress) GetIsLocalNetwork() bool {
+	return bool(bool((m.GetNetworkNumber().GetActualValue()) == (0)))
+}
+
+func (m *BACnetAddress) GetIsBroadcast() bool {
+	return bool(bool((m.GetMacAddress().GetActualLength()) == (0)))
 }
 
 ///////////////////////
@@ -65,8 +86,8 @@ func (m *BACnetAddress) GetPort() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetAddress factory function for BACnetAddress
-func NewBACnetAddress(address []uint8, port uint16) *BACnetAddress {
-	return &BACnetAddress{Address: address, Port: port}
+func NewBACnetAddress(networkNumber *BACnetApplicationTagUnsignedInteger, macAddress *BACnetApplicationTagOctetString) *BACnetAddress {
+	return &BACnetAddress{NetworkNumber: networkNumber, MacAddress: macAddress}
 }
 
 func CastBACnetAddress(structType interface{}) *BACnetAddress {
@@ -90,13 +111,15 @@ func (m *BACnetAddress) GetLengthInBits() uint16 {
 func (m *BACnetAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
-	// Array field
-	if len(m.Address) > 0 {
-		lengthInBits += 8 * uint16(len(m.Address))
-	}
+	// Simple field (networkNumber)
+	lengthInBits += m.NetworkNumber.GetLengthInBits()
 
-	// Simple field (port)
-	lengthInBits += 16
+	// A virtual field doesn't have any in- or output.
+
+	// Simple field (macAddress)
+	lengthInBits += m.MacAddress.GetLengthInBits()
+
+	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
@@ -114,38 +137,48 @@ func BACnetAddressParse(readBuffer utils.ReadBuffer) (*BACnetAddress, error) {
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (address)
-	if pullErr := readBuffer.PullContext("address", utils.WithRenderAsList(true)); pullErr != nil {
+	// Simple Field (networkNumber)
+	if pullErr := readBuffer.PullContext("networkNumber"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Count array
-	address := make([]uint8, uint16(4))
-	{
-		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-			_item, _err := readBuffer.ReadUint8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'address' field")
-			}
-			address[curItem] = _item
-		}
+	_networkNumber, _networkNumberErr := BACnetApplicationTagParse(readBuffer)
+	if _networkNumberErr != nil {
+		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field")
 	}
-	if closeErr := readBuffer.CloseContext("address", utils.WithRenderAsList(true)); closeErr != nil {
+	networkNumber := CastBACnetApplicationTagUnsignedInteger(_networkNumber)
+	if closeErr := readBuffer.CloseContext("networkNumber"); closeErr != nil {
 		return nil, closeErr
 	}
 
-	// Simple Field (port)
-	_port, _portErr := readBuffer.ReadUint16("port", 16)
-	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
+	// Virtual field
+	_isLocalNetwork := bool((networkNumber.GetActualValue()) == (0))
+	isLocalNetwork := bool(_isLocalNetwork)
+	_ = isLocalNetwork
+
+	// Simple Field (macAddress)
+	if pullErr := readBuffer.PullContext("macAddress"); pullErr != nil {
+		return nil, pullErr
 	}
-	port := _port
+	_macAddress, _macAddressErr := BACnetApplicationTagParse(readBuffer)
+	if _macAddressErr != nil {
+		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field")
+	}
+	macAddress := CastBACnetApplicationTagOctetString(_macAddress)
+	if closeErr := readBuffer.CloseContext("macAddress"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	// Virtual field
+	_isBroadcast := bool((macAddress.GetActualLength()) == (0))
+	isBroadcast := bool(_isBroadcast)
+	_ = isBroadcast
 
 	if closeErr := readBuffer.CloseContext("BACnetAddress"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetAddress(address, port), nil
+	return NewBACnetAddress(networkNumber, macAddress), nil
 }
 
 func (m *BACnetAddress) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -155,27 +188,36 @@ func (m *BACnetAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 		return pushErr
 	}
 
-	// Array Field (address)
-	if m.Address != nil {
-		if pushErr := writeBuffer.PushContext("address", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
-		}
-		for _, _element := range m.Address {
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'address' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("address", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
-		}
+	// Simple Field (networkNumber)
+	if pushErr := writeBuffer.PushContext("networkNumber"); pushErr != nil {
+		return pushErr
+	}
+	_networkNumberErr := m.NetworkNumber.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("networkNumber"); popErr != nil {
+		return popErr
+	}
+	if _networkNumberErr != nil {
+		return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
+	}
+	// Virtual field
+	if _isLocalNetworkErr := writeBuffer.WriteVirtual("isLocalNetwork", m.GetIsLocalNetwork()); _isLocalNetworkErr != nil {
+		return errors.Wrap(_isLocalNetworkErr, "Error serializing 'isLocalNetwork' field")
 	}
 
-	// Simple Field (port)
-	port := uint16(m.Port)
-	_portErr := writeBuffer.WriteUint16("port", 16, (port))
-	if _portErr != nil {
-		return errors.Wrap(_portErr, "Error serializing 'port' field")
+	// Simple Field (macAddress)
+	if pushErr := writeBuffer.PushContext("macAddress"); pushErr != nil {
+		return pushErr
+	}
+	_macAddressErr := m.MacAddress.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("macAddress"); popErr != nil {
+		return popErr
+	}
+	if _macAddressErr != nil {
+		return errors.Wrap(_macAddressErr, "Error serializing 'macAddress' field")
+	}
+	// Virtual field
+	if _isBroadcastErr := writeBuffer.WriteVirtual("isBroadcast", m.GetIsBroadcast()); _isBroadcastErr != nil {
+		return errors.Wrap(_isBroadcastErr, "Error serializing 'isBroadcast' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAddress"); popErr != nil {
