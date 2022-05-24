@@ -496,11 +496,11 @@
 
         ['VT_OPEN' BACnetConfirmedServiceRequestVTOpen
             [simple   BACnetVTClassTagged('0', 'TagClass.APPLICATION_TAGS')                                 vtClass                     ]
-            [simple   BACnetApplicationTagUnsignedInteger                                                   locatVtSessionIdentifier    ]
+            [simple   BACnetApplicationTagUnsignedInteger                                                   localVtSessionIdentifier    ]
         ]
         ['VT_CLOSE' BACnetConfirmedServiceRequestVTClose
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [array    BACnetApplicationTagUnsignedInteger                                                   listOfRemoteVtSessionIdentifiers
+                                                               length '(serviceRequestLength>0)?(serviceRequestLength - 1):0'           ]
         ]
         ['VT_DATA' BACnetConfirmedServiceRequestVTData
             // TODO: implement me

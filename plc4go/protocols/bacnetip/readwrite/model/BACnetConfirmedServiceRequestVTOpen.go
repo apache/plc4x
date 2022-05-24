@@ -30,7 +30,7 @@ import (
 type BACnetConfirmedServiceRequestVTOpen struct {
 	*BACnetConfirmedServiceRequest
 	VtClass                  *BACnetVTClassTagged
-	LocatVtSessionIdentifier *BACnetApplicationTagUnsignedInteger
+	LocalVtSessionIdentifier *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
 	ServiceRequestLength uint16
@@ -41,8 +41,8 @@ type IBACnetConfirmedServiceRequestVTOpen interface {
 	IBACnetConfirmedServiceRequest
 	// GetVtClass returns VtClass (property field)
 	GetVtClass() *BACnetVTClassTagged
-	// GetLocatVtSessionIdentifier returns LocatVtSessionIdentifier (property field)
-	GetLocatVtSessionIdentifier() *BACnetApplicationTagUnsignedInteger
+	// GetLocalVtSessionIdentifier returns LocalVtSessionIdentifier (property field)
+	GetLocalVtSessionIdentifier() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -81,8 +81,8 @@ func (m *BACnetConfirmedServiceRequestVTOpen) GetVtClass() *BACnetVTClassTagged 
 	return m.VtClass
 }
 
-func (m *BACnetConfirmedServiceRequestVTOpen) GetLocatVtSessionIdentifier() *BACnetApplicationTagUnsignedInteger {
-	return m.LocatVtSessionIdentifier
+func (m *BACnetConfirmedServiceRequestVTOpen) GetLocalVtSessionIdentifier() *BACnetApplicationTagUnsignedInteger {
+	return m.LocalVtSessionIdentifier
 }
 
 ///////////////////////
@@ -91,10 +91,10 @@ func (m *BACnetConfirmedServiceRequestVTOpen) GetLocatVtSessionIdentifier() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestVTOpen factory function for BACnetConfirmedServiceRequestVTOpen
-func NewBACnetConfirmedServiceRequestVTOpen(vtClass *BACnetVTClassTagged, locatVtSessionIdentifier *BACnetApplicationTagUnsignedInteger, serviceRequestLength uint16) *BACnetConfirmedServiceRequestVTOpen {
+func NewBACnetConfirmedServiceRequestVTOpen(vtClass *BACnetVTClassTagged, localVtSessionIdentifier *BACnetApplicationTagUnsignedInteger, serviceRequestLength uint16) *BACnetConfirmedServiceRequestVTOpen {
 	_result := &BACnetConfirmedServiceRequestVTOpen{
 		VtClass:                       vtClass,
-		LocatVtSessionIdentifier:      locatVtSessionIdentifier,
+		LocalVtSessionIdentifier:      localVtSessionIdentifier,
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result.Child = _result
@@ -131,8 +131,8 @@ func (m *BACnetConfirmedServiceRequestVTOpen) GetLengthInBitsConditional(lastIte
 	// Simple field (vtClass)
 	lengthInBits += m.VtClass.GetLengthInBits()
 
-	// Simple field (locatVtSessionIdentifier)
-	lengthInBits += m.LocatVtSessionIdentifier.GetLengthInBits()
+	// Simple field (localVtSessionIdentifier)
+	lengthInBits += m.LocalVtSessionIdentifier.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -163,16 +163,16 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, servi
 		return nil, closeErr
 	}
 
-	// Simple Field (locatVtSessionIdentifier)
-	if pullErr := readBuffer.PullContext("locatVtSessionIdentifier"); pullErr != nil {
+	// Simple Field (localVtSessionIdentifier)
+	if pullErr := readBuffer.PullContext("localVtSessionIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_locatVtSessionIdentifier, _locatVtSessionIdentifierErr := BACnetApplicationTagParse(readBuffer)
-	if _locatVtSessionIdentifierErr != nil {
-		return nil, errors.Wrap(_locatVtSessionIdentifierErr, "Error parsing 'locatVtSessionIdentifier' field")
+	_localVtSessionIdentifier, _localVtSessionIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	if _localVtSessionIdentifierErr != nil {
+		return nil, errors.Wrap(_localVtSessionIdentifierErr, "Error parsing 'localVtSessionIdentifier' field")
 	}
-	locatVtSessionIdentifier := CastBACnetApplicationTagUnsignedInteger(_locatVtSessionIdentifier)
-	if closeErr := readBuffer.CloseContext("locatVtSessionIdentifier"); closeErr != nil {
+	localVtSessionIdentifier := CastBACnetApplicationTagUnsignedInteger(_localVtSessionIdentifier)
+	if closeErr := readBuffer.CloseContext("localVtSessionIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
 
@@ -183,7 +183,7 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, servi
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestVTOpen{
 		VtClass:                       CastBACnetVTClassTagged(vtClass),
-		LocatVtSessionIdentifier:      CastBACnetApplicationTagUnsignedInteger(locatVtSessionIdentifier),
+		LocalVtSessionIdentifier:      CastBACnetApplicationTagUnsignedInteger(localVtSessionIdentifier),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
@@ -210,16 +210,16 @@ func (m *BACnetConfirmedServiceRequestVTOpen) Serialize(writeBuffer utils.WriteB
 			return errors.Wrap(_vtClassErr, "Error serializing 'vtClass' field")
 		}
 
-		// Simple Field (locatVtSessionIdentifier)
-		if pushErr := writeBuffer.PushContext("locatVtSessionIdentifier"); pushErr != nil {
+		// Simple Field (localVtSessionIdentifier)
+		if pushErr := writeBuffer.PushContext("localVtSessionIdentifier"); pushErr != nil {
 			return pushErr
 		}
-		_locatVtSessionIdentifierErr := m.LocatVtSessionIdentifier.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("locatVtSessionIdentifier"); popErr != nil {
+		_localVtSessionIdentifierErr := m.LocalVtSessionIdentifier.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("localVtSessionIdentifier"); popErr != nil {
 			return popErr
 		}
-		if _locatVtSessionIdentifierErr != nil {
-			return errors.Wrap(_locatVtSessionIdentifierErr, "Error serializing 'locatVtSessionIdentifier' field")
+		if _localVtSessionIdentifierErr != nil {
+			return errors.Wrap(_localVtSessionIdentifierErr, "Error serializing 'localVtSessionIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestVTOpen"); popErr != nil {
