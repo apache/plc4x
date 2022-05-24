@@ -197,7 +197,6 @@
             [optional BACnetConfirmedServiceRequest('apduLength - (4 + (segmentedMessage ? 2 : 0))')
                                 serviceRequest       '!segmentedMessage' ]
             [validation '(!segmentedMessage && serviceRequest != null) || segmentedMessage' "service request should be set" ]
-            // TODO: maybe we should put this in the discriminated types below
             [optional uint 8    segmentServiceChoice
                                     'segmentedMessage && sequenceNumber != 0']
             [array    byte      segment
@@ -224,7 +223,6 @@
             [optional BACnetServiceAck('apduLength - (3 + (segmentedMessage ? 2 : 0))')
                                 serviceAck         '!segmentedMessage'  ]
             [validation '(!segmentedMessage && serviceAck != null) || segmentedMessage' "service ack should be set" ]
-            // TODO: maybe we should put this in the discriminated types below
             [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
             [array    byte      segment
                                     length
@@ -503,8 +501,9 @@
                                                                length '(serviceRequestLength>0)?(serviceRequestLength - 1):0'           ]
         ]
         ['VT_DATA' BACnetConfirmedServiceRequestVTData
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetApplicationTagUnsignedInteger                                                   vtSessionIdentifier         ]
+            [simple   BACnetApplicationTagOctetString                                                       vtNewData                   ]
+            [simple   BACnetApplicationTagUnsignedInteger                                                   vtDataFlag                  ]
         ]
         //
         ////
