@@ -250,7 +250,7 @@ func BACnetNotificationParametersChangeOfLifeSafetyParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("operationExpected"); pullErr != nil {
 		return nil, pullErr
 	}
-	_operationExpected, _operationExpectedErr := BACnetLifeSafetyOperationTaggedParse(readBuffer, uint8(uint8(3)))
+	_operationExpected, _operationExpectedErr := BACnetLifeSafetyOperationTaggedParse(readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _operationExpectedErr != nil {
 		return nil, errors.Wrap(_operationExpectedErr, "Error parsing 'operationExpected' field")
 	}
