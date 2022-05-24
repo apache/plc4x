@@ -528,6 +528,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetMaintenanceTaggedParse(io, tagNumber, tagClass)
+	case "BACnetNotificationParametersChangeOfDiscreteValueNewValue":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetNotificationParametersChangeOfDiscreteValueNewValueParse(io, tagNumber)
 	case "BACnetAccessPassbackModeTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

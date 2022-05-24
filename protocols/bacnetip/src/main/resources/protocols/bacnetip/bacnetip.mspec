@@ -1466,6 +1466,16 @@
                             innerClosingTag                                         ]
         ]
         // 20 is not used
+        ['21' BACnetNotificationParametersChangeOfDiscreteValue(uint 8 peekedTagNumber)
+            [simple BACnetOpeningTag('peekedTagNumber')
+                            innerOpeningTag                                         ]
+            [simple BACnetNotificationParametersChangeOfDiscreteValueNewValue('0')
+                            newValue                                                ]
+            [simple BACnetStatusFlags('1')
+                            statusFlags                                             ]
+            [simple BACnetClosingTag('peekedTagNumber')
+                            innerClosingTag                                         ]
+        ]
 
         // TODO: implement other cases
     ]
@@ -1581,6 +1591,60 @@
     [virtual    bit fault           'rawBits.payload.data[1]']
     [virtual    bit overriden       'rawBits.payload.data[2]']
     [virtual    bit outOfService    'rawBits.payload.data[3]']
+]
+
+[type BACnetNotificationParametersChangeOfDiscreteValueNewValue(uint 8 tagNumber)
+   [simple     BACnetOpeningTag('tagNumber')
+                       openingTag                                                  ]
+   [peek       BACnetTagHeader
+                       peekedTagHeader
+   ]
+   [virtual uint 8     peekedTagNumber     'peekedTagHeader.actualTagNumber'       ]
+   [virtual bit        peekedIsContextTag  'peekedTagHeader.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS'
+   [typeSwitch peekedTagNumber, peekedIsContextTag
+       ['0x1', 'false' BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
+           [simple BACnetApplicationTagBoolean
+                       booleanValue                                                ]
+       ]
+       ['0x2', 'false' BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
+           [simple BACnetApplicationTagUnsignedInteger
+                       unsignedValue                                               ]
+       ]
+       ['0x3', 'false' BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
+           [simple BACnetApplicationTagSignedInteger
+                       integerValue                                                ]
+       ]
+       ['0x9', 'false' BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
+           [simple BACnetApplicationTagEnumerated
+                       enumeratedValue                                             ]
+       ]
+       ['0x7', 'false' BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString
+           [simple BACnetApplicationTagCharacterString
+                       characterStringValue                                        ]
+       ]
+       ['0x6', 'false' BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString
+           [simple BACnetApplicationTagOctetString
+                       octetStringValue                                            ]
+       ]
+       ['0xA', 'false' BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
+           [simple BACnetApplicationTagDate
+                       dateValue                                                   ]
+       ]
+       ['0xB', 'false' BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
+           [simple BACnetApplicationTagTime
+                       timeValue                                                   ]
+       ]
+       ['0xC', 'false' BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier
+           [simple BACnetApplicationTagObjectIdentifier
+                       objectidentifierValue                                       ]
+       ]
+       ['0', 'true' BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
+           [simple BACnetDateTimeEnclosed('0')
+                       dateTimeValue                                               ]
+       ]
+   ]
+   [simple     BACnetClosingTag('tagNumber')
+                       closingTag                                                  ]
 ]
 
 [type BACnetActionList
