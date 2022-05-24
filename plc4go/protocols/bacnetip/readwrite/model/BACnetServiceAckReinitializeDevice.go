@@ -30,7 +30,7 @@ type BACnetServiceAckReinitializeDevice struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckReinitializeDevice is the corresponding interface of BACnetServiceAckReinitializeDevice
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckReinitializeDevice) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckReinitializeDevice factory function for BACnetServiceAckReinitializeDevice
-func NewBACnetServiceAckReinitializeDevice(serviceRequestLength uint16) *BACnetServiceAckReinitializeDevice {
+func NewBACnetServiceAckReinitializeDevice(serviceAckLength uint16) *BACnetServiceAckReinitializeDevice {
 	_result := &BACnetServiceAckReinitializeDevice{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckReinitializeDevice) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReinitializeDeviceParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckReinitializeDevice, error) {
+func BACnetServiceAckReinitializeDeviceParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckReinitializeDevice, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReinitializeDevice"); pullErr != nil {

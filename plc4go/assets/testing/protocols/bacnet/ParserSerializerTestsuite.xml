@@ -5713,7 +5713,7 @@
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            <BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -5724,7 +5724,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <value dataType="uint" bitLength="8" stringRepresentation="ENABLE">0</value>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            </BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -6096,7 +6096,7 @@
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            <BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -6107,7 +6107,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <value dataType="uint" bitLength="8" stringRepresentation="ENABLE">0</value>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            </BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -6418,7 +6418,7 @@
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            <BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -6429,7 +6429,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <value dataType="uint" bitLength="8" stringRepresentation="DISABLE">1</value>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            </BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -6524,7 +6524,7 @@
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            <BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -6535,7 +6535,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <value dataType="uint" bitLength="8" stringRepresentation="DISABLE">1</value>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            </BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -6630,7 +6630,7 @@
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            <BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -6641,7 +6641,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <value dataType="uint" bitLength="8" stringRepresentation="DISABLE">1</value>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            </BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -6736,7 +6736,7 @@
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            <BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -6747,7 +6747,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <value dataType="uint" bitLength="8" stringRepresentation="DISABLE">1</value>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            </BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -6968,7 +6968,7 @@
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            <BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -6979,7 +6979,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <value dataType="uint" bitLength="8" stringRepresentation="DISABLE">1</value>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            </BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>
@@ -7165,7 +7165,7 @@
                         </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
-                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            <BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                               <header>
                                 <BACnetTagHeader>
                                   <tagNumber dataType="uint" bitLength="4">1</tagNumber>
@@ -7176,7 +7176,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <value dataType="uint" bitLength="8" stringRepresentation="DISABLE">1</value>
-                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged>
+                            </BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged>
                           </enableDisable>
                           <password>
                             <BACnetContextTag>

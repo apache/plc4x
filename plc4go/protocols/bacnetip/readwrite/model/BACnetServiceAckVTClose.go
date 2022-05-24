@@ -30,7 +30,7 @@ type BACnetServiceAckVTClose struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckVTClose is the corresponding interface of BACnetServiceAckVTClose
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckVTClose) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckVTClose factory function for BACnetServiceAckVTClose
-func NewBACnetServiceAckVTClose(serviceRequestLength uint16) *BACnetServiceAckVTClose {
+func NewBACnetServiceAckVTClose(serviceAckLength uint16) *BACnetServiceAckVTClose {
 	_result := &BACnetServiceAckVTClose{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckVTClose) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckVTCloseParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckVTClose, error) {
+func BACnetServiceAckVTCloseParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckVTClose, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTClose"); pullErr != nil {

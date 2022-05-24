@@ -38,6 +38,8 @@ type IBACnetAddress interface {
 	GetNetworkNumber() *BACnetApplicationTagUnsignedInteger
 	// GetMacAddress returns MacAddress (property field)
 	GetMacAddress() *BACnetApplicationTagOctetString
+	// GetZero returns Zero (virtual field)
+	GetZero() uint64
 	// GetIsLocalNetwork returns IsLocalNetwork (virtual field)
 	GetIsLocalNetwork() bool
 	// GetIsBroadcast returns IsBroadcast (virtual field)
@@ -72,8 +74,12 @@ func (m *BACnetAddress) GetMacAddress() *BACnetApplicationTagOctetString {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
+func (m *BACnetAddress) GetZero() uint64 {
+	return uint64(uint64(0))
+}
+
 func (m *BACnetAddress) GetIsLocalNetwork() bool {
-	return bool(bool((m.GetNetworkNumber().GetActualValue()) == (0)))
+	return bool(bool((m.GetNetworkNumber().GetActualValue()) == (m.GetZero())))
 }
 
 func (m *BACnetAddress) GetIsBroadcast() bool {
@@ -116,6 +122,8 @@ func (m *BACnetAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// A virtual field doesn't have any in- or output.
 
+	// A virtual field doesn't have any in- or output.
+
 	// Simple field (macAddress)
 	lengthInBits += m.MacAddress.GetLengthInBits()
 
@@ -151,7 +159,12 @@ func BACnetAddressParse(readBuffer utils.ReadBuffer) (*BACnetAddress, error) {
 	}
 
 	// Virtual field
-	_isLocalNetwork := bool((networkNumber.GetActualValue()) == (0))
+	_zero := uint64(0)
+	zero := uint64(_zero)
+	_ = zero
+
+	// Virtual field
+	_isLocalNetwork := bool((networkNumber.GetActualValue()) == (zero))
 	isLocalNetwork := bool(_isLocalNetwork)
 	_ = isLocalNetwork
 
@@ -198,6 +211,10 @@ func (m *BACnetAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 	if _networkNumberErr != nil {
 		return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
+	}
+	// Virtual field
+	if _zeroErr := writeBuffer.WriteVirtual("zero", m.GetZero()); _zeroErr != nil {
+		return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 	}
 	// Virtual field
 	if _isLocalNetworkErr := writeBuffer.WriteVirtual("isLocalNetwork", m.GetIsLocalNetwork()); _isLocalNetworkErr != nil {

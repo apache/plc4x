@@ -30,7 +30,7 @@ type BACnetServiceAckAcknowledgeAlarm struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckAcknowledgeAlarm is the corresponding interface of BACnetServiceAckAcknowledgeAlarm
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckAcknowledgeAlarm) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckAcknowledgeAlarm factory function for BACnetServiceAckAcknowledgeAlarm
-func NewBACnetServiceAckAcknowledgeAlarm(serviceRequestLength uint16) *BACnetServiceAckAcknowledgeAlarm {
+func NewBACnetServiceAckAcknowledgeAlarm(serviceAckLength uint16) *BACnetServiceAckAcknowledgeAlarm {
 	_result := &BACnetServiceAckAcknowledgeAlarm{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckAcknowledgeAlarm) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAcknowledgeAlarmParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckAcknowledgeAlarm, error) {
+func BACnetServiceAckAcknowledgeAlarmParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckAcknowledgeAlarm, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAcknowledgeAlarm"); pullErr != nil {

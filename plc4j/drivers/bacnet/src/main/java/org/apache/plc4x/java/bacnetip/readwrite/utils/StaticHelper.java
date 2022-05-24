@@ -46,29 +46,29 @@ public class StaticHelper {
         int bitsToRead = (int) (actualLength * 8);
         long rawValue = readBuffer.readUnsignedLong("value", bitsToRead);
         Class<?> declaringClass = template.getDeclaringClass();
-        if (declaringClass == BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.class) {
-            if (!BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.isDefined((short) rawValue))
-                throw new ParseException("Invalid value " + rawValue + " for " + BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.class.getSimpleName());
-            return BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.enumForValue((short) rawValue);
+        if (declaringClass == BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable.class) {
+            if (!BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable.class.getSimpleName());
+            return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable.enumForValue((short) rawValue);
         } else if (declaringClass == BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.class) {
             if (!BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.isDefined((short) rawValue))
-                throw new ParseException("Invalid value " + rawValue + " for " + BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.class.getSimpleName());
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.class.getSimpleName());
             return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.enumForValue((short) rawValue);
         } else if (declaringClass == BACnetSegmentation.class) {
             if (!BACnetSegmentation.isDefined((short) rawValue))
-                throw new ParseException("Invalid value " + rawValue + " for " + BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.class.getSimpleName());
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetSegmentation.class.getSimpleName());
             return BACnetSegmentation.enumForValue((short) rawValue);
         } else if (declaringClass == BACnetAction.class) {
             if (!BACnetAction.isDefined((short) rawValue))
-                throw new ParseException("Invalid value " + rawValue + " for " + BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.class.getSimpleName());
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetAction.class.getSimpleName());
             return BACnetAction.enumForValue((short) rawValue);
         } else if (declaringClass == BACnetNotifyType.class) {
             if (!BACnetNotifyType.isDefined((short) rawValue))
-                throw new ParseException("Invalid value " + rawValue + " for " + BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.class.getSimpleName());
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetBinaryPV.class.getSimpleName());
             return BACnetNotifyType.enumForValue((short) rawValue);
         } else if (declaringClass == BACnetBinaryPV.class) {
             if (!BACnetBinaryPV.isDefined((short) rawValue))
-                throw new ParseException("Invalid value " + rawValue + " for " + BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.class.getSimpleName());
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetBinaryPV.class.getSimpleName());
             return BACnetBinaryPV.enumForValue((short) rawValue);
         }
         throw new ParseException("Unmapped type " + declaringClass);
@@ -196,8 +196,8 @@ public class StaticHelper {
             valueValue = ((BACnetRejectReason) value).getValue();
         } else if (value.getDeclaringClass() == BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.class) {
             valueValue = ((BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) value).getValue();
-        } else if (value.getDeclaringClass() == BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable.class) {
-            valueValue = ((BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable.class) {
+            valueValue = ((BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) value).getValue();
         } else {
             LOGGER.warn("using reflection for {}", value.getDeclaringClass());
             try {

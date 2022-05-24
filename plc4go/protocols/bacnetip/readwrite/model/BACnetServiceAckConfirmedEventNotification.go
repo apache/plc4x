@@ -30,7 +30,7 @@ type BACnetServiceAckConfirmedEventNotification struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckConfirmedEventNotification is the corresponding interface of BACnetServiceAckConfirmedEventNotification
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckConfirmedEventNotification) GetParent() *BACnetServiceA
 }
 
 // NewBACnetServiceAckConfirmedEventNotification factory function for BACnetServiceAckConfirmedEventNotification
-func NewBACnetServiceAckConfirmedEventNotification(serviceRequestLength uint16) *BACnetServiceAckConfirmedEventNotification {
+func NewBACnetServiceAckConfirmedEventNotification(serviceAckLength uint16) *BACnetServiceAckConfirmedEventNotification {
 	_result := &BACnetServiceAckConfirmedEventNotification{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckConfirmedEventNotification) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckConfirmedEventNotificationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckConfirmedEventNotification, error) {
+func BACnetServiceAckConfirmedEventNotificationParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckConfirmedEventNotification, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckConfirmedEventNotification"); pullErr != nil {

@@ -30,7 +30,7 @@ type BACnetServiceAckLifeSafetyOperation struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckLifeSafetyOperation is the corresponding interface of BACnetServiceAckLifeSafetyOperation
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckLifeSafetyOperation) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckLifeSafetyOperation factory function for BACnetServiceAckLifeSafetyOperation
-func NewBACnetServiceAckLifeSafetyOperation(serviceRequestLength uint16) *BACnetServiceAckLifeSafetyOperation {
+func NewBACnetServiceAckLifeSafetyOperation(serviceAckLength uint16) *BACnetServiceAckLifeSafetyOperation {
 	_result := &BACnetServiceAckLifeSafetyOperation{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckLifeSafetyOperation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckLifeSafetyOperationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckLifeSafetyOperation, error) {
+func BACnetServiceAckLifeSafetyOperationParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckLifeSafetyOperation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckLifeSafetyOperation"); pullErr != nil {

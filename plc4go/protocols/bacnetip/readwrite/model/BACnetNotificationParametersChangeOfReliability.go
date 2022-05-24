@@ -200,7 +200,7 @@ func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("reliability"); pullErr != nil {
 		return nil, pullErr
 	}
-	_reliability, _reliabilityErr := BACnetReliabilityTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_ContextSpecificTags))
+	_reliability, _reliabilityErr := BACnetReliabilityTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _reliabilityErr != nil {
 		return nil, errors.Wrap(_reliabilityErr, "Error parsing 'reliability' field")
 	}
@@ -226,7 +226,7 @@ func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("propertyValues"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyValues, _propertyValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(uint8(2)), BACnetObjectType(monitoredObjectIdentifier.GetObjectType()))
+	_propertyValues, _propertyValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectType))
 	if _propertyValuesErr != nil {
 		return nil, errors.Wrap(_propertyValuesErr, "Error parsing 'propertyValues' field")
 	}

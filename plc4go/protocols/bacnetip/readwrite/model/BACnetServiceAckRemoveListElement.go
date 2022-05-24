@@ -30,7 +30,7 @@ type BACnetServiceAckRemoveListElement struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckRemoveListElement is the corresponding interface of BACnetServiceAckRemoveListElement
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckRemoveListElement) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckRemoveListElement factory function for BACnetServiceAckRemoveListElement
-func NewBACnetServiceAckRemoveListElement(serviceRequestLength uint16) *BACnetServiceAckRemoveListElement {
+func NewBACnetServiceAckRemoveListElement(serviceAckLength uint16) *BACnetServiceAckRemoveListElement {
 	_result := &BACnetServiceAckRemoveListElement{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckRemoveListElement) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckRemoveListElementParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckRemoveListElement, error) {
+func BACnetServiceAckRemoveListElementParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckRemoveListElement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRemoveListElement"); pullErr != nil {

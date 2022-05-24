@@ -213,7 +213,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("messagePriority"); pullErr != nil {
 		return nil, pullErr
 	}
-	_messagePriority, _messagePriorityErr := BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParse(readBuffer, uint8(uint8(2)))
+	_messagePriority, _messagePriorityErr := BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _messagePriorityErr != nil {
 		return nil, errors.Wrap(_messagePriorityErr, "Error parsing 'messagePriority' field")
 	}

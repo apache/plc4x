@@ -33,7 +33,7 @@ type BACnetServiceAckGetEventInformation struct {
 	MoreEvents           *BACnetContextTagBoolean
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckGetEventInformation is the corresponding interface of BACnetServiceAckGetEventInformation
@@ -90,11 +90,11 @@ func (m *BACnetServiceAckGetEventInformation) GetMoreEvents() *BACnetContextTagB
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckGetEventInformation factory function for BACnetServiceAckGetEventInformation
-func NewBACnetServiceAckGetEventInformation(listOfEventSummaries *BACnetEventSummariesList, moreEvents *BACnetContextTagBoolean, serviceRequestLength uint16) *BACnetServiceAckGetEventInformation {
+func NewBACnetServiceAckGetEventInformation(listOfEventSummaries *BACnetEventSummariesList, moreEvents *BACnetContextTagBoolean, serviceAckLength uint16) *BACnetServiceAckGetEventInformation {
 	_result := &BACnetServiceAckGetEventInformation{
 		ListOfEventSummaries: listOfEventSummaries,
 		MoreEvents:           moreEvents,
-		BACnetServiceAck:     NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck:     NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -140,7 +140,7 @@ func (m *BACnetServiceAckGetEventInformation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckGetEventInformation, error) {
+func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckGetEventInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEventInformation"); pullErr != nil {

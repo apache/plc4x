@@ -37,7 +37,7 @@ type BACnetServiceAckGetEnrollmentSummary struct {
 	NotificationClass *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckGetEnrollmentSummary is the corresponding interface of BACnetServiceAckGetEnrollmentSummary
@@ -112,14 +112,14 @@ func (m *BACnetServiceAckGetEnrollmentSummary) GetNotificationClass() *BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckGetEnrollmentSummary factory function for BACnetServiceAckGetEnrollmentSummary
-func NewBACnetServiceAckGetEnrollmentSummary(objectIdentifier *BACnetApplicationTagObjectIdentifier, eventType *BACnetEventTypeTagged, eventState *BACnetEventStateTagged, priority *BACnetApplicationTagUnsignedInteger, notificationClass *BACnetApplicationTagUnsignedInteger, serviceRequestLength uint16) *BACnetServiceAckGetEnrollmentSummary {
+func NewBACnetServiceAckGetEnrollmentSummary(objectIdentifier *BACnetApplicationTagObjectIdentifier, eventType *BACnetEventTypeTagged, eventState *BACnetEventStateTagged, priority *BACnetApplicationTagUnsignedInteger, notificationClass *BACnetApplicationTagUnsignedInteger, serviceAckLength uint16) *BACnetServiceAckGetEnrollmentSummary {
 	_result := &BACnetServiceAckGetEnrollmentSummary{
 		ObjectIdentifier:  objectIdentifier,
 		EventType:         eventType,
 		EventState:        eventState,
 		Priority:          priority,
 		NotificationClass: notificationClass,
-		BACnetServiceAck:  NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck:  NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -176,7 +176,7 @@ func (m *BACnetServiceAckGetEnrollmentSummary) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckGetEnrollmentSummary, error) {
+func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckGetEnrollmentSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEnrollmentSummary"); pullErr != nil {

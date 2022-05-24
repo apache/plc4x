@@ -30,7 +30,7 @@ type BACnetServiceAckVTData struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckVTData is the corresponding interface of BACnetServiceAckVTData
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckVTData) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckVTData factory function for BACnetServiceAckVTData
-func NewBACnetServiceAckVTData(serviceRequestLength uint16) *BACnetServiceAckVTData {
+func NewBACnetServiceAckVTData(serviceAckLength uint16) *BACnetServiceAckVTData {
 	_result := &BACnetServiceAckVTData{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckVTData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckVTData, error) {
+func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckVTData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTData"); pullErr != nil {

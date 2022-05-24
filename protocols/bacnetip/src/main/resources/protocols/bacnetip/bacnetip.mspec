@@ -342,10 +342,12 @@
             [optional BACnetNotificationParameters('12', 'eventObjectIdentifier.objectType')            eventValues                    ]
         ]
         ['GET_ENROLLMENT_SUMMARY' BACnetConfirmedServiceRequestGetEnrollmentSummary
-            [simple   BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged('0') acknowledgmentFilter           ]
+            [simple   BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                                                                                        acknowledgmentFilter           ]
             [optional BACnetRecipientProcessEnclosed('1')                                               enrollmentFilter               ]
-            [optional BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged('2')      eventStateFilter               ]
-            [optional BACnetEventTypeTagged('3')                                                        eventTypeFilter                ]
+            [optional BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged('2', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                                                                                        eventStateFilter               ]
+            [optional BACnetEventTypeTagged('3', 'TagClass.CONTEXT_SPECIFIC_TAGS')                      eventTypeFilter                ]
             [optional BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter('4')              priorityFilter                 ]
             [optional BACnetContextTagUnsignedInteger('5', 'BACnetDataType.UNSIGNED_INTEGER')           notificationClassFilter        ]
         ]
@@ -478,7 +480,8 @@
         ['CONFIRMED_TEXT_MESSAGE' BACnetConfirmedServiceRequestConfirmedTextMessage
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      textMessageSourceDevice     ]
             [optional BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass('1')                    messageClass                ]
-            [simple   BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged('2')           messagePriority             ]
+            [simple   BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged('2', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                                                                                            messagePriority             ]
             [simple   BACnetContextTagCharacterString('3', 'BACnetDataType.CHARACTER_STRING')               message                     ]
         ]
         ['REINITIALIZE_DEVICE' BACnetConfirmedServiceRequestReinitializeDevice
@@ -510,16 +513,13 @@
         //  Removed Services
 
         ['AUTHENTICATE' BACnetConfirmedServiceRequestAuthenticate
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [array    byte    bytesOfRemovedService length '(serviceRequestLength>0)?(serviceRequestLength - 1):0']
         ]
         ['REQUEST_KEY' BACnetConfirmedServiceRequestRequestKey
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [array    byte    bytesOfRemovedService length '(serviceRequestLength>0)?(serviceRequestLength - 1):0']
         ]
         ['READ_PROPERTY_CONDITIONAL' BACnetConfirmedServiceRequestReadPropertyConditional
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [array    byte    bytesOfRemovedService length '(serviceRequestLength>0)?(serviceRequestLength - 1):0']
         ]
         //
         ////
@@ -882,7 +882,7 @@
     ]
 ]
 
-[discriminatedType BACnetServiceAck(uint 16 serviceRequestLength)
+[discriminatedType BACnetServiceAck(uint 16 serviceAckLength)
     [discriminator   BACnetConfirmedServiceChoice
                         serviceChoice                   ]
     [typeSwitch serviceChoice
@@ -985,7 +985,7 @@
             [array    BACnetReadAccessResult
                             data
                             length
-                            'serviceRequestLength'                   ]
+                            'serviceAckLength'                   ]
         ]
         ['READ_RANGE' BACnetServiceAckReadRange
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier    ]
@@ -1054,16 +1054,13 @@
         //  Removed Services
 
         ['AUTHENTICATE' BACnetServiceAckAuthenticate
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [array    byte    bytesOfRemovedService length '(serviceAckLength>0)?(serviceAckLength - 1):0']
         ]
         ['REQUEST_KEY' BACnetServiceAckRequestKey
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [array    byte    bytesOfRemovedService length '(serviceAckLength>0)?(serviceAckLength - 1):0']
         ]
         ['READ_PROPERTY_CONDITIONAL' BACnetServiceAckReadPropertyConditional
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [array    byte    bytesOfRemovedService length '(serviceAckLength>0)?(serviceAckLength - 1):0']
         ]
         //
         ////
@@ -1534,11 +1531,11 @@
         ['19' BACnetNotificationParametersChangeOfReliability(uint 8 peekedTagNumber)
             [simple   BACnetOpeningTag('peekedTagNumber')
                             innerOpeningTag                                         ]
-            [simple   BACnetReliabilityTagged('0', 'TagClass.ContextSpecificTags')
+            [simple   BACnetReliabilityTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                             reliability                                             ]
             [simple   BACnetStatusFlags('1')
                             statusFlags                                             ]
-            [simple   BACnetPropertyValues('2', 'monitoredObjectIdentifier.objectType')
+            [simple   BACnetPropertyValues('2', 'objectType')
                             propertyValues                                          ]
             [simple   BACnetClosingTag('peekedTagNumber')
                             innerClosingTag                                         ]
@@ -2094,7 +2091,9 @@
 [type BACnetAddress
     [simple   BACnetApplicationTagUnsignedInteger
                         networkNumber       ]
-    [virtual  bit   isLocalNetwork  'networkNumber.actualValue == 0']
+    // TODO: uint 64 ---> big int in java == boom
+    [virtual  uint 64   zero           '0'  ]
+    [virtual  bit   isLocalNetwork  'networkNumber.actualValue == zero']
     [simple   BACnetApplicationTagOctetString
                         macAddress          ]
     [virtual  bit   isBroadcast  'macAddress.actualLength == 0']

@@ -209,7 +209,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("acknowledgmentFilter"); pullErr != nil {
 		return nil, pullErr
 	}
-	_acknowledgmentFilter, _acknowledgmentFilterErr := BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedParse(readBuffer, uint8(uint8(0)))
+	_acknowledgmentFilter, _acknowledgmentFilterErr := BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _acknowledgmentFilterErr != nil {
 		return nil, errors.Wrap(_acknowledgmentFilterErr, "Error parsing 'acknowledgmentFilter' field")
 	}
@@ -246,7 +246,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 		if pullErr := readBuffer.PullContext("eventStateFilter"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParse(readBuffer, uint8(2))
+		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParse(readBuffer, uint8(2), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
@@ -267,7 +267,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 		if pullErr := readBuffer.PullContext("eventTypeFilter"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetEventTypeTaggedParse(readBuffer, uint8(3))
+		_val, _err := BACnetEventTypeTaggedParse(readBuffer, uint8(3), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

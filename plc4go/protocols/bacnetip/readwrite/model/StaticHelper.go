@@ -33,8 +33,8 @@ func ReadEnumGenericFailing(readBuffer utils.ReadBuffer, actualLength uint32, te
 		return nil, err
 	}
 	switch template.(type) {
-	case BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable:
-		return BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(rawValue), nil
+	case BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable:
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable(rawValue), nil
 	case BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice:
 		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice(rawValue), nil
 	case BACnetSegmentation:
@@ -392,7 +392,7 @@ func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value interface{}) error {
 		valueValue = uint32(v)
 	case BACnetBinaryPV: // <<-- private enum is always defined
 		valueValue = uint32(v)
-	case BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable: // <<-- private enum is always defined
+	case BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable: // <<-- private enum is always defined
 		valueValue = uint32(v)
 	case BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice: // <<-- private enum is always defined
 		valueValue = uint32(v)

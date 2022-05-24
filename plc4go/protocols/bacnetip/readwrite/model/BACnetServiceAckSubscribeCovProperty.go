@@ -30,7 +30,7 @@ type BACnetServiceAckSubscribeCovProperty struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckSubscribeCovProperty is the corresponding interface of BACnetServiceAckSubscribeCovProperty
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckSubscribeCovProperty) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckSubscribeCovProperty factory function for BACnetServiceAckSubscribeCovProperty
-func NewBACnetServiceAckSubscribeCovProperty(serviceRequestLength uint16) *BACnetServiceAckSubscribeCovProperty {
+func NewBACnetServiceAckSubscribeCovProperty(serviceAckLength uint16) *BACnetServiceAckSubscribeCovProperty {
 	_result := &BACnetServiceAckSubscribeCovProperty{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckSubscribeCovProperty) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckSubscribeCovPropertyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckSubscribeCovProperty, error) {
+func BACnetServiceAckSubscribeCovPropertyParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckSubscribeCovProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckSubscribeCovProperty"); pullErr != nil {

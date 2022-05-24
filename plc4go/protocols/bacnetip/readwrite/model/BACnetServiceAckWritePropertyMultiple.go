@@ -30,7 +30,7 @@ type BACnetServiceAckWritePropertyMultiple struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckWritePropertyMultiple is the corresponding interface of BACnetServiceAckWritePropertyMultiple
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckWritePropertyMultiple) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckWritePropertyMultiple factory function for BACnetServiceAckWritePropertyMultiple
-func NewBACnetServiceAckWritePropertyMultiple(serviceRequestLength uint16) *BACnetServiceAckWritePropertyMultiple {
+func NewBACnetServiceAckWritePropertyMultiple(serviceAckLength uint16) *BACnetServiceAckWritePropertyMultiple {
 	_result := &BACnetServiceAckWritePropertyMultiple{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckWritePropertyMultiple) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckWritePropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckWritePropertyMultiple, error) {
+func BACnetServiceAckWritePropertyMultipleParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckWritePropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckWritePropertyMultiple"); pullErr != nil {

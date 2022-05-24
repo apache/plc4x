@@ -30,7 +30,7 @@ type BACnetServiceAckConfirmedTextMessage struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckConfirmedTextMessage is the corresponding interface of BACnetServiceAckConfirmedTextMessage
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckConfirmedTextMessage) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckConfirmedTextMessage factory function for BACnetServiceAckConfirmedTextMessage
-func NewBACnetServiceAckConfirmedTextMessage(serviceRequestLength uint16) *BACnetServiceAckConfirmedTextMessage {
+func NewBACnetServiceAckConfirmedTextMessage(serviceAckLength uint16) *BACnetServiceAckConfirmedTextMessage {
 	_result := &BACnetServiceAckConfirmedTextMessage{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckConfirmedTextMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckConfirmedTextMessageParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckConfirmedTextMessage, error) {
+func BACnetServiceAckConfirmedTextMessageParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckConfirmedTextMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckConfirmedTextMessage"); pullErr != nil {

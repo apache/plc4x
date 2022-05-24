@@ -30,7 +30,7 @@ type BACnetServiceAckSubscribeCovPropertyMultiple struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckSubscribeCovPropertyMultiple is the corresponding interface of BACnetServiceAckSubscribeCovPropertyMultiple
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckSubscribeCovPropertyMultiple) GetParent() *BACnetServic
 }
 
 // NewBACnetServiceAckSubscribeCovPropertyMultiple factory function for BACnetServiceAckSubscribeCovPropertyMultiple
-func NewBACnetServiceAckSubscribeCovPropertyMultiple(serviceRequestLength uint16) *BACnetServiceAckSubscribeCovPropertyMultiple {
+func NewBACnetServiceAckSubscribeCovPropertyMultiple(serviceAckLength uint16) *BACnetServiceAckSubscribeCovPropertyMultiple {
 	_result := &BACnetServiceAckSubscribeCovPropertyMultiple{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckSubscribeCovPropertyMultiple) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckSubscribeCovPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckSubscribeCovPropertyMultiple, error) {
+func BACnetServiceAckSubscribeCovPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckSubscribeCovPropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckSubscribeCovPropertyMultiple"); pullErr != nil {

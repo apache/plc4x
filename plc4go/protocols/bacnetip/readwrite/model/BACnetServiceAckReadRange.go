@@ -39,7 +39,7 @@ type BACnetServiceAckReadRange struct {
 	FirstSequenceNumber *BACnetContextTagUnsignedInteger
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckReadRange is the corresponding interface of BACnetServiceAckReadRange
@@ -126,7 +126,7 @@ func (m *BACnetServiceAckReadRange) GetFirstSequenceNumber() *BACnetContextTagUn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadRange factory function for BACnetServiceAckReadRange
-func NewBACnetServiceAckReadRange(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, propertyArrayIndex *BACnetContextTagUnsignedInteger, resultFlags *BACnetResultFlags, itemCount *BACnetContextTagUnsignedInteger, itemData *BACnetConstructedData, firstSequenceNumber *BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *BACnetServiceAckReadRange {
+func NewBACnetServiceAckReadRange(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, propertyArrayIndex *BACnetContextTagUnsignedInteger, resultFlags *BACnetResultFlags, itemCount *BACnetContextTagUnsignedInteger, itemData *BACnetConstructedData, firstSequenceNumber *BACnetContextTagUnsignedInteger, serviceAckLength uint16) *BACnetServiceAckReadRange {
 	_result := &BACnetServiceAckReadRange{
 		ObjectIdentifier:    objectIdentifier,
 		PropertyIdentifier:  propertyIdentifier,
@@ -135,7 +135,7 @@ func NewBACnetServiceAckReadRange(objectIdentifier *BACnetContextTagObjectIdenti
 		ItemCount:           itemCount,
 		ItemData:            itemData,
 		FirstSequenceNumber: firstSequenceNumber,
-		BACnetServiceAck:    NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck:    NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -202,7 +202,7 @@ func (m *BACnetServiceAckReadRange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckReadRange, error) {
+func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckReadRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadRange"); pullErr != nil {

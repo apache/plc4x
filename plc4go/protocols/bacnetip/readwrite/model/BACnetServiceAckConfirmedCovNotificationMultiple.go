@@ -30,7 +30,7 @@ type BACnetServiceAckConfirmedCovNotificationMultiple struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckConfirmedCovNotificationMultiple is the corresponding interface of BACnetServiceAckConfirmedCovNotificationMultiple
@@ -66,9 +66,9 @@ func (m *BACnetServiceAckConfirmedCovNotificationMultiple) GetParent() *BACnetSe
 }
 
 // NewBACnetServiceAckConfirmedCovNotificationMultiple factory function for BACnetServiceAckConfirmedCovNotificationMultiple
-func NewBACnetServiceAckConfirmedCovNotificationMultiple(serviceRequestLength uint16) *BACnetServiceAckConfirmedCovNotificationMultiple {
+func NewBACnetServiceAckConfirmedCovNotificationMultiple(serviceAckLength uint16) *BACnetServiceAckConfirmedCovNotificationMultiple {
 	_result := &BACnetServiceAckConfirmedCovNotificationMultiple{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -108,7 +108,7 @@ func (m *BACnetServiceAckConfirmedCovNotificationMultiple) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckConfirmedCovNotificationMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckConfirmedCovNotificationMultiple, error) {
+func BACnetServiceAckConfirmedCovNotificationMultipleParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckConfirmedCovNotificationMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckConfirmedCovNotificationMultiple"); pullErr != nil {

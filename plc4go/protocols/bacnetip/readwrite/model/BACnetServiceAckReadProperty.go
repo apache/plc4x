@@ -36,7 +36,7 @@ type BACnetServiceAckReadProperty struct {
 	Values             *BACnetConstructedData
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckReadProperty is the corresponding interface of BACnetServiceAckReadProperty
@@ -105,13 +105,13 @@ func (m *BACnetServiceAckReadProperty) GetValues() *BACnetConstructedData {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadProperty factory function for BACnetServiceAckReadProperty
-func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, values *BACnetConstructedData, serviceRequestLength uint16) *BACnetServiceAckReadProperty {
+func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, values *BACnetConstructedData, serviceAckLength uint16) *BACnetServiceAckReadProperty {
 	_result := &BACnetServiceAckReadProperty{
 		ObjectIdentifier:   objectIdentifier,
 		PropertyIdentifier: propertyIdentifier,
 		ArrayIndex:         arrayIndex,
 		Values:             values,
-		BACnetServiceAck:   NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck:   NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -167,7 +167,7 @@ func (m *BACnetServiceAckReadProperty) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckReadProperty, error) {
+func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckReadProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadProperty"); pullErr != nil {

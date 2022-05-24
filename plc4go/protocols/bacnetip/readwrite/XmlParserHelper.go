@@ -1089,8 +1089,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		if err != nil {
 			return nil, err
 		}
-		serviceRequestLength := uint16(parsedUint0)
-		return model.BACnetServiceAckParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceRequestLength)
+		serviceAckLength := uint16(parsedUint0)
+		return model.BACnetServiceAckParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceAckLength)
 	case "BACnetAccessCredentialDisableTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {

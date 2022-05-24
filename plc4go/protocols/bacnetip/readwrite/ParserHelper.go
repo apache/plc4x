@@ -951,11 +951,11 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetAccessEventTaggedParse(io, tagNumber, tagClass)
 	case "BACnetServiceAck":
-		serviceRequestLength, err := utils.StrToUint16(arguments[0])
+		serviceAckLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.BACnetServiceAckParse(io, serviceRequestLength)
+		return model.BACnetServiceAckParse(io, serviceAckLength)
 	case "BACnetAccessCredentialDisableTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

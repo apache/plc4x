@@ -32,7 +32,7 @@ type BACnetServiceAckReadPropertyMultiple struct {
 	Data []*BACnetReadAccessResult
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckReadPropertyMultiple is the corresponding interface of BACnetServiceAckReadPropertyMultiple
@@ -83,10 +83,10 @@ func (m *BACnetServiceAckReadPropertyMultiple) GetData() []*BACnetReadAccessResu
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadPropertyMultiple factory function for BACnetServiceAckReadPropertyMultiple
-func NewBACnetServiceAckReadPropertyMultiple(data []*BACnetReadAccessResult, serviceRequestLength uint16) *BACnetServiceAckReadPropertyMultiple {
+func NewBACnetServiceAckReadPropertyMultiple(data []*BACnetReadAccessResult, serviceAckLength uint16) *BACnetServiceAckReadPropertyMultiple {
 	_result := &BACnetServiceAckReadPropertyMultiple{
 		Data:             data,
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -133,7 +133,7 @@ func (m *BACnetServiceAckReadPropertyMultiple) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckReadPropertyMultiple, error) {
+func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckReadPropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {
@@ -149,7 +149,7 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serv
 	// Length array
 	data := make([]*BACnetReadAccessResult, 0)
 	{
-		_dataLength := serviceRequestLength
+		_dataLength := serviceAckLength
 		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
 		for positionAware.GetPos() < _dataEndPos {
 			_item, _err := BACnetReadAccessResultParse(readBuffer)

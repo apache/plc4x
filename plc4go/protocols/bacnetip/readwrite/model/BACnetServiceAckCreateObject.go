@@ -30,7 +30,7 @@ type BACnetServiceAckCreateObject struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckCreateObject is the corresponding interface of BACnetServiceAckCreateObject
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckCreateObject) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckCreateObject factory function for BACnetServiceAckCreateObject
-func NewBACnetServiceAckCreateObject(serviceRequestLength uint16) *BACnetServiceAckCreateObject {
+func NewBACnetServiceAckCreateObject(serviceAckLength uint16) *BACnetServiceAckCreateObject {
 	_result := &BACnetServiceAckCreateObject{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckCreateObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckCreateObject, error) {
+func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckCreateObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckCreateObject"); pullErr != nil {

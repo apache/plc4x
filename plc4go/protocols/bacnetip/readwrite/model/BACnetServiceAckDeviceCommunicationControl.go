@@ -30,7 +30,7 @@ type BACnetServiceAckDeviceCommunicationControl struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckDeviceCommunicationControl is the corresponding interface of BACnetServiceAckDeviceCommunicationControl
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckDeviceCommunicationControl) GetParent() *BACnetServiceA
 }
 
 // NewBACnetServiceAckDeviceCommunicationControl factory function for BACnetServiceAckDeviceCommunicationControl
-func NewBACnetServiceAckDeviceCommunicationControl(serviceRequestLength uint16) *BACnetServiceAckDeviceCommunicationControl {
+func NewBACnetServiceAckDeviceCommunicationControl(serviceAckLength uint16) *BACnetServiceAckDeviceCommunicationControl {
 	_result := &BACnetServiceAckDeviceCommunicationControl{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckDeviceCommunicationControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckDeviceCommunicationControlParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckDeviceCommunicationControl, error) {
+func BACnetServiceAckDeviceCommunicationControlParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckDeviceCommunicationControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckDeviceCommunicationControl"); pullErr != nil {

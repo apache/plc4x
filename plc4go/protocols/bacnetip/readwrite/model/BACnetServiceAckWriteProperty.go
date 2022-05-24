@@ -30,7 +30,7 @@ type BACnetServiceAckWriteProperty struct {
 	*BACnetServiceAck
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceAckLength uint16
 }
 
 // IBACnetServiceAckWriteProperty is the corresponding interface of BACnetServiceAckWriteProperty
@@ -65,9 +65,9 @@ func (m *BACnetServiceAckWriteProperty) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckWriteProperty factory function for BACnetServiceAckWriteProperty
-func NewBACnetServiceAckWriteProperty(serviceRequestLength uint16) *BACnetServiceAckWriteProperty {
+func NewBACnetServiceAckWriteProperty(serviceAckLength uint16) *BACnetServiceAckWriteProperty {
 	_result := &BACnetServiceAckWriteProperty{
-		BACnetServiceAck: NewBACnetServiceAck(serviceRequestLength),
+		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result.Child = _result
 	return _result
@@ -107,7 +107,7 @@ func (m *BACnetServiceAckWriteProperty) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckWritePropertyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetServiceAckWriteProperty, error) {
+func BACnetServiceAckWritePropertyParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckWriteProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckWriteProperty"); pullErr != nil {
