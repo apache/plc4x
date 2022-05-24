@@ -891,8 +891,11 @@
             [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['GET_ENROLLMENT_SUMMARY' BACnetServiceAckGetEnrollmentSummary
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetApplicationTagObjectIdentifier                      objectIdentifier                ]
+            [simple   BACnetEventTypeTagged('0', 'TagClass.APPLICATION_TAGS')   eventType                       ]
+            [simple   BACnetEventStateTagged('0', 'TagClass.APPLICATION_TAGS')  eventState                      ]
+            [simple   BACnetApplicationTagUnsignedInteger                       priority                        ]
+            [optional BACnetApplicationTagUnsignedInteger                       notificationClass               ]
         ]
         ['GET_EVENT_INFORMATION' BACnetServiceAckGetEventInformation
             [simple   BACnetEventSummariesList('0')
