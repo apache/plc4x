@@ -1258,7 +1258,7 @@
         ['1' BACnetNotificationParametersChangeOfState(uint 8 peekedTagNumber)
             [simple BACnetOpeningTag('peekedTagNumber')
                             innerOpeningTag ]
-            [simple BACnetPropertyStates('0')
+            [simple BACnetPropertyStatesEnclosed('0')
                             changeOfState ]
             [simple BACnetStatusFlags('1')
                             statusFlags ]
@@ -1508,45 +1508,264 @@
                         writeSuccessful                                                         ]
 ]
 
-[type BACnetPropertyStates(uint 8 tagNumber)
+[type BACnetPropertyStatesEnclosed(uint 8 tagNumber)
     [simple  BACnetOpeningTag('tagNumber')
-                    openingTag                              ]
+                    openingTag                                  ]
+    [simple  BACnetPropertyStates
+                    propertyState                               ]
+    [simple  BACnetClosingTag('tagNumber')
+                    closingTag                                  ]
+]
+
+[type BACnetPropertyStates
     [peek    BACnetTagHeader
-                    peekedTagHeader                         ]
+                    peekedTagHeader                             ]
     [virtual uint 8 peekedTagNumber
-                        'peekedTagHeader.actualTagNumber'   ]
+                        'peekedTagHeader.actualTagNumber'       ]
     [typeSwitch peekedTagNumber
         ['0' BACnetPropertyStatesBoolean(uint 8 peekedTagNumber)
             [simple   BACnetContextTagBoolean('peekedTagNumber', 'BACnetDataType.BOOLEAN')
-                                booleanValue                ]
+                                booleanValue                    ]
         ]
         ['1' BACnetPropertyStatesBinaryValue(uint 8 peekedTagNumber)
             [simple   BACnetBinaryPVTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
-                                binaryValue                 ]
+                                binaryValue                     ]
         ]
-        // TODO: add missing type
+        ['2' BACnetPropertyStatesEventType(uint 8 peekedTagNumber)
+            [simple   BACnetEventTypeTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                eventType                       ]
+        ]
+        ['3' BACnetPropertyStatesPolarity(uint 8 peekedTagNumber)
+            [simple   BACnetPolarityTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                polarity                        ]
+        ]
+        ['4' BACnetPropertyStatesProgramChange(uint 8 peekedTagNumber)
+            [simple   BACnetProgramRequestTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                programChange                   ]
+        ]
+        ['5' BACnetPropertyStatesProgramChange(uint 8 peekedTagNumber)
+            [simple   BACnetProgramStateTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                programState                    ]
+        ]
+        ['6' BACnetPropertyStatesReasonForHalt(uint 8 peekedTagNumber)
+            [simple   BACnetProgramErrorTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                reasonForHalt                   ]
+        ]
         ['7' BACnetPropertyStatesReliability(uint 8 peekedTagNumber)
             [simple   BACnetReliabilityTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
-                                reliability                 ]
+                                reliability                     ]
         ]
-        // TODO: add missing type
+        ['8' BACnetPropertyStatesState(uint 8 peekedTagNumber)
+            [simple   BACnetEventStateTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                state                           ]
+        ]
+        ['9' BACnetPropertyStatesSystemStatus(uint 8 peekedTagNumber)
+            [simple   BACnetDeviceStatusTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                systemStatus                    ]
+        ]
+        ['10' BACnetPropertyStatesUnits(uint 8 peekedTagNumber)
+            [simple   BACnetEngineeringUnitsTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                units                           ]
+        ]
+        ['11' BACnetPropertyStatesExtendedValue(uint 8 peekedTagNumber)
+            [simple   BACnetContextTagUnsignedInteger('peekedTagNumber', 'BACnetDataType.UNSIGNED_INTEGER')
+                                unsignedValue                   ]
+        ]
+        ['12' BACnetPropertyStatesLifeSafetyMode(uint 8 peekedTagNumber)
+            [simple   BACnetLifeSafetyModeTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                lifeSafetyMode                  ]
+        ]
+        ['13' BACnetPropertyStatesLifeSafetyState(uint 8 peekedTagNumber)
+            [simple   BACnetLifeSafetyStateTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                lifeSafetyState                 ]
+        ]
+        ['14' BACnetPropertyStatesRestartReason(uint 8 peekedTagNumber)
+            [simple   BACnetRestartReasonTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                restartReason                   ]
+        ]
+        ['15' BACnetPropertyStatesDoorAlarmState(uint 8 peekedTagNumber)
+            [simple   BACnetDoorAlarmStateTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                doorAlarmState                  ]
+        ]
         ['16' BACnetPropertyStatesAction(uint 8 peekedTagNumber)
             [simple   BACnetActionTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
-                                action                      ]
+                                action                          ]
         ]
-        // TODO: add missing type
-        ['42' BACnetPropertyStatesNetworkType(uint 8 peekedTagNumber)
+        ['17' BACnetPropertyStatesDoorSecuredStatus(uint 8 peekedTagNumber)
+            [simple   BACnetDoorSecuredStatusTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                doorSecuredStatus               ]
+        ]
+        ['18' BACnetPropertyStatesDoorStatus(uint 8 peekedTagNumber)
+            [simple   BACnetDoorStatusTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                doorStatus                      ]
+        ]
+        ['19' BACnetPropertyStatesDoorValue(uint 8 peekedTagNumber)
+            [simple   BACnetDoorValueTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                doorValue                       ]
+        ]
+        ['20' BACnetPropertyStatesFileAccessMethod(uint 8 peekedTagNumber)
+            [simple   BACnetFileAccessMethodTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                fileAccessMethod                ]
+        ]
+        ['21' BACnetPropertyStatesLockStatus(uint 8 peekedTagNumber)
+            [simple   BACnetLockStatusTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                lockStatus                      ]
+        ]
+        ['22' BACnetPropertyStatesLifeSafetyOperations(uint 8 peekedTagNumber)
+            [simple   BACnetLifeSafetyOperationTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                lifeSafetyOperations            ]
+        ]
+        ['23' BACnetPropertyStatesMaintenance(uint 8 peekedTagNumber)
+            [simple   BACnetMaintenanceTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                maintenance                     ]
+        ]
+        ['24' BACnetPropertyStatesNodeType(uint 8 peekedTagNumber)
+            [simple   BACnetNodeTypeTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                nodeType                        ]
+        ]
+        ['25' BACnetPropertyStatesNotifyType(uint 8 peekedTagNumber)
+            [simple   BACnetNotifyTypeTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                notifyType                      ]
+        ]
+        ['26' BACnetPropertyStatesSecurityLevel(uint 8 peekedTagNumber)
+            [simple   BACnetSecurityLevelTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                securityLevel                   ]
+        ]
+        ['27' BACnetPropertyStatesShedState(uint 8 peekedTagNumber)
+            [simple   BACnetShedStateTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                shedState                       ]
+        ]
+        ['28' BACnetPropertyStatesSilencedState(uint 8 peekedTagNumber)
+            [simple   BACnetSilencedStateTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                silencedState                   ]
+        ]
+        //['29' BACnetPropertyStatesReserved(uint 8 peekedTagNumber) ]
+        ['30' BACnetPropertyStatesAccessEvent(uint 8 peekedTagNumber)
+            [simple   BACnetAccessEventTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                accessEvent                     ]
+        ]
+        ['31' BACnetPropertyStatesZoneOccupanyState(uint 8 peekedTagNumber)
+            [simple   BACnetAccessZoneOccupancyStateTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                zoneOccupanyState               ]
+        ]
+        ['32' BACnetPropertyStatesAccessCredentialDisableReason(uint 8 peekedTagNumber)
+            [simple   BACnetAccessCredentialDisableReasonTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                accessCredentialDisableReason   ]
+        ]
+        ['33' BACnetPropertyStatesAccessCredentialDisable(uint 8 peekedTagNumber)
+            [simple   BACnetAccessCredentialDisableTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                accessCredentialDisable         ]
+        ]
+        ['34' BACnetPropertyStatesAuthenticationStatus(uint 8 peekedTagNumber)
+            [simple   BACnetAuthenticationStatusTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                authenticationStatus            ]
+        ]
+        // 35 is undefined
+        ['36' BACnetPropertyStatesBackupState(uint 8 peekedTagNumber)
+            [simple    BACnetBackupStateTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                backupState                     ]
+        ]
+        ['37' BACnetPropertyStatesWriteStatus(uint 8 peekedTagNumber)
+            [simple    BACnetWriteStatusTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                writeStatus                     ]
+        ]
+        ['38' BACnetPropertyStatesLightningInProgress(uint 8 peekedTagNumber)
+            [simple    BACnetLightingInProgressTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                lightningInProgress             ]
+        ]
+        ['39' BACnetPropertyStatesLightningOperation(uint 8 peekedTagNumber)
+            [simple    BACnetLightingOperationTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                lightningOperation              ]
+        ]
+        ['40' BACnetPropertyStatesLightningTransition(uint 8 peekedTagNumber)
+            [simple    BACnetLightingTransitionTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                lightningTransition             ]
+        ]
+        ['41' BACnetPropertyStatesIntegerValue(uint 8 peekedTagNumber)
+            [simple   BACnetContextTagSignedInteger('peekedTagNumber', 'BACnetDataType.SIGNED_INTEGER')
+                                integerValue                    ]
+        ]
+        ['42' BACnetPropertyStatesBinaryLightningValue(uint 8 peekedTagNumber)
+            [simple   BACnetBinaryLightingPVTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                binaryLightningValue            ]
+        ]
+        ['43' BACnetPropertyStatesTimerState(uint 8 peekedTagNumber)
+            [simple   BACnetTimerStateTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                timerState                      ]
+        ]
+        ['44' BACnetPropertyStatesTimerTransition(uint 8 peekedTagNumber)
+            [simple   BACnetTimerTransitionTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                timerTransition                 ]
+        ]
+        ['45' BACnetPropertyStatesBacnetIpMode(uint 8 peekedTagNumber)
+            [simple   BACnetIPModeTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                bacnetIpMode                    ]
+        ]
+        ['46' BACnetPropertyStatesNetworkPortCommand(uint 8 peekedTagNumber)
+            [simple   BACnetNetworkPortCommandTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                networkPortCommand              ]
+        ]
+        ['47' BACnetPropertyStatesNetworkType(uint 8 peekedTagNumber)
             [simple   BACnetNetworkTypeTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
-                                networkType                 ]
+                                networkType                     ]
         ]
-        // TODO: add missing type
-        [BACnetPropertyStateActionUnmapped
-                // TODO: implement me
-                [validation    '1 == 2'    "TODO: implement me"]
+        ['48' BACnetPropertyStatesNetworkNumberQuality(uint 8 peekedTagNumber)
+            [simple   BACnetNetworkNumberQualityTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                networkNumberQuality            ]
+        ]
+        ['49' BACnetPropertyStatesEscalatorOperationDirection(uint 8 peekedTagNumber)
+            [simple   BACnetEscalatorOperationDirectionTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                escalatorOperationDirection     ]
+        ]
+        ['50' BACnetPropertyStatesEscalatorFault(uint 8 peekedTagNumber)
+            [simple   BACnetEscalatorFaultTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                escalatorFault                  ]
+        ]
+        ['51' BACnetPropertyStatesEscalatorMode(uint 8 peekedTagNumber)
+            [simple   BACnetEscalatorModeTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                escalatorMode                   ]
+        ]
+        ['52' BACnetPropertyStatesLiftCarDirection(uint 8 peekedTagNumber)
+            [simple   BACnetLiftCarDirectionTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                liftCarDirection                ]
+        ]
+        ['53' BACnetPropertyStatesLiftCarDoorCommand(uint 8 peekedTagNumber)
+            [simple   BACnetLiftCarDoorCommandTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                liftCarDoorCommand              ]
+        ]
+        ['54' BACnetPropertyStatesLiftCarDriveStatus(uint 8 peekedTagNumber)
+            [simple   BACnetLiftCarDriveStatusTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                liftCarDriveStatus              ]
+        ]
+        ['55' BACnetPropertyStatesLiftCarMode(uint 8 peekedTagNumber)
+            [simple   BACnetLiftCarModeTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                liftCarMode                     ]
+        ]
+        ['56' BACnetPropertyStatesLiftGroupMode(uint 8 peekedTagNumber)
+            [simple   BACnetLiftGroupModeTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                liftGroupMode                   ]
+        ]
+        ['57' BACnetPropertyStatesLiftFault(uint 8 peekedTagNumber)
+            [simple   BACnetLiftFaultTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                liftFault                       ]
+        ]
+        ['58' BACnetPropertyStatesProtocolLevel(uint 8 peekedTagNumber)
+            [simple   BACnetProtocolLevelTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                protocolLevel                   ]
+        ]
+        // 59 undefined
+        // 60 undefined
+        // 61 undefined
+        // 62 undefined
+        ['63' BACnetPropertyStatesExtendedValue(uint 8 peekedTagNumber)
+            [simple BACnetContextTagUnsignedInteger('peekedTagNumber', 'BACnetDataType.UNSIGNED_INTEGER')
+                                extendedValue                   ]
+        ]
+        [BACnetPropertyStateActionUnknown(uint 8 peekedTagNumber)
+            [simple BACnetContextTagUnknown('peekedTagNumber', 'BACnetDataType.UNKNOWN')
+                                unknownValue                    ]
         ]
     ]
-    [simple  BACnetClosingTag('tagNumber')
-                    closingTag                              ]
 ]
 
 [type BACnetTimeStamp

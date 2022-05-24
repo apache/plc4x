@@ -614,11 +614,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		return model.BACnetDeviceObjectPropertyReferenceEnclosedParse(io, tagNumber)
 	case "BACnetPropertyStates":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetPropertyStatesParse(io, tagNumber)
+		return model.BACnetPropertyStatesParse(io)
 	case "BACnetReadAccessResult":
 		return model.BACnetReadAccessResultParse(io)
 	case "BACnetConstructedData":
@@ -759,6 +755,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.MaxApduLengthAcceptedTaggedParse(io, tagNumber, tagClass)
+	case "BACnetPropertyStatesEnclosed":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetPropertyStatesEnclosedParse(io, tagNumber)
 	case "BACnetFileAccessMethodTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

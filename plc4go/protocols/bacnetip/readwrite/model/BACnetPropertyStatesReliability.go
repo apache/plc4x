@@ -30,9 +30,6 @@ import (
 type BACnetPropertyStatesReliability struct {
 	*BACnetPropertyStates
 	Reliability *BACnetReliabilityTagged
-
-	// Arguments.
-	TagNumber uint8
 }
 
 // IBACnetPropertyStatesReliability is the corresponding interface of BACnetPropertyStatesReliability
@@ -58,10 +55,8 @@ type IBACnetPropertyStatesReliability interface {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetPropertyStatesReliability) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
-	m.BACnetPropertyStates.OpeningTag = openingTag
+func (m *BACnetPropertyStatesReliability) InitializeParent(parent *BACnetPropertyStates, peekedTagHeader *BACnetTagHeader) {
 	m.BACnetPropertyStates.PeekedTagHeader = peekedTagHeader
-	m.BACnetPropertyStates.ClosingTag = closingTag
 }
 
 func (m *BACnetPropertyStatesReliability) GetParent() *BACnetPropertyStates {
@@ -83,10 +78,10 @@ func (m *BACnetPropertyStatesReliability) GetReliability() *BACnetReliabilityTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesReliability factory function for BACnetPropertyStatesReliability
-func NewBACnetPropertyStatesReliability(reliability *BACnetReliabilityTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStatesReliability {
+func NewBACnetPropertyStatesReliability(reliability *BACnetReliabilityTagged, peekedTagHeader *BACnetTagHeader) *BACnetPropertyStatesReliability {
 	_result := &BACnetPropertyStatesReliability{
 		Reliability:          reliability,
-		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
 	}
 	_result.Child = _result
 	return _result
@@ -129,7 +124,7 @@ func (m *BACnetPropertyStatesReliability) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesReliabilityParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetPropertyStatesReliability, error) {
+func BACnetPropertyStatesReliabilityParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (*BACnetPropertyStatesReliability, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesReliability"); pullErr != nil {

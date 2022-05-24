@@ -30,9 +30,6 @@ import (
 type BACnetPropertyStatesNetworkType struct {
 	*BACnetPropertyStates
 	NetworkType *BACnetNetworkTypeTagged
-
-	// Arguments.
-	TagNumber uint8
 }
 
 // IBACnetPropertyStatesNetworkType is the corresponding interface of BACnetPropertyStatesNetworkType
@@ -58,10 +55,8 @@ type IBACnetPropertyStatesNetworkType interface {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetPropertyStatesNetworkType) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
-	m.BACnetPropertyStates.OpeningTag = openingTag
+func (m *BACnetPropertyStatesNetworkType) InitializeParent(parent *BACnetPropertyStates, peekedTagHeader *BACnetTagHeader) {
 	m.BACnetPropertyStates.PeekedTagHeader = peekedTagHeader
-	m.BACnetPropertyStates.ClosingTag = closingTag
 }
 
 func (m *BACnetPropertyStatesNetworkType) GetParent() *BACnetPropertyStates {
@@ -83,10 +78,10 @@ func (m *BACnetPropertyStatesNetworkType) GetNetworkType() *BACnetNetworkTypeTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesNetworkType factory function for BACnetPropertyStatesNetworkType
-func NewBACnetPropertyStatesNetworkType(networkType *BACnetNetworkTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStatesNetworkType {
+func NewBACnetPropertyStatesNetworkType(networkType *BACnetNetworkTypeTagged, peekedTagHeader *BACnetTagHeader) *BACnetPropertyStatesNetworkType {
 	_result := &BACnetPropertyStatesNetworkType{
 		NetworkType:          networkType,
-		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
 	}
 	_result.Child = _result
 	return _result
@@ -129,7 +124,7 @@ func (m *BACnetPropertyStatesNetworkType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesNetworkTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetPropertyStatesNetworkType, error) {
+func BACnetPropertyStatesNetworkTypeParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (*BACnetPropertyStatesNetworkType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNetworkType"); pullErr != nil {

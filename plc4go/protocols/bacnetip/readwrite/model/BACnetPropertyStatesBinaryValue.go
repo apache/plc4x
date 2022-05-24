@@ -30,9 +30,6 @@ import (
 type BACnetPropertyStatesBinaryValue struct {
 	*BACnetPropertyStates
 	BinaryValue *BACnetBinaryPVTagged
-
-	// Arguments.
-	TagNumber uint8
 }
 
 // IBACnetPropertyStatesBinaryValue is the corresponding interface of BACnetPropertyStatesBinaryValue
@@ -58,10 +55,8 @@ type IBACnetPropertyStatesBinaryValue interface {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetPropertyStatesBinaryValue) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
-	m.BACnetPropertyStates.OpeningTag = openingTag
+func (m *BACnetPropertyStatesBinaryValue) InitializeParent(parent *BACnetPropertyStates, peekedTagHeader *BACnetTagHeader) {
 	m.BACnetPropertyStates.PeekedTagHeader = peekedTagHeader
-	m.BACnetPropertyStates.ClosingTag = closingTag
 }
 
 func (m *BACnetPropertyStatesBinaryValue) GetParent() *BACnetPropertyStates {
@@ -83,10 +78,10 @@ func (m *BACnetPropertyStatesBinaryValue) GetBinaryValue() *BACnetBinaryPVTagged
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesBinaryValue factory function for BACnetPropertyStatesBinaryValue
-func NewBACnetPropertyStatesBinaryValue(binaryValue *BACnetBinaryPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStatesBinaryValue {
+func NewBACnetPropertyStatesBinaryValue(binaryValue *BACnetBinaryPVTagged, peekedTagHeader *BACnetTagHeader) *BACnetPropertyStatesBinaryValue {
 	_result := &BACnetPropertyStatesBinaryValue{
 		BinaryValue:          binaryValue,
-		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
 	}
 	_result.Child = _result
 	return _result
@@ -129,7 +124,7 @@ func (m *BACnetPropertyStatesBinaryValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesBinaryValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetPropertyStatesBinaryValue, error) {
+func BACnetPropertyStatesBinaryValueParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (*BACnetPropertyStatesBinaryValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBinaryValue"); pullErr != nil {

@@ -28,23 +28,14 @@ import (
 
 // BACnetPropertyStates is the data-structure of this message
 type BACnetPropertyStates struct {
-	OpeningTag      *BACnetOpeningTag
 	PeekedTagHeader *BACnetTagHeader
-	ClosingTag      *BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
-	Child     IBACnetPropertyStatesChild
+	Child           IBACnetPropertyStatesChild
 }
 
 // IBACnetPropertyStates is the corresponding interface of BACnetPropertyStates
 type IBACnetPropertyStates interface {
-	// GetOpeningTag returns OpeningTag (property field)
-	GetOpeningTag() *BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() *BACnetTagHeader
-	// GetClosingTag returns ClosingTag (property field)
-	GetClosingTag() *BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
 	// GetLengthInBytes returns the length in bytes
@@ -62,7 +53,7 @@ type IBACnetPropertyStatesParent interface {
 
 type IBACnetPropertyStatesChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag)
+	InitializeParent(parent *BACnetPropertyStates, peekedTagHeader *BACnetTagHeader)
 	GetParent() *BACnetPropertyStates
 
 	GetTypeName() string
@@ -74,16 +65,8 @@ type IBACnetPropertyStatesChild interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetPropertyStates) GetOpeningTag() *BACnetOpeningTag {
-	return m.OpeningTag
-}
-
 func (m *BACnetPropertyStates) GetPeekedTagHeader() *BACnetTagHeader {
 	return m.PeekedTagHeader
-}
-
-func (m *BACnetPropertyStates) GetClosingTag() *BACnetClosingTag {
-	return m.ClosingTag
 }
 
 ///////////////////////
@@ -105,8 +88,8 @@ func (m *BACnetPropertyStates) GetPeekedTagNumber() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStates factory function for BACnetPropertyStates
-func NewBACnetPropertyStates(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStates {
-	return &BACnetPropertyStates{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+func NewBACnetPropertyStates(peekedTagHeader *BACnetTagHeader) *BACnetPropertyStates {
+	return &BACnetPropertyStates{PeekedTagHeader: peekedTagHeader}
 }
 
 func CastBACnetPropertyStates(structType interface{}) *BACnetPropertyStates {
@@ -137,13 +120,7 @@ func (m *BACnetPropertyStates) GetLengthInBitsConditional(lastItem bool) uint16 
 func (m *BACnetPropertyStates) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
-	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
-
 	// A virtual field doesn't have any in- or output.
-
-	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -152,7 +129,7 @@ func (m *BACnetPropertyStates) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetPropertyStates, error) {
+func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer) (*BACnetPropertyStates, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStates"); pullErr != nil {
@@ -160,19 +137,6 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
-	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
-	}
-	openingTag := CastBACnetOpeningTag(_openingTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
-	}
 
 	// Peek Field (peekedTagHeader)
 	currentPos = positionAware.GetPos()
@@ -189,24 +153,130 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type BACnetPropertyStatesChild interface {
-		InitializeParent(*BACnetPropertyStates, *BACnetOpeningTag, *BACnetTagHeader, *BACnetClosingTag)
+		InitializeParent(*BACnetPropertyStates, *BACnetTagHeader)
 		GetParent() *BACnetPropertyStates
 	}
 	var _child BACnetPropertyStatesChild
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetPropertyStatesBoolean
-		_child, typeSwitchError = BACnetPropertyStatesBooleanParse(readBuffer, tagNumber, peekedTagNumber)
+		_child, typeSwitchError = BACnetPropertyStatesBooleanParse(readBuffer, peekedTagNumber)
 	case peekedTagNumber == uint8(1): // BACnetPropertyStatesBinaryValue
-		_child, typeSwitchError = BACnetPropertyStatesBinaryValueParse(readBuffer, tagNumber, peekedTagNumber)
+		_child, typeSwitchError = BACnetPropertyStatesBinaryValueParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(2): // BACnetPropertyStatesEventType
+		_child, typeSwitchError = BACnetPropertyStatesEventTypeParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(3): // BACnetPropertyStatesPolarity
+		_child, typeSwitchError = BACnetPropertyStatesPolarityParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(4): // BACnetPropertyStatesProgramChange
+		_child, typeSwitchError = BACnetPropertyStatesProgramChangeParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(5): // BACnetPropertyStatesProgramChange
+		_child, typeSwitchError = BACnetPropertyStatesProgramChangeParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(6): // BACnetPropertyStatesReasonForHalt
+		_child, typeSwitchError = BACnetPropertyStatesReasonForHaltParse(readBuffer, peekedTagNumber)
 	case peekedTagNumber == uint8(7): // BACnetPropertyStatesReliability
-		_child, typeSwitchError = BACnetPropertyStatesReliabilityParse(readBuffer, tagNumber, peekedTagNumber)
+		_child, typeSwitchError = BACnetPropertyStatesReliabilityParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(8): // BACnetPropertyStatesState
+		_child, typeSwitchError = BACnetPropertyStatesStateParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(9): // BACnetPropertyStatesSystemStatus
+		_child, typeSwitchError = BACnetPropertyStatesSystemStatusParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(10): // BACnetPropertyStatesUnits
+		_child, typeSwitchError = BACnetPropertyStatesUnitsParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(11): // BACnetPropertyStatesExtendedValue
+		_child, typeSwitchError = BACnetPropertyStatesExtendedValueParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(12): // BACnetPropertyStatesLifeSafetyMode
+		_child, typeSwitchError = BACnetPropertyStatesLifeSafetyModeParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(13): // BACnetPropertyStatesLifeSafetyState
+		_child, typeSwitchError = BACnetPropertyStatesLifeSafetyStateParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(14): // BACnetPropertyStatesRestartReason
+		_child, typeSwitchError = BACnetPropertyStatesRestartReasonParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(15): // BACnetPropertyStatesDoorAlarmState
+		_child, typeSwitchError = BACnetPropertyStatesDoorAlarmStateParse(readBuffer, peekedTagNumber)
 	case peekedTagNumber == uint8(16): // BACnetPropertyStatesAction
-		_child, typeSwitchError = BACnetPropertyStatesActionParse(readBuffer, tagNumber, peekedTagNumber)
-	case peekedTagNumber == uint8(42): // BACnetPropertyStatesNetworkType
-		_child, typeSwitchError = BACnetPropertyStatesNetworkTypeParse(readBuffer, tagNumber, peekedTagNumber)
-	case true: // BACnetPropertyStateActionUnmapped
-		_child, typeSwitchError = BACnetPropertyStateActionUnmappedParse(readBuffer, tagNumber)
+		_child, typeSwitchError = BACnetPropertyStatesActionParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(17): // BACnetPropertyStatesDoorSecuredStatus
+		_child, typeSwitchError = BACnetPropertyStatesDoorSecuredStatusParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(18): // BACnetPropertyStatesDoorStatus
+		_child, typeSwitchError = BACnetPropertyStatesDoorStatusParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(19): // BACnetPropertyStatesDoorValue
+		_child, typeSwitchError = BACnetPropertyStatesDoorValueParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(20): // BACnetPropertyStatesFileAccessMethod
+		_child, typeSwitchError = BACnetPropertyStatesFileAccessMethodParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(21): // BACnetPropertyStatesLockStatus
+		_child, typeSwitchError = BACnetPropertyStatesLockStatusParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(22): // BACnetPropertyStatesLifeSafetyOperations
+		_child, typeSwitchError = BACnetPropertyStatesLifeSafetyOperationsParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(23): // BACnetPropertyStatesMaintenance
+		_child, typeSwitchError = BACnetPropertyStatesMaintenanceParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(24): // BACnetPropertyStatesNodeType
+		_child, typeSwitchError = BACnetPropertyStatesNodeTypeParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(25): // BACnetPropertyStatesNotifyType
+		_child, typeSwitchError = BACnetPropertyStatesNotifyTypeParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(26): // BACnetPropertyStatesSecurityLevel
+		_child, typeSwitchError = BACnetPropertyStatesSecurityLevelParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(27): // BACnetPropertyStatesShedState
+		_child, typeSwitchError = BACnetPropertyStatesShedStateParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(28): // BACnetPropertyStatesSilencedState
+		_child, typeSwitchError = BACnetPropertyStatesSilencedStateParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(30): // BACnetPropertyStatesAccessEvent
+		_child, typeSwitchError = BACnetPropertyStatesAccessEventParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(31): // BACnetPropertyStatesZoneOccupanyState
+		_child, typeSwitchError = BACnetPropertyStatesZoneOccupanyStateParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(32): // BACnetPropertyStatesAccessCredentialDisableReason
+		_child, typeSwitchError = BACnetPropertyStatesAccessCredentialDisableReasonParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(33): // BACnetPropertyStatesAccessCredentialDisable
+		_child, typeSwitchError = BACnetPropertyStatesAccessCredentialDisableParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(34): // BACnetPropertyStatesAuthenticationStatus
+		_child, typeSwitchError = BACnetPropertyStatesAuthenticationStatusParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(36): // BACnetPropertyStatesBackupState
+		_child, typeSwitchError = BACnetPropertyStatesBackupStateParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(37): // BACnetPropertyStatesWriteStatus
+		_child, typeSwitchError = BACnetPropertyStatesWriteStatusParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(38): // BACnetPropertyStatesLightningInProgress
+		_child, typeSwitchError = BACnetPropertyStatesLightningInProgressParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(39): // BACnetPropertyStatesLightningOperation
+		_child, typeSwitchError = BACnetPropertyStatesLightningOperationParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(40): // BACnetPropertyStatesLightningTransition
+		_child, typeSwitchError = BACnetPropertyStatesLightningTransitionParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(41): // BACnetPropertyStatesIntegerValue
+		_child, typeSwitchError = BACnetPropertyStatesIntegerValueParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(42): // BACnetPropertyStatesBinaryLightningValue
+		_child, typeSwitchError = BACnetPropertyStatesBinaryLightningValueParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(43): // BACnetPropertyStatesTimerState
+		_child, typeSwitchError = BACnetPropertyStatesTimerStateParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(44): // BACnetPropertyStatesTimerTransition
+		_child, typeSwitchError = BACnetPropertyStatesTimerTransitionParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(45): // BACnetPropertyStatesBacnetIpMode
+		_child, typeSwitchError = BACnetPropertyStatesBacnetIpModeParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(46): // BACnetPropertyStatesNetworkPortCommand
+		_child, typeSwitchError = BACnetPropertyStatesNetworkPortCommandParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(47): // BACnetPropertyStatesNetworkType
+		_child, typeSwitchError = BACnetPropertyStatesNetworkTypeParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(48): // BACnetPropertyStatesNetworkNumberQuality
+		_child, typeSwitchError = BACnetPropertyStatesNetworkNumberQualityParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(49): // BACnetPropertyStatesEscalatorOperationDirection
+		_child, typeSwitchError = BACnetPropertyStatesEscalatorOperationDirectionParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(50): // BACnetPropertyStatesEscalatorFault
+		_child, typeSwitchError = BACnetPropertyStatesEscalatorFaultParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(51): // BACnetPropertyStatesEscalatorMode
+		_child, typeSwitchError = BACnetPropertyStatesEscalatorModeParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(52): // BACnetPropertyStatesLiftCarDirection
+		_child, typeSwitchError = BACnetPropertyStatesLiftCarDirectionParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(53): // BACnetPropertyStatesLiftCarDoorCommand
+		_child, typeSwitchError = BACnetPropertyStatesLiftCarDoorCommandParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(54): // BACnetPropertyStatesLiftCarDriveStatus
+		_child, typeSwitchError = BACnetPropertyStatesLiftCarDriveStatusParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(55): // BACnetPropertyStatesLiftCarMode
+		_child, typeSwitchError = BACnetPropertyStatesLiftCarModeParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(56): // BACnetPropertyStatesLiftGroupMode
+		_child, typeSwitchError = BACnetPropertyStatesLiftGroupModeParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(57): // BACnetPropertyStatesLiftFault
+		_child, typeSwitchError = BACnetPropertyStatesLiftFaultParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(58): // BACnetPropertyStatesProtocolLevel
+		_child, typeSwitchError = BACnetPropertyStatesProtocolLevelParse(readBuffer, peekedTagNumber)
+	case peekedTagNumber == uint8(63): // BACnetPropertyStatesExtendedValue
+		_child, typeSwitchError = BACnetPropertyStatesExtendedValueParse(readBuffer, peekedTagNumber)
+	case true: // BACnetPropertyStateActionUnknown
+		_child, typeSwitchError = BACnetPropertyStateActionUnknownParse(readBuffer, peekedTagNumber)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -215,25 +285,12 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
-	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
-	}
-	closingTag := CastBACnetClosingTag(_closingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
-	}
-
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStates"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child.GetParent(), openingTag, peekedTagHeader, closingTag)
+	_child.InitializeParent(_child.GetParent(), peekedTagHeader)
 	return _child.GetParent(), nil
 }
 
@@ -247,18 +304,6 @@ func (m *BACnetPropertyStates) SerializeParent(writeBuffer utils.WriteBuffer, ch
 	if pushErr := writeBuffer.PushContext("BACnetPropertyStates"); pushErr != nil {
 		return pushErr
 	}
-
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
-	}
-	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
-	}
 	// Virtual field
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
@@ -267,18 +312,6 @@ func (m *BACnetPropertyStates) SerializeParent(writeBuffer utils.WriteBuffer, ch
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
-	}
-
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
-	}
-	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPropertyStates"); popErr != nil {

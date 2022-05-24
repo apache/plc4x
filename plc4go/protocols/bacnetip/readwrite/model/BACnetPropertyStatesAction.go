@@ -30,9 +30,6 @@ import (
 type BACnetPropertyStatesAction struct {
 	*BACnetPropertyStates
 	Action *BACnetActionTagged
-
-	// Arguments.
-	TagNumber uint8
 }
 
 // IBACnetPropertyStatesAction is the corresponding interface of BACnetPropertyStatesAction
@@ -58,10 +55,8 @@ type IBACnetPropertyStatesAction interface {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetPropertyStatesAction) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
-	m.BACnetPropertyStates.OpeningTag = openingTag
+func (m *BACnetPropertyStatesAction) InitializeParent(parent *BACnetPropertyStates, peekedTagHeader *BACnetTagHeader) {
 	m.BACnetPropertyStates.PeekedTagHeader = peekedTagHeader
-	m.BACnetPropertyStates.ClosingTag = closingTag
 }
 
 func (m *BACnetPropertyStatesAction) GetParent() *BACnetPropertyStates {
@@ -83,10 +78,10 @@ func (m *BACnetPropertyStatesAction) GetAction() *BACnetActionTagged {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesAction factory function for BACnetPropertyStatesAction
-func NewBACnetPropertyStatesAction(action *BACnetActionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStatesAction {
+func NewBACnetPropertyStatesAction(action *BACnetActionTagged, peekedTagHeader *BACnetTagHeader) *BACnetPropertyStatesAction {
 	_result := &BACnetPropertyStatesAction{
 		Action:               action,
-		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
 	}
 	_result.Child = _result
 	return _result
@@ -129,7 +124,7 @@ func (m *BACnetPropertyStatesAction) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetPropertyStatesAction, error) {
+func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (*BACnetPropertyStatesAction, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAction"); pullErr != nil {
