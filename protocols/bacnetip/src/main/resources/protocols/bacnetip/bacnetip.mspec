@@ -1431,6 +1431,18 @@
             [simple BACnetClosingTag('peekedTagNumber')
                             innerClosingTag                                         ]
         ]
+        ['17' BACnetNotificationParametersChangeOfCharacterString(uint 8 peekedTagNumber)
+            [simple BACnetOpeningTag('peekedTagNumber')
+                            innerOpeningTag                                         ]
+            [simple BACnetContextTagCharacterString('0', 'BACnetDataType.CHARACTER_STRING')
+                            changedValue                                            ]
+            [simple BACnetStatusFlags('1')
+                            statusFlags                                             ]
+            [simple BACnetContextTagCharacterString('2', 'BACnetDataType.CHARACTER_STRING')
+                            alarmValue                                              ]
+            [simple BACnetClosingTag('peekedTagNumber')
+                            innerClosingTag                                         ]
+        ]
         // TODO: implement other cases
         [BACnetNotificationParametersUnmapped
             // TODO: implement me
