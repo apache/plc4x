@@ -23,7 +23,7 @@ import org.apache.maven.project.MavenProject
 project = (MavenProject) project
 def bacnetEnumsFile = new File(project.basedir, "src/main/resources/protocols/bacnetip/bacnet-private-enums.mspec")
 foundEnums = []
-enumPattern = ~/\[enum \w+ \d+ (\w+)\n.*' *([\w_]+)/
+enumPattern = ~/\[enum \w+ \d+ (\w+)(\r)?\n.*' *([\w_]+)/
 matcher = bacnetEnumsFile.text =~ enumPattern
 if (matcher.find()) {
     matcher.each {
