@@ -983,8 +983,9 @@
             [simple   BACnetApplicationTagUnsignedInteger                       remoteVtSessionIdentifier                        ]
         ]
         ['VT_DATA' BACnetServiceAckVTData
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetApplicationTagUnsignedInteger                       vtSessionIdentifier                              ]
+            [simple   BACnetApplicationTagOctetString                           vtNewData                                        ]
+            [simple   BACnetApplicationTagUnsignedInteger                       vtDataFlag                                       ]
         ]
         //
         ////
