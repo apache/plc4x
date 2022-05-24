@@ -156,7 +156,7 @@ func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer, bvlcPayload
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'table' field")
 			}
-			table = append(table, _item)
+			table = append(table, CastBVLCForeignDeviceTableEntry(_item))
 		}
 	}
 	if closeErr := readBuffer.CloseContext("table", utils.WithRenderAsList(true)); closeErr != nil {

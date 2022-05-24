@@ -147,7 +147,7 @@ func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (*DIBSuppSvcFamilies, 
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'serviceIds' field")
 			}
-			serviceIds = append(serviceIds, _item)
+			serviceIds = append(serviceIds, CastServiceId(_item))
 		}
 	}
 	if closeErr := readBuffer.CloseContext("serviceIds", utils.WithRenderAsList(true)); closeErr != nil {

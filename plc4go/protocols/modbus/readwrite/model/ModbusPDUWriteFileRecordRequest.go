@@ -171,7 +171,7 @@ func ModbusPDUWriteFileRecordRequestParse(readBuffer utils.ReadBuffer, response 
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field")
 			}
-			items = append(items, _item)
+			items = append(items, CastModbusPDUWriteFileRecordRequestItem(_item))
 		}
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {

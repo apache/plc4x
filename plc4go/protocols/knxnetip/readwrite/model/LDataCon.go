@@ -185,7 +185,7 @@ func LDataConParse(readBuffer utils.ReadBuffer, size uint16) (*LDataCon, error) 
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field")
 			}
-			additionalInformation = append(additionalInformation, _item)
+			additionalInformation = append(additionalInformation, CastCEMIAdditionalInformation(_item))
 		}
 	}
 	if closeErr := readBuffer.CloseContext("additionalInformation", utils.WithRenderAsList(true)); closeErr != nil {

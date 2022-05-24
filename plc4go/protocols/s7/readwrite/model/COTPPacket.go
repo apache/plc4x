@@ -209,7 +209,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'parameters' field")
 			}
-			parameters = append(parameters, _item)
+			parameters = append(parameters, CastCOTPParameter(_item))
 			curPos = positionAware.GetPos() - startPos
 		}
 	}

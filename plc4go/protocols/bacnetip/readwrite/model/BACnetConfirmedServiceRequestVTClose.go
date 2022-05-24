@@ -153,11 +153,11 @@ func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, serv
 		_listOfRemoteVtSessionIdentifiersLength := utils.InlineIf(bool(bool((serviceRequestLength) > (0))), func() interface{} { return uint16(uint16(uint16(serviceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
 		_listOfRemoteVtSessionIdentifiersEndPos := positionAware.GetPos() + uint16(_listOfRemoteVtSessionIdentifiersLength)
 		for positionAware.GetPos() < _listOfRemoteVtSessionIdentifiersEndPos {
-			_item, _err := BACnetApplicationTagUnsignedIntegerParse(readBuffer)
+			_item, _err := BACnetApplicationTagParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfRemoteVtSessionIdentifiers' field")
 			}
-			listOfRemoteVtSessionIdentifiers = append(listOfRemoteVtSessionIdentifiers, _item)
+			listOfRemoteVtSessionIdentifiers = append(listOfRemoteVtSessionIdentifiers, CastBACnetApplicationTagUnsignedInteger(_item))
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listOfRemoteVtSessionIdentifiers", utils.WithRenderAsList(true)); closeErr != nil {

@@ -830,11 +830,40 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		_${arrayField.name}Length := ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}
 		_${arrayField.name}EndPos := positionAware.GetPos() + uint16(_${arrayField.name}Length)
 		for ;positionAware.GetPos() < _${arrayField.name}EndPos; {
-			_item, _err := <#if arrayElementType.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall("", arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>${arrayElementType.asComplexTypeReference().orElseThrow().name}Parse(readBuffer<#if arrayElementType.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list arrayElementType.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayElementType, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
+                        <@compress single_line=true>
+							_item, _err := <#if arrayElementType.isSimpleTypeReference()>
+                            ${helper.getReadBufferReadMethodCall("", arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}
+                        <#else>
+                            <#assign complexTypeReference=arrayElementType.asComplexTypeReference().orElseThrow()>
+                            <#assign typeName=complexTypeReference.name>
+                            <#assign typeDefinition=complexTypeReference.typeDefinition>
+                            <#if typeDefinition.isComplexTypeDefinition() && typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedChildTypeDefinition()>
+                            <#-- Usually you don't use child directly unless they are parameterized #-->
+                                <#assign typeName=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow().name>
+                                <#assign typeDefinition=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow()>
+                            </#if>
+                            <#assign hasRefParams=complexTypeReference.params.isPresent()>
+                            <#assign refParams>
+                                <#if hasRefParams>
+									,
+                                    <#list complexTypeReference.params.orElseThrow() as parserArgument>
+                                        ${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayElementType, parserArgument?index), parserArgument, parserArguments)}
+                                        <#sep>, </#sep>
+                                    </#list>
+                                </#if>
+                            </#assign>
+                            ${typeName}Parse(readBuffer${refParams})
+                        </#if>
+                        </@compress>
+
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
+                        <#if arrayElementType.isSimpleTypeReference()>
 			${arrayField.name} = append(${arrayField.name}, _item)
+                        <#else>
+			${arrayField.name} = append(${arrayField.name}, Cast${arrayElementType.asComplexTypeReference().orElseThrow().name}(_item))
+                        </#if>
 						<#-- After parsing, update the current position, but only if it's needed -->
 							<#if arrayField.loopExpression.contains("curPos")>
 			curPos = positionAware.GetPos() - startPos
@@ -848,8 +877,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	{
 		for ;!bool(${helper.toParseExpression(arrayField, helper.boolTypeReference, arrayField.loopExpression, parserArguments)}); {
 						<@compress single_line=true>
-			_item, _err :=
-							<#if arrayElementType.isSimpleTypeReference()>
+			_item, _err := <#if arrayElementType.isSimpleTypeReference()>
 								${helper.getReadBufferReadMethodCall("", arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}
 							<#else>
                                 <#assign complexTypeReference=arrayElementType.asComplexTypeReference().orElseThrow()>

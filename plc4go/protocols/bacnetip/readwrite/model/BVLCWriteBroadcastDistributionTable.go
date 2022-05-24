@@ -156,7 +156,7 @@ func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcP
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'table' field")
 			}
-			table = append(table, _item)
+			table = append(table, CastBVLCBroadcastDistributionTableEntry(_item))
 		}
 	}
 	if closeErr := readBuffer.CloseContext("table", utils.WithRenderAsList(true)); closeErr != nil {
