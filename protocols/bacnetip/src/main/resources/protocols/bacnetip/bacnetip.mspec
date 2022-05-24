@@ -1443,11 +1443,17 @@
             [simple BACnetClosingTag('peekedTagNumber')
                             innerClosingTag                                         ]
         ]
-        // TODO: implement other cases
-        [BACnetNotificationParametersUnmapped
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+        ['18' BACnetNotificationParametersChangeOfStatusFlags(uint 8 peekedTagNumber)
+            [simple BACnetOpeningTag('peekedTagNumber')
+                            innerOpeningTag                                         ]
+            [simple BACnetConstructedData('0', 'objectType', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE')
+                            presentValue                                            ]
+            [simple BACnetStatusFlags('1')
+                            statusFlags                                             ]
+            [simple BACnetClosingTag('peekedTagNumber')
+                            innerClosingTag                                         ]
         ]
+        // TODO: implement other cases
     ]
     [simple BACnetClosingTag('tagNumber')
                     closingTag                                              ]
