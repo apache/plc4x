@@ -78,7 +78,7 @@ taggedEnumsTemplate = """
                     proprietaryValue
                         'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
                         'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?header.actualLength * 8:0'                                     ]
+                        '_value.isProprietary?(header.actualLength * 8):0'                                     ]
 ]
 <% } %>
 """

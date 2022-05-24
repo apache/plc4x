@@ -201,7 +201,7 @@
                                     'segmentedMessage && sequenceNumber != 0']
             [array    byte      segment
                                     length
-                                    'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?6:5)):0):0'
+                                    'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?(6):(5))):0):0']
         ]
         ['0x1' APDUUnconfirmedRequest
             [reserved uint 4                          '0'               ]
@@ -226,7 +226,7 @@
             [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
             [array    byte      segment
                                     length
-                                    'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?5:4)):0):0'
+                                    'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?(5):(4))):0):0'
                                                                         ]
         ]
         ['0x4' APDUSegmentAck
@@ -277,7 +277,7 @@
                     proprietaryValue
                         'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, actualLength, isProprietary)'
                         'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?actualLength * 8:0'                  ]
+                        '_value.isProprietary?(actualLength * 8):0'                  ]
 ]
 
 // Not really tagged as it has no header but is consistent with naming schema enum+Tagged
@@ -293,7 +293,7 @@
                     proprietaryValue
                         'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, actualLength, isProprietary)'
                         'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?actualLength * 8:0'                  ]
+                        '_value.isProprietary?(actualLength * 8):0'                  ]
 ]
 
 [discriminatedType BACnetConfirmedServiceRequest(uint 16 serviceRequestLength)
@@ -425,7 +425,7 @@
         ['READ_PROPERTY' BACnetConfirmedServiceRequestReadProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                             objectIdentifier        ]
-            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
+            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                             propertyIdentifier      ]
             [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
                             arrayIndex              ]
@@ -570,7 +570,7 @@
 ]
 
 [type ListOfCovNotificationsValue(BACnetObjectType objectType)
-    [simple   BACnetPropertyIdentifierTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
+    [simple   BACnetPropertyIdentifierTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                                 propertyIdentifier                                                      ]
     [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
                                 arrayIndex                                                              ]
@@ -688,7 +688,7 @@
 ]
 
 [type BACnetPropertyReference
-    [simple   BACnetPropertyIdentifierTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
+    [simple   BACnetPropertyIdentifierTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                     propertyIdentifier              ]
     [optional   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
                     arrayIndex                      ]
@@ -706,7 +706,7 @@
 [type BACnetObjectPropertyReference
     [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                     objectIdentifier                ]
-    [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
+    [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                     propertyIdentifier              ]
     [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
                     arrayIndex                      ]
@@ -771,7 +771,7 @@
 ]
 
 [type BACnetPropertyWriteDefinition(BACnetObjectType objectType)
-    [simple   BACnetPropertyIdentifierTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
+    [simple   BACnetPropertyIdentifierTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                     propertyIdentifier              ]
     [optional   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
                     arrayIndex                      ]
@@ -938,7 +938,7 @@
         ['READ_PROPERTY' BACnetServiceAckReadProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                             objectIdentifier        ]
-            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
+            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                             propertyIdentifier      ]
             [optional   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
                             arrayIndex              ]
@@ -1105,7 +1105,7 @@
     [peek       BACnetTagHeader
                            peekedTagHeader                                          ]
     [virtual uint 8     peekedTagNumber     'peekedTagHeader.actualTagNumber'       ]
-    [virtual bit        peekedIsContextTag  'peekedTagHeader.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS'
+    [virtual bit        peekedIsContextTag  'peekedTagHeader.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS']
     [typeSwitch peekedTagNumber, peekedIsContextTag
        ['0x0', 'false' BACnetChannelValueNull
            [simple  BACnetApplicationTagNull
@@ -1209,7 +1209,7 @@
 ]
 
 [type BACnetReadAccessProperty(BACnetObjectType objectType)
-    [simple   BACnetPropertyIdentifierTagged('2', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
+    [simple   BACnetPropertyIdentifierTagged('2', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                     propertyIdentifier                                                          ]
     [optional   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
                     arrayIndex                                                                  ]
@@ -1746,7 +1746,7 @@
                        peekedTagHeader
    ]
    [virtual uint 8     peekedTagNumber     'peekedTagHeader.actualTagNumber'       ]
-   [virtual bit        peekedIsContextTag  'peekedTagHeader.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS'
+   [virtual bit        peekedIsContextTag  'peekedTagHeader.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS']
    [typeSwitch peekedTagNumber, peekedIsContextTag
        ['0x1', 'false' BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
            [simple   BACnetApplicationTagBoolean
@@ -1809,7 +1809,7 @@
                         deviceIdentifier                                                        ]
     [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                         objectIdentifier                                                        ]
-    [simple   BACnetPropertyIdentifierTagged('2', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
+    [simple   BACnetPropertyIdentifierTagged('2', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                         propertyIdentifier                                                      ]
     [optional   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
                         arrayIndex                                                              ]
@@ -2886,7 +2886,7 @@
 [type BACnetDeviceObjectPropertyReference
     [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                         objectIdentifier                                                                        ]
-    [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')               
+    [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                         propertyIdentifier                                                                      ]
     [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
                         arrayIndex                                                                              ]

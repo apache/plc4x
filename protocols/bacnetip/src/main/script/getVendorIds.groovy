@@ -145,7 +145,7 @@ mspecTemplate = """
                     unknownId
                         'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isUnknownId)'
                         'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, unknownId, isUnknownId)'
-                        '_value.isUnknownId?header.actualLength * 8:0'                                       ]
+                        '_value.isUnknownId?(header.actualLength * 8):0'                                       ]
 ]
 """
 SimpleTemplateEngine templateEngine = new SimpleTemplateEngine()
