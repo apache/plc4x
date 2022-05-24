@@ -1449,10 +1449,24 @@
             [simple BACnetConstructedData('0', 'objectType', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE')
                             presentValue                                            ]
             [simple BACnetStatusFlags('1')
-                            statusFlags                                             ]
+                            referencedFlags                                         ]
             [simple BACnetClosingTag('peekedTagNumber')
                             innerClosingTag                                         ]
         ]
+        ['19' BACnetNotificationParametersChangeOfReliability(uint 8 peekedTagNumber)
+            [simple BACnetOpeningTag('peekedTagNumber')
+                            innerOpeningTag                                         ]
+            [simple BACnetReliabilityTagged('0', 'TagClass.ContextSpecificTags')
+                            reliability                                             ]
+            [simple BACnetStatusFlags('1')
+                            statusFlags                                             ]
+            [simple BACnetPropertyValues('2', 'monitoredObjectIdentifier.objectType')
+                            propertyValues                                          ]
+            [simple BACnetClosingTag('peekedTagNumber')
+                            innerClosingTag                                         ]
+        ]
+        // 20 is not used
+
         // TODO: implement other cases
     ]
     [simple BACnetClosingTag('tagNumber')
