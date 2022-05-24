@@ -844,8 +844,11 @@
             [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE') serviceParameters           ]
         ]
         ['UNCONFIRMED_TEXT_MESSAGE' BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      textMessageSourceDevice     ]
+            [optional BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass('1')                    messageClass                ] // Note we reuse the once from confirmed here
+            [simple   BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged('2', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                                                                                            messagePriority             ] // Note we reuse the once from confirmed here
+            [simple   BACnetContextTagCharacterString('3', 'BACnetDataType.CHARACTER_STRING')               message                     ]
         ]
         ['TIME_SYNCHRONIZATION' BACnetUnconfirmedServiceRequestTimeSynchronization
             [simple   BACnetApplicationTagDate synchronizedDate]
@@ -858,23 +861,25 @@
             [optional BACnetContextTagCharacterString('3', 'BACnetDataType.CHARACTER_STRING')           objectName                    'objectIdentifier == null'            ]
         ]
         ['WHO_IS' BACnetUnconfirmedServiceRequestWhoIs
-            [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')   deviceInstanceRangeLowLimit                                                 ]
-            [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')   deviceInstanceRangeHighLimit  'deviceInstanceRangeLowLimit != null'         ]
+            [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')           deviceInstanceRangeLowLimit                                                 ]
+            [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')           deviceInstanceRangeHighLimit  'deviceInstanceRangeLowLimit != null'         ]
         ]
         ['UTC_TIME_SYNCHRONIZATION' BACnetUnconfirmedServiceRequestUTCTimeSynchronization
             [simple   BACnetApplicationTagDate synchronizedDate]
             [simple   BACnetApplicationTagTime synchronizedTime]
         ]
         ['WRITE_GROUP' BACnetUnconfirmedServiceRequestWriteGroup
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')           groupNumber                 ]
+            [simple   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')           writePriority               ]
+            [simple   BACnetGroupChannelValueList('2')                                                  changeList                  ]
+            [optional BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')           inhibitDelay                ]
         ]
         ['UNCONFIRMED_COV_NOTIFICATION_MULTIPLE' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
-            [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
-            [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') initiatingDeviceIdentifier  ]
-            [simple   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')          timeRemaining               ]
-            [optional BACnetTimeStampEnclosed('3')                                                     timestamp                   ]
-            [simple   ListOfCovNotificationsList('4')                                                  listOfCovNotifications      ]
+            [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')           subscriberProcessIdentifier ]
+            [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')  initiatingDeviceIdentifier  ]
+            [simple   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')           timeRemaining               ]
+            [optional BACnetTimeStampEnclosed('3')                                                      timestamp                   ]
+            [simple   ListOfCovNotificationsList('4')                                                   listOfCovNotifications      ]
         ]
         [BACnetUnconfirmedServiceRequestUnconfirmedUnknown
             [array    byte    unknownBytes length '(serviceRequestLength>0)?(serviceRequestLength - 1):0']
@@ -1133,6 +1138,113 @@
     [virtual    bit toOffnormal         'rawBits.payload.data[0]']
     [virtual    bit toFault             'rawBits.payload.data[1]']
     [virtual    bit toNormal            'rawBits.payload.data[2]']
+]
+
+[type BACnetGroupChannelValueList(uint 8 tagNumber)
+    [simple   BACnetOpeningTag('tagNumber')
+                     openingTag                     ]
+    [array    BACnetEventSummary
+                         listOfEventSummaries
+                         terminated
+                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'
+    ]
+    [simple   BACnetClosingTag('tagNumber')
+                     closingTag                     ]
+]
+
+[type BACnetGroupChannelValue
+    [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')   channel                         ]
+    [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')   overridingPriority              ]
+    [simple   BACnetChannelValue                                                        value                           ]
+]
+
+[type BACnetChannelValue
+    [peek       BACnetTagHeader
+                           peekedTagHeader                                          ]
+    [virtual uint 8     peekedTagNumber     'peekedTagHeader.actualTagNumber'       ]
+    [virtual bit        peekedIsContextTag  'peekedTagHeader.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS'
+    [typeSwitch peekedTagNumber, peekedIsContextTag
+       ['0x0', 'false' BACnetChannelValueNull
+           [simple  BACnetApplicationTagNull
+                        nullValue                                                  ]
+       ]
+       ['0x4', 'false' BACnetChannelValueReal
+           [simple  BACnetApplicationTagReal
+                        realValue                                                  ]
+       ]
+       ['0x9', 'false' BACnetChannelValueEnumerated
+           [simple   BACnetApplicationTagEnumerated
+                       enumeratedValue                                             ]
+       ]
+       ['0x2', 'false' BACnetChannelValueUnsigned
+           [simple   BACnetApplicationTagUnsignedInteger
+                       unsignedValue                                               ]
+       ]
+       ['0x1', 'false' BACnetChannelValueBoolean
+           [simple   BACnetApplicationTagBoolean
+                       booleanValue                                                ]
+       ]
+       ['0x3', 'false' BACnetChannelValueInteger
+           [simple   BACnetApplicationTagSignedInteger
+                       integerValue                                                ]
+       ]
+       ['0x5', 'false' BACnetChannelValueDouble
+           [simple  BACnetApplicationTagDouble
+                        doubleValue                                                ]
+       ]
+       ['0xB', 'false' BACnetChannelValueTime
+           [simple   BACnetApplicationTagTime
+                       timeValue                                                   ]
+       ]
+       ['0x7', 'false' BACnetChannelValueCharacterString
+           [simple   BACnetApplicationTagCharacterString
+                       characterStringValue                                        ]
+       ]
+       ['0x6', 'false' BACnetChannelValueOctetString
+           [simple   BACnetApplicationTagOctetString
+                       octetStringValue                                            ]
+       ]
+       ['0x8', 'false' BACnetChannelValueBitString
+           [simple   BACnetApplicationTagBitString
+                       bitStringValue                                              ]
+       ]
+       ['0xA', 'false' BACnetChannelValueDate
+           [simple   BACnetApplicationTagDate
+                       dateValue                                                   ]
+       ]
+       ['0xC', 'false' BACnetChannelValueObjectidentifier
+           [simple   BACnetApplicationTagObjectIdentifier
+                       objectidentifierValue                                       ]
+       ]
+       ['0', 'true' BACnetChannelValueLightingCommand
+           [simple   BACnetLightingCommandEnclosed('0')
+                       ligthingCommandValue                                        ]
+       ]
+    ]
+]
+
+[type BACnetLightingCommandEnclosed(uint 8 tagNumber)
+    [simple   BACnetOpeningTag('tagNumber')
+                    openingTag          ]
+    [simple   BACnetLightingCommand
+                    lightingCommand     ]
+    [simple   BACnetClosingTag('tagNumber')
+                    closingTag          ]
+]
+
+[type BACnetLightingCommand
+    [simple    BACnetLightingOperationTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                        lightningOperation              ]
+    [optional  BACnetContextTagReal('1', 'BACnetDataType.REAL')
+                        targetLevel                     ]
+    [optional  BACnetContextTagReal('2', 'BACnetDataType.REAL')
+                        rampRate                        ]
+    [optional  BACnetContextTagReal('3', 'BACnetDataType.REAL')
+                        stepIncrement                   ]
+    [optional  BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')
+                        fadeTime                        ]
+    [optional  BACnetContextTagUnsignedInteger('5', 'BACnetDataType.UNSIGNED_INTEGER')
+                        priority                        ]
 ]
 
 [type BACnetReadAccessResult
