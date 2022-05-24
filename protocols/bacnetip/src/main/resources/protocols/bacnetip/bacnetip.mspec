@@ -1319,7 +1319,21 @@
             [simple BACnetPropertyValues('peekedTagNumber', 'objectType')
                             listOfValues ]
         ]
-        // TODO: implement other cases
+        // 7 is deprecated
+        ['8' BACnetNotificationParametersChangeOfLifeSafety(uint 8 peekedTagNumber)
+            [simple BACnetOpeningTag('peekedTagNumber')
+                            innerOpeningTag                                         ]
+            [simple BACnetLifeSafetyStateTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                            newState                                                ]
+            [simple BACnetLifeSafetyModeTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                            newMode                                                 ]
+            [simple BACnetStatusFlags('2')
+                            statusFlags                                             ]
+            [simple BACnetLifeSafetyOperationTagged('3', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                            operationExpected                                       ]
+            [simple BACnetClosingTag('peekedTagNumber')
+                            innerClosingTag                                         ]
+        ]
         ['9' BACnetNotificationParametersExtended(uint 8 peekedTagNumber)
             [simple BACnetOpeningTag('peekedTagNumber')
                             innerOpeningTag ]
