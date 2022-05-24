@@ -40,8 +40,11 @@ public class BacNetIpProtocol implements Protocol, ProtocolHelpers {
     public TypeContext getTypeContext() throws GenerationException {
         ValidatableTypeContext typeContext;
 
+        LOGGER.info("Parsing: bacnet-tags.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-tags"));
+
         LOGGER.info("Parsing: bacnet-private-enums.mspec");
-        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-private-enums"));
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-private-enums"), typeContext);
 
         LOGGER.info("Parsing: bacnet-enums.mspec");
         typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-enums"), typeContext);
