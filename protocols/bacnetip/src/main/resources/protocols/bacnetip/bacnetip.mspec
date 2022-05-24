@@ -485,9 +485,9 @@
             [simple   BACnetContextTagCharacterString('3', 'BACnetDataType.CHARACTER_STRING')               message                     ]
         ]
         ['REINITIALIZE_DEVICE' BACnetConfirmedServiceRequestReinitializeDevice
-          [simple   BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+            [simple   BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                                                                                                             reinitializedStateOfDevice  ]
-          [optional BACnetContextTagCharacterString('1', 'BACnetDataType.CHARACTER_STRING')
+            [optional BACnetContextTagCharacterString('1', 'BACnetDataType.CHARACTER_STRING')
                                                                                                             password                    ]
         ]
 
@@ -495,8 +495,8 @@
         //  Virtual Terminal Services
 
         ['VT_OPEN' BACnetConfirmedServiceRequestVTOpen
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetVTClassTagged('0', 'TagClass.APPLICATION_TAGS')                                 vtClass                     ]
+            [simple   BACnetApplicationTagUnsignedInteger                                                   locatVtSessionIdentifier    ]
         ]
         ['VT_CLOSE' BACnetConfirmedServiceRequestVTClose
             // TODO: implement me
