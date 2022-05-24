@@ -894,25 +894,10 @@
         ////
         // Alarm and Event Services
 
-        ['ACKNOWLEDGE_ALARM' BACnetServiceAckAcknowledgeAlarm
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['CONFIRMED_COV_NOTIFICATION' BACnetServiceAckConfirmedCovNotification
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['CONFIRMED_COV_NOTIFICATION_MULTIPLE' BACnetServiceAckConfirmedCovNotificationMultiple
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['CONFIRMED_EVENT_NOTIFICATION' BACnetServiceAckConfirmedEventNotification
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
         ['GET_ALARM_SUMMARY' BACnetServiceAckGetAlarmSummary
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetApplicationTagObjectIdentifier                      objectIdentifier                ]
+            [simple   BACnetEventStateTagged('0', 'TagClass.APPLICATION_TAGS')  eventState                      ]
+            [simple   BACnetEventTransitionBitsApplication                      acknowledgedTransitions         ]
         ]
         ['GET_ENROLLMENT_SUMMARY' BACnetServiceAckGetEnrollmentSummary
             [simple   BACnetApplicationTagObjectIdentifier                      objectIdentifier                ]
@@ -926,22 +911,6 @@
                         listOfEventSummaries            ]
             [simple   BACnetContextTagBoolean('1', 'BACnetDataType.BOOLEAN')
                         moreEvents                       ]
-        ]
-        ['LIFE_SAFETY_OPERATION' BACnetServiceAckLifeSafetyOperation
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['SUBSCRIBE_COV' BACnetServiceAckSubscribeCov
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['SUBSCRIBE_COV_PROPERTY' BACnetServiceAckSubscribeCovProperty
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['SUBSCRIBE_COV_PROPERTY_MULTIPLE' BACnetServiceAckSubscribeCovPropertyMultiple
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
         ]
         //
         ////
@@ -964,14 +933,6 @@
 
         ////
         // Object Access Services
-        ['ADD_LIST_ELEMENT' BACnetServiceAckAddListElement
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['REMOVE_LIST_ELEMENT' BACnetServiceAckRemoveListElement
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
         ['CREATE_OBJECT' BACnetServiceAckCreateObject
             // TODO: implement me
             [validation    '1 == 2'    "TODO: implement me"]
@@ -1000,14 +961,6 @@
             [simple   BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')               itemCount           ]
             [optional BACnetConstructedData('5', 'objectIdentifier.objectType', 'propertyIdentifier.value') itemData            ]
             [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               firstSequenceNumber ]
-        ]
-        ['WRITE_PROPERTY' BACnetServiceAckWriteProperty
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['WRITE_PROPERTY_MULTIPLE' BACnetServiceAckWritePropertyMultiple
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
         ]
         //
         ////
@@ -1133,8 +1086,16 @@
 
 [type BACnetEventTransitionBits(uint 8 tagNumber)
     [simple   BACnetContextTagBitString('tagNumber', 'BACnetDataType.BIT_STRING')
-        rawBits
-    ]
+                    rawBits                                      ]
+    [virtual    bit toOffnormal         'rawBits.payload.data[0]']
+    [virtual    bit toFault             'rawBits.payload.data[1]']
+    [virtual    bit toNormal            'rawBits.payload.data[2]']
+]
+
+// TODO: check if we can do that a bit smarter
+[type BACnetEventTransitionBitsApplication
+    [simple   BACnetApplicationTagBitString
+                    rawBits                                      ]
     [virtual    bit toOffnormal         'rawBits.payload.data[0]']
     [virtual    bit toFault             'rawBits.payload.data[1]']
     [virtual    bit toNormal            'rawBits.payload.data[2]']
