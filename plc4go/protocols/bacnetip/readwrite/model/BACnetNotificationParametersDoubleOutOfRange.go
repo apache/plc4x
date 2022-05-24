@@ -30,10 +30,10 @@ import (
 type BACnetNotificationParametersDoubleOutOfRange struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag *BACnetOpeningTag
-	ExceedingValue  *BACnetContextTagDouble
+	ExceedingValue  *BACnetContextTagSignedInteger
 	StatusFlags     *BACnetStatusFlags
-	Deadband        *BACnetContextTagDouble
-	ExceededLimit   *BACnetContextTagDouble
+	Deadband        *BACnetContextTagUnsignedInteger
+	ExceededLimit   *BACnetContextTagSignedInteger
 	InnerClosingTag *BACnetClosingTag
 
 	// Arguments.
@@ -47,13 +47,13 @@ type IBACnetNotificationParametersDoubleOutOfRange interface {
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() *BACnetOpeningTag
 	// GetExceedingValue returns ExceedingValue (property field)
-	GetExceedingValue() *BACnetContextTagDouble
+	GetExceedingValue() *BACnetContextTagSignedInteger
 	// GetStatusFlags returns StatusFlags (property field)
 	GetStatusFlags() *BACnetStatusFlags
 	// GetDeadband returns Deadband (property field)
-	GetDeadband() *BACnetContextTagDouble
+	GetDeadband() *BACnetContextTagUnsignedInteger
 	// GetExceededLimit returns ExceededLimit (property field)
-	GetExceededLimit() *BACnetContextTagDouble
+	GetExceededLimit() *BACnetContextTagSignedInteger
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() *BACnetClosingTag
 	// GetLengthInBytes returns the length in bytes
@@ -93,7 +93,7 @@ func (m *BACnetNotificationParametersDoubleOutOfRange) GetInnerOpeningTag() *BAC
 	return m.InnerOpeningTag
 }
 
-func (m *BACnetNotificationParametersDoubleOutOfRange) GetExceedingValue() *BACnetContextTagDouble {
+func (m *BACnetNotificationParametersDoubleOutOfRange) GetExceedingValue() *BACnetContextTagSignedInteger {
 	return m.ExceedingValue
 }
 
@@ -101,11 +101,11 @@ func (m *BACnetNotificationParametersDoubleOutOfRange) GetStatusFlags() *BACnetS
 	return m.StatusFlags
 }
 
-func (m *BACnetNotificationParametersDoubleOutOfRange) GetDeadband() *BACnetContextTagDouble {
+func (m *BACnetNotificationParametersDoubleOutOfRange) GetDeadband() *BACnetContextTagUnsignedInteger {
 	return m.Deadband
 }
 
-func (m *BACnetNotificationParametersDoubleOutOfRange) GetExceededLimit() *BACnetContextTagDouble {
+func (m *BACnetNotificationParametersDoubleOutOfRange) GetExceededLimit() *BACnetContextTagSignedInteger {
 	return m.ExceededLimit
 }
 
@@ -119,7 +119,7 @@ func (m *BACnetNotificationParametersDoubleOutOfRange) GetInnerClosingTag() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersDoubleOutOfRange factory function for BACnetNotificationParametersDoubleOutOfRange
-func NewBACnetNotificationParametersDoubleOutOfRange(innerOpeningTag *BACnetOpeningTag, exceedingValue *BACnetContextTagDouble, statusFlags *BACnetStatusFlags, deadband *BACnetContextTagDouble, exceededLimit *BACnetContextTagDouble, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersDoubleOutOfRange {
+func NewBACnetNotificationParametersDoubleOutOfRange(innerOpeningTag *BACnetOpeningTag, exceedingValue *BACnetContextTagSignedInteger, statusFlags *BACnetStatusFlags, deadband *BACnetContextTagUnsignedInteger, exceededLimit *BACnetContextTagSignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersDoubleOutOfRange {
 	_result := &BACnetNotificationParametersDoubleOutOfRange{
 		InnerOpeningTag:              innerOpeningTag,
 		ExceedingValue:               exceedingValue,
@@ -211,11 +211,11 @@ func BACnetNotificationParametersDoubleOutOfRangeParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("exceedingValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_exceedingValue, _exceedingValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_DOUBLE))
+	_exceedingValue, _exceedingValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _exceedingValueErr != nil {
 		return nil, errors.Wrap(_exceedingValueErr, "Error parsing 'exceedingValue' field")
 	}
-	exceedingValue := CastBACnetContextTagDouble(_exceedingValue)
+	exceedingValue := CastBACnetContextTagSignedInteger(_exceedingValue)
 	if closeErr := readBuffer.CloseContext("exceedingValue"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -237,11 +237,11 @@ func BACnetNotificationParametersDoubleOutOfRangeParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("deadband"); pullErr != nil {
 		return nil, pullErr
 	}
-	_deadband, _deadbandErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_DOUBLE))
+	_deadband, _deadbandErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _deadbandErr != nil {
 		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field")
 	}
-	deadband := CastBACnetContextTagDouble(_deadband)
+	deadband := CastBACnetContextTagUnsignedInteger(_deadband)
 	if closeErr := readBuffer.CloseContext("deadband"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -250,11 +250,11 @@ func BACnetNotificationParametersDoubleOutOfRangeParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("exceededLimit"); pullErr != nil {
 		return nil, pullErr
 	}
-	_exceededLimit, _exceededLimitErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_DOUBLE))
+	_exceededLimit, _exceededLimitErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _exceededLimitErr != nil {
 		return nil, errors.Wrap(_exceededLimitErr, "Error parsing 'exceededLimit' field")
 	}
-	exceededLimit := CastBACnetContextTagDouble(_exceededLimit)
+	exceededLimit := CastBACnetContextTagSignedInteger(_exceededLimit)
 	if closeErr := readBuffer.CloseContext("exceededLimit"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -279,10 +279,10 @@ func BACnetNotificationParametersDoubleOutOfRangeParse(readBuffer utils.ReadBuff
 	// Create a partially initialized instance
 	_child := &BACnetNotificationParametersDoubleOutOfRange{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
-		ExceedingValue:               CastBACnetContextTagDouble(exceedingValue),
+		ExceedingValue:               CastBACnetContextTagSignedInteger(exceedingValue),
 		StatusFlags:                  CastBACnetStatusFlags(statusFlags),
-		Deadband:                     CastBACnetContextTagDouble(deadband),
-		ExceededLimit:                CastBACnetContextTagDouble(exceededLimit),
+		Deadband:                     CastBACnetContextTagUnsignedInteger(deadband),
+		ExceededLimit:                CastBACnetContextTagSignedInteger(exceededLimit),
 		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),
 		BACnetNotificationParameters: &BACnetNotificationParameters{},
 	}

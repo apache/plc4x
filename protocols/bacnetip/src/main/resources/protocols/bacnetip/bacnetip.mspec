@@ -1403,6 +1403,20 @@
             [simple BACnetClosingTag('peekedTagNumber')
                             innerClosingTag                                         ]
         ]
+        ['15' BACnetNotificationParametersSignedOutOfRange(uint 8 peekedTagNumber)
+            [simple BACnetOpeningTag('peekedTagNumber')
+                            innerOpeningTag                                         ]
+            [simple BACnetContextTagSignedInteger('0', 'BACnetDataType.SIGNED_INTEGER')
+                            exceedingValue                                          ]
+            [simple BACnetStatusFlags('1')
+                            statusFlags                                             ]
+            [simple BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
+                            deadband                                                ]
+            [simple BACnetContextTagSignedInteger('3', 'BACnetDataType.SIGNED_INTEGER')
+                            exceededLimit                                           ]
+            [simple BACnetClosingTag('peekedTagNumber')
+                            innerClosingTag                                         ]
+        ]
         // TODO: implement other cases
         [BACnetNotificationParametersUnmapped
             // TODO: implement me
