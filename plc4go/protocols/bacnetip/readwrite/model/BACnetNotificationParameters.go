@@ -234,6 +234,8 @@ func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber ui
 		_child, typeSwitchError = BACnetNotificationParametersChangeOfReliabilityParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(21): // BACnetNotificationParametersChangeOfDiscreteValue
 		_child, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+	case peekedTagNumber == uint8(22): // BACnetNotificationParametersChangeOfTimer
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfTimerParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
