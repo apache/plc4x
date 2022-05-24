@@ -92,8 +92,8 @@
 ]
 
 [type NPDU(uint 16 npduLength)
-    [simple   uint 8      protocolVersionNumber                                                                   ]
-    [simple   NPDUControl control                                                                                 ]
+    [simple   uint 8      protocolVersionNumber                                                                     ]
+    [simple   NPDUControl control                                                                                   ]
     [optional   uint 16     destinationNetworkAddress   'control.destinationSpecified'                              ]
     [optional   uint 8      destinationLength           'control.destinationSpecified'                              ]
     [array      uint 8      destinationAddress count    'control.destinationSpecified ? destinationLength : 0'      ]
@@ -115,17 +115,17 @@
 
 [type NPDUControl
     [simple   bit         messageTypeFieldPresent         ]
-    [reserved   uint 1      '0'                             ]
+    [reserved   uint 1      '0'                           ]
     [simple   bit         destinationSpecified            ]
-    [reserved   uint 1      '0'                             ]
+    [reserved   uint 1      '0'                           ]
     [simple   bit         sourceSpecified                 ]
     [simple   bit         expectingReply                  ]
     [simple   NPDUNetworkPriority
-                            networkPriority                 ]
+                            networkPriority               ]
 ]
 
 [discriminatedType NLM(uint 16 apduLength)
-    [discriminator uint 8   messageType                     ]
+    [discriminator uint 8   messageType                   ]
     [optional      BACnetVendorId
                             vendorId '(messageType >= 128) && (messageType <= 255)']
     [typeSwitch messageType
@@ -141,7 +141,7 @@
         ]
         ['0x03' NLMRejectRouterToNetwork(uint 8 messageType)
             [simple   NLMRejectRouterToNetworkRejectReason
-                                    rejectReason                ]
+                                    rejectReason              ]
             [simple   uint 16     destinationNetworkAddress   ]
         ]
         ['0x04' NLMRouterBusyToNetwork(uint 8 messageType)
@@ -154,13 +154,13 @@
             [simple   uint 8      numberOfPorts               ]
             [array      NLMInitalizeRoutingTablePortMapping
                                     portMappings
-                        count 'numberOfPorts'                   ]
+                        count 'numberOfPorts'                 ]
         ]
         ['0x07' NLMInitalizeRoutingTableAck(uint 8 messageType)
             [simple   uint 8      numberOfPorts               ]
             [array      NLMInitalizeRoutingTablePortMapping
                                     portMappings
-                        count 'numberOfPorts'                   ]
+                        count 'numberOfPorts'                 ]
         ]
         ['0x08' NLMEstablishConnectionToNetwork(uint 8 messageType)
             [simple   uint 16     destinationNetworkAddress   ]
@@ -387,15 +387,15 @@
         // File Access Services
 
         ['ATOMIC_READ_FILE' BACnetConfirmedServiceRequestAtomicReadFile
-            [simple   BACnetApplicationTagObjectIdentifier                        fileIdentifier      ]
-            [simple   BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord   accessMethod        ]
+            [simple   BACnetApplicationTagObjectIdentifier                                               fileIdentifier               ]
+            [simple   BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord                          accessMethod                 ]
         ]
         ['ATOMIC_WRITE_FILE' BACnetConfirmedServiceRequestAtomicWriteFile
-            [simple   BACnetApplicationTagObjectIdentifier                  deviceIdentifier          ]
-            [optional BACnetOpeningTag('0')                               openingTag                ]
-            [simple   BACnetApplicationTagSignedInteger                     fileStartPosition         ]
-            [simple   BACnetApplicationTagOctetString                       fileData                  ]
-            [optional BACnetClosingTag('0')                               closingTag                ]
+            [simple   BACnetApplicationTagObjectIdentifier                                               deviceIdentifier             ]
+            [optional BACnetOpeningTag('0')                                                              openingTag                   ]
+            [simple   BACnetApplicationTagSignedInteger                                                  fileStartPosition            ]
+            [simple   BACnetApplicationTagOctetString                                                    fileData                     ]
+            [optional BACnetClosingTag('0')                                                              closingTag                   ]
         ]
         //
         ////
@@ -403,24 +403,24 @@
         ////
         // Object Access Services
         ['ADD_LIST_ELEMENT' BACnetConfirmedServiceRequestAddListElement
-            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier    ]
-            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier  ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               arrayIndex          ]
-            [optional BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier.value') listOfElements      ]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier            ]
+            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier          ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               arrayIndex                  ]
+            [optional BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier.value') listOfElements              ]
         ]
         ['REMOVE_LIST_ELEMENT' BACnetConfirmedServiceRequestRemoveListElement
-            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier    ]
-            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier  ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               arrayIndex          ]
-            [optional BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier.value') listOfElements      ]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier            ]
+            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier          ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               arrayIndex                  ]
+            [optional BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier.value') listOfElements              ]
         ]
         ['CREATE_OBJECT' BACnetConfirmedServiceRequestCreateObject
-            [simple   BACnetConfirmedServiceRequestCreateObjectObjectSpecifier('0')                    objectSpecifier     ]
+            [simple   BACnetConfirmedServiceRequestCreateObjectObjectSpecifier('0')                         objectSpecifier             ]
             [optional BACnetPropertyValues('1', 'objectSpecifier.isObjectType?objectSpecifier.objectType:objectSpecifier.objectIdentifier.objectType')
-                                                                                                           listOfValues        ]
+                                                                                                            listOfValues                ]
         ]
         ['DELETE_OBJECT' BACnetConfirmedServiceRequestDeleteObject
-            [simple   BACnetApplicationTagObjectIdentifier                                                 objectIdentifier    ]
+            [simple   BACnetApplicationTagObjectIdentifier                                                  objectIdentifier            ]
         ]
         ['READ_PROPERTY' BACnetConfirmedServiceRequestReadProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
@@ -437,18 +437,18 @@
                             'serviceRequestLength'                   ]
         ]
         ['READ_RANGE' BACnetConfirmedServiceRequestReadRange
-            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier    ]
-            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier  ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               propertyArrayIndex  ]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier            ]
+            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier          ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               propertyArrayIndex          ]
             // TODO: this attribute should be named range but this is a keyword in golang (so at this point we should build a language translator which makes keywords safe)
-            [optional BACnetConfirmedServiceRequestReadRangeRange                                           readRange           ]
+            [optional BACnetConfirmedServiceRequestReadRangeRange                                           readRange                   ]
         ]
         ['WRITE_PROPERTY' BACnetConfirmedServiceRequestWriteProperty
-            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier    ]
-            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier  ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               arrayIndex          ]
-            [simple   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier.value') propertyValue       ]
-            [optional BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')               priority            ]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      objectIdentifier            ]
+            [simple   BACnetPropertyIdentifierTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')                 propertyIdentifier          ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               arrayIndex                  ]
+            [simple   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier.value') propertyValue               ]
+            [optional BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')               priority                    ]
         ]
         ['WRITE_PROPERTY_MULTIPLE' BACnetConfirmedServiceRequestWritePropertyMultiple
             [array    BACnetWriteAccessSpecification
@@ -463,31 +463,29 @@
         // Remote Device Management Services
 
         ['DEVICE_COMMUNICATION_CONTROL' BACnetConfirmedServiceRequestDeviceCommunicationControl
-            [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')
-                                timeDuration                                                        ]
-            [simple   BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')
-                                enableDisable                                                       ]
-            [optional BACnetContextTagCharacterString('2', 'BACnetDataType.CHARACTER_STRING')
-                                password                                                            ]
+            [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')               timeDuration                ]
+            [simple   BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                                                                                            enableDisable               ]
+            [optional BACnetContextTagCharacterString('2', 'BACnetDataType.CHARACTER_STRING')               password                    ]
 
         ]
         ['CONFIRMED_PRIVATE_TRANSFER' BACnetConfirmedServiceRequestConfirmedPrivateTransfer
-            [simple   BACnetVendorIdTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
-                                vendorId                                                            ]
-            [simple   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
-                                serviceNumber                                                       ]
+            [simple   BACnetVendorIdTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')                           vendorId                    ]
+            [simple   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')               serviceNumber               ]
             [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE')
-                                serviceParameters                                                   ]
+                                                                                                            serviceParameters           ]
         ]
         ['CONFIRMED_TEXT_MESSAGE' BACnetConfirmedServiceRequestConfirmedTextMessage
-             // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')      textMessageSourceDevice     ]
+            [optional BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass('1')                    messageClass                ]
+            [simple   BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged('2')           messagePriority             ]
+            [simple   BACnetContextTagCharacterString('3', 'BACnetDataType.CHARACTER_STRING')               message                     ]
         ]
         ['REINITIALIZE_DEVICE' BACnetConfirmedServiceRequestReinitializeDevice
           [simple   BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
-                                reinitializedStateOfDevice                                          ]
+                                                                                                            reinitializedStateOfDevice  ]
           [optional BACnetContextTagCharacterString('1', 'BACnetDataType.CHARACTER_STRING')
-                                password                                                            ]
+                                                                                                            password                    ]
         ]
 
         ////
@@ -727,6 +725,25 @@
     ]
     [simple   BACnetClosingTag('1')
                      closingTag                     ]
+]
+
+[type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(uint 8 tagNumber)
+    [simple   BACnetOpeningTag('tagNumber')
+                  openingTag                  ]
+    [peek       BACnetTagHeader
+                        peekedTagHeader                 ]
+
+    [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
+    [typeSwitch peekedTagNumber
+        ['0' BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
+            [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER') numericValue             ]
+        ]
+        ['1' BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
+            [simple   BACnetContextTagCharacterString('1', 'BACnetDataType.CHARACTER_STRING') characterValue           ]
+        ]
+    ]
+    [simple   BACnetClosingTag('tagNumber')
+                  closingTag                  ]
 ]
 
 [type BACnetConfirmedServiceRequestReadRangeRange

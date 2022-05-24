@@ -159,6 +159,19 @@
 ]
 
 // Attention: No proprietary extension allowed
+[enum uint 8 BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority
+    ['0' NORMAL                                 ]
+    ['1' URGENT                                 ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable
+    ['0' ENABLE                                 ]
+    ['1' DISABLE                                ]
+    ['2' DISABLE_INITIATION                     ]
+]
+
+// Attention: No proprietary extension allowed
 [enum uint 8 BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
     ['0' ALL                                    ]
     ['1' ACKED                                  ]
@@ -172,13 +185,6 @@
     ['2' NORMAL                                 ]
     ['3' ALL                                    ]
     ['4' ACTIVE                                 ]
-]
-
-// Attention: No proprietary extension allowed
-[enum uint 8 BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable
-    ['0' ENABLE                                 ]
-    ['1' DISABLE                                ]
-    ['2' DISABLE_INITIATION                     ]
 ]
 
 // Attention: No proprietary extension allowed
