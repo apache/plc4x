@@ -19,14 +19,7 @@
 -->
 <xsl:stylesheet version="2.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                xmlns:opc="http://opcfoundation.org/BinarySchema/"
-                xmlns:plc4x="https://plc4x.apache.org/"
-                xmlns:map="http://www.w3.org/2005/xpath-functions/map"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xmlns:ua="http://opcfoundation.org/UA/"
-                xmlns:tns="http://opcfoundation.org/UA/"
-                xmlns:node="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd">
+>
 
     <xsl:output
         method="text"

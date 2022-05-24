@@ -16,10 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import groovy.text.SimpleTemplateEngine
+import org.jsoup.Jsoup
+
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
-import org.jsoup.Jsoup
-import groovy.text.SimpleTemplateEngine
 
 // Make sure the cache directory exists in the used maven local repo
 def localRepoBaseDir = session.getLocalRepository().getBasedir()

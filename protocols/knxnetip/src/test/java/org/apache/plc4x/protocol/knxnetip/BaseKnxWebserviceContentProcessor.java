@@ -22,10 +22,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.plc4x.protocol.knxnetip.handlers.ManufacturerIdsHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Base helper that crawls over all xml descriptions found in the local storage.

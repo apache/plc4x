@@ -23,17 +23,9 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ProtocolHe
 import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ValidatableTypeContext;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 
 public class KnxNetIpProtocol implements Protocol, ProtocolHelpers {
 

@@ -25,8 +25,6 @@ import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
-import java.io.InputStream;
-
 /**
  * Little helper protocol used to communicate over UDP with Beckhoff hardware.
  */

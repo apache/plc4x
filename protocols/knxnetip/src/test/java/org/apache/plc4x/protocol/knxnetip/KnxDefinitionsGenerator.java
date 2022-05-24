@@ -23,7 +23,8 @@ import org.apache.plc4x.protocol.knxnetip.handlers.ProductDescriptionHandler;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class KnxDefinitionsGenerator extends BaseKnxWebserviceContentProcessor {
 

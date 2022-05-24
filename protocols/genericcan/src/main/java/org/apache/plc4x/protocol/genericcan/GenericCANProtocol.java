@@ -23,11 +23,7 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ProtocolHe
 import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ValidatableTypeContext;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
-
-import java.io.InputStream;
-import java.util.Map;
 
 public class GenericCANProtocol implements Protocol, ProtocolHelpers {
 
@@ -43,9 +39,9 @@ public class GenericCANProtocol implements Protocol, ProtocolHelpers {
         return typeContext;
     }
 
-
     @Override
     public String getPackageName() {
         return "can";
     }
+
 }
