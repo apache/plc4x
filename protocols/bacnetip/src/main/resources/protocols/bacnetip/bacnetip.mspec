@@ -934,8 +934,7 @@
         ////
         // Object Access Services
         ['CREATE_OBJECT' BACnetServiceAckCreateObject
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetApplicationTagObjectIdentifier                      objectIdentifier                ]
         ]
         ['READ_PROPERTY' BACnetServiceAckReadProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
@@ -969,22 +968,10 @@
         ////
         // Remote Device Management Services
 
-        ['DEVICE_COMMUNICATION_CONTROL' BACnetServiceAckDeviceCommunicationControl
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
         ['CONFIRMED_PRIVATE_TRANSFER' BACnetServiceAckConfirmedPrivateTransfer
             [simple   BACnetVendorIdTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')                      vendorId                    ]
             [simple   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
             [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE') resultBlock                 ]
-        ]
-        ['CONFIRMED_TEXT_MESSAGE' BACnetServiceAckConfirmedTextMessage
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['REINITIALIZE_DEVICE' BACnetServiceAckReinitializeDevice
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
         ]
         //
         ////
@@ -993,12 +980,7 @@
         //  Virtual Terminal Services
 
         ['VT_OPEN' BACnetServiceAckVTOpen
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['VT_CLOSE' BACnetServiceAckVTClose
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetApplicationTagUnsignedInteger                       remoteVtSessionIdentifier                        ]
         ]
         ['VT_DATA' BACnetServiceAckVTData
             // TODO: implement me

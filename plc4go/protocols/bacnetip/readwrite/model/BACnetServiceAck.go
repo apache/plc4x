@@ -150,18 +150,10 @@ func BACnetServiceAckParse(readBuffer utils.ReadBuffer, serviceAckLength uint16)
 		_child, typeSwitchError = BACnetServiceAckReadPropertyMultipleParse(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_RANGE: // BACnetServiceAckReadRange
 		_child, typeSwitchError = BACnetServiceAckReadRangeParse(readBuffer, serviceAckLength)
-	case serviceChoice == BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL: // BACnetServiceAckDeviceCommunicationControl
-		_child, typeSwitchError = BACnetServiceAckDeviceCommunicationControlParse(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: // BACnetServiceAckConfirmedPrivateTransfer
 		_child, typeSwitchError = BACnetServiceAckConfirmedPrivateTransferParse(readBuffer, serviceAckLength)
-	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_TEXT_MESSAGE: // BACnetServiceAckConfirmedTextMessage
-		_child, typeSwitchError = BACnetServiceAckConfirmedTextMessageParse(readBuffer, serviceAckLength)
-	case serviceChoice == BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE: // BACnetServiceAckReinitializeDevice
-		_child, typeSwitchError = BACnetServiceAckReinitializeDeviceParse(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_OPEN: // BACnetServiceAckVTOpen
 		_child, typeSwitchError = BACnetServiceAckVTOpenParse(readBuffer, serviceAckLength)
-	case serviceChoice == BACnetConfirmedServiceChoice_VT_CLOSE: // BACnetServiceAckVTClose
-		_child, typeSwitchError = BACnetServiceAckVTCloseParse(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_DATA: // BACnetServiceAckVTData
 		_child, typeSwitchError = BACnetServiceAckVTDataParse(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_AUTHENTICATE: // BACnetServiceAckAuthenticate
