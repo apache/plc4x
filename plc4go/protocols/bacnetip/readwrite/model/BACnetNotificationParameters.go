@@ -222,8 +222,10 @@ func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber ui
 		_child, typeSwitchError = BACnetNotificationParametersAccessEventParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(14): // BACnetNotificationParametersDoubleOutOfRange
 		_child, typeSwitchError = BACnetNotificationParametersDoubleOutOfRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
-	case peekedTagNumber == uint8(15): // BACnetNotificationParametersDoubleOutOfRange
-		_child, typeSwitchError = BACnetNotificationParametersDoubleOutOfRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+	case peekedTagNumber == uint8(15): // BACnetNotificationParametersSignedOutOfRange
+		_child, typeSwitchError = BACnetNotificationParametersSignedOutOfRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+	case peekedTagNumber == uint8(16): // BACnetNotificationParametersUnsignedOutOfRange
+		_child, typeSwitchError = BACnetNotificationParametersUnsignedOutOfRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case true: // BACnetNotificationParametersUnmapped
 		_child, typeSwitchError = BACnetNotificationParametersUnmappedParse(readBuffer, tagNumber, objectType)
 	default:
