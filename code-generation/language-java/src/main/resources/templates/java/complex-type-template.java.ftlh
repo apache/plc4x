@@ -542,6 +542,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
         // Unknown field
         lengthInBits += ${simpleTypeReference.sizeInBits};
+        <#break>
     <#case "virtual">
         <#assign virtualField = field.asVirtualField().orElseThrow()>
 
