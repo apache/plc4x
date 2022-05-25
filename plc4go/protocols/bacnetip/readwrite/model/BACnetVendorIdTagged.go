@@ -125,7 +125,7 @@ func (m *BACnetVendorIdTagged) GetLengthInBitsConditional(lastItem bool) uint16 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (unknownId)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsUnknownId(), func() interface{} { return int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8))) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsUnknownId(), func() interface{} { return int32(int32(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }

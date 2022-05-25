@@ -77,8 +77,8 @@ func Parse(io utils.ReadBuffer) int8 {
 func Serialize(io utils.WriteBuffer, data byte) {
 }
 
-func ReadManualField(io utils.ReadBuffer, simpleField uint8) (uint8, error) {
-	return 0, nil
+func ReadManualField(io utils.ReadBuffer, simpleField uint8) (interface{}, error) {
+	return uint8(0), nil
 }
 
 func CrcInt8(num int) (int8, error) {

@@ -98,7 +98,7 @@
             <protocolName>test</protocolName>
             <languageName>go</languageName>
             <outputFlavor>read-write</outputFlavor>
-            <outputDir>${project.basedir}/internal</outputDir>
+            <outputDir>${project.basedir}/protocols</outputDir>
           </configuration>
         </execution>
       </executions>

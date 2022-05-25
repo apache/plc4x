@@ -323,7 +323,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUC
 	// Byte Array field (segment)
 	numberOfBytessegment := int(utils.InlineIf(segmentedMessage, func() interface{} {
 		return uint16(uint16(utils.InlineIf(bool(bool((apduLength) > (0))), func() interface{} {
-			return uint16(uint16(uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool((*sequenceNumber) != (0))), func() interface{} { return uint16(uint16(5)) }, func() interface{} { return uint16(uint16(4)) }).(uint16)))))
+			return uint16(uint16(uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool((*sequenceNumber) != (0))), func() interface{} { return uint16(uint16(uint16(5))) }, func() interface{} { return uint16(uint16(uint16(4))) }).(uint16)))))
 		}, func() interface{} { return uint16(uint16(0)) }).(uint16)))
 	}, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	segment, _readArrayErr := readBuffer.ReadByteArray("segment", numberOfBytessegment)
