@@ -67,11 +67,11 @@
             <goal>copy-resources</goal>
           </goals>
           <configuration>
-            <outputDirectory>./internal/plc4go/spi</outputDirectory>
+            <outputDirectory>./internal/spi</outputDirectory>
             <resources>
               <resource>
                 <targetPath>.</targetPath>
-                <directory>../../../../../internal/spi</directory>
+                <directory>../../../../../plc4go/internal/spi</directory>
                 <excludes>
                   <exclude>testutils/**</exclude>
                 </excludes>
