@@ -106,6 +106,7 @@
       <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
+
     <!-- Include all drivers -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
