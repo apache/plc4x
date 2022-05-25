@@ -52,12 +52,13 @@ public class S7PlcToAzureIoTHubSample {
         LOGGER.info("Connecting {}, {}, {}", options.getPlc4xConnectionString(), options.getPlc4xFieldAddress(),
             options.getIotHubConnectionString());
 
-        // Open both a connection to the remote PLC as well as a connection to the cloud service.
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(options.getPlc4xConnectionString());
-             DeviceClient client = new DeviceClient(options.getIotHubConnectionString(), IotHubClientProtocol.MQTT)) {
+        // Open both a connection to the remote PLC and the cloud service.
+        DeviceClient client = new DeviceClient(options.getIotHubConnectionString(), IotHubClientProtocol.MQTT);
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(options.getPlc4xConnectionString())) {
+
             LOGGER.info("Connected");
 
-            client.open();
+            client.open(true);
 
             // Prepare a read request.
             PlcReadRequest request = plcConnection.readRequestBuilder()
@@ -73,13 +74,23 @@ public class S7PlcToAzureIoTHubSample {
                             Message msg = new Message("{ \"bits\" : \"" + result + "\"}");
 
                             // Send the message.
-                            client.sendEventAsync(msg, (responseStatus, callbackContext) -> LOGGER.info("Received status: ", responseStatus), new Object());
+                            client.sendEventAsync(msg,
+                                (sentMessage, clientException, callbackContext) -> {
+                                    if(clientException != null) {
+                                        LOGGER.info("Received exception: ", clientException);
+                                    } else {
+                                        LOGGER.info("Sent successfully");
+                                    }
+                                },
+                                msg);
                         }
                     );
 
                 // Wait a second.
                 TimeUnit.SECONDS.sleep(1);
             }
+        } finally {
+            client.close();
         }
     }
 
