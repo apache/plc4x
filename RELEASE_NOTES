@@ -29,6 +29,10 @@ Incompatible changes
 - The name of the Modbus TCP driver was changed from "modbus"
   to "modbus-tcp".
 
+- Removed the Apache Edgent (incubating) integration and
+  examples related, as Edgent is abandoned and there were
+  CVEs reported, which will not be fixed.
+
 Bug Fixes
 ---------
 
