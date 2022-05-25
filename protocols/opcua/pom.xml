@@ -217,7 +217,8 @@
           <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
-            <version>10.5</version>
+            <!-- REMARK: 11.3 is currently the newest version, however when updating to that, the build breaks -->
+            <version>10.8</version>
           </dependency>
         </dependencies>
       </plugin>

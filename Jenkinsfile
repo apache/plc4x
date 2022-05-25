@@ -94,7 +94,7 @@ pipeline {
                 echo 'Building'
                 //sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-c,with-cpp,with-boost,with-dotnet,with-python,with-proxies ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
                 //sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-go ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
-                sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-c,with-go,enable-all-checks ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
+                sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-c,with-go ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
             }
             post {
                 always {

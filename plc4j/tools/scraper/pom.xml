@@ -88,12 +88,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <!-- Test dependencies-->
     <dependency>
       <groupId>org.awaitility</groupId>

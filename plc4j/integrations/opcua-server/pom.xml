@@ -32,7 +32,6 @@
 
   <properties>
     <app.main.class>org.apache.plc4x.java.opcuaserver.OPCUAServer</app.main.class>
-    <guava.version>30.0-jre</guava.version>
   </properties>
 
   <dependencies>
@@ -200,35 +199,7 @@
       <groupId>io.vavr</groupId>
       <artifactId>vavr</artifactId>
     </dependency>
-
-    <!-- Testing Dependencies -->
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-handler</artifactId>
-        <version>${netty.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-tcnative-classes</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <build>
     <plugins>

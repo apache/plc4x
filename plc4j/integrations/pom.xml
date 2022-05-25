@@ -35,7 +35,6 @@
 
   <modules>
     <module>apache-camel</module>
-    <module>apache-edgent</module>
     <module>apache-kafka</module>
     <module>apache-nifi</module>
     <module>apache-calcite</module>

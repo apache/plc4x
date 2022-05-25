@@ -41,14 +41,12 @@
   <modules>
     <module>hello-cloud-azure</module>
     <module>hello-cloud-google</module>
-    <module>hello-connectivity-kafka</module>
     <module>hello-discovery</module>
     <module>hello-connectivity-mqtt</module>
     <module>hello-influx-data-collection</module>
     <module>hello-integration-edgent</module>
     <module>hello-integration-iotdb</module>
     <module>hello-opm</module>
-    <module>hello-webapp</module>
     <module>hello-webservice</module>
     <module>hello-world-kotlin</module>
     <module>hello-world-plc4x</module>

@@ -50,7 +50,6 @@
     <dependency>
       <groupId>tel.schich</groupId>
       <artifactId>javacan</artifactId>
-      <version>2.3.0</version>
     </dependency>
 
     <dependency>
@@ -73,12 +72,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 

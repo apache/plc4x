@@ -43,7 +43,8 @@
     <dependency>
       <groupId>com.microsoft.azure.sdk.iot</groupId>
       <artifactId>iot-device-client</artifactId>
-      <version>1.34.0</version>
+      <!-- Remark: 2.0.3 is the latest version, but due to API changes, the code needs to be refactored -->
+      <version>1.34.3</version>
     </dependency>
 
     <dependency>
