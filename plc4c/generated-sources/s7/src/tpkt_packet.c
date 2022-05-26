@@ -96,7 +96,7 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buff
     return _res;
   }
 
-  // Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (plc4c_s7_read_write_cotp_packet_length_in_bytes(_message->payload)) + (4));
   if(_res != OK) {
     return _res;

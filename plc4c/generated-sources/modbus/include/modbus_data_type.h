@@ -66,6 +66,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_data_type_parse(plc4c_spi_read_
 
 plc4c_return_code plc4c_modbus_read_write_modbus_data_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_data_type* message);
 
+plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_type_for_value(uint8_t value);
+
 plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_type_value_of(char* value_string);
 
 int plc4c_modbus_read_write_modbus_data_type_num_values();

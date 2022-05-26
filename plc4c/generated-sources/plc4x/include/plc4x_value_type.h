@@ -64,6 +64,8 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_type_parse(plc4c_spi_read_b
 
 plc4c_return_code plc4c_plc4x_read_write_plc4x_value_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_plc4x_read_write_plc4x_value_type* message);
 
+plc4c_plc4x_read_write_plc4x_value_type plc4c_plc4x_read_write_plc4x_value_type_for_value(uint8_t value);
+
 plc4c_plc4x_read_write_plc4x_value_type plc4c_plc4x_read_write_plc4x_value_type_value_of(char* value_string);
 
 int plc4c_plc4x_read_write_plc4x_value_type_num_values();

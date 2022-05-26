@@ -58,6 +58,8 @@ plc4c_return_code plc4c_s7_read_write_szl_sublist_parse(plc4c_spi_read_buffer* r
 
 plc4c_return_code plc4c_s7_read_write_szl_sublist_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_szl_sublist* message);
 
+plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_for_value(uint8_t value);
+
 plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_value_of(char* value_string);
 
 int plc4c_s7_read_write_szl_sublist_num_values();

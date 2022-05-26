@@ -48,6 +48,8 @@ plc4c_return_code plc4c_s7_read_write_mode_transition_type_parse(plc4c_spi_read_
 
 plc4c_return_code plc4c_s7_read_write_mode_transition_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_mode_transition_type* message);
 
+plc4c_s7_read_write_mode_transition_type plc4c_s7_read_write_mode_transition_type_for_value(uint8_t value);
+
 plc4c_s7_read_write_mode_transition_type plc4c_s7_read_write_mode_transition_type_value_of(char* value_string);
 
 int plc4c_s7_read_write_mode_transition_type_num_values();

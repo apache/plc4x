@@ -57,7 +57,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* re
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-        // Discriminator Field (addressType)
+  // Discriminator Field (addressType)
 
   // Discriminator Field (addressType) (Used as input to a switch field)
   uint8_t addressType = 0;
@@ -213,7 +213,7 @@ uint16_t plc4c_s7_read_write_s7_address_length_in_bits(plc4c_s7_read_write_s7_ad
   // Discriminator Field (addressType)
   lengthInBits += 8;
 
-  // Depending of the current type, add the length of sub-type elements ...
+  // Depending on the current type, add the length of sub-type elements ...
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_address_type_plc4c_s7_read_write_s7_address_any: {
 

@@ -42,6 +42,8 @@ plc4c_return_code plc4c_modbus_read_write_driver_type_parse(plc4c_spi_read_buffe
 
 plc4c_return_code plc4c_modbus_read_write_driver_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_driver_type* message);
 
+plc4c_modbus_read_write_driver_type plc4c_modbus_read_write_driver_type_for_value(uint32_t value);
+
 plc4c_modbus_read_write_driver_type plc4c_modbus_read_write_driver_type_value_of(char* value_string);
 
 int plc4c_modbus_read_write_driver_type_num_values();

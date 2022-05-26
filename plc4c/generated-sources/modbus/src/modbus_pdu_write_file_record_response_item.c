@@ -113,7 +113,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
     return _res;
   }
 
-  // Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (recordLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (plc4c_spi_evaluation_helper_count(_message->record_data)) / (2));
   if(_res != OK) {
     return _res;

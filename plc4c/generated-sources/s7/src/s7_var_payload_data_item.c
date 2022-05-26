@@ -112,7 +112,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_s
     return _res;
   }
 
-  // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (plc4c_spi_evaluation_helper_count(_message->data)) * ((((((_message->transport_size) == (plc4c_s7_read_write_data_transport_size_BIT))) ? 1 : (((plc4c_s7_read_write_data_transport_size_get_size_in_bits(_message->transport_size)) ? 8 : 1))))));
   if(_res != OK) {
     return _res;

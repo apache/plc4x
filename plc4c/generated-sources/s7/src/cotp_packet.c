@@ -74,7 +74,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* r
   if(_res != OK) {
     return _res;
   }
-        // Discriminator Field (tpduCode)
+  // Discriminator Field (tpduCode)
 
   // Discriminator Field (tpduCode) (Used as input to a switch field)
   uint8_t tpduCode = 0;
@@ -271,7 +271,7 @@ if( tpduCode == 0x70 ) { /* COTPPacketTpduError */
 plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_cotp_packet* _message) {
   plc4c_return_code _res = OK;
 
-  // Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (plc4c_s7_read_write_cotp_packet_length_in_bytes(_message)) - ((((((((_message->payload) != (NULL))) ? plc4c_s7_read_write_s7_message_length_in_bytes(_message->payload) : 0))) + (1))));
   if(_res != OK) {
     return _res;
@@ -435,7 +435,7 @@ uint16_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp
   // Discriminator Field (tpduCode)
   lengthInBits += 8;
 
-  // Depending of the current type, add the length of sub-type elements ...
+  // Depending on the current type, add the length of sub-type elements ...
   switch(_message->_type) {
     case plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data: {
 

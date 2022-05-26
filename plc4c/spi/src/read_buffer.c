@@ -55,7 +55,7 @@ uint8_t plc4c_spi_read_unsigned_byte_get_byte_internal(
 plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
     plc4c_spi_read_buffer* buf, uint8_t num_bits, void* opaque_value) {
 
-  // Cast void input to uint8_t so we can walk the bytes, without
+  // Cast void input to uint8_t, so we can walk the bytes, without
   // casting prior to calling this fcn. Size of values is really
   // given in the num_bits.
   uint8_t* value = (void*)opaque_value;
@@ -68,7 +68,7 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
     return OUT_OF_RANGE;
   }
 
-  // If the bit-offset is currently 0 and we're reading
+  // If the bit-offset is currently 0, and we're reading
   // a full byte, go this shortcut.
   if ((buf->curPosBit == 0) && (num_bits % 8 == 0)) {
     if (buf->curPosByte > (buf->length - 1)) {
@@ -144,7 +144,7 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
     uint8_t cur_byte = plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0);
 
     // In the case that the number of bits read from the first and last
-    // byte are more than 8, we gotta put that excess data into it's own
+    // byte are more than 8, we got to put that excess data into its own
     // output byte.
     if(num_bits_first_byte + num_bits_last_byte > 8) {
       uint8_t excess_bits = num_bits_first_byte + num_bits_last_byte - 8;
@@ -617,7 +617,7 @@ plc4c_return_code plc4c_spi_read_string(plc4c_spi_read_buffer* buf,
     cur_str++;
   }
   // Terminate the string.
-  cur_str = '\0';
+  *cur_str = '\0';
   *value = str;
   return OK;
 }

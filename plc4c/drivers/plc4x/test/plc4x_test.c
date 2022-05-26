@@ -28,8 +28,7 @@ int main(void) {
   UNITY_BEGIN();
 
   // Execute the auto-generated serializer/parser tests.
-  // TODO: Disabled for now ...
-  //parser_serializer_test_plc4x_read_write();
+  parser_serializer_test_plc4x_read_write();
 
   return UNITY_END();
 }

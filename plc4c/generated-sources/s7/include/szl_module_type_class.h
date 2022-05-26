@@ -43,6 +43,8 @@ plc4c_return_code plc4c_s7_read_write_szl_module_type_class_parse(plc4c_spi_read
 
 plc4c_return_code plc4c_s7_read_write_szl_module_type_class_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_szl_module_type_class* message);
 
+plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class_for_value(uint8_t value);
+
 plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class_value_of(char* value_string);
 
 int plc4c_s7_read_write_szl_module_type_class_num_values();

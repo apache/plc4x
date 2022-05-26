@@ -49,6 +49,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_error_code_parse(plc4c_spi_read
 
 plc4c_return_code plc4c_modbus_read_write_modbus_error_code_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_error_code* message);
 
+plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_modbus_error_code_for_value(uint8_t value);
+
 plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_modbus_error_code_value_of(char* value_string);
 
 int plc4c_modbus_read_write_modbus_error_code_num_values();

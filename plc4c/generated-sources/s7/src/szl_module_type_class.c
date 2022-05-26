@@ -36,7 +36,9 @@ plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_cl
 plc4c_return_code plc4c_s7_read_write_szl_module_type_class_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_szl_module_type_class* _message) {
     plc4c_return_code _res = OK;
 
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 4, (uint8_t*) _message);
+    uint8_t value;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 4, (uint8_t*) &value);
+    *_message = plc4c_s7_read_write_szl_module_type_class_for_value(value);
 
     return _res;
 }
@@ -47,6 +49,15 @@ plc4c_return_code plc4c_s7_read_write_szl_module_type_class_serialize(plc4c_spi_
     _res = plc4c_spi_write_unsigned_byte(writeBuffer, 4, *_message);
 
     return _res;
+}
+
+plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class_for_value(uint8_t value) {
+    for(int i = 0; i < plc4c_s7_read_write_szl_module_type_class_num_values(); i++) {
+        if(plc4c_s7_read_write_szl_module_type_class_value_for_index(i) == value) {
+            return plc4c_s7_read_write_szl_module_type_class_value_for_index(i);
+        }
+    }
+    return -1;
 }
 
 plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class_value_of(char* value_string) {

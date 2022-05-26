@@ -80,7 +80,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* re
     return PARSE_ERROR;
     // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID + " but got " + protocolId);
   }
-        // Discriminator Field (messageType)
+  // Discriminator Field (messageType)
 
   // Discriminator Field (messageType) (Used as input to a switch field)
   uint8_t messageType = 0;
@@ -219,13 +219,13 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
     return _res;
   }
 
-  // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (((_message->parameter) != (NULL)) ? plc4c_s7_read_write_s7_parameter_length_in_bytes(_message->parameter) : 0));
   if(_res != OK) {
     return _res;
   }
 
-  // Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (payloadLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (((_message->payload) != (NULL)) ? plc4c_s7_read_write_s7_payload_length_in_bytes(_message->payload) : 0));
   if(_res != OK) {
     return _res;
@@ -319,7 +319,7 @@ uint16_t plc4c_s7_read_write_s7_message_length_in_bits(plc4c_s7_read_write_s7_me
   // Implicit Field (payloadLength)
   lengthInBits += 16;
 
-  // Depending of the current type, add the length of sub-type elements ...
+  // Depending on the current type, add the length of sub-type elements ...
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request: {
 

@@ -86,6 +86,8 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 -->
 plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* writeBuffer, ${helper.getCTypeName(type.name)}* message);
 
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_for_value(${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())} value);
+
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_of(char* value_string);
 
 int ${helper.getCTypeName(type.name)}_num_values();
