@@ -259,6 +259,7 @@
                                 abortReason                             ]
         ]
         [APDUUnknown
+            [simple   uint 4    unknownTypeRest                         ]
             [array    byte      unknownBytes length '(apduLength>0)?(apduLength - 1):0'    ]
         ]
     ]

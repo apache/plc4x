@@ -29,7 +29,8 @@ import (
 // APDUUnknown is the data-structure of this message
 type APDUUnknown struct {
 	*APDU
-	UnknownBytes []byte
+	UnknownTypeRest uint8
+	UnknownBytes    []byte
 
 	// Arguments.
 	ApduLength uint16
@@ -38,6 +39,8 @@ type APDUUnknown struct {
 // IAPDUUnknown is the corresponding interface of APDUUnknown
 type IAPDUUnknown interface {
 	IAPDU
+	// GetUnknownTypeRest returns UnknownTypeRest (property field)
+	GetUnknownTypeRest() uint8
 	// GetUnknownBytes returns UnknownBytes (property field)
 	GetUnknownBytes() []byte
 	// GetLengthInBytes returns the length in bytes
@@ -73,6 +76,10 @@ func (m *APDUUnknown) GetParent() *APDU {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
+func (m *APDUUnknown) GetUnknownTypeRest() uint8 {
+	return m.UnknownTypeRest
+}
+
 func (m *APDUUnknown) GetUnknownBytes() []byte {
 	return m.UnknownBytes
 }
@@ -83,10 +90,11 @@ func (m *APDUUnknown) GetUnknownBytes() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUUnknown factory function for APDUUnknown
-func NewAPDUUnknown(unknownBytes []byte, apduLength uint16) *APDUUnknown {
+func NewAPDUUnknown(unknownTypeRest uint8, unknownBytes []byte, apduLength uint16) *APDUUnknown {
 	_result := &APDUUnknown{
-		UnknownBytes: unknownBytes,
-		APDU:         NewAPDU(apduLength),
+		UnknownTypeRest: unknownTypeRest,
+		UnknownBytes:    unknownBytes,
+		APDU:            NewAPDU(apduLength),
 	}
 	_result.Child = _result
 	return _result
@@ -119,6 +127,9 @@ func (m *APDUUnknown) GetLengthInBits() uint16 {
 func (m *APDUUnknown) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
+	// Simple field (unknownTypeRest)
+	lengthInBits += 4
+
 	// Array field
 	if len(m.UnknownBytes) > 0 {
 		lengthInBits += 8 * uint16(len(m.UnknownBytes))
@@ -139,6 +150,13 @@ func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUUnkn
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+
+	// Simple Field (unknownTypeRest)
+	_unknownTypeRest, _unknownTypeRestErr := readBuffer.ReadUint8("unknownTypeRest", 4)
+	if _unknownTypeRestErr != nil {
+		return nil, errors.Wrap(_unknownTypeRestErr, "Error parsing 'unknownTypeRest' field")
+	}
+	unknownTypeRest := _unknownTypeRest
 	// Byte Array field (unknownBytes)
 	numberOfBytesunknownBytes := int(utils.InlineIf(bool(bool((apduLength) > (0))), func() interface{} { return uint16(uint16(uint16(apduLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
@@ -152,8 +170,9 @@ func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUUnkn
 
 	// Create a partially initialized instance
 	_child := &APDUUnknown{
-		UnknownBytes: unknownBytes,
-		APDU:         &APDU{},
+		UnknownTypeRest: unknownTypeRest,
+		UnknownBytes:    unknownBytes,
+		APDU:            &APDU{},
 	}
 	_child.APDU.Child = _child
 	return _child, nil
@@ -165,6 +184,13 @@ func (m *APDUUnknown) Serialize(writeBuffer utils.WriteBuffer) error {
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUUnknown"); pushErr != nil {
 			return pushErr
+		}
+
+		// Simple Field (unknownTypeRest)
+		unknownTypeRest := uint8(m.UnknownTypeRest)
+		_unknownTypeRestErr := writeBuffer.WriteUint8("unknownTypeRest", 4, (unknownTypeRest))
+		if _unknownTypeRestErr != nil {
+			return errors.Wrap(_unknownTypeRestErr, "Error serializing 'unknownTypeRest' field")
 		}
 
 		// Array Field (unknownBytes)
