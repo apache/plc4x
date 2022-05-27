@@ -37,6 +37,7 @@ import java.security.*;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+
 public class EncryptionHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaProtocolLogic.class);

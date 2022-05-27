@@ -115,6 +115,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     public void onDiscover(ConversationContext<OpcuaAPU> context) {
         // Only the TCP transport supports login.
         LOGGER.debug("Opcua Driver running in ACTIVE mode, discovering endpoints");
+        if (this.channel == null) {
+            this.channel = new SecureChannel(driverContext, this.configuration);
+        }
         channel.onDiscover(context);
     }
 

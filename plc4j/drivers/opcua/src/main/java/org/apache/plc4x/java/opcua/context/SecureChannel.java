@@ -526,7 +526,7 @@ public class SecureChannel {
             expandedNodeId,
             null,
             activateSessionRequest,
-            true);
+            false);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
@@ -618,7 +618,7 @@ public class SecureChannel {
             expandedNodeId,
             null,
             closeSessionRequest,
-            true);
+            false);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
@@ -702,7 +702,7 @@ public class SecureChannel {
                 expandedNodeId,
                 null,
                 closeSecureChannelRequest,
-                true));
+                false));
 
         Consumer<Integer> requestConsumer = t -> {
             context.sendRequest(new OpcuaAPU(closeRequest, false))
@@ -740,8 +740,11 @@ public class SecureChannel {
                 onDiscoverOpenSecureChannel(context, opcuaAcknowledgeResponse);
             });
 
-        channelTransactionManager.submit(requestConsumer, 1);
+        channelTransactionManager.submit(requestConsumer, channelTransactionManager.getTransactionIdentifier());
+
     }
+
+
 
     public void onDiscoverOpenSecureChannel(ConversationContext<OpcuaAPU> context, OpcuaAcknowledgeResponse opcuaAcknowledgeResponse) {
         int transactionId = channelTransactionManager.getTransactionIdentifier();
@@ -762,20 +765,22 @@ public class SecureChannel {
             NULL_BYTE_STRING,
             lifetime);
 
+
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
             false,            //Server Index Specified
             new NodeIdFourByte((short) 0, Integer.parseInt(openSecureChannelRequest.getIdentifier())),
             null,
             null);
 
+        ExtensionObject extObject = new ExtensionObject(
+            expandedNodeId,
+            null,
+            openSecureChannelRequest,
+            false);
 
         try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(openSecureChannelRequest.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-            new ExtensionObject(
-                expandedNodeId,
-                null,
-                openSecureChannelRequest,
-                true).serialize(buffer);
+            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
+            extObject.serialize(buffer);
 
             OpcuaOpenRequest openRequest = new OpcuaOpenRequest(FINAL_CHUNK,
                 0,
@@ -852,13 +857,15 @@ public class SecureChannel {
             null,
             null);
 
+        ExtensionObject extObject = new ExtensionObject(
+            expandedNodeId,
+            null,
+            endpointsRequest,
+            false);
+
         try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(endpointsRequest.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-            new ExtensionObject(
-                expandedNodeId,
-                null,
-                endpointsRequest,
-                true).serialize(buffer);
+            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
+            extObject.serialize(buffer);
 
             OpcuaMessageRequest messageRequest = new OpcuaMessageRequest(FINAL_CHUNK,
                 channelId.get(),
@@ -940,7 +947,7 @@ public class SecureChannel {
                 expandedNodeId,
                 null,
                 closeSecureChannelRequest,
-                true));
+                false));
 
         Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(closeRequest, false))
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
