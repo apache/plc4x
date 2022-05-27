@@ -33,8 +33,9 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, filter)
 
 	handle, numberOfPackage, timestampToIndexMap := pcaphandler.GetIndexedPcapHandle(pcapFile, filter)
+	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
 	defer handle.Close()
-	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Interface("timestampToIndexMap", timestampToIndexMap).Msg("got handle")
+	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
 	source := pcaphandler.GetPacketSource(handle)
 	var packageParse func(string, []byte) (interface{}, error)
 	var serializePackage func(interface{}) ([]byte, error)

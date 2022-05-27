@@ -65,15 +65,13 @@ TODO: document me
 		if !noFilter {
 			switch protocolType {
 			case "bacnet":
-				bacnetFilter, err := cmd.Flags().GetString("default-bacnet-filter")
-				if err != nil {
-					log.Fatal().Err(err).Msg("could not get default-bacnet-filter argument")
-				}
-				if bacnetFilter != "" {
-					filter = bacnetFilter
+				if filter != "" && bacnetFilter != "" {
 					log.Debug().Str("filter", filter).Msg("Setting bacnet filter")
+					filter = bacnetFilter
 				}
 			}
+		} else {
+			log.Info().Msg("All filtering disabled")
 		}
 		analyzer.Analyze(pcapFile, protocolType, filter, onlyParse, noBytesCompare)
 	},
@@ -84,6 +82,8 @@ func init() {
 
 	analyzeCmd.Flags().StringVarP(&filter, "filter", "f", "", "BFF filter to apply")
 	analyzeCmd.Flags().BoolVarP(&noFilter, "no-filter", "n", false, "disable filter")
+	analyzeCmd.Flags().BoolVarP(&onlyParse, "onlyParse", "o", false, "only parse messaged")
+	analyzeCmd.Flags().BoolVarP(&noBytesCompare, "noBytesCompare", "c", false, "don't compare original bytes with serialized bytes")
 	analyzeCmd.PersistentFlags().StringVarP(&bacnetFilter, "default-bacnet-filter", "", "udp port 47808 and udp[4:2] > 29", "Defines the default filter when bacnet is selected")
 	// TODO: support other protocols
 }
