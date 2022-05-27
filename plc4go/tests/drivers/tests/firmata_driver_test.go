@@ -20,12 +20,14 @@
 package tests
 
 import (
-	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
+	"github.com/apache/plc4x/plc4go/internal/knxnetip"
 	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
+	firmataIO "github.com/apache/plc4x/plc4go/protocols/firmata/readwrite"
+	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )
 
-func TestDf1ParserSerializer(t *testing.T) {
-	//t.Skip("Still a WIP")
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/df1/ParserSerializerTestsuite.xml")
+func TestFirmataDriver(t *testing.T) {
+	t.Skip("no testsuite yet")
+	testutils.RunDriverTestsuite(t, knxnetip.NewDriver(), "assets/testing/protocols/firmata/DriverTestsuite.xml", firmataIO.FirmataXmlParserHelper{})
 }

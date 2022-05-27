@@ -20,18 +20,11 @@
 package tests
 
 import (
-	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/eip"
 	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	eipIO "github.com/apache/plc4x/plc4go/protocols/eip/readwrite"
-	eipModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
+	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )
 
-func TestEIPDriver(t *testing.T) {
-	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
-		return eipModel.EipPacketParse(readBufferByteBased)
-	})}
-	testutils.RunDriverTestsuiteWithOptions(t, eip.NewDriver(), "assets/testing/protocols/eip/DriverTestsuite.xml", eipIO.EipXmlParserHelper{}, options)
+func TestBacnetParserSerializer(t *testing.T) {
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/bacnet/ParserSerializerTestsuite.xml")
 }

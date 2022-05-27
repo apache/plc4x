@@ -54,16 +54,18 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 	}
 
 	// Check if the test-file is available
-	info, err := os.Stat(path + "/../../../../" + testPath)
+	dirOffset := "/../../../"
+	testFile := path + dirOffset + testPath
+	info, err := os.Stat(testFile)
 	if os.IsNotExist(err) {
-		t.Error("Test-File doesn't exist")
+		t.Errorf("Test-File %s doesn't exist", testFile)
 	}
 	if info.IsDir() {
-		t.Error("Test-File refers to a directory")
+		t.Errorf("Test-File %s refers to a directory", testFile)
 	}
 
 	// Open a reader for this file
-	dat, err := os.Open(path + "/../../../../" + testPath)
+	dat, err := os.Open(testFile)
 	if err != nil {
 		t.Error("Error opening file")
 	}

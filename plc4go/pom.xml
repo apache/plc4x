@@ -35,11 +35,11 @@
 
   <properties>
     <!-- Tell Sonar where to find the sources -->
-    <sonar.sources>cmd,examples,internal,pkg</sonar.sources>
+    <sonar.sources>examples,internal,pkg,tools</sonar.sources>
   </properties>
 
   <build>
-    <sourceDirectory>cmd</sourceDirectory>
+    <sourceDirectory>pkg</sourceDirectory>
     <plugins>
       <!--
         Copy the test-resources in here
@@ -561,7 +561,7 @@
         </executions>
         <configuration>
           <packages>
-            <package>github.com/apache/plc4x/plc4go/cmd/main</package>
+            <package>github.com/apache/plc4x/plc4go/pkg/plc4go</package>
           </packages>
           <sources>${project.basedir}</sources>
           <verbose>true</verbose>

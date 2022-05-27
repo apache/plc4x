@@ -19,5 +19,8 @@
 
 package main
 
+import "github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/cmd"
+
 func main() {
+	cmd.Execute()
 }

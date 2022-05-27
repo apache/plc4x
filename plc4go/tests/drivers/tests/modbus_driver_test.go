@@ -20,13 +20,18 @@
 package tests
 
 import (
-	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
+	"github.com/apache/plc4x/plc4go/internal/modbus"
 	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
+	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	modbusIO "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite"
+	modbusModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
+	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )
 
-func TestModbusParserSerializer(t *testing.T) {
-	//testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/modbus/ascii/ParserSerializerTestsuite.xml")
-	//testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/modbus/rtu/ParserSerializerTestsuite.xml")
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/modbus/tcp/ParserSerializerTestsuite.xml")
+func TestModbusDriver(t *testing.T) {
+	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
+		return modbusModel.ModbusTcpADUParse(readBufferByteBased, modbusModel.DriverType_MODBUS_TCP, false)
+	})}
+	testutils.RunDriverTestsuiteWithOptions(t, modbus.NewModbusTcpDriver(), "assets/testing/protocols/modbus/tcp/DriverTestsuite.xml", modbusIO.ModbusXmlParserHelper{}, options)
 }

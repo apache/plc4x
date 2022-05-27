@@ -20,11 +20,11 @@
 package tests
 
 import (
-	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
 	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
+	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )
 
-func TestS7ParserSerializer(t *testing.T) {
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/s7/ParserSerializerTestsuite.xml")
+func TestFirmataParserSerializer(t *testing.T) {
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/firmata/ParserSerializerTestsuite.xml")
 }

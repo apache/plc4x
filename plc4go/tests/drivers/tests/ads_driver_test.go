@@ -20,18 +20,18 @@
 package tests
 
 import (
-	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/s7"
+	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	s7IO "github.com/apache/plc4x/plc4go/protocols/s7/readwrite"
-	s7Model "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	adsIO "github.com/apache/plc4x/plc4go/protocols/ads/readwrite"
+	adsModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )
 
-func TestS7Driver(t *testing.T) {
+func TestAdsDriver(t *testing.T) {
 	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
-		return s7Model.TPKTPacketParse(readBufferByteBased)
+		return adsModel.AmsTCPPacketParse(readBufferByteBased)
 	})}
-	testutils.RunDriverTestsuiteWithOptions(t, s7.NewDriver(), "assets/testing/protocols/s7/DriverTestsuite.xml", s7IO.S7XmlParserHelper{}, options)
+	testutils.RunDriverTestsuiteWithOptions(t, ads.NewDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml", adsIO.AdsXmlParserHelper{}, options)
 }

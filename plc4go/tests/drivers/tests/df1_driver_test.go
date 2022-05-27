@@ -20,19 +20,14 @@
 package tests
 
 import (
-	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/knxnetip"
+	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	knxIO "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite"
-	knxModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	df1IO "github.com/apache/plc4x/plc4go/protocols/df1/readwrite"
+	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )
 
-func TestKNXNetIPDriver(t *testing.T) {
+func TestDf1Driver(t *testing.T) {
 	t.Skip("No test yet")
-	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
-		return knxModel.KnxNetIpMessageParse(readBufferByteBased)
-	})}
-	testutils.RunDriverTestsuiteWithOptions(t, knxnetip.NewDriver(), "assets/testing/protocols/knxnetip/DriverTestsuite.xml", knxIO.KnxnetipXmlParserHelper{}, options)
+	testutils.RunDriverTestsuite(t, ads.NewDriver(), "assets/testing/protocols/df1/DriverTestsuite.xml", df1IO.Df1XmlParserHelper{})
 }

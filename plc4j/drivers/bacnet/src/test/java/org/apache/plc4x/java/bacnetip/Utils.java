@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.bacnetip;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -42,6 +44,22 @@ public class Utils {
 
     static void tryParseBytes(int[] rawBytesAsInts, int startIndex, boolean dumpPackages) throws ParseException {
         var rawBytes = (byte[]) ArrayUtils.toPrimitive(IntStream.of(rawBytesAsInts).boxed().map(Integer::byteValue).toArray(Byte[]::new));
+        rawBytes = ArrayUtils.subarray(rawBytes, startIndex, rawBytes.length);
+        BVLC bvlc = BVLC.staticParse(new ReadBufferByteBased(rawBytes));
+        assertNotNull(bvlc);
+        if (dumpPackages) System.out.println(bvlc);
+    }
+
+    static void tryParseHex(String hex) throws ParseException, DecoderException {
+        tryParseHex(hex, DUMP_PACKAGES);
+    }
+
+    static void tryParseHex(String hex, boolean dumpPackages) throws ParseException, DecoderException {
+        tryParseHex(hex, 0, dumpPackages);
+    }
+
+    static void tryParseHex(String hex, int startIndex, boolean dumpPackages) throws ParseException, DecoderException {
+        byte[] rawBytes = Hex.decodeHex(hex);
         rawBytes = ArrayUtils.subarray(rawBytes, startIndex, rawBytes.length);
         BVLC bvlc = BVLC.staticParse(new ReadBufferByteBased(rawBytes));
         assertNotNull(bvlc);

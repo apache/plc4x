@@ -544,7 +544,9 @@ func ParseDriverTestsuiteXml(testPath string) (*xmldom.Node, error) {
 	}
 
 	// Check if the test-file is available
-	info, err := os.Stat(path + "/../../../../" + testPath)
+	pathOffset := "/../../../"
+	testSuitePath := path + pathOffset + testPath
+	info, err := os.Stat(testSuitePath)
 	if os.IsNotExist(err) {
 		return nil, errors.Wrap(err, "test-File doesn't exist")
 	}
@@ -553,7 +555,7 @@ func ParseDriverTestsuiteXml(testPath string) (*xmldom.Node, error) {
 	}
 
 	// Open a reader for this file
-	dat, err := os.Open(path + "/../../../../" + testPath)
+	dat, err := os.Open(testSuitePath)
 	if err != nil {
 		return nil, errors.Wrap(err, "error opening file")
 	}

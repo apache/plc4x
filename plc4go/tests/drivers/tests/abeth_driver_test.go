@@ -20,11 +20,14 @@
 package tests
 
 import (
-	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
+	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
+	abethIO "github.com/apache/plc4x/plc4go/protocols/abeth/readwrite"
+	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )
 
-func TestAbEthParserSerializer(t *testing.T) {
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/abeth/ParserSerializerTestsuite.xml")
+func TestAbEthDriver(t *testing.T) {
+	t.Skip("No test yet available")
+	testutils.RunDriverTestsuite(t, ads.NewDriver(), "assets/testing/protocols/abeth/DriverTestsuite.xml", abethIO.AbethXmlParserHelper{})
 }

@@ -20,12 +20,12 @@
 package tests
 
 import (
-	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
 	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
+	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )
 
-func TestEipParserSerializer(t *testing.T) {
+func TestDf1ParserSerializer(t *testing.T) {
 	//t.Skip("Still a WIP")
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/eip/ParserSerializerTestsuite.xml")
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/df1/ParserSerializerTestsuite.xml")
 }
