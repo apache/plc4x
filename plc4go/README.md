@@ -17,12 +17,14 @@
   under the License.
   -->
 
-==plc4go module==
+# plc4go
+
+## plc4go module
 
 To use plc4go use the `driverManager := plc4go.NewPlcDriverManager()` and register a driver e.g. 
 `drivers.RegisterKnxDriver(driverManager)`.
 
-==plc4go tools==
+## plc4go tools
 
 To install a tool e.g. plc4xpcapanalyzer install it like that: 
 `go install github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer@latest`
