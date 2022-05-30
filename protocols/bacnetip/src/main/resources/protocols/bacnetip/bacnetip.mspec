@@ -2236,6 +2236,10 @@
         ]
         //[*, 'ALARM_VALUES'                            BACnetConstructedDataAlarmValues [validation    '1 == 2'    "TODO: implement me ALARM_VALUES BACnetConstructedDataAlarmValues"]]
         //[*, 'ALIGN_INTERVALS'                         BACnetConstructedDataAlignIntervals [validation    '1 == 2'    "TODO: implement me ALIGN_INTERVALS BACnetConstructedDataAlignIntervals"]]
+
+        /////
+        // All property implementations for every object
+
         ['ACCESS_CREDENTIAL'     , 'ALL'              BACnetConstructedDataAccessCredentialAl
             [validation '1==2' "TODO: implement me BACnetConstructedData ...ACCESS_CREDENTIAL..."]
         ]
@@ -2458,6 +2462,9 @@
         ['TREND_LOG_MULTIPLE'    , 'ALL'              BACnetConstructedDataTrendLogMultipleAll
             [validation '1==2' "TODO: implement me BACnetConstructedData ...TREND_LOG_MULTIPLE..."]
         ]
+        //
+        /////
+
         //[*, 'ALL_WRITES_SUCCESSFUL'                   BACnetConstructedDataAllWritesSuccessful [validation    '1 == 2'    "TODO: implement me ALL_WRITES_SUCCESSFUL BACnetConstructedDataAllWritesSuccessful"]]
         //[*, 'ALLOW_GROUP_DELAY_INHIBIT'               BACnetConstructedDataAllowGroupDelayInhibit [validation    '1 == 2'    "TODO: implement me ALLOW_GROUP_DELAY_INHIBIT BACnetConstructedDataAllowGroupDelayInhibit"]]
         //[*, 'APDU_LENGTH'                             BACnetConstructedDataAPDULength [validation    '1 == 2'    "TODO: implement me APDU_LENGTH BACnetConstructedDataAPDULength"]]
@@ -2521,9 +2528,11 @@
         //[*, 'CONTROL_GROUPS'                          BACnetConstructedDataControlGroups [validation    '1 == 2'    "TODO: implement me CONTROL_GROUPS BACnetConstructedDataControlGroups"]]
         //[*, 'CONTROLLED_VARIABLE_REFERENCE'           BACnetConstructedDataControlledVariableReference [validation    '1 == 2'    "TODO: implement me CONTROLLED_VARIABLE_REFERENCE BACnetConstructedDataControlledVariableReference"]]
         [*, 'CONTROLLED_VARIABLE_UNITS'               BACnetConstructedDataControlledVariableUnits
-          [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS') units                           ]
+            [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS') units                           ]
         ]
-        //[*, 'CONTROLLED_VARIABLE_VALUE'               BACnetConstructedDataControlledVariableValue [validation    '1 == 2'    "TODO: implement me CONTROLLED_VARIABLE_VALUE BACnetConstructedDataControlledVariableValue"]]
+        [*, 'CONTROLLED_VARIABLE_VALUE'               BACnetConstructedDataControlledVariableValue
+            [simple   BACnetApplicationTagReal  controlledVariableValue         ]
+        ]
         //[*, 'COUNT'                                   BACnetConstructedDataCount [validation    '1 == 2'    "TODO: implement me COUNT BACnetConstructedDataCount"]]
         //[*, 'COUNT_BEFORE_CHANGE'                     BACnetConstructedDataCountBeforeChange [validation    '1 == 2'    "TODO: implement me COUNT_BEFORE_CHANGE BACnetConstructedDataCountBeforeChange"]]
         //[*, 'COUNT_CHANGE_TIME'                       BACnetConstructedDataCountChangeTime [validation    '1 == 2'    "TODO: implement me COUNT_CHANGE_TIME BACnetConstructedDataCountChangeTime"]]
