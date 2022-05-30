@@ -34,10 +34,7 @@ import org.pcap4j.packet.UdpPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.net.URL;
 import java.nio.file.FileSystems;
@@ -59,9 +56,6 @@ public class RandomPackagesTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomPackagesTest.class);
 
     public static final String BACNET_BPF_FILTER_UDP = "udp port 47808";
-
-    // TODO: remove that once done
-    private static boolean GLOBAL_RESERIALIZE = false;
 
     Queue<Closeable> toBeClosed = new ConcurrentLinkedDeque<>();
 
@@ -1022,24 +1016,15 @@ public class RandomPackagesTest {
     Collection<DynamicNode> CriticalRoom55_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("CriticalRoom55-1.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            // undefined reject
-            8,
-            // undefined reject
-            10,
-            // undefined reject
-            12,
-            // undefined reject
-            14,
-            // undefined reject
-            16,
-            // undefined reject
-            18,
-            // Broken package
-            22,
-            // Broken package
-            24,
-            // Broken package
-            26
+            skip(8, "undefined reject... some glibberich"),
+            skip(10, "undefined reject... some glibberich"),
+            skip(12, "undefined reject... some glibberich"),
+            skip(14, "undefined reject... some glibberich"),
+            skip(16, "undefined reject... some glibberich"),
+            skip(18, "undefined reject... some glibberich"),
+            skip(22, "undefined reject... some glibberich"),
+            skip(24, "undefined reject... some glibberich"),
+            skip(26, "undefined reject... some glibberich")
         ));
     }
 
@@ -1061,38 +1046,10 @@ public class RandomPackagesTest {
                     assertEquals(123.0f, baCnetApplicationTagReal.getPayload().getValue());
                 }),
             pcapEvaluator.parseFrom(2,
-                // Almost every response is garbage so we don't re-serialize that
-                false,
-                // Broken package
-                2,
-                // Broken package
-                4,
-                // Broken package
-                6,
-                // Broken package
-                8,
-                // Broken package
-                10,
-                // Broken package
-                12,
-                // Broken package
-                14,
-                // Broken package
-                16,
-                // Broken package
-                18,
-                // Broken package
-                20,
-                // Broken package
-                22,
-                // Broken package
-                24,
-                // Broken package
-                26,
-                // Broken package
-                28,
-                // Broken package
-                30
+                IntStream.rangeClosed(2, 281)
+                    .filter(i -> i % 2 == 0)
+                    .mapToObj(i -> skip(i, i > 30 ? SkipInstruction.SkipType.SKIP_COMPARE : SkipInstruction.SkipType.SKIP_COMPLETE, "The responses here are just garbage"))
+                    .toArray(SkipInstruction[]::new)
             )
         );
     }
@@ -1103,34 +1060,27 @@ public class RandomPackagesTest {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("DRI%20CAVE%20log%20udp-0168-20081216-1117-03.cap");
         return List.of(
             pcapEvaluator.parseEmAll(
-                // incomplete captured package (size limit 100)
-                86,
-                // broken package
-                87,
-                // incomplete captured package (size limit 100)
-                94,
-                // broken package
-                95,
-                // incomplete captured package (size limit 100)
-                104,
-                // broken package
-                105,
-                // incomplete captured package (size limit 100)
-                110,
-                // broken package
-                111,
-                // broken package
-                140,
-                // incomplete captured package (size limit 100)
-                142,
-                // broken package
-                143,
-                // broken package
-                147,
-                // incomplete captured package (size limit 100)
-                151,
-                // broken package
-                152
+                // TODO: fixme: analyze what is wrong
+                skip(55, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: analyze what is wrong"),
+                skip(60, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: analyze what is wrong"),
+                skip(92, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: analyze what is wrong"),
+                skip(99, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: analyze what is wrong"),
+                skip(131, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: analyze what is wrong"),
+                skip(134, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: analyze what is wrong"),
+                skip(86, "incomplete captured package (size limit 100)"),
+                skip(87, "broken package"),
+                skip(94, "incomplete captured package (size limit 100)"),
+                skip(95, "broken package"),
+                skip(104, "incomplete captured package (size limit 100)"),
+                skip(105, "broken package"),
+                skip(110, "incomplete captured package (size limit 100)"),
+                skip(111, "broken package"),
+                skip(140, "incomplete captured package (size limit 100)"),
+                skip(142, "broken package"),
+                skip(143, "broken package"),
+                skip(147, "broken package"),
+                skip(151, "incomplete captured package (size limit 100)"),
+                skip(152, "broken package")
             )
         );
     }
@@ -1444,8 +1394,8 @@ public class RandomPackagesTest {
     Collection<DynamicNode> SubordinateListDecodeSample() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("SubordinateListDecodeSample.pcap");
         return List.of(pcapEvaluator.parseEmAll(
-            1,
-            4
+            //1,
+            //4
         ));
     }
 
@@ -1454,8 +1404,8 @@ public class RandomPackagesTest {
     Collection<DynamicNode> SynergyBlinkWarn() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("SynergyBlinkWarn.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            3,
-            5
+            //3,
+            //5
         ));
     }
 
@@ -1464,8 +1414,8 @@ public class RandomPackagesTest {
     Collection<DynamicNode> SynergyReadProperties() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("SynergyReadProperties.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            37,
-            38
+            //37,
+            //38
         ));
     }
 
@@ -1474,8 +1424,8 @@ public class RandomPackagesTest {
     Collection<DynamicNode> SynergyWriteProperty() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("SynergyWriteProperty.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            3,
-            5
+            //3,
+            //5
         ));
     }
 
@@ -1491,9 +1441,9 @@ public class RandomPackagesTest {
     Collection<DynamicNode> Sysco_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("Sysco-2.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            25,
-            26,
-            27
+            // 25,
+            // 26,
+            // 27
         ));
     }
 
@@ -1502,9 +1452,9 @@ public class RandomPackagesTest {
     Collection<DynamicNode> Sysco_3() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("Sysco-3.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            25,
-            26,
-            27
+            //25,
+            //26,
+            //27
         ));
     }
 
@@ -1594,9 +1544,9 @@ public class RandomPackagesTest {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("Tower333%20lighting%205min%20IP.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
             // TODO: this is a broken message which should be ignored but also it results in a java heap space error so we should take care of that
-            7,
+            //7,
             // TODO: this is a broken message which should be ignored but also it results in a java heap space error so we should take care of that
-            14
+            //14
         ));
     }
 
@@ -1972,9 +1922,9 @@ public class RandomPackagesTest {
     Collection<DynamicNode> atomic_read_file_50() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-read-file-50.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            5,
-            8,
-            11
+            // 5,
+            // 8,
+            // 11
         ));
     }
 
@@ -1983,12 +1933,12 @@ public class RandomPackagesTest {
     Collection<DynamicNode> atomic_read_file_50x1500k() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-read-file-50x1500k.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            35,
-            60,
-            75,
-            173,
-            201,
-            216
+            //  35,
+            //  60,
+            //  75,
+            //  173,
+            //  201,
+            //  216
         ));
     }
 
@@ -1997,9 +1947,9 @@ public class RandomPackagesTest {
     Collection<DynamicNode> atomic_read_file_480() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-read-file-480.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            5,
-            8,
-            9
+            //  5,
+            //  8,
+            //  9
         ));
     }
 
@@ -2023,12 +1973,12 @@ public class RandomPackagesTest {
     Collection<DynamicNode> atomic_write_file_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file-2.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            1,
-            3,
-            6,
-            1173,
-            1179,
-            1180
+            //  1,
+            //  3,
+            //  6,
+            //  1173,
+            //  1179,
+            //  1180
         ));
     }
 
@@ -2037,10 +1987,10 @@ public class RandomPackagesTest {
     Collection<DynamicNode> atomic_write_file_3() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file-3.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            3,
-            4,
-            67,
-            71
+            // 3,
+            // 4,
+            // 67,
+            // 71
         ));
     }
 
@@ -2070,9 +2020,9 @@ public class RandomPackagesTest {
     Collection<DynamicNode> atomic_write_file() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            1,
-            4,
-            3122
+            //  1,
+            //  4,
+            //  3122
         ));
     }
 
@@ -2087,7 +2037,12 @@ public class RandomPackagesTest {
     @DisplayName("bacapp-malform")
     Collection<DynamicNode> bacapp_malform() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacapp-malform.cap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll());
+        return List.of(pcapEvaluator.parseEmAll(
+            // TODO: fixme Something is complete of with that test
+            IntStream.range(1, 1683)
+                .mapToObj(i -> skip(i, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme Something is complete of with that test"))
+                .toArray(SkipInstruction[]::new)
+        ));
     }
 
     @Disabled("no udp packages")
@@ -2117,7 +2072,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> bacnet_ip() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-ip.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            2
+            //2
         ));
     }
 
@@ -2132,7 +2087,11 @@ public class RandomPackagesTest {
     @DisplayName("bacnet-services")
     Collection<DynamicNode> bacnet_services() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-services.cap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll());
+        return List.of(pcapEvaluator.parseEmAll(
+            // TODO: analyze what is wrong here
+            skip(279, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: analyze what is wrong here"),
+            skip(281, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: analyze what is wrong here")
+        ));
     }
 
     @TestFactory
@@ -2140,14 +2099,12 @@ public class RandomPackagesTest {
     Collection<DynamicNode> bacnet_stack_services() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-stack-services.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            // Malformed Package
-            56,
-            // Malformed Package
-            58,
-            // Malformed Package
-            60,
-            // Malformed Package
-            62
+            // TODO: analyze what is wrong here
+            skip(1, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: analyze what is wrong here"),
+            skip(77, "Malformed Package"),
+            skip(79, "Malformed Package"),
+            skip(81, "Malformed Package"),
+            skip(83, "Malformed Package")
         ));
     }
 
@@ -2913,7 +2870,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> epics_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("epics-1.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            2
+            //2
         ));
     }
 
@@ -3320,7 +3277,44 @@ public class RandomPackagesTest {
     @DisplayName("plugfest-2011-sauter-1")
     Collection<DynamicNode> plugfest_2011_sauter_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-sauter-1.pcap");
-        return List.of(pcapEvaluator.parseEmAll());
+        return List.of(pcapEvaluator.parseEmAll(
+            skip(70, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(72, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(74, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(76, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(228, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(306, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(309, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... no idea what is wrong here"),
+            skip(313, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(321, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... no idea what is wrong here"),
+            skip(323, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... no idea what is wrong here"),
+            skip(335, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(337, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(341, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(345, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(347, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(351, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(357, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(367, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(371, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(373, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(377, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(381, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(385, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(391, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(405, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(416, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(423, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(425, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(429, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(433, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(435, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(1250, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... no idea what is wrong here"),
+            skip(1252, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... no idea what is wrong here"),
+            skip(1256, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... no idea what is wrong here"),
+            skip(1278, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(1280, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... no idea what is wrong here")
+        ));
     }
 
     @TestFactory
@@ -3328,12 +3322,19 @@ public class RandomPackagesTest {
     Collection<DynamicNode> plugfest_2011_siemens_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-siemens-1.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            // TODO: siemens shenanigans again
-            225,
-            // TODO: siemens shenanigans again
-            2329,
-            // TODO: siemens shenanigans again
-            2345
+            skip(225, "strange siemens package"),
+            //TODO: investigate those
+            skip(278, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(291, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(363, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(448, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(1575, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(2327, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(2329, "strange siemens package"),
+            skip(2345, "strange siemens package"),
+            //TODO: investigate those
+            skip(2586, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(2626, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate")
         ));
     }
 
@@ -3360,43 +3361,130 @@ public class RandomPackagesTest {
     @DisplayName("plugfest-delta-2")
     Collection<DynamicNode> plugfest_delta_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2.cap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll());
+        return List.of(pcapEvaluator.parseEmAll(
+            // TODO: fixme analyze what is wrong in those
+            IntStream.rangeClosed(990, 19567)
+                .mapToObj(i -> skip(i, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme analyze what is wrong in those"))
+                .toArray(SkipInstruction[]::new)
+        ));
     }
 
     @TestFactory
     @DisplayName("plugfest-delta-2b")
     Collection<DynamicNode> plugfest_delta_2b() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2b.cap", BACNET_BPF_FILTER_UDP);
-        return List.of(
-            pcapEvaluator.parseEmAll());
+        return List.of(pcapEvaluator.parseEmAll(
+            // TODO: fixme analyze what is wrong in those
+            IntStream.rangeClosed(150, 11831)
+                .mapToObj(i -> skip(i, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme analyze what is wrong in those"))
+                .toArray(SkipInstruction[]::new)
+        ));
     }
 
     @TestFactory
     @DisplayName("plugfest-tridium-1")
     Collection<DynamicNode> plugfest_tridium_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-1.pcap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll());
+        return List.of(pcapEvaluator.parseEmAll(
+            //TODO: investigate those
+            skip(13, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(15, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(391, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(393, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(423, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(425, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(438, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(440, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(489, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(495, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(828, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(830, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(945, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(947, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(1084, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(1086, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(3405, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(3407, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate")
+        ));
     }
 
     @TestFactory
     @DisplayName("plugfest-tridium-2")
     Collection<DynamicNode> plugfest_tridium_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-2.pcap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll());
+        return List.of(pcapEvaluator.parseEmAll(
+            //TODO: investigate those
+            skip(60, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(62, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(82, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(84, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(103, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(105, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(156, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(158, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(170, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(172, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(184, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(186, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(205, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(207, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(227, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(229, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(245, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(251, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(270, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(272, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(302, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(304, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(319, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(325, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(366, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(368, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(386, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(388, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(410, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(412, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(430, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(434, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(440, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(444, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(460, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(462, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(487, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(489, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(511, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(513, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(527, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(533, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(551, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(553, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(574, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(576, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(597, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(599, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(620, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(622, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate")
+        ));
     }
 
     @TestFactory
     @DisplayName("polarsoft-free-range-router-init-routing-table")
     Collection<DynamicNode> polarsoft_free_range_router_init_routing_table() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("polarsoft-free-range-router-init-routing-table.cap");
-        return List.of(pcapEvaluator.parseEmAll());
+        return List.of(pcapEvaluator.parseEmAll(
+            // TODO: fix me, don't know whats wrong
+            skip(2, SkipInstruction.SkipType.SKIP_COMPARE, "fix me, don't know whats wrong")
+        ));
     }
 
     @TestFactory
     @DisplayName("polarsoft-free-range-router")
     Collection<DynamicNode> polarsoft_free_range_router() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("polarsoft-free-range-router.cap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll());
+        return List.of(pcapEvaluator.parseEmAll(
+            // TODO: fix me, don't know whats wrong
+            skip(6155, SkipInstruction.SkipType.SKIP_COMPARE, "fix me, don't know whats wrong")
+        ));
     }
 
     @TestFactory
@@ -5236,9 +5324,9 @@ public class RandomPackagesTest {
     Collection<DynamicNode> readfile() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("readfile.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            3,
-            4,
-            5
+            // 3,
+            // 4,
+            // 5
         ));
     }
 
@@ -5254,12 +5342,9 @@ public class RandomPackagesTest {
     Collection<DynamicNode> reinit_device() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("reinit-device.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            // 201 is using prorietary value which should not be allowed
-            130,
-            // 207 is using prorietary value which should not be allowed
-            134,
-            // 223 is using prorietary value which should not be allowed
-            143
+            skip(201, SkipInstruction.SkipType.SKIP_COMPLETE, "is using proprietary value which should not be allowed"),
+            skip(207, SkipInstruction.SkipType.SKIP_COMPLETE, "is using proprietary value which should not be allowed"),
+            skip(223, SkipInstruction.SkipType.SKIP_COMPLETE, "is using proprietary value which should not be allowed")
         ));
     }
 
@@ -5395,14 +5480,15 @@ public class RandomPackagesTest {
     Collection<DynamicNode> synergy_broken_rpm() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("synergy-broken-rpm.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            5,
-            8,
-            9,
-            10,
-            13,
-            55,
-            56,
-            57
+            // TODO: fixme: apparently we omit one byte
+            skip(46, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
+            skip(47, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
+            skip(48, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
+            skip(50, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
+            skip(51, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
+            skip(52, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
+            skip(53, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
+            skip(54, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte")
         ));
     }
 
@@ -5410,19 +5496,14 @@ public class RandomPackagesTest {
     @DisplayName("synergy-device")
     Collection<DynamicNode> synergy_device() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("synergy-device.cap");
-        return List.of(pcapEvaluator.parseEmAll(
-            1,
-            4
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("time-sync")
     Collection<DynamicNode> time_sync() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("time-sync.cap");
-        return List.of(pcapEvaluator.parseEmAll(
-            2
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -5451,7 +5532,10 @@ public class RandomPackagesTest {
     @DisplayName("who-has-I-have")
     Collection<DynamicNode> who_has_I_have() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("who-has-I-have.cap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll());
+        return List.of(pcapEvaluator.parseEmAll(
+            // TODO: fixme
+            skip(1, "todo investigate")
+        ));
     }
 
     @TestFactory
@@ -5665,7 +5749,10 @@ public class RandomPackagesTest {
     @DisplayName("wp-weekly-schedule-test")
     Collection<DynamicNode> wp_weekly_schedule_test() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("wp-weekly-schedule-test.cap");
-        return List.of(pcapEvaluator.parseEmAll());
+        return List.of(pcapEvaluator.parseEmAll(
+            // TODO: fixme
+            skip(17, SkipInstruction.SkipType.SKIP_COMPARE, "fixme don't know whats wrong")
+        ));
     }
 
     @TestFactory
@@ -5701,22 +5788,22 @@ public class RandomPackagesTest {
     Collection<DynamicNode> write_property() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("write-property.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            39, // Malformed Package
-            40,   // Malformed Package
-            41,   // Malformed Package
-            42,   // Malformed Package
-            43,   // Malformed Package
-            44,   // Malformed Package
-            45,   // Malformed Package
-            46,   // Malformed Package
-            47,   // Malformed Package
-            48,   // Malformed Package
-            49,   // Malformed Package
-            50,   // Malformed Package
-            51,   // Malformed Package
-            52,   // Malformed Package
-            53,   // Malformed Package
-            54    // Malformed Package
+            skip(1594, "Malformed Package"),
+            skip(1595, "Malformed Package"),
+            skip(1596, "Malformed Package"),
+            skip(1597, "Malformed Package"),
+            skip(1598, "Malformed Package"),
+            skip(1599, "Malformed Package"),
+            skip(1600, "Malformed Package"),
+            skip(1601, "Malformed Package"),
+            skip(1602, "Malformed Package"),
+            skip(1603, "Malformed Package"),
+            skip(1604, "Malformed Package"),
+            skip(1605, "Malformed Package"),
+            skip(1606, "Malformed Package"),
+            skip(1607, "Malformed Package"),
+            skip(1608, "Malformed Package"),
+            skip(1609, "Malformed Package")
         ));
     }
 
@@ -5725,8 +5812,8 @@ public class RandomPackagesTest {
     Collection<DynamicNode> write_property2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("write-property2.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            10,
-            14
+            //skip(10), // TODO: skiped why?
+            //skip(14)  // TODO: skiped why?
         ));
     }
 
@@ -5761,34 +5848,23 @@ public class RandomPackagesTest {
             super(pcapFile, filter);
         }
 
-        public DynamicContainer parseEmAll(int... skippedUnitTestNumber) {
-            return parseEmAll(true, skippedUnitTestNumber);
+        public DynamicContainer parseEmAll(SkipInstruction... skipInstructions) {
+            return parseRange(1, maxPackages, skipInstructions);
         }
 
-        public DynamicContainer parseEmAll(boolean reserialize, int... skippedUnitTestNumber) {
-            return parseRange(1, maxPackages, reserialize, skippedUnitTestNumber);
+        public DynamicContainer parseFrom(int startPackageNumber, SkipInstruction... skipInstructions) {
+            return parseRange(startPackageNumber, maxPackages, skipInstructions);
         }
 
-        public DynamicContainer parseFrom(int startPackageNumber, int... skippedUnitTestNumber) {
-            return parseFrom(startPackageNumber, true, skippedUnitTestNumber);
+        public DynamicContainer parseTill(int packageNumber, SkipInstruction... skipInstructions) {
+            return parseRange(1, packageNumber, skipInstructions);
         }
 
-        public DynamicContainer parseFrom(int startPackageNumber, boolean reserialize, int... skippedUnitTestNumber) {
-            return parseRange(startPackageNumber, maxPackages, reserialize, skippedUnitTestNumber);
-        }
-
-        public DynamicContainer parseTill(int packageNumber, int... skippedUnitTestNumber) {
-            return parseTill(packageNumber, true, skippedUnitTestNumber);
-        }
-
-        public DynamicContainer parseTill(int packageNumber, boolean reserialize, int... skippedUnitTestNumber) {
-            return parseRange(1, packageNumber, reserialize, skippedUnitTestNumber);
-        }
-
-        public DynamicContainer parseRange(int startPackageNumber, int endPackageNumber, boolean reserialize, int... skippedUnitTestNumber) {
-            Set<Integer> numbersToSkip = Arrays.stream(skippedUnitTestNumber).boxed().collect(Collectors.toSet());
+        public DynamicContainer parseRange(int startPackageNumber, int endPackageNumber, SkipInstruction... skipInstructions) {
+            Map<Integer, SkipInstruction> skipInstructionMap = Arrays.stream(skipInstructions).collect(Collectors.toMap(SkipInstruction::getPackageNumber, v -> v));
+            Set<Integer> numbersToSkip = Arrays.stream(skipInstructions).filter(SkipInstruction::shouldSkipAll).map(SkipInstruction::getPackageNumber).collect(Collectors.toSet());
             // This means we requested to skip no test number
-            boolean hasNoSkipping = skippedUnitTestNumber.length <= 0;
+            boolean hasNoSkipping = numbersToSkip.size() <= 0;
             boolean hasSkipping = !hasNoSkipping;
             // This function maps the test number to the package number if there is an offset. That happens when we apply a BPF filter
             Function<Integer, Integer> packageNumResolver = i -> packageNumbers != null ? packageNumbers.get(i - 1) : i;
@@ -5799,14 +5875,18 @@ public class RandomPackagesTest {
                         (i) -> DynamicTest.dynamicTest(
                             "No. " + packageNumResolver.apply(i) + " - Unit-Test nr." + i,
                             () -> {
-                                if (hasSkipping && numbersToSkip.contains(i)) {
-                                    Integer packageNumber = packageNumResolver.apply(i);
+                                Integer packageNumber = packageNumResolver.apply(i);
+                                // TODO: maybe we can migrate that to the instruction below
+                                if (hasSkipping && numbersToSkip.contains(packageNumber)) {
                                     LOGGER.info("Skipping unfiltered package {} with test nr. {}", packageNumber, i);
                                     skipPackages(1);
                                     throw new TestAbortedException("Package nr. " + packageNumber + " filtered (Unit-Test nr. " + i + ")");
                                 }
-
-                                BVLC bvlc = nextBVLC(reserialize);
+                                SkipInstruction skipInstruction = skipInstructionMap.getOrDefault(packageNumber, noskip());
+                                if (!skipInstruction.shouldParse()) {
+                                    throw new TestAbortedException(skipInstruction.toString());
+                                }
+                                BVLC bvlc = nextBVLC(skipInstruction);
                                 LOGGER.info("Test number {} is package number {}", i, currentPackageNumber);
                                 assumeTrue(bvlc != null, "No more package left");
                                 dump(bvlc);
@@ -5899,18 +5979,18 @@ public class RandomPackagesTest {
         }
 
         public BVLC nextBVLC() throws NotOpenException, ParseException, SerializationException {
-            return nextBVLC(true);
+            return nextBVLC(noskip());
         }
 
-        public BVLC nextBVLC(boolean reserialize) throws NotOpenException, ParseException, SerializationException {
-            return nextBVLC(null, reserialize);
+        public BVLC nextBVLC(SkipInstruction skipInstruction) throws NotOpenException, ParseException, SerializationException {
+            return nextBVLC(null, skipInstruction);
         }
 
         public BVLC nextBVLC(Integer ensurePackageNumber) throws NotOpenException, ParseException, SerializationException {
-            return nextBVLC(ensurePackageNumber, true);
+            return nextBVLC(ensurePackageNumber, noskip());
         }
 
-        public BVLC nextBVLC(Integer ensurePackageNumber, boolean reserialize) throws NotOpenException, ParseException, SerializationException {
+        public BVLC nextBVLC(Integer ensurePackageNumber, SkipInstruction skipInstruction) throws NotOpenException, ParseException, SerializationException {
             Packet packet = nextPacket();
             if (packet == null) {
                 return null;
@@ -5930,10 +6010,10 @@ public class RandomPackagesTest {
                     throw new IllegalArgumentException("Could not find package with package number " + ensurePackageNumber);
                 }
             }
-            return getBvlc(packet, reserialize);
+            return getBvlc(packet, skipInstruction);
         }
 
-        private BVLC getBvlc(Packet packet, boolean reserialize) throws ParseException, SerializationException {
+        private BVLC getBvlc(Packet packet, SkipInstruction skipInstruction) throws ParseException, SerializationException {
             UdpPacket udpPacket = packet.get(UdpPacket.class);
             assumeTrue(udpPacket != null, "nextBVLC assumes a UDP Packet. If non is there it might by LLC");
             LOGGER.info("Handling UDP\n{}", udpPacket);
@@ -5941,10 +6021,15 @@ public class RandomPackagesTest {
             LOGGER.info("Reading BVLC from:\n{}", Hex.dump(rawData));
             try {
                 BVLC bvlc = BVLC.staticParse(new ReadBufferByteBased(rawData));
-                if (reserialize && GLOBAL_RESERIALIZE) {
+                if (skipInstruction.shouldSerialize()) {
                     WriteBufferByteBased writeBuffer = new WriteBufferByteBased(bvlc.getLengthInBytes());
                     bvlc.serialize(writeBuffer);
-                    assertArrayEquals(rawData, writeBuffer.getBytes(), "re-serialized output doesn't match original bytes");
+                    if (skipInstruction.shouldCompare()) {
+                        byte[] actualSerialized = writeBuffer.getBytes();
+                        assertArrayEquals(rawData, actualSerialized, "re-serialized output doesn't match original bytes");
+                    }
+                } else {
+                    LOGGER.debug("{}", skipInstruction);
                 }
                 return bvlc;
             } catch (ParseException e) {
@@ -5998,6 +6083,76 @@ public class RandomPackagesTest {
                 "pcapFile='" + pcapFile + '\'' +
                 ", pcapHandle=" + pcapHandle +
                 '}';
+        }
+    }
+
+    static SkipInstruction noskip() {
+        return skip(-1, SkipInstruction.SkipType.NO_SKIPPING, "there should be no reason to skip this package");
+    }
+
+    static SkipInstruction skip(int packageNumber, String reason) {
+        return skip(packageNumber, SkipInstruction.SkipType.SKIP_COMPLETE, reason);
+    }
+
+    static SkipInstruction skip(int packageNumber, SkipInstruction.SkipType skipType, String reason) {
+        return new SkipInstruction(packageNumber, skipType, reason);
+    }
+
+    static class SkipInstruction {
+        int packageNumber;
+
+        SkipType skipType;
+
+        String reason;
+
+        SkipInstruction(int packageNumber, SkipType skipType, String reason) {
+            this.packageNumber = packageNumber;
+            this.skipType = Objects.requireNonNull(skipType);
+            this.reason = Objects.requireNonNull(reason);
+        }
+
+        enum SkipType {
+            /**
+             * don't do anything with that package
+             */
+            SKIP_COMPLETE,
+            /**
+             * only parse don't serialize
+             */
+            SKIP_SERIALIZE,
+            /**
+             * ony parse, serialize and don't compare
+             */
+            SKIP_COMPARE,
+            /**
+             * don't skip at all
+             */
+            NO_SKIPPING;
+        }
+
+        boolean shouldSkipAll() {
+            return skipType == SkipType.SKIP_COMPLETE;
+        }
+
+        boolean shouldParse() {
+            return skipType.ordinal() > SkipType.SKIP_COMPLETE.ordinal();
+        }
+
+        boolean shouldSerialize() {
+            return skipType.ordinal() > SkipType.SKIP_SERIALIZE.ordinal();
+        }
+
+        boolean shouldCompare() {
+            return skipType.ordinal() > SkipType.SKIP_COMPARE.ordinal();
+        }
+
+        int getPackageNumber() {
+            return packageNumber;
+        }
+
+        @Override
+        public String toString() {
+            return "Package " + packageNumber + " skipped with skipType=" + skipType + ". Reason: " + reason;
         }
     }
 }
