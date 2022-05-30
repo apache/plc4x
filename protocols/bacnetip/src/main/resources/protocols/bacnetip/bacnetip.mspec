@@ -180,9 +180,9 @@
 ]
 
 [discriminatedType APDU(uint 16 apduLength)
-    [discriminator uint 4 apduType]
+    [discriminator ApduType apduType]
     [typeSwitch apduType
-        ['0x0' APDUConfirmedRequest
+        ['CONFIRMED_REQUEST_PDU' APDUConfirmedRequest
             [simple   bit       segmentedMessage                         ]
             [simple   bit       moreFollows                              ]
             [simple   bit       segmentedResponseAccepted                ]
@@ -203,17 +203,17 @@
                                     length
                                     'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?(6):(5))):0):0']
         ]
-        ['0x1' APDUUnconfirmedRequest
+        ['UNCONFIRMED_REQUEST_PDU' APDUUnconfirmedRequest
             [reserved uint 4                          '0'               ]
             [simple   BACnetUnconfirmedServiceRequest('apduLength - 1')
                                 serviceRequest                          ]
         ]
-        ['0x2' APDUSimpleAck
+        ['SIMPLE_ACK_PDU' APDUSimpleAck
             [reserved uint 4    '0'                                     ]
             [simple   uint 8    originalInvokeId                        ]
             [simple   uint 8    serviceChoice                           ]
         ]
-        ['0x3' APDUComplexAck
+        ['COMPLEX_ACK_PDU' APDUComplexAck
             [simple   bit       segmentedMessage                        ]
             [simple   bit       moreFollows                             ]
             [reserved uint 2    '0'                                     ]
@@ -229,7 +229,7 @@
                                     'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?(5):(4))):0):0'
                                                                         ]
         ]
-        ['0x4' APDUSegmentAck
+        ['SEGMENT_ACK_PDU' APDUSegmentAck
             [reserved uint 2    '0x00'                                  ]
             [simple   bit       negativeAck                             ]
             [simple   bit       server                                  ]
@@ -237,7 +237,7 @@
             [simple   uint 8    sequenceNumber                          ]
             [simple   uint 8    proposedWindowSize                      ]
         ]
-        ['0x5' APDUError
+        ['ERROR_PDU' APDUError
             [reserved uint 4    '0x00'                                  ]
             [simple   uint 8    originalInvokeId                        ]
             [simple   BACnetConfirmedServiceChoice
@@ -245,13 +245,13 @@
             [simple   BACnetError('errorChoice')
                                 error                                   ]
         ]
-        ['0x6' APDUReject
+        ['REJECT_PDU' APDUReject
             [reserved uint 4    '0x00'                                  ]
             [simple   uint 8    originalInvokeId                        ]
             [simple   BACnetRejectReasonTagged('1')
                                 rejectReason                            ]
         ]
-        ['0x7' APDUAbort
+        ['ABORT_PDU' APDUAbort
             [reserved uint 3    '0x00'                                  ]
             [simple   bit       server                                  ]
             [simple   uint 8    originalInvokeId                        ]
@@ -260,9 +260,20 @@
         ]
         [APDUUnknown
             [simple   uint 4    unknownTypeRest                         ]
-            [array    byte      unknownBytes length '(apduLength>0)?(apduLength - 1):0'    ]
+            [array    byte      unknownBytes length '(apduLength>0)?apduLength:0'    ]
         ]
     ]
+]
+
+[enum uint 4 ApduType
+  ['0' CONFIRMED_REQUEST_PDU           ]
+  ['1' UNCONFIRMED_REQUEST_PDU         ]
+  ['2' SIMPLE_ACK_PDU                  ]
+  ['3' COMPLEX_ACK_PDU                 ]
+  ['4' SEGMENT_ACK_PDU                 ]
+  ['5' ERROR_PDU                       ]
+  ['6' REJECT_PDU                      ]
+  ['7' ABORT_PDU                       ]
 ]
 
 // Not really tagged as it has no header but is consistent with naming schema enum+Tagged

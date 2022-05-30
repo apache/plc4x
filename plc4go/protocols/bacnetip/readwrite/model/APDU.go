@@ -37,7 +37,7 @@ type APDU struct {
 // IAPDU is the corresponding interface of APDU
 type IAPDU interface {
 	// GetApduType returns ApduType (discriminator field)
-	GetApduType() uint8
+	GetApduType() ApduType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -112,7 +112,14 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	_ = currentPos
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
-	apduType, _apduTypeErr := readBuffer.ReadUint8("apduType", 4)
+	if pullErr := readBuffer.PullContext("apduType"); pullErr != nil {
+		return nil, pullErr
+	}
+	apduType_temp, _apduTypeErr := ApduTypeParse(readBuffer)
+	var apduType ApduType = apduType_temp
+	if closeErr := readBuffer.CloseContext("apduType"); closeErr != nil {
+		return nil, closeErr
+	}
 	if _apduTypeErr != nil {
 		return nil, errors.Wrap(_apduTypeErr, "Error parsing 'apduType' field")
 	}
@@ -125,21 +132,21 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	var _child APDUChild
 	var typeSwitchError error
 	switch {
-	case apduType == 0x0: // APDUConfirmedRequest
+	case apduType == ApduType_CONFIRMED_REQUEST_PDU: // APDUConfirmedRequest
 		_child, typeSwitchError = APDUConfirmedRequestParse(readBuffer, apduLength)
-	case apduType == 0x1: // APDUUnconfirmedRequest
+	case apduType == ApduType_UNCONFIRMED_REQUEST_PDU: // APDUUnconfirmedRequest
 		_child, typeSwitchError = APDUUnconfirmedRequestParse(readBuffer, apduLength)
-	case apduType == 0x2: // APDUSimpleAck
+	case apduType == ApduType_SIMPLE_ACK_PDU: // APDUSimpleAck
 		_child, typeSwitchError = APDUSimpleAckParse(readBuffer, apduLength)
-	case apduType == 0x3: // APDUComplexAck
+	case apduType == ApduType_COMPLEX_ACK_PDU: // APDUComplexAck
 		_child, typeSwitchError = APDUComplexAckParse(readBuffer, apduLength)
-	case apduType == 0x4: // APDUSegmentAck
+	case apduType == ApduType_SEGMENT_ACK_PDU: // APDUSegmentAck
 		_child, typeSwitchError = APDUSegmentAckParse(readBuffer, apduLength)
-	case apduType == 0x5: // APDUError
+	case apduType == ApduType_ERROR_PDU: // APDUError
 		_child, typeSwitchError = APDUErrorParse(readBuffer, apduLength)
-	case apduType == 0x6: // APDUReject
+	case apduType == ApduType_REJECT_PDU: // APDUReject
 		_child, typeSwitchError = APDURejectParse(readBuffer, apduLength)
-	case apduType == 0x7: // APDUAbort
+	case apduType == ApduType_ABORT_PDU: // APDUAbort
 		_child, typeSwitchError = APDUAbortParse(readBuffer, apduLength)
 	case true: // APDUUnknown
 		_child, typeSwitchError = APDUUnknownParse(readBuffer, apduLength)
@@ -172,8 +179,14 @@ func (m *APDU) SerializeParent(writeBuffer utils.WriteBuffer, child IAPDU, seria
 	}
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
-	apduType := uint8(child.GetApduType())
-	_apduTypeErr := writeBuffer.WriteUint8("apduType", 4, (apduType))
+	apduType := ApduType(child.GetApduType())
+	if pushErr := writeBuffer.PushContext("apduType"); pushErr != nil {
+		return pushErr
+	}
+	_apduTypeErr := apduType.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("apduType"); popErr != nil {
+		return popErr
+	}
 
 	if _apduTypeErr != nil {
 		return errors.Wrap(_apduTypeErr, "Error serializing 'apduType' field")

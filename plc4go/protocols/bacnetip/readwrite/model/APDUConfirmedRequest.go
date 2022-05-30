@@ -85,8 +85,8 @@ type IAPDUConfirmedRequest interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *APDUConfirmedRequest) GetApduType() uint8 {
-	return 0x0
+func (m *APDUConfirmedRequest) GetApduType() ApduType {
+	return ApduType_CONFIRMED_REQUEST_PDU
 }
 
 ///////////////////////

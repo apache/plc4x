@@ -57,7 +57,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">2</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="SIMPLE_ACK_PDU">2</ApduType>
+                  </apduType>
                   <APDUSimpleAck>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">2</originalInvokeId>
@@ -107,7 +109,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -188,7 +192,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -311,7 +317,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -389,7 +397,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -512,7 +522,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -615,7 +627,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -715,7 +729,9 @@
               <hopCount dataType="uint" bitLength="8">254</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -842,7 +858,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -999,7 +1017,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="COMPLEX_ACK_PDU">3</ApduType>
+                  </apduType>
                   <APDUComplexAck>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -1081,7 +1101,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -1238,7 +1260,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="COMPLEX_ACK_PDU">3</ApduType>
+                  </apduType>
                   <APDUComplexAck>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -1320,7 +1344,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -1477,7 +1503,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="COMPLEX_ACK_PDU">3</ApduType>
+                  </apduType>
                   <APDUComplexAck>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -1559,7 +1587,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -1716,7 +1746,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="COMPLEX_ACK_PDU">3</ApduType>
+                  </apduType>
                   <APDUComplexAck>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -1798,7 +1830,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -1955,7 +1989,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="COMPLEX_ACK_PDU">3</ApduType>
+                  </apduType>
                   <APDUComplexAck>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -2037,7 +2073,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -2194,7 +2232,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="COMPLEX_ACK_PDU">3</ApduType>
+                  </apduType>
                   <APDUComplexAck>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -2276,7 +2316,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -2433,7 +2475,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="COMPLEX_ACK_PDU">3</ApduType>
+                  </apduType>
                   <APDUComplexAck>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -2515,7 +2559,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -2672,7 +2718,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="COMPLEX_ACK_PDU">3</ApduType>
+                  </apduType>
                   <APDUComplexAck>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -2753,7 +2801,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -2853,7 +2903,9 @@
               <hopCount dataType="uint" bitLength="8">254</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -2980,7 +3032,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -3086,7 +3140,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">5</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="ERROR_PDU">5</ApduType>
+                  </apduType>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
@@ -3176,7 +3232,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -3276,7 +3334,9 @@
               <hopCount dataType="uint" bitLength="8">254</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -3403,7 +3463,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -3506,7 +3568,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">5</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="ERROR_PDU">5</ApduType>
+                  </apduType>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
@@ -3596,7 +3660,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -3696,7 +3762,9 @@
               <hopCount dataType="uint" bitLength="8">254</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -3823,7 +3891,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -3926,7 +3996,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">5</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="ERROR_PDU">5</ApduType>
+                  </apduType>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
@@ -4016,7 +4088,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -4116,7 +4190,9 @@
               <hopCount dataType="uint" bitLength="8">254</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -4243,7 +4319,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -4346,7 +4424,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="COMPLEX_ACK_PDU">3</ApduType>
+                  </apduType>
                   <APDUComplexAck>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -4748,7 +4828,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -4995,7 +5077,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -5095,7 +5179,9 @@
               <hopCount dataType="uint" bitLength="8">254</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -5222,7 +5308,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -5376,7 +5464,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">5</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="ERROR_PDU">5</ApduType>
+                  </apduType>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
@@ -5466,7 +5556,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -5566,7 +5658,9 @@
               <hopCount dataType="uint" bitLength="8">254</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -5693,7 +5787,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -5799,7 +5895,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">2</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="SIMPLE_ACK_PDU">2</ApduType>
+                  </apduType>
                   <APDUSimpleAck>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
@@ -5849,7 +5947,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -5949,7 +6049,9 @@
               <hopCount dataType="uint" bitLength="8">254</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -6076,7 +6178,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -6182,7 +6286,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">5</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="ERROR_PDU">5</ApduType>
+                  </apduType>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
@@ -6272,7 +6378,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -6398,7 +6506,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -6504,7 +6614,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -6610,7 +6722,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -6716,7 +6830,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -6822,7 +6938,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -6948,7 +7066,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -7055,7 +7175,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">5</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="ERROR_PDU">5</ApduType>
+                  </apduType>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">50</originalInvokeId>
@@ -7145,7 +7267,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -7252,7 +7376,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">2</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="SIMPLE_ACK_PDU">2</ApduType>
+                  </apduType>
                   <APDUSimpleAck>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">51</originalInvokeId>
@@ -7302,7 +7428,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -7431,7 +7559,9 @@
               <hopCount dataType="uint" bitLength="8">254</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -7537,7 +7667,9 @@
               <hopCount dataType="uint" bitLength="8">254</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -7615,7 +7747,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">1</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="UNCONFIRMED_REQUEST_PDU">1</ApduType>
+                  </apduType>
                   <APDUUnconfirmedRequest>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
@@ -7738,7 +7872,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -7845,7 +7981,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">5</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="ERROR_PDU">5</ApduType>
+                  </apduType>
                   <APDUError>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">52</originalInvokeId>
@@ -7935,7 +8073,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -8042,7 +8182,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">2</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="SIMPLE_ACK_PDU">2</ApduType>
+                  </apduType>
                   <APDUSimpleAck>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">53</originalInvokeId>
@@ -8092,7 +8234,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -8254,7 +8398,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="COMPLEX_ACK_PDU">3</ApduType>
+                  </apduType>
                   <APDUComplexAck>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -8408,7 +8554,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -8570,7 +8718,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="COMPLEX_ACK_PDU">3</ApduType>
+                  </apduType>
                   <APDUComplexAck>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -8724,7 +8874,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -8886,7 +9038,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="COMPLEX_ACK_PDU">3</ApduType>
+                  </apduType>
                   <APDUComplexAck>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -9040,7 +9194,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -9202,7 +9358,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="COMPLEX_ACK_PDU">3</ApduType>
+                  </apduType>
                   <APDUComplexAck>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -9356,7 +9514,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -9514,7 +9674,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">6</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="REJECT_PDU">6</ApduType>
+                  </apduType>
                   <APDUReject>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">58</originalInvokeId>
@@ -9568,7 +9730,9 @@
               </sourceAddress>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">0</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="CONFIRMED_REQUEST_PDU">0</ApduType>
+                  </apduType>
                   <APDUConfirmedRequest>
                     <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
                     <moreFollows dataType="bit" bitLength="1">false</moreFollows>
@@ -9706,7 +9870,9 @@
               <hopCount dataType="uint" bitLength="8">255</hopCount>
               <apdu>
                 <APDU>
-                  <apduType dataType="uint" bitLength="4">6</apduType>
+                  <apduType>
+                    <ApduType dataType="uint" bitLength="4" stringRepresentation="REJECT_PDU">6</ApduType>
+                  </apduType>
                   <APDUReject>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <originalInvokeId dataType="uint" bitLength="8">59</originalInvokeId>

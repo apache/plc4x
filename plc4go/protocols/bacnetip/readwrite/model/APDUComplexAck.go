@@ -76,8 +76,8 @@ type IAPDUComplexAck interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *APDUComplexAck) GetApduType() uint8 {
-	return 0x3
+func (m *APDUComplexAck) GetApduType() ApduType {
+	return ApduType_COMPLEX_ACK_PDU
 }
 
 ///////////////////////

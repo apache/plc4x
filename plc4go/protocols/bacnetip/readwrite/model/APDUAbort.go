@@ -60,8 +60,8 @@ type IAPDUAbort interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *APDUAbort) GetApduType() uint8 {
-	return 0x7
+func (m *APDUAbort) GetApduType() ApduType {
+	return ApduType_ABORT_PDU
 }
 
 ///////////////////////

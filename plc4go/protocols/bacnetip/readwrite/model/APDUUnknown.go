@@ -56,7 +56,7 @@ type IAPDUUnknown interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *APDUUnknown) GetApduType() uint8 {
+func (m *APDUUnknown) GetApduType() ApduType {
 	return 0
 }
 
@@ -158,7 +158,7 @@ func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUUnkn
 	}
 	unknownTypeRest := _unknownTypeRest
 	// Byte Array field (unknownBytes)
-	numberOfBytesunknownBytes := int(utils.InlineIf(bool(bool((apduLength) > (0))), func() interface{} { return uint16(uint16(uint16(apduLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	numberOfBytesunknownBytes := int(utils.InlineIf(bool(bool((apduLength) > (0))), func() interface{} { return uint16(apduLength) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field")

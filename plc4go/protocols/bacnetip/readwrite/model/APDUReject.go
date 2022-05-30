@@ -57,8 +57,8 @@ type IAPDUReject interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *APDUReject) GetApduType() uint8 {
-	return 0x6
+func (m *APDUReject) GetApduType() ApduType {
+	return ApduType_REJECT_PDU
 }
 
 ///////////////////////
