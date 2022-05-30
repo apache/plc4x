@@ -34,7 +34,7 @@ type BACnetEventSummary struct {
 	EventTimestamps         *BACnetEventTimestamps
 	NotifyType              *BACnetNotifyTypeTagged
 	EventEnable             *BACnetEventTransitionBits
-	EventPriorities         *BACnetEventProrities
+	EventPriorities         *BACnetEventPriorities
 }
 
 // IBACnetEventSummary is the corresponding interface of BACnetEventSummary
@@ -52,7 +52,7 @@ type IBACnetEventSummary interface {
 	// GetEventEnable returns EventEnable (property field)
 	GetEventEnable() *BACnetEventTransitionBits
 	// GetEventPriorities returns EventPriorities (property field)
-	GetEventPriorities() *BACnetEventProrities
+	GetEventPriorities() *BACnetEventPriorities
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,7 +90,7 @@ func (m *BACnetEventSummary) GetEventEnable() *BACnetEventTransitionBits {
 	return m.EventEnable
 }
 
-func (m *BACnetEventSummary) GetEventPriorities() *BACnetEventProrities {
+func (m *BACnetEventSummary) GetEventPriorities() *BACnetEventPriorities {
 	return m.EventPriorities
 }
 
@@ -100,7 +100,7 @@ func (m *BACnetEventSummary) GetEventPriorities() *BACnetEventProrities {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetEventSummary factory function for BACnetEventSummary
-func NewBACnetEventSummary(objectIdentifier *BACnetContextTagObjectIdentifier, eventState *BACnetEventStateTagged, acknowledgedTransitions *BACnetEventTransitionBits, eventTimestamps *BACnetEventTimestamps, notifyType *BACnetNotifyTypeTagged, eventEnable *BACnetEventTransitionBits, eventPriorities *BACnetEventProrities) *BACnetEventSummary {
+func NewBACnetEventSummary(objectIdentifier *BACnetContextTagObjectIdentifier, eventState *BACnetEventStateTagged, acknowledgedTransitions *BACnetEventTransitionBits, eventTimestamps *BACnetEventTimestamps, notifyType *BACnetNotifyTypeTagged, eventEnable *BACnetEventTransitionBits, eventPriorities *BACnetEventPriorities) *BACnetEventSummary {
 	return &BACnetEventSummary{ObjectIdentifier: objectIdentifier, EventState: eventState, AcknowledgedTransitions: acknowledgedTransitions, EventTimestamps: eventTimestamps, NotifyType: notifyType, EventEnable: eventEnable, EventPriorities: eventPriorities}
 }
 
@@ -244,11 +244,11 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (*BACnetEventSummary, 
 	if pullErr := readBuffer.PullContext("eventPriorities"); pullErr != nil {
 		return nil, pullErr
 	}
-	_eventPriorities, _eventPrioritiesErr := BACnetEventProritiesParse(readBuffer, uint8(uint8(6)))
+	_eventPriorities, _eventPrioritiesErr := BACnetEventPrioritiesParse(readBuffer, uint8(uint8(6)))
 	if _eventPrioritiesErr != nil {
 		return nil, errors.Wrap(_eventPrioritiesErr, "Error parsing 'eventPriorities' field")
 	}
-	eventPriorities := CastBACnetEventProrities(_eventPriorities)
+	eventPriorities := CastBACnetEventPriorities(_eventPriorities)
 	if closeErr := readBuffer.CloseContext("eventPriorities"); closeErr != nil {
 		return nil, closeErr
 	}

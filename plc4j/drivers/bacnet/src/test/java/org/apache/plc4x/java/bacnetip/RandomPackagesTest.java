@@ -1224,8 +1224,8 @@ public class RandomPackagesTest {
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(6);
                             assertEquals(BACnetPropertyIdentifier.UNITS, baCnetPropertyValue.getPropertyIdentifier().getValue());
-                            BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) ((BACnetConstructedDataUnspecified) baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
-                            assertEquals(64, baCnetApplicationTagEnumerated.getActualValue());
+                            BACnetConstructedDataUnits baCnetConstructedDataUnits = (BACnetConstructedDataUnits) ((BACnetConstructedDataUnits) baCnetPropertyValue.getPropertyValue().getConstructedData());
+                            assertEquals(BACnetEngineeringUnits.DEGREES_FAHRENHEIT, baCnetConstructedDataUnits.getUnits().getValue());
                         }
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(7);

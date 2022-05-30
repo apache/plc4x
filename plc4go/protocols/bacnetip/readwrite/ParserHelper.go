@@ -347,12 +347,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetConfirmedServiceRequestParse(io, serviceRequestLength)
-	case "BACnetEventProrities":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetEventProritiesParse(io, tagNumber)
 	case "ListOfCovNotificationsList":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -792,6 +786,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetBinaryPVTaggedParse(io, tagNumber, tagClass)
+	case "BACnetEventPriorities":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetEventPrioritiesParse(io, tagNumber)
 	case "BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

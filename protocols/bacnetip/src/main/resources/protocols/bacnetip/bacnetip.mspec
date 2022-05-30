@@ -1057,7 +1057,7 @@
                     notifyType                      ]
     [simple   BACnetEventTransitionBits('5')
                     eventEnable                     ]
-    [simple   BACnetEventProrities('6')
+    [simple   BACnetEventPriorities('6')
                     eventPriorities                 ]
 ]
 
@@ -1076,7 +1076,7 @@
     ]
 ]
 
-[type BACnetEventProrities(uint 8 tagNumber)
+[type BACnetEventPriorities(uint 8 tagNumber)
     [simple  BACnetOpeningTag('tagNumber')
                     openingTag
     ]
@@ -2790,7 +2790,9 @@
         //[*, 'OPERATION_DIRECTION'                     BACnetConstructedDataOperationDirection [validation    '1 == 2'    "TODO: implement me OPERATION_DIRECTION BACnetConstructedDataOperationDirection"]]
         //[*, 'OPERATION_EXPECTED'                      BACnetConstructedDataOperationExpected [validation    '1 == 2'    "TODO: implement me OPERATION_EXPECTED BACnetConstructedDataOperationExpected"]]
         //[*, 'OPTIONAL'                                BACnetConstructedDataOptional [validation    '1 == 2'    "TODO: implement me OPTIONAL BACnetConstructedDataOptional"]]
-        //[*, 'OUT_OF_SERVICE'                          BACnetConstructedDataOutOfService [validation    '1 == 2'    "TODO: implement me OUT_OF_SERVICE BACnetConstructedDataOutOfService"]]
+        [*, 'OUT_OF_SERVICE'                          BACnetConstructedDataOutOfService
+            [simple   BACnetApplicationTagBoolean  outOfService         ]
+        ]
         [*, 'OUTPUT_UNITS'                            BACnetConstructedDataOutputUnits
           [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS') units                           ]
 
