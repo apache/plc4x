@@ -266,14 +266,27 @@
 ]
 
 [enum uint 4 ApduType
-  ['0' CONFIRMED_REQUEST_PDU           ]
-  ['1' UNCONFIRMED_REQUEST_PDU         ]
-  ['2' SIMPLE_ACK_PDU                  ]
-  ['3' COMPLEX_ACK_PDU                 ]
-  ['4' SEGMENT_ACK_PDU                 ]
-  ['5' ERROR_PDU                       ]
-  ['6' REJECT_PDU                      ]
-  ['7' ABORT_PDU                       ]
+  ['0x0' CONFIRMED_REQUEST_PDU           ]
+  ['0x1' UNCONFIRMED_REQUEST_PDU         ]
+  ['0x2' SIMPLE_ACK_PDU                  ]
+  ['0x3' COMPLEX_ACK_PDU                 ]
+  ['0x4' SEGMENT_ACK_PDU                 ]
+  ['0x5' ERROR_PDU                       ]
+  ['0x6' REJECT_PDU                      ]
+  ['0x7' ABORT_PDU                       ]
+  /////
+  // plc4x definitions to not fall back to 0x0 in case one of those is parsed
+
+  ['0x8' APDU_UNKNOWN_8                  ]
+  ['0x9' APDU_UNKNOWN_9                  ]
+  ['0xA' APDU_UNKNOWN_A                  ]
+  ['0xB' APDU_UNKNOWN_B                  ]
+  ['0xC' APDU_UNKNOWN_C                  ]
+  ['0xD' APDU_UNKNOWN_D                  ]
+  ['0xE' APDU_UNKNOWN_E                  ]
+  ['0xF' APDU_UNKNOWN_F                  ]
+  //
+  /////
 ]
 
 // Not really tagged as it has no header but is consistent with naming schema enum+Tagged

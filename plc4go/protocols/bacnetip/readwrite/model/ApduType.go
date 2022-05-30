@@ -34,14 +34,22 @@ type IApduType interface {
 }
 
 const (
-	ApduType_CONFIRMED_REQUEST_PDU   ApduType = 0
-	ApduType_UNCONFIRMED_REQUEST_PDU ApduType = 1
-	ApduType_SIMPLE_ACK_PDU          ApduType = 2
-	ApduType_COMPLEX_ACK_PDU         ApduType = 3
-	ApduType_SEGMENT_ACK_PDU         ApduType = 4
-	ApduType_ERROR_PDU               ApduType = 5
-	ApduType_REJECT_PDU              ApduType = 6
-	ApduType_ABORT_PDU               ApduType = 7
+	ApduType_CONFIRMED_REQUEST_PDU   ApduType = 0x0
+	ApduType_UNCONFIRMED_REQUEST_PDU ApduType = 0x1
+	ApduType_SIMPLE_ACK_PDU          ApduType = 0x2
+	ApduType_COMPLEX_ACK_PDU         ApduType = 0x3
+	ApduType_SEGMENT_ACK_PDU         ApduType = 0x4
+	ApduType_ERROR_PDU               ApduType = 0x5
+	ApduType_REJECT_PDU              ApduType = 0x6
+	ApduType_ABORT_PDU               ApduType = 0x7
+	ApduType_APDU_UNKNOWN_8          ApduType = 0x8
+	ApduType_APDU_UNKNOWN_9          ApduType = 0x9
+	ApduType_APDU_UNKNOWN_A          ApduType = 0xA
+	ApduType_APDU_UNKNOWN_B          ApduType = 0xB
+	ApduType_APDU_UNKNOWN_C          ApduType = 0xC
+	ApduType_APDU_UNKNOWN_D          ApduType = 0xD
+	ApduType_APDU_UNKNOWN_E          ApduType = 0xE
+	ApduType_APDU_UNKNOWN_F          ApduType = 0xF
 )
 
 var ApduTypeValues []ApduType
@@ -57,27 +65,51 @@ func init() {
 		ApduType_ERROR_PDU,
 		ApduType_REJECT_PDU,
 		ApduType_ABORT_PDU,
+		ApduType_APDU_UNKNOWN_8,
+		ApduType_APDU_UNKNOWN_9,
+		ApduType_APDU_UNKNOWN_A,
+		ApduType_APDU_UNKNOWN_B,
+		ApduType_APDU_UNKNOWN_C,
+		ApduType_APDU_UNKNOWN_D,
+		ApduType_APDU_UNKNOWN_E,
+		ApduType_APDU_UNKNOWN_F,
 	}
 }
 
 func ApduTypeByValue(value uint8) ApduType {
 	switch value {
-	case 0:
+	case 0x0:
 		return ApduType_CONFIRMED_REQUEST_PDU
-	case 1:
+	case 0x1:
 		return ApduType_UNCONFIRMED_REQUEST_PDU
-	case 2:
+	case 0x2:
 		return ApduType_SIMPLE_ACK_PDU
-	case 3:
+	case 0x3:
 		return ApduType_COMPLEX_ACK_PDU
-	case 4:
+	case 0x4:
 		return ApduType_SEGMENT_ACK_PDU
-	case 5:
+	case 0x5:
 		return ApduType_ERROR_PDU
-	case 6:
+	case 0x6:
 		return ApduType_REJECT_PDU
-	case 7:
+	case 0x7:
 		return ApduType_ABORT_PDU
+	case 0x8:
+		return ApduType_APDU_UNKNOWN_8
+	case 0x9:
+		return ApduType_APDU_UNKNOWN_9
+	case 0xA:
+		return ApduType_APDU_UNKNOWN_A
+	case 0xB:
+		return ApduType_APDU_UNKNOWN_B
+	case 0xC:
+		return ApduType_APDU_UNKNOWN_C
+	case 0xD:
+		return ApduType_APDU_UNKNOWN_D
+	case 0xE:
+		return ApduType_APDU_UNKNOWN_E
+	case 0xF:
+		return ApduType_APDU_UNKNOWN_F
 	}
 	return 0
 }
@@ -100,6 +132,22 @@ func ApduTypeByName(value string) ApduType {
 		return ApduType_REJECT_PDU
 	case "ABORT_PDU":
 		return ApduType_ABORT_PDU
+	case "APDU_UNKNOWN_8":
+		return ApduType_APDU_UNKNOWN_8
+	case "APDU_UNKNOWN_9":
+		return ApduType_APDU_UNKNOWN_9
+	case "APDU_UNKNOWN_A":
+		return ApduType_APDU_UNKNOWN_A
+	case "APDU_UNKNOWN_B":
+		return ApduType_APDU_UNKNOWN_B
+	case "APDU_UNKNOWN_C":
+		return ApduType_APDU_UNKNOWN_C
+	case "APDU_UNKNOWN_D":
+		return ApduType_APDU_UNKNOWN_D
+	case "APDU_UNKNOWN_E":
+		return ApduType_APDU_UNKNOWN_E
+	case "APDU_UNKNOWN_F":
+		return ApduType_APDU_UNKNOWN_F
 	}
 	return 0
 }
@@ -161,6 +209,22 @@ func (e ApduType) name() string {
 		return "REJECT_PDU"
 	case ApduType_ABORT_PDU:
 		return "ABORT_PDU"
+	case ApduType_APDU_UNKNOWN_8:
+		return "APDU_UNKNOWN_8"
+	case ApduType_APDU_UNKNOWN_9:
+		return "APDU_UNKNOWN_9"
+	case ApduType_APDU_UNKNOWN_A:
+		return "APDU_UNKNOWN_A"
+	case ApduType_APDU_UNKNOWN_B:
+		return "APDU_UNKNOWN_B"
+	case ApduType_APDU_UNKNOWN_C:
+		return "APDU_UNKNOWN_C"
+	case ApduType_APDU_UNKNOWN_D:
+		return "APDU_UNKNOWN_D"
+	case ApduType_APDU_UNKNOWN_E:
+		return "APDU_UNKNOWN_E"
+	case ApduType_APDU_UNKNOWN_F:
+		return "APDU_UNKNOWN_F"
 	}
 	return ""
 }
