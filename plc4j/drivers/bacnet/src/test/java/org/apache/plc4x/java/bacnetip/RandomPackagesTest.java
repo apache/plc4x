@@ -21,10 +21,7 @@ package org.apache.plc4x.java.bacnetip;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBufferBoxBased;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.utils.hex.Hex;
 import org.apache.plc4x.test.RequirePcapNg;
@@ -62,6 +59,9 @@ public class RandomPackagesTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomPackagesTest.class);
 
     public static final String BACNET_BPF_FILTER_UDP = "udp port 47808";
+
+    // TODO: remove that once done
+    private static boolean GLOBAL_RESERIALIZE = false;
 
     Queue<Closeable> toBeClosed = new ConcurrentLinkedDeque<>();
 
@@ -1022,6 +1022,18 @@ public class RandomPackagesTest {
     Collection<DynamicNode> CriticalRoom55_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("CriticalRoom55-1.cap");
         return List.of(pcapEvaluator.parseEmAll(
+            // undefined reject
+            8,
+            // undefined reject
+            10,
+            // undefined reject
+            12,
+            // undefined reject
+            14,
+            // undefined reject
+            16,
+            // undefined reject
+            18,
             // Broken package
             22,
             // Broken package
@@ -1049,6 +1061,8 @@ public class RandomPackagesTest {
                     assertEquals(123.0f, baCnetApplicationTagReal.getPayload().getValue());
                 }),
             pcapEvaluator.parseFrom(2,
+                // Almost every response is garbage so we don't re-serialize that
+                false,
                 // Broken package
                 2,
                 // Broken package
@@ -5748,18 +5762,30 @@ public class RandomPackagesTest {
         }
 
         public DynamicContainer parseEmAll(int... skippedUnitTestNumber) {
-            return parseRange(1, maxPackages, skippedUnitTestNumber);
+            return parseEmAll(true, skippedUnitTestNumber);
+        }
+
+        public DynamicContainer parseEmAll(boolean reserialize, int... skippedUnitTestNumber) {
+            return parseRange(1, maxPackages, reserialize, skippedUnitTestNumber);
         }
 
         public DynamicContainer parseFrom(int startPackageNumber, int... skippedUnitTestNumber) {
-            return parseRange(startPackageNumber, maxPackages, skippedUnitTestNumber);
+            return parseFrom(startPackageNumber, true, skippedUnitTestNumber);
+        }
+
+        public DynamicContainer parseFrom(int startPackageNumber, boolean reserialize, int... skippedUnitTestNumber) {
+            return parseRange(startPackageNumber, maxPackages, reserialize, skippedUnitTestNumber);
         }
 
         public DynamicContainer parseTill(int packageNumber, int... skippedUnitTestNumber) {
-            return parseRange(1, packageNumber, skippedUnitTestNumber);
+            return parseTill(packageNumber, true, skippedUnitTestNumber);
         }
 
-        public DynamicContainer parseRange(int startPackageNumber, int endPackageNumber, int... skippedUnitTestNumber) {
+        public DynamicContainer parseTill(int packageNumber, boolean reserialize, int... skippedUnitTestNumber) {
+            return parseRange(1, packageNumber, reserialize, skippedUnitTestNumber);
+        }
+
+        public DynamicContainer parseRange(int startPackageNumber, int endPackageNumber, boolean reserialize, int... skippedUnitTestNumber) {
             Set<Integer> numbersToSkip = Arrays.stream(skippedUnitTestNumber).boxed().collect(Collectors.toSet());
             // This means we requested to skip no test number
             boolean hasNoSkipping = skippedUnitTestNumber.length <= 0;
@@ -5780,7 +5806,7 @@ public class RandomPackagesTest {
                                     throw new TestAbortedException("Package nr. " + packageNumber + " filtered (Unit-Test nr. " + i + ")");
                                 }
 
-                                BVLC bvlc = nextBVLC();
+                                BVLC bvlc = nextBVLC(reserialize);
                                 LOGGER.info("Test number {} is package number {}", i, currentPackageNumber);
                                 assumeTrue(bvlc != null, "No more package left");
                                 dump(bvlc);
@@ -5872,11 +5898,19 @@ public class RandomPackagesTest {
             });
         }
 
-        public BVLC nextBVLC() throws NotOpenException, ParseException {
-            return nextBVLC(null);
+        public BVLC nextBVLC() throws NotOpenException, ParseException, SerializationException {
+            return nextBVLC(true);
         }
 
-        public BVLC nextBVLC(Integer ensurePackageNumber) throws NotOpenException, ParseException {
+        public BVLC nextBVLC(boolean reserialize) throws NotOpenException, ParseException, SerializationException {
+            return nextBVLC(null, reserialize);
+        }
+
+        public BVLC nextBVLC(Integer ensurePackageNumber) throws NotOpenException, ParseException, SerializationException {
+            return nextBVLC(ensurePackageNumber, true);
+        }
+
+        public BVLC nextBVLC(Integer ensurePackageNumber, boolean reserialize) throws NotOpenException, ParseException, SerializationException {
             Packet packet = nextPacket();
             if (packet == null) {
                 return null;
@@ -5896,19 +5930,27 @@ public class RandomPackagesTest {
                     throw new IllegalArgumentException("Could not find package with package number " + ensurePackageNumber);
                 }
             }
-            return getBvlc(packet);
+            return getBvlc(packet, reserialize);
         }
 
-        private BVLC getBvlc(Packet packet) throws ParseException {
+        private BVLC getBvlc(Packet packet, boolean reserialize) throws ParseException, SerializationException {
             UdpPacket udpPacket = packet.get(UdpPacket.class);
             assumeTrue(udpPacket != null, "nextBVLC assumes a UDP Packet. If non is there it might by LLC");
             LOGGER.info("Handling UDP\n{}", udpPacket);
             byte[] rawData = udpPacket.getPayload().getRawData();
             LOGGER.info("Reading BVLC from:\n{}", Hex.dump(rawData));
             try {
-                return BVLC.staticParse(new ReadBufferByteBased(rawData));
+                BVLC bvlc = BVLC.staticParse(new ReadBufferByteBased(rawData));
+                if (reserialize && GLOBAL_RESERIALIZE) {
+                    WriteBufferByteBased writeBuffer = new WriteBufferByteBased(bvlc.getLengthInBytes());
+                    bvlc.serialize(writeBuffer);
+                    assertArrayEquals(rawData, writeBuffer.getBytes(), "re-serialized output doesn't match original bytes");
+                }
+                return bvlc;
             } catch (ParseException e) {
                 throw new ParseException(String.format("Caught at current package number: %d. Packages read so far %d", currentPackageNumber, readPackages), e);
+            } catch (SerializationException e) {
+                throw new SerializationException(String.format("Caught at current package number: %d. Packages read so far %d", currentPackageNumber, readPackages), e);
             }
         }
 

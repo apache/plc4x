@@ -137,7 +137,7 @@ mspecTemplate = """
                     value
                         'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, BACnetVendorId.UNKNOWN_VENDOR)'
                         'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                            ]
+                        '_value.isUnknownId?0:(header.actualLength * 8)'                                     ]
     [virtual  bit   isUnknownId
                         'value == BACnetVendorId.UNKNOWN_VENDOR'                                             ]
     //TODO: change to uint32 once cast is inserted
@@ -145,7 +145,7 @@ mspecTemplate = """
                     unknownId
                         'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isUnknownId)'
                         'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, unknownId, isUnknownId)'
-                        '_value.isUnknownId?(header.actualLength * 8):0'                                       ]
+                        '_value.isUnknownId?(header.actualLength * 8):0'                                     ]
 ]
 """
 SimpleTemplateEngine templateEngine = new SimpleTemplateEngine()

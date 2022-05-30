@@ -312,7 +312,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 		if pullErr := readBuffer.PullContext("firstSequenceNumber"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParse(readBuffer, uint8(6), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

@@ -137,7 +137,7 @@ public class StaticHelper {
                     paramValue = (short) rawValue;
                 } else if (parameterType == int.class || parameterType == Integer.class) {
                     paramValue = (int) rawValue;
-                }else if (parameterType == long.class || parameterType == Long.class) {
+                } else if (parameterType == long.class || parameterType == Long.class) {
                     paramValue = (int) rawValue;
                 }
                 Object result = method.invoke(null, paramValue);
@@ -165,6 +165,8 @@ public class StaticHelper {
         if (value == null) {
             return;
         }
+        // TODO: generic name mapping for now
+        if (value.name().equals("VENDOR_PROPRIETARY_VALUE")) return;
         int bitsToWrite;
         long valueValue;
         // TODO: map types here for better performance which doesn't use reflection

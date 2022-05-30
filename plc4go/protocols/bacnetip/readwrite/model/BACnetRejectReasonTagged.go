@@ -109,7 +109,7 @@ func (m *BACnetRejectReasonTagged) GetLengthInBitsConditional(lastItem bool) uin
 	lengthInBits := uint16(0)
 
 	// Manual Field (value)
-	lengthInBits += uint16(int32(m.ActualLength) * int32(int32(8)))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32(int32(int32(m.ActualLength) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 

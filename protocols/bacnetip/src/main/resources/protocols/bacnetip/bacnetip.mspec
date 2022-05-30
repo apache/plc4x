@@ -295,14 +295,14 @@
                     value
                         'STATIC_CALL("readEnumGeneric", readBuffer, actualLength, BACnetRejectReason.VENDOR_PROPRIETARY_VALUE)'
                         'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'actualLength * 8'                                  ]
+                        '_value.isProprietary?0:(actualLength * 8)'                     ]
     [virtual  bit   isProprietary
-                        'value == BACnetRejectReason.VENDOR_PROPRIETARY_VALUE'    ]
+                        'value == BACnetRejectReason.VENDOR_PROPRIETARY_VALUE'          ]
     [manual   uint 32
                     proprietaryValue
                         'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, actualLength, isProprietary)'
                         'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?(actualLength * 8):0'                  ]
+                        '_value.isProprietary?(actualLength * 8):0'                     ]
 ]
 
 // Not really tagged as it has no header but is consistent with naming schema enum+Tagged
@@ -311,14 +311,14 @@
                     value
                         'STATIC_CALL("readEnumGeneric", readBuffer, actualLength, BACnetAbortReason.VENDOR_PROPRIETARY_VALUE)'
                         'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'actualLength * 8'                                  ]
+                        '_value.isProprietary?0:(actualLength * 8)'                     ]
     [virtual  bit   isProprietary
-                        'value == BACnetAbortReason.VENDOR_PROPRIETARY_VALUE'     ]
+                        'value == BACnetAbortReason.VENDOR_PROPRIETARY_VALUE'           ]
     [manual   uint 32
                     proprietaryValue
                         'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, actualLength, isProprietary)'
                         'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?(actualLength * 8):0'                  ]
+                        '_value.isProprietary?(actualLength * 8):0'                     ]
 ]
 
 [discriminatedType BACnetConfirmedServiceRequest(uint 16 serviceRequestLength)
@@ -983,7 +983,7 @@
             [simple   BACnetResultFlags('3')                                                                resultFlags         ]
             [simple   BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')               itemCount           ]
             [optional BACnetConstructedData('5', 'objectIdentifier.objectType', 'propertyIdentifier.value') itemData            ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               firstSequenceNumber ]
+            [optional BACnetContextTagUnsignedInteger('6', 'BACnetDataType.UNSIGNED_INTEGER')               firstSequenceNumber ]
         ]
         //
         ////

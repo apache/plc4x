@@ -71,14 +71,14 @@ taggedEnumsTemplate = """
                     value
                         'STATIC_CALL("readEnumGeneric", readBuffer, header.actualLength, <%= item.name %>.VENDOR_PROPRIETARY_VALUE)'
                         'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'header.actualLength * 8'                                                            ]
+                        '_value.isProprietary?0:(header.actualLength * 8)'                                   ]
     [virtual  bit   isProprietary
-                        'value == <%= item.name %>.VENDOR_PROPRIETARY_VALUE'                                       ]
+                        'value == <%= item.name %>.VENDOR_PROPRIETARY_VALUE'                                 ]
     [manual   uint 32
                     proprietaryValue
                         'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, header.actualLength, isProprietary)'
                         'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?(header.actualLength * 8):0'                                     ]
+                        '_value.isProprietary?(header.actualLength * 8):0'                                   ]
 ]
 <% } %>
 """
