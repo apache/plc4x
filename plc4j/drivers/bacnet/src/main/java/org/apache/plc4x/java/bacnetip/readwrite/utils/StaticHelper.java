@@ -137,6 +137,8 @@ public class StaticHelper {
                     paramValue = (short) rawValue;
                 } else if (parameterType == int.class || parameterType == Integer.class) {
                     paramValue = (int) rawValue;
+                }else if (parameterType == long.class || parameterType == Long.class) {
+                    paramValue = (int) rawValue;
                 }
                 Object result = method.invoke(null, paramValue);
                 if (result == null) {
