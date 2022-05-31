@@ -3091,6 +3091,6 @@
                             contextTag          'isContextTag'                                                  ]
     [optional   BACnetConstructedData('peekedTagNumber', 'objectType', 'propertyIdentifierArgument')
                             constructedData     'isConstructedData'                                             ]
-    [validation 'isApplicationTag || isContextTag || isConstructedData'
+    [validation '(isApplicationTag && applicationTag != null) || (isContextTag && contextTag != null) || (isConstructedData && constructedData != null)'
                 "BACnetConstructedDataElement could not parse anything"                                         ]
 ]

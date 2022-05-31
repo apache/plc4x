@@ -302,7 +302,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 	}
 
 	// Validation
-	if !(bool(bool(isApplicationTag) || bool(isContextTag)) || bool(isConstructedData)) {
+	if !(bool(bool(bool(bool(isApplicationTag) && bool(bool((applicationTag) != (nil))))) || bool(bool(bool(isContextTag) && bool(bool((contextTag) != (nil)))))) || bool(bool(bool(isConstructedData) && bool(bool((constructedData) != (nil)))))) {
 		return nil, utils.ParseValidationError{"BACnetConstructedDataElement could not parse anything"}
 	}
 

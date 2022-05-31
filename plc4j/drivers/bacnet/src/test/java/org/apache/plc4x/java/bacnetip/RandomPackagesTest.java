@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.URL;
-import java.nio.file.FileSystems;
+import java.nio.file.*;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -449,22 +449,22 @@ public class RandomPackagesTest {
                     assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PRIORITY_ARRAY, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetConstructedDataPriorityArray priorityArray = (BACnetConstructedDataPriorityArray) baCnetServiceAckReadProperty.getValues();
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue01().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue02().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue03().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue04().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue05().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue06().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue07().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue08().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue09().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue10().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue11().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue12().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue13().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue14().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue15().getClass());
-                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue16().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue01().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue02().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue03().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue04().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue05().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue06().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue07().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue08().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue09().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue10().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue11().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue12().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue13().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue14().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue15().getClass());
+                    assertEquals(BACnetPriorityValueNull.class, priorityArray.getPriorityArray().getPriorityValue16().getClass());
                 }),
             DynamicTest.dynamicTest("No. 9 - BACnet Virtual Link Control BVLC Function Register-Foreign-Device",
                 () -> {
@@ -548,10 +548,9 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.RELINQUISH_DEFAULT, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
-                    /* FIXME: wrong data here too
-                    BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) ((BACnetConstructedDataUnspecified)baCnetServiceAckReadProperty.getValues()).getData().get(0);
-                    assertEquals(0f, baCnetApplicationTagReal);
-                     */
+                    BACnetConstructedDataUnspecified baCnetConstructedDataUnspecified = (BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues();
+                    BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) baCnetConstructedDataUnspecified.getData().get(0).getApplicationTag();
+                    assertEquals(0.0f, baCnetApplicationTagReal.getActualValue());
                 }),
             DynamicTest.dynamicTest("No. 29-76 - Skip Misc 48 packages",
                 () -> {
@@ -560,7 +559,7 @@ public class RandomPackagesTest {
                 }),
             DynamicTest.dynamicTest("No. 77 - Confirmed-REQ writeProperty[ 1] analog-output,0 priority-array",
                 () -> {
-                    // This package is broken as from the spec it requires 16 values // TODO: validate that
+                    // This package is broken as from the spec it requires 16 values
                     pcapEvaluator.skipPackages(1);
                 }),
             DynamicTest.dynamicTest("No. 78 - Error writeProperty[ 1]",
@@ -1556,10 +1555,59 @@ public class RandomPackagesTest {
     Collection<DynamicNode> Tower333_lighting_5min_IP() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("Tower333%20lighting%205min%20IP.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            // TODO: this is a broken message which should be ignored but also it results in a java heap space error so we should take care of that
-            //7,
-            // TODO: this is a broken message which should be ignored but also it results in a java heap space error so we should take care of that
-            //14
+            IntStream.of(
+                    4, 7, 14, 15, 23, 28, 117, 118, 124, 126, 130, 131, 135, 166, 176, 177, 178, 180, 183, 185, 188, 194, 198,
+                    199, 219, 223, 233, 254, 273, 284, 292, 294, 307, 311, 343, 345, 346, 347, 352, 354, 436, 437, 438,
+                    447, 451, 454, 456, 459, 461, 468, 470, 517, 521, 602, 606, 624, 625, 650, 676, 700, 703, 704, 716,
+                    718, 806, 815, 820, 851, 853, 856, 858, 860, 862, 885, 888, 891, 895, 921, 923, 924, 925, 926, 927, 928,
+                    931, 933, 935, 936, 939, 941, 942, 944, 946, 948, 949, 982, 985, 986, 987, 1029, 1035, 1038, 1064, 1065, 1067, 1069,
+                    1101, 1102, 1105, 1112, 1117, 1121, 1124, 1129, 1130, 1138, 1140, 1142, 1149, 1150, 1152, 1156, 1159,
+                    1160, 1161, 1162, 1163, 1164, 1165, 1166, 1167, 1168, 1169, 1171, 1172, 1177, 1186, 1238, 1241, 1248, 1249,
+                    1252, 1255, 1275, 1277, 1481, 1492, 1498, 1501, 1502, 1503, 1526, 1543, 1548, 1550, 1552, 1553, 1583, 1586, 1594,
+                    1599, 1633, 1635, 1656, 1657, 1658, 1694, 1697, 1706, 1736, 1744, 1750, 1755, 1757, 1773, 1778, 1779,
+                    1782, 1789, 1790, 1791, 1794, 1795, 1797, 1829, 1830, 1846, 1847, 1848, 1852, 1857, 1883, 1939, 1986,
+                    1997, 1998, 1999, 2020, 2021, 2024, 2026, 2027, 2030, 2039, 2042, 2051, 2058, 2071, 2076, 2083, 2088,
+                    2093, 2103, 2133, 2140, 2153, 2185, 2218, 2237, 2238, 2256, 2257, 2279, 2286, 2287, 2303, 2305, 2306, 2307,
+                    2323, 2326, 2329, 2330, 2345, 2348, 2349, 2371, 2382, 2387, 2388, 2389, 2409, 2410, 2422, 2423, 2432,
+                    2514, 2519, 2548, 2580, 2581, 2605, 2606, 2627, 2628, 2730, 2764, 2768, 2777, 2778, 2781, 2790, 2801,
+                    2806, 2807, 2808, 2811, 2812, 2832, 2878, 2885, 2918, 2925, 2958, 2959, 2966, 2973, 2975, 3001, 3004, 3062,
+                    3072, 3075, 3076, 3084, 3145, 3146, 3205, 3208, 3234, 3235, 3238, 3239, 3240, 3242, 3243, 3245, 3248, 3250, 3254,
+                    3255, 3256, 3257, 3258, 3259, 3261, 3266, 3268, 3269, 3270, 3271, 3272, 3273, 3274, 3275, 3278, 3279,
+                    3280, 3282, 3285, 3354, 3360, 3372, 3409, 3419, 3429, 3430, 3454, 3456, 3457, 3459, 3460, 3461, 3462, 3466,
+                    3468, 3469, 3470, 3471, 3472, 3473, 3474, 3475, 3476, 3477, 3478, 3480, 3481, 3483, 3485, 3486, 3487, 3491,
+                    3492, 3493, 3494, 3503, 3504, 3505, 3506, 3507, 3510, 3519, 3521, 3545, 3546, 3547, 3551, 3573, 3575,
+                    3576, 3588, 3591, 3595, 3598, 3599, 3602, 3605, 3610, 3611, 3615, 3619, 3630, 3635, 3638, 3642, 3667,
+                    3668, 3673, 3677, 3711, 3713, 3761, 3762, 3768, 3769, 3805, 3806, 3810, 3822, 3823, 3829, 3832, 3838, 3840,
+                    3859, 3863, 3864, 3866, 3871, 3878, 3880, 3882, 3884, 3889, 3893, 3942, 3943, 3945, 3948, 3949, 3950,
+                    3952, 3958, 3962, 3986, 3996, 4001, 4014, 4030, 4031, 4043, 4045, 4046, 4047, 4054, 4055, 4100, 4112, 4117,
+                    4118, 4119, 4152, 4174, 4183, 4215, 4216, 4217, 4273, 4277, 4295, 4309, 4311, 4316, 4322, 4396, 4398,
+                    4428, 4503, 4505, 4506, 4507, 4541, 4542, 4548, 4551, 4552, 4555, 4617, 4620, 4621, 4628, 4654, 4655,
+                    4660, 4663, 4688, 4689, 4730, 4733, 4734, 4777, 4778, 4779, 4794, 4798, 5019, 5021, 5048, 5051, 5056, 5058, 5088,
+                    5098, 5101, 5102, 5129, 5133, 5139, 5140, 5149, 5156, 5175, 5177, 5194, 5200, 5214, 5220, 5221, 5227, 5231,
+                    5258, 5264, 5288, 5297, 5332, 5335, 5358, 5363, 5373, 5374, 5375, 5382, 5414, 5418, 5431, 5432, 5471,
+                    5473, 5482, 5483, 5486, 5487, 5488, 5491, 5492, 5494, 5497, 5502, 5508, 5512, 5513, 5526, 5527, 5530,
+                    5535, 5542, 5543, 5565, 5573, 5575, 5576, 5577, 5581, 5583, 5584, 5590, 5595, 5604, 5607, 5613, 5614,
+                    5619, 5620, 5625, 5718, 5722, 5723, 5749, 5757, 5761, 5794, 5806, 5813, 5818, 5819, 5820, 5828, 5841,
+                    5846, 5849, 5857, 5858, 5859, 5860, 5861, 5862, 5863, 5864, 5865, 5866, 5870, 5871, 5872, 5873, 5874, 5875,
+                    5877, 5878, 5880, 5882, 5885, 5888, 5890, 5891, 5894, 5897, 5898, 5901, 5903, 5904, 5905, 5907, 5916,
+                    5921, 5944, 5949, 5978, 5992, 5994, 6021, 6108, 6115, 6188, 6197, 6266, 6298, 6328, 6332, 6335, 6338,
+                    6353, 6359, 6396, 6401, 6405, 6412, 6413, 6416, 6434, 6436, 6437, 6438, 6458, 6459, 6478, 6485, 6491, 6501,
+                    6613, 6618, 6649, 6652, 6699, 6725, 6872, 6891, 7024, 7036, 7037, 7040, 7060, 7064, 7071, 7072, 7117,
+                    7118, 7126, 7152, 7157, 7159, 7165, 7221, 7227, 7238, 7240, 7253, 7254, 7324, 7337, 7338, 7344, 7350, 7370,
+                    7371, 7464, 7470, 7499, 7504, 7505, 7510, 7515, 7551, 7561, 7609, 7614, 7616, 7629, 7630, 7635, 7660, 7665,
+                    7679, 7683, 7686, 7687, 7688, 7689, 7694, 7701, 7703, 7704, 7705, 7710, 7714, 7727, 7729, 7731, 7737, 7836,
+                    7841, 7845, 7849, 7850, 7852, 7853, 7904, 7906, 7910, 7911, 7912, 7915, 7924, 7927, 7930, 7936, 7940,
+                    7942, 7948, 7950, 7954, 7955, 7958, 7963, 7966, 7968, 7994, 7997, 8005, 8006, 8015, 8016, 8019, 8020, 8021, 8037,
+                    8043, 8047, 8084, 8085, 8105, 8107, 8109, 8110, 8113, 8117, 8119, 8120, 8121, 8140, 8143, 8163, 8165,
+                    8219, 8223, 8251, 8254, 8335, 8338, 8340, 8347, 8368, 8369, 8454, 8455, 8488, 8489, 8553, 8555, 8556, 8557,
+                    8562, 8585, 8597, 8598, 8610, 8634, 8647, 8649, 8650, 8652, 8653, 8677, 8679, 8682, 8683, 8691, 8692,
+                    8693, 8694, 8697, 8698, 8699, 8701, 8702, 8703, 8705, 8709, 8710, 8713, 8715, 8716, 8737, 8741, 8742,
+                    8747, 8748, 8749, 8751, 8752, 8754, 8759, 8761, 8766, 8768, 8804, 8807, 8808, 8843, 8873, 8890, 8894,
+                    8901, 8904, 8908, 8911, 8915, 8917, 8923, 8926, 8930, 8931, 8932, 8933, 8934, 8935, 8936, 8937, 8938,
+                    8939, 8940, 8943, 8946, 8949, 8950, 8951, 8955, 8958, 8959, 8962, 8969, 8972, 8973, 8974, 8989, 8994,
+                    9012, 9017, 9022, 9023, 9031, 9033, 9045)
+                .mapToObj(i -> skip(i, SkipInstruction.SkipType.SKIP_COMPLETE, "Malformed Package. Siemens Implementation"))
+                .toArray(SkipInstruction[]::new)
         ));
     }
 
@@ -6166,6 +6214,18 @@ public class RandomPackagesTest {
         @Override
         public String toString() {
             return "Package " + packageNumber + " skipped with skipType=" + skipType + ". Reason: " + reason;
+        }
+    }
+
+    static private void appendPackageNumberToFile(int packageNumber) {
+        try {
+            OpenOption openOption = StandardOpenOption.CREATE_NEW;
+            Path path = Paths.get("target", "collectedPackageNumbers.txt");
+            if (path.toFile().exists()) {
+                openOption = StandardOpenOption.APPEND;
+            }
+            Files.write(path, (" " + packageNumber + ",").getBytes(), openOption);
+        } catch (IOException ignore) {
         }
     }
 }
