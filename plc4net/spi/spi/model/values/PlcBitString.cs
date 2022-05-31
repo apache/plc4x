@@ -21,6 +21,25 @@ namespace org.apache.plc4net.spi.model.values
 {
     public class PlcBitString : PlcValueAdapter
     {
+        public PlcBitString()
+        {
+        }
+
+        public PlcBitString(byte value)
+        {
+        }
+
+        public PlcBitString(ushort value)
+        {
+        }
+
+        public PlcBitString(uint value)
+        {
+        }
+
+        public PlcBitString(ulong value)
+        {
+        }
 
     }
 }
