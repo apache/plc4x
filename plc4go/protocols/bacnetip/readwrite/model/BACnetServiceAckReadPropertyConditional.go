@@ -32,7 +32,8 @@ type BACnetServiceAckReadPropertyConditional struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceAckLength uint16
+	ServiceAckLength        uint16
+	ServiceAckPayloadLength uint16
 }
 
 // IBACnetServiceAckReadPropertyConditional is the corresponding interface of BACnetServiceAckReadPropertyConditional
@@ -83,7 +84,7 @@ func (m *BACnetServiceAckReadPropertyConditional) GetBytesOfRemovedService() []b
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadPropertyConditional factory function for BACnetServiceAckReadPropertyConditional
-func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, serviceAckLength uint16) *BACnetServiceAckReadPropertyConditional {
+func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, serviceAckLength uint16, serviceAckPayloadLength uint16) *BACnetServiceAckReadPropertyConditional {
 	_result := &BACnetServiceAckReadPropertyConditional{
 		BytesOfRemovedService: bytesOfRemovedService,
 		BACnetServiceAck:      NewBACnetServiceAck(serviceAckLength),
@@ -131,7 +132,7 @@ func (m *BACnetServiceAckReadPropertyConditional) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyConditionalParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckReadPropertyConditional, error) {
+func BACnetServiceAckReadPropertyConditionalParse(readBuffer utils.ReadBuffer, serviceAckLength uint16, serviceAckPayloadLength uint16) (*BACnetServiceAckReadPropertyConditional, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyConditional"); pullErr != nil {
@@ -140,7 +141,7 @@ func BACnetServiceAckReadPropertyConditionalParse(readBuffer utils.ReadBuffer, s
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (bytesOfRemovedService)
-	numberOfBytesbytesOfRemovedService := int(utils.InlineIf(bool(bool((serviceAckLength) > (0))), func() interface{} { return uint16(uint16(uint16(serviceAckLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	numberOfBytesbytesOfRemovedService := int(serviceAckPayloadLength)
 	bytesOfRemovedService, _readArrayErr := readBuffer.ReadByteArray("bytesOfRemovedService", numberOfBytesbytesOfRemovedService)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field")

@@ -32,7 +32,8 @@ type BACnetConfirmedServiceRequestReadPropertyConditional struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceRequestLength        uint16
+	ServiceRequestPayloadLength uint16
 }
 
 // IBACnetConfirmedServiceRequestReadPropertyConditional is the corresponding interface of BACnetConfirmedServiceRequestReadPropertyConditional
@@ -84,7 +85,7 @@ func (m *BACnetConfirmedServiceRequestReadPropertyConditional) GetBytesOfRemoved
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestReadPropertyConditional factory function for BACnetConfirmedServiceRequestReadPropertyConditional
-func NewBACnetConfirmedServiceRequestReadPropertyConditional(bytesOfRemovedService []byte, serviceRequestLength uint16) *BACnetConfirmedServiceRequestReadPropertyConditional {
+func NewBACnetConfirmedServiceRequestReadPropertyConditional(bytesOfRemovedService []byte, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *BACnetConfirmedServiceRequestReadPropertyConditional {
 	_result := &BACnetConfirmedServiceRequestReadPropertyConditional{
 		BytesOfRemovedService:         bytesOfRemovedService,
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -132,7 +133,7 @@ func (m *BACnetConfirmedServiceRequestReadPropertyConditional) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadPropertyConditionalParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestReadPropertyConditional, error) {
+func BACnetConfirmedServiceRequestReadPropertyConditionalParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16, serviceRequestPayloadLength uint16) (*BACnetConfirmedServiceRequestReadPropertyConditional, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadPropertyConditional"); pullErr != nil {
@@ -141,7 +142,7 @@ func BACnetConfirmedServiceRequestReadPropertyConditionalParse(readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (bytesOfRemovedService)
-	numberOfBytesbytesOfRemovedService := int(utils.InlineIf(bool(bool((serviceRequestLength) > (0))), func() interface{} { return uint16(uint16(uint16(serviceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	numberOfBytesbytesOfRemovedService := int(serviceRequestPayloadLength)
 	bytesOfRemovedService, _readArrayErr := readBuffer.ReadByteArray("bytesOfRemovedService", numberOfBytesbytesOfRemovedService)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field")

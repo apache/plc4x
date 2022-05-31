@@ -32,7 +32,8 @@ type BACnetConfirmedServiceRequestVTClose struct {
 	ListOfRemoteVtSessionIdentifiers []*BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceRequestLength        uint16
+	ServiceRequestPayloadLength uint16
 }
 
 // IBACnetConfirmedServiceRequestVTClose is the corresponding interface of BACnetConfirmedServiceRequestVTClose
@@ -84,7 +85,7 @@ func (m *BACnetConfirmedServiceRequestVTClose) GetListOfRemoteVtSessionIdentifie
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestVTClose factory function for BACnetConfirmedServiceRequestVTClose
-func NewBACnetConfirmedServiceRequestVTClose(listOfRemoteVtSessionIdentifiers []*BACnetApplicationTagUnsignedInteger, serviceRequestLength uint16) *BACnetConfirmedServiceRequestVTClose {
+func NewBACnetConfirmedServiceRequestVTClose(listOfRemoteVtSessionIdentifiers []*BACnetApplicationTagUnsignedInteger, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *BACnetConfirmedServiceRequestVTClose {
 	_result := &BACnetConfirmedServiceRequestVTClose{
 		ListOfRemoteVtSessionIdentifiers: listOfRemoteVtSessionIdentifiers,
 		BACnetConfirmedServiceRequest:    NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -134,7 +135,7 @@ func (m *BACnetConfirmedServiceRequestVTClose) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestVTClose, error) {
+func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16, serviceRequestPayloadLength uint16) (*BACnetConfirmedServiceRequestVTClose, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTClose"); pullErr != nil {
@@ -150,7 +151,7 @@ func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, serv
 	// Length array
 	listOfRemoteVtSessionIdentifiers := make([]*BACnetApplicationTagUnsignedInteger, 0)
 	{
-		_listOfRemoteVtSessionIdentifiersLength := utils.InlineIf(bool(bool((serviceRequestLength) > (0))), func() interface{} { return uint16(uint16(uint16(serviceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
+		_listOfRemoteVtSessionIdentifiersLength := serviceRequestPayloadLength
 		_listOfRemoteVtSessionIdentifiersEndPos := positionAware.GetPos() + uint16(_listOfRemoteVtSessionIdentifiersLength)
 		for positionAware.GetPos() < _listOfRemoteVtSessionIdentifiersEndPos {
 			_item, _err := BACnetApplicationTagParse(readBuffer)

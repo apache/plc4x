@@ -38,6 +38,8 @@ type BACnetConfirmedServiceRequest struct {
 type IBACnetConfirmedServiceRequest interface {
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetConfirmedServiceChoice
+	// GetServiceRequestPayloadLength returns ServiceRequestPayloadLength (virtual field)
+	GetServiceRequestPayloadLength() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -59,6 +61,20 @@ type IBACnetConfirmedServiceRequestChild interface {
 	GetTypeName() string
 	IBACnetConfirmedServiceRequest
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConfirmedServiceRequest) GetServiceRequestPayloadLength() uint16 {
+	return uint16(utils.InlineIf(bool(bool((m.ServiceRequestLength) > (0))), func() interface{} { return uint16(uint16(uint16(m.ServiceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequest factory function for BACnetConfirmedServiceRequest
 func NewBACnetConfirmedServiceRequest(serviceRequestLength uint16) *BACnetConfirmedServiceRequest {
@@ -95,6 +111,8 @@ func (m *BACnetConfirmedServiceRequest) GetParentLengthInBits() uint16 {
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -123,6 +141,11 @@ func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRequ
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
+
+	// Virtual field
+	_serviceRequestPayloadLength := utils.InlineIf(bool(bool((serviceRequestLength) > (0))), func() interface{} { return uint16(uint16(uint16(serviceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
+	serviceRequestPayloadLength := uint16(_serviceRequestPayloadLength)
+	_ = serviceRequestPayloadLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type BACnetConfirmedServiceRequestChild interface {
@@ -167,13 +190,13 @@ func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRequ
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY: // BACnetConfirmedServiceRequestReadProperty
 		_child, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyParse(readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE: // BACnetConfirmedServiceRequestReadPropertyMultiple
-		_child, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyMultipleParse(readBuffer, serviceRequestLength)
+		_child, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyMultipleParse(readBuffer, serviceRequestLength, serviceRequestPayloadLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_RANGE: // BACnetConfirmedServiceRequestReadRange
 		_child, typeSwitchError = BACnetConfirmedServiceRequestReadRangeParse(readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_WRITE_PROPERTY: // BACnetConfirmedServiceRequestWriteProperty
 		_child, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyParse(readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE: // BACnetConfirmedServiceRequestWritePropertyMultiple
-		_child, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer, serviceRequestLength)
+		_child, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer, serviceRequestLength, serviceRequestPayloadLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL: // BACnetConfirmedServiceRequestDeviceCommunicationControl
 		_child, typeSwitchError = BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: // BACnetConfirmedServiceRequestConfirmedPrivateTransfer
@@ -185,17 +208,17 @@ func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRequ
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_OPEN: // BACnetConfirmedServiceRequestVTOpen
 		_child, typeSwitchError = BACnetConfirmedServiceRequestVTOpenParse(readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_CLOSE: // BACnetConfirmedServiceRequestVTClose
-		_child, typeSwitchError = BACnetConfirmedServiceRequestVTCloseParse(readBuffer, serviceRequestLength)
+		_child, typeSwitchError = BACnetConfirmedServiceRequestVTCloseParse(readBuffer, serviceRequestLength, serviceRequestPayloadLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_DATA: // BACnetConfirmedServiceRequestVTData
 		_child, typeSwitchError = BACnetConfirmedServiceRequestVTDataParse(readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_AUTHENTICATE: // BACnetConfirmedServiceRequestAuthenticate
-		_child, typeSwitchError = BACnetConfirmedServiceRequestAuthenticateParse(readBuffer, serviceRequestLength)
+		_child, typeSwitchError = BACnetConfirmedServiceRequestAuthenticateParse(readBuffer, serviceRequestLength, serviceRequestPayloadLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_REQUEST_KEY: // BACnetConfirmedServiceRequestRequestKey
-		_child, typeSwitchError = BACnetConfirmedServiceRequestRequestKeyParse(readBuffer, serviceRequestLength)
+		_child, typeSwitchError = BACnetConfirmedServiceRequestRequestKeyParse(readBuffer, serviceRequestLength, serviceRequestPayloadLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL: // BACnetConfirmedServiceRequestReadPropertyConditional
-		_child, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyConditionalParse(readBuffer, serviceRequestLength)
+		_child, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyConditionalParse(readBuffer, serviceRequestLength, serviceRequestPayloadLength)
 	case true: // BACnetConfirmedServiceRequestConfirmedUnknown
-		_child, typeSwitchError = BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer, serviceRequestLength)
+		_child, typeSwitchError = BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer, serviceRequestLength, serviceRequestPayloadLength)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -236,6 +259,10 @@ func (m *BACnetConfirmedServiceRequest) SerializeParent(writeBuffer utils.WriteB
 
 	if _serviceChoiceErr != nil {
 		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
+	}
+	// Virtual field
+	if _serviceRequestPayloadLengthErr := writeBuffer.WriteVirtual("serviceRequestPayloadLength", m.GetServiceRequestPayloadLength()); _serviceRequestPayloadLengthErr != nil {
+		return errors.Wrap(_serviceRequestPayloadLengthErr, "Error serializing 'serviceRequestPayloadLength' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

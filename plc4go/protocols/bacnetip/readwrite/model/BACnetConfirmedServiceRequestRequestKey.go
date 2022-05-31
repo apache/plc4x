@@ -32,7 +32,8 @@ type BACnetConfirmedServiceRequestRequestKey struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceRequestLength        uint16
+	ServiceRequestPayloadLength uint16
 }
 
 // IBACnetConfirmedServiceRequestRequestKey is the corresponding interface of BACnetConfirmedServiceRequestRequestKey
@@ -84,7 +85,7 @@ func (m *BACnetConfirmedServiceRequestRequestKey) GetBytesOfRemovedService() []b
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestRequestKey factory function for BACnetConfirmedServiceRequestRequestKey
-func NewBACnetConfirmedServiceRequestRequestKey(bytesOfRemovedService []byte, serviceRequestLength uint16) *BACnetConfirmedServiceRequestRequestKey {
+func NewBACnetConfirmedServiceRequestRequestKey(bytesOfRemovedService []byte, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *BACnetConfirmedServiceRequestRequestKey {
 	_result := &BACnetConfirmedServiceRequestRequestKey{
 		BytesOfRemovedService:         bytesOfRemovedService,
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -132,7 +133,7 @@ func (m *BACnetConfirmedServiceRequestRequestKey) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRequestKeyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestRequestKey, error) {
+func BACnetConfirmedServiceRequestRequestKeyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16, serviceRequestPayloadLength uint16) (*BACnetConfirmedServiceRequestRequestKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRequestKey"); pullErr != nil {
@@ -141,7 +142,7 @@ func BACnetConfirmedServiceRequestRequestKeyParse(readBuffer utils.ReadBuffer, s
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (bytesOfRemovedService)
-	numberOfBytesbytesOfRemovedService := int(utils.InlineIf(bool(bool((serviceRequestLength) > (0))), func() interface{} { return uint16(uint16(uint16(serviceRequestLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	numberOfBytesbytesOfRemovedService := int(serviceRequestPayloadLength)
 	bytesOfRemovedService, _readArrayErr := readBuffer.ReadByteArray("bytesOfRemovedService", numberOfBytesbytesOfRemovedService)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field")

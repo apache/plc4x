@@ -32,7 +32,8 @@ type BACnetServiceAckRequestKey struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceAckLength uint16
+	ServiceAckLength        uint16
+	ServiceAckPayloadLength uint16
 }
 
 // IBACnetServiceAckRequestKey is the corresponding interface of BACnetServiceAckRequestKey
@@ -83,7 +84,7 @@ func (m *BACnetServiceAckRequestKey) GetBytesOfRemovedService() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckRequestKey factory function for BACnetServiceAckRequestKey
-func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckLength uint16) *BACnetServiceAckRequestKey {
+func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckLength uint16, serviceAckPayloadLength uint16) *BACnetServiceAckRequestKey {
 	_result := &BACnetServiceAckRequestKey{
 		BytesOfRemovedService: bytesOfRemovedService,
 		BACnetServiceAck:      NewBACnetServiceAck(serviceAckLength),
@@ -131,7 +132,7 @@ func (m *BACnetServiceAckRequestKey) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckRequestKeyParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckRequestKey, error) {
+func BACnetServiceAckRequestKeyParse(readBuffer utils.ReadBuffer, serviceAckLength uint16, serviceAckPayloadLength uint16) (*BACnetServiceAckRequestKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRequestKey"); pullErr != nil {
@@ -140,7 +141,7 @@ func BACnetServiceAckRequestKeyParse(readBuffer utils.ReadBuffer, serviceAckLeng
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (bytesOfRemovedService)
-	numberOfBytesbytesOfRemovedService := int(utils.InlineIf(bool(bool((serviceAckLength) > (0))), func() interface{} { return uint16(uint16(uint16(serviceAckLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	numberOfBytesbytesOfRemovedService := int(serviceAckPayloadLength)
 	bytesOfRemovedService, _readArrayErr := readBuffer.ReadByteArray("bytesOfRemovedService", numberOfBytesbytesOfRemovedService)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field")

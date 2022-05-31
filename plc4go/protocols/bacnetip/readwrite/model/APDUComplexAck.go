@@ -63,6 +63,10 @@ type IAPDUComplexAck interface {
 	GetSegmentServiceChoice() *uint8
 	// GetSegment returns Segment (property field)
 	GetSegment() []byte
+	// GetApduHeaderReduction returns ApduHeaderReduction (virtual field)
+	GetApduHeaderReduction() uint16
+	// GetSegmentReduction returns SegmentReduction (virtual field)
+	GetSegmentReduction() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -126,6 +130,39 @@ func (m *APDUComplexAck) GetSegmentServiceChoice() *uint8 {
 
 func (m *APDUComplexAck) GetSegment() []byte {
 	return m.Segment
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *APDUComplexAck) GetApduHeaderReduction() uint16 {
+	sequenceNumber := m.SequenceNumber
+	_ = sequenceNumber
+	proposedWindowSize := m.ProposedWindowSize
+	_ = proposedWindowSize
+	serviceAck := m.ServiceAck
+	_ = serviceAck
+	segmentServiceChoice := m.SegmentServiceChoice
+	_ = segmentServiceChoice
+	return uint16(uint16(uint16(2)) + uint16(uint16(utils.InlineIf(m.GetSegmentedMessage(), func() interface{} { return uint16(uint16(2)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))
+}
+
+func (m *APDUComplexAck) GetSegmentReduction() uint16 {
+	sequenceNumber := m.SequenceNumber
+	_ = sequenceNumber
+	proposedWindowSize := m.ProposedWindowSize
+	_ = proposedWindowSize
+	serviceAck := m.ServiceAck
+	_ = serviceAck
+	segmentServiceChoice := m.SegmentServiceChoice
+	_ = segmentServiceChoice
+	return uint16(utils.InlineIf(bool(bool((m.GetSegmentServiceChoice()) != (nil))), func() interface{} { return uint16(uint16(uint16(m.GetApduHeaderReduction()) + uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(m.GetApduHeaderReduction())) }).(uint16))
 }
 
 ///////////////////////
@@ -199,6 +236,8 @@ func (m *APDUComplexAck) GetLengthInBitsConditional(lastItem bool) uint16 {
 		lengthInBits += 8
 	}
 
+	// A virtual field doesn't have any in- or output.
+
 	// Optional Field (serviceAck)
 	if m.ServiceAck != nil {
 		lengthInBits += (*m.ServiceAck).GetLengthInBits()
@@ -208,6 +247,8 @@ func (m *APDUComplexAck) GetLengthInBitsConditional(lastItem bool) uint16 {
 	if m.SegmentServiceChoice != nil {
 		lengthInBits += 8
 	}
+
+	// A virtual field doesn't have any in- or output.
 
 	// Array field
 	if len(m.Segment) > 0 {
@@ -285,6 +326,11 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUC
 		proposedWindowSize = &_val
 	}
 
+	// Virtual field
+	_apduHeaderReduction := uint16(uint16(2)) + uint16(uint16(utils.InlineIf(segmentedMessage, func() interface{} { return uint16(uint16(2)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)))
+	apduHeaderReduction := uint16(_apduHeaderReduction)
+	_ = apduHeaderReduction
+
 	// Optional Field (serviceAck) (Can be skipped, if a given expression evaluates to false)
 	var serviceAck *BACnetServiceAck = nil
 	if !(segmentedMessage) {
@@ -292,7 +338,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUC
 		if pullErr := readBuffer.PullContext("serviceAck"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetServiceAckParse(readBuffer, uint16(apduLength)-uint16(uint16(uint16(uint16(3))+uint16(uint16(utils.InlineIf(segmentedMessage, func() interface{} { return uint16(uint16(2)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
+		_val, _err := BACnetServiceAckParse(readBuffer, uint16(apduLength)-uint16(apduHeaderReduction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
@@ -320,11 +366,14 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUC
 		}
 		segmentServiceChoice = &_val
 	}
+
+	// Virtual field
+	_segmentReduction := utils.InlineIf(bool(bool((segmentServiceChoice) != (nil))), func() interface{} { return uint16(uint16(uint16(apduHeaderReduction) + uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(apduHeaderReduction)) }).(uint16)
+	segmentReduction := uint16(_segmentReduction)
+	_ = segmentReduction
 	// Byte Array field (segment)
 	numberOfBytessegment := int(utils.InlineIf(segmentedMessage, func() interface{} {
-		return uint16(uint16(utils.InlineIf(bool(bool((apduLength) > (0))), func() interface{} {
-			return uint16(uint16(uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool((*sequenceNumber) != (0))), func() interface{} { return uint16(uint16(uint16(5))) }, func() interface{} { return uint16(uint16(uint16(4))) }).(uint16)))))
-		}, func() interface{} { return uint16(uint16(0)) }).(uint16)))
+		return uint16(uint16(utils.InlineIf(bool(bool((apduLength) > (0))), func() interface{} { return uint16(uint16(uint16(apduLength) - uint16(segmentReduction))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)))
 	}, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	segment, _readArrayErr := readBuffer.ReadByteArray("segment", numberOfBytessegment)
 	if _readArrayErr != nil {
@@ -407,6 +456,10 @@ func (m *APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
 				return errors.Wrap(_proposedWindowSizeErr, "Error serializing 'proposedWindowSize' field")
 			}
 		}
+		// Virtual field
+		if _apduHeaderReductionErr := writeBuffer.WriteVirtual("apduHeaderReduction", m.GetApduHeaderReduction()); _apduHeaderReductionErr != nil {
+			return errors.Wrap(_apduHeaderReductionErr, "Error serializing 'apduHeaderReduction' field")
+		}
 
 		// Optional Field (serviceAck) (Can be skipped, if the value is null)
 		var serviceAck *BACnetServiceAck = nil
@@ -432,6 +485,10 @@ func (m *APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
 			if _segmentServiceChoiceErr != nil {
 				return errors.Wrap(_segmentServiceChoiceErr, "Error serializing 'segmentServiceChoice' field")
 			}
+		}
+		// Virtual field
+		if _segmentReductionErr := writeBuffer.WriteVirtual("segmentReduction", m.GetSegmentReduction()); _segmentReductionErr != nil {
+			return errors.Wrap(_segmentReductionErr, "Error serializing 'segmentReduction' field")
 		}
 
 		// Array Field (segment)

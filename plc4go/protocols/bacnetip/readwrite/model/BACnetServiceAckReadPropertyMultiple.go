@@ -32,7 +32,8 @@ type BACnetServiceAckReadPropertyMultiple struct {
 	Data []*BACnetReadAccessResult
 
 	// Arguments.
-	ServiceAckLength uint16
+	ServiceAckLength        uint16
+	ServiceAckPayloadLength uint16
 }
 
 // IBACnetServiceAckReadPropertyMultiple is the corresponding interface of BACnetServiceAckReadPropertyMultiple
@@ -83,7 +84,7 @@ func (m *BACnetServiceAckReadPropertyMultiple) GetData() []*BACnetReadAccessResu
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadPropertyMultiple factory function for BACnetServiceAckReadPropertyMultiple
-func NewBACnetServiceAckReadPropertyMultiple(data []*BACnetReadAccessResult, serviceAckLength uint16) *BACnetServiceAckReadPropertyMultiple {
+func NewBACnetServiceAckReadPropertyMultiple(data []*BACnetReadAccessResult, serviceAckLength uint16, serviceAckPayloadLength uint16) *BACnetServiceAckReadPropertyMultiple {
 	_result := &BACnetServiceAckReadPropertyMultiple{
 		Data:             data,
 		BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
@@ -133,7 +134,7 @@ func (m *BACnetServiceAckReadPropertyMultiple) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceAckLength uint16) (*BACnetServiceAckReadPropertyMultiple, error) {
+func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceAckLength uint16, serviceAckPayloadLength uint16) (*BACnetServiceAckReadPropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {
@@ -149,7 +150,7 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serv
 	// Length array
 	data := make([]*BACnetReadAccessResult, 0)
 	{
-		_dataLength := serviceAckLength
+		_dataLength := serviceAckPayloadLength
 		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
 		for positionAware.GetPos() < _dataEndPos {
 			_item, _err := BACnetReadAccessResultParse(readBuffer)

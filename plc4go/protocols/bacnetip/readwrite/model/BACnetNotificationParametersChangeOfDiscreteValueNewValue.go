@@ -200,6 +200,11 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueParse(readBuffer u
 	peekedIsContextTag := bool(_peekedIsContextTag)
 	_ = peekedIsContextTag
 
+	// Validation
+	if !(bool(bool(!(peekedIsContextTag))) || bool(bool(bool(bool(peekedIsContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x6)))) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
+		return nil, utils.ParseValidationError{"unexpected opening or closing tag"}
+	}
+
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type BACnetNotificationParametersChangeOfDiscreteValueNewValueChild interface {
 		InitializeParent(*BACnetNotificationParametersChangeOfDiscreteValueNewValue, *BACnetOpeningTag, *BACnetTagHeader, *BACnetClosingTag)

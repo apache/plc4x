@@ -32,7 +32,8 @@ type BACnetConfirmedServiceRequestReadPropertyMultiple struct {
 	Data []*BACnetReadAccessSpecification
 
 	// Arguments.
-	ServiceRequestLength uint16
+	ServiceRequestLength        uint16
+	ServiceRequestPayloadLength uint16
 }
 
 // IBACnetConfirmedServiceRequestReadPropertyMultiple is the corresponding interface of BACnetConfirmedServiceRequestReadPropertyMultiple
@@ -84,7 +85,7 @@ func (m *BACnetConfirmedServiceRequestReadPropertyMultiple) GetData() []*BACnetR
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestReadPropertyMultiple factory function for BACnetConfirmedServiceRequestReadPropertyMultiple
-func NewBACnetConfirmedServiceRequestReadPropertyMultiple(data []*BACnetReadAccessSpecification, serviceRequestLength uint16) *BACnetConfirmedServiceRequestReadPropertyMultiple {
+func NewBACnetConfirmedServiceRequestReadPropertyMultiple(data []*BACnetReadAccessSpecification, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *BACnetConfirmedServiceRequestReadPropertyMultiple {
 	_result := &BACnetConfirmedServiceRequestReadPropertyMultiple{
 		Data:                          data,
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -134,7 +135,7 @@ func (m *BACnetConfirmedServiceRequestReadPropertyMultiple) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestReadPropertyMultiple, error) {
+func BACnetConfirmedServiceRequestReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16, serviceRequestPayloadLength uint16) (*BACnetConfirmedServiceRequestReadPropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadPropertyMultiple"); pullErr != nil {
@@ -150,7 +151,7 @@ func BACnetConfirmedServiceRequestReadPropertyMultipleParse(readBuffer utils.Rea
 	// Length array
 	data := make([]*BACnetReadAccessSpecification, 0)
 	{
-		_dataLength := serviceRequestLength
+		_dataLength := serviceRequestPayloadLength
 		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
 		for positionAware.GetPos() < _dataEndPos {
 			_item, _err := BACnetReadAccessSpecificationParse(readBuffer)
