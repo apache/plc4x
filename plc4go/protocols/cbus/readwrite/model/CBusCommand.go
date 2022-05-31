@@ -86,7 +86,7 @@ func (m *CBusCommand) GetHeader() *CBusHeader {
 ///////////////////////
 
 func (m *CBusCommand) GetDestinationAddressType() DestinationAddressType {
-	return DestinationAddressType(m.GetHeader().GetDestinationAddressType())
+	return CastDestinationAddressType(m.GetHeader().GetDestinationAddressType())
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommand, er
 
 	// Virtual field
 	_destinationAddressType := header.GetDestinationAddressType()
-	destinationAddressType := DestinationAddressType(_destinationAddressType)
+	destinationAddressType := CastDestinationAddressType(_destinationAddressType)
 	_ = destinationAddressType
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

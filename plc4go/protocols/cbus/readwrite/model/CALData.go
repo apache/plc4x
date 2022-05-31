@@ -79,7 +79,7 @@ func (m *CALData) GetCommandTypeContainer() CALCommandTypeContainer {
 ///////////////////////
 
 func (m *CALData) GetCommandType() CALCommandType {
-	return CALCommandType(m.GetCommandTypeContainer().CommandType())
+	return CastCALCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
 ///////////////////////
@@ -156,7 +156,7 @@ func CALDataParse(readBuffer utils.ReadBuffer) (*CALData, error) {
 
 	// Virtual field
 	_commandType := commandTypeContainer.CommandType()
-	commandType := CALCommandType(_commandType)
+	commandType := CastCALCommandType(_commandType)
 	_ = commandType
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

@@ -93,7 +93,7 @@ func (m *BACnetContextTagObjectIdentifier) GetPayload() *BACnetTagPayloadObjectI
 ///////////////////////
 
 func (m *BACnetContextTagObjectIdentifier) GetObjectType() BACnetObjectType {
-	return BACnetObjectType(m.GetPayload().GetObjectType())
+	return CastBACnetObjectType(m.GetPayload().GetObjectType())
 }
 
 func (m *BACnetContextTagObjectIdentifier) GetInstanceNumber() uint32 {
@@ -180,7 +180,7 @@ func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Virtual field
 	_objectType := payload.GetObjectType()
-	objectType := BACnetObjectType(_objectType)
+	objectType := CastBACnetObjectType(_objectType)
 	_ = objectType
 
 	// Virtual field

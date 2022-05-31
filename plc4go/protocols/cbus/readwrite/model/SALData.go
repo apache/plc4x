@@ -79,7 +79,7 @@ func (m *SALData) GetCommandTypeContainer() SALCommandTypeContainer {
 ///////////////////////
 
 func (m *SALData) GetCommandType() SALCommandType {
-	return SALCommandType(m.GetCommandTypeContainer().CommandType())
+	return CastSALCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
 ///////////////////////
@@ -156,7 +156,7 @@ func SALDataParse(readBuffer utils.ReadBuffer) (*SALData, error) {
 
 	// Virtual field
 	_commandType := commandTypeContainer.CommandType()
-	commandType := SALCommandType(_commandType)
+	commandType := CastSALCommandType(_commandType)
 	_ = commandType
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

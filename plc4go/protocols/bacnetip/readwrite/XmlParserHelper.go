@@ -75,7 +75,12 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetOpeningTagParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumberArgument)
 	case "BACnetPriorityArray":
 		objectType := model.BACnetObjectTypeByName(parserArguments[0])
-		return model.BACnetPriorityArrayParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectType)
+		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 8)
+		if err != nil {
+			return nil, err
+		}
+		tagNumber := uint8(parsedUint1)
+		return model.BACnetPriorityArrayParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectType, tagNumber)
 	case "BACnetAuthorizationExemptionTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {

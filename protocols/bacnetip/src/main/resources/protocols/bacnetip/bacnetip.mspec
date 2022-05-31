@@ -1833,28 +1833,31 @@
                         writeSuccessful                                                         ]
 ]
 
-[type BACnetPriorityArray(BACnetObjectType objectType)
-    [simple   BACnetPriorityValue('objectType')   priorityValue01              ]
-    // TODO: fixme ugly workaround as we don't handle the index at all so we might do that somehow
-    [peek       BACnetTagHeader
-                               peekedTagHeader                                 ]
-    [virtual  bit likelyArrayAccessWhichIsNotImplemented
-                'peekedTagHeader.lengthValueType == 0x7'                       ]
-    [optional BACnetPriorityValue('objectType')   priorityValue02  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue03  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue04  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue05  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue06  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue07  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue08  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue09  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue10  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue11  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue12  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue13  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue14  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue15  '!likelyArrayAccessWhichIsNotImplemented']
-    [optional BACnetPriorityValue('objectType')   priorityValue16  '!likelyArrayAccessWhichIsNotImplemented']
+// Note per spec this should be 16 but we reuse this for index access and non conformant transmission
+[type BACnetPriorityArray(BACnetObjectType objectType, uint 8 tagNumber)
+    [array    BACnetPriorityValue('objectType')
+                            data
+                                    terminated
+                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+    [virtual  BACnetPriorityValue   priorityValue01         'COUNT(data)>0?data[0]:null'        ]
+    [virtual  BACnetPriorityValue   priorityValue02         'COUNT(data)>1?data[1]:null'        ]
+    [virtual  BACnetPriorityValue   priorityValue03         'COUNT(data)>2?data[2]:null'        ]
+    [virtual  BACnetPriorityValue   priorityValue04         'COUNT(data)>3?data[3]:null'        ]
+    [virtual  BACnetPriorityValue   priorityValue05         'COUNT(data)>4?data[4]:null'        ]
+    [virtual  BACnetPriorityValue   priorityValue06         'COUNT(data)>5?data[5]:null'        ]
+    [virtual  BACnetPriorityValue   priorityValue07         'COUNT(data)>6?data[6]:null'        ]
+    [virtual  BACnetPriorityValue   priorityValue08         'COUNT(data)>7?data[7]:null'        ]
+    [virtual  BACnetPriorityValue   priorityValue09         'COUNT(data)>8?data[8]:null'        ]
+    [virtual  BACnetPriorityValue   priorityValue10         'COUNT(data)>9?data[9]:null'        ]
+    [virtual  BACnetPriorityValue   priorityValue11         'COUNT(data)>10?data[10]:null'      ]
+    [virtual  BACnetPriorityValue   priorityValue12         'COUNT(data)>11?data[11]:null'      ]
+    [virtual  BACnetPriorityValue   priorityValue13         'COUNT(data)>12?data[12]:null'      ]
+    [virtual  BACnetPriorityValue   priorityValue14         'COUNT(data)>13?data[13]:null'      ]
+    [virtual  BACnetPriorityValue   priorityValue15         'COUNT(data)>14?data[14]:null'      ]
+    [virtual  BACnetPriorityValue   priorityValue16         'COUNT(data)>15?data[15]:null'      ]
+    [virtual  bit                   isValidPriorityArray    'COUNT(data) == 16'                 ]
+    [virtual  bit                   isIndexedAccess         'COUNT(data) == 1'                  ]
+    [virtual  BACnetPriorityValue   indexEntry              'priorityValue01'                   ]
 ]
 
 [type BACnetPriorityValue(BACnetObjectType objectType)
@@ -2887,7 +2890,7 @@
         //[*, 'PRESENT_VALUE'                           BACnetConstructedDataPresentValue [validation    '1 == 2'    "TODO: implement me PRESENT_VALUE BACnetConstructedDataPresentValue"]]
         //[*, 'PRIORITY'                                BACnetConstructedDataPriority [validation    '1 == 2'    "TODO: implement me PRIORITY BACnetConstructedDataPriority"]]
         [*, 'PRIORITY_ARRAY'                          BACnetConstructedDataPriorityArray
-            [simple   BACnetPriorityArray('objectType') priorityArray     ]
+            [simple   BACnetPriorityArray('objectType', 'tagNumber') priorityArray     ]
         ]
         //[*, 'PRIORITY_FOR_WRITING'                    BACnetConstructedDataPriorityForWriting [validation    '1 == 2'    "TODO: implement me PRIORITY_FOR_WRITING BACnetConstructedDataPriorityForWriting"]]
         //[*, 'PROCESS_IDENTIFIER'                      BACnetConstructedDataProcessIdentifier [validation    '1 == 2'    "TODO: implement me PROCESS_IDENTIFIER BACnetConstructedDataProcessIdentifier"]]

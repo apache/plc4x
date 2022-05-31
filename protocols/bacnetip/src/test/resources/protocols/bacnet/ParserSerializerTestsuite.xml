@@ -4491,7 +4491,7 @@
                               <BACnetConstructedDataPriorityArray>
                                 <priorityArray>
                                   <BACnetPriorityArray>
-                                    <priorityValue01>
+                                    <data isList="true">
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4511,8 +4511,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue01>
-                                    <priorityValue02>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4532,8 +4530,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue02>
-                                    <priorityValue03>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4553,8 +4549,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue03>
-                                    <priorityValue04>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4574,8 +4568,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue04>
-                                    <priorityValue05>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4595,8 +4587,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue05>
-                                    <priorityValue06>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4616,8 +4606,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue06>
-                                    <priorityValue07>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4637,8 +4625,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue07>
-                                    <priorityValue08>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4658,8 +4644,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue08>
-                                    <priorityValue09>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4679,8 +4663,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue09>
-                                    <priorityValue10>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4700,8 +4682,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue10>
-                                    <priorityValue11>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4721,8 +4701,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue11>
-                                    <priorityValue12>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4742,8 +4720,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue12>
-                                    <priorityValue13>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4763,8 +4739,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue13>
-                                    <priorityValue14>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4784,8 +4758,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue14>
-                                    <priorityValue15>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4805,8 +4777,6 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue15>
-                                    <priorityValue16>
                                       <BACnetPriorityValue>
                                         <BACnetPriorityValueNull>
                                           <nullValue>
@@ -4826,7 +4796,7 @@
                                           </nullValue>
                                         </BACnetPriorityValueNull>
                                       </BACnetPriorityValue>
-                                    </priorityValue16>
+                                    </data>
                                   </BACnetPriorityArray>
                                 </priorityArray>
                               </BACnetConstructedDataPriorityArray>
