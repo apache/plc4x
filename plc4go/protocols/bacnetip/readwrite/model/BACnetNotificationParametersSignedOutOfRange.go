@@ -31,7 +31,7 @@ type BACnetNotificationParametersSignedOutOfRange struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag *BACnetOpeningTag
 	ExceedingValue  *BACnetContextTagSignedInteger
-	StatusFlags     *BACnetStatusFlags
+	StatusFlags     *BACnetStatusFlagsTagged
 	Deadband        *BACnetContextTagUnsignedInteger
 	ExceededLimit   *BACnetContextTagSignedInteger
 	InnerClosingTag *BACnetClosingTag
@@ -49,7 +49,7 @@ type IBACnetNotificationParametersSignedOutOfRange interface {
 	// GetExceedingValue returns ExceedingValue (property field)
 	GetExceedingValue() *BACnetContextTagSignedInteger
 	// GetStatusFlags returns StatusFlags (property field)
-	GetStatusFlags() *BACnetStatusFlags
+	GetStatusFlags() *BACnetStatusFlagsTagged
 	// GetDeadband returns Deadband (property field)
 	GetDeadband() *BACnetContextTagUnsignedInteger
 	// GetExceededLimit returns ExceededLimit (property field)
@@ -97,7 +97,7 @@ func (m *BACnetNotificationParametersSignedOutOfRange) GetExceedingValue() *BACn
 	return m.ExceedingValue
 }
 
-func (m *BACnetNotificationParametersSignedOutOfRange) GetStatusFlags() *BACnetStatusFlags {
+func (m *BACnetNotificationParametersSignedOutOfRange) GetStatusFlags() *BACnetStatusFlagsTagged {
 	return m.StatusFlags
 }
 
@@ -119,7 +119,7 @@ func (m *BACnetNotificationParametersSignedOutOfRange) GetInnerClosingTag() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersSignedOutOfRange factory function for BACnetNotificationParametersSignedOutOfRange
-func NewBACnetNotificationParametersSignedOutOfRange(innerOpeningTag *BACnetOpeningTag, exceedingValue *BACnetContextTagSignedInteger, statusFlags *BACnetStatusFlags, deadband *BACnetContextTagUnsignedInteger, exceededLimit *BACnetContextTagSignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersSignedOutOfRange {
+func NewBACnetNotificationParametersSignedOutOfRange(innerOpeningTag *BACnetOpeningTag, exceedingValue *BACnetContextTagSignedInteger, statusFlags *BACnetStatusFlagsTagged, deadband *BACnetContextTagUnsignedInteger, exceededLimit *BACnetContextTagSignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersSignedOutOfRange {
 	_result := &BACnetNotificationParametersSignedOutOfRange{
 		InnerOpeningTag:              innerOpeningTag,
 		ExceedingValue:               exceedingValue,
@@ -224,11 +224,11 @@ func BACnetNotificationParametersSignedOutOfRangeParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
-	statusFlags := CastBACnetStatusFlags(_statusFlags)
+	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -280,7 +280,7 @@ func BACnetNotificationParametersSignedOutOfRangeParse(readBuffer utils.ReadBuff
 	_child := &BACnetNotificationParametersSignedOutOfRange{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
 		ExceedingValue:               CastBACnetContextTagSignedInteger(exceedingValue),
-		StatusFlags:                  CastBACnetStatusFlags(statusFlags),
+		StatusFlags:                  CastBACnetStatusFlagsTagged(statusFlags),
 		Deadband:                     CastBACnetContextTagUnsignedInteger(deadband),
 		ExceededLimit:                CastBACnetContextTagSignedInteger(exceededLimit),
 		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),

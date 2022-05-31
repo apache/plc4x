@@ -31,7 +31,7 @@ type BACnetNotificationParametersChangeOfState struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag *BACnetOpeningTag
 	ChangeOfState   *BACnetPropertyStatesEnclosed
-	StatusFlags     *BACnetStatusFlags
+	StatusFlags     *BACnetStatusFlagsTagged
 	InnerClosingTag *BACnetClosingTag
 
 	// Arguments.
@@ -47,7 +47,7 @@ type IBACnetNotificationParametersChangeOfState interface {
 	// GetChangeOfState returns ChangeOfState (property field)
 	GetChangeOfState() *BACnetPropertyStatesEnclosed
 	// GetStatusFlags returns StatusFlags (property field)
-	GetStatusFlags() *BACnetStatusFlags
+	GetStatusFlags() *BACnetStatusFlagsTagged
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() *BACnetClosingTag
 	// GetLengthInBytes returns the length in bytes
@@ -91,7 +91,7 @@ func (m *BACnetNotificationParametersChangeOfState) GetChangeOfState() *BACnetPr
 	return m.ChangeOfState
 }
 
-func (m *BACnetNotificationParametersChangeOfState) GetStatusFlags() *BACnetStatusFlags {
+func (m *BACnetNotificationParametersChangeOfState) GetStatusFlags() *BACnetStatusFlagsTagged {
 	return m.StatusFlags
 }
 
@@ -105,7 +105,7 @@ func (m *BACnetNotificationParametersChangeOfState) GetInnerClosingTag() *BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfState factory function for BACnetNotificationParametersChangeOfState
-func NewBACnetNotificationParametersChangeOfState(innerOpeningTag *BACnetOpeningTag, changeOfState *BACnetPropertyStatesEnclosed, statusFlags *BACnetStatusFlags, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfState {
+func NewBACnetNotificationParametersChangeOfState(innerOpeningTag *BACnetOpeningTag, changeOfState *BACnetPropertyStatesEnclosed, statusFlags *BACnetStatusFlagsTagged, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfState {
 	_result := &BACnetNotificationParametersChangeOfState{
 		InnerOpeningTag:              innerOpeningTag,
 		ChangeOfState:                changeOfState,
@@ -202,11 +202,11 @@ func BACnetNotificationParametersChangeOfStateParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
-	statusFlags := CastBACnetStatusFlags(_statusFlags)
+	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -232,7 +232,7 @@ func BACnetNotificationParametersChangeOfStateParse(readBuffer utils.ReadBuffer,
 	_child := &BACnetNotificationParametersChangeOfState{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
 		ChangeOfState:                CastBACnetPropertyStatesEnclosed(changeOfState),
-		StatusFlags:                  CastBACnetStatusFlags(statusFlags),
+		StatusFlags:                  CastBACnetStatusFlagsTagged(statusFlags),
 		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),
 		BACnetNotificationParameters: &BACnetNotificationParameters{},
 	}

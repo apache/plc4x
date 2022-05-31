@@ -31,7 +31,7 @@ type BACnetNotificationParametersCommandFailure struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag *BACnetOpeningTag
 	CommandValue    *BACnetConstructedData
-	StatusFlags     *BACnetStatusFlags
+	StatusFlags     *BACnetStatusFlagsTagged
 	FeedbackValue   *BACnetConstructedData
 	InnerClosingTag *BACnetClosingTag
 
@@ -48,7 +48,7 @@ type IBACnetNotificationParametersCommandFailure interface {
 	// GetCommandValue returns CommandValue (property field)
 	GetCommandValue() *BACnetConstructedData
 	// GetStatusFlags returns StatusFlags (property field)
-	GetStatusFlags() *BACnetStatusFlags
+	GetStatusFlags() *BACnetStatusFlagsTagged
 	// GetFeedbackValue returns FeedbackValue (property field)
 	GetFeedbackValue() *BACnetConstructedData
 	// GetInnerClosingTag returns InnerClosingTag (property field)
@@ -94,7 +94,7 @@ func (m *BACnetNotificationParametersCommandFailure) GetCommandValue() *BACnetCo
 	return m.CommandValue
 }
 
-func (m *BACnetNotificationParametersCommandFailure) GetStatusFlags() *BACnetStatusFlags {
+func (m *BACnetNotificationParametersCommandFailure) GetStatusFlags() *BACnetStatusFlagsTagged {
 	return m.StatusFlags
 }
 
@@ -112,7 +112,7 @@ func (m *BACnetNotificationParametersCommandFailure) GetInnerClosingTag() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersCommandFailure factory function for BACnetNotificationParametersCommandFailure
-func NewBACnetNotificationParametersCommandFailure(innerOpeningTag *BACnetOpeningTag, commandValue *BACnetConstructedData, statusFlags *BACnetStatusFlags, feedbackValue *BACnetConstructedData, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersCommandFailure {
+func NewBACnetNotificationParametersCommandFailure(innerOpeningTag *BACnetOpeningTag, commandValue *BACnetConstructedData, statusFlags *BACnetStatusFlagsTagged, feedbackValue *BACnetConstructedData, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersCommandFailure {
 	_result := &BACnetNotificationParametersCommandFailure{
 		InnerOpeningTag:              innerOpeningTag,
 		CommandValue:                 commandValue,
@@ -213,11 +213,11 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
-	statusFlags := CastBACnetStatusFlags(_statusFlags)
+	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -256,7 +256,7 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 	_child := &BACnetNotificationParametersCommandFailure{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
 		CommandValue:                 CastBACnetConstructedData(commandValue),
-		StatusFlags:                  CastBACnetStatusFlags(statusFlags),
+		StatusFlags:                  CastBACnetStatusFlagsTagged(statusFlags),
 		FeedbackValue:                CastBACnetConstructedData(feedbackValue),
 		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),
 		BACnetNotificationParameters: &BACnetNotificationParameters{},

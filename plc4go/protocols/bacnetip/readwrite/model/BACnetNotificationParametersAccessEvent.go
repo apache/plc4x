@@ -32,7 +32,7 @@ type BACnetNotificationParametersAccessEvent struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag      *BACnetOpeningTag
 	AccessEvent          *BACnetAccessEventTagged
-	StatusFlags          *BACnetStatusFlags
+	StatusFlags          *BACnetStatusFlagsTagged
 	AccessEventTag       *BACnetContextTagUnsignedInteger
 	AccessEventTime      *BACnetTimeStampEnclosed
 	AccessCredential     *BACnetDeviceObjectReferenceEnclosed
@@ -52,7 +52,7 @@ type IBACnetNotificationParametersAccessEvent interface {
 	// GetAccessEvent returns AccessEvent (property field)
 	GetAccessEvent() *BACnetAccessEventTagged
 	// GetStatusFlags returns StatusFlags (property field)
-	GetStatusFlags() *BACnetStatusFlags
+	GetStatusFlags() *BACnetStatusFlagsTagged
 	// GetAccessEventTag returns AccessEventTag (property field)
 	GetAccessEventTag() *BACnetContextTagUnsignedInteger
 	// GetAccessEventTime returns AccessEventTime (property field)
@@ -104,7 +104,7 @@ func (m *BACnetNotificationParametersAccessEvent) GetAccessEvent() *BACnetAccess
 	return m.AccessEvent
 }
 
-func (m *BACnetNotificationParametersAccessEvent) GetStatusFlags() *BACnetStatusFlags {
+func (m *BACnetNotificationParametersAccessEvent) GetStatusFlags() *BACnetStatusFlagsTagged {
 	return m.StatusFlags
 }
 
@@ -134,7 +134,7 @@ func (m *BACnetNotificationParametersAccessEvent) GetInnerClosingTag() *BACnetCl
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersAccessEvent factory function for BACnetNotificationParametersAccessEvent
-func NewBACnetNotificationParametersAccessEvent(innerOpeningTag *BACnetOpeningTag, accessEvent *BACnetAccessEventTagged, statusFlags *BACnetStatusFlags, accessEventTag *BACnetContextTagUnsignedInteger, accessEventTime *BACnetTimeStampEnclosed, accessCredential *BACnetDeviceObjectReferenceEnclosed, authenticationFactor *BACnetAuthenticationFactorTypeTagged, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersAccessEvent {
+func NewBACnetNotificationParametersAccessEvent(innerOpeningTag *BACnetOpeningTag, accessEvent *BACnetAccessEventTagged, statusFlags *BACnetStatusFlagsTagged, accessEventTag *BACnetContextTagUnsignedInteger, accessEventTime *BACnetTimeStampEnclosed, accessCredential *BACnetDeviceObjectReferenceEnclosed, authenticationFactor *BACnetAuthenticationFactorTypeTagged, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersAccessEvent {
 	_result := &BACnetNotificationParametersAccessEvent{
 		InnerOpeningTag:              innerOpeningTag,
 		AccessEvent:                  accessEvent,
@@ -249,11 +249,11 @@ func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
-	statusFlags := CastBACnetStatusFlags(_statusFlags)
+	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -339,7 +339,7 @@ func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, t
 	_child := &BACnetNotificationParametersAccessEvent{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
 		AccessEvent:                  CastBACnetAccessEventTagged(accessEvent),
-		StatusFlags:                  CastBACnetStatusFlags(statusFlags),
+		StatusFlags:                  CastBACnetStatusFlagsTagged(statusFlags),
 		AccessEventTag:               CastBACnetContextTagUnsignedInteger(accessEventTag),
 		AccessEventTime:              CastBACnetTimeStampEnclosed(accessEventTime),
 		AccessCredential:             CastBACnetDeviceObjectReferenceEnclosed(accessCredential),

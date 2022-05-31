@@ -31,7 +31,7 @@ type BACnetNotificationParametersUnsignedRange struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag *BACnetOpeningTag
 	SequenceNumber  *BACnetContextTagUnsignedInteger
-	StatusFlags     *BACnetStatusFlags
+	StatusFlags     *BACnetStatusFlagsTagged
 	ExceededLimit   *BACnetContextTagUnsignedInteger
 	InnerClosingTag *BACnetClosingTag
 
@@ -48,7 +48,7 @@ type IBACnetNotificationParametersUnsignedRange interface {
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() *BACnetContextTagUnsignedInteger
 	// GetStatusFlags returns StatusFlags (property field)
-	GetStatusFlags() *BACnetStatusFlags
+	GetStatusFlags() *BACnetStatusFlagsTagged
 	// GetExceededLimit returns ExceededLimit (property field)
 	GetExceededLimit() *BACnetContextTagUnsignedInteger
 	// GetInnerClosingTag returns InnerClosingTag (property field)
@@ -94,7 +94,7 @@ func (m *BACnetNotificationParametersUnsignedRange) GetSequenceNumber() *BACnetC
 	return m.SequenceNumber
 }
 
-func (m *BACnetNotificationParametersUnsignedRange) GetStatusFlags() *BACnetStatusFlags {
+func (m *BACnetNotificationParametersUnsignedRange) GetStatusFlags() *BACnetStatusFlagsTagged {
 	return m.StatusFlags
 }
 
@@ -112,7 +112,7 @@ func (m *BACnetNotificationParametersUnsignedRange) GetInnerClosingTag() *BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersUnsignedRange factory function for BACnetNotificationParametersUnsignedRange
-func NewBACnetNotificationParametersUnsignedRange(innerOpeningTag *BACnetOpeningTag, sequenceNumber *BACnetContextTagUnsignedInteger, statusFlags *BACnetStatusFlags, exceededLimit *BACnetContextTagUnsignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersUnsignedRange {
+func NewBACnetNotificationParametersUnsignedRange(innerOpeningTag *BACnetOpeningTag, sequenceNumber *BACnetContextTagUnsignedInteger, statusFlags *BACnetStatusFlagsTagged, exceededLimit *BACnetContextTagUnsignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersUnsignedRange {
 	_result := &BACnetNotificationParametersUnsignedRange{
 		InnerOpeningTag:              innerOpeningTag,
 		SequenceNumber:               sequenceNumber,
@@ -213,11 +213,11 @@ func BACnetNotificationParametersUnsignedRangeParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
-	statusFlags := CastBACnetStatusFlags(_statusFlags)
+	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -256,7 +256,7 @@ func BACnetNotificationParametersUnsignedRangeParse(readBuffer utils.ReadBuffer,
 	_child := &BACnetNotificationParametersUnsignedRange{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
 		SequenceNumber:               CastBACnetContextTagUnsignedInteger(sequenceNumber),
-		StatusFlags:                  CastBACnetStatusFlags(statusFlags),
+		StatusFlags:                  CastBACnetStatusFlagsTagged(statusFlags),
 		ExceededLimit:                CastBACnetContextTagUnsignedInteger(exceededLimit),
 		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),
 		BACnetNotificationParameters: &BACnetNotificationParameters{},

@@ -30,10 +30,10 @@ import (
 type BACnetEventSummary struct {
 	ObjectIdentifier        *BACnetContextTagObjectIdentifier
 	EventState              *BACnetEventStateTagged
-	AcknowledgedTransitions *BACnetEventTransitionBits
+	AcknowledgedTransitions *BACnetEventTransitionBitsTagged
 	EventTimestamps         *BACnetEventTimestamps
 	NotifyType              *BACnetNotifyTypeTagged
-	EventEnable             *BACnetEventTransitionBits
+	EventEnable             *BACnetEventTransitionBitsTagged
 	EventPriorities         *BACnetEventPriorities
 }
 
@@ -44,13 +44,13 @@ type IBACnetEventSummary interface {
 	// GetEventState returns EventState (property field)
 	GetEventState() *BACnetEventStateTagged
 	// GetAcknowledgedTransitions returns AcknowledgedTransitions (property field)
-	GetAcknowledgedTransitions() *BACnetEventTransitionBits
+	GetAcknowledgedTransitions() *BACnetEventTransitionBitsTagged
 	// GetEventTimestamps returns EventTimestamps (property field)
 	GetEventTimestamps() *BACnetEventTimestamps
 	// GetNotifyType returns NotifyType (property field)
 	GetNotifyType() *BACnetNotifyTypeTagged
 	// GetEventEnable returns EventEnable (property field)
-	GetEventEnable() *BACnetEventTransitionBits
+	GetEventEnable() *BACnetEventTransitionBitsTagged
 	// GetEventPriorities returns EventPriorities (property field)
 	GetEventPriorities() *BACnetEventPriorities
 	// GetLengthInBytes returns the length in bytes
@@ -74,7 +74,7 @@ func (m *BACnetEventSummary) GetEventState() *BACnetEventStateTagged {
 	return m.EventState
 }
 
-func (m *BACnetEventSummary) GetAcknowledgedTransitions() *BACnetEventTransitionBits {
+func (m *BACnetEventSummary) GetAcknowledgedTransitions() *BACnetEventTransitionBitsTagged {
 	return m.AcknowledgedTransitions
 }
 
@@ -86,7 +86,7 @@ func (m *BACnetEventSummary) GetNotifyType() *BACnetNotifyTypeTagged {
 	return m.NotifyType
 }
 
-func (m *BACnetEventSummary) GetEventEnable() *BACnetEventTransitionBits {
+func (m *BACnetEventSummary) GetEventEnable() *BACnetEventTransitionBitsTagged {
 	return m.EventEnable
 }
 
@@ -100,7 +100,7 @@ func (m *BACnetEventSummary) GetEventPriorities() *BACnetEventPriorities {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetEventSummary factory function for BACnetEventSummary
-func NewBACnetEventSummary(objectIdentifier *BACnetContextTagObjectIdentifier, eventState *BACnetEventStateTagged, acknowledgedTransitions *BACnetEventTransitionBits, eventTimestamps *BACnetEventTimestamps, notifyType *BACnetNotifyTypeTagged, eventEnable *BACnetEventTransitionBits, eventPriorities *BACnetEventPriorities) *BACnetEventSummary {
+func NewBACnetEventSummary(objectIdentifier *BACnetContextTagObjectIdentifier, eventState *BACnetEventStateTagged, acknowledgedTransitions *BACnetEventTransitionBitsTagged, eventTimestamps *BACnetEventTimestamps, notifyType *BACnetNotifyTypeTagged, eventEnable *BACnetEventTransitionBitsTagged, eventPriorities *BACnetEventPriorities) *BACnetEventSummary {
 	return &BACnetEventSummary{ObjectIdentifier: objectIdentifier, EventState: eventState, AcknowledgedTransitions: acknowledgedTransitions, EventTimestamps: eventTimestamps, NotifyType: notifyType, EventEnable: eventEnable, EventPriorities: eventPriorities}
 }
 
@@ -192,11 +192,11 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (*BACnetEventSummary, 
 	if pullErr := readBuffer.PullContext("acknowledgedTransitions"); pullErr != nil {
 		return nil, pullErr
 	}
-	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsParse(readBuffer, uint8(uint8(2)))
+	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _acknowledgedTransitionsErr != nil {
 		return nil, errors.Wrap(_acknowledgedTransitionsErr, "Error parsing 'acknowledgedTransitions' field")
 	}
-	acknowledgedTransitions := CastBACnetEventTransitionBits(_acknowledgedTransitions)
+	acknowledgedTransitions := CastBACnetEventTransitionBitsTagged(_acknowledgedTransitions)
 	if closeErr := readBuffer.CloseContext("acknowledgedTransitions"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -231,11 +231,11 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (*BACnetEventSummary, 
 	if pullErr := readBuffer.PullContext("eventEnable"); pullErr != nil {
 		return nil, pullErr
 	}
-	_eventEnable, _eventEnableErr := BACnetEventTransitionBitsParse(readBuffer, uint8(uint8(5)))
+	_eventEnable, _eventEnableErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(5)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventEnableErr != nil {
 		return nil, errors.Wrap(_eventEnableErr, "Error parsing 'eventEnable' field")
 	}
-	eventEnable := CastBACnetEventTransitionBits(_eventEnable)
+	eventEnable := CastBACnetEventTransitionBitsTagged(_eventEnable)
 	if closeErr := readBuffer.CloseContext("eventEnable"); closeErr != nil {
 		return nil, closeErr
 	}

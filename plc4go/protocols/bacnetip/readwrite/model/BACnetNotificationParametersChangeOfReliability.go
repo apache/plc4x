@@ -31,7 +31,7 @@ type BACnetNotificationParametersChangeOfReliability struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag *BACnetOpeningTag
 	Reliability     *BACnetReliabilityTagged
-	StatusFlags     *BACnetStatusFlags
+	StatusFlags     *BACnetStatusFlagsTagged
 	PropertyValues  *BACnetPropertyValues
 	InnerClosingTag *BACnetClosingTag
 
@@ -48,7 +48,7 @@ type IBACnetNotificationParametersChangeOfReliability interface {
 	// GetReliability returns Reliability (property field)
 	GetReliability() *BACnetReliabilityTagged
 	// GetStatusFlags returns StatusFlags (property field)
-	GetStatusFlags() *BACnetStatusFlags
+	GetStatusFlags() *BACnetStatusFlagsTagged
 	// GetPropertyValues returns PropertyValues (property field)
 	GetPropertyValues() *BACnetPropertyValues
 	// GetInnerClosingTag returns InnerClosingTag (property field)
@@ -94,7 +94,7 @@ func (m *BACnetNotificationParametersChangeOfReliability) GetReliability() *BACn
 	return m.Reliability
 }
 
-func (m *BACnetNotificationParametersChangeOfReliability) GetStatusFlags() *BACnetStatusFlags {
+func (m *BACnetNotificationParametersChangeOfReliability) GetStatusFlags() *BACnetStatusFlagsTagged {
 	return m.StatusFlags
 }
 
@@ -112,7 +112,7 @@ func (m *BACnetNotificationParametersChangeOfReliability) GetInnerClosingTag() *
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfReliability factory function for BACnetNotificationParametersChangeOfReliability
-func NewBACnetNotificationParametersChangeOfReliability(innerOpeningTag *BACnetOpeningTag, reliability *BACnetReliabilityTagged, statusFlags *BACnetStatusFlags, propertyValues *BACnetPropertyValues, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfReliability {
+func NewBACnetNotificationParametersChangeOfReliability(innerOpeningTag *BACnetOpeningTag, reliability *BACnetReliabilityTagged, statusFlags *BACnetStatusFlagsTagged, propertyValues *BACnetPropertyValues, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfReliability {
 	_result := &BACnetNotificationParametersChangeOfReliability{
 		InnerOpeningTag:              innerOpeningTag,
 		Reliability:                  reliability,
@@ -213,11 +213,11 @@ func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
-	statusFlags := CastBACnetStatusFlags(_statusFlags)
+	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -256,7 +256,7 @@ func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadB
 	_child := &BACnetNotificationParametersChangeOfReliability{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
 		Reliability:                  CastBACnetReliabilityTagged(reliability),
-		StatusFlags:                  CastBACnetStatusFlags(statusFlags),
+		StatusFlags:                  CastBACnetStatusFlagsTagged(statusFlags),
 		PropertyValues:               CastBACnetPropertyValues(propertyValues),
 		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),
 		BACnetNotificationParameters: &BACnetNotificationParameters{},

@@ -725,7 +725,7 @@ public class RandomPackagesTest {
                         assertEquals(50, baCnetNotificationParametersUnsignedRange.getSequenceNumber().getPayload().getActualValue().longValue());
                         assertTrue(baCnetNotificationParametersUnsignedRange.getStatusFlags().getInAlarm());
                         assertFalse(baCnetNotificationParametersUnsignedRange.getStatusFlags().getFault());
-                        assertFalse(baCnetNotificationParametersUnsignedRange.getStatusFlags().getOverriden());
+                        assertFalse(baCnetNotificationParametersUnsignedRange.getStatusFlags().getOverridden());
                         assertFalse(baCnetNotificationParametersUnsignedRange.getStatusFlags().getOutOfService());
                         assertEquals(40, baCnetNotificationParametersUnsignedRange.getExceededLimit().getPayload().getActualValue().longValue());
                     }
@@ -1017,7 +1017,7 @@ public class RandomPackagesTest {
                         BACnetNotificationParametersChangeOfState baCnetNotificationParametersChangeOfState = (BACnetNotificationParametersChangeOfState) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
                         assertTrue(baCnetNotificationParametersChangeOfState.getStatusFlags().getInAlarm());
                         assertFalse(baCnetNotificationParametersChangeOfState.getStatusFlags().getFault());
-                        assertFalse(baCnetNotificationParametersChangeOfState.getStatusFlags().getOverriden());
+                        assertFalse(baCnetNotificationParametersChangeOfState.getStatusFlags().getOverridden());
                         assertFalse(baCnetNotificationParametersChangeOfState.getStatusFlags().getOutOfService());
                     }
                 })
@@ -2719,7 +2719,7 @@ public class RandomPackagesTest {
                                     );
                                 assertThat(baCnetNotificationParametersCommandFailure)
                                     .extracting(BACnetNotificationParametersCommandFailure::getStatusFlags)
-                                    .extracting(BACnetStatusFlags::getInAlarm)
+                                    .extracting(BACnetStatusFlagsTagged::getInAlarm)
                                     .isEqualTo(true);
                                 assertThat(baCnetNotificationParametersCommandFailure)
                                     .extracting(BACnetNotificationParametersCommandFailure::getFeedbackValue)

@@ -31,7 +31,7 @@ type BACnetNotificationParametersUnsignedOutOfRange struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag *BACnetOpeningTag
 	ExceedingValue  *BACnetContextTagUnsignedInteger
-	StatusFlags     *BACnetStatusFlags
+	StatusFlags     *BACnetStatusFlagsTagged
 	Deadband        *BACnetContextTagUnsignedInteger
 	ExceededLimit   *BACnetContextTagUnsignedInteger
 	InnerClosingTag *BACnetClosingTag
@@ -49,7 +49,7 @@ type IBACnetNotificationParametersUnsignedOutOfRange interface {
 	// GetExceedingValue returns ExceedingValue (property field)
 	GetExceedingValue() *BACnetContextTagUnsignedInteger
 	// GetStatusFlags returns StatusFlags (property field)
-	GetStatusFlags() *BACnetStatusFlags
+	GetStatusFlags() *BACnetStatusFlagsTagged
 	// GetDeadband returns Deadband (property field)
 	GetDeadband() *BACnetContextTagUnsignedInteger
 	// GetExceededLimit returns ExceededLimit (property field)
@@ -97,7 +97,7 @@ func (m *BACnetNotificationParametersUnsignedOutOfRange) GetExceedingValue() *BA
 	return m.ExceedingValue
 }
 
-func (m *BACnetNotificationParametersUnsignedOutOfRange) GetStatusFlags() *BACnetStatusFlags {
+func (m *BACnetNotificationParametersUnsignedOutOfRange) GetStatusFlags() *BACnetStatusFlagsTagged {
 	return m.StatusFlags
 }
 
@@ -119,7 +119,7 @@ func (m *BACnetNotificationParametersUnsignedOutOfRange) GetInnerClosingTag() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersUnsignedOutOfRange factory function for BACnetNotificationParametersUnsignedOutOfRange
-func NewBACnetNotificationParametersUnsignedOutOfRange(innerOpeningTag *BACnetOpeningTag, exceedingValue *BACnetContextTagUnsignedInteger, statusFlags *BACnetStatusFlags, deadband *BACnetContextTagUnsignedInteger, exceededLimit *BACnetContextTagUnsignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersUnsignedOutOfRange {
+func NewBACnetNotificationParametersUnsignedOutOfRange(innerOpeningTag *BACnetOpeningTag, exceedingValue *BACnetContextTagUnsignedInteger, statusFlags *BACnetStatusFlagsTagged, deadband *BACnetContextTagUnsignedInteger, exceededLimit *BACnetContextTagUnsignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersUnsignedOutOfRange {
 	_result := &BACnetNotificationParametersUnsignedOutOfRange{
 		InnerOpeningTag:              innerOpeningTag,
 		ExceedingValue:               exceedingValue,
@@ -224,11 +224,11 @@ func BACnetNotificationParametersUnsignedOutOfRangeParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
-	statusFlags := CastBACnetStatusFlags(_statusFlags)
+	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -280,7 +280,7 @@ func BACnetNotificationParametersUnsignedOutOfRangeParse(readBuffer utils.ReadBu
 	_child := &BACnetNotificationParametersUnsignedOutOfRange{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
 		ExceedingValue:               CastBACnetContextTagUnsignedInteger(exceedingValue),
-		StatusFlags:                  CastBACnetStatusFlags(statusFlags),
+		StatusFlags:                  CastBACnetStatusFlagsTagged(statusFlags),
 		Deadband:                     CastBACnetContextTagUnsignedInteger(deadband),
 		ExceededLimit:                CastBACnetContextTagUnsignedInteger(exceededLimit),
 		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),

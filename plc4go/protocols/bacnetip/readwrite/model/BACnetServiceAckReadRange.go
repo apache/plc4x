@@ -33,7 +33,7 @@ type BACnetServiceAckReadRange struct {
 	ObjectIdentifier    *BACnetContextTagObjectIdentifier
 	PropertyIdentifier  *BACnetPropertyIdentifierTagged
 	PropertyArrayIndex  *BACnetContextTagUnsignedInteger
-	ResultFlags         *BACnetResultFlags
+	ResultFlags         *BACnetResultFlagsTagged
 	ItemCount           *BACnetContextTagUnsignedInteger
 	ItemData            *BACnetConstructedData
 	FirstSequenceNumber *BACnetContextTagUnsignedInteger
@@ -52,7 +52,7 @@ type IBACnetServiceAckReadRange interface {
 	// GetPropertyArrayIndex returns PropertyArrayIndex (property field)
 	GetPropertyArrayIndex() *BACnetContextTagUnsignedInteger
 	// GetResultFlags returns ResultFlags (property field)
-	GetResultFlags() *BACnetResultFlags
+	GetResultFlags() *BACnetResultFlagsTagged
 	// GetItemCount returns ItemCount (property field)
 	GetItemCount() *BACnetContextTagUnsignedInteger
 	// GetItemData returns ItemData (property field)
@@ -104,7 +104,7 @@ func (m *BACnetServiceAckReadRange) GetPropertyArrayIndex() *BACnetContextTagUns
 	return m.PropertyArrayIndex
 }
 
-func (m *BACnetServiceAckReadRange) GetResultFlags() *BACnetResultFlags {
+func (m *BACnetServiceAckReadRange) GetResultFlags() *BACnetResultFlagsTagged {
 	return m.ResultFlags
 }
 
@@ -126,7 +126,7 @@ func (m *BACnetServiceAckReadRange) GetFirstSequenceNumber() *BACnetContextTagUn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadRange factory function for BACnetServiceAckReadRange
-func NewBACnetServiceAckReadRange(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, propertyArrayIndex *BACnetContextTagUnsignedInteger, resultFlags *BACnetResultFlags, itemCount *BACnetContextTagUnsignedInteger, itemData *BACnetConstructedData, firstSequenceNumber *BACnetContextTagUnsignedInteger, serviceAckLength uint16) *BACnetServiceAckReadRange {
+func NewBACnetServiceAckReadRange(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetPropertyIdentifierTagged, propertyArrayIndex *BACnetContextTagUnsignedInteger, resultFlags *BACnetResultFlagsTagged, itemCount *BACnetContextTagUnsignedInteger, itemData *BACnetConstructedData, firstSequenceNumber *BACnetContextTagUnsignedInteger, serviceAckLength uint16) *BACnetServiceAckReadRange {
 	_result := &BACnetServiceAckReadRange{
 		ObjectIdentifier:    objectIdentifier,
 		PropertyIdentifier:  propertyIdentifier,
@@ -262,11 +262,11 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	if pullErr := readBuffer.PullContext("resultFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_resultFlags, _resultFlagsErr := BACnetResultFlagsParse(readBuffer, uint8(uint8(3)))
+	_resultFlags, _resultFlagsErr := BACnetResultFlagsTaggedParse(readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _resultFlagsErr != nil {
 		return nil, errors.Wrap(_resultFlagsErr, "Error parsing 'resultFlags' field")
 	}
-	resultFlags := CastBACnetResultFlags(_resultFlags)
+	resultFlags := CastBACnetResultFlagsTagged(_resultFlags)
 	if closeErr := readBuffer.CloseContext("resultFlags"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -335,7 +335,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 		ObjectIdentifier:    CastBACnetContextTagObjectIdentifier(objectIdentifier),
 		PropertyIdentifier:  CastBACnetPropertyIdentifierTagged(propertyIdentifier),
 		PropertyArrayIndex:  CastBACnetContextTagUnsignedInteger(propertyArrayIndex),
-		ResultFlags:         CastBACnetResultFlags(resultFlags),
+		ResultFlags:         CastBACnetResultFlagsTagged(resultFlags),
 		ItemCount:           CastBACnetContextTagUnsignedInteger(itemCount),
 		ItemData:            CastBACnetConstructedData(itemData),
 		FirstSequenceNumber: CastBACnetContextTagUnsignedInteger(firstSequenceNumber),

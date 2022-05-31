@@ -32,7 +32,7 @@ type BACnetNotificationParametersChangeOfLifeSafety struct {
 	InnerOpeningTag   *BACnetOpeningTag
 	NewState          *BACnetLifeSafetyStateTagged
 	NewMode           *BACnetLifeSafetyModeTagged
-	StatusFlags       *BACnetStatusFlags
+	StatusFlags       *BACnetStatusFlagsTagged
 	OperationExpected *BACnetLifeSafetyOperationTagged
 	InnerClosingTag   *BACnetClosingTag
 
@@ -51,7 +51,7 @@ type IBACnetNotificationParametersChangeOfLifeSafety interface {
 	// GetNewMode returns NewMode (property field)
 	GetNewMode() *BACnetLifeSafetyModeTagged
 	// GetStatusFlags returns StatusFlags (property field)
-	GetStatusFlags() *BACnetStatusFlags
+	GetStatusFlags() *BACnetStatusFlagsTagged
 	// GetOperationExpected returns OperationExpected (property field)
 	GetOperationExpected() *BACnetLifeSafetyOperationTagged
 	// GetInnerClosingTag returns InnerClosingTag (property field)
@@ -101,7 +101,7 @@ func (m *BACnetNotificationParametersChangeOfLifeSafety) GetNewMode() *BACnetLif
 	return m.NewMode
 }
 
-func (m *BACnetNotificationParametersChangeOfLifeSafety) GetStatusFlags() *BACnetStatusFlags {
+func (m *BACnetNotificationParametersChangeOfLifeSafety) GetStatusFlags() *BACnetStatusFlagsTagged {
 	return m.StatusFlags
 }
 
@@ -119,7 +119,7 @@ func (m *BACnetNotificationParametersChangeOfLifeSafety) GetInnerClosingTag() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfLifeSafety factory function for BACnetNotificationParametersChangeOfLifeSafety
-func NewBACnetNotificationParametersChangeOfLifeSafety(innerOpeningTag *BACnetOpeningTag, newState *BACnetLifeSafetyStateTagged, newMode *BACnetLifeSafetyModeTagged, statusFlags *BACnetStatusFlags, operationExpected *BACnetLifeSafetyOperationTagged, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfLifeSafety {
+func NewBACnetNotificationParametersChangeOfLifeSafety(innerOpeningTag *BACnetOpeningTag, newState *BACnetLifeSafetyStateTagged, newMode *BACnetLifeSafetyModeTagged, statusFlags *BACnetStatusFlagsTagged, operationExpected *BACnetLifeSafetyOperationTagged, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfLifeSafety {
 	_result := &BACnetNotificationParametersChangeOfLifeSafety{
 		InnerOpeningTag:              innerOpeningTag,
 		NewState:                     newState,
@@ -237,11 +237,11 @@ func BACnetNotificationParametersChangeOfLifeSafetyParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(2)))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
-	statusFlags := CastBACnetStatusFlags(_statusFlags)
+	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -281,7 +281,7 @@ func BACnetNotificationParametersChangeOfLifeSafetyParse(readBuffer utils.ReadBu
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
 		NewState:                     CastBACnetLifeSafetyStateTagged(newState),
 		NewMode:                      CastBACnetLifeSafetyModeTagged(newMode),
-		StatusFlags:                  CastBACnetStatusFlags(statusFlags),
+		StatusFlags:                  CastBACnetStatusFlagsTagged(statusFlags),
 		OperationExpected:            CastBACnetLifeSafetyOperationTagged(operationExpected),
 		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),
 		BACnetNotificationParameters: &BACnetNotificationParameters{},

@@ -31,7 +31,7 @@ type BACnetNotificationParametersChangeOfCharacterString struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag *BACnetOpeningTag
 	ChangedValue    *BACnetContextTagCharacterString
-	StatusFlags     *BACnetStatusFlags
+	StatusFlags     *BACnetStatusFlagsTagged
 	AlarmValue      *BACnetContextTagCharacterString
 	InnerClosingTag *BACnetClosingTag
 
@@ -48,7 +48,7 @@ type IBACnetNotificationParametersChangeOfCharacterString interface {
 	// GetChangedValue returns ChangedValue (property field)
 	GetChangedValue() *BACnetContextTagCharacterString
 	// GetStatusFlags returns StatusFlags (property field)
-	GetStatusFlags() *BACnetStatusFlags
+	GetStatusFlags() *BACnetStatusFlagsTagged
 	// GetAlarmValue returns AlarmValue (property field)
 	GetAlarmValue() *BACnetContextTagCharacterString
 	// GetInnerClosingTag returns InnerClosingTag (property field)
@@ -94,7 +94,7 @@ func (m *BACnetNotificationParametersChangeOfCharacterString) GetChangedValue() 
 	return m.ChangedValue
 }
 
-func (m *BACnetNotificationParametersChangeOfCharacterString) GetStatusFlags() *BACnetStatusFlags {
+func (m *BACnetNotificationParametersChangeOfCharacterString) GetStatusFlags() *BACnetStatusFlagsTagged {
 	return m.StatusFlags
 }
 
@@ -112,7 +112,7 @@ func (m *BACnetNotificationParametersChangeOfCharacterString) GetInnerClosingTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfCharacterString factory function for BACnetNotificationParametersChangeOfCharacterString
-func NewBACnetNotificationParametersChangeOfCharacterString(innerOpeningTag *BACnetOpeningTag, changedValue *BACnetContextTagCharacterString, statusFlags *BACnetStatusFlags, alarmValue *BACnetContextTagCharacterString, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfCharacterString {
+func NewBACnetNotificationParametersChangeOfCharacterString(innerOpeningTag *BACnetOpeningTag, changedValue *BACnetContextTagCharacterString, statusFlags *BACnetStatusFlagsTagged, alarmValue *BACnetContextTagCharacterString, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfCharacterString {
 	_result := &BACnetNotificationParametersChangeOfCharacterString{
 		InnerOpeningTag:              innerOpeningTag,
 		ChangedValue:                 changedValue,
@@ -213,11 +213,11 @@ func BACnetNotificationParametersChangeOfCharacterStringParse(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
-	statusFlags := CastBACnetStatusFlags(_statusFlags)
+	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -256,7 +256,7 @@ func BACnetNotificationParametersChangeOfCharacterStringParse(readBuffer utils.R
 	_child := &BACnetNotificationParametersChangeOfCharacterString{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
 		ChangedValue:                 CastBACnetContextTagCharacterString(changedValue),
-		StatusFlags:                  CastBACnetStatusFlags(statusFlags),
+		StatusFlags:                  CastBACnetStatusFlagsTagged(statusFlags),
 		AlarmValue:                   CastBACnetContextTagCharacterString(alarmValue),
 		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),
 		BACnetNotificationParameters: &BACnetNotificationParameters{},

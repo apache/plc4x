@@ -31,7 +31,7 @@ type BACnetNotificationParametersChangeOfDiscreteValue struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag *BACnetOpeningTag
 	NewValue        *BACnetNotificationParametersChangeOfDiscreteValueNewValue
-	StatusFlags     *BACnetStatusFlags
+	StatusFlags     *BACnetStatusFlagsTagged
 	InnerClosingTag *BACnetClosingTag
 
 	// Arguments.
@@ -47,7 +47,7 @@ type IBACnetNotificationParametersChangeOfDiscreteValue interface {
 	// GetNewValue returns NewValue (property field)
 	GetNewValue() *BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetStatusFlags returns StatusFlags (property field)
-	GetStatusFlags() *BACnetStatusFlags
+	GetStatusFlags() *BACnetStatusFlagsTagged
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() *BACnetClosingTag
 	// GetLengthInBytes returns the length in bytes
@@ -91,7 +91,7 @@ func (m *BACnetNotificationParametersChangeOfDiscreteValue) GetNewValue() *BACne
 	return m.NewValue
 }
 
-func (m *BACnetNotificationParametersChangeOfDiscreteValue) GetStatusFlags() *BACnetStatusFlags {
+func (m *BACnetNotificationParametersChangeOfDiscreteValue) GetStatusFlags() *BACnetStatusFlagsTagged {
 	return m.StatusFlags
 }
 
@@ -105,7 +105,7 @@ func (m *BACnetNotificationParametersChangeOfDiscreteValue) GetInnerClosingTag()
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfDiscreteValue factory function for BACnetNotificationParametersChangeOfDiscreteValue
-func NewBACnetNotificationParametersChangeOfDiscreteValue(innerOpeningTag *BACnetOpeningTag, newValue *BACnetNotificationParametersChangeOfDiscreteValueNewValue, statusFlags *BACnetStatusFlags, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfDiscreteValue {
+func NewBACnetNotificationParametersChangeOfDiscreteValue(innerOpeningTag *BACnetOpeningTag, newValue *BACnetNotificationParametersChangeOfDiscreteValueNewValue, statusFlags *BACnetStatusFlagsTagged, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfDiscreteValue {
 	_result := &BACnetNotificationParametersChangeOfDiscreteValue{
 		InnerOpeningTag:              innerOpeningTag,
 		NewValue:                     newValue,
@@ -202,11 +202,11 @@ func BACnetNotificationParametersChangeOfDiscreteValueParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
-	statusFlags := CastBACnetStatusFlags(_statusFlags)
+	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -232,7 +232,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueParse(readBuffer utils.Rea
 	_child := &BACnetNotificationParametersChangeOfDiscreteValue{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
 		NewValue:                     CastBACnetNotificationParametersChangeOfDiscreteValueNewValue(newValue),
-		StatusFlags:                  CastBACnetStatusFlags(statusFlags),
+		StatusFlags:                  CastBACnetStatusFlagsTagged(statusFlags),
 		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),
 		BACnetNotificationParameters: &BACnetNotificationParameters{},
 	}

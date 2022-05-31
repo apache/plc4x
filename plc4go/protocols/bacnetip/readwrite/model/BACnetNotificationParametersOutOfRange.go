@@ -31,7 +31,7 @@ type BACnetNotificationParametersOutOfRange struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag *BACnetOpeningTag
 	ExceedingValue  *BACnetContextTagReal
-	StatusFlags     *BACnetStatusFlags
+	StatusFlags     *BACnetStatusFlagsTagged
 	Deadband        *BACnetContextTagReal
 	ExceededLimit   *BACnetContextTagReal
 	InnerClosingTag *BACnetClosingTag
@@ -49,7 +49,7 @@ type IBACnetNotificationParametersOutOfRange interface {
 	// GetExceedingValue returns ExceedingValue (property field)
 	GetExceedingValue() *BACnetContextTagReal
 	// GetStatusFlags returns StatusFlags (property field)
-	GetStatusFlags() *BACnetStatusFlags
+	GetStatusFlags() *BACnetStatusFlagsTagged
 	// GetDeadband returns Deadband (property field)
 	GetDeadband() *BACnetContextTagReal
 	// GetExceededLimit returns ExceededLimit (property field)
@@ -97,7 +97,7 @@ func (m *BACnetNotificationParametersOutOfRange) GetExceedingValue() *BACnetCont
 	return m.ExceedingValue
 }
 
-func (m *BACnetNotificationParametersOutOfRange) GetStatusFlags() *BACnetStatusFlags {
+func (m *BACnetNotificationParametersOutOfRange) GetStatusFlags() *BACnetStatusFlagsTagged {
 	return m.StatusFlags
 }
 
@@ -119,7 +119,7 @@ func (m *BACnetNotificationParametersOutOfRange) GetInnerClosingTag() *BACnetClo
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersOutOfRange factory function for BACnetNotificationParametersOutOfRange
-func NewBACnetNotificationParametersOutOfRange(innerOpeningTag *BACnetOpeningTag, exceedingValue *BACnetContextTagReal, statusFlags *BACnetStatusFlags, deadband *BACnetContextTagReal, exceededLimit *BACnetContextTagReal, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersOutOfRange {
+func NewBACnetNotificationParametersOutOfRange(innerOpeningTag *BACnetOpeningTag, exceedingValue *BACnetContextTagReal, statusFlags *BACnetStatusFlagsTagged, deadband *BACnetContextTagReal, exceededLimit *BACnetContextTagReal, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersOutOfRange {
 	_result := &BACnetNotificationParametersOutOfRange{
 		InnerOpeningTag:              innerOpeningTag,
 		ExceedingValue:               exceedingValue,
@@ -224,11 +224,11 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
-	statusFlags := CastBACnetStatusFlags(_statusFlags)
+	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -280,7 +280,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	_child := &BACnetNotificationParametersOutOfRange{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
 		ExceedingValue:               CastBACnetContextTagReal(exceedingValue),
-		StatusFlags:                  CastBACnetStatusFlags(statusFlags),
+		StatusFlags:                  CastBACnetStatusFlagsTagged(statusFlags),
 		Deadband:                     CastBACnetContextTagReal(deadband),
 		ExceededLimit:                CastBACnetContextTagReal(exceededLimit),
 		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),

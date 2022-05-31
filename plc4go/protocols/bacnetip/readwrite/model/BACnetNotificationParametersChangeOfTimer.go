@@ -32,7 +32,7 @@ type BACnetNotificationParametersChangeOfTimer struct {
 	*BACnetNotificationParameters
 	InnerOpeningTag *BACnetOpeningTag
 	NewValue        *BACnetTimerStateTagged
-	StatusFlags     *BACnetStatusFlags
+	StatusFlags     *BACnetStatusFlagsTagged
 	UpdateTime      *BACnetDateTimeEnclosed
 	LastStateChange *BACnetTimerTransitionTagged
 	InitialTimeout  *BACnetContextTagUnsignedInteger
@@ -52,7 +52,7 @@ type IBACnetNotificationParametersChangeOfTimer interface {
 	// GetNewValue returns NewValue (property field)
 	GetNewValue() *BACnetTimerStateTagged
 	// GetStatusFlags returns StatusFlags (property field)
-	GetStatusFlags() *BACnetStatusFlags
+	GetStatusFlags() *BACnetStatusFlagsTagged
 	// GetUpdateTime returns UpdateTime (property field)
 	GetUpdateTime() *BACnetDateTimeEnclosed
 	// GetLastStateChange returns LastStateChange (property field)
@@ -104,7 +104,7 @@ func (m *BACnetNotificationParametersChangeOfTimer) GetNewValue() *BACnetTimerSt
 	return m.NewValue
 }
 
-func (m *BACnetNotificationParametersChangeOfTimer) GetStatusFlags() *BACnetStatusFlags {
+func (m *BACnetNotificationParametersChangeOfTimer) GetStatusFlags() *BACnetStatusFlagsTagged {
 	return m.StatusFlags
 }
 
@@ -134,7 +134,7 @@ func (m *BACnetNotificationParametersChangeOfTimer) GetInnerClosingTag() *BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfTimer factory function for BACnetNotificationParametersChangeOfTimer
-func NewBACnetNotificationParametersChangeOfTimer(innerOpeningTag *BACnetOpeningTag, newValue *BACnetTimerStateTagged, statusFlags *BACnetStatusFlags, updateTime *BACnetDateTimeEnclosed, lastStateChange *BACnetTimerTransitionTagged, initialTimeout *BACnetContextTagUnsignedInteger, expirationTime *BACnetDateTimeEnclosed, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfTimer {
+func NewBACnetNotificationParametersChangeOfTimer(innerOpeningTag *BACnetOpeningTag, newValue *BACnetTimerStateTagged, statusFlags *BACnetStatusFlagsTagged, updateTime *BACnetDateTimeEnclosed, lastStateChange *BACnetTimerTransitionTagged, initialTimeout *BACnetContextTagUnsignedInteger, expirationTime *BACnetDateTimeEnclosed, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfTimer {
 	_result := &BACnetNotificationParametersChangeOfTimer{
 		InnerOpeningTag:              innerOpeningTag,
 		NewValue:                     newValue,
@@ -253,11 +253,11 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
-	statusFlags := CastBACnetStatusFlags(_statusFlags)
+	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -359,7 +359,7 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	_child := &BACnetNotificationParametersChangeOfTimer{
 		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
 		NewValue:                     CastBACnetTimerStateTagged(newValue),
-		StatusFlags:                  CastBACnetStatusFlags(statusFlags),
+		StatusFlags:                  CastBACnetStatusFlagsTagged(statusFlags),
 		UpdateTime:                   CastBACnetDateTimeEnclosed(updateTime),
 		LastStateChange:              CastBACnetTimerTransitionTagged(lastStateChange),
 		InitialTimeout:               CastBACnetContextTagUnsignedInteger(initialTimeout),

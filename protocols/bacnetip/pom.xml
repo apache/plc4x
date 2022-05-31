@@ -92,6 +92,16 @@
               <source>${project.basedir}/src/main/script/produceTaggedPrivateEnums.groovy</source>
             </configuration>
           </execution>
+          <execution>
+            <id>generate-tagged-bit-strings</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>${project.basedir}/src/main/script/produceTaggedBitStrings.groovy</source>
+            </configuration>
+          </execution>
         </executions>
         <dependencies>
           <dependency>

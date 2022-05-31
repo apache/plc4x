@@ -31,7 +31,7 @@ type BACnetServiceAckGetAlarmSummary struct {
 	*BACnetServiceAck
 	ObjectIdentifier        *BACnetApplicationTagObjectIdentifier
 	EventState              *BACnetEventStateTagged
-	AcknowledgedTransitions *BACnetEventTransitionBitsApplication
+	AcknowledgedTransitions *BACnetEventTransitionBitsTagged
 
 	// Arguments.
 	ServiceAckLength uint16
@@ -45,7 +45,7 @@ type IBACnetServiceAckGetAlarmSummary interface {
 	// GetEventState returns EventState (property field)
 	GetEventState() *BACnetEventStateTagged
 	// GetAcknowledgedTransitions returns AcknowledgedTransitions (property field)
-	GetAcknowledgedTransitions() *BACnetEventTransitionBitsApplication
+	GetAcknowledgedTransitions() *BACnetEventTransitionBitsTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -87,7 +87,7 @@ func (m *BACnetServiceAckGetAlarmSummary) GetEventState() *BACnetEventStateTagge
 	return m.EventState
 }
 
-func (m *BACnetServiceAckGetAlarmSummary) GetAcknowledgedTransitions() *BACnetEventTransitionBitsApplication {
+func (m *BACnetServiceAckGetAlarmSummary) GetAcknowledgedTransitions() *BACnetEventTransitionBitsTagged {
 	return m.AcknowledgedTransitions
 }
 
@@ -97,7 +97,7 @@ func (m *BACnetServiceAckGetAlarmSummary) GetAcknowledgedTransitions() *BACnetEv
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckGetAlarmSummary factory function for BACnetServiceAckGetAlarmSummary
-func NewBACnetServiceAckGetAlarmSummary(objectIdentifier *BACnetApplicationTagObjectIdentifier, eventState *BACnetEventStateTagged, acknowledgedTransitions *BACnetEventTransitionBitsApplication, serviceAckLength uint16) *BACnetServiceAckGetAlarmSummary {
+func NewBACnetServiceAckGetAlarmSummary(objectIdentifier *BACnetApplicationTagObjectIdentifier, eventState *BACnetEventStateTagged, acknowledgedTransitions *BACnetEventTransitionBitsTagged, serviceAckLength uint16) *BACnetServiceAckGetAlarmSummary {
 	_result := &BACnetServiceAckGetAlarmSummary{
 		ObjectIdentifier:        objectIdentifier,
 		EventState:              eventState,
@@ -190,11 +190,11 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAc
 	if pullErr := readBuffer.PullContext("acknowledgedTransitions"); pullErr != nil {
 		return nil, pullErr
 	}
-	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsApplicationParse(readBuffer)
+	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _acknowledgedTransitionsErr != nil {
 		return nil, errors.Wrap(_acknowledgedTransitionsErr, "Error parsing 'acknowledgedTransitions' field")
 	}
-	acknowledgedTransitions := CastBACnetEventTransitionBitsApplication(_acknowledgedTransitions)
+	acknowledgedTransitions := CastBACnetEventTransitionBitsTagged(_acknowledgedTransitions)
 	if closeErr := readBuffer.CloseContext("acknowledgedTransitions"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -207,7 +207,7 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAc
 	_child := &BACnetServiceAckGetAlarmSummary{
 		ObjectIdentifier:        CastBACnetApplicationTagObjectIdentifier(objectIdentifier),
 		EventState:              CastBACnetEventStateTagged(eventState),
-		AcknowledgedTransitions: CastBACnetEventTransitionBitsApplication(acknowledgedTransitions),
+		AcknowledgedTransitions: CastBACnetEventTransitionBitsTagged(acknowledgedTransitions),
 		BACnetServiceAck:        &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
