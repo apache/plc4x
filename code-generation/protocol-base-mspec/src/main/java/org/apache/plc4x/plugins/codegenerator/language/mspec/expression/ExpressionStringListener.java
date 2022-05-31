@@ -220,7 +220,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         String name = ctx.name.getText();
         // TODO: Based on the current context type-definition, get the type of the property with name ctx.name.getText()
 
-        int index = VariableLiteral.NO_INDEX;
+        Integer index = null;
         if (indexContext != null) {
             // TODO: Add a check, that the field providing the property is an "array" or "manualArray" field.
             index = indexContext.getFirst().getNumber().intValue();

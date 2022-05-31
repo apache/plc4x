@@ -834,10 +834,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     .orElse("");
         }
         String indexCall = "";
-        if (variableLiteral.getIndex() >= 0) {
+        if (variableLiteral.getIndex().isPresent()) {
             tracer = tracer.dive("indexCall");
             // We have a index call
-            indexCall = "[" + variableLiteral.getIndex() + "]";
+            indexCall = "[" + variableLiteral.getIndex().orElseThrow() + "]";
         }
         tracer = tracer.dive("else");
         Tracer tracer2 = tracer;
@@ -866,8 +866,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             sb.append(")");
         }
-        if (variableLiteral.getIndex() != VariableLiteral.NO_INDEX) {
-            sb.append("[").append(variableLiteral.getIndex()).append("]");
+        if (variableLiteral.getIndex().isPresent()) {
+            sb.append("[").append(variableLiteral.getIndex().orElseThrow()).append("]");
         }
         return tracer + sb.toString() + variableLiteral.getChild()
             .map(child -> "." + toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true))

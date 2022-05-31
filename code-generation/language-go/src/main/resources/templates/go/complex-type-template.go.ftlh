@@ -264,7 +264,7 @@ func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAcce
 	${field.name} := m.${field.name?cap_first}
 	_ = ${field.name}
   	  </#list>
-	return ${helper.getLanguageTypeNameForTypeReference(typeRef)}(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)})
+	return <#if typeRef.isNonSimpleTypeReference()>Cast</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)})
 }
 
 	</#list>
@@ -1385,7 +1385,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 
 	// Virtual field
 	_${virtualField.name} := ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}
-	${virtualField.name} := ${helper.getLanguageTypeNameForTypeReference(virtualField.type)}(_${virtualField.name})
+	${virtualField.name} := <#if virtualField.type.isNonSimpleTypeReference()>Cast</#if>${helper.getLanguageTypeNameForTypeReference(virtualField.type)}(_${virtualField.name})
 	_ = ${virtualField.name}
 				<#break>
             <#case "validation">

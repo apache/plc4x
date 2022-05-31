@@ -862,7 +862,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     return tracer + "";
             }
         } else {
-            return tracer + variableLiteral.getName() + variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(field, resultType, child)).orElse("");
+            String indexAddon = "";
+            if (variableLiteral.getIndex().isPresent()) {
+                indexAddon = ".get(" + variableLiteral.getIndex().orElseThrow() + ")";
+            }
+            return tracer + variableLiteral.getName() + indexAddon + variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(field, resultType, child)).orElse("");
         }
     }
 
@@ -950,9 +954,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }*/
         }
         sb.append(")");
-        if (variableLiteral.getIndex() != VariableLiteral.NO_INDEX) {
+        if (variableLiteral.getIndex().isPresent()) {
             // TODO: If this is a byte typed field, this needs to be an array accessor instead.
-            sb.append(".get(").append(variableLiteral.getIndex()).append(")");
+            sb.append(".get(").append(variableLiteral.getIndex().orElseThrow()).append(")");
         }
         return tracer + sb.toString();
     }
@@ -973,9 +977,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             sb.append(")");
         }
-        if (variableLiteral.getIndex() != VariableLiteral.NO_INDEX) {
+        if (variableLiteral.getIndex().isPresent()) {
             // TODO: If this is a byte typed field, this needs to be an array accessor instead.
-            sb.append(".get(").append(variableLiteral.getIndex()).append(")");
+            sb.append(".get(").append(variableLiteral.getIndex().orElseThrow()).append(")");
         }
         return tracer + sb.toString() + variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(field, resultType, child)).orElse("");
     }
@@ -1151,10 +1155,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         String variableLiteralName = variableLiteral.getName();
         if (variableLiteralName.equals("length")) {
             tracer = tracer.dive("length");
-            return tracer + variableLiteralName + "()" + ((variableLiteral.isIndexed() ? ".get(" + variableLiteral.getIndex() + ")" : "") +
+            return tracer + variableLiteralName + "()" + ((variableLiteral.getIndex().isPresent() ? ".get(" + variableLiteral.getIndex().orElseThrow() + ")" : "") +
                 variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(field, resultType, child)).orElse(""));
         }
-        return tracer + "get" + WordUtils.capitalize(variableLiteralName) + "()" + ((variableLiteral.isIndexed() ? ".get(" + variableLiteral.getIndex() + ")" : "") +
+        return tracer + "get" + WordUtils.capitalize(variableLiteralName) + "()" + ((variableLiteral.getIndex().isPresent() ? ".get(" + variableLiteral.getIndex().orElseThrow() + ")" : "") +
             variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(field, resultType, child)).orElse(""));
     }
 

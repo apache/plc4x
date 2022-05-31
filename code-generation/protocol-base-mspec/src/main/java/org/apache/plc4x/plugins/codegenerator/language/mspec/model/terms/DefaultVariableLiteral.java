@@ -31,10 +31,10 @@ public class DefaultVariableLiteral implements VariableLiteral {
     private final String name;
     private TypeReference typeReference;
     private final List<Term> args;
-    private final int index;
+    private final Integer index;
     private final VariableLiteral child;
 
-    public DefaultVariableLiteral(String name, List<Term> args, int index, VariableLiteral child) {
+    public DefaultVariableLiteral(String name, List<Term> args, Integer index, VariableLiteral child) {
         this.name = Objects.requireNonNull(name);
         this.args = args;
         this.index = index;
@@ -66,8 +66,8 @@ public class DefaultVariableLiteral implements VariableLiteral {
     }
 
     @Override
-    public int getIndex() {
-        return index;
+    public Optional<Integer> getIndex() {
+        return Optional.ofNullable(index);
     }
 
     @Override

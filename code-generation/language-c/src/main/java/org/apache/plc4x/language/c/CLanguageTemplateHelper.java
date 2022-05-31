@@ -856,8 +856,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
             sb.append(")");
         }
-        if (variableLiteral.getIndex() != VariableLiteral.NO_INDEX) {
-            sb.append("[").append(variableLiteral.getIndex()).append("]");
+        if (variableLiteral.getIndex().isPresent()) {
+            sb.append("[").append(variableLiteral.getIndex().orElseThrow()).append("]");
         }
         if (variableLiteral.getChild().isPresent()) {
             sb.append(".");
@@ -1192,11 +1192,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
     private void appendVariableExpressionRest(StringBuilder sb, TypeDefinition baseType, VariableLiteral variableLiteral) {
         Tracer tracer = Tracer.start("appendVariableExpressionRest");
-        if (variableLiteral.isIndexed()) {
+        if (variableLiteral.getIndex().isPresent()) {
             tracer = tracer.dive("isindexed");
             sb.insert(0, "plc4c_utils_list_get_value(");
             sb.append(camelCaseToSnakeCase(variableLiteral.getName()));
-            sb.append(", ").append(variableLiteral.getIndex()).append(")");
+            sb.append(", ").append(variableLiteral.getIndex().orElseThrow()).append(")");
         } else {
             sb.append(camelCaseToSnakeCase(variableLiteral.getName()));
         }

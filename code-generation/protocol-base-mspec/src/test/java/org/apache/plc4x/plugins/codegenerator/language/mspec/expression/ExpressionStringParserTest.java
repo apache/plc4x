@@ -148,19 +148,19 @@ class ExpressionStringParserTest {
     }
 
     void assertVariableLiteral(Term term, String name) {
-        assertVariableLiteral(term, name, null, null, -1);
+        assertVariableLiteral(term, name, null, null, null);
     }
 
     void assertVariableLiteral(Term term, String name, Consumer<List<Term>> argsAsserter, Consumer<VariableLiteral> childAsserter) {
-        assertVariableLiteral(term, name, argsAsserter, childAsserter, -1);
+        assertVariableLiteral(term, name, argsAsserter, childAsserter, null);
     }
 
-    void assertVariableLiteral(Term term, String name, Consumer<List<Term>> argsAsserter, Consumer<VariableLiteral> childAsserter, int index) {
+    void assertVariableLiteral(Term term, String name, Consumer<List<Term>> argsAsserter, Consumer<VariableLiteral> childAsserter, Integer index) {
         assertThat(term, not(nullValue()));
         assertThat(term, instanceOf(VariableLiteral.class));
         VariableLiteral variableLiteral = (VariableLiteral) term;
         assertThat(variableLiteral.getName(), is(name));
-        assertThat(variableLiteral.getIndex(), is(index));
+        assertThat(variableLiteral.getIndex().orElse(null), is(index));
         if (argsAsserter != null) {
             argsAsserter.accept(variableLiteral.getArgs().orElseThrow(RuntimeException::new));
         } else {
