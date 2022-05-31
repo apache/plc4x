@@ -448,10 +448,23 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PRIORITY_ARRAY, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
-                    /* FIXME: we get now a bunch of tags here (Priority Array)
-                    BACnetPropertyValuePriorityValue baCnetPropertyValuePriorityValue = (BACnetPropertyValuePriorityValue) ((BACnetConstructedDataUnspecified)baCnetServiceAckReadProperty.getValues()).getData();
-                    assertArrayEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, baCnetPropertyValuePriorityValue.getValues());
-                     */
+                    BACnetConstructedDataPriorityArray priorityArray = (BACnetConstructedDataPriorityArray) baCnetServiceAckReadProperty.getValues();
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue01().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue02().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue03().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue04().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue05().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue06().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue07().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue08().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue09().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue10().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue11().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue12().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue13().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue14().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue15().getClass());
+                    assertEquals(BACnetPriorityValueNull.class,priorityArray.getPriorityArray().getPriorityValue16().getClass());
                 }),
             DynamicTest.dynamicTest("No. 9 - BACnet Virtual Link Control BVLC Function Register-Foreign-Device",
                 () -> {

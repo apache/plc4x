@@ -59,6 +59,9 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetOpeningTagParse(io, tagNumberArgument)
+	case "BACnetPriorityArray":
+		objectType := model.BACnetObjectTypeByName(arguments[0])
+		return model.BACnetPriorityArrayParse(io, objectType)
 	case "BACnetAuthorizationExemptionTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -552,6 +555,9 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetStatusFlagsParse(io, tagNumber)
+	case "BACnetPriorityValue":
+		objectType := model.BACnetObjectTypeByName(arguments[0])
+		return model.BACnetPriorityValueParse(io, objectType)
 	case "BACnetMaintenanceTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

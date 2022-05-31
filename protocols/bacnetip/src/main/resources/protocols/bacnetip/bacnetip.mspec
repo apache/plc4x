@@ -1836,18 +1836,106 @@
                         objectIdentifier                                                        ]
     [simple   BACnetPropertyIdentifierTagged('2', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                         propertyIdentifier                                                      ]
-    [optional   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
+    [optional BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
                         arrayIndex                                                              ]
-    [optional   BACnetConstructedData('4', 'objectIdentifier.objectType', 'propertyIdentifier.value')
+    [optional BACnetConstructedData('4', 'objectIdentifier.objectType', 'propertyIdentifier.value')
                         propertyValue                                                           ]
-    [optional   BACnetContextTagUnsignedInteger('5', 'BACnetDataType.UNSIGNED_INTEGER')
+    [optional BACnetContextTagUnsignedInteger('5', 'BACnetDataType.UNSIGNED_INTEGER')
                         priority                                                                ]
-    [optional   BACnetContextTagBoolean('6', 'BACnetDataType.BOOLEAN')
+    [optional BACnetContextTagBoolean('6', 'BACnetDataType.BOOLEAN')
                         postDelay                                                               ]
     [simple   BACnetContextTagBoolean('7', 'BACnetDataType.BOOLEAN')
                         quitOnFailure                                                           ]
     [simple   BACnetContextTagBoolean('8', 'BACnetDataType.BOOLEAN')
                         writeSuccessful                                                         ]
+]
+
+[type BACnetPriorityArray(BACnetObjectType objectType)
+    [simple   BACnetPriorityValue('objectType')   priorityValue01              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue02              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue03              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue04              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue05              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue06              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue07              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue08              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue09              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue10              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue11              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue12              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue13              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue14              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue15              ]
+    [simple   BACnetPriorityValue('objectType')   priorityValue16              ]
+]
+
+[type BACnetPriorityValue(BACnetObjectType objectType)
+    [peek       BACnetTagHeader
+                           peekedTagHeader                                          ]
+    [virtual uint 8     peekedTagNumber     'peekedTagHeader.actualTagNumber'       ]
+    [virtual bit        peekedIsContextTag  'peekedTagHeader.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS']
+    [typeSwitch peekedTagNumber, peekedIsContextTag
+       ['0x0', 'false' BACnetPriorityValueNull
+           [simple  BACnetApplicationTagNull
+                            nullValue                                                   ]
+       ]
+       ['0x4', 'false' BACnetPriorityValueReal
+           [simple  BACnetApplicationTagReal
+                            realValue                                                   ]
+       ]
+       ['0x9', 'false' BACnetPriorityValueEnumerated
+           [simple   BACnetApplicationTagEnumerated
+                            enumeratedValue                                             ]
+       ]
+       ['0x2', 'false' BACnetPriorityValueUnsigned
+           [simple   BACnetApplicationTagUnsignedInteger
+                            unsignedValue                                               ]
+       ]
+       ['0x1', 'false' BACnetPriorityValueBoolean
+           [simple   BACnetApplicationTagBoolean
+                            booleanValue                                                ]
+       ]
+       ['0x3', 'false' BACnetPriorityValueInteger
+           [simple   BACnetApplicationTagSignedInteger
+                            integerValue                                                ]
+       ]
+       ['0x5', 'false' BACnetPriorityValueDouble
+           [simple  BACnetApplicationTagDouble
+                                doubleValue                                             ]
+       ]
+       ['0xB', 'false' BACnetPriorityValueTime
+           [simple   BACnetApplicationTagTime
+                            timeValue                                                   ]
+       ]
+       ['0x7', 'false' BACnetPriorityValueCharacterString
+           [simple   BACnetApplicationTagCharacterString
+                            characterStringValue                                        ]
+       ]
+       ['0x6', 'false' BACnetPriorityValueOctetString
+           [simple   BACnetApplicationTagOctetString
+                            octetStringValue                                            ]
+       ]
+       ['0x8', 'false' BACnetPriorityValueBitString
+           [simple   BACnetApplicationTagBitString
+                            bitStringValue                                              ]
+       ]
+       ['0xA', 'false' BACnetPriorityValueDate
+           [simple   BACnetApplicationTagDate
+                            dateValue                                                   ]
+       ]
+       ['0xC', 'false' BACnetPriorityValueObjectidentifier
+           [simple   BACnetApplicationTagObjectIdentifier
+                            objectidentifierValue                                       ]
+       ]
+       ['0', 'true' BACnetPriorityValueConstructedValue
+           [simple   BACnetConstructedData('0', 'objectType', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE')
+                            constructedValue                                            ]
+       ]
+       ['1', 'true' BACnetPriorityValueDateTime
+            [simple   BACnetDateTimeEnclosed('1')
+                            dateTimeValue                                               ]
+       ]
+    ]
 ]
 
 [type BACnetPropertyStatesEnclosed(uint 8 tagNumber)
@@ -2808,7 +2896,9 @@
         //[*, 'PRESCALE'                                BACnetConstructedDataPrescale [validation    '1 == 2'    "TODO: implement me PRESCALE BACnetConstructedDataPrescale"]]
         //[*, 'PRESENT_VALUE'                           BACnetConstructedDataPresentValue [validation    '1 == 2'    "TODO: implement me PRESENT_VALUE BACnetConstructedDataPresentValue"]]
         //[*, 'PRIORITY'                                BACnetConstructedDataPriority [validation    '1 == 2'    "TODO: implement me PRIORITY BACnetConstructedDataPriority"]]
-        //[*, 'PRIORITY_ARRAY'                          BACnetConstructedDataPriorityArray [validation    '1 == 2'    "TODO: implement me PRIORITY_ARRAY BACnetConstructedDataPriorityArray"]]
+        [*, 'PRIORITY_ARRAY'                          BACnetConstructedDataPriorityArray
+            [simple   BACnetPriorityArray('objectType') priorityArray     ]
+        ]
         //[*, 'PRIORITY_FOR_WRITING'                    BACnetConstructedDataPriorityForWriting [validation    '1 == 2'    "TODO: implement me PRIORITY_FOR_WRITING BACnetConstructedDataPriorityForWriting"]]
         //[*, 'PROCESS_IDENTIFIER'                      BACnetConstructedDataProcessIdentifier [validation    '1 == 2'    "TODO: implement me PROCESS_IDENTIFIER BACnetConstructedDataProcessIdentifier"]]
         //[*, 'PROCESS_IDENTIFIER_FILTER'               BACnetConstructedDataProcessIdentifierFilter [validation    '1 == 2'    "TODO: implement me PROCESS_IDENTIFIER_FILTER BACnetConstructedDataProcessIdentifierFilter"]]
@@ -2820,7 +2910,7 @@
         //[*, 'PROPERTY_LIST'                           BACnetConstructedDataPropertyList [validation    '1 == 2'    "TODO: implement me PROPERTY_LIST BACnetConstructedDataPropertyList"]]
         //[*, 'PROPORTIONAL_CONSTANT'                   BACnetConstructedDataProportionalConstant [validation    '1 == 2'    "TODO: implement me PROPORTIONAL_CONSTANT BACnetConstructedDataProportionalConstant"]]
         [*, 'PROPORTIONAL_CONSTANT_UNITS'             BACnetConstructedDataProportionalConstantUnits
-          [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS') units                           ]
+            [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS') units                           ]
 
         //[*, 'PROTOCOL_LEVEL'                          BACnetConstructedDataProtocolLevel [validation    '1 == 2'    "TODO: implement me PROTOCOL_LEVEL BACnetConstructedDataProtocolLevel"]]
         //[*, 'PROTOCOL_CONFORMANCE_CLASS'              BACnetConstructedDataProtocolConformanceClass [validation    '1 == 2'    "TODO: implement me PROTOCOL_CONFORMANCE_CLASS BACnetConstructedDataProtocolConformanceClass"]]
