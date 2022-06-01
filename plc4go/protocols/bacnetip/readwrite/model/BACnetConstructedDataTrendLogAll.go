@@ -125,7 +125,7 @@ func BACnetConstructedDataTrendLogAllParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, utils.ParseValidationError{"TODO: implement me BACnetConstructedData ...TREND_LOG..."}
+		return nil, utils.ParseValidationError{"All should never occur in context of constructed data. If it does please report"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTrendLogAll"); closeErr != nil {

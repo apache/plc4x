@@ -125,7 +125,7 @@ func BACnetConstructedDataPulseConverterAllParse(readBuffer utils.ReadBuffer, ta
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, utils.ParseValidationError{"TODO: implement me BACnetConstructedData ...PULSE_CONVERTER..."}
+		return nil, utils.ParseValidationError{"All should never occur in context of constructed data. If it does please report"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPulseConverterAll"); closeErr != nil {

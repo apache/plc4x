@@ -125,7 +125,7 @@ func BACnetConstructedDataBinaryLightingOutputAllParse(readBuffer utils.ReadBuff
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, utils.ParseValidationError{"TODO: implement me BACnetConstructedData ...BINARY_LIGHTING_OUTPUT..."}
+		return nil, utils.ParseValidationError{"All should never occur in context of constructed data. If it does please report"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryLightingOutputAll"); closeErr != nil {

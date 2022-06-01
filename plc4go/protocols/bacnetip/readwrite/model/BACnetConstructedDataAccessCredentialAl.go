@@ -125,7 +125,7 @@ func BACnetConstructedDataAccessCredentialAlParse(readBuffer utils.ReadBuffer, t
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, utils.ParseValidationError{"TODO: implement me BACnetConstructedData ...ACCESS_CREDENTIAL..."}
+		return nil, utils.ParseValidationError{"All should never occur in context of constructed data. If it does please report"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessCredentialAl"); closeErr != nil {

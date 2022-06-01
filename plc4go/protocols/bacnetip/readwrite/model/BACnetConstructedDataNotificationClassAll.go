@@ -125,7 +125,7 @@ func BACnetConstructedDataNotificationClassAllParse(readBuffer utils.ReadBuffer,
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, utils.ParseValidationError{"TODO: implement me BACnetConstructedData ...NOTIFICATION_CLASS..."}
+		return nil, utils.ParseValidationError{"All should never occur in context of constructed data. If it does please report"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNotificationClassAll"); closeErr != nil {
