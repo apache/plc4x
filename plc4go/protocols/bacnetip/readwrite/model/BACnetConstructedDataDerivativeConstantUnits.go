@@ -53,7 +53,7 @@ type IBACnetConstructedDataDerivativeConstantUnits interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataDerivativeConstantUnits) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataDerivativeConstantUnits) GetObjectTypeArgument() BACnetObjectType {
 	return 0
 }
 
@@ -136,7 +136,7 @@ func (m *BACnetConstructedDataDerivativeConstantUnits) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDerivativeConstantUnitsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDerivativeConstantUnits, error) {
+func BACnetConstructedDataDerivativeConstantUnitsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDerivativeConstantUnits, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDerivativeConstantUnits"); pullErr != nil {

@@ -49,7 +49,7 @@ type IBACnetConstructedDataPositiveIntegerValueAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataPositiveIntegerValueAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataPositiveIntegerValueAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_POSITIVE_INTEGER_VALUE
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataPositiveIntegerValueAll) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPositiveIntegerValueAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPositiveIntegerValueAll, error) {
+func BACnetConstructedDataPositiveIntegerValueAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPositiveIntegerValueAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueAll"); pullErr != nil {

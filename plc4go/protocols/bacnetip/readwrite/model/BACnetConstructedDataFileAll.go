@@ -49,7 +49,7 @@ type IBACnetConstructedDataFileAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataFileAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataFileAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_FILE
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataFileAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFileAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataFileAll, error) {
+func BACnetConstructedDataFileAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataFileAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFileAll"); pullErr != nil {

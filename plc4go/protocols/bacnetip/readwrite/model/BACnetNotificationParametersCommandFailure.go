@@ -36,8 +36,8 @@ type BACnetNotificationParametersCommandFailure struct {
 	InnerClosingTag *BACnetClosingTag
 
 	// Arguments.
-	TagNumber  uint8
-	ObjectType BACnetObjectType
+	TagNumber          uint8
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetNotificationParametersCommandFailure is the corresponding interface of BACnetNotificationParametersCommandFailure
@@ -112,14 +112,14 @@ func (m *BACnetNotificationParametersCommandFailure) GetInnerClosingTag() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersCommandFailure factory function for BACnetNotificationParametersCommandFailure
-func NewBACnetNotificationParametersCommandFailure(innerOpeningTag *BACnetOpeningTag, commandValue *BACnetConstructedData, statusFlags *BACnetStatusFlagsTagged, feedbackValue *BACnetConstructedData, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersCommandFailure {
+func NewBACnetNotificationParametersCommandFailure(innerOpeningTag *BACnetOpeningTag, commandValue *BACnetConstructedData, statusFlags *BACnetStatusFlagsTagged, feedbackValue *BACnetConstructedData, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *BACnetNotificationParametersCommandFailure {
 	_result := &BACnetNotificationParametersCommandFailure{
 		InnerOpeningTag:              innerOpeningTag,
 		CommandValue:                 commandValue,
 		StatusFlags:                  statusFlags,
 		FeedbackValue:                feedbackValue,
 		InnerClosingTag:              innerClosingTag,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectType),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -174,7 +174,7 @@ func (m *BACnetNotificationParametersCommandFailure) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersCommandFailure, error) {
+func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersCommandFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersCommandFailure"); pullErr != nil {
@@ -200,7 +200,7 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("commandValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_commandValue, _commandValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(0)), BACnetObjectType(objectType), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
+	_commandValue, _commandValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
 	if _commandValueErr != nil {
 		return nil, errors.Wrap(_commandValueErr, "Error parsing 'commandValue' field")
 	}
@@ -226,7 +226,7 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("feedbackValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_feedbackValue, _feedbackValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectType), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
+	_feedbackValue, _feedbackValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
 	if _feedbackValueErr != nil {
 		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field")
 	}

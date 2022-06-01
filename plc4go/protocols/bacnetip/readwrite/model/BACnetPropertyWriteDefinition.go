@@ -35,7 +35,7 @@ type BACnetPropertyWriteDefinition struct {
 	Priority           *BACnetContextTagUnsignedInteger
 
 	// Arguments.
-	ObjectType BACnetObjectType
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetPropertyWriteDefinition is the corresponding interface of BACnetPropertyWriteDefinition
@@ -83,8 +83,8 @@ func (m *BACnetPropertyWriteDefinition) GetPriority() *BACnetContextTagUnsignedI
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyWriteDefinition factory function for BACnetPropertyWriteDefinition
-func NewBACnetPropertyWriteDefinition(propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, priority *BACnetContextTagUnsignedInteger, objectType BACnetObjectType) *BACnetPropertyWriteDefinition {
-	return &BACnetPropertyWriteDefinition{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, ObjectType: objectType}
+func NewBACnetPropertyWriteDefinition(propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, priority *BACnetContextTagUnsignedInteger, objectTypeArgument BACnetObjectType) *BACnetPropertyWriteDefinition {
+	return &BACnetPropertyWriteDefinition{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, ObjectTypeArgument: objectTypeArgument}
 }
 
 func CastBACnetPropertyWriteDefinition(structType interface{}) *BACnetPropertyWriteDefinition {
@@ -133,7 +133,7 @@ func (m *BACnetPropertyWriteDefinition) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetPropertyWriteDefinition, error) {
+func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (*BACnetPropertyWriteDefinition, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyWriteDefinition"); pullErr != nil {
@@ -183,7 +183,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectType 
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), objectType, propertyIdentifier.GetValue())
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), objectTypeArgument, propertyIdentifier.GetValue())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
@@ -223,7 +223,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectType 
 	}
 
 	// Create the instance
-	return NewBACnetPropertyWriteDefinition(propertyIdentifier, arrayIndex, propertyValue, priority, objectType), nil
+	return NewBACnetPropertyWriteDefinition(propertyIdentifier, arrayIndex, propertyValue, priority, objectTypeArgument), nil
 }
 
 func (m *BACnetPropertyWriteDefinition) Serialize(writeBuffer utils.WriteBuffer) error {

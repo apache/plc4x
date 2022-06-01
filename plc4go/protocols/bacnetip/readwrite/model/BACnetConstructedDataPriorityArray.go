@@ -53,7 +53,7 @@ type IBACnetConstructedDataPriorityArray interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataPriorityArray) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataPriorityArray) GetObjectTypeArgument() BACnetObjectType {
 	return 0
 }
 
@@ -136,7 +136,7 @@ func (m *BACnetConstructedDataPriorityArray) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPriorityArrayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPriorityArray, error) {
+func BACnetConstructedDataPriorityArrayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPriorityArray, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPriorityArray"); pullErr != nil {
@@ -149,7 +149,7 @@ func BACnetConstructedDataPriorityArrayParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("priorityArray"); pullErr != nil {
 		return nil, pullErr
 	}
-	_priorityArray, _priorityArrayErr := BACnetPriorityArrayParse(readBuffer, BACnetObjectType(objectType), uint8(tagNumber))
+	_priorityArray, _priorityArrayErr := BACnetPriorityArrayParse(readBuffer, BACnetObjectType(objectTypeArgument), uint8(tagNumber))
 	if _priorityArrayErr != nil {
 		return nil, errors.Wrap(_priorityArrayErr, "Error parsing 'priorityArray' field")
 	}

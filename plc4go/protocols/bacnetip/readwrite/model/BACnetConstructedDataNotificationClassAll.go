@@ -49,7 +49,7 @@ type IBACnetConstructedDataNotificationClassAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataNotificationClassAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataNotificationClassAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_NOTIFICATION_CLASS
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataNotificationClassAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNotificationClassAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNotificationClassAll, error) {
+func BACnetConstructedDataNotificationClassAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNotificationClassAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotificationClassAll"); pullErr != nil {

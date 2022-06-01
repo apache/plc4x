@@ -49,7 +49,7 @@ type IBACnetConstructedDataAccumulatorAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataAccumulatorAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataAccumulatorAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_ACCUMULATOR
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataAccumulatorAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccumulatorAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccumulatorAll, error) {
+func BACnetConstructedDataAccumulatorAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccumulatorAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccumulatorAll"); pullErr != nil {

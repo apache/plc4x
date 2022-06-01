@@ -32,7 +32,7 @@ type BACnetPriorityValueEnumerated struct {
 	EnumeratedValue *BACnetApplicationTagEnumerated
 
 	// Arguments.
-	ObjectType BACnetObjectType
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetPriorityValueEnumerated is the corresponding interface of BACnetPriorityValueEnumerated
@@ -81,10 +81,10 @@ func (m *BACnetPriorityValueEnumerated) GetEnumeratedValue() *BACnetApplicationT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPriorityValueEnumerated factory function for BACnetPriorityValueEnumerated
-func NewBACnetPriorityValueEnumerated(enumeratedValue *BACnetApplicationTagEnumerated, peekedTagHeader *BACnetTagHeader, objectType BACnetObjectType) *BACnetPriorityValueEnumerated {
+func NewBACnetPriorityValueEnumerated(enumeratedValue *BACnetApplicationTagEnumerated, peekedTagHeader *BACnetTagHeader, objectTypeArgument BACnetObjectType) *BACnetPriorityValueEnumerated {
 	_result := &BACnetPriorityValueEnumerated{
 		EnumeratedValue:     enumeratedValue,
-		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectType),
+		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -127,7 +127,7 @@ func (m *BACnetPriorityValueEnumerated) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueEnumeratedParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetPriorityValueEnumerated, error) {
+func BACnetPriorityValueEnumeratedParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (*BACnetPriorityValueEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueEnumerated"); pullErr != nil {

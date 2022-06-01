@@ -49,7 +49,7 @@ type IBACnetConstructedDataScheduleAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataScheduleAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataScheduleAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_SCHEDULE
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataScheduleAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataScheduleAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataScheduleAll, error) {
+func BACnetConstructedDataScheduleAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataScheduleAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataScheduleAll"); pullErr != nil {

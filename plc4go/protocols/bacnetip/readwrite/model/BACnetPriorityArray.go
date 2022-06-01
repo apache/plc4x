@@ -31,8 +31,8 @@ type BACnetPriorityArray struct {
 	Data []*BACnetPriorityValue
 
 	// Arguments.
-	ObjectType BACnetObjectType
-	TagNumber  uint8
+	ObjectTypeArgument BACnetObjectType
+	TagNumber          uint8
 }
 
 // IBACnetPriorityArray is the corresponding interface of BACnetPriorityArray
@@ -185,8 +185,8 @@ func (m *BACnetPriorityArray) GetIndexEntry() *BACnetPriorityValue {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPriorityArray factory function for BACnetPriorityArray
-func NewBACnetPriorityArray(data []*BACnetPriorityValue, objectType BACnetObjectType, tagNumber uint8) *BACnetPriorityArray {
-	return &BACnetPriorityArray{Data: data, ObjectType: objectType, TagNumber: tagNumber}
+func NewBACnetPriorityArray(data []*BACnetPriorityValue, objectTypeArgument BACnetObjectType, tagNumber uint8) *BACnetPriorityArray {
+	return &BACnetPriorityArray{Data: data, ObjectTypeArgument: objectTypeArgument, TagNumber: tagNumber}
 }
 
 func CastBACnetPriorityArray(structType interface{}) *BACnetPriorityArray {
@@ -262,7 +262,7 @@ func (m *BACnetPriorityArray) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType, tagNumber uint8) (*BACnetPriorityArray, error) {
+func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, tagNumber uint8) (*BACnetPriorityArray, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityArray"); pullErr != nil {
@@ -279,7 +279,7 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectType BACnetObje
 	data := make([]*BACnetPriorityValue, 0)
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetPriorityValueParse(readBuffer, objectType)
+			_item, _err := BACnetPriorityValueParse(readBuffer, objectTypeArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field")
 			}
@@ -391,7 +391,7 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectType BACnetObje
 	}
 
 	// Create the instance
-	return NewBACnetPriorityArray(data, objectType, tagNumber), nil
+	return NewBACnetPriorityArray(data, objectTypeArgument, tagNumber), nil
 }
 
 func (m *BACnetPriorityArray) Serialize(writeBuffer utils.WriteBuffer) error {

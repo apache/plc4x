@@ -36,8 +36,8 @@ type BACnetNotificationParametersChangeOfCharacterString struct {
 	InnerClosingTag *BACnetClosingTag
 
 	// Arguments.
-	TagNumber  uint8
-	ObjectType BACnetObjectType
+	TagNumber          uint8
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetNotificationParametersChangeOfCharacterString is the corresponding interface of BACnetNotificationParametersChangeOfCharacterString
@@ -112,14 +112,14 @@ func (m *BACnetNotificationParametersChangeOfCharacterString) GetInnerClosingTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfCharacterString factory function for BACnetNotificationParametersChangeOfCharacterString
-func NewBACnetNotificationParametersChangeOfCharacterString(innerOpeningTag *BACnetOpeningTag, changedValue *BACnetContextTagCharacterString, statusFlags *BACnetStatusFlagsTagged, alarmValue *BACnetContextTagCharacterString, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfCharacterString {
+func NewBACnetNotificationParametersChangeOfCharacterString(innerOpeningTag *BACnetOpeningTag, changedValue *BACnetContextTagCharacterString, statusFlags *BACnetStatusFlagsTagged, alarmValue *BACnetContextTagCharacterString, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *BACnetNotificationParametersChangeOfCharacterString {
 	_result := &BACnetNotificationParametersChangeOfCharacterString{
 		InnerOpeningTag:              innerOpeningTag,
 		ChangedValue:                 changedValue,
 		StatusFlags:                  statusFlags,
 		AlarmValue:                   alarmValue,
 		InnerClosingTag:              innerClosingTag,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectType),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -174,7 +174,7 @@ func (m *BACnetNotificationParametersChangeOfCharacterString) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfCharacterStringParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersChangeOfCharacterString, error) {
+func BACnetNotificationParametersChangeOfCharacterStringParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersChangeOfCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfCharacterString"); pullErr != nil {

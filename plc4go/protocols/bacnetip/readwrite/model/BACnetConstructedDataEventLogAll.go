@@ -49,7 +49,7 @@ type IBACnetConstructedDataEventLogAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataEventLogAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataEventLogAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_EVENT_LOG
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataEventLogAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventLogAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEventLogAll, error) {
+func BACnetConstructedDataEventLogAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEventLogAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventLogAll"); pullErr != nil {

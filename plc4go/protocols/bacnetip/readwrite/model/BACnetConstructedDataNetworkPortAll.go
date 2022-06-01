@@ -49,7 +49,7 @@ type IBACnetConstructedDataNetworkPortAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataNetworkPortAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataNetworkPortAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_NETWORK_PORT
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataNetworkPortAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNetworkPortAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNetworkPortAll, error) {
+func BACnetConstructedDataNetworkPortAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNetworkPortAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkPortAll"); pullErr != nil {

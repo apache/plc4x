@@ -40,8 +40,8 @@ type BACnetNotificationParametersChangeOfTimer struct {
 	InnerClosingTag *BACnetClosingTag
 
 	// Arguments.
-	TagNumber  uint8
-	ObjectType BACnetObjectType
+	TagNumber          uint8
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetNotificationParametersChangeOfTimer is the corresponding interface of BACnetNotificationParametersChangeOfTimer
@@ -134,7 +134,7 @@ func (m *BACnetNotificationParametersChangeOfTimer) GetInnerClosingTag() *BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfTimer factory function for BACnetNotificationParametersChangeOfTimer
-func NewBACnetNotificationParametersChangeOfTimer(innerOpeningTag *BACnetOpeningTag, newValue *BACnetTimerStateTagged, statusFlags *BACnetStatusFlagsTagged, updateTime *BACnetDateTimeEnclosed, lastStateChange *BACnetTimerTransitionTagged, initialTimeout *BACnetContextTagUnsignedInteger, expirationTime *BACnetDateTimeEnclosed, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfTimer {
+func NewBACnetNotificationParametersChangeOfTimer(innerOpeningTag *BACnetOpeningTag, newValue *BACnetTimerStateTagged, statusFlags *BACnetStatusFlagsTagged, updateTime *BACnetDateTimeEnclosed, lastStateChange *BACnetTimerTransitionTagged, initialTimeout *BACnetContextTagUnsignedInteger, expirationTime *BACnetDateTimeEnclosed, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *BACnetNotificationParametersChangeOfTimer {
 	_result := &BACnetNotificationParametersChangeOfTimer{
 		InnerOpeningTag:              innerOpeningTag,
 		NewValue:                     newValue,
@@ -144,7 +144,7 @@ func NewBACnetNotificationParametersChangeOfTimer(innerOpeningTag *BACnetOpening
 		InitialTimeout:               initialTimeout,
 		ExpirationTime:               expirationTime,
 		InnerClosingTag:              innerClosingTag,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectType),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -214,7 +214,7 @@ func (m *BACnetNotificationParametersChangeOfTimer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersChangeOfTimer, error) {
+func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersChangeOfTimer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfTimer"); pullErr != nil {

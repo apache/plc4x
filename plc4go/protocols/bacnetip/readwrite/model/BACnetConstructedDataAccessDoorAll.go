@@ -49,7 +49,7 @@ type IBACnetConstructedDataAccessDoorAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataAccessDoorAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataAccessDoorAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_ACCESS_DOOR
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataAccessDoorAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessDoorAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccessDoorAll, error) {
+func BACnetConstructedDataAccessDoorAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccessDoorAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessDoorAll"); pullErr != nil {

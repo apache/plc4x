@@ -33,8 +33,8 @@ type BACnetPropertyValues struct {
 	InnerClosingTag *BACnetClosingTag
 
 	// Arguments.
-	TagNumber  uint8
-	ObjectType BACnetObjectType
+	TagNumber          uint8
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetPropertyValues is the corresponding interface of BACnetPropertyValues
@@ -76,8 +76,8 @@ func (m *BACnetPropertyValues) GetInnerClosingTag() *BACnetClosingTag {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyValues factory function for BACnetPropertyValues
-func NewBACnetPropertyValues(innerOpeningTag *BACnetOpeningTag, data []*BACnetPropertyValue, innerClosingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetPropertyValues {
-	return &BACnetPropertyValues{InnerOpeningTag: innerOpeningTag, Data: data, InnerClosingTag: innerClosingTag, TagNumber: tagNumber, ObjectType: objectType}
+func NewBACnetPropertyValues(innerOpeningTag *BACnetOpeningTag, data []*BACnetPropertyValue, innerClosingTag *BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *BACnetPropertyValues {
+	return &BACnetPropertyValues{InnerOpeningTag: innerOpeningTag, Data: data, InnerClosingTag: innerClosingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
 }
 
 func CastBACnetPropertyValues(structType interface{}) *BACnetPropertyValues {
@@ -121,7 +121,7 @@ func (m *BACnetPropertyValues) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType) (*BACnetPropertyValues, error) {
+func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (*BACnetPropertyValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyValues"); pullErr != nil {
@@ -151,7 +151,7 @@ func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, obj
 	data := make([]*BACnetPropertyValue, 0)
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetPropertyValueParse(readBuffer, objectType)
+			_item, _err := BACnetPropertyValueParse(readBuffer, objectTypeArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field")
 			}
@@ -181,7 +181,7 @@ func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, obj
 	}
 
 	// Create the instance
-	return NewBACnetPropertyValues(innerOpeningTag, data, innerClosingTag, tagNumber, objectType), nil
+	return NewBACnetPropertyValues(innerOpeningTag, data, innerClosingTag, tagNumber, objectTypeArgument), nil
 }
 
 func (m *BACnetPropertyValues) Serialize(writeBuffer utils.WriteBuffer) error {

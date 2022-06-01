@@ -49,7 +49,7 @@ type IBACnetConstructedDataGlobalGroupAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataGlobalGroupAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataGlobalGroupAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_GLOBAL_GROUP
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataGlobalGroupAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataGlobalGroupAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataGlobalGroupAll, error) {
+func BACnetConstructedDataGlobalGroupAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataGlobalGroupAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGlobalGroupAll"); pullErr != nil {

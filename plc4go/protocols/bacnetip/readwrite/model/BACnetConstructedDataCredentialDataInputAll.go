@@ -49,7 +49,7 @@ type IBACnetConstructedDataCredentialDataInputAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataCredentialDataInputAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataCredentialDataInputAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_CREDENTIAL_DATA_INPUT
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataCredentialDataInputAll) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCredentialDataInputAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCredentialDataInputAll, error) {
+func BACnetConstructedDataCredentialDataInputAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCredentialDataInputAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCredentialDataInputAll"); pullErr != nil {

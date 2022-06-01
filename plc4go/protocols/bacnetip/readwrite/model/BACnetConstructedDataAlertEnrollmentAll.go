@@ -49,7 +49,7 @@ type IBACnetConstructedDataAlertEnrollmentAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataAlertEnrollmentAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataAlertEnrollmentAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_ALERT_ENROLLMENT
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataAlertEnrollmentAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAlertEnrollmentAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAlertEnrollmentAll, error) {
+func BACnetConstructedDataAlertEnrollmentAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAlertEnrollmentAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAlertEnrollmentAll"); pullErr != nil {

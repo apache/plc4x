@@ -53,7 +53,7 @@ type IBACnetConstructedDataReliability interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataReliability) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataReliability) GetObjectTypeArgument() BACnetObjectType {
 	return 0
 }
 
@@ -136,7 +136,7 @@ func (m *BACnetConstructedDataReliability) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataReliabilityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataReliability, error) {
+func BACnetConstructedDataReliabilityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataReliability, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReliability"); pullErr != nil {

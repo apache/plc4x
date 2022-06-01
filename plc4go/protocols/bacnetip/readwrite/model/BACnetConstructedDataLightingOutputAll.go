@@ -49,7 +49,7 @@ type IBACnetConstructedDataLightingOutputAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataLightingOutputAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataLightingOutputAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_LIGHTING_OUTPUT
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataLightingOutputAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLightingOutputAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLightingOutputAll, error) {
+func BACnetConstructedDataLightingOutputAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLightingOutputAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingOutputAll"); pullErr != nil {

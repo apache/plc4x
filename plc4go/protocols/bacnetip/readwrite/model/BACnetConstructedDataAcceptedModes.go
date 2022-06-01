@@ -53,7 +53,7 @@ type IBACnetConstructedDataAcceptedModes interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataAcceptedModes) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataAcceptedModes) GetObjectTypeArgument() BACnetObjectType {
 	return 0
 }
 
@@ -140,7 +140,7 @@ func (m *BACnetConstructedDataAcceptedModes) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAcceptedModesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAcceptedModes, error) {
+func BACnetConstructedDataAcceptedModesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAcceptedModes, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAcceptedModes"); pullErr != nil {

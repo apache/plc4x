@@ -49,7 +49,7 @@ type IBACnetConstructedDataBitstringValueAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataBitstringValueAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataBitstringValueAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_BITSTRING_VALUE
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataBitstringValueAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBitstringValueAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBitstringValueAll, error) {
+func BACnetConstructedDataBitstringValueAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBitstringValueAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBitstringValueAll"); pullErr != nil {

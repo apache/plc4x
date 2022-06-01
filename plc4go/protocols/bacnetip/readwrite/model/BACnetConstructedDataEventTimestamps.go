@@ -59,7 +59,7 @@ type IBACnetConstructedDataEventTimestamps interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataEventTimestamps) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataEventTimestamps) GetObjectTypeArgument() BACnetObjectType {
 	return 0
 }
 
@@ -158,7 +158,7 @@ func (m *BACnetConstructedDataEventTimestamps) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEventTimestamps, error) {
+func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEventTimestamps, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventTimestamps"); pullErr != nil {

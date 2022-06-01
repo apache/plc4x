@@ -49,7 +49,7 @@ type IBACnetConstructedDataElevatorGroupAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataElevatorGroupAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataElevatorGroupAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_ELEVATOR_GROUP
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataElevatorGroupAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataElevatorGroupAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataElevatorGroupAll, error) {
+func BACnetConstructedDataElevatorGroupAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataElevatorGroupAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElevatorGroupAll"); pullErr != nil {

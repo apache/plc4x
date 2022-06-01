@@ -53,7 +53,7 @@ type IBACnetConstructedDataSubordinateList interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataSubordinateList) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataSubordinateList) GetObjectTypeArgument() BACnetObjectType {
 	return 0
 }
 
@@ -140,7 +140,7 @@ func (m *BACnetConstructedDataSubordinateList) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSubordinateListParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSubordinateList, error) {
+func BACnetConstructedDataSubordinateListParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSubordinateList, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubordinateList"); pullErr != nil {

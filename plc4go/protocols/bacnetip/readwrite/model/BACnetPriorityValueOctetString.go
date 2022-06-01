@@ -32,7 +32,7 @@ type BACnetPriorityValueOctetString struct {
 	OctetStringValue *BACnetApplicationTagOctetString
 
 	// Arguments.
-	ObjectType BACnetObjectType
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetPriorityValueOctetString is the corresponding interface of BACnetPriorityValueOctetString
@@ -81,10 +81,10 @@ func (m *BACnetPriorityValueOctetString) GetOctetStringValue() *BACnetApplicatio
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPriorityValueOctetString factory function for BACnetPriorityValueOctetString
-func NewBACnetPriorityValueOctetString(octetStringValue *BACnetApplicationTagOctetString, peekedTagHeader *BACnetTagHeader, objectType BACnetObjectType) *BACnetPriorityValueOctetString {
+func NewBACnetPriorityValueOctetString(octetStringValue *BACnetApplicationTagOctetString, peekedTagHeader *BACnetTagHeader, objectTypeArgument BACnetObjectType) *BACnetPriorityValueOctetString {
 	_result := &BACnetPriorityValueOctetString{
 		OctetStringValue:    octetStringValue,
-		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectType),
+		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -127,7 +127,7 @@ func (m *BACnetPriorityValueOctetString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueOctetStringParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetPriorityValueOctetString, error) {
+func BACnetPriorityValueOctetStringParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (*BACnetPriorityValueOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueOctetString"); pullErr != nil {

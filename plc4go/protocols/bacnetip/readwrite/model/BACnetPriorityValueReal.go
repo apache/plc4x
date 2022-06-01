@@ -32,7 +32,7 @@ type BACnetPriorityValueReal struct {
 	RealValue *BACnetApplicationTagReal
 
 	// Arguments.
-	ObjectType BACnetObjectType
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetPriorityValueReal is the corresponding interface of BACnetPriorityValueReal
@@ -81,10 +81,10 @@ func (m *BACnetPriorityValueReal) GetRealValue() *BACnetApplicationTagReal {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPriorityValueReal factory function for BACnetPriorityValueReal
-func NewBACnetPriorityValueReal(realValue *BACnetApplicationTagReal, peekedTagHeader *BACnetTagHeader, objectType BACnetObjectType) *BACnetPriorityValueReal {
+func NewBACnetPriorityValueReal(realValue *BACnetApplicationTagReal, peekedTagHeader *BACnetTagHeader, objectTypeArgument BACnetObjectType) *BACnetPriorityValueReal {
 	_result := &BACnetPriorityValueReal{
 		RealValue:           realValue,
-		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectType),
+		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -127,7 +127,7 @@ func (m *BACnetPriorityValueReal) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueRealParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetPriorityValueReal, error) {
+func BACnetPriorityValueRealParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (*BACnetPriorityValueReal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueReal"); pullErr != nil {

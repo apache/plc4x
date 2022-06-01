@@ -32,7 +32,7 @@ type BACnetPriorityValueDate struct {
 	DateValue *BACnetApplicationTagDate
 
 	// Arguments.
-	ObjectType BACnetObjectType
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetPriorityValueDate is the corresponding interface of BACnetPriorityValueDate
@@ -81,10 +81,10 @@ func (m *BACnetPriorityValueDate) GetDateValue() *BACnetApplicationTagDate {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPriorityValueDate factory function for BACnetPriorityValueDate
-func NewBACnetPriorityValueDate(dateValue *BACnetApplicationTagDate, peekedTagHeader *BACnetTagHeader, objectType BACnetObjectType) *BACnetPriorityValueDate {
+func NewBACnetPriorityValueDate(dateValue *BACnetApplicationTagDate, peekedTagHeader *BACnetTagHeader, objectTypeArgument BACnetObjectType) *BACnetPriorityValueDate {
 	_result := &BACnetPriorityValueDate{
 		DateValue:           dateValue,
-		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectType),
+		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -127,7 +127,7 @@ func (m *BACnetPriorityValueDate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueDateParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetPriorityValueDate, error) {
+func BACnetPriorityValueDateParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (*BACnetPriorityValueDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueDate"); pullErr != nil {

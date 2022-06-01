@@ -35,7 +35,7 @@ type ListOfCovNotificationsValue struct {
 	TimeOfChange       *BACnetContextTagTime
 
 	// Arguments.
-	ObjectType BACnetObjectType
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IListOfCovNotificationsValue is the corresponding interface of ListOfCovNotificationsValue
@@ -83,8 +83,8 @@ func (m *ListOfCovNotificationsValue) GetTimeOfChange() *BACnetContextTagTime {
 ///////////////////////////////////////////////////////////
 
 // NewListOfCovNotificationsValue factory function for ListOfCovNotificationsValue
-func NewListOfCovNotificationsValue(propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, timeOfChange *BACnetContextTagTime, objectType BACnetObjectType) *ListOfCovNotificationsValue {
-	return &ListOfCovNotificationsValue{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, TimeOfChange: timeOfChange, ObjectType: objectType}
+func NewListOfCovNotificationsValue(propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, timeOfChange *BACnetContextTagTime, objectTypeArgument BACnetObjectType) *ListOfCovNotificationsValue {
+	return &ListOfCovNotificationsValue{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, TimeOfChange: timeOfChange, ObjectTypeArgument: objectTypeArgument}
 }
 
 func CastListOfCovNotificationsValue(structType interface{}) *ListOfCovNotificationsValue {
@@ -131,7 +131,7 @@ func (m *ListOfCovNotificationsValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*ListOfCovNotificationsValue, error) {
+func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (*ListOfCovNotificationsValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ListOfCovNotificationsValue"); pullErr != nil {
@@ -178,7 +178,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectType BA
 	if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectType), BACnetPropertyIdentifier(propertyIdentifier.GetValue()))
+	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifier.GetValue()))
 	if _propertyValueErr != nil {
 		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field")
 	}
@@ -213,7 +213,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectType BA
 	}
 
 	// Create the instance
-	return NewListOfCovNotificationsValue(propertyIdentifier, arrayIndex, propertyValue, timeOfChange, objectType), nil
+	return NewListOfCovNotificationsValue(propertyIdentifier, arrayIndex, propertyValue, timeOfChange, objectTypeArgument), nil
 }
 
 func (m *ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) error {

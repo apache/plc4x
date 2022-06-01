@@ -49,7 +49,7 @@ type IBACnetConstructedDataAveragingAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataAveragingAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataAveragingAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_AVERAGING
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataAveragingAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAveragingAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAveragingAll, error) {
+func BACnetConstructedDataAveragingAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAveragingAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAveragingAll"); pullErr != nil {

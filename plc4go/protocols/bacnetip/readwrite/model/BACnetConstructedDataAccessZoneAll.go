@@ -49,7 +49,7 @@ type IBACnetConstructedDataAccessZoneAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataAccessZoneAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataAccessZoneAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_ACCESS_ZONE
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataAccessZoneAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessZoneAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccessZoneAll, error) {
+func BACnetConstructedDataAccessZoneAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccessZoneAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessZoneAll"); pullErr != nil {

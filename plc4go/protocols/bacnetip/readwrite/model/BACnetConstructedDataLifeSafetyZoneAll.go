@@ -49,7 +49,7 @@ type IBACnetConstructedDataLifeSafetyZoneAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataLifeSafetyZoneAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataLifeSafetyZoneAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_LIFE_SAFETY_ZONE
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataLifeSafetyZoneAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLifeSafetyZoneAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLifeSafetyZoneAll, error) {
+func BACnetConstructedDataLifeSafetyZoneAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLifeSafetyZoneAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyZoneAll"); pullErr != nil {

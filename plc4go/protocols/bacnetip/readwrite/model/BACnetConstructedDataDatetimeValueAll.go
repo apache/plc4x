@@ -49,7 +49,7 @@ type IBACnetConstructedDataDatetimeValueAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataDatetimeValueAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataDatetimeValueAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_DATETIME_VALUE
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataDatetimeValueAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDatetimeValueAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDatetimeValueAll, error) {
+func BACnetConstructedDataDatetimeValueAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDatetimeValueAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDatetimeValueAll"); pullErr != nil {

@@ -49,7 +49,7 @@ type IBACnetConstructedDataPulseConverterAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataPulseConverterAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataPulseConverterAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_PULSE_CONVERTER
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataPulseConverterAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPulseConverterAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPulseConverterAll, error) {
+func BACnetConstructedDataPulseConverterAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPulseConverterAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPulseConverterAll"); pullErr != nil {

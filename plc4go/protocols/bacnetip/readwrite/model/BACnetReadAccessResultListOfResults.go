@@ -33,8 +33,8 @@ type BACnetReadAccessResultListOfResults struct {
 	ClosingTag               *BACnetClosingTag
 
 	// Arguments.
-	TagNumber  uint8
-	ObjectType BACnetObjectType
+	TagNumber          uint8
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetReadAccessResultListOfResults is the corresponding interface of BACnetReadAccessResultListOfResults
@@ -76,8 +76,8 @@ func (m *BACnetReadAccessResultListOfResults) GetClosingTag() *BACnetClosingTag 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetReadAccessResultListOfResults factory function for BACnetReadAccessResultListOfResults
-func NewBACnetReadAccessResultListOfResults(openingTag *BACnetOpeningTag, listOfReadAccessProperty []*BACnetReadAccessProperty, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetReadAccessResultListOfResults {
-	return &BACnetReadAccessResultListOfResults{OpeningTag: openingTag, ListOfReadAccessProperty: listOfReadAccessProperty, ClosingTag: closingTag, TagNumber: tagNumber, ObjectType: objectType}
+func NewBACnetReadAccessResultListOfResults(openingTag *BACnetOpeningTag, listOfReadAccessProperty []*BACnetReadAccessProperty, closingTag *BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *BACnetReadAccessResultListOfResults {
+	return &BACnetReadAccessResultListOfResults{OpeningTag: openingTag, ListOfReadAccessProperty: listOfReadAccessProperty, ClosingTag: closingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
 }
 
 func CastBACnetReadAccessResultListOfResults(structType interface{}) *BACnetReadAccessResultListOfResults {
@@ -121,7 +121,7 @@ func (m *BACnetReadAccessResultListOfResults) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetReadAccessResultListOfResultsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType) (*BACnetReadAccessResultListOfResults, error) {
+func BACnetReadAccessResultListOfResultsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (*BACnetReadAccessResultListOfResults, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReadAccessResultListOfResults"); pullErr != nil {
@@ -151,7 +151,7 @@ func BACnetReadAccessResultListOfResultsParse(readBuffer utils.ReadBuffer, tagNu
 	listOfReadAccessProperty := make([]*BACnetReadAccessProperty, 0)
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
-			_item, _err := BACnetReadAccessPropertyParse(readBuffer, objectType)
+			_item, _err := BACnetReadAccessPropertyParse(readBuffer, objectTypeArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfReadAccessProperty' field")
 			}
@@ -181,7 +181,7 @@ func BACnetReadAccessResultListOfResultsParse(readBuffer utils.ReadBuffer, tagNu
 	}
 
 	// Create the instance
-	return NewBACnetReadAccessResultListOfResults(openingTag, listOfReadAccessProperty, closingTag, tagNumber, objectType), nil
+	return NewBACnetReadAccessResultListOfResults(openingTag, listOfReadAccessProperty, closingTag, tagNumber, objectTypeArgument), nil
 }
 
 func (m *BACnetReadAccessResultListOfResults) Serialize(writeBuffer utils.WriteBuffer) error {

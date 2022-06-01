@@ -53,7 +53,7 @@ type IBACnetConstructedDataAction interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataAction) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataAction) GetObjectTypeArgument() BACnetObjectType {
 	return 0
 }
 
@@ -140,7 +140,7 @@ func (m *BACnetConstructedDataAction) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAction, error) {
+func BACnetConstructedDataActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAction, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAction"); pullErr != nil {

@@ -37,8 +37,8 @@ type BACnetNotificationParametersUnsignedOutOfRange struct {
 	InnerClosingTag *BACnetClosingTag
 
 	// Arguments.
-	TagNumber  uint8
-	ObjectType BACnetObjectType
+	TagNumber          uint8
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetNotificationParametersUnsignedOutOfRange is the corresponding interface of BACnetNotificationParametersUnsignedOutOfRange
@@ -119,7 +119,7 @@ func (m *BACnetNotificationParametersUnsignedOutOfRange) GetInnerClosingTag() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersUnsignedOutOfRange factory function for BACnetNotificationParametersUnsignedOutOfRange
-func NewBACnetNotificationParametersUnsignedOutOfRange(innerOpeningTag *BACnetOpeningTag, exceedingValue *BACnetContextTagUnsignedInteger, statusFlags *BACnetStatusFlagsTagged, deadband *BACnetContextTagUnsignedInteger, exceededLimit *BACnetContextTagUnsignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersUnsignedOutOfRange {
+func NewBACnetNotificationParametersUnsignedOutOfRange(innerOpeningTag *BACnetOpeningTag, exceedingValue *BACnetContextTagUnsignedInteger, statusFlags *BACnetStatusFlagsTagged, deadband *BACnetContextTagUnsignedInteger, exceededLimit *BACnetContextTagUnsignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *BACnetNotificationParametersUnsignedOutOfRange {
 	_result := &BACnetNotificationParametersUnsignedOutOfRange{
 		InnerOpeningTag:              innerOpeningTag,
 		ExceedingValue:               exceedingValue,
@@ -127,7 +127,7 @@ func NewBACnetNotificationParametersUnsignedOutOfRange(innerOpeningTag *BACnetOp
 		Deadband:                     deadband,
 		ExceededLimit:                exceededLimit,
 		InnerClosingTag:              innerClosingTag,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectType),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -185,7 +185,7 @@ func (m *BACnetNotificationParametersUnsignedOutOfRange) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersUnsignedOutOfRangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersUnsignedOutOfRange, error) {
+func BACnetNotificationParametersUnsignedOutOfRangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersUnsignedOutOfRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersUnsignedOutOfRange"); pullErr != nil {

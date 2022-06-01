@@ -49,7 +49,7 @@ type IBACnetConstructedDataCalendarAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataCalendarAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataCalendarAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_CALENDAR
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataCalendarAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCalendarAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCalendarAll, error) {
+func BACnetConstructedDataCalendarAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCalendarAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCalendarAll"); pullErr != nil {

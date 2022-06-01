@@ -37,8 +37,8 @@ type BACnetNotificationParametersChangeOfLifeSafety struct {
 	InnerClosingTag   *BACnetClosingTag
 
 	// Arguments.
-	TagNumber  uint8
-	ObjectType BACnetObjectType
+	TagNumber          uint8
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetNotificationParametersChangeOfLifeSafety is the corresponding interface of BACnetNotificationParametersChangeOfLifeSafety
@@ -119,7 +119,7 @@ func (m *BACnetNotificationParametersChangeOfLifeSafety) GetInnerClosingTag() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfLifeSafety factory function for BACnetNotificationParametersChangeOfLifeSafety
-func NewBACnetNotificationParametersChangeOfLifeSafety(innerOpeningTag *BACnetOpeningTag, newState *BACnetLifeSafetyStateTagged, newMode *BACnetLifeSafetyModeTagged, statusFlags *BACnetStatusFlagsTagged, operationExpected *BACnetLifeSafetyOperationTagged, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfLifeSafety {
+func NewBACnetNotificationParametersChangeOfLifeSafety(innerOpeningTag *BACnetOpeningTag, newState *BACnetLifeSafetyStateTagged, newMode *BACnetLifeSafetyModeTagged, statusFlags *BACnetStatusFlagsTagged, operationExpected *BACnetLifeSafetyOperationTagged, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *BACnetNotificationParametersChangeOfLifeSafety {
 	_result := &BACnetNotificationParametersChangeOfLifeSafety{
 		InnerOpeningTag:              innerOpeningTag,
 		NewState:                     newState,
@@ -127,7 +127,7 @@ func NewBACnetNotificationParametersChangeOfLifeSafety(innerOpeningTag *BACnetOp
 		StatusFlags:                  statusFlags,
 		OperationExpected:            operationExpected,
 		InnerClosingTag:              innerClosingTag,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectType),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -185,7 +185,7 @@ func (m *BACnetNotificationParametersChangeOfLifeSafety) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfLifeSafetyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersChangeOfLifeSafety, error) {
+func BACnetNotificationParametersChangeOfLifeSafetyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersChangeOfLifeSafety, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfLifeSafety"); pullErr != nil {

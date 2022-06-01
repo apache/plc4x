@@ -32,7 +32,7 @@ type BACnetPriorityValueConstructedValue struct {
 	ConstructedValue *BACnetConstructedData
 
 	// Arguments.
-	ObjectType BACnetObjectType
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetPriorityValueConstructedValue is the corresponding interface of BACnetPriorityValueConstructedValue
@@ -81,10 +81,10 @@ func (m *BACnetPriorityValueConstructedValue) GetConstructedValue() *BACnetConst
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPriorityValueConstructedValue factory function for BACnetPriorityValueConstructedValue
-func NewBACnetPriorityValueConstructedValue(constructedValue *BACnetConstructedData, peekedTagHeader *BACnetTagHeader, objectType BACnetObjectType) *BACnetPriorityValueConstructedValue {
+func NewBACnetPriorityValueConstructedValue(constructedValue *BACnetConstructedData, peekedTagHeader *BACnetTagHeader, objectTypeArgument BACnetObjectType) *BACnetPriorityValueConstructedValue {
 	_result := &BACnetPriorityValueConstructedValue{
 		ConstructedValue:    constructedValue,
-		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectType),
+		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -127,7 +127,7 @@ func (m *BACnetPriorityValueConstructedValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueConstructedValueParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetPriorityValueConstructedValue, error) {
+func BACnetPriorityValueConstructedValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (*BACnetPriorityValueConstructedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueConstructedValue"); pullErr != nil {
@@ -140,7 +140,7 @@ func BACnetPriorityValueConstructedValueParse(readBuffer utils.ReadBuffer, objec
 	if pullErr := readBuffer.PullContext("constructedValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_constructedValue, _constructedValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(0)), BACnetObjectType(objectType), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
+	_constructedValue, _constructedValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
 	if _constructedValueErr != nil {
 		return nil, errors.Wrap(_constructedValueErr, "Error parsing 'constructedValue' field")
 	}

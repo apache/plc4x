@@ -49,7 +49,7 @@ type IBACnetConstructedDataEscalatorAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataEscalatorAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataEscalatorAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_ESCALATOR
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataEscalatorAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEscalatorAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEscalatorAll, error) {
+func BACnetConstructedDataEscalatorAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEscalatorAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEscalatorAll"); pullErr != nil {

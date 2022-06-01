@@ -34,7 +34,7 @@ type BACnetReadAccessProperty struct {
 	ReadResult         *BACnetReadAccessPropertyReadResult
 
 	// Arguments.
-	ObjectType BACnetObjectType
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetReadAccessProperty is the corresponding interface of BACnetReadAccessProperty
@@ -76,8 +76,8 @@ func (m *BACnetReadAccessProperty) GetReadResult() *BACnetReadAccessPropertyRead
 ///////////////////////////////////////////////////////////
 
 // NewBACnetReadAccessProperty factory function for BACnetReadAccessProperty
-func NewBACnetReadAccessProperty(propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, readResult *BACnetReadAccessPropertyReadResult, objectType BACnetObjectType) *BACnetReadAccessProperty {
-	return &BACnetReadAccessProperty{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, ReadResult: readResult, ObjectType: objectType}
+func NewBACnetReadAccessProperty(propertyIdentifier *BACnetPropertyIdentifierTagged, arrayIndex *BACnetContextTagUnsignedInteger, readResult *BACnetReadAccessPropertyReadResult, objectTypeArgument BACnetObjectType) *BACnetReadAccessProperty {
+	return &BACnetReadAccessProperty{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, ReadResult: readResult, ObjectTypeArgument: objectTypeArgument}
 }
 
 func CastBACnetReadAccessProperty(structType interface{}) *BACnetReadAccessProperty {
@@ -121,7 +121,7 @@ func (m *BACnetReadAccessProperty) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetReadAccessProperty, error) {
+func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (*BACnetReadAccessProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReadAccessProperty"); pullErr != nil {
@@ -171,7 +171,7 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectType BACne
 		if pullErr := readBuffer.PullContext("readResult"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetReadAccessPropertyReadResultParse(readBuffer, objectType, propertyIdentifier.GetValue())
+		_val, _err := BACnetReadAccessPropertyReadResultParse(readBuffer, objectTypeArgument, propertyIdentifier.GetValue())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
@@ -190,7 +190,7 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectType BACne
 	}
 
 	// Create the instance
-	return NewBACnetReadAccessProperty(propertyIdentifier, arrayIndex, readResult, objectType), nil
+	return NewBACnetReadAccessProperty(propertyIdentifier, arrayIndex, readResult, objectTypeArgument), nil
 }
 
 func (m *BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -40,8 +40,8 @@ type BACnetNotificationParametersAccessEvent struct {
 	InnerClosingTag      *BACnetClosingTag
 
 	// Arguments.
-	TagNumber  uint8
-	ObjectType BACnetObjectType
+	TagNumber          uint8
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetNotificationParametersAccessEvent is the corresponding interface of BACnetNotificationParametersAccessEvent
@@ -134,7 +134,7 @@ func (m *BACnetNotificationParametersAccessEvent) GetInnerClosingTag() *BACnetCl
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersAccessEvent factory function for BACnetNotificationParametersAccessEvent
-func NewBACnetNotificationParametersAccessEvent(innerOpeningTag *BACnetOpeningTag, accessEvent *BACnetAccessEventTagged, statusFlags *BACnetStatusFlagsTagged, accessEventTag *BACnetContextTagUnsignedInteger, accessEventTime *BACnetTimeStampEnclosed, accessCredential *BACnetDeviceObjectReferenceEnclosed, authenticationFactor *BACnetAuthenticationFactorTypeTagged, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersAccessEvent {
+func NewBACnetNotificationParametersAccessEvent(innerOpeningTag *BACnetOpeningTag, accessEvent *BACnetAccessEventTagged, statusFlags *BACnetStatusFlagsTagged, accessEventTag *BACnetContextTagUnsignedInteger, accessEventTime *BACnetTimeStampEnclosed, accessCredential *BACnetDeviceObjectReferenceEnclosed, authenticationFactor *BACnetAuthenticationFactorTypeTagged, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *BACnetNotificationParametersAccessEvent {
 	_result := &BACnetNotificationParametersAccessEvent{
 		InnerOpeningTag:              innerOpeningTag,
 		AccessEvent:                  accessEvent,
@@ -144,7 +144,7 @@ func NewBACnetNotificationParametersAccessEvent(innerOpeningTag *BACnetOpeningTa
 		AccessCredential:             accessCredential,
 		AuthenticationFactor:         authenticationFactor,
 		InnerClosingTag:              innerClosingTag,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectType),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -210,7 +210,7 @@ func (m *BACnetNotificationParametersAccessEvent) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersAccessEvent, error) {
+func BACnetNotificationParametersAccessEventParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersAccessEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersAccessEvent"); pullErr != nil {

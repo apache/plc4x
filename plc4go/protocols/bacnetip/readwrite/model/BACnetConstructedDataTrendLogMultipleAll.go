@@ -49,7 +49,7 @@ type IBACnetConstructedDataTrendLogMultipleAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataTrendLogMultipleAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataTrendLogMultipleAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_TREND_LOG_MULTIPLE
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataTrendLogMultipleAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTrendLogMultipleAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTrendLogMultipleAll, error) {
+func BACnetConstructedDataTrendLogMultipleAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTrendLogMultipleAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrendLogMultipleAll"); pullErr != nil {

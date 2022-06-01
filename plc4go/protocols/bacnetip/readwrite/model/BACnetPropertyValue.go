@@ -35,7 +35,7 @@ type BACnetPropertyValue struct {
 	Priority           *BACnetContextTagUnsignedInteger
 
 	// Arguments.
-	ObjectType BACnetObjectType
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetPropertyValue is the corresponding interface of BACnetPropertyValue
@@ -83,8 +83,8 @@ func (m *BACnetPropertyValue) GetPriority() *BACnetContextTagUnsignedInteger {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyValue factory function for BACnetPropertyValue
-func NewBACnetPropertyValue(propertyIdentifier *BACnetPropertyIdentifierTagged, propertyArrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedDataElement, priority *BACnetContextTagUnsignedInteger, objectType BACnetObjectType) *BACnetPropertyValue {
-	return &BACnetPropertyValue{PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, PropertyValue: propertyValue, Priority: priority, ObjectType: objectType}
+func NewBACnetPropertyValue(propertyIdentifier *BACnetPropertyIdentifierTagged, propertyArrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedDataElement, priority *BACnetContextTagUnsignedInteger, objectTypeArgument BACnetObjectType) *BACnetPropertyValue {
+	return &BACnetPropertyValue{PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, PropertyValue: propertyValue, Priority: priority, ObjectTypeArgument: objectTypeArgument}
 }
 
 func CastBACnetPropertyValue(structType interface{}) *BACnetPropertyValue {
@@ -133,7 +133,7 @@ func (m *BACnetPropertyValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetPropertyValue, error) {
+func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (*BACnetPropertyValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyValue"); pullErr != nil {
@@ -183,7 +183,7 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObje
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataElementParse(readBuffer, objectType, propertyIdentifier.GetValue())
+		_val, _err := BACnetConstructedDataElementParse(readBuffer, objectTypeArgument, propertyIdentifier.GetValue())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
@@ -223,7 +223,7 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObje
 	}
 
 	// Create the instance
-	return NewBACnetPropertyValue(propertyIdentifier, propertyArrayIndex, propertyValue, priority, objectType), nil
+	return NewBACnetPropertyValue(propertyIdentifier, propertyArrayIndex, propertyValue, priority, objectTypeArgument), nil
 }
 
 func (m *BACnetPropertyValue) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -33,9 +33,9 @@ type BACnetNotificationParameters struct {
 	ClosingTag      *BACnetClosingTag
 
 	// Arguments.
-	TagNumber  uint8
-	ObjectType BACnetObjectType
-	Child      IBACnetNotificationParametersChild
+	TagNumber          uint8
+	ObjectTypeArgument BACnetObjectType
+	Child              IBACnetNotificationParametersChild
 }
 
 // IBACnetNotificationParameters is the corresponding interface of BACnetNotificationParameters
@@ -106,8 +106,8 @@ func (m *BACnetNotificationParameters) GetPeekedTagNumber() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParameters factory function for BACnetNotificationParameters
-func NewBACnetNotificationParameters(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParameters {
-	return &BACnetNotificationParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber, ObjectType: objectType}
+func NewBACnetNotificationParameters(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *BACnetNotificationParameters {
+	return &BACnetNotificationParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
 }
 
 func CastBACnetNotificationParameters(structType interface{}) *BACnetNotificationParameters {
@@ -153,7 +153,7 @@ func (m *BACnetNotificationParameters) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType) (*BACnetNotificationParameters, error) {
+func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (*BACnetNotificationParameters, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParameters"); pullErr != nil {
@@ -197,45 +197,45 @@ func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber ui
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetNotificationParametersChangeOfBitString
-		_child, typeSwitchError = BACnetNotificationParametersChangeOfBitStringParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfBitStringParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(1): // BACnetNotificationParametersChangeOfState
-		_child, typeSwitchError = BACnetNotificationParametersChangeOfStateParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfStateParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(2): // BACnetNotificationParametersChangeOfValue
-		_child, typeSwitchError = BACnetNotificationParametersChangeOfValueParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfValueParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(3): // BACnetNotificationParametersCommandFailure
-		_child, typeSwitchError = BACnetNotificationParametersCommandFailureParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersCommandFailureParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(4): // BACnetNotificationParametersFloatingLimit
-		_child, typeSwitchError = BACnetNotificationParametersFloatingLimitParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersFloatingLimitParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(5): // BACnetNotificationParametersOutOfRange
-		_child, typeSwitchError = BACnetNotificationParametersOutOfRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersOutOfRangeParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(6): // BACnetNotificationParametersComplexEventType
-		_child, typeSwitchError = BACnetNotificationParametersComplexEventTypeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersComplexEventTypeParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(8): // BACnetNotificationParametersChangeOfLifeSafety
-		_child, typeSwitchError = BACnetNotificationParametersChangeOfLifeSafetyParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfLifeSafetyParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(9): // BACnetNotificationParametersExtended
-		_child, typeSwitchError = BACnetNotificationParametersExtendedParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersExtendedParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(10): // BACnetNotificationParametersBufferReady
-		_child, typeSwitchError = BACnetNotificationParametersBufferReadyParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersBufferReadyParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(11): // BACnetNotificationParametersUnsignedRange
-		_child, typeSwitchError = BACnetNotificationParametersUnsignedRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersUnsignedRangeParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(13): // BACnetNotificationParametersAccessEvent
-		_child, typeSwitchError = BACnetNotificationParametersAccessEventParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersAccessEventParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(14): // BACnetNotificationParametersDoubleOutOfRange
-		_child, typeSwitchError = BACnetNotificationParametersDoubleOutOfRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersDoubleOutOfRangeParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(15): // BACnetNotificationParametersSignedOutOfRange
-		_child, typeSwitchError = BACnetNotificationParametersSignedOutOfRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersSignedOutOfRangeParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(16): // BACnetNotificationParametersUnsignedOutOfRange
-		_child, typeSwitchError = BACnetNotificationParametersUnsignedOutOfRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersUnsignedOutOfRangeParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(17): // BACnetNotificationParametersChangeOfCharacterString
-		_child, typeSwitchError = BACnetNotificationParametersChangeOfCharacterStringParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfCharacterStringParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(18): // BACnetNotificationParametersChangeOfStatusFlags
-		_child, typeSwitchError = BACnetNotificationParametersChangeOfStatusFlagsParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfStatusFlagsParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(19): // BACnetNotificationParametersChangeOfReliability
-		_child, typeSwitchError = BACnetNotificationParametersChangeOfReliabilityParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfReliabilityParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(21): // BACnetNotificationParametersChangeOfDiscreteValue
-		_child, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	case peekedTagNumber == uint8(22): // BACnetNotificationParametersChangeOfTimer
-		_child, typeSwitchError = BACnetNotificationParametersChangeOfTimerParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfTimerParse(readBuffer, tagNumber, objectTypeArgument, peekedTagNumber)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

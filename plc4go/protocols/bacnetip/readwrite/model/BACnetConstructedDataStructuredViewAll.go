@@ -49,7 +49,7 @@ type IBACnetConstructedDataStructuredViewAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataStructuredViewAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataStructuredViewAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_STRUCTURED_VIEW
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataStructuredViewAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataStructuredViewAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataStructuredViewAll, error) {
+func BACnetConstructedDataStructuredViewAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataStructuredViewAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStructuredViewAll"); pullErr != nil {

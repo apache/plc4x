@@ -32,7 +32,7 @@ type BACnetPriorityValueUnsigned struct {
 	UnsignedValue *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	ObjectType BACnetObjectType
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetPriorityValueUnsigned is the corresponding interface of BACnetPriorityValueUnsigned
@@ -81,10 +81,10 @@ func (m *BACnetPriorityValueUnsigned) GetUnsignedValue() *BACnetApplicationTagUn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPriorityValueUnsigned factory function for BACnetPriorityValueUnsigned
-func NewBACnetPriorityValueUnsigned(unsignedValue *BACnetApplicationTagUnsignedInteger, peekedTagHeader *BACnetTagHeader, objectType BACnetObjectType) *BACnetPriorityValueUnsigned {
+func NewBACnetPriorityValueUnsigned(unsignedValue *BACnetApplicationTagUnsignedInteger, peekedTagHeader *BACnetTagHeader, objectTypeArgument BACnetObjectType) *BACnetPriorityValueUnsigned {
 	_result := &BACnetPriorityValueUnsigned{
 		UnsignedValue:       unsignedValue,
-		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectType),
+		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -127,7 +127,7 @@ func (m *BACnetPriorityValueUnsigned) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueUnsignedParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetPriorityValueUnsigned, error) {
+func BACnetPriorityValueUnsignedParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (*BACnetPriorityValueUnsigned, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueUnsigned"); pullErr != nil {

@@ -49,7 +49,7 @@ type IBACnetConstructedDataNetworkSecurityAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataNetworkSecurityAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataNetworkSecurityAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_NETWORK_SECURITY
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataNetworkSecurityAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNetworkSecurityAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNetworkSecurityAll, error) {
+func BACnetConstructedDataNetworkSecurityAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNetworkSecurityAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkSecurityAll"); pullErr != nil {

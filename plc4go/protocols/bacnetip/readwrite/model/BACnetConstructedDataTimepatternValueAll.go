@@ -49,7 +49,7 @@ type IBACnetConstructedDataTimepatternValueAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataTimepatternValueAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataTimepatternValueAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_TIMEPATTERN_VALUE
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataTimepatternValueAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimepatternValueAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTimepatternValueAll, error) {
+func BACnetConstructedDataTimepatternValueAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTimepatternValueAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimepatternValueAll"); pullErr != nil {

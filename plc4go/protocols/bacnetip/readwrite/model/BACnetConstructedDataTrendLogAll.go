@@ -49,7 +49,7 @@ type IBACnetConstructedDataTrendLogAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataTrendLogAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataTrendLogAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_TREND_LOG
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataTrendLogAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTrendLogAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTrendLogAll, error) {
+func BACnetConstructedDataTrendLogAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTrendLogAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrendLogAll"); pullErr != nil {

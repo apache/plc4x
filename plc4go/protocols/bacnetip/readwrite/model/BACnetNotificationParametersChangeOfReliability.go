@@ -36,8 +36,8 @@ type BACnetNotificationParametersChangeOfReliability struct {
 	InnerClosingTag *BACnetClosingTag
 
 	// Arguments.
-	TagNumber  uint8
-	ObjectType BACnetObjectType
+	TagNumber          uint8
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetNotificationParametersChangeOfReliability is the corresponding interface of BACnetNotificationParametersChangeOfReliability
@@ -112,14 +112,14 @@ func (m *BACnetNotificationParametersChangeOfReliability) GetInnerClosingTag() *
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfReliability factory function for BACnetNotificationParametersChangeOfReliability
-func NewBACnetNotificationParametersChangeOfReliability(innerOpeningTag *BACnetOpeningTag, reliability *BACnetReliabilityTagged, statusFlags *BACnetStatusFlagsTagged, propertyValues *BACnetPropertyValues, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParametersChangeOfReliability {
+func NewBACnetNotificationParametersChangeOfReliability(innerOpeningTag *BACnetOpeningTag, reliability *BACnetReliabilityTagged, statusFlags *BACnetStatusFlagsTagged, propertyValues *BACnetPropertyValues, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *BACnetNotificationParametersChangeOfReliability {
 	_result := &BACnetNotificationParametersChangeOfReliability{
 		InnerOpeningTag:              innerOpeningTag,
 		Reliability:                  reliability,
 		StatusFlags:                  statusFlags,
 		PropertyValues:               propertyValues,
 		InnerClosingTag:              innerClosingTag,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectType),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -174,7 +174,7 @@ func (m *BACnetNotificationParametersChangeOfReliability) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersChangeOfReliability, error) {
+func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersChangeOfReliability, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfReliability"); pullErr != nil {
@@ -226,7 +226,7 @@ func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("propertyValues"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyValues, _propertyValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectType))
+	_propertyValues, _propertyValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument))
 	if _propertyValuesErr != nil {
 		return nil, errors.Wrap(_propertyValuesErr, "Error parsing 'propertyValues' field")
 	}

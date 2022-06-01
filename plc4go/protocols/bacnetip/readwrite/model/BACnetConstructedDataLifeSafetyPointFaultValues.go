@@ -53,7 +53,7 @@ type IBACnetConstructedDataLifeSafetyPointFaultValues interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataLifeSafetyPointFaultValues) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataLifeSafetyPointFaultValues) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_LIFE_SAFETY_POINT
 }
 
@@ -140,7 +140,7 @@ func (m *BACnetConstructedDataLifeSafetyPointFaultValues) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLifeSafetyPointFaultValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLifeSafetyPointFaultValues, error) {
+func BACnetConstructedDataLifeSafetyPointFaultValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLifeSafetyPointFaultValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyPointFaultValues"); pullErr != nil {

@@ -49,7 +49,7 @@ type IBACnetConstructedDataNotificationForwarderAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataNotificationForwarderAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataNotificationForwarderAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_NOTIFICATION_FORWARDER
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataNotificationForwarderAll) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNotificationForwarderAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNotificationForwarderAll, error) {
+func BACnetConstructedDataNotificationForwarderAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNotificationForwarderAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotificationForwarderAll"); pullErr != nil {

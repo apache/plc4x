@@ -49,7 +49,7 @@ type IBACnetConstructedDataOctetstringValueAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataOctetstringValueAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataOctetstringValueAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_OCTETSTRING_VALUE
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataOctetstringValueAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOctetstringValueAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataOctetstringValueAll, error) {
+func BACnetConstructedDataOctetstringValueAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataOctetstringValueAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOctetstringValueAll"); pullErr != nil {

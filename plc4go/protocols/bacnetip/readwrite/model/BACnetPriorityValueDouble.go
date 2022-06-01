@@ -32,7 +32,7 @@ type BACnetPriorityValueDouble struct {
 	DoubleValue *BACnetApplicationTagDouble
 
 	// Arguments.
-	ObjectType BACnetObjectType
+	ObjectTypeArgument BACnetObjectType
 }
 
 // IBACnetPriorityValueDouble is the corresponding interface of BACnetPriorityValueDouble
@@ -81,10 +81,10 @@ func (m *BACnetPriorityValueDouble) GetDoubleValue() *BACnetApplicationTagDouble
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPriorityValueDouble factory function for BACnetPriorityValueDouble
-func NewBACnetPriorityValueDouble(doubleValue *BACnetApplicationTagDouble, peekedTagHeader *BACnetTagHeader, objectType BACnetObjectType) *BACnetPriorityValueDouble {
+func NewBACnetPriorityValueDouble(doubleValue *BACnetApplicationTagDouble, peekedTagHeader *BACnetTagHeader, objectTypeArgument BACnetObjectType) *BACnetPriorityValueDouble {
 	_result := &BACnetPriorityValueDouble{
 		DoubleValue:         doubleValue,
-		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectType),
+		BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -127,7 +127,7 @@ func (m *BACnetPriorityValueDouble) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueDoubleParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetPriorityValueDouble, error) {
+func BACnetPriorityValueDoubleParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (*BACnetPriorityValueDouble, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueDouble"); pullErr != nil {

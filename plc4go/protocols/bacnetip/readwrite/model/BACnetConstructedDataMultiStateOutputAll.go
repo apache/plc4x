@@ -49,7 +49,7 @@ type IBACnetConstructedDataMultiStateOutputAll interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *BACnetConstructedDataMultiStateOutputAll) GetObjectType() BACnetObjectType {
+func (m *BACnetConstructedDataMultiStateOutputAll) GetObjectTypeArgument() BACnetObjectType {
 	return BACnetObjectType_MULTI_STATE_OUTPUT
 }
 
@@ -114,7 +114,7 @@ func (m *BACnetConstructedDataMultiStateOutputAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMultiStateOutputAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataMultiStateOutputAll, error) {
+func BACnetConstructedDataMultiStateOutputAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataMultiStateOutputAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMultiStateOutputAll"); pullErr != nil {
