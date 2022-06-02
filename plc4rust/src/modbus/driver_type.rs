@@ -83,6 +83,7 @@ impl Message for DriverType {
     }
 
     fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
+        assert!(parameter.is_none());
         let result = reader.read_u8()?;
         match DriverType::try_from(result) {
             Ok(result) => {

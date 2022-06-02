@@ -17,10 +17,7 @@
  * under the License.
  */
 
-use std::any::Any;
-use std::collections::HashMap;
-use std::io::{Error, Read, Write};
-use std::io::ErrorKind::InvalidInput;
+use std::io::{Read, Write};
 
 use crate::read_buffer::ReadBuffer;
 use crate::write_buffer::WriteBuffer;
@@ -66,10 +63,10 @@ mod tests {
             response: false
         };
 
-        let mut bytes: Vec<u8> = vec![];
+        let bytes: Vec<u8> = vec![];
         let mut read_buffer = ReadBuffer::new(Endianess::BigEndian, &*bytes);
 
-        let result = ModbusADU::parse(&mut read_buffer, Some(options));
+        let _ = ModbusADU::parse(&mut read_buffer, Some(options));
     }
 
 }

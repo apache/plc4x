@@ -223,17 +223,13 @@ pub enum ModbusPDU {
     ModbusPDUError(ModbusPDUError)
 }
 
-impl ModbusPDU {
-
-    fn deserialize_special<T: Read>(reader: &mut ReadBuffer<T>, bit_response: bool) -> Result<ModbusPDU, Error> {
-        todo!()
-    }
-
+pub struct ModbusPDUOption {
+    bit_response: bool
 }
 
 impl Message for ModbusPDU {
     type M = ModbusPDU;
-    type P = u8;
+    type P = ModbusPDUOption;
 
     fn get_length_in_bits(&self) -> u32 {
         match self {
