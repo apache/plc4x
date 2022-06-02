@@ -28,6 +28,9 @@ mod modbus_pdu;
 mod modbus_pdu_read_file_record_request_item;
 mod modbus_pdu_write_file_record_response_item;
 mod modbus_error_code;
+mod modbus_device_information_conformity_level;
+mod modbus_device_information_more_follows;
+mod modbus_device_information_level;
 
 pub use driver_type::DriverType;
 pub use modbus_adu::ModbusADU;
@@ -36,6 +39,10 @@ pub use modbus_pdu::ModbusPDU;
 pub use modbus_pdu::ModbusPDUError;
 pub use modbus_pdu_read_file_record_request_item::ModbusPDUReadFileRecordRequestItem;
 pub use modbus_pdu_write_file_record_response_item::ModbusPDUWriteFileRecordResponseItem;
+pub use modbus_error_code::ModbusErrorCode;
+pub use modbus_device_information_conformity_level::ModbusDeviceInformationConformityLevel;
+pub use modbus_device_information_more_follows::ModbusDeviceInformationMoreFollows;
+pub use modbus_device_information_level::ModbusDeviceInformationLevel;
 
 #[cfg(test)]
 #[allow(unused_must_use)]

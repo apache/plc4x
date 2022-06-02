@@ -26,6 +26,7 @@ mod write_buffer;
 mod modbus;
 mod read_buffer;
 mod r#enum;
+mod types;
 
 #[allow(dead_code)]
 pub enum Endianess {
