@@ -56,9 +56,9 @@ pub struct ModbusADUOptions {
 
 impl Message for ModbusADU {
     type M = ModbusADU;
-    type O = ModbusADUOptions;
+    type P = ModbusADUOptions;
 
-    fn get_length(&self) -> u32 {
+    fn get_length_in_bits(&self) -> u32 {
         todo!()
     }
 
@@ -66,15 +66,15 @@ impl Message for ModbusADU {
         todo!()
     }
 
-    fn deserialize_with_parameters<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::O>) -> Result<Self::M, Error> {
+    fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
         match parameter {
             Some(parameter) => {
                 match parameter.driver_type {
                     DriverType::MODBUS_TCP => {
-                        Ok(ModbusADU::ModbusTcpADU(ModbusTcpADU::deserialize_with_parameters::<T>(reader, None)?))
+                        Ok(ModbusADU::ModbusTcpADU(ModbusTcpADU::parse::<T>(reader, None)?))
                     }
                     DriverType::MODBUS_RTU => {
-                        Ok(ModbusADU::ModbusRtuADU(ModbusRtuADU::deserialize_with_parameters::<T>(reader, None)?))
+                        Ok(ModbusADU::ModbusRtuADU(ModbusRtuADU::parse::<T>(reader, None)?))
                     }
                     _ => {
                         Err(Error::new(InvalidInput, format!("Unable to deserialize from {:?}, {:?}", parameter.driver_type, parameter.response)))
@@ -98,15 +98,15 @@ pub struct ModbusTcpADU {
 
 impl ModbusTcpADU {
     fn length(&self) -> u16 {
-        return (self.pdu.get_length() + 1) as u16
+        return (self.pdu.get_length_in_bytes() + 1) as u16
     }
 }
 
 impl Message for ModbusTcpADU {
     type M = ModbusTcpADU;
-    type O = u8;
+    type P = u8;
 
-    fn get_length(&self) -> u32 {
+    fn get_length_in_bits(&self) -> u32 {
         todo!()
     }
 
@@ -114,7 +114,7 @@ impl Message for ModbusTcpADU {
         todo!()
     }
 
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+    fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
         todo!()
     }
 }
@@ -125,9 +125,9 @@ pub struct ModbusRtuADU {
 
 impl Message for ModbusRtuADU {
     type M = ModbusRtuADU;
-    type O = u8;
+    type P = u8;
 
-    fn get_length(&self) -> u32 {
+    fn get_length_in_bits(&self) -> u32 {
         todo!()
     }
 
@@ -135,7 +135,7 @@ impl Message for ModbusRtuADU {
         todo!()
     }
 
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+    fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
         todo!()
     }
 }

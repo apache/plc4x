@@ -53,17 +53,17 @@ impl Into<u8> for DriverType {
 
 impl Message for DriverType {
     type M = DriverType;
-    type O = u8;
+    type P = u8;
 
-    fn get_length(&self) -> u32 {
-        1
+    fn get_length_in_bits(&self) -> u32 {
+        8
     }
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
         writer.write_u8((*self).into())
     }
 
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+    fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
         let result = reader.read_u8()?;
         match DriverType::try_from(result) {
             Ok(result) => {

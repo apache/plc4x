@@ -18,26 +18,17 @@ pub enum Endianess {
 
 trait Message {
     type M;
-    type O;
+    type P;
 
-    fn get_length(&self) -> u32;
+    fn get_length_in_bits(&self) -> u32;
+
+    fn get_length_in_bytes(&self) -> u32 {
+        self.get_length_in_bits()/8
+    }
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, std::io::Error>;
 
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
-        Err(Error::new(InvalidInput, "Cannot parse directly!"))
-    }
-
-    fn deserialize_with_parameters<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::O>) -> Result<Self::M, std::io::Error> {
-        match parameter {
-            None => {
-                Self::deserialize(reader)
-            }
-            Some(_) => {
-                Err(Error::new(InvalidInput, "not implemented!"))
-            }
-        }
-    }
+    fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, std::io::Error>;
 
 }
 
@@ -57,7 +48,7 @@ mod tests {
         let mut bytes: Vec<u8> = vec![];
         let mut read_buffer = ReadBuffer::new(Endianess::BigEndian, &*bytes);
 
-        let result = ModbusADU::deserialize_with_parameters(&mut read_buffer, Some(options));
+        let result = ModbusADU::parse(&mut read_buffer, Some(options));
     }
 
 }

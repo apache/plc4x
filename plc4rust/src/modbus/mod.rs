@@ -46,11 +46,10 @@ mod test {
         let bytes = writer.writer.clone();
         let mut reader = ReadBuffer::new(Endianess::BigEndian, &*bytes);
 
-        if let Ok(msg) = ModbusPDUWriteFileRecordResponseItem::deserialize_with_parameters(&mut reader, None) {
+        if let Ok(msg) = ModbusPDUWriteFileRecordResponseItem::parse(&mut reader, None) {
             assert_eq!(message, msg);
         } else {
             assert!(false);
         }
-
     }
 }

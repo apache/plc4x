@@ -17,10 +17,10 @@ pub struct ModbusPDUReadFileRecordRequestItem {
 
 impl Message for ModbusPDUReadFileRecordRequestItem {
     type M = ModbusPDUReadFileRecordRequestItem;
-    type O = u8;
+    type P = u8;
 
-    fn get_length(&self) -> u32 {
-        56
+    fn get_length_in_bits(&self) -> u32 {
+        56*8
     }
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, std::io::Error> {
@@ -31,7 +31,7 @@ impl Message for ModbusPDUReadFileRecordRequestItem {
         Ok(size)
     }
 
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, std::io::Error> {
+    fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, std::io::Error> {
         let reference_type = reader.read_u8()?;
         let file_number = reader.read_u16()?;
         let record_number = reader.read_u16()?;
