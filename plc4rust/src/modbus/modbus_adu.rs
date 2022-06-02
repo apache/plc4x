@@ -1,6 +1,6 @@
 use std::io::{Error, Read, Write};
 use std::io::ErrorKind::InvalidInput;
-use crate::{Message, ReadBuffer, WriteBuffer};
+use crate::{Message, NoOption, ReadBuffer, WriteBuffer};
 use crate::modbus::{DriverType, ModbusPDU};
 
 // [discriminatedType ModbusADU(DriverType driverType, bit response) byteOrder='BIG_ENDIAN'
@@ -125,7 +125,7 @@ pub struct ModbusRtuADU {
 
 impl Message for ModbusRtuADU {
     type M = ModbusRtuADU;
-    type P = u8;
+    type P = NoOption;
 
     fn get_length_in_bits(&self) -> u32 {
         todo!()

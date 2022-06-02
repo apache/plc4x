@@ -16,6 +16,8 @@ pub enum Endianess {
     BigEndian
 }
 
+struct NoOption {}
+
 trait Message {
     type M;
     type P;

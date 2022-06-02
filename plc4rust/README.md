@@ -6,5 +6,3 @@ Some testing / prototyping for potential plc4rust
 
 cargo 1.59.0
 rust 1.59.0
-
-

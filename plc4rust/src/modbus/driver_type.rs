@@ -1,5 +1,5 @@
 use std::io::{Error, ErrorKind, Read, Write};
-use crate::{Message, ReadBuffer, WriteBuffer};
+use crate::{Message, NoOption, ReadBuffer, WriteBuffer};
 
 // [enum DriverType
 //     ['0x01' MODBUS_TCP  ]
@@ -53,7 +53,7 @@ impl Into<u8> for DriverType {
 
 impl Message for DriverType {
     type M = DriverType;
-    type P = u8;
+    type P = NoOption;
 
     fn get_length_in_bits(&self) -> u32 {
         8

@@ -1,5 +1,5 @@
 use std::io::{Error, Read, Write};
-use crate::{Message, ReadBuffer, WriteBuffer};
+use crate::{Message, NoOption, ReadBuffer, WriteBuffer};
 
 // [discriminatedType ModbusPDU(bit response)
 //     [discriminator bit         errorFlag]
@@ -239,7 +239,7 @@ pub struct ModbusPDUError {
 
 impl Message for ModbusPDUError {
     type M = ModbusPDUError;
-    type P = u8;
+    type P = NoOption;
 
     fn get_length_in_bits(&self) -> u32 {
         todo!()

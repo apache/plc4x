@@ -1,5 +1,5 @@
 use std::io::{Read, Write};
-use crate::{Message, ReadBuffer, WriteBuffer};
+use crate::{Message, NoOption, ReadBuffer, WriteBuffer};
 
 // [type ModbusPDUWriteFileRecordResponseItem
 //     [simple     uint 8     referenceType]
@@ -24,7 +24,7 @@ impl ModbusPDUWriteFileRecordResponseItem {
 
 impl Message for ModbusPDUWriteFileRecordResponseItem {
     type M = ModbusPDUWriteFileRecordResponseItem;
-    type P = u8;
+    type P = NoOption;
 
     fn get_length_in_bits(&self) -> u32 {
         8 * (56 + self.record_data.len()) as u32
