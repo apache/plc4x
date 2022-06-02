@@ -63,6 +63,10 @@ impl Into<u8> for DriverType {
 impl Message for DriverType {
     type M = DriverType;
 
+    fn get_length(&self) -> u32 {
+        1
+    }
+
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
         writer.write_u8((*self).into())
     }
@@ -145,6 +149,10 @@ struct ModbusTcpADU {
 impl Message for ModbusTcpADU {
     type M = ModbusTcpADU;
 
+    fn get_length(&self) -> u32 {
+        todo!()
+    }
+
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
         todo!()
     }
@@ -160,6 +168,10 @@ struct ModbusRtuADU {
 
 impl Message for ModbusRtuADU {
     type M = ModbusRtuADU;
+
+    fn get_length(&self) -> u32 {
+        todo!()
+    }
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
         todo!()
@@ -201,6 +213,10 @@ enum ModbusADUSubtype {
 impl Message for ModbusADU {
     type M = ModbusADU;
 
+    fn get_length(&self) -> u32 {
+        todo!()
+    }
+
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
         todo!()
     }
@@ -226,6 +242,10 @@ struct ModbusPDUReadFileRecordRequestItem {
 
 impl Message for ModbusPDUReadFileRecordRequestItem {
     type M = ModbusPDUReadFileRecordRequestItem;
+
+    fn get_length(&self) -> u32 {
+        56
+    }
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, std::io::Error> {
         let mut size = writer.write_u8(self.reference_type)?;
@@ -273,6 +293,10 @@ impl ModbusPDUWriteFileRecordResponseItem {
 
 impl Message for ModbusPDUWriteFileRecordResponseItem {
     type M = ModbusPDUWriteFileRecordResponseItem;
+
+    fn get_length(&self) -> u32 {
+        56 + self.record_data.len() as u32
+    }
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, std::io::Error> {
         let mut size = writer.write_u8(self.reference_type)?;
