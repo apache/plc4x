@@ -63,7 +63,7 @@ impl Message for DriverType {
         writer.write_u8((*self).into())
     }
 
-    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
         let result = reader.read_u8()?;
         match DriverType::try_from(result) {
             Ok(result) => {

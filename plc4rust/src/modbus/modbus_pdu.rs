@@ -228,7 +228,7 @@ impl Message for ModbusPDU {
         todo!()
     }
 
-    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
         todo!()
     }
 }
@@ -249,7 +249,7 @@ impl Message for ModbusPDUError {
         todo!()
     }
 
-    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
         todo!()
     }
 }

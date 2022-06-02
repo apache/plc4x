@@ -66,19 +66,15 @@ impl Message for ModbusADU {
         todo!()
     }
 
-    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
-        Err(Error::new(InvalidInput, "Cannot parse directly!"))
-    }
-
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::O>) -> Result<Self::M, Error> {
+    fn deserialize_with_parameters<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::O>) -> Result<Self::M, Error> {
         match parameter {
             Some(parameter) => {
                 match parameter.driver_type {
                     DriverType::MODBUS_TCP => {
-                        Ok(ModbusADU::ModbusTcpADU(ModbusTcpADU::deserialize::<T>(reader, None)?))
+                        Ok(ModbusADU::ModbusTcpADU(ModbusTcpADU::deserialize_with_parameters::<T>(reader, None)?))
                     }
                     DriverType::MODBUS_RTU => {
-                        Ok(ModbusADU::ModbusRtuADU(ModbusRtuADU::deserialize::<T>(reader, None)?))
+                        Ok(ModbusADU::ModbusRtuADU(ModbusRtuADU::deserialize_with_parameters::<T>(reader, None)?))
                     }
                     _ => {
                         Err(Error::new(InvalidInput, format!("Unable to deserialize from {:?}, {:?}", parameter.driver_type, parameter.response)))
@@ -118,7 +114,7 @@ impl Message for ModbusTcpADU {
         todo!()
     }
 
-    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
         todo!()
     }
 }
@@ -139,7 +135,7 @@ impl Message for ModbusRtuADU {
         todo!()
     }
 
-    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
         todo!()
     }
 }

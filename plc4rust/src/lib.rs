@@ -24,12 +24,14 @@ trait Message {
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, std::io::Error>;
 
-    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, std::io::Error>;
+    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+        Err(Error::new(InvalidInput, "Cannot parse directly!"))
+    }
 
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::O>) -> Result<Self::M, std::io::Error> {
+    fn deserialize_with_parameters<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::O>) -> Result<Self::M, std::io::Error> {
         match parameter {
             None => {
-                Self::_deserialize(reader)
+                Self::deserialize(reader)
             }
             Some(_) => {
                 Err(Error::new(InvalidInput, "not implemented!"))
