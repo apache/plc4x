@@ -11,7 +11,7 @@ mod modbus_pdu_write_file_record_response_item;
 
 pub use driver_type::DriverType;
 pub use modbus_adu::ModbusADU;
-pub use modbus_pdu::ModbusPDUSubtypes;
+pub use modbus_pdu::ModbusPDU;
 pub use modbus_pdu::ModbusPDUError;
 pub use modbus_pdu_read_file_record_request_item::ModbusPDUReadFileRecordRequestItem;
 pub use modbus_pdu_write_file_record_response_item::ModbusPDUWriteFileRecordResponseItem;
