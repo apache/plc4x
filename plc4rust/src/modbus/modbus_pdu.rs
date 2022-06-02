@@ -204,8 +204,17 @@ pub enum ModbusPDU {
     ModbusPDUError(ModbusPDUError)
 }
 
+impl ModbusPDU {
+
+    fn deserialize_special<T: Read>(reader: &mut ReadBuffer<T>, bit_response: bool) -> Result<ModbusPDU, Error> {
+        todo!()
+    }
+
+}
+
 impl Message for ModbusPDU {
     type M = ModbusPDU;
+    type O = u8;
 
     fn get_length(&self) -> u32 {
         match self {
@@ -219,7 +228,7 @@ impl Message for ModbusPDU {
         todo!()
     }
 
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
         todo!()
     }
 }
@@ -230,6 +239,7 @@ pub struct ModbusPDUError {
 
 impl Message for ModbusPDUError {
     type M = ModbusPDUError;
+    type O = u8;
 
     fn get_length(&self) -> u32 {
         todo!()
@@ -239,7 +249,7 @@ impl Message for ModbusPDUError {
         todo!()
     }
 
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
         todo!()
     }
 }

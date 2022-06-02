@@ -24,6 +24,7 @@ impl ModbusPDUWriteFileRecordResponseItem {
 
 impl Message for ModbusPDUWriteFileRecordResponseItem {
     type M = ModbusPDUWriteFileRecordResponseItem;
+    type O = u8;
 
     fn get_length(&self) -> u32 {
         56 + self.record_data.len() as u32
@@ -38,7 +39,7 @@ impl Message for ModbusPDUWriteFileRecordResponseItem {
         Ok(size)
     }
 
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, std::io::Error> {
+    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, std::io::Error> {
         let reference_type = reader.read_u8()?;
         let file_number = reader.read_u16()?;
         let record_number = reader.read_u16()?;

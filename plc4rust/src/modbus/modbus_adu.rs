@@ -49,26 +49,14 @@ pub enum ModbusADU {
     ModbusRtuADU(ModbusRtuADU),
 }
 
-impl ModbusADU {
-
-    fn deserialize_special<T: Read>(reader: &mut ReadBuffer<T>, driver_type: DriverType, bit_response: bool) -> Result<ModbusADU, Error> {
-        match driver_type {
-            DriverType::MODBUS_TCP => {
-                Ok(ModbusADU::ModbusTcpADU(ModbusTcpADU::deserialize(reader)?))
-            }
-            DriverType::MODBUS_RTU => {
-                Ok(ModbusADU::ModbusRtuADU(ModbusRtuADU::deserialize(reader)?))
-            }
-            _ => {
-                Err(Error::new(InvalidInput, format!("Unable to deserialize from {:?}, {:?}", driver_type, bit_response)))
-            }
-        }
-    }
-
+pub struct ModbusADUOptions {
+    driver_type: DriverType,
+    response: bool
 }
 
 impl Message for ModbusADU {
     type M = ModbusADU;
+    type O = ModbusADUOptions;
 
     fn get_length(&self) -> u32 {
         todo!()
@@ -78,8 +66,30 @@ impl Message for ModbusADU {
         todo!()
     }
 
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
         Err(Error::new(InvalidInput, "Cannot parse directly!"))
+    }
+
+    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::O>) -> Result<Self::M, Error> {
+        match parameter {
+            Some(parameter) => {
+                match parameter.driver_type {
+                    DriverType::MODBUS_TCP => {
+                        Ok(ModbusADU::ModbusTcpADU(ModbusTcpADU::deserialize::<T>(reader, None)?))
+                    }
+                    DriverType::MODBUS_RTU => {
+                        Ok(ModbusADU::ModbusRtuADU(ModbusRtuADU::deserialize::<T>(reader, None)?))
+                    }
+                    _ => {
+                        Err(Error::new(InvalidInput, format!("Unable to deserialize from {:?}, {:?}", parameter.driver_type, parameter.response)))
+                    }
+                }
+            }
+            _ => {
+                Err(Error::new(InvalidInput, "Unable to construct object"))
+            }
+        }
+
     }
 }
 
@@ -98,6 +108,7 @@ impl ModbusTcpADU {
 
 impl Message for ModbusTcpADU {
     type M = ModbusTcpADU;
+    type O = u8;
 
     fn get_length(&self) -> u32 {
         todo!()
@@ -107,7 +118,7 @@ impl Message for ModbusTcpADU {
         todo!()
     }
 
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
         todo!()
     }
 }
@@ -118,6 +129,7 @@ pub struct ModbusRtuADU {
 
 impl Message for ModbusRtuADU {
     type M = ModbusRtuADU;
+    type O = u8;
 
     fn get_length(&self) -> u32 {
         todo!()
@@ -127,7 +139,7 @@ impl Message for ModbusRtuADU {
         todo!()
     }
 
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
+    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, Error> {
         todo!()
     }
 }

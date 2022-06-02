@@ -1,6 +1,7 @@
 use std::any::Any;
 use std::collections::HashMap;
-use std::io::{Read, Write};
+use std::io::{Error, Read, Write};
+use std::io::ErrorKind::InvalidInput;
 
 use crate::read_buffer::ReadBuffer;
 use crate::write_buffer::WriteBuffer;
@@ -17,11 +18,28 @@ pub enum Endianess {
 
 trait Message {
     type M;
+    type O;
 
     fn get_length(&self) -> u32;
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, std::io::Error>;
-    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, std::io::Error>;
+
+    fn _deserialize<T: Read>(reader: &mut ReadBuffer<T>) -> Result<Self::M, std::io::Error>;
+
+    fn deserialize<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::O>) -> Result<Self::M, std::io::Error> {
+        match parameter {
+            None => {
+                Self::_deserialize(reader)
+            }
+            Some(_) => {
+                Err(Error::new(InvalidInput, "not implemented!"))
+            }
+        }
+    }
+
+}
+
+trait ParametrizedMessage: Message {
 
 }
 
