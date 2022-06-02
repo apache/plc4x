@@ -18,7 +18,7 @@
  */
 
 use std::io::{Error, ErrorKind, Read, Write};
-use crate::{Message, NoOption, plc_enum, ReadBuffer, WriteBuffer};
+use crate::{Message, NoOption, plc4x_enum, ReadBuffer, WriteBuffer};
 
 // [enum uint 8 ModbusErrorCode
 //     ['1'    ILLEGAL_FUNCTION]
@@ -32,7 +32,7 @@ use crate::{Message, NoOption, plc_enum, ReadBuffer, WriteBuffer};
 //     ['10'   GATEWAY_PATH_UNAVAILABLE]
 //     ['11'   GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND]
 // ]
-plc_enum!
+plc4x_enum!
 [enum u8 : ModbusErrorCode
     [1 =>   ILLEGAL_FUNCTION],
     [2 =>   ILLEGAL_DATA_ADDRESS],

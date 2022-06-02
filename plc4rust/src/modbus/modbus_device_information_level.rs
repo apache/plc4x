@@ -18,7 +18,7 @@
  */
 
 use std::io::{Error, ErrorKind, Read, Write};
-use crate::{Message, NoOption, plc_enum, ReadBuffer, WriteBuffer};
+use crate::{Message, NoOption, plc4x_enum, ReadBuffer, WriteBuffer};
 
 // [enum uint 8 ModbusDeviceInformationLevel
 //     ['0x01' BASIC     ]
@@ -26,7 +26,7 @@ use crate::{Message, NoOption, plc_enum, ReadBuffer, WriteBuffer};
 //     ['0x03' EXTENDED  ]
 //     ['0x04' INDIVIDUAL]
 // ]
-plc_enum![enum u8 : ModbusDeviceInformationLevel
+plc4x_enum![enum u8 : ModbusDeviceInformationLevel
     [0x01 => BASIC],
     [0x02 => REGULAR],
     [0x03 => EXTENDED],

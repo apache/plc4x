@@ -18,13 +18,13 @@
  */
 
 use std::io::{Error, ErrorKind, Read, Write};
-use crate::{Message, NoOption, plc_enum, ReadBuffer, WriteBuffer};
+use crate::{Message, NoOption, plc4x_enum, ReadBuffer, WriteBuffer};
 
 // [enum uint 8 ModbusDeviceInformationMoreFollows
 //     ['0x00' NO_MORE_OBJECTS_AVAILABLE]
 //     ['0xFF' MORE_OBJECTS_AVAILABLE   ]
 // ]
-plc_enum![enum u8 : ModbusDeviceInformationMoreFollows
+plc4x_enum![enum u8 : ModbusDeviceInformationMoreFollows
     [0x00 => NO_MORE_OBJECTS_AVAILABLE],
     [0xFF => MORE_OBJECTS_AVAILABLE ]
 ];

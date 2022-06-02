@@ -34,7 +34,7 @@
 // use std::io::{Error, ErrorKind, Read, Write};
 // use crate::{Message, NoOption, ReadBuffer, WriteBuffer};
 #[macro_export]
-macro_rules! plc_enum {
+macro_rules! plc4x_enum {
     (enum $type:ty : $name:ident $([$pat:expr => $branch:ident]),*) => {
         #[derive(Copy, Clone, PartialEq, Debug)]
         #[allow(non_camel_case_types)]
@@ -179,7 +179,7 @@ mod test {
 
     #[test]
     fn test_macro() {
-        plc_enum!
+        plc4x_enum!
         [enum u8 : ModbusErrorCode
             [1 =>   ILLEGAL_FUNCTION],
             [2 =>   ILLEGAL_DATA_ADDRESS],
@@ -193,7 +193,7 @@ mod test {
             [11 =>  GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND]
         ];
 
-        plc_enum![enum u16 : ModbusErrorCode2
+        plc4x_enum![enum u16 : ModbusErrorCode2
         [1 =>   ILLEGAL_FUNCTION],
         [2 =>   ILLEGAL_DATA_ADDRESS],
         [3 =>   ILLEGAL_DATA_VALUE],
@@ -219,7 +219,7 @@ mod test {
         // ['0x02' REGULAR_STREAM_ONLY ]
         // ['0x03' EXTENDED_STREAM_ONLY]
         // ]
-        plc_enum![enum 7 => u8 : ModbusDeviceInformationConformityLevel
+        plc4x_enum![enum 7 => u8 : ModbusDeviceInformationConformityLevel
             [0x01 => BASIC_STREAM_ONLY],
             [0x02 => REGULAR_STREAM_ONLY ],
             [0x03 => EXTENDED_STREAM_ONLY]

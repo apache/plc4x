@@ -18,14 +18,14 @@
  */
 
 use std::io::{Error, ErrorKind, Read, Write};
-use crate::{Message, NoOption, plc_enum, ReadBuffer, WriteBuffer};
+use crate::{Message, NoOption, plc4x_enum, ReadBuffer, WriteBuffer};
 
 // [enum uint 7 ModbusDeviceInformationConformityLevel
 // ['0x01' BASIC_STREAM_ONLY   ]
 // ['0x02' REGULAR_STREAM_ONLY ]
 // ['0x03' EXTENDED_STREAM_ONLY]
 // ]
-plc_enum!
+plc4x_enum!
 [enum 7 => u8 : ModbusDeviceInformationConformityLevel
     [0x01 => BASIC_STREAM_ONLY],
     [0x02 => REGULAR_STREAM_ONLY ],
