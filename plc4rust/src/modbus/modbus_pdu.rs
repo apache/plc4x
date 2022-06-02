@@ -18,6 +18,7 @@
  */
 
 use std::io::{Error, Read, Write};
+use std::io::ErrorKind::InvalidInput;
 use crate::{Message, NoOption, ReadBuffer, WriteBuffer};
 
 // [discriminatedType ModbusPDU(bit response)
@@ -244,7 +245,20 @@ impl Message for ModbusPDU {
     }
 
     fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
-        todo!()
+        let response = parameter.unwrap().bit_response;
+        let error_flag = reader.read_bit()?;
+        let function_flag = reader.read_u_n(7)? as u8;
+
+        match (error_flag, function_flag, response) {
+            (true, _, _) => {
+                Ok(ModbusPDU::ModbusPDUError(ModbusPDUError {
+
+                }))
+            }
+            (_, _, _) => {
+                Err(Error::new(InvalidInput, "unnable to parse"))
+            }
+        }
     }
 }
 

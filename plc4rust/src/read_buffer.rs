@@ -32,7 +32,7 @@ impl<T: Read> ReadBuffer<T> {
         ReadBuffer {
             position: 0,
             endianness: endianess,
-            reader: reader
+            reader
         }
     }
 }
@@ -62,6 +62,10 @@ impl<T: Read> ReadBuffer<T> {
                 u16::from_le_bytes(bytes)
             },
         })
+    }
+
+    pub(crate) fn read_u_n(&self, number_of_bits: u8) -> Result<u64, std::io::Error> {
+        todo!()
     }
 
     pub(crate) fn read_bytes(&mut self, length: usize) -> Result<Vec<u8>, std::io::Error> {

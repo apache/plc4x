@@ -27,6 +27,7 @@ mod modbus_adu;
 mod modbus_pdu;
 mod modbus_pdu_read_file_record_request_item;
 mod modbus_pdu_write_file_record_response_item;
+mod modbus_error_code;
 
 pub use driver_type::DriverType;
 pub use modbus_adu::ModbusADU;

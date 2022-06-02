@@ -25,6 +25,7 @@ use crate::write_buffer::WriteBuffer;
 mod write_buffer;
 mod modbus;
 mod read_buffer;
+mod r#enum;
 
 #[allow(dead_code)]
 pub enum Endianess {
