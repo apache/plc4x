@@ -97,7 +97,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>dotnet-build</id>
+            <id>cargo-build</id>
             <phase>compile</phase>
             <goals>
               <goal>exec</goal>
@@ -107,6 +107,20 @@
               <workingDirectory>${project.basedir}</workingDirectory>
               <arguments>
                 <argument>build</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>cargo-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>cargo</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>test</argument>
               </arguments>
             </configuration>
           </execution>
