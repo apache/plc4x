@@ -106,68 +106,68 @@ macro_rules! plc_enum {
         }
     };
     (enum $bits:expr => $type:ty : $name:ident $([$pat:expr => $branch:ident]),*) => {
-    #[derive(Copy, Clone, PartialEq, Debug)]
-    #[allow(non_camel_case_types)]
-    pub enum $name {
-    $(
-    $branch,
-    )* // Repeat for each `expr` passed to the macro
-    }
+        #[derive(Copy, Clone, PartialEq, Debug)]
+        #[allow(non_camel_case_types)]
+        pub enum $name {
+            $(
+            $branch,
+            )* // Repeat for each `expr` passed to the macro
+        }
 
-    impl TryFrom<$type> for $name {
-    type Error = ();
+        impl TryFrom<$type> for $name {
+            type Error = ();
 
-    fn try_from(value: $type) -> Result<Self, Self::Error> {
-    match value {
-    $(
-    $pat => {
-    Ok($name::$branch)
-    },
-    )* // Repeat for each `expr` passed to the macro
-    _ => {
-    Err(())
-    }
-    }
-    }
-    }
+            fn try_from(value: $type) -> Result<Self, Self::Error> {
+                match value {
+                    $(
+                        $pat => {
+                        Ok($name::$branch)
+                    },
+                    )* // Repeat for each `expr` passed to the macro
+                    _ => {
+                    Err(())
+                    }
+                }
+            }
+        }
 
-    impl Into<$type> for $name {
-    fn into(self) -> $type {
-    match self {
-    $(
-    $name::$branch => {
-    $pat
-    },
-    )*
-    }
-    }
-    }
+        impl Into<$type> for $name {
+            fn into(self) -> $type {
+                match self {
+                    $(
+                        $name::$branch => {
+                        $pat
+                    },
+                    )*
+                }
+            }
+        }
 
     impl Message for $name {
-    type M = $name;
-    type P = NoOption;
+        type M = $name;
+        type P = NoOption;
 
-    fn get_length_in_bits(&self) -> u32 {
-    todo!()
-    }
+        fn get_length_in_bits(&self) -> u32 {
+            todo!()
+        }
 
-    fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
-        let x: $type = (*self).into();
-        writer.write_u_n($bits, x as u64)
-    }
+        fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
+            let x: $type = (*self).into();
+            writer.write_u_n($bits, x as u64)
+        }
 
-    fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
-        assert!(parameter.is_none());
-        let result = reader.read_u_n($bits)?;
-        match $name::try_from(result as $type) {
-        Ok(result) => {
-        Ok(result)
+        fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
+            assert!(parameter.is_none());
+            let result = reader.read_u_n($bits)?;
+            match $name::try_from(result as $type) {
+            Ok(result) => {
+            Ok(result)
+            }
+            Err(_) => {
+            Err(Error::new(ErrorKind::InvalidInput, format!("Cannot parse {}", result)))
+            }
+            }
         }
-        Err(_) => {
-        Err(Error::new(ErrorKind::InvalidInput, format!("Cannot parse {}", result)))
-        }
-        }
-    }
     }
     }
 }
