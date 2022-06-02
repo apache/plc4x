@@ -50,8 +50,8 @@ pub enum ModbusADU {
 }
 
 pub struct ModbusADUOptions {
-    driver_type: DriverType,
-    response: bool
+    pub(crate) driver_type: DriverType,
+    pub(crate) response: bool
 }
 
 impl Message for ModbusADU {

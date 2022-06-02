@@ -41,13 +41,23 @@ trait Message {
 
 }
 
-trait ParametrizedMessage: Message {
-
-}
-
-
 #[cfg(test)]
 #[allow(unused_must_use)]
 mod tests {
+    use crate::{Endianess, Message, ReadBuffer};
+    use crate::modbus::{DriverType, ModbusADU, ModbusADUOptions};
+
+    #[test]
+    fn deserialize_adu() {
+        let options = ModbusADUOptions {
+            driver_type: DriverType::MODBUS_TCP,
+            response: false
+        };
+
+        let mut bytes: Vec<u8> = vec![];
+        let mut read_buffer = ReadBuffer::new(Endianess::BigEndian, &*bytes);
+
+        let result = ModbusADU::deserialize_with_parameters(&mut read_buffer, Some(options));
+    }
 
 }
