@@ -116,6 +116,12 @@
           </dependency>
         </dependencies>
       </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludedGroups>just-output</excludedGroups>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
