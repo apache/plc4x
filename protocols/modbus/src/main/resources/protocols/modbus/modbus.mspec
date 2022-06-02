@@ -38,7 +38,7 @@
             // identifier of the request.
             [simple         uint 16     transactionIdentifier]
 
-            // It is used for intra-system multiplexing. The MODBUS protocol is identified by the value 0.
+            // It is used for intra-system multiplexing. The MODBUS protocol is identified by the value.
             [const          uint 16     protocolIdentifier    0x0000]
 
             // The length field is a byte count of the following fields, including the Unit Identifier and

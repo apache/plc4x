@@ -1515,6 +1515,14 @@
       </modules>
     </profile>
 
+    <!-- Build PLC4X including the Rust modules -->
+    <profile>
+      <id>with-rust</id>
+      <modules>
+        <module>plc4rust</module>
+      </modules>
+    </profile>
+
     <!-- Build PLC4X including the .Net modules -->
     <profile>
       <id>with-dotnet</id>

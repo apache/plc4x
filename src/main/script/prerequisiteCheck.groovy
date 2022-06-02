@@ -354,6 +354,57 @@ def checkSetupTools() {
     }
 }
 
+def checkCargo() {
+    print "Detecting Cargo version:   "
+    try {
+        def process = ("cargo --version").execute()
+        def stdOut = new StringBuilder()
+        def stdErr = new StringBuilder()
+        process.consumeProcessOutput(stdOut, stdErr)
+        process.waitForOrKill(500)
+        Matcher matcher = extractVersion(stdOut + stdErr)
+        if (matcher.size() > 0) {
+            def curVersion = matcher[0][1]
+            def result = checkVersionAtLeast(curVersion, "1.59.0")
+            if (!result) {
+                allConditionsMet = false
+            }
+        } else {
+            println "missing (Please install at least version 3.6.0)"
+            allConditionsMet = false
+        }
+    } catch (Exception e) {
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
+def checkRust() {
+    print "Detecting Rust version:    "
+    try {
+        def process = ("rustc --version").execute()
+        def stdOut = new StringBuilder()
+        def stdErr = new StringBuilder()
+        process.consumeProcessOutput(stdOut, stdErr)
+        process.waitForOrKill(500)
+        Matcher matcher = extractVersion(stdOut + stdErr)
+        if (matcher.size() > 0) {
+            def curVersion = matcher[0][1]
+            def result = checkVersionAtLeast(curVersion, "1.59.0")
+            if (!result) {
+                allConditionsMet = false
+            }
+        } else {
+            println "missing (Please install at least version 3.6.0)"
+            allConditionsMet = false
+        }
+    } catch (Exception e) {
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
+
 /*
  * This check does an extremely simple check, if the boost library exists in the maven local repo.
  * We're not checking if it could be resolved.
@@ -485,6 +536,7 @@ def goEnabled = false
 // Java is always enabled ...
 def javaEnabled = true
 def pythonEnabled = false
+def rustEnabled = false
 def sandboxEnabled = false
 def apacheReleaseEnabled = false
 def activeProfiles = session.request.activeProfiles
@@ -503,6 +555,8 @@ for (def activeProfile : activeProfiles) {
         goEnabled = true
     } else if (activeProfile == "with-python") {
         pythonEnabled = true
+    } else if (activeProfile == "with-rust") {
+        rustEnabled = true
     } else if (activeProfile == "with-sandbox") {
         sandboxEnabled = true
     } else if (activeProfile == "apache-release") {
@@ -563,6 +617,11 @@ if (cppEnabled) {
 if (pythonEnabled) {
     checkPython()
     checkSetupTools()
+}
+
+if (rustEnabled) {
+    checkCargo()
+    checkRust()
 }
 
 // Boost needs the visual-studio `cl` compiler to compile the boostrap.
