@@ -28,17 +28,17 @@ import (
 
 // BACnetNameValueCollection is the data-structure of this message
 type BACnetNameValueCollection struct {
-	OpeningTag      *BACnetOpeningTag
-	SubordinateList []*BACnetNameValue
-	ClosingTag      *BACnetClosingTag
+	OpeningTag *BACnetOpeningTag
+	Members    []*BACnetNameValue
+	ClosingTag *BACnetClosingTag
 }
 
 // IBACnetNameValueCollection is the corresponding interface of BACnetNameValueCollection
 type IBACnetNameValueCollection interface {
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() *BACnetOpeningTag
-	// GetSubordinateList returns SubordinateList (property field)
-	GetSubordinateList() []*BACnetNameValue
+	// GetMembers returns Members (property field)
+	GetMembers() []*BACnetNameValue
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() *BACnetClosingTag
 	// GetLengthInBytes returns the length in bytes
@@ -58,8 +58,8 @@ func (m *BACnetNameValueCollection) GetOpeningTag() *BACnetOpeningTag {
 	return m.OpeningTag
 }
 
-func (m *BACnetNameValueCollection) GetSubordinateList() []*BACnetNameValue {
-	return m.SubordinateList
+func (m *BACnetNameValueCollection) GetMembers() []*BACnetNameValue {
+	return m.Members
 }
 
 func (m *BACnetNameValueCollection) GetClosingTag() *BACnetClosingTag {
@@ -72,8 +72,8 @@ func (m *BACnetNameValueCollection) GetClosingTag() *BACnetClosingTag {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNameValueCollection factory function for BACnetNameValueCollection
-func NewBACnetNameValueCollection(openingTag *BACnetOpeningTag, subordinateList []*BACnetNameValue, closingTag *BACnetClosingTag) *BACnetNameValueCollection {
-	return &BACnetNameValueCollection{OpeningTag: openingTag, SubordinateList: subordinateList, ClosingTag: closingTag}
+func NewBACnetNameValueCollection(openingTag *BACnetOpeningTag, members []*BACnetNameValue, closingTag *BACnetClosingTag) *BACnetNameValueCollection {
+	return &BACnetNameValueCollection{OpeningTag: openingTag, Members: members, ClosingTag: closingTag}
 }
 
 func CastBACnetNameValueCollection(structType interface{}) *BACnetNameValueCollection {
@@ -101,8 +101,8 @@ func (m *BACnetNameValueCollection) GetLengthInBitsConditional(lastItem bool) ui
 	lengthInBits += m.OpeningTag.GetLengthInBits()
 
 	// Array field
-	if len(m.SubordinateList) > 0 {
-		for _, element := range m.SubordinateList {
+	if len(m.Members) > 0 {
+		for _, element := range m.Members {
 			lengthInBits += element.GetLengthInBits()
 		}
 	}
@@ -139,23 +139,23 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer) (*BACnetNameVal
 		return nil, closeErr
 	}
 
-	// Array field (subordinateList)
-	if pullErr := readBuffer.PullContext("subordinateList", utils.WithRenderAsList(true)); pullErr != nil {
+	// Array field (members)
+	if pullErr := readBuffer.PullContext("members", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, pullErr
 	}
 	// Terminated array
-	subordinateList := make([]*BACnetNameValue, 0)
+	members := make([]*BACnetNameValue, 0)
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 0)) {
 			_item, _err := BACnetNameValueParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'subordinateList' field")
+				return nil, errors.Wrap(_err, "Error parsing 'members' field")
 			}
-			subordinateList = append(subordinateList, CastBACnetNameValue(_item))
+			members = append(members, CastBACnetNameValue(_item))
 
 		}
 	}
-	if closeErr := readBuffer.CloseContext("subordinateList", utils.WithRenderAsList(true)); closeErr != nil {
+	if closeErr := readBuffer.CloseContext("members", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
 	}
 
@@ -177,7 +177,7 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer) (*BACnetNameVal
 	}
 
 	// Create the instance
-	return NewBACnetNameValueCollection(openingTag, subordinateList, closingTag), nil
+	return NewBACnetNameValueCollection(openingTag, members, closingTag), nil
 }
 
 func (m *BACnetNameValueCollection) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -199,18 +199,18 @@ func (m *BACnetNameValueCollection) Serialize(writeBuffer utils.WriteBuffer) err
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (subordinateList)
-	if m.SubordinateList != nil {
-		if pushErr := writeBuffer.PushContext("subordinateList", utils.WithRenderAsList(true)); pushErr != nil {
+	// Array Field (members)
+	if m.Members != nil {
+		if pushErr := writeBuffer.PushContext("members", utils.WithRenderAsList(true)); pushErr != nil {
 			return pushErr
 		}
-		for _, _element := range m.SubordinateList {
+		for _, _element := range m.Members {
 			_elementErr := _element.Serialize(writeBuffer)
 			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'subordinateList' field")
+				return errors.Wrap(_elementErr, "Error serializing 'members' field")
 			}
 		}
-		if popErr := writeBuffer.PopContext("subordinateList", utils.WithRenderAsList(true)); popErr != nil {
+		if popErr := writeBuffer.PopContext("members", utils.WithRenderAsList(true)); popErr != nil {
 			return popErr
 		}
 	}

@@ -2701,12 +2701,14 @@
             [simple   BACnetApplicationTagSignedInteger                     daysRemaining                               ]
         ]
         [*, 'DEADBAND'                                BACnetConstructedDataDeadband
-            [simple BACnetApplicationTagReal                                          deadband                          ]
+            [simple   BACnetApplicationTagReal                                          deadband                        ]
         ]
         //[*, 'DEFAULT_FADE_TIME'                       BACnetConstructedDataDefaultFadeTime [validation    '1 == 2'    "TODO: implement me DEFAULT_FADE_TIME BACnetConstructedDataDefaultFadeTime"]]
         //[*, 'DEFAULT_RAMP_RATE'                       BACnetConstructedDataDefaultRampRate [validation    '1 == 2'    "TODO: implement me DEFAULT_RAMP_RATE BACnetConstructedDataDefaultRampRate"]]
         //[*, 'DEFAULT_STEP_INCREMENT'                  BACnetConstructedDataDefaultStepIncrement [validation    '1 == 2'    "TODO: implement me DEFAULT_STEP_INCREMENT BACnetConstructedDataDefaultStepIncrement"]]
-        //[*, 'DEFAULT_SUBORDINATE_RELATIONSHIP'        BACnetConstructedDataDefaultSubordinateRelationship [validation    '1 == 2'    "TODO: implement me DEFAULT_SUBORDINATE_RELATIONSHIP BACnetConstructedDataDefaultSubordinateRelationship"]]
+        [*, 'DEFAULT_SUBORDINATE_RELATIONSHIP'        BACnetConstructedDataDefaultSubordinateRelationship
+            [simple   BACnetRelationshipTagged('0', 'TagClass.APPLICATION_TAGS') defaultSubordinateRelationship         ]
+        ]
         [*, 'DEFAULT_TIMEOUT'                         BACnetConstructedDataDefaultTimeout
             [simple   BACnetApplicationTagUnsignedInteger                     defaultTimeout                            ]
         ]
@@ -3040,8 +3042,12 @@
         //[*, 'NETWORK_NUMBER_QUALITY'                  BACnetConstructedDataNetworkNumberQuality [validation    '1 == 2'    "TODO: implement me NETWORK_NUMBER_QUALITY BACnetConstructedDataNetworkNumberQuality"]]
         //[*, 'NETWORK_TYPE'                            BACnetConstructedDataNetworkType [validation    '1 == 2'    "TODO: implement me NETWORK_TYPE BACnetConstructedDataNetworkType"]]
         //[*, 'NEXT_STOPPING_FLOOR'                     BACnetConstructedDataNextStoppingFloor [validation    '1 == 2'    "TODO: implement me NEXT_STOPPING_FLOOR BACnetConstructedDataNextStoppingFloor"]]
-        //[*, 'NODE_SUBTYPE'                            BACnetConstructedDataNodeSubtype [validation    '1 == 2'    "TODO: implement me NODE_SUBTYPE BACnetConstructedDataNodeSubtype"]]
-        //[*, 'NODE_TYPE'                               BACnetConstructedDataNodeType [validation    '1 == 2'    "TODO: implement me NODE_TYPE BACnetConstructedDataNodeType"]]
+        [*, 'NODE_SUBTYPE'                            BACnetConstructedDataNodeSubtype
+            [simple BACnetApplicationTagCharacterString                  nodeSubType                                    ]
+        ]
+        [*, 'NODE_TYPE'                               BACnetConstructedDataNodeType
+            [simple BACnetNodeTypeTagged('0', 'TagClass.APPLICATION_TAGS')  nodeType                                    ]
+        ]
         [*, 'NOTIFICATION_CLASS'                      BACnetConstructedDataNotificationClass
             [simple BACnetApplicationTagUnsignedInteger                               notificationClass                 ]
         ]
@@ -3211,16 +3217,36 @@
             [simple BACnetApplicationTagUnsignedInteger                       strikeCount                     ]
         ]
         //[*, 'STRUCTURED_OBJECT_LIST'                  BACnetConstructedDataStructuredObjectList [validation    '1 == 2'    "TODO: implement me STRUCTURED_OBJECT_LIST BACnetConstructedDataStructuredObjectList"]]
-        //[*, 'SUBORDINATE_ANNOTATIONS'                 BACnetConstructedDataSubordinateAnnotations [validation    '1 == 2'    "TODO: implement me SUBORDINATE_ANNOTATIONS BACnetConstructedDataSubordinateAnnotations"]]
+        [*, 'SUBORDINATE_ANNOTATIONS'                 BACnetConstructedDataSubordinateAnnotations
+            [array    BACnetApplicationTagCharacterString
+                    subordinateAnnotations
+                            terminated
+                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         [*, 'SUBORDINATE_LIST'                        BACnetConstructedDataSubordinateList
             [array    BACnetDeviceObjectReference
                         subordinateList
                                 terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
-        //[*, 'SUBORDINATE_NODE_TYPES'                  BACnetConstructedDataSubordinateNodeTypes [validation    '1 == 2'    "TODO: implement me SUBORDINATE_NODE_TYPES BACnetConstructedDataSubordinateNodeTypes"]]
-        //[*, 'SUBORDINATE_RELATIONSHIPS'               BACnetConstructedDataSubordinateRelationships [validation    '1 == 2'    "TODO: implement me SUBORDINATE_RELATIONSHIPS BACnetConstructedDataSubordinateRelationships"]]
-        //[*, 'SUBORDINATE_TAGS'                        BACnetConstructedDataSubordinateTags [validation    '1 == 2'    "TODO: implement me SUBORDINATE_TAGS BACnetConstructedDataSubordinateTags"]]
+        [*, 'SUBORDINATE_NODE_TYPES'                  BACnetConstructedDataSubordinateNodeTypes
+            [array    BACnetNodeTypeTagged('0', 'TagClass.APPLICATION_TAGS')
+                        subordinateNodeTypes
+                                terminated
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
+        [*, 'SUBORDINATE_RELATIONSHIPS'               BACnetConstructedDataSubordinateRelationships
+            [array    BACnetRelationshipTagged('0', 'TagClass.APPLICATION_TAGS')
+                                    subordinateRelationships
+                                            terminated
+                                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
+        [*, 'SUBORDINATE_TAGS'                        BACnetConstructedDataSubordinateTags
+            [array    BACnetNameValueCollection
+                        subordinateList
+                                terminated
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         //[*, 'SUBSCRIBED_RECIPIENTS'                   BACnetConstructedDataSubscribedRecipients [validation    '1 == 2'    "TODO: implement me SUBSCRIBED_RECIPIENTS BACnetConstructedDataSubscribedRecipients"]]
         //[*, 'SUPPORTED_FORMAT_CLASSES'                BACnetConstructedDataSupportedFormatClasses [validation    '1 == 2'    "TODO: implement me SUPPORTED_FORMAT_CLASSES BACnetConstructedDataSupportedFormatClasses"]]
         //[*, 'SUPPORTED_FORMATS'                       BACnetConstructedDataSupportedFormats [validation    '1 == 2'    "TODO: implement me SUPPORTED_FORMATS BACnetConstructedDataSupportedFormats"]]
@@ -3455,7 +3481,7 @@
     [simple   BACnetOpeningTag('0')
                             openingTag                                                                                  ]
     [array    BACnetNameValue
-                            subordinateList
+                            members
                                    terminated
                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 0)'             ]
     [simple   BACnetClosingTag('0')
