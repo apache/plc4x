@@ -182,6 +182,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataAccessEventTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCESS_TRANSACTION_EVENTS: // BACnetConstructedDataAccessTransactionEvents
 		_child, typeSwitchError = BACnetConstructedDataAccessTransactionEventsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCOMPANIMENT: // BACnetConstructedDataAccompaniment
+		_child, typeSwitchError = BACnetConstructedDataAccompanimentParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCOMPANIMENT_TIME: // BACnetConstructedDataAccompanimentTime
 		_child, typeSwitchError = BACnetConstructedDataAccompanimentTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACKED_TRANSITIONS: // BACnetConstructedDataAckedTransitions
@@ -454,6 +456,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataMinimumValueParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MUSTER_POINT: // BACnetConstructedDataMusterPoint
 		_child, typeSwitchError = BACnetConstructedDataMusterPointParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_NEGATIVE_ACCESS_RULES: // BACnetConstructedDataNegativeAccessRules
+		_child, typeSwitchError = BACnetConstructedDataNegativeAccessRulesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_NOTIFICATION_CLASS: // BACnetConstructedDataNotificationClass
 		_child, typeSwitchError = BACnetConstructedDataNotificationClassParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_NOTIFY_TYPE: // BACnetConstructedDataNotifyType

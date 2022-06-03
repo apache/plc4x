@@ -2335,7 +2335,9 @@
                                             terminated
                                             'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
-        //[*, 'ACCOMPANIMENT'                           BACnetConstructedDataAccompaniment [validation    '1 == 2'    "TODO: implement me ACCOMPANIMENT BACnetConstructedDataAccompaniment"]]
+        [*, 'ACCOMPANIMENT'                           BACnetConstructedDataAccompaniment
+            [simple   BACnetDeviceObjectReference       accompaniment                                                   ]
+        ]
         [*, 'ACCOMPANIMENT_TIME'                      BACnetConstructedDataAccompanimentTime
             [simple   BACnetApplicationTagUnsignedInteger                               accompanimentTime               ]
         ]
@@ -3003,7 +3005,12 @@
         [*, 'MUSTER_POINT'                            BACnetConstructedDataMusterPoint
             [simple   BACnetApplicationTagBoolean                                       musterPoint           ]
         ]
-        //[*, 'NEGATIVE_ACCESS_RULES'                   BACnetConstructedDataNegativeAccessRules [validation    '1 == 2'    "TODO: implement me NEGATIVE_ACCESS_RULES BACnetConstructedDataNegativeAccessRules"]]
+        [*, 'NEGATIVE_ACCESS_RULES'                   BACnetConstructedDataNegativeAccessRules
+            [array    BACnetAccessRule
+                            negativeAccessRules
+                                    terminated
+                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         //[*, 'NETWORK_ACCESS_SECURITY_POLICIES'        BACnetConstructedDataNetworkAccessSecurityPolicies [validation    '1 == 2'    "TODO: implement me NETWORK_ACCESS_SECURITY_POLICIES BACnetConstructedDataNetworkAccessSecurityPolicies"]]
         //[*, 'NETWORK_INTERFACE_NAME'                  BACnetConstructedDataNetworkInterfaceName [validation    '1 == 2'    "TODO: implement me NETWORK_INTERFACE_NAME BACnetConstructedDataNetworkInterfaceName"]]
         //[*, 'NETWORK_NUMBER'                          BACnetConstructedDataNetworkNumber [validation    '1 == 2'    "TODO: implement me NETWORK_NUMBER BACnetConstructedDataNetworkNumber"]]
