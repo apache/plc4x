@@ -2707,7 +2707,9 @@
         //[*, 'DEFAULT_RAMP_RATE'                       BACnetConstructedDataDefaultRampRate [validation    '1 == 2'    "TODO: implement me DEFAULT_RAMP_RATE BACnetConstructedDataDefaultRampRate"]]
         //[*, 'DEFAULT_STEP_INCREMENT'                  BACnetConstructedDataDefaultStepIncrement [validation    '1 == 2'    "TODO: implement me DEFAULT_STEP_INCREMENT BACnetConstructedDataDefaultStepIncrement"]]
         //[*, 'DEFAULT_SUBORDINATE_RELATIONSHIP'        BACnetConstructedDataDefaultSubordinateRelationship [validation    '1 == 2'    "TODO: implement me DEFAULT_SUBORDINATE_RELATIONSHIP BACnetConstructedDataDefaultSubordinateRelationship"]]
-        //[*, 'DEFAULT_TIMEOUT'                         BACnetConstructedDataDefaultTimeout [validation    '1 == 2'    "TODO: implement me DEFAULT_TIMEOUT BACnetConstructedDataDefaultTimeout"]]
+        [*, 'DEFAULT_TIMEOUT'                         BACnetConstructedDataDefaultTimeout
+            [simple   BACnetApplicationTagUnsignedInteger                     defaultTimeout                            ]
+        ]
         //[*, 'DEPLOYED_PROFILE_LOCATION'               BACnetConstructedDataDeployedProfileLocation [validation    '1 == 2'    "TODO: implement me DEPLOYED_PROFILE_LOCATION BACnetConstructedDataDeployedProfileLocation"]]
         //[*, 'DERIVATIVE_CONSTANT'                     BACnetConstructedDataDerivativeConstant [validation    '1 == 2'    "TODO: implement me DERIVATIVE_CONSTANT BACnetConstructedDataDerivativeConstant"]]
         [*, 'DERIVATIVE_CONSTANT_UNITS'               BACnetConstructedDataDerivativeConstantUnits
@@ -2848,7 +2850,9 @@
         //[*, 'IN_PROCESS'                              BACnetConstructedDataInProcess [validation    '1 == 2'    "TODO: implement me IN_PROCESS BACnetConstructedDataInProcess"]]
         //[*, 'IN_PROGRESS'                             BACnetConstructedDataInProgress [validation    '1 == 2'    "TODO: implement me IN_PROGRESS BACnetConstructedDataInProgress"]]
         //[*, 'INACTIVE_TEXT'                           BACnetConstructedDataInactiveText [validation    '1 == 2'    "TODO: implement me INACTIVE_TEXT BACnetConstructedDataInactiveText"]]
-        //[*, 'INITIAL_TIMEOUT'                         BACnetConstructedDataInitialTimeout [validation    '1 == 2'    "TODO: implement me INITIAL_TIMEOUT BACnetConstructedDataInitialTimeout"]]
+        [*, 'INITIAL_TIMEOUT'                         BACnetConstructedDataInitialTimeout
+            [simple   BACnetApplicationTagUnsignedInteger                               initialTimeout                  ]
+        ]
         //[*, 'INPUT_REFERENCE'                         BACnetConstructedDataInputReference [validation    '1 == 2'    "TODO: implement me INPUT_REFERENCE BACnetConstructedDataInputReference"]]
         //[*, 'INSTALLATION_ID'                         BACnetConstructedDataInstallationId [validation    '1 == 2'    "TODO: implement me INSTALLATION_ID BACnetConstructedDataInstallationId"]]
         //[*, 'INSTANCE_OF'                             BACnetConstructedDataInstanceOf [validation    '1 == 2'    "TODO: implement me INSTANCE_OF BACnetConstructedDataInstanceOf"]]
@@ -2904,7 +2908,9 @@
         //[*, 'LAST_PRIORITY'                           BACnetConstructedDataLastPriority [validation    '1 == 2'    "TODO: implement me LAST_PRIORITY BACnetConstructedDataLastPriority"]]
         //[*, 'LAST_RESTART_REASON'                     BACnetConstructedDataLastRestartReason [validation    '1 == 2'    "TODO: implement me LAST_RESTART_REASON BACnetConstructedDataLastRestartReason"]]
         //[*, 'LAST_RESTORE_TIME'                       BACnetConstructedDataLastRestoreTime [validation    '1 == 2'    "TODO: implement me LAST_RESTORE_TIME BACnetConstructedDataLastRestoreTime"]]
-        //[*, 'LAST_STATE_CHANGE'                       BACnetConstructedDataLastStateChange [validation    '1 == 2'    "TODO: implement me LAST_STATE_CHANGE BACnetConstructedDataLastStateChange"]]
+        [*, 'LAST_STATE_CHANGE'                       BACnetConstructedDataLastStateChange
+            [simple   BACnetTimerTransitionTagged('0', 'TagClass.APPLICATION_TAGS')             lastStateChange         ]
+        ]
         [*, 'LAST_USE_TIME'                           BACnetConstructedDataLastUseTime
             [simple   BACnetDateTime                                        lastUseTime             ]
         ]
@@ -3187,7 +3193,13 @@
         //[*, 'SLAVE_ADDRESS_BINDING'                   BACnetConstructedDataSlaveAddressBinding [validation    '1 == 2'    "TODO: implement me SLAVE_ADDRESS_BINDING BACnetConstructedDataSlaveAddressBinding"]]
         //[*, 'SLAVE_PROXY_ENABLE'                      BACnetConstructedDataSlaveProxyEnable [validation    '1 == 2'    "TODO: implement me SLAVE_PROXY_ENABLE BACnetConstructedDataSlaveProxyEnable"]]
         //[*, 'START_TIME'                              BACnetConstructedDataStartTime [validation    '1 == 2'    "TODO: implement me START_TIME BACnetConstructedDataStartTime"]]
-        //[*, 'STATE_CHANGE_VALUES'                     BACnetConstructedDataStateChangeValues [validation    '1 == 2'    "TODO: implement me STATE_CHANGE_VALUES BACnetConstructedDataStateChangeValues"]]
+        [*, 'STATE_CHANGE_VALUES'                     BACnetConstructedDataStateChangeValues
+            [array    BACnetTimerStateChangeValue('objectTypeArgument')
+                                stateChangeValues
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+            [validation 'COUNT(stateChangeValues) == 7' "stateChangeValues should have exactly 7 values"                ]
+        ]
         //[*, 'STATE_DESCRIPTION'                       BACnetConstructedDataStateDescription [validation    '1 == 2'    "TODO: implement me STATE_DESCRIPTION BACnetConstructedDataStateDescription"]]
         //[*, 'STATE_TEXT'                              BACnetConstructedDataStateText [validation    '1 == 2'    "TODO: implement me STATE_TEXT BACnetConstructedDataStateText"]]
         [*, 'STATUS_FLAGS'                            BACnetConstructedDataStatusFlags
@@ -3240,8 +3252,12 @@
         ]
         //[*, 'TIME_SYNCHRONIZATION_INTERVAL'           BACnetConstructedDataTimeSynchronizationInterval [validation    '1 == 2'    "TODO: implement me TIME_SYNCHRONIZATION_INTERVAL BACnetConstructedDataTimeSynchronizationInterval"]]
         //[*, 'TIME_SYNCHRONIZATION_RECIPIENTS'         BACnetConstructedDataTimeSynchronizationRecipients [validation    '1 == 2'    "TODO: implement me TIME_SYNCHRONIZATION_RECIPIENTS BACnetConstructedDataTimeSynchronizationRecipients"]]
-        //[*, 'TIMER_RUNNING'                           BACnetConstructedDataTimerRunning [validation    '1 == 2'    "TODO: implement me TIMER_RUNNING BACnetConstructedDataTimerRunning"]]
-        //[*, 'TIMER_STATE'                             BACnetConstructedDataTimerState [validation    '1 == 2'    "TODO: implement me TIMER_STATE BACnetConstructedDataTimerState"]]
+        [*, 'TIMER_RUNNING'                           BACnetConstructedDataTimerRunning
+            [simple   BACnetApplicationTagBoolean                               timerRunning                 ]
+        ]
+        [*, 'TIMER_STATE'                             BACnetConstructedDataTimerState
+            [simple  BACnetTimerStateTagged('0', 'TagClass.APPLICATION_TAGS')   timerState] 
+        ]
         //[*, 'TOTAL_RECORD_COUNT'                      BACnetConstructedDataTotalRecordCount [validation    '1 == 2'    "TODO: implement me TOTAL_RECORD_COUNT BACnetConstructedDataTotalRecordCount"]]
         [*, 'TRACE_FLAG'                              BACnetConstructedDataTraceFlag
             [simple   BACnetApplicationTagBoolean                               traceFlag                               ]
@@ -3537,4 +3553,83 @@
                     credentialDataInput                                                                                 ]
     [simple   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
                     index                                                                                               ]
+]
+
+[type BACnetTimerStateChangeValue(BACnetObjectType objectTypeArgument)
+    [peek       BACnetTagHeader
+                           peekedTagHeader                                          ]
+    [virtual uint 8     peekedTagNumber     'peekedTagHeader.actualTagNumber'       ]
+    [virtual bit        peekedIsContextTag  'peekedTagHeader.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS']
+    [validation '(!peekedIsContextTag) || (peekedIsContextTag && peekedTagHeader.lengthValueType != 0x6 && peekedTagHeader.lengthValueType != 0x7)'
+                "unexpected opening or closing tag"                                 ]
+    [typeSwitch peekedTagNumber, peekedIsContextTag
+       ['0x0', 'false' BACnetTimerStateChangeValueNull
+           [simple  BACnetApplicationTagNull
+                            nullValue                                                   ]
+       ]
+       ['0x1', 'false' BACnetTimerStateChangeValueBoolean
+           [simple   BACnetApplicationTagBoolean
+                            booleanValue                                                ]
+       ]
+       ['0x2', 'false' BACnetTimerStateChangeValueUnsigned
+           [simple   BACnetApplicationTagUnsignedInteger
+                            unsignedValue                                               ]
+       ]
+       ['0x3', 'false' BACnetTimerStateChangeValueInteger
+           [simple   BACnetApplicationTagSignedInteger
+                            integerValue                                                ]
+       ]
+       ['0x4', 'false' BACnetTimerStateChangeValueReal
+           [simple  BACnetApplicationTagReal
+                            realValue                                                   ]
+       ]
+       ['0x5', 'false' BACnetTimerStateChangeValueDouble
+           [simple  BACnetApplicationTagDouble
+                                doubleValue                                             ]
+       ]
+       ['0x6', 'false' BACnetTimerStateChangeValueOctetString
+           [simple   BACnetApplicationTagOctetString
+                            octetStringValue                                            ]
+       ]
+       ['0x7', 'false' BACnetTimerStateChangeValueCharacterString
+           [simple   BACnetApplicationTagCharacterString
+                            characterStringValue                                        ]
+       ]
+       ['0x8', 'false' BACnetTimerStateChangeValueBitString
+           [simple   BACnetApplicationTagBitString
+                            bitStringValue                                              ]
+       ]
+       ['0x9', 'false' BACnetTimerStateChangeValueEnumerated
+           [simple   BACnetApplicationTagEnumerated
+                            enumeratedValue                                             ]
+       ]
+       ['0xA', 'false' BACnetTimerStateChangeValueDate
+           [simple   BACnetApplicationTagDate
+                            dateValue                                                   ]
+       ]
+       ['0xB', 'false' BACnetTimerStateChangeValueTime
+           [simple   BACnetApplicationTagTime
+                            timeValue                                                   ]
+       ]
+       ['0xC', 'false' BACnetTimerStateChangeValueObjectidentifier
+           [simple   BACnetApplicationTagObjectIdentifier
+                            objectidentifierValue                                       ]
+       ]
+       ['0', 'true' BACnetTimerStateChangeValueNoValue
+           [simple   BACnetContextTagNull('0', 'BACnetDataType.NULL')
+                            noValue                                                     ]
+       ]
+       ['1', 'true' BACnetTimerStateChangeValueConstructedValue
+            [simple   BACnetConstructedData('1', 'objectTypeArgument', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE')
+                                        constructedValue                                ]
+       ]
+       ['2', 'true' BACnetTimerStateChangeValueDateTime
+            [simple   BACnetDateTimeEnclosed('2')
+                            dateTimeValue                                               ]
+       ]
+       ['3', 'true' BACnetTimerStateChangeValueLightingCommand
+           [simple   BACnetLightingCommandEnclosed('3')
+                       ligthingCommandValue                                             ]
+       ]
+    ]
 ]

@@ -802,6 +802,9 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedParse(io, tagNumber, tagClass)
 	case "BACnetTagPayloadDouble":
 		return model.BACnetTagPayloadDoubleParse(io)
+	case "BACnetTimerStateChangeValue":
+		objectTypeArgument := model.BACnetObjectTypeByName(arguments[0])
+		return model.BACnetTimerStateChangeValueParse(io, objectTypeArgument)
 	case "BACnetNetworkNumberQualityTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
