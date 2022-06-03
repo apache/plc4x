@@ -282,6 +282,13 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetLiftCarDirectionTaggedParse(io, tagNumber, tagClass)
+	case "BACnetAccessRuleTimeRangeSpecifierTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAccessRuleTimeRangeSpecifierTaggedParse(io, tagNumber, tagClass)
 	case "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -297,6 +304,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetBackupStateTaggedParse(io, tagNumber, tagClass)
+	case "BACnetAddressBinding":
+		return model.BACnetAddressBindingParse(io)
 	case "ListOfCovNotificationsValue":
 		objectTypeArgument := model.BACnetObjectTypeByName(arguments[0])
 		return model.ListOfCovNotificationsValueParse(io, objectTypeArgument)
@@ -569,6 +578,13 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "BACnetPriorityValue":
 		objectTypeArgument := model.BACnetObjectTypeByName(arguments[0])
 		return model.BACnetPriorityValueParse(io, objectTypeArgument)
+	case "BACnetAccessRuleLocationSpecifierTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAccessRuleLocationSpecifierTaggedParse(io, tagNumber, tagClass)
 	case "BACnetMaintenanceTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -998,6 +1014,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetRecipientProcessEnclosedParse(io, tagNumber)
+	case "BACnetAccessRule":
+		return model.BACnetAccessRuleParse(io)
 	case "BACnetShedStateTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

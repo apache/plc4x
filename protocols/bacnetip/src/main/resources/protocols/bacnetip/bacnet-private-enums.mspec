@@ -31,6 +31,18 @@
 ]
 
 // Attention: No proprietary extension allowed
+[enum uint 8 BACnetAccessRuleLocationSpecifier
+    ['0'    SPECIFIED                               ]
+    ['1'    ALL                                     ]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 BACnetAccessRuleTimeRangeSpecifier
+    ['0'    SPECIFIED                               ]
+    ['1'    ALWAYS                                  ]
+]
+
+// Attention: No proprietary extension allowed
 [enum uint 8 BACnetAuthenticationFactorType
     ['0'    UNDEFINED                               ]
     ['1'    ERROR                                   ]

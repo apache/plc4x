@@ -97,6 +97,27 @@ public class ObjectPropertyDeDuplicationTest {
         return tests;
     }
 
+    @Disabled("disabled till every type is implemented")
+    @TestFactory
+    Collection<DynamicNode> testUniqueUsagesAreMappedGeneric() {
+        List<DynamicNode> tests = new LinkedList<>();
+        propertyToObjectNameMap.forEach((propertyIdentifier, bacNetObjectNames) -> {
+            if (bacNetObjectNames.size() > 1) {
+                return;
+            }
+            String bacNetObjectName = bacNetObjectNames.get(0);
+            tests.add(
+                DynamicTest.dynamicTest("Unique property " + propertyIdentifier + " for " + bacNetObjectName,
+                    () -> {
+                        String searchedTypeName = "BACnetConstructedData" + propertyIdentifier;
+                        searchedTypeName = searchedTypeName.replaceAll("_", "");
+                        assertNotNull(typeDefinitions.get(searchedTypeName), searchedTypeName + " not found");
+                    })
+            );
+        });
+        return tests;
+    }
+
     @Nested
     @Tag("just-output")
     class JustOutputs {
