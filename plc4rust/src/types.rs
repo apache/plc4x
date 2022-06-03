@@ -32,7 +32,7 @@ macro_rules! plc4x_type {
         #[derive(PartialEq,Eq,Clone,Debug)]
         pub struct $name {
             $(
-                $parameter: $type,
+                pub $parameter: $type,
             )*
         }
 

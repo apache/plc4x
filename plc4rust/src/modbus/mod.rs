@@ -31,6 +31,7 @@ mod modbus_error_code;
 mod modbus_device_information_conformity_level;
 mod modbus_device_information_more_follows;
 mod modbus_device_information_level;
+mod test;
 
 pub use driver_type::DriverType;
 pub use modbus_adu::ModbusADU;
@@ -46,7 +47,7 @@ pub use modbus_device_information_level::ModbusDeviceInformationLevel;
 
 #[cfg(test)]
 #[allow(unused_must_use)]
-mod test {
+mod mod_tests {
     use crate::{Endianess, Message, ReadBuffer};
     use crate::modbus::ModbusPDUWriteFileRecordResponseItem;
     use crate::write_buffer::{WriteBuffer};

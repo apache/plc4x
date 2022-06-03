@@ -19,7 +19,7 @@
 
 use std::io::{Error, Read, Write};
 use std::io::ErrorKind::InvalidInput;
-use crate::{Message, NoOption, ReadBuffer, WriteBuffer};
+use crate::{Message, NoOption, plc4x_type, ReadBuffer, WriteBuffer};
 
 // [discriminatedType ModbusPDU(bit response)
 //     [discriminator bit         errorFlag]
@@ -221,11 +221,12 @@ use crate::{Message, NoOption, ReadBuffer, WriteBuffer};
 //     ]
 // ]
 pub enum ModbusPDU {
-    ModbusPDUError(ModbusPDUError)
+    ModbusPDUError(ModbusPDUError),
+    ModbusPDUReadDiscreteInputsRequest(ModbusPDUReadDiscreteInputsRequest)
 }
 
 pub struct ModbusPDUOption {
-    bit_response: bool
+    pub(crate) bit_response: bool
 }
 
 impl Message for ModbusPDU {
@@ -234,18 +235,28 @@ impl Message for ModbusPDU {
 
     fn get_length_in_bits(&self) -> u32 {
         match self {
-            ModbusPDU::ModbusPDUError(m) => {
-                m.get_length_in_bits()
+            ModbusPDU::ModbusPDUError(msg) => {
+                msg.get_length_in_bits()
+            },
+            ModbusPDU::ModbusPDUReadDiscreteInputsRequest(msg) => {
+                msg.get_length_in_bits()
             }
         }
     }
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
-        todo!()
+        match self {
+            ModbusPDU::ModbusPDUError(_) => {
+                todo!()
+            }
+            ModbusPDU::ModbusPDUReadDiscreteInputsRequest(msg) => {
+                msg.serialize(writer)
+            }
+        }
     }
 
     fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
-        let response = parameter.unwrap().bit_response;
+        let response = parameter.expect("No option given!").bit_response;
         let error_flag = reader.read_bit()?;
         let function_flag = reader.read_u_n(7)? as u8;
 
@@ -254,6 +265,9 @@ impl Message for ModbusPDU {
                 Ok(ModbusPDU::ModbusPDUError(ModbusPDUError {
 
                 }))
+            },
+            (false, 0x02, false) => {
+                Ok(ModbusPDU::ModbusPDUReadDiscreteInputsRequest(ModbusPDUReadDiscreteInputsRequest::parse(reader, None)?))
             }
             (_, _, _) => {
                 Err(Error::new(InvalidInput, "unnable to parse"))
@@ -282,3 +296,19 @@ impl Message for ModbusPDUError {
         todo!()
     }
 }
+
+//         // Bit Access
+//         ['false','0x02','false'     ModbusPDUReadDiscreteInputsRequest
+//             [simple     uint 16     startingAddress]
+//             [simple     uint 16     quantity]
+//         ]
+plc4x_type!
+[type ModbusPDUReadDiscreteInputsRequest
+    [simple u16 : startingAddress],
+    [simple u16 : quantity]
+];
+
+//         ['false','0x02','true'      ModbusPDUReadDiscreteInputsResponse
+//             [implicit   uint 8      byteCount     'COUNT(value)']
+//             [array      byte        value         count   'byteCount']
+//         ]

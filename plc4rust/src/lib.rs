@@ -17,6 +17,8 @@
  * under the License.
  */
 
+extern crate core;
+
 use std::io::{Read, Write};
 
 use crate::read_buffer::ReadBuffer;

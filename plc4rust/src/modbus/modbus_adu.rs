@@ -21,6 +21,7 @@ use std::io::{Error, Read, Write};
 use std::io::ErrorKind::InvalidInput;
 use crate::{Message, NoOption, ReadBuffer, WriteBuffer};
 use crate::modbus::{DriverType, ModbusPDU};
+use crate::modbus::modbus_pdu::ModbusPDUOption;
 
 // [discriminatedType ModbusADU(DriverType driverType, bit response) byteOrder='BIG_ENDIAN'
 //     [typeSwitch driverType
@@ -82,37 +83,37 @@ impl Message for ModbusADU {
     }
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
-        todo!()
+        match self {
+            ModbusADU::ModbusTcpADU(msg) => {
+                msg.serialize(writer)
+            }
+            ModbusADU::ModbusRtuADU(msg) => {
+                panic!("Not implemented!")
+            }
+        }
     }
 
     fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
-        match parameter {
-            Some(parameter) => {
-                match parameter.driver_type {
-                    DriverType::MODBUS_TCP => {
-                        Ok(ModbusADU::ModbusTcpADU(ModbusTcpADU::parse::<T>(reader, None)?))
-                    }
-                    DriverType::MODBUS_RTU => {
-                        Ok(ModbusADU::ModbusRtuADU(ModbusRtuADU::parse::<T>(reader, None)?))
-                    }
-                    _ => {
-                        Err(Error::new(InvalidInput, format!("Unable to deserialize from {:?}, {:?}", parameter.driver_type, parameter.response)))
-                    }
-                }
+        let parameter = parameter.expect("No Options given!");
+        match parameter.driver_type {
+            DriverType::MODBUS_TCP => {
+                Ok(ModbusADU::ModbusTcpADU(ModbusTcpADU::parse::<T>(reader, None)?))
+            }
+            DriverType::MODBUS_RTU => {
+                Ok(ModbusADU::ModbusRtuADU(ModbusRtuADU::parse::<T>(reader, None)?))
             }
             _ => {
-                Err(Error::new(InvalidInput, "Unable to construct object"))
+                Err(Error::new(InvalidInput, format!("Unable to deserialize from {:?}, {:?}", parameter.driver_type, parameter.response)))
             }
         }
-
     }
 }
 
 pub struct ModbusTcpADU {
-    transaction_identifier: u16,
-    protocol_identifier: u16,
-    unit_identifier: u8,
-    pdu: ModbusPDU
+    pub(crate) transaction_identifier: u16,
+    pub(crate) protocol_identifier: u16,
+    pub(crate) unit_identifier: u8,
+    pub(crate) pdu: ModbusPDU
 }
 
 impl ModbusTcpADU {
@@ -130,11 +131,26 @@ impl Message for ModbusTcpADU {
     }
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
-        todo!()
+        writer.write_u16(self.transaction_identifier)?;
+        writer.write_u16(self.protocol_identifier)?;
+        writer.write_u8(self.unit_identifier)?;
+        self.pdu.serialize(writer);
+        Ok(0)
     }
 
     fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
-        todo!()
+        let transaction_identifier = reader.read_u16()?;
+        let protocol_identifier = reader.read_u16()?;
+        let unit_identifier = reader.read_u8()?;
+        let pdu = ModbusPDU::parse(reader, Some(ModbusPDUOption {
+            bit_response: false
+        }))?;
+        Ok(Self::M {
+            transaction_identifier,
+            protocol_identifier,
+            unit_identifier,
+            pdu
+        })
     }
 }
 
