@@ -29,14 +29,14 @@ import (
 // BACnetSpecialEventPeriodCalendarEntry is the data-structure of this message
 type BACnetSpecialEventPeriodCalendarEntry struct {
 	*BACnetSpecialEventPeriod
-	CalendarEntry *BACnetCalendarEntry
+	CalendarEntry *BACnetCalendarEntryEnclosed
 }
 
 // IBACnetSpecialEventPeriodCalendarEntry is the corresponding interface of BACnetSpecialEventPeriodCalendarEntry
 type IBACnetSpecialEventPeriodCalendarEntry interface {
 	IBACnetSpecialEventPeriod
 	// GetCalendarEntry returns CalendarEntry (property field)
-	GetCalendarEntry() *BACnetCalendarEntry
+	GetCalendarEntry() *BACnetCalendarEntryEnclosed
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -68,7 +68,7 @@ func (m *BACnetSpecialEventPeriodCalendarEntry) GetParent() *BACnetSpecialEventP
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetSpecialEventPeriodCalendarEntry) GetCalendarEntry() *BACnetCalendarEntry {
+func (m *BACnetSpecialEventPeriodCalendarEntry) GetCalendarEntry() *BACnetCalendarEntryEnclosed {
 	return m.CalendarEntry
 }
 
@@ -78,7 +78,7 @@ func (m *BACnetSpecialEventPeriodCalendarEntry) GetCalendarEntry() *BACnetCalend
 ///////////////////////////////////////////////////////////
 
 // NewBACnetSpecialEventPeriodCalendarEntry factory function for BACnetSpecialEventPeriodCalendarEntry
-func NewBACnetSpecialEventPeriodCalendarEntry(calendarEntry *BACnetCalendarEntry, peekedTagHeader *BACnetTagHeader) *BACnetSpecialEventPeriodCalendarEntry {
+func NewBACnetSpecialEventPeriodCalendarEntry(calendarEntry *BACnetCalendarEntryEnclosed, peekedTagHeader *BACnetTagHeader) *BACnetSpecialEventPeriodCalendarEntry {
 	_result := &BACnetSpecialEventPeriodCalendarEntry{
 		CalendarEntry:            calendarEntry,
 		BACnetSpecialEventPeriod: NewBACnetSpecialEventPeriod(peekedTagHeader),
@@ -137,11 +137,11 @@ func BACnetSpecialEventPeriodCalendarEntryParse(readBuffer utils.ReadBuffer) (*B
 	if pullErr := readBuffer.PullContext("calendarEntry"); pullErr != nil {
 		return nil, pullErr
 	}
-	_calendarEntry, _calendarEntryErr := BACnetCalendarEntryParse(readBuffer, uint8(uint8(0)))
+	_calendarEntry, _calendarEntryErr := BACnetCalendarEntryEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _calendarEntryErr != nil {
 		return nil, errors.Wrap(_calendarEntryErr, "Error parsing 'calendarEntry' field")
 	}
-	calendarEntry := CastBACnetCalendarEntry(_calendarEntry)
+	calendarEntry := CastBACnetCalendarEntryEnclosed(_calendarEntry)
 	if closeErr := readBuffer.CloseContext("calendarEntry"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -152,7 +152,7 @@ func BACnetSpecialEventPeriodCalendarEntryParse(readBuffer utils.ReadBuffer) (*B
 
 	// Create a partially initialized instance
 	_child := &BACnetSpecialEventPeriodCalendarEntry{
-		CalendarEntry:            CastBACnetCalendarEntry(calendarEntry),
+		CalendarEntry:            CastBACnetCalendarEntryEnclosed(calendarEntry),
 		BACnetSpecialEventPeriod: &BACnetSpecialEventPeriod{},
 	}
 	_child.BACnetSpecialEventPeriod.Child = _child

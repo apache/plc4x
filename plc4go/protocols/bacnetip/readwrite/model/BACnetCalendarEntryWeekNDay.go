@@ -30,9 +30,6 @@ import (
 type BACnetCalendarEntryWeekNDay struct {
 	*BACnetCalendarEntry
 	WeekNDay *BACnetWeekNDayTagged
-
-	// Arguments.
-	TagNumber uint8
 }
 
 // IBACnetCalendarEntryWeekNDay is the corresponding interface of BACnetCalendarEntryWeekNDay
@@ -81,10 +78,10 @@ func (m *BACnetCalendarEntryWeekNDay) GetWeekNDay() *BACnetWeekNDayTagged {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetCalendarEntryWeekNDay factory function for BACnetCalendarEntryWeekNDay
-func NewBACnetCalendarEntryWeekNDay(weekNDay *BACnetWeekNDayTagged, peekedTagHeader *BACnetTagHeader, tagNumber uint8) *BACnetCalendarEntryWeekNDay {
+func NewBACnetCalendarEntryWeekNDay(weekNDay *BACnetWeekNDayTagged, peekedTagHeader *BACnetTagHeader) *BACnetCalendarEntryWeekNDay {
 	_result := &BACnetCalendarEntryWeekNDay{
 		WeekNDay:            weekNDay,
-		BACnetCalendarEntry: NewBACnetCalendarEntry(peekedTagHeader, tagNumber),
+		BACnetCalendarEntry: NewBACnetCalendarEntry(peekedTagHeader),
 	}
 	_result.Child = _result
 	return _result
@@ -127,7 +124,7 @@ func (m *BACnetCalendarEntryWeekNDay) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCalendarEntryWeekNDayParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetCalendarEntryWeekNDay, error) {
+func BACnetCalendarEntryWeekNDayParse(readBuffer utils.ReadBuffer) (*BACnetCalendarEntryWeekNDay, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntryWeekNDay"); pullErr != nil {

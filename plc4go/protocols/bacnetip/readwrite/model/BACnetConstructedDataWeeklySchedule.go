@@ -169,11 +169,6 @@ func BACnetConstructedDataWeeklyScheduleParse(readBuffer utils.ReadBuffer, tagNu
 		return nil, closeErr
 	}
 
-	// Validation
-	if !(bool((len(weeklySchedule)) == (7))) {
-		return nil, utils.ParseValidationError{"weeklySchedule should have exactly 7 values"}
-	}
-
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataWeeklySchedule"); closeErr != nil {
 		return nil, closeErr
 	}

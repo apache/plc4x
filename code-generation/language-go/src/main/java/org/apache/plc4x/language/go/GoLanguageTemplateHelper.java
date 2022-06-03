@@ -696,6 +696,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     private String toVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, boolean isChild) {
         Tracer tracer = Tracer.start("toVariableExpression(serialize=" + serialize + ")");
         String variableLiteralName = variableLiteral.getName();
+        boolean isEnumTypeReference = typeReference != null && typeReference.isEnumTypeReference();
         if ("lengthInBytes".equals(variableLiteralName)) {
             return toLengthInBytesVariableExpression(typeReference, serialize, tracer);
         } else if ("lengthInBits".equals(variableLiteralName)) {
@@ -757,9 +758,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return toCastVariableExpression(field, typeReference, variableLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess, tracer);
         } else if ("STATIC_CALL".equals(variableLiteralName)) {
             return toStaticCallVariableExpression(field, typeReference, variableLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess, tracer);
-        } else if ("COUNT".equals(variableLiteralName)) {
+        } else if (!isEnumTypeReference && "COUNT".equals(variableLiteralName)) {
             return toCountVariableExpression(field, typeReference, variableLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess, tracer);
-        } else if ("ARRAY_SIZE_IN_BYTES".equals(variableLiteralName)) {
+        } else if (!isEnumTypeReference && "ARRAY_SIZE_IN_BYTES".equals(variableLiteralName)) {
             return toArraySizeInBytesVariableExpression(field, typeReference, variableLiteral, parserArguments, serializerArguments, suppressPointerAccess, tracer);
         } else if ("CEIL".equals(variableLiteralName)) {
             return toCeilVariableExpression(field, variableLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess, tracer);

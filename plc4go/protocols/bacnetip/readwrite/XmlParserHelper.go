@@ -845,6 +845,13 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetAuthenticationPolicyListParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetAccessThreatLevel":
 		return model.BACnetAccessThreatLevelParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetCalendarEntryEnclosed":
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
+		if err != nil {
+			return nil, err
+		}
+		tagNumber := uint8(parsedUint0)
+		return model.BACnetCalendarEntryEnclosedParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetRecipient":
 		return model.BACnetRecipientParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetLiftCarDriveStatusTagged":
@@ -1012,12 +1019,7 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		objectTypeArgument := model.BACnetObjectTypeByName(parserArguments[0])
 		return model.BACnetPriorityValueParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument)
 	case "BACnetCalendarEntry":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
-		if err != nil {
-			return nil, err
-		}
-		tagNumber := uint8(parsedUint0)
-		return model.BACnetCalendarEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
+		return model.BACnetCalendarEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetAccessPassbackModeTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {

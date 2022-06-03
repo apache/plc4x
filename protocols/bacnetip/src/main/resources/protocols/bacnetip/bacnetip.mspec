@@ -2668,15 +2668,23 @@
             [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS')                    units           ]
         ]
         [*, 'CONTROLLED_VARIABLE_VALUE'               BACnetConstructedDataControlledVariableValue
-            [simple   BACnetApplicationTagReal                                                          controlledVariableValue         ]
+            [simple   BACnetApplicationTagReal                                          controlledVariableValue         ]
         ]
-        //[*, 'COUNT'                                   BACnetConstructedDataCount [validation    '1 == 2'    "TODO: implement me COUNT BACnetConstructedDataCount"]]
-        //[*, 'COUNT_BEFORE_CHANGE'                     BACnetConstructedDataCountBeforeChange [validation    '1 == 2'    "TODO: implement me COUNT_BEFORE_CHANGE BACnetConstructedDataCountBeforeChange"]]
-        //[*, 'COUNT_CHANGE_TIME'                       BACnetConstructedDataCountChangeTime [validation    '1 == 2'    "TODO: implement me COUNT_CHANGE_TIME BACnetConstructedDataCountChangeTime"]]
+        [*, 'COUNT'                                   BACnetConstructedDataCount
+            [simple BACnetApplicationTagUnsignedInteger                               count                             ]
+        ]
+        [*, 'COUNT_BEFORE_CHANGE'                     BACnetConstructedDataCountBeforeChange
+            [simple BACnetApplicationTagUnsignedInteger                               countBeforeChange                 ]
+        ]
+        [*, 'COUNT_CHANGE_TIME'                       BACnetConstructedDataCountChangeTime
+            [simple   BACnetDateTime                                        countChangeTime                             ]
+        ]
         [*, 'COV_INCREMENT'                           BACnetConstructedDataCOVIncrement
             [simple   BACnetApplicationTagReal                                          covIncrement                    ]
         ]
-        //[*, 'COV_PERIOD'                              BACnetConstructedDataCOVPeriod [validation    '1 == 2'    "TODO: implement me COV_PERIOD BACnetConstructedDataCOVPeriod"]]
+        [*, 'COV_PERIOD'                              BACnetConstructedDataCOVPeriod
+            [simple   BACnetApplicationTagUnsignedInteger                               covPeriod                       ]
+        ]
         //[*, 'COV_RESUBSCRIPTION_INTERVAL'             BACnetConstructedDataCOVResubscriptionInterval [validation    '1 == 2'    "TODO: implement me COV_RESUBSCRIPTION_INTERVAL BACnetConstructedDataCOVResubscriptionInterval"]]
         //[*, 'COVU_PERIOD'                             BACnetConstructedDataCOVUPeriod [validation    '1 == 2'    "TODO: implement me COVU_PERIOD BACnetConstructedDataCOVUPeriod"]]
         //[*, 'COVU_RECIPIENTS'                         BACnetConstructedDataCOVURecipients [validation    '1 == 2'    "TODO: implement me COVU_RECIPIENTS BACnetConstructedDataCOVURecipients"]]
@@ -2862,7 +2870,9 @@
         [*, 'INITIAL_TIMEOUT'                         BACnetConstructedDataInitialTimeout
             [simple   BACnetApplicationTagUnsignedInteger                               initialTimeout                  ]
         ]
-        //[*, 'INPUT_REFERENCE'                         BACnetConstructedDataInputReference [validation    '1 == 2'    "TODO: implement me INPUT_REFERENCE BACnetConstructedDataInputReference"]]
+        [*, 'INPUT_REFERENCE'                         BACnetConstructedDataInputReference
+            [simple   BACnetObjectPropertyReference                                     inputReference                  ]
+        ]
         //[*, 'INSTALLATION_ID'                         BACnetConstructedDataInstallationId [validation    '1 == 2'    "TODO: implement me INSTALLATION_ID BACnetConstructedDataInstallationId"]]
         //[*, 'INSTANCE_OF'                             BACnetConstructedDataInstanceOf [validation    '1 == 2'    "TODO: implement me INSTANCE_OF BACnetConstructedDataInstanceOf"]]
         //[*, 'INSTANTANEOUS_POWER'                     BACnetConstructedDataInstantaneousPower [validation    '1 == 2'    "TODO: implement me INSTANTANEOUS_POWER BACnetConstructedDataInstantaneousPower"]]
@@ -3187,7 +3197,9 @@
         //[*, 'RESTORE_PREPARATION_TIME'                BACnetConstructedDataRestorePreparationTime [validation    '1 == 2'    "TODO: implement me RESTORE_PREPARATION_TIME BACnetConstructedDataRestorePreparationTime"]]
         //[*, 'ROUTING_TABLE'                           BACnetConstructedDataRoutingTable [validation    '1 == 2'    "TODO: implement me ROUTING_TABLE BACnetConstructedDataRoutingTable"]]
         //[*, 'SCALE'                                   BACnetConstructedDataScale [validation    '1 == 2'    "TODO: implement me SCALE BACnetConstructedDataScale"]]
-        //[*, 'SCALE_FACTOR'                            BACnetConstructedDataScaleFactor [validation    '1 == 2'    "TODO: implement me SCALE_FACTOR BACnetConstructedDataScaleFactor"]]
+        [*, 'SCALE_FACTOR'                            BACnetConstructedDataScaleFactor
+            [simple   BACnetApplicationTagReal                                          scaleFactor                     ]
+        ]
         [*, 'SCHEDULE_DEFAULT'                        BACnetConstructedDataScheduleDefault
             [simple   BACnetConstructedDataElement('objectTypeArgument', 'propertyIdentifierArgument') scheduleDefault  ]
         ]
@@ -3347,7 +3359,8 @@
                                 weeklySchedule
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
-            [validation 'COUNT(weeklySchedule) == 7' "weeklySchedule should have exactly 7 values"
+            // TODO: check if we have an array index... in this case it can be below 7... till then we deactivate this check
+            //[validation 'COUNT(weeklySchedule) == 7' "weeklySchedule should have exactly 7 values"                      ]
         ]
         //[*, 'WINDOW_INTERVAL'                         BACnetConstructedDataWindowInterval [validation    '1 == 2'    "TODO: implement me WINDOW_INTERVAL BACnetConstructedDataWindowInterval"]]
         //[*, 'WINDOW_SAMPLES'                          BACnetConstructedDataWindowSamples [validation    '1 == 2'    "TODO: implement me WINDOW_SAMPLES BACnetConstructedDataWindowSamples"]]
@@ -3691,7 +3704,7 @@
     [validation         'peekedTagHeader.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS']
     [typeSwitch peekedTagNumber
         ['0' BACnetSpecialEventPeriodCalendarEntry
-            [simple   BACnetCalendarEntry('0')
+            [simple   BACnetCalendarEntryEnclosed('0')
                                     calendarEntry                                    ]
         ]
         ['1' BACnetSpecialEventPeriodCalendarReference
@@ -3701,7 +3714,7 @@
     ]
 ]
 
-[type BACnetCalendarEntry(uint 8 tagNumber)
+[type BACnetCalendarEntry
     [peek       BACnetTagHeader
                            peekedTagHeader                                          ]
     [virtual uint 8     peekedTagNumber     'peekedTagHeader.actualTagNumber'       ]
@@ -3720,6 +3733,15 @@
                                         weekNDay                                    ]
         ]
     ]
+]
+
+[type BACnetCalendarEntryEnclosed(uint 8 tagNumber)
+    [simple   BACnetOpeningTag('tagNumber')
+                openingTag                                                                              ]
+    [simple   BACnetCalendarEntry
+                calendarEntry                                                                           ]
+    [simple   BACnetClosingTag('tagNumber')
+                closingTag                                                                              ]
 ]
 
 [type BACnetDateRange

@@ -30,9 +30,6 @@ import (
 type BACnetCalendarEntryDateRange struct {
 	*BACnetCalendarEntry
 	DateRange *BACnetDateRangeEnclosed
-
-	// Arguments.
-	TagNumber uint8
 }
 
 // IBACnetCalendarEntryDateRange is the corresponding interface of BACnetCalendarEntryDateRange
@@ -81,10 +78,10 @@ func (m *BACnetCalendarEntryDateRange) GetDateRange() *BACnetDateRangeEnclosed {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetCalendarEntryDateRange factory function for BACnetCalendarEntryDateRange
-func NewBACnetCalendarEntryDateRange(dateRange *BACnetDateRangeEnclosed, peekedTagHeader *BACnetTagHeader, tagNumber uint8) *BACnetCalendarEntryDateRange {
+func NewBACnetCalendarEntryDateRange(dateRange *BACnetDateRangeEnclosed, peekedTagHeader *BACnetTagHeader) *BACnetCalendarEntryDateRange {
 	_result := &BACnetCalendarEntryDateRange{
 		DateRange:           dateRange,
-		BACnetCalendarEntry: NewBACnetCalendarEntry(peekedTagHeader, tagNumber),
+		BACnetCalendarEntry: NewBACnetCalendarEntry(peekedTagHeader),
 	}
 	_result.Child = _result
 	return _result
@@ -127,7 +124,7 @@ func (m *BACnetCalendarEntryDateRange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCalendarEntryDateRangeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetCalendarEntryDateRange, error) {
+func BACnetCalendarEntryDateRangeParse(readBuffer utils.ReadBuffer) (*BACnetCalendarEntryDateRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntryDateRange"); pullErr != nil {

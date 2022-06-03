@@ -29,10 +29,7 @@ import (
 // BACnetCalendarEntry is the data-structure of this message
 type BACnetCalendarEntry struct {
 	PeekedTagHeader *BACnetTagHeader
-
-	// Arguments.
-	TagNumber uint8
-	Child     IBACnetCalendarEntryChild
+	Child           IBACnetCalendarEntryChild
 }
 
 // IBACnetCalendarEntry is the corresponding interface of BACnetCalendarEntry
@@ -91,8 +88,8 @@ func (m *BACnetCalendarEntry) GetPeekedTagNumber() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetCalendarEntry factory function for BACnetCalendarEntry
-func NewBACnetCalendarEntry(peekedTagHeader *BACnetTagHeader, tagNumber uint8) *BACnetCalendarEntry {
-	return &BACnetCalendarEntry{PeekedTagHeader: peekedTagHeader, TagNumber: tagNumber}
+func NewBACnetCalendarEntry(peekedTagHeader *BACnetTagHeader) *BACnetCalendarEntry {
+	return &BACnetCalendarEntry{PeekedTagHeader: peekedTagHeader}
 }
 
 func CastBACnetCalendarEntry(structType interface{}) *BACnetCalendarEntry {
@@ -132,7 +129,7 @@ func (m *BACnetCalendarEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetCalendarEntry, error) {
+func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer) (*BACnetCalendarEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntry"); pullErr != nil {
@@ -168,11 +165,11 @@ func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BA
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetCalendarEntryDate
-		_child, typeSwitchError = BACnetCalendarEntryDateParse(readBuffer, tagNumber)
+		_child, typeSwitchError = BACnetCalendarEntryDateParse(readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetCalendarEntryDateRange
-		_child, typeSwitchError = BACnetCalendarEntryDateRangeParse(readBuffer, tagNumber)
+		_child, typeSwitchError = BACnetCalendarEntryDateRangeParse(readBuffer)
 	case peekedTagNumber == uint8(2): // BACnetCalendarEntryWeekNDay
-		_child, typeSwitchError = BACnetCalendarEntryWeekNDayParse(readBuffer, tagNumber)
+		_child, typeSwitchError = BACnetCalendarEntryWeekNDayParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

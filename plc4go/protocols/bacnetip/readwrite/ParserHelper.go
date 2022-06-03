@@ -740,6 +740,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetAuthenticationPolicyListParse(io, tagNumber)
 	case "BACnetAccessThreatLevel":
 		return model.BACnetAccessThreatLevelParse(io)
+	case "BACnetCalendarEntryEnclosed":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetCalendarEntryEnclosedParse(io, tagNumber)
 	case "BACnetRecipient":
 		return model.BACnetRecipientParse(io)
 	case "BACnetLiftCarDriveStatusTagged":
@@ -890,11 +896,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		objectTypeArgument := model.BACnetObjectTypeByName(arguments[0])
 		return model.BACnetPriorityValueParse(io, objectTypeArgument)
 	case "BACnetCalendarEntry":
-		tagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetCalendarEntryParse(io, tagNumber)
+		return model.BACnetCalendarEntryParse(io)
 	case "BACnetAccessPassbackModeTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
