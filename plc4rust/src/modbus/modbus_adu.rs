@@ -64,6 +64,7 @@ use crate::modbus::modbus_pdu::ModbusPDUOption;
 //         ]
 //     ]
 // ]
+#[derive(PartialEq, Debug, Clone)]
 pub enum ModbusADU {
     ModbusTcpADU(ModbusTcpADU),
     ModbusRtuADU(ModbusRtuADU),
@@ -109,6 +110,7 @@ impl Message for ModbusADU {
     }
 }
 
+#[derive(PartialEq, Debug, Clone)]
 pub struct ModbusTcpADU {
     pub(crate) transaction_identifier: u16,
     pub(crate) protocol_identifier: u16,
@@ -154,6 +156,7 @@ impl Message for ModbusTcpADU {
     }
 }
 
+#[derive(PartialEq, Debug, Clone)]
 pub struct ModbusRtuADU {
 
 }

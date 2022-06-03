@@ -31,6 +31,7 @@ mod r#enum;
 mod types;
 
 #[allow(dead_code)]
+#[derive(Debug)]
 pub enum Endianess {
     LittleEndian,
     BigEndian

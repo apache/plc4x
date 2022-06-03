@@ -28,7 +28,7 @@ mod modbus_tests {
     fn read_write() {
         let pdu = ModbusPDU::ModbusPDUReadDiscreteInputsRequest(
             ModbusPDUReadDiscreteInputsRequest {
-                startingAddress: 0,
+                startingAddress: 0x03,
                 quantity: 1
             }
         );
@@ -46,7 +46,7 @@ mod modbus_tests {
         let mut write_buffer = WriteBuffer::new(Endianess::BigEndian, bytes);
         let result = adu.serialize(&mut write_buffer);
 
-        assert_eq!(vec![0, 1, 0, 0, 1, 0, 0, 0, 1], write_buffer.writer);
+        assert_eq!(vec![0, 1, 0, 0, 1, 4, 0, 3, 0, 1], write_buffer.writer);
 
         let bytes = write_buffer.writer;
 
@@ -58,6 +58,7 @@ mod modbus_tests {
         }));
 
         assert!(deserialized.is_ok());
+        assert_eq!(adu, deserialized.unwrap());
     }
 
 }

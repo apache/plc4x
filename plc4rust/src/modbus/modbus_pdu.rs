@@ -220,6 +220,7 @@ use crate::{Message, NoOption, plc4x_type, ReadBuffer, WriteBuffer};
 //         ]
 //     ]
 // ]
+#[derive(PartialEq, Debug, Clone)]
 pub enum ModbusPDU {
     ModbusPDUError(ModbusPDUError),
     ModbusPDUReadDiscreteInputsRequest(ModbusPDUReadDiscreteInputsRequest)
@@ -245,11 +246,15 @@ impl Message for ModbusPDU {
     }
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
+        // Write general stuff first
         match self {
             ModbusPDU::ModbusPDUError(_) => {
                 todo!()
             }
             ModbusPDU::ModbusPDUReadDiscreteInputsRequest(msg) => {
+                // Write discriminator
+                writer.write_u_n(1, 0);
+                writer.write_u_n(7, 0x02);
                 msg.serialize(writer)
             }
         }
@@ -276,6 +281,7 @@ impl Message for ModbusPDU {
     }
 }
 
+#[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUError {
 
 }

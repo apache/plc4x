@@ -107,6 +107,7 @@ impl<T: Write> WriteBuffer<T> {
     }
 
     fn write(&mut self, bytes: &[u8]) -> std::io::Result<usize> {
+        assert!(self.bit_writer.position == 0);
         let bytes_written = self.writer.write(bytes)?;
         self.position = self.position + bytes_written as u64;
         Ok(bytes_written)
