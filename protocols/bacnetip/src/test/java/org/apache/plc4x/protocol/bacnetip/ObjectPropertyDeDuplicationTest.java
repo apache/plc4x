@@ -101,20 +101,22 @@ public class ObjectPropertyDeDuplicationTest {
     @TestFactory
     Collection<DynamicNode> testUniqueUsagesAreMappedGeneric() {
         List<DynamicNode> tests = new LinkedList<>();
-        propertyToObjectNameMap.forEach((propertyIdentifier, bacNetObjectNames) -> {
-            if (bacNetObjectNames.size() > 1) {
-                return;
-            }
-            String bacNetObjectName = bacNetObjectNames.get(0);
-            tests.add(
-                DynamicTest.dynamicTest("Unique property " + propertyIdentifier + " for " + bacNetObjectName,
-                    () -> {
-                        String searchedTypeName = "BACnetConstructedData" + propertyIdentifier;
-                        searchedTypeName = searchedTypeName.replaceAll("_", "");
-                        assertNotNull(typeDefinitions.get(searchedTypeName), searchedTypeName + " not found");
-                    })
-            );
-        });
+        new LinkedList<>(propertyToObjectNamesMap.entrySet())
+            .stream()
+            .filter(propertyToObjectNamesEntry -> propertyToObjectNamesEntry.getValue().size() == 1)
+            .sorted(Comparator.comparing(stringListEntry -> stringListEntry.getValue().get(0)))
+            .forEach(propertyToObjectNameEntry -> {
+                String propertyIdentifier = propertyToObjectNameEntry.getKey();
+                String bacNetObjectName = propertyToObjectNameEntry.getValue().get(0);
+                tests.add(
+                    DynamicTest.dynamicTest(bacNetObjectName + " uses property " + propertyIdentifier + " uniquely",
+                        () -> {
+                            String searchedTypeName = "BACnetConstructedData" + propertyIdentifier;
+                            searchedTypeName = searchedTypeName.replaceAll("_", "");
+                            assertNotNull(typeDefinitions.get(searchedTypeName), searchedTypeName + " not found");
+                        })
+                );
+            });
         return tests;
     }
 
@@ -134,7 +136,7 @@ public class ObjectPropertyDeDuplicationTest {
 
         @Test
         void outputPropertyUsage() {
-            propertyToObjectNameMap.forEach((propertyIdentifier, bacNetObjectNames) -> LOGGER.info("property {} is used by {}", propertyIdentifier, bacNetObjectNames));
+            propertyToObjectNamesMap.forEach((propertyIdentifier, bacNetObjectNames) -> LOGGER.info("property {} is used by {}", propertyIdentifier, bacNetObjectNames));
         }
 
         @Test
@@ -155,7 +157,7 @@ public class ObjectPropertyDeDuplicationTest {
 
         @Test
         void outputUniqueProperties() {
-            propertyToObjectNameMap.forEach((propertyIdentifier, bacNetObjectNames) -> {
+            propertyToObjectNamesMap.forEach((propertyIdentifier, bacNetObjectNames) -> {
                 if (bacNetObjectNames.size() > 1) {
                     return;
                 }
@@ -165,7 +167,7 @@ public class ObjectPropertyDeDuplicationTest {
 
         @Test
         void outputNonUniqueProperties() {
-            propertyToObjectNameMap.forEach((propertyIdentifier, bacNetObjectNames) -> {
+            propertyToObjectNamesMap.forEach((propertyIdentifier, bacNetObjectNames) -> {
                 if (bacNetObjectNames.size() == 1) {
                     return;
                 }

@@ -40,7 +40,7 @@ public class BACnetObjectsDefinitions {
     /**
      * a map which property is contained in which objects(name)
      */
-    static Map<String, List<String>> propertyToObjectNameMap;
+    static Map<String, List<String>> propertyToObjectNamesMap;
 
     /**
      * a map which property-type-combinations is contained in which objects(name)
@@ -2482,13 +2482,13 @@ public class BACnetObjectsDefinitions {
     }
 
     private static void createPropertyToObjectNameMap() {
-        propertyToObjectNameMap = new HashMap<>();
+        propertyToObjectNamesMap = new HashMap<>();
         bacNetObjects.forEach(bacNetObject -> {
             String bacNetObjectName = bacNetObject.name;
             bacNetObject.properties.forEach(bacNetProperty -> {
                 String propertyIdentifier = bacNetProperty.propertyIdentifier;
-                propertyToObjectNameMap.putIfAbsent(propertyIdentifier, new LinkedList<>());
-                propertyToObjectNameMap.get(propertyIdentifier).add(bacNetObjectName);
+                propertyToObjectNamesMap.putIfAbsent(propertyIdentifier, new LinkedList<>());
+                propertyToObjectNamesMap.get(propertyIdentifier).add(bacNetObjectName);
             });
         });
     }
@@ -2507,7 +2507,7 @@ public class BACnetObjectsDefinitions {
 
     static void createPropertyIdToPropertyNameMap() {
         propertyIdToPropertyNameMap = new HashMap<>();
-        propertyToObjectNameMap.keySet().forEach(propertyName -> propertyIdToPropertyNameMap.put(mapPropertyNameToEnumName(propertyName), propertyName));
+        propertyToObjectNamesMap.keySet().forEach(propertyName -> propertyIdToPropertyNameMap.put(mapPropertyNameToEnumName(propertyName), propertyName));
     }
 
     static String mapPropertyNameToEnumName(String propertyName) {
