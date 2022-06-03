@@ -2667,13 +2667,32 @@
         //[*, 'DIRECT_READING'                          BACnetConstructedDataDirectReading [validation    '1 == 2'    "TODO: implement me DIRECT_READING BACnetConstructedDataDirectReading"]]
         //[*, 'DISTRIBUTION_KEY_REVISION'               BACnetConstructedDataDistributionKeyRevision [validation    '1 == 2'    "TODO: implement me DISTRIBUTION_KEY_REVISION BACnetConstructedDataDistributionKeyRevision"]]
         //[*, 'DO_NOT_HIDE'                             BACnetConstructedDataDoNotHide [validation    '1 == 2'    "TODO: implement me DO_NOT_HIDE BACnetConstructedDataDoNotHide"]]
-        //[*, 'DOOR_ALARM_STATE'                        BACnetConstructedDataDoorAlarmState [validation    '1 == 2'    "TODO: implement me DOOR_ALARM_STATE BACnetConstructedDataDoorAlarmState"]]
-        //[*, 'DOOR_EXTENDED_PULSE_TIME'                BACnetConstructedDataDoorExtendedPulseTime [validation    '1 == 2'    "TODO: implement me DOOR_EXTENDED_PULSE_TIME BACnetConstructedDataDoorExtendedPulseTime"]]
-        //[*, 'DOOR_MEMBERS'                            BACnetConstructedDataDoorMembers [validation    '1 == 2'    "TODO: implement me DOOR_MEMBERS BACnetConstructedDataDoorMembers"]]
-        //[*, 'DOOR_OPEN_TOO_LONG_TIME'                 BACnetConstructedDataDoorOpenTooLongTime [validation    '1 == 2'    "TODO: implement me DOOR_OPEN_TOO_LONG_TIME BACnetConstructedDataDoorOpenTooLongTime"]]
-        //[*, 'DOOR_PULSE_TIME'                         BACnetConstructedDataDoorPuleTime [validation    '1 == 2'    "TODO: implement me DOOR_PULSE_TIME BACnetConstructedDataDoorPuleTime"]]
-        //[*, 'DOOR_STATUS'                             BACnetConstructedDataDoorStatus [validation    '1 == 2'    "TODO: implement me DOOR_STATUS BACnetConstructedDataDoorStatus"]]
-        //[*, 'DOOR_UNLOCK_DELAY_TIME'                  BACnetConstructedDataDoorUnlockDelayTime [validation    '1 == 2'    "TODO: implement me DOOR_UNLOCK_DELAY_TIME BACnetConstructedDataDoorUnlockDelayTime"]]
+        [*, 'DOOR_ALARM_STATE'                        BACnetConstructedDataDoorAlarmState
+            [simple BACnetDoorAlarmStateTagged('0', 'TagClass.APPLICATION_TAGS')
+                            doorAlarmState  ]
+        ]
+        [*, 'DOOR_EXTENDED_PULSE_TIME'                BACnetConstructedDataDoorExtendedPulseTime
+            [simple BACnetApplicationTagUnsignedInteger                     doorExtendedPulseTime                       ]
+        ]
+        [*, 'DOOR_MEMBERS'                            BACnetConstructedDataDoorMembers
+            [array    BACnetDeviceObjectReference
+                        doorMembers
+                            terminated
+                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
+        [*, 'DOOR_OPEN_TOO_LONG_TIME'                 BACnetConstructedDataDoorOpenTooLongTime
+            [simple BACnetApplicationTagUnsignedInteger                     doorOpenTooLongTime                         ]
+        ]
+        [*, 'DOOR_PULSE_TIME'                         BACnetConstructedDataDoorPulseTime
+            [simple BACnetApplicationTagUnsignedInteger                     doorPulseTime                               ]
+        ]
+        [*, 'DOOR_STATUS'                             BACnetConstructedDataDoorStatus
+            [simple   BACnetDoorStatusTagged('0', 'TagClass.APPLICATION_TAGS')
+                                            doorStatus                      ]
+        ]
+        [*, 'DOOR_UNLOCK_DELAY_TIME'                  BACnetConstructedDataDoorUnlockDelayTime
+            [simple BACnetApplicationTagUnsignedInteger                     doorUnlockDelayTime                         ]
+        ]
         //[*, 'DUTY_WINDOW'                             BACnetConstructedDataDutyWindow [validation    '1 == 2'    "TODO: implement me DUTY_WINDOW BACnetConstructedDataDutyWindow"]]
         //[*, 'EFFECTIVE_PERIOD'                        BACnetConstructedDataEffectivePeriod [validation    '1 == 2'    "TODO: implement me EFFECTIVE_PERIOD BACnetConstructedDataEffectivePeriod"]]
         //[*, 'EGRESS_ACTIVE'                           BACnetConstructedDataEgressActive [validation    '1 == 2'    "TODO: implement me EGRESS_ACTIVE BACnetConstructedDataEgressActive"]]
@@ -2847,7 +2866,9 @@
         //[*, 'LOCAL_FORWARDING_ONLY'                   BACnetConstructedDataLocalForwardingOnly [validation    '1 == 2'    "TODO: implement me LOCAL_FORWARDING_ONLY BACnetConstructedDataLocalForwardingOnly"]]
         //[*, 'LOCAL_TIME'                              BACnetConstructedDataLocalTime [validation    '1 == 2'    "TODO: implement me LOCAL_TIME BACnetConstructedDataLocalTime"]]
         //[*, 'LOCATION'                                BACnetConstructedDataLocation [validation    '1 == 2'    "TODO: implement me LOCATION BACnetConstructedDataLocation"]]
-        //[*, 'LOCK_STATUS'                             BACnetConstructedDataLockStatus [validation    '1 == 2'    "TODO: implement me LOCK_STATUS BACnetConstructedDataLockStatus"]]
+        [*, 'LOCK_STATUS'                             BACnetConstructedDataLockStatus
+            [simple   BACnetLockStatusTagged('0', 'TagClass.APPLICATION_TAGS')      lockStatus  ]
+        ]
         //[*, 'LOCKOUT'                                 BACnetConstructedDataLockout [validation    '1 == 2'    "TODO: implement me LOCKOUT BACnetConstructedDataLockout"]]
         //[*, 'LOCKOUT_RELINQUISH_TIME'                 BACnetConstructedDataLockoutRelinquishTime [validation    '1 == 2'    "TODO: implement me LOCKOUT_RELINQUISH_TIME BACnetConstructedDataLockoutRelinquishTime"]]
         //[*, 'LOG_BUFFER'                              BACnetConstructedDataLogBuffer [validation    '1 == 2'    "TODO: implement me LOG_BUFFER BACnetConstructedDataLogBuffer"]]
@@ -2875,7 +2896,12 @@
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
-        //[*, 'MASKED_ALARM_VALUES'                     BACnetConstructedDataMaskedAlarmValues [validation    '1 == 2'    "TODO: implement me MASKED_ALARM_VALUES BACnetConstructedDataMaskedAlarmValues"]]
+        [*, 'MASKED_ALARM_VALUES'                     BACnetConstructedDataMaskedAlarmValues
+            [array    BACnetDoorAlarmStateTagged('0', 'TagClass.APPLICATION_TAGS')
+                                maskedAlarmValues
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         //[*, 'MAX_ACTUAL_VALUE'                        BACnetConstructedDataMaxActualValue [validation    '1 == 2'    "TODO: implement me MAX_ACTUAL_VALUE BACnetConstructedDataMaxActualValue"]]
         //[*, 'MAX_APDU_LENGTH_ACCEPTED'                BACnetConstructedDataMaxApduLengthAccepted [validation    '1 == 2'    "TODO: implement me MAX_APDU_LENGTH_ACCEPTED BACnetConstructedDataMaxApduLengthAccepted"]]
         //[*, 'MAX_FAILED_ATTEMPTS'                     BACnetConstructedDataMaxFailedAttempts [validation    '1 == 2'    "TODO: implement me MAX_FAILED_ATTEMPTS BACnetConstructedDataMaxFailedAttempts"]]
@@ -3052,7 +3078,9 @@
         //[*, 'SCALE'                                   BACnetConstructedDataScale [validation    '1 == 2'    "TODO: implement me SCALE BACnetConstructedDataScale"]]
         //[*, 'SCALE_FACTOR'                            BACnetConstructedDataScaleFactor [validation    '1 == 2'    "TODO: implement me SCALE_FACTOR BACnetConstructedDataScaleFactor"]]
         //[*, 'SCHEDULE_DEFAULT'                        BACnetConstructedDataScheduleDefault [validation    '1 == 2'    "TODO: implement me SCHEDULE_DEFAULT BACnetConstructedDataScheduleDefault"]]
-        //[*, 'SECURED_STATUS'                          BACnetConstructedDataSecuredStatus [validation    '1 == 2'    "TODO: implement me SECURED_STATUS BACnetConstructedDataSecuredStatus"]]
+        [*, 'SECURED_STATUS'                          BACnetConstructedDataSecuredStatus
+            [simple   BACnetDoorSecuredStatusTagged('0', 'TagClass.APPLICATION_TAGS')         securedStatus             ]
+        ]
         //[*, 'SECURITY_PDU_TIMEOUT'                    BACnetConstructedDataSecurityPduTimeout [validation    '1 == 2'    "TODO: implement me SECURITY_PDU_TIMEOUT BACnetConstructedDataSecurityPduTimeout"]]
         //[*, 'SECURITY_TIME_WINDOW'                    BACnetConstructedDataSecurityTimeWindow [validation    '1 == 2'    "TODO: implement me SECURITY_TIME_WINDOW BACnetConstructedDataSecurityTimeWindow"]]
         //[*, 'SEGMENTATION_SUPPORTED'                  BACnetConstructedDataSegmentationSupported [validation    '1 == 2'    "TODO: implement me SEGMENTATION_SUPPORTED BACnetConstructedDataSegmentationSupported"]]
