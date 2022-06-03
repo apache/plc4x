@@ -2752,10 +2752,12 @@
                                             doorStatus                      ]
         ]
         [*, 'DOOR_UNLOCK_DELAY_TIME'                  BACnetConstructedDataDoorUnlockDelayTime
-            [simple BACnetApplicationTagUnsignedInteger                     doorUnlockDelayTime                         ]
+            [simple   BACnetApplicationTagUnsignedInteger                     doorUnlockDelayTime                         ]
         ]
         //[*, 'DUTY_WINDOW'                             BACnetConstructedDataDutyWindow [validation    '1 == 2'    "TODO: implement me DUTY_WINDOW BACnetConstructedDataDutyWindow"]]
-        //[*, 'EFFECTIVE_PERIOD'                        BACnetConstructedDataEffectivePeriod [validation    '1 == 2'    "TODO: implement me EFFECTIVE_PERIOD BACnetConstructedDataEffectivePeriod"]]
+        [*, 'EFFECTIVE_PERIOD'                        BACnetConstructedDataEffectivePeriod
+            [simple   BACnetDateRange               dateRange   ]
+        ]
         //[*, 'EGRESS_ACTIVE'                           BACnetConstructedDataEgressActive [validation    '1 == 2'    "TODO: implement me EGRESS_ACTIVE BACnetConstructedDataEgressActive"]]
         //[*, 'EGRESS_TIME'                             BACnetConstructedDataEgressTime [validation    '1 == 2'    "TODO: implement me EGRESS_TIME BACnetConstructedDataEgressTime"]]
         //[*, 'ELAPSED_ACTIVE_TIME'                     BACnetConstructedDataElapsedActiveTime [validation    '1 == 2'    "TODO: implement me ELAPSED_ACTIVE_TIME BACnetConstructedDataElapsedActiveTime"]]
@@ -2792,7 +2794,12 @@
             [simple  BACnetEventTimestamps                        eventTimeStamps                                       ]
         ]
         //[*, 'EVENT_TYPE'                              BACnetConstructedDataEventType [validation    '1 == 2'    "TODO: implement me EVENT_TYPE BACnetConstructedDataEventType"]]
-        //[*, 'EXCEPTION_SCHEDULE'                      BACnetConstructedDataExceptionSchedule [validation    '1 == 2'    "TODO: implement me EXCEPTION_SCHEDULE BACnetConstructedDataExceptionSchedule"]]
+        [*, 'EXCEPTION_SCHEDULE'                      BACnetConstructedDataExceptionSchedule
+            [array    BACnetSpecialEvent
+                            exceptionSchedule
+                                terminated
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'        ]
+        ]
         //[*, 'EXECUTION_DELAY'                         BACnetConstructedDataExecutionDelay [validation    '1 == 2'    "TODO: implement me EXECUTION_DELAY BACnetConstructedDataExecutionDelay"]]
         //[*, 'EXIT_POINTS'                             BACnetConstructedDataExitPoints [validation    '1 == 2'    "TODO: implement me EXIT_POINTS BACnetConstructedDataExitPoints"]]
         //[*, 'EXPECTED_SHED_LEVEL'                     BACnetConstructedDataExpectedShedLevel [validation    '1 == 2'    "TODO: implement me EXPECTED_SHED_LEVEL BACnetConstructedDataExpectedShedLevel"]]
@@ -3181,7 +3188,9 @@
         //[*, 'ROUTING_TABLE'                           BACnetConstructedDataRoutingTable [validation    '1 == 2'    "TODO: implement me ROUTING_TABLE BACnetConstructedDataRoutingTable"]]
         //[*, 'SCALE'                                   BACnetConstructedDataScale [validation    '1 == 2'    "TODO: implement me SCALE BACnetConstructedDataScale"]]
         //[*, 'SCALE_FACTOR'                            BACnetConstructedDataScaleFactor [validation    '1 == 2'    "TODO: implement me SCALE_FACTOR BACnetConstructedDataScaleFactor"]]
-        //[*, 'SCHEDULE_DEFAULT'                        BACnetConstructedDataScheduleDefault [validation    '1 == 2'    "TODO: implement me SCHEDULE_DEFAULT BACnetConstructedDataScheduleDefault"]]
+        [*, 'SCHEDULE_DEFAULT'                        BACnetConstructedDataScheduleDefault
+            [simple   BACnetConstructedDataElement('objectTypeArgument', 'propertyIdentifierArgument') scheduleDefault  ]
+        ]
         [*, 'SECURED_STATUS'                          BACnetConstructedDataSecuredStatus
             [simple   BACnetDoorSecuredStatusTagged('0', 'TagClass.APPLICATION_TAGS')         securedStatus             ]
         ]
@@ -3333,7 +3342,13 @@
         ]
         //[*, 'VIRTUAL_MAC_ADDRESS_TABLE'               BACnetConstructedDataVirtualMacAddressTable [validation    '1 == 2'    "TODO: implement me VIRTUAL_MAC_ADDRESS_TABLE BACnetConstructedDataVirtualMacAddressTable"]]
         //[*, 'VT_CLASSES_SUPPORTED'                    BACnetConstructedDataVtClassesSupported [validation    '1 == 2'    "TODO: implement me VT_CLASSES_SUPPORTED BACnetConstructedDataVtClassesSupported"]]
-        //[*, 'WEEKLY_SCHEDULE'                         BACnetConstructedDataWeeklySchedule [validation    '1 == 2'    "TODO: implement me WEEKLY_SCHEDULE BACnetConstructedDataWeeklySchedule"]]
+        [*, 'WEEKLY_SCHEDULE'                         BACnetConstructedDataWeeklySchedule
+            [array    BACnetDailySchedule
+                                weeklySchedule
+                                    terminated
+                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
+            [validation 'COUNT(weeklySchedule) == 7' "weeklySchedule should have exactly 7 values"
+        ]
         //[*, 'WINDOW_INTERVAL'                         BACnetConstructedDataWindowInterval [validation    '1 == 2'    "TODO: implement me WINDOW_INTERVAL BACnetConstructedDataWindowInterval"]]
         //[*, 'WINDOW_SAMPLES'                          BACnetConstructedDataWindowSamples [validation    '1 == 2'    "TODO: implement me WINDOW_SAMPLES BACnetConstructedDataWindowSamples"]]
         //[*, 'WRITE_STATUS'                            BACnetConstructedDataWriteStatus [validation    '1 == 2'    "TODO: implement me WRITE_STATUS BACnetConstructedDataWriteStatus"]]
@@ -3369,11 +3384,11 @@
 
 [type BACnetDeviceObjectReferenceEnclosed(uint 8 tagNumber)
    [simple   BACnetOpeningTag('tagNumber')
-                   openingTag                  ]
+                   openingTag                   ]
    [simple   BACnetDeviceObjectReference
-                   objectReference     ]
+                   objectReference              ]
    [simple   BACnetClosingTag('tagNumber')
-                   closingTag                  ]
+                   closingTag                   ]
 ]
 
 [type BACnetDeviceObjectPropertyReference
@@ -3658,4 +3673,136 @@
                        ligthingCommandValue                                             ]
        ]
     ]
+]
+
+[type BACnetSpecialEvent
+    [simple   BACnetSpecialEventPeriod
+                        period                                      ]
+    [simple   BACnetSpecialEventListOfTimeValues('2')
+                        listOfTimeValues                            ]
+    [simple   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
+                        eventPriority                               ]
+]
+
+[type BACnetSpecialEventPeriod
+    [peek       BACnetTagHeader
+                           peekedTagHeader                                          ]
+    [virtual uint 8     peekedTagNumber     'peekedTagHeader.actualTagNumber'       ]
+    [validation         'peekedTagHeader.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS']
+    [typeSwitch peekedTagNumber
+        ['0' BACnetSpecialEventPeriodCalendarEntry
+            [simple   BACnetCalendarEntry('0')
+                                    calendarEntry                                    ]
+        ]
+        ['1' BACnetSpecialEventPeriodCalendarReference
+            [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                                   calendarReference                                ]
+        ]
+    ]
+]
+
+[type BACnetCalendarEntry(uint 8 tagNumber)
+    [peek       BACnetTagHeader
+                           peekedTagHeader                                          ]
+    [virtual uint 8     peekedTagNumber     'peekedTagHeader.actualTagNumber'       ]
+    [validation         'peekedTagHeader.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS']
+    [typeSwitch peekedTagNumber
+        ['0' BACnetCalendarEntryDate
+            [simple   BACnetContextTagDate('0', 'BACnetDataType.DATE')
+                                        dateValue                                   ]
+        ]
+        ['1' BACnetCalendarEntryDateRange
+            [simple   BACnetDateRangeEnclosed('1')
+                                        dateRange                                   ]
+        ]
+        ['2' BACnetCalendarEntryWeekNDay
+            [simple   BACnetWeekNDayTagged('2', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                        weekNDay                                    ]
+        ]
+    ]
+]
+
+[type BACnetDateRange
+    [simple   BACnetApplicationTagDate  startDate   ]
+    [simple   BACnetApplicationTagDate  endDate     ]
+]
+
+[type BACnetDateRangeEnclosed(uint 8 tagNumber)
+    [simple   BACnetOpeningTag('tagNumber')
+                openingTag                                                                              ]
+    [simple   BACnetDateRange
+                dateRange                                                                               ]
+    [simple   BACnetClosingTag('tagNumber')
+                closingTag                                                                              ]
+]
+
+[type BACnetWeekNDay
+    [validation '1==2' "Unusable type. Exits only for consistency. Use BACnetWeekNDayTagged"]
+]
+
+[type BACnetWeekNDayTagged(uint 8 tagNumber, TagClass tagClass)
+    [simple   BACnetTagHeader
+                            header                                                                              ]
+    [validation    'header.tagClass == tagClass'    "tag class doesn't match"                                   ]
+    [validation    '(header.tagClass == TagClass.APPLICATION_TAGS) || (header.actualTagNumber == tagNumber)'
+                                                    "tagnumber doesn't match" shouldFail=false                  ]
+    [validation    'header.actualLength == 3' "We should have at least 3 octets"                                ]
+    // TODO: once we progress in codegen var enough that we can detect the source for array access we can use that again
+    // ... at the moment in java this produces a .get(0) call and this doesn't work with byte arrays
+    //[simple        BACnetTagPayloadOctetString  payload                                                         ]
+    // TODO see comment above
+    //[virtual       uint 8 month                                     'payload.octets[0]'   ]
+    // TODO: temporary
+    [simple        uint 8 month]
+    [virtual       bit    oddMonths                                 'month == 13'         ]
+    [virtual       bit    evenMonths                                'month == 14'         ]
+    [virtual       bit    anyMonth                                  'month == 0xFF'       ]
+    // TODO see comment above
+    //[virtual       uint 8 weekOfMonth                               'payload.octets[1]'   ]
+    // TODO: temporary
+    [simple        uint 8 weekOfMonth]
+    [virtual       bit    days1to7                                  'weekOfMonth == 1'    ]
+    [virtual       bit    days8to14                                 'weekOfMonth == 2'    ]
+    [virtual       bit    days15to21                                'weekOfMonth == 3'    ]
+    [virtual       bit    days22to28                                'weekOfMonth == 4'    ]
+    [virtual       bit    days29to31                                'weekOfMonth == 5'    ]
+    [virtual       bit    last7DaysOfThisMonth                      'weekOfMonth == 6'    ]
+    [virtual       bit    any7DaysPriorToLast7DaysOfThisMonth       'weekOfMonth == 7'    ]
+    [virtual       bit    any7DaysPriorToLast14DaysOfThisMonth      'weekOfMonth == 8'    ]
+    [virtual       bit    any7DaysPriorToLast21DaysOfThisMonth      'weekOfMonth == 9'    ]
+    [virtual       bit    anyWeekOfthisMonth                        'weekOfMonth == 0xFF' ]
+    // TODO see comment above
+    //[virtual       uint 8 dayOfWeek                                 'payload.octets[2]'   ]
+    // TODO: temporary
+    [simple        uint 8 dayOfWeek]
+    [virtual       bit    anyDayOfWeek                              'dayOfWeek == 0xFF' ]
+]
+
+[type BACnetSpecialEventListOfTimeValues(uint 8 tagNumber)
+    [simple   BACnetOpeningTag('tagNumber')
+                    openingTag                                                                              ]
+    [array    BACnetTimeValue
+                    listOfTimeValues
+                        terminated
+                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
+    [simple   BACnetClosingTag('tagNumber')
+                    closingTag                                                                              ]
+]
+
+[type BACnetTimeValue
+    [simple   BACnetApplicationTagTime
+                    timeValue                                                                               ]
+    [simple BACnetConstructedDataElement('BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE')
+                    value                                                                                   ]
+]
+
+[type BACnetDailySchedule
+    [simple   BACnetOpeningTag('0')
+                        openingTag                                                                              ]
+    [array    BACnetTimeValue
+                    daySchedule
+                        terminated
+                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 0)'    ]
+    [simple   BACnetClosingTag('0')
+                    closingTag                                                                              ]
 ]
