@@ -2630,8 +2630,15 @@
             [simple   BACnetDeviceObjectReference       belongsTo                                                      ]
         ]
         //[*, 'BIAS'                                    BACnetConstructedDataBias [validation    '1 == 2'    "TODO: implement me BIAS BACnetConstructedDataBias"]]
-        //[*, 'BIT_MASK'                                BACnetConstructedDataBitMask [validation    '1 == 2'    "TODO: implement me BIT_MASK BACnetConstructedDataBitMask"]]
-        //[*, 'BIT_TEXT'                                BACnetConstructedDataBitText [validation    '1 == 2'    "TODO: implement me BIT_TEXT BACnetConstructedDataBitText"]]
+        [*, 'BIT_MASK'                                BACnetConstructedDataBitMask
+            [simple   BACnetApplicationTagBitString     bitString                                                       ]
+        ]
+        [*, 'BIT_TEXT'                                BACnetConstructedDataBitText
+            [array    BACnetApplicationTagCharacterString
+                    bitText
+                            terminated
+                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         //[*, 'BLINK_WARN_ENABLE'                       BACnetConstructedDataBlinkWarnEnable [validation    '1 == 2'    "TODO: implement me BLINK_WARN_ENABLE BACnetConstructedDataBlinkWarnEnable"]]
         //[*, 'BUFFER_SIZE'                             BACnetConstructedDataBufferSize [validation    '1 == 2'    "TODO: implement me BUFFER_SIZE BACnetConstructedDataBufferSize"]]
         //[*, 'CAR_ASSIGNED_DIRECTION'                  BACnetConstructedDataCarAssignedDirection [validation    '1 == 2'    "TODO: implement me CAR_ASSIGNED_DIRECTION BACnetConstructedDataCarAssignedDirection"]]
