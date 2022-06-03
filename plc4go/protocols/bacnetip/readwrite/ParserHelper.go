@@ -201,6 +201,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.NPDUControlParse(io)
 	case "BACnetReadAccessSpecification":
 		return model.BACnetReadAccessSpecificationParse(io)
+	case "BACnetAuthenticationPolicyList":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetAuthenticationPolicyListParse(io, tagNumber)
 	case "BACnetTimeStampEnclosed":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -324,6 +330,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.ErrorEnclosedParse(io, tagNumber)
+	case "BACnetAuthenticationPolicyListEntry":
+		return model.BACnetAuthenticationPolicyListEntryParse(io)
 	case "APDU":
 		apduLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {
@@ -523,6 +531,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(io, tagNumber)
 	case "Error":
 		return model.ErrorParse(io)
+	case "BACnetAuthenticationPolicy":
+		return model.BACnetAuthenticationPolicyParse(io)
 	case "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
