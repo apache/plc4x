@@ -22,6 +22,8 @@ package model
 import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/pkg/errors"
+	"math"
 	"math/big"
 	"reflect"
 )
@@ -34,17 +36,45 @@ func ReadEnumGenericFailing(readBuffer utils.ReadBuffer, actualLength uint32, te
 	}
 	switch template.(type) {
 	case BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
 		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable(rawValue), nil
 	case BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
 		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice(rawValue), nil
 	case BACnetSegmentation:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || BACnetSegmentationKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
 		return BACnetSegmentation(rawValue), nil
 	case BACnetAction:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || BACnetActionKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
 		return BACnetAction(rawValue), nil
 	case BACnetNotifyType:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || BACnetNotifyTypeKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
 		return BACnetNotifyType(rawValue), nil
 	case BACnetBinaryPV:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || BACnetBinaryPVKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
 		return BACnetBinaryPV(rawValue), nil
+	case BACnetLockStatus:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || BACnetLockStatusKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetLockStatus(rawValue), nil
+	case BACnetDoorSecuredStatus:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || BACnetDoorSecuredStatusKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetDoorSecuredStatus(rawValue), nil
 	default:
 		panic(fmt.Sprintf("support for %T not yet implemented", template))
 	}

@@ -70,6 +70,14 @@ public class StaticHelper {
             if (!BACnetBinaryPV.isDefined((short) rawValue))
                 throw new ParseException("Invalid value " + rawValue + " for " + BACnetBinaryPV.class.getSimpleName());
             return BACnetBinaryPV.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetLockStatus.class) {
+            if (!BACnetLockStatus.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetLockStatus.class.getSimpleName());
+            return BACnetLockStatus.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetDoorSecuredStatus.class) {
+            if (!BACnetDoorSecuredStatus.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetDoorSecuredStatus.class.getSimpleName());
+            return BACnetDoorSecuredStatus.enumForValue((short) rawValue);
         }
         throw new ParseException("Unmapped type " + declaringClass);
     }
