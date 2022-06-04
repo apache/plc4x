@@ -57,26 +57,84 @@ use crate::${import}::${import};
 </#if>
 </#list>
 
-<#if type.parserArguments.isEmpty()>
-plc4x_enum!
+<#--
 [enum <#if helper.isExactBitLength(type.type)>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}<#else>${helper.getExactBitLength(type.type)} => ${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}</#if> : ${type.name}
     <#list type.enumValues as enumValue>
         [${enumValue.value} => ${enumValue.name}]<#sep>, </#sep>
     </#list>
 ];
-<#else>
+-->
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[allow(non_camel_case_types)]
+pub enum ${type.name} {
+    <#list type.enumValues as enumValue>
+        ${enumValue.name}<#sep>, </#sep>
+    </#list>
+}
+
+impl TryFrom<${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}> for ${type.name} {
+    type Error = ();
+
+    fn try_from(value: ${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}) -> Result<Self, Self::Error> {
+        match value {
+            <#list type.enumValues as enumValue>
+            ${enumValue.value} => ${enumValue.name},
+            </#list>
+            _ => {
+                panic!("Unable to deserialize enum!")
+            }
+        }
+    }
+}
+
+impl Into<${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}> for ${type.name} {
+    fn into(self) -> ${type.name} {
+        match self {
+        <#list type.enumValues as enumValue>
+            ${enumValue.name} => ${enumValue.value}<#sep>,</#sep>
+        </#list>
+        }
+    }
+}
+
+<#--impl Message for $name {-->
+<#--type M = $name;-->
+<#--type P = NoOption;-->
+
+<#--fn get_length_in_bits(&self) -> u32 {-->
+<#--todo!()-->
+<#--}-->
+
+<#--fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {-->
+<#--        use paste::paste;-->
+<#--        paste! {-->
+<#--        writer.[<write_ $type>]((*self).into())-->
+<#--            }-->
+<#--            }-->
+
+<#--            fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {-->
+<#--                        assert!(parameter.is_none());-->
+<#--                        use paste::paste;-->
+<#--                        paste! {-->
+<#--                        let result = reader.[<read_ $type>]()?;-->
+<#--                            }-->
+<#--                            match $name::try_from(result) {-->
+<#--                            Ok(result) => {-->
+<#--                            Ok(result)-->
+<#--                            }-->
+<#--                            Err(_) => {-->
+<#--                            Err(Error::new(ErrorKind::InvalidInput, format!("Cannot parse {}", result)))-->
+<#--                            }-->
+<#--                            }-->
+<#--                            }-->
+<#--                            }-->
+
+<#if !type.parserArguments.isEmpty()>
 pub struct ${type.name}Arguments {
     <#list type.parserArguments.orElseThrow() as arg>
         ${helper.sink(arg)}${arg.name}: ${helper.getNullsafeLanguageTypeNameForTypeReference(arg, type.enumValues)}<#sep>, </#sep>
     </#list>
 }
-
-plc4x_enum!
-[enum <#if helper.isExactBitLength(type.type)>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}<#else>${helper.getExactBitLength(type.type)} => ${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}</#if> : ${type.name}
-<#list type.enumValues as enumValue>
-    [${enumValue.value} => ${enumValue.name}]<#sep>, </#sep>
-</#list>
-];
 
 impl ${type.name} {
 
