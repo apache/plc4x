@@ -21,11 +21,14 @@ package org.apache.plc4x.language.rust;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultEnumTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultEnumTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultStringLiteral;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
+import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
@@ -42,6 +45,7 @@ import java.util.function.Function;
 public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
 
     private final Map<String, String> options;
+    private List<TypeReference> imports = new ArrayList<>();
 
     public RustLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
                                       Map<String, String> options) {
@@ -76,6 +80,18 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return getLanguageTypeNameForTypeReference(((TypedField) field).getType(), !field.isOptionalField());
     }
 
+    public List<String> generateImports(EnumTypeDefinition typeDefinition) {
+        // Iterate all Types to see what kind of other Enums / Objects are references
+        List<String> imports = new ArrayList<>();
+        for (String constantName : typeDefinition.getConstantNames()) {
+            TypeReference constantType = typeDefinition.getConstantType(constantName);
+            if (constantType instanceof DefaultEnumTypeReference) {
+                imports.add(((DefaultEnumTypeReference) constantType).getName());
+            }
+        }
+        return imports;
+    }
+
     public String getNonPrimitiveLanguageTypeNameForField(TypedField field) {
         return getLanguageTypeNameForTypeReference(field.getType(), false);
     }
@@ -96,6 +112,57 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return false;
     }
 
+    public String sink(Object definition) {
+        return "";
+    }
+
+    private static boolean canParseInt(String i) {
+        // Hex number
+        if (i.startsWith("0x")) {
+            return true;
+        }
+        try {
+            Integer.parseInt(i);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public String formatLiteral(Argument argument, List<EnumValue> values, String literal) {
+        String innerValue = this.formatLiteral(argument.getType(), literal);
+        if (isNullable(argument, values)) {
+            if (Objects.equals(innerValue, "null")) {
+                return "None";
+            }
+            return "Some(" + innerValue + ")";
+        }
+        return innerValue;
+    }
+
+    public String formatLiteral(TypeReference type, String literal) {
+        if ("null".equals(literal)) {
+            return "null";
+        }
+        if (type instanceof DefaultEnumTypeReference) {
+            return ((DefaultEnumTypeReference) type).getName() + "::" + literal;
+        }
+        if (!(type instanceof SimpleTypeReference)) {
+            return literal;
+        }
+        switch (((SimpleTypeReference) type).getBaseType()) {
+            case UINT:
+                if (!canParseInt(literal)) {
+                    return "b'" + literal + "'";
+                }
+                break;
+            case STRING:
+            case VSTRING:
+                return "String::from(\"" + literal + "\")";
+        }
+        return literal;
+    }
+
     public boolean isExactBitLength(Optional<TypeReference> optionalTypeReference) {
         TypeReference typeReference = optionalTypeReference.get();
         if (isUnsigned(typeReference)) {
@@ -106,6 +173,22 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     public int getExactBitLength(Optional<TypeReference> optionalTypeReference) {
         return ((SimpleTypeReference) optionalTypeReference.get()).getSizeInBits();
+    }
+
+    public String getNullsafeLanguageTypeNameForTypeReference(Argument argument, List<EnumValue> enumValues) {
+        String innerType = this.getLanguageTypeNameForTypeReference(argument.getType());
+        // Check if nullable
+        if (isNullable(argument, enumValues)) {
+            return "Option<" + innerType + ">";
+        }
+        return innerType;
+    }
+
+    private boolean isNullable(Argument argument, List<EnumValue> enumValues) {
+        return enumValues.stream().anyMatch(val -> {
+            Optional<String> constant = val.getConstant(argument.getName());
+            return constant.map(s -> s.equals("null")).orElse(false);
+        });
     }
 
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean allowPrimitive) {
@@ -128,9 +211,9 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return allowPrimitive ? boolean.class.getSimpleName() : Boolean.class.getSimpleName();
+                return "bool";
             case BYTE:
-                return "u8";
+                return "i8";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
@@ -166,15 +249,15 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 int sizeInBits = floatTypeReference.getSizeInBits();
                 if (sizeInBits <= 32) {
-                    return allowPrimitive ? float.class.getSimpleName() : Float.class.getSimpleName();
+                    return "f32";
                 }
                 if (sizeInBits <= 64) {
-                    return allowPrimitive ? double.class.getSimpleName() : Double.class.getSimpleName();
+                    return "f64";
                 }
-                return BigDecimal.class.getSimpleName();
+                throw new UnsupportedOperationException("");
             case STRING:
             case VSTRING:
-                return String.class.getSimpleName();
+                return "String";
             case TIME:
                 return LocalTime.class.getSimpleName();
             case DATE:

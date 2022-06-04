@@ -35,6 +35,7 @@
 
   <modules>
     <module>modbus</module>
+    <module>s7</module>
   </modules>
 
   <!-- Disabled for now as C# support is currently not installed in Apache SonarQube -->
@@ -144,7 +145,7 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-modbus</artifactId>
+      <artifactId>plc4x-protocols-s7</artifactId>
       <version>0.10.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>

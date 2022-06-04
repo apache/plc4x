@@ -29,6 +29,7 @@ pub mod modbus;
 pub mod read_buffer;
 mod r#enum;
 mod types;
+mod s7;
 
 #[allow(dead_code)]
 #[derive(Debug)]

@@ -20,6 +20,7 @@
 use std::io::{Error, ErrorKind, Read, Write};
 use crate::{Message, NoOption, ReadBuffer, WriteBuffer};
 
+
 // [enum DriverType
 //     ['0x01' MODBUS_TCP  ]
 //     ['0x02' MODBUS_RTU  ]

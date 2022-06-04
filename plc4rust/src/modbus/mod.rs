@@ -32,6 +32,7 @@ mod modbus_device_information_conformity_level;
 mod modbus_device_information_more_follows;
 mod modbus_device_information_level;
 mod test;
+pub mod modbus_data_type;
 
 pub use driver_type::DriverType;
 pub use modbus_adu::ModbusADU;
