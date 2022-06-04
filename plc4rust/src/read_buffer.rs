@@ -91,7 +91,7 @@ impl<T: Read> ReadBuffer<T> {
 }
 
 pub struct BitReader<T: Read> {
-    pub(crate) position: i8,
+    pub(crate) position: u8,
     pub(crate) value: Option<u8>,
     pub(crate) phantom_data: PhantomData<T>
 }
@@ -112,6 +112,7 @@ impl<T: Read> BitReader<T> {
         assert!(bits <= 8);
         let mut results: u8 = 0;
         let mut bit_count: u8 = 0;
+        let bit_offset = self.position;
         loop {
             if bit_count == bits {
                 break;
@@ -122,7 +123,7 @@ impl<T: Read> BitReader<T> {
             let mask = (0x01 << self.position) as u8;
             let bit = self.value.unwrap() & mask;
             // Add the bit to our result
-            results = results | (bit >> bit_count);
+            results = results | (bit >> (self.position - bit_count));
 
             bit_count += 1;
             self.position += 1;

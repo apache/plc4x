@@ -225,7 +225,8 @@ use crate::{Message, NoOption, plc4x_type, ReadBuffer, WriteBuffer};
 pub enum ModbusPDU {
     ModbusPDUError(ModbusPDUError),
     ModbusPDUReadDiscreteInputsRequest(ModbusPDUReadDiscreteInputsRequest),
-    ModbusPDUReadDiscreteInputsResponse(ModbusPDUReadDiscreteInputsResponse)
+    ModbusPDUReadDiscreteInputsResponse(ModbusPDUReadDiscreteInputsResponse),
+    ModbusPDUReadCoilsRequest(ModbusPDUReadCoilsRequest)
 }
 
 pub struct ModbusPDUOption {
@@ -245,6 +246,9 @@ impl Message for ModbusPDU {
                 msg.get_length_in_bits()
             }
             ModbusPDU::ModbusPDUReadDiscreteInputsResponse(msg) => {
+                msg.get_length_in_bits()
+            }
+            ModbusPDU::ModbusPDUReadCoilsRequest(msg) => {
                 msg.get_length_in_bits()
             }
         }
@@ -268,6 +272,11 @@ impl Message for ModbusPDU {
                 writer.write_u_n(7, 0x02);
                 msg.serialize(writer)
             }
+            ModbusPDU::ModbusPDUReadCoilsRequest(msg) => {
+                writer.write_u_n(1, 0);
+                writer.write_u_n(7, 0x01);
+                msg.serialize(writer)
+            }
         }
     }
 
@@ -288,8 +297,11 @@ impl Message for ModbusPDU {
             (false, 0x02, true) => {
                 Ok(ModbusPDU::ModbusPDUReadDiscreteInputsResponse(ModbusPDUReadDiscreteInputsResponse::parse(reader, None)?))
             }
+            (false, 0x01, false) => {
+                Ok(ModbusPDU::ModbusPDUReadCoilsRequest(ModbusPDUReadCoilsRequest::parse(reader, None)?))
+            }
             (_, _, _) => {
-                panic!("unnable to parse");
+                panic!("unnable to parse {}, {}, {}", error_flag, function_flag, response);
             }
         }
     }
@@ -365,3 +377,12 @@ impl Message for ModbusPDUReadDiscreteInputsResponse {
         })
     }
 }
+
+//         ['false','0x01','false'     ModbusPDUReadCoilsRequest
+//             [simple     uint 16     startingAddress]
+//             [simple     uint 16     quantity]
+//         ]
+plc4x_type![type ModbusPDUReadCoilsRequest
+    [simple u16 : startingAddress],
+    [simple u16 : quantity]
+];

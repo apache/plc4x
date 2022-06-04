@@ -51,6 +51,7 @@ impl<T: Write> BitWriter<T> {
         let mut results: usize = 0;
         // Write until the byte is full or bits are over
         let mut bit_index: u8 = 0;
+        let bit_offset = self.position;
         loop {
             if self.position == 8 {
                 // Flush and then go to 0 again
