@@ -21,9 +21,14 @@ package org.apache.plc4x.language.rust;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultEnumTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultSwitchField;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultEnumTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultBooleanLiteral;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultStringLiteral;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultVariableLiteral;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer;
@@ -40,6 +45,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
@@ -80,13 +86,94 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return getLanguageTypeNameForTypeReference(((TypedField) field).getType(), !field.isOptionalField());
     }
 
-    public List<String> generateImports(EnumTypeDefinition typeDefinition) {
+    public List<TypeDefinition> getSubtypes(TypeDefinition typeDefinition) {
+        List<TypeDefinition> subtypes = new ArrayList<>();
+        if (typeDefinition instanceof DefaultComplexTypeDefinition) {
+            for (Field field : ((DefaultComplexTypeDefinition) typeDefinition).getAllFields()) {
+                if (field instanceof DefaultSwitchField) {
+                    subtypes.addAll(((DefaultSwitchField) field).getCases());
+                }
+            }
+        }
+        return subtypes;
+    }
+
+    public String generateFieldParseCode(Field field) {
+        if (field instanceof DefaultDiscriminatorField) {
+            // Get it from the parameter
+            String type = this.getLanguageTypeNameForField(field);
+            return "let " + ((DefaultDiscriminatorField) field).getName() + " = parser.parse_" + type + "()?;";
+        }
+        if (field instanceof DefaultSwitchField) {
+            String matchExpression = String.join(", ", ((DefaultSwitchField) field).getDiscriminatorExpressions().stream().map(literal -> literal.getName()).collect(Collectors.toList()));
+            StringBuilder sb = new StringBuilder();
+            sb.append(String.format("match (%s) {", matchExpression) + "\n");
+
+            int numberOfCases = ((DefaultSwitchField) field).getDiscriminatorExpressions().size();
+
+            for (DiscriminatedComplexTypeDefinition aCase : ((DefaultSwitchField) field).getCases()) {
+                ArrayList<String> caseStatement = new ArrayList<>();
+                for (int i = 0; i < numberOfCases; i++) {
+                    if (aCase.getDiscriminatorValueTerms().size() > i) {
+                        Term discriminatorLiteral = aCase.getDiscriminatorValueTerms().get(i);
+                        String literal = discriminatorLiteral.stringRepresentation();
+                        if (discriminatorLiteral instanceof Literal) {
+                            if (discriminatorLiteral instanceof DefaultBooleanLiteral) {
+                                literal = Boolean.toString(((DefaultBooleanLiteral) discriminatorLiteral).getValue());
+                            }
+                            if (discriminatorLiteral instanceof DefaultVariableLiteral) {
+                                // Find out type of the Variable
+                                TypeReference typeReference = ((DefaultSwitchField) field).getDiscriminatorExpressions().get(i).getTypeReference();
+                                if (!(typeReference instanceof DefaultEnumTypeReference)) {
+                                    throw new RuntimeException("...");
+                                }
+                                literal = ((DefaultEnumTypeReference) typeReference).getName() + "::" + ((DefaultVariableLiteral) discriminatorLiteral).getName();
+                            }
+                        }
+                        caseStatement.add(literal);
+                    } else {
+                        caseStatement.add("_");
+                    }
+                }
+
+                sb.append("(" + String.join(", ", caseStatement) + ") => {\n");
+
+
+                // TODO handle parser arguments if the type needs it
+                String options  = "None";
+
+                sb.append("Ok(" + aCase.getParentType().get().getName() + "::" + aCase.getName() + "(" + aCase.getName() + "::parse::<T>(reader, " + options + ")?))");
+
+                // TODO add the action here...
+                System.out.println("Hallo");
+
+                sb.append("}\n");
+            }
+
+            sb.append("}\n");
+            return sb.toString();
+        }
+        return "";
+    }
+
+    public List<String> generateImports(TypeDefinition typeDefinition) {
         // Iterate all Types to see what kind of other Enums / Objects are references
         List<String> imports = new ArrayList<>();
-        for (String constantName : typeDefinition.getConstantNames()) {
-            TypeReference constantType = typeDefinition.getConstantType(constantName);
-            if (constantType instanceof DefaultEnumTypeReference) {
-                imports.add(((DefaultEnumTypeReference) constantType).getName());
+        if (typeDefinition instanceof EnumTypeDefinition) {
+            for (String constantName : ((EnumTypeDefinition) typeDefinition).getConstantNames()) {
+                TypeReference constantType = ((EnumTypeDefinition) typeDefinition).getConstantType(constantName);
+                if (constantType instanceof DefaultEnumTypeReference) {
+                    imports.add(((DefaultEnumTypeReference) constantType).getName());
+                }
+            }
+        }
+        if (typeDefinition instanceof DefaultComplexTypeDefinition) {
+            for (Field field : ((DefaultComplexTypeDefinition) typeDefinition).getFields()) {
+                if (field instanceof DefaultSwitchField) {
+                    for (DiscriminatedComplexTypeDefinition subclass : ((DefaultSwitchField) field).getCases()) {
+                        imports.add(subclass.getName());
+                    }
+                }
             }
         }
         return imports;
@@ -110,6 +197,28 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             return ((SimpleTypeReference) typeReference).getBaseType() == SimpleTypeReference.SimpleBaseType.UINT;
         }
         return false;
+    }
+
+    public boolean needsParserArguments(TypeDefinition typeDefinition) {
+        if (typeDefinition.getParserArguments().isPresent()) {
+            return !typeDefinition.getParserArguments().get().isEmpty();
+        }
+        return false;
+    }
+
+    public boolean isSwitchField(Field field) {
+        return field instanceof DefaultSwitchField;
+    }
+
+    public boolean isAbstract(TypeDefinition typeDefinition) {
+        if (typeDefinition instanceof DefaultComplexTypeDefinition) {
+            return ((DefaultComplexTypeDefinition) typeDefinition).isAbstract();
+        }
+        return false;
+    }
+
+    public boolean isDiscriminated(TypeDefinition typeDefinition) {
+        return typeDefinition instanceof DiscriminatedComplexTypeDefinition;
     }
 
     public String sink(Object definition) {

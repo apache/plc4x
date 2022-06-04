@@ -126,7 +126,7 @@ impl Message for ${type.name} {
 <#if !type.parserArguments.isEmpty()>
 pub struct ${type.name}Arguments {
 <#list type.parserArguments.orElseThrow() as arg>
-    ${helper.sink(arg)}${arg.name}: ${helper.getNullsafeLanguageTypeNameForTypeReference(arg, type.enumValues)}<#sep>, </#sep>
+    ${arg.name}: ${helper.getNullsafeLanguageTypeNameForTypeReference(arg, type.enumValues)}<#sep>, </#sep>
 </#list>
 }
 
