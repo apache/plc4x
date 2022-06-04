@@ -67,9 +67,9 @@ use crate::${import}::${import};
 #[derive(Copy, Clone, PartialEq, Debug)]
 #[allow(non_camel_case_types)]
 pub enum ${type.name} {
-    <#list type.enumValues as enumValue>
-        ${enumValue.name}<#sep>, </#sep>
-    </#list>
+<#list type.enumValues as enumValue>
+    ${enumValue.name}<#sep>, </#sep>
+</#list>
 }
 
 impl TryFrom<${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}> for ${type.name} {
@@ -97,65 +97,53 @@ impl Into<${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), 
     }
 }
 
-<#--impl Message for $name {-->
-<#--type M = $name;-->
-<#--type P = NoOption;-->
+impl Message for ${type.name} {
+    type M = ${type.name};
+    type P = NoOption;
 
-<#--fn get_length_in_bits(&self) -> u32 {-->
-<#--todo!()-->
-<#--}-->
+    fn get_length_in_bits(&self) -> u32 {
+        todo!()
+    }
 
-<#--fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {-->
-<#--        use paste::paste;-->
-<#--        paste! {-->
-<#--        writer.[<write_ $type>]((*self).into())-->
-<#--            }-->
-<#--            }-->
+    fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
+        writer.write_${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}((*self).into())
+    }
 
-<#--            fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {-->
-<#--                        assert!(parameter.is_none());-->
-<#--                        use paste::paste;-->
-<#--                        paste! {-->
-<#--                        let result = reader.[<read_ $type>]()?;-->
-<#--                            }-->
-<#--                            match $name::try_from(result) {-->
-<#--                            Ok(result) => {-->
-<#--                            Ok(result)-->
-<#--                            }-->
-<#--                            Err(_) => {-->
-<#--                            Err(Error::new(ErrorKind::InvalidInput, format!("Cannot parse {}", result)))-->
-<#--                            }-->
-<#--                            }-->
-<#--                            }-->
-<#--                            }-->
+    fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
+        assert!(parameter.is_none());
+        let result = reader.read_${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}()?;
+        match ${type.name}::try_from(result) {
+            Ok(result) => {
+                Ok(result)
+            }
+            Err(_) => {
+                panic!("Cannot parse {}", result);
+            }
+        }
+    }
+}
 
 <#if !type.parserArguments.isEmpty()>
 pub struct ${type.name}Arguments {
-    <#list type.parserArguments.orElseThrow() as arg>
-        ${helper.sink(arg)}${arg.name}: ${helper.getNullsafeLanguageTypeNameForTypeReference(arg, type.enumValues)}<#sep>, </#sep>
-    </#list>
+<#list type.parserArguments.orElseThrow() as arg>
+    ${helper.sink(arg)}${arg.name}: ${helper.getNullsafeLanguageTypeNameForTypeReference(arg, type.enumValues)}<#sep>, </#sep>
+</#list>
 }
 
 impl ${type.name} {
 
     fn get_arguments(self) -> ${type.name}Arguments {
         match self {
-            <#list type.enumValues as enumValue>
-                ${enumValue.name} => {
-                    ${type.name}Arguments {
-                        <#list type.parserArguments.orElseThrow() as constant>
-                            ${constant.name}: ${helper.formatLiteral(constant, type.enumValues, enumValue.getConstant(constant.name).orElseThrow())}<#sep>,</#sep>
-                        </#list>
-                    }
-                }<#sep>, </#sep>
-            </#list>
+        <#list type.enumValues as enumValue>
+            ${enumValue.name} => {
+                ${type.name}Arguments {
+                <#list type.parserArguments.orElseThrow() as constant>
+                    ${constant.name}: ${helper.formatLiteral(constant, type.enumValues, enumValue.getConstant(constant.name).orElseThrow())}<#sep>,</#sep>
+                </#list>
+                }
+            }<#sep>, </#sep>
+        </#list>
         }
-<#--        match value {-->
-<#--            <#list type.enumValues as val>-->
-<#--                (<#list type.parserArguments.orElseThrow() as constant>${val.getConstant(constant.name).orElseThrow()} <#sep>,</#sep></#list>) => {}-->
-<#--            </#list>-->
-<#--            ${helper.sink(type)}-->
-<#--            <#list type.parserArguments as k, v>${k}<#sep>,</#sep></#list>-->
     }
 }
 </#if>
