@@ -22,9 +22,9 @@
 // ]
 const MODBUS_TCP_DEFAULT_PORT: u16 = 502;
 
-mod driver_type;
-mod modbus_adu;
-mod modbus_pdu;
+pub mod driver_type;
+pub mod modbus_adu;
+pub mod modbus_pdu;
 mod modbus_pdu_read_file_record_request_item;
 mod modbus_pdu_write_file_record_response_item;
 mod modbus_error_code;

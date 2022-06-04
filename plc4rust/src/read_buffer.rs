@@ -31,7 +31,7 @@ pub struct ReadBuffer<T: Read> {
 }
 
 impl<T: Read> ReadBuffer<T> {
-    pub(crate) fn new(endianess: Endianess, reader: T) -> ReadBuffer<T> {
+    pub fn new(endianess: Endianess, reader: T) -> ReadBuffer<T> {
         ReadBuffer {
             position: 0,
             endianness: endianess,

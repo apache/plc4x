@@ -71,8 +71,8 @@ pub enum ModbusADU {
 }
 
 pub struct ModbusADUOptions {
-    pub(crate) driver_type: DriverType,
-    pub(crate) response: bool
+    pub driver_type: DriverType,
+    pub response: bool
 }
 
 impl Message for ModbusADU {
@@ -112,10 +112,10 @@ impl Message for ModbusADU {
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusTcpADU {
-    pub(crate) transaction_identifier: u16,
-    pub(crate) protocol_identifier: u16,
-    pub(crate) unit_identifier: u8,
-    pub(crate) pdu: ModbusPDU
+    pub transaction_identifier: u16,
+    pub protocol_identifier: u16,
+    pub unit_identifier: u8,
+    pub pdu: ModbusPDU
 }
 
 pub struct ModbusTcpADUOptions {

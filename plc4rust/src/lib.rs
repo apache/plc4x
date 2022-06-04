@@ -24,9 +24,9 @@ use std::io::{Read, Write};
 use crate::read_buffer::ReadBuffer;
 use crate::write_buffer::WriteBuffer;
 
-mod write_buffer;
-mod modbus;
-mod read_buffer;
+pub mod write_buffer;
+pub mod modbus;
+pub mod read_buffer;
 mod r#enum;
 mod types;
 
@@ -37,9 +37,9 @@ pub enum Endianess {
     BigEndian
 }
 
-struct NoOption {}
+pub struct NoOption {}
 
-trait Message {
+pub trait Message {
     type M;
     type P;
 

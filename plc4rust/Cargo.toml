@@ -19,8 +19,17 @@
 name = "plc4rust"
 version = "0.10.0"
 edition = "2021"
-
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+#
+#[lib]
+#crate-type = ["cdylib"]
 
 [dependencies]
 paste = "1.0.7"
+
+[profile.release]
+# See https://kerkour.com/optimize-rust-binary-size
+opt-level = "z"
+lto = true
+codegen-units = 1
+rustflags=["-C prefer-dynamic"]
