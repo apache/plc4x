@@ -89,6 +89,25 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return getLanguageTypeNameForTypeReference(typeReference, false);
     }
 
+    public boolean isUnsigned(TypeReference typeReference) {
+        if (typeReference instanceof SimpleTypeReference) {
+            return ((SimpleTypeReference) typeReference).getBaseType() == SimpleTypeReference.SimpleBaseType.UINT;
+        }
+        return false;
+    }
+
+    public boolean isExactBitLength(Optional<TypeReference> optionalTypeReference) {
+        TypeReference typeReference = optionalTypeReference.get();
+        if (isUnsigned(typeReference)) {
+            return Arrays.asList(8, 16, 32, 64, 128).contains(((SimpleTypeReference) typeReference).getSizeInBits());
+        }
+        return false;
+    }
+
+    public int getExactBitLength(Optional<TypeReference> optionalTypeReference) {
+        return ((SimpleTypeReference) optionalTypeReference.get()).getSizeInBits();
+    }
+
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean allowPrimitive) {
         Objects.requireNonNull(typeReference);
         if (typeReference instanceof ArrayTypeReference) {
@@ -111,37 +130,37 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case BIT:
                 return allowPrimitive ? boolean.class.getSimpleName() : Boolean.class.getSimpleName();
             case BYTE:
-                return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
+                return "u8";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
-                    return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
-                }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return allowPrimitive ? short.class.getSimpleName() : Short.class.getSimpleName();
+                    return "u8";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return allowPrimitive ? int.class.getSimpleName() : Integer.class.getSimpleName();
+                    return "u16";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return allowPrimitive ? long.class.getSimpleName() : Long.class.getSimpleName();
+                    return "u32";
                 }
-                return BigInteger.class.getSimpleName();
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
+                    return "u64";
+                }
+                return "u128";
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
+                    return "i8";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return allowPrimitive ? short.class.getSimpleName() : Short.class.getSimpleName();
+                    return "i16";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return allowPrimitive ? int.class.getSimpleName() : Integer.class.getSimpleName();
+                    return "i32";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return allowPrimitive ? long.class.getSimpleName() : Long.class.getSimpleName();
+                    return "i64";
                 }
-                return BigInteger.class.getSimpleName();
+                return "i128";
             case FLOAT:
             case UFLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;

@@ -33,6 +33,10 @@
   <name>PLC4Rust</name>
   <description>Implementation of the protocol adapters for usage as Rust module.</description>
 
+  <modules>
+    <module>modbus</module>
+  </modules>
+
   <!-- Disabled for now as C# support is currently not installed in Apache SonarQube -->
   <!--properties>
     <sonar.language>c#</sonar.language>
