@@ -17,6 +17,7 @@
  * under the License.
  */
 
+use std::fs::read;
 use std::io::{Error, Read, Write};
 use std::io::ErrorKind::InvalidInput;
 use crate::{Message, NoOption, plc4x_type, ReadBuffer, WriteBuffer};
@@ -223,7 +224,8 @@ use crate::{Message, NoOption, plc4x_type, ReadBuffer, WriteBuffer};
 #[derive(PartialEq, Debug, Clone)]
 pub enum ModbusPDU {
     ModbusPDUError(ModbusPDUError),
-    ModbusPDUReadDiscreteInputsRequest(ModbusPDUReadDiscreteInputsRequest)
+    ModbusPDUReadDiscreteInputsRequest(ModbusPDUReadDiscreteInputsRequest),
+    ModbusPDUReadDiscreteInputsResponse(ModbusPDUReadDiscreteInputsResponse)
 }
 
 pub struct ModbusPDUOption {
@@ -242,6 +244,9 @@ impl Message for ModbusPDU {
             ModbusPDU::ModbusPDUReadDiscreteInputsRequest(msg) => {
                 msg.get_length_in_bits()
             }
+            ModbusPDU::ModbusPDUReadDiscreteInputsResponse(msg) => {
+                msg.get_length_in_bits()
+            }
         }
     }
 
@@ -252,6 +257,12 @@ impl Message for ModbusPDU {
                 todo!()
             }
             ModbusPDU::ModbusPDUReadDiscreteInputsRequest(msg) => {
+                // Write discriminator
+                writer.write_u_n(1, 0);
+                writer.write_u_n(7, 0x02);
+                msg.serialize(writer)
+            }
+            ModbusPDU::ModbusPDUReadDiscreteInputsResponse(msg) => {
                 // Write discriminator
                 writer.write_u_n(1, 0);
                 writer.write_u_n(7, 0x02);
@@ -274,8 +285,11 @@ impl Message for ModbusPDU {
             (false, 0x02, false) => {
                 Ok(ModbusPDU::ModbusPDUReadDiscreteInputsRequest(ModbusPDUReadDiscreteInputsRequest::parse(reader, None)?))
             }
+            (false, 0x02, true) => {
+                Ok(ModbusPDU::ModbusPDUReadDiscreteInputsResponse(ModbusPDUReadDiscreteInputsResponse::parse(reader, None)?))
+            }
             (_, _, _) => {
-                Err(Error::new(InvalidInput, "unnable to parse"))
+                panic!("unnable to parse");
             }
         }
     }
@@ -318,3 +332,36 @@ plc4x_type!
 //             [implicit   uint 8      byteCount     'COUNT(value)']
 //             [array      byte        value         count   'byteCount']
 //         ]
+#[derive(PartialEq, Debug, Clone)]
+pub struct ModbusPDUReadDiscreteInputsResponse {
+    pub value: Vec<u8>
+}
+
+impl ModbusPDUReadDiscreteInputsResponse {
+    pub fn byte_count(&self) -> u8 {
+        self.value.len() as u8
+    }
+}
+
+impl Message for ModbusPDUReadDiscreteInputsResponse {
+    type M = ModbusPDUReadDiscreteInputsResponse;
+    type P = NoOption;
+
+    fn get_length_in_bits(&self) -> u32 {
+        (self.value.len() * 8) as u32
+    }
+
+    fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
+        writer.write_u8(self.byte_count())?;
+        writer.write_bytes(&self.value)
+    }
+
+    fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
+        let byte_count = reader.read_u8()?;
+        let value = reader.read_bytes(byte_count as usize)?;
+
+        Ok(Self::M {
+            value
+        })
+    }
+}

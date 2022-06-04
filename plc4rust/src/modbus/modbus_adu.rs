@@ -98,13 +98,13 @@ impl Message for ModbusADU {
         let parameter = parameter.expect("No Options given!");
         match parameter.driver_type {
             DriverType::MODBUS_TCP => {
-                Ok(ModbusADU::ModbusTcpADU(ModbusTcpADU::parse::<T>(reader, None)?))
+                Ok(ModbusADU::ModbusTcpADU(ModbusTcpADU::parse::<T>(reader, Some(ModbusTcpADUOptions { response: parameter.response }))?))
             }
             DriverType::MODBUS_RTU => {
                 Ok(ModbusADU::ModbusRtuADU(ModbusRtuADU::parse::<T>(reader, None)?))
             }
             _ => {
-                Err(Error::new(InvalidInput, format!("Unable to deserialize from {:?}, {:?}", parameter.driver_type, parameter.response)))
+                panic!("{}", format!("Unable to deserialize from {:?}, {:?}", parameter.driver_type, parameter.response));
             }
         }
     }
@@ -118,6 +118,10 @@ pub struct ModbusTcpADU {
     pub(crate) pdu: ModbusPDU
 }
 
+pub struct ModbusTcpADUOptions {
+    response: bool
+}
+
 impl ModbusTcpADU {
     fn length(&self) -> u16 {
         return (self.pdu.get_length_in_bytes() + 1) as u16
@@ -126,7 +130,7 @@ impl ModbusTcpADU {
 
 impl Message for ModbusTcpADU {
     type M = ModbusTcpADU;
-    type P = u8;
+    type P = ModbusTcpADUOptions;
 
     fn get_length_in_bits(&self) -> u32 {
         todo!()
@@ -145,7 +149,7 @@ impl Message for ModbusTcpADU {
         let protocol_identifier = reader.read_u16()?;
         let unit_identifier = reader.read_u8()?;
         let pdu = ModbusPDU::parse(reader, Some(ModbusPDUOption {
-            bit_response: false
+            bit_response: parameter.unwrap().response
         }))?;
         Ok(Self::M {
             transaction_identifier,
@@ -161,9 +165,13 @@ pub struct ModbusRtuADU {
 
 }
 
+pub struct ModbusRtuADUOptions {
+    response: bool
+}
+
 impl Message for ModbusRtuADU {
     type M = ModbusRtuADU;
-    type P = NoOption;
+    type P = ModbusRtuADUOptions;
 
     fn get_length_in_bits(&self) -> u32 {
         todo!()
