@@ -226,7 +226,8 @@ pub enum ModbusPDU {
     ModbusPDUError(ModbusPDUError),
     ModbusPDUReadDiscreteInputsRequest(ModbusPDUReadDiscreteInputsRequest),
     ModbusPDUReadDiscreteInputsResponse(ModbusPDUReadDiscreteInputsResponse),
-    ModbusPDUReadCoilsRequest(ModbusPDUReadCoilsRequest)
+    ModbusPDUReadCoilsRequest(ModbusPDUReadCoilsRequest),
+    ModbusPDUReadCoilsResponse(ModbusPDUReadCoilsResponse)
 }
 
 pub struct ModbusPDUOption {
@@ -249,6 +250,9 @@ impl Message for ModbusPDU {
                 msg.get_length_in_bits()
             }
             ModbusPDU::ModbusPDUReadCoilsRequest(msg) => {
+                msg.get_length_in_bits()
+            }
+            ModbusPDU::ModbusPDUReadCoilsResponse(msg) => {
                 msg.get_length_in_bits()
             }
         }
@@ -277,6 +281,11 @@ impl Message for ModbusPDU {
                 writer.write_u_n(7, 0x01);
                 msg.serialize(writer)
             }
+            ModbusPDU::ModbusPDUReadCoilsResponse(msg) => {
+                writer.write_u_n(1, 0);
+                writer.write_u_n(7, 0x01);
+                msg.serialize(writer)
+            }
         }
     }
 
@@ -299,6 +308,9 @@ impl Message for ModbusPDU {
             }
             (false, 0x01, false) => {
                 Ok(ModbusPDU::ModbusPDUReadCoilsRequest(ModbusPDUReadCoilsRequest::parse(reader, None)?))
+            }
+            (false, 0x01, true) => {
+                Ok(ModbusPDU::ModbusPDUReadCoilsResponse(ModbusPDUReadCoilsResponse::parse(reader, None)?))
             }
             (_, _, _) => {
                 panic!("unnable to parse {}, {}, {}", error_flag, function_flag, response);
@@ -386,3 +398,41 @@ plc4x_type![type ModbusPDUReadCoilsRequest
     [simple u16 : startingAddress],
     [simple u16 : quantity]
 ];
+
+//         ['false','0x01','true'      ModbusPDUReadCoilsResponse
+//             [implicit   uint 8      byteCount     'COUNT(value)']
+//             [array      byte        value         count   'byteCount']
+//         ]
+#[derive(PartialEq, Debug, Clone)]
+pub struct ModbusPDUReadCoilsResponse {
+    pub value: Vec<u8>
+}
+
+impl ModbusPDUReadCoilsResponse {
+    pub fn byte_count(&self) -> u8 {
+        self.value.len() as u8
+    }
+}
+
+impl Message for ModbusPDUReadCoilsResponse {
+    type M = ModbusPDUReadCoilsResponse;
+    type P = NoOption;
+
+    fn get_length_in_bits(&self) -> u32 {
+        (self.value.len() * 8) as u32
+    }
+
+    fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
+        writer.write_u8(self.byte_count())?;
+        writer.write_bytes(&self.value)
+    }
+
+    fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
+        let byte_count = reader.read_u8()?;
+        let value = reader.read_bytes(byte_count as usize)?;
+
+        Ok(Self::M {
+            value
+        })
+    }
+}
