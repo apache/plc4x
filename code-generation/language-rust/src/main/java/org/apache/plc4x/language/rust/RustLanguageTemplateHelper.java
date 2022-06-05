@@ -51,12 +51,16 @@ import java.util.stream.Collectors;
 public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
 
     private final Map<String, String> options;
-    private List<TypeReference> imports = new ArrayList<>();
+    private Map<String, TypeDefinition> definitions = new HashMap<>();
 
     public RustLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
                                       Map<String, String> options) {
         super(thisType, protocolName, flavorName, types);
         this.options = options;
+    }
+
+    public void register(TypeDefinition definition) {
+        this.definitions.put(definition.getName(), definition);
     }
 
     public String packageName() {
@@ -143,13 +147,9 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 String options  = "None";
 
                 sb.append("Ok(" + aCase.getParentType().get().getName() + "::" + aCase.getName() + "(" + aCase.getName() + "::parse::<T>(reader, " + options + ")?))");
-
-                // TODO add the action here...
-                System.out.println("Hallo");
-
                 sb.append("}\n");
             }
-
+            sb.append("_ => { panic!(\"Something went wrong...\"); }\n");
             sb.append("}\n");
             return sb.toString();
         }
@@ -225,6 +225,13 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return "";
     }
 
+    public String getFullyQualifiedName(Literal literal) {
+        if (literal instanceof DefaultVariableLiteral) {
+            return ((DefaultVariableLiteral) literal).getName();
+        }
+        return literal.stringRepresentation();
+    }
+
     private static boolean canParseInt(String i) {
         // Hex number
         if (i.startsWith("0x")) {
@@ -247,6 +254,13 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             return "Some(" + innerValue + ")";
         }
         return innerValue;
+    }
+
+    public String formatLiteral(TypeReference type, Literal literal) {
+        if (literal instanceof DefaultVariableLiteral) {
+            return this.formatLiteral(type, ((DefaultVariableLiteral) literal).getName());
+        }
+        return this.formatLiteral(type, literal.stringRepresentation());
     }
 
     public String formatLiteral(TypeReference type, String literal) {

@@ -55,13 +55,22 @@ use crate::${import}::${import};
 </#if>
 </#list>
 
-<#if helper.needsParserArguments(type)>
+<#--<#if helper.needsParserArguments(type)>-->
 pub struct ${type.name}Options {
+<#if type.parserArguments?? && !type.parserArguments.isEmpty()>
 <#list type.parserArguments.orElseThrow() as arg>
     ${arg.name}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}<#sep>, </#sep>
 </#list>
-}
 </#if>
+<#if !type.parentType.isEmpty()>
+<#if type.parentType.get().parserArguments?? && !type.parentType.get().parserArguments.isEmpty()>
+<#list type.parentType.get().parserArguments.orElseThrow() as arg>
+    ${arg.name}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}<#sep>, </#sep>
+</#list>
+</#if>
+</#if>
+}
+<#--</#if>-->
 <#if helper.isAbstract(type)>
 #[derive(PartialEq, Debug, Clone)]
 pub enum ${type.name} {
@@ -89,12 +98,33 @@ impl Message for ${type.name} {
     }
 
     fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
-    // (Re-)define the options
+        // (Re-)define the options
     <#list type.parserArguments.orElseThrow() as arg>
         let ${arg.name} = parameter.unwrap().${arg.name};
     </#list>
     <#list type.fields as field>
-        ${helper.generateFieldParseCode(field)}
+        <#if helper.isSwitchField(field)>
+        match (<#list field.getDiscriminatorExpressions() as literal>${literal.name}<#sep>, </#sep></#list>) {
+        <#list field.cases as aCase>
+            <#assign n=aCase.discriminatorValueTerms?size - 1>
+            <#assign m=field.getDiscriminatorExpressions()?size - 1>
+<#--            ${helper.sink(n)}-->
+            (<#list 0..m as i><#if i <= n><#assign caseType=field.getDiscriminatorExpressions()[i]><#assign term=aCase.discriminatorValueTerms[i]>${helper.formatLiteral(caseType.typeReference, term)}<#else>_</#if><#sep>, </#sep></#list>) => {
+                Ok(${type.name}::${aCase.name}(${aCase.name}::parse::<T>(reader, Some(${aCase.name}Options {
+                <#if type.parserArguments?? && !type.parserArguments.isEmpty()>
+                <#list type.parserArguments.orElseThrow() as arg>
+                    ${arg.name}<#sep>, </#sep>
+                </#list>
+                </#if>
+                }))?))
+<#--                ${helper.sink(aCase)}-->
+            }
+        </#list>
+        }
+        <#else>
+        read ${field}
+        </#if>
+<#--        ${helper.generateFieldParseCode(field)}-->
     </#list>
     }
 }
