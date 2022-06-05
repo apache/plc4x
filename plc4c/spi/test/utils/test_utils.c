@@ -44,6 +44,6 @@ void internal_assert_arrays_equal(uint8_t* expected_array,
       }
       printf("\n");
     }
-    //TEST_ASSERT_EQUAL_UINT8_MESSAGE(expected_value, actual_value, "Byte arrays differ");
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(expected_value, actual_value, "Byte arrays differ");
   }
 }

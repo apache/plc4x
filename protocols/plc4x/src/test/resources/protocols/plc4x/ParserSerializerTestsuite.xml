@@ -380,7 +380,14 @@
                 <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="BYTE">2</Plc4xValueType>
               </valueType>
               <value>
-                <value dataType="uint" bitLength="8">191</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
               </value>
             </Plc4xFieldValueResponse>
             <Plc4xFieldValueResponse>
@@ -399,7 +406,22 @@
                 <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="WORD">3</Plc4xValueType>
               </valueType>
               <value>
-                <value dataType="uint" bitLength="16">10527</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
               </value>
             </Plc4xFieldValueResponse>
             <Plc4xFieldValueResponse>
@@ -418,7 +440,38 @@
                 <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="DWORD">4</Plc4xValueType>
               </valueType>
               <value>
-                <value dataType="uint" bitLength="32">2015598905</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">true</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">false</value>
+                <value dataType="bit" bitLength="1">true</value>
               </value>
             </Plc4xFieldValueResponse>
             <Plc4xFieldValueResponse>

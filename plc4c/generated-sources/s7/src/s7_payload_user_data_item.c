@@ -965,7 +965,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
 
   // Optional Field (Alarmtype)
   if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype != NULL) {
-    _res = plc4c_s7_read_write_alarm_state_type_serialize(writeBuffer, _message->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype);
+    _res = plc4c_s7_read_write_alarm_state_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype);
     if(_res != OK) {
       return _res;
     }

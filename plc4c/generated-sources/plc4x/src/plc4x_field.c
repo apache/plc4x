@@ -80,7 +80,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_field_serialize(plc4c_spi_write_b
   }
 
   // Simple Field (name)
-  _res = plc4c_spi_write_string(writeBuffer, -1, "UTF-8", _message->name);
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->name)) * (8), "UTF-8", _message->name);
   if(_res != OK) {
     return _res;
   }
@@ -92,7 +92,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_field_serialize(plc4c_spi_write_b
   }
 
   // Simple Field (fieldQuery)
-  _res = plc4c_spi_write_string(writeBuffer, -1, "UTF-8", _message->field_query);
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->field_query)) * (8), "UTF-8", _message->field_query);
   if(_res != OK) {
     return _res;
   }

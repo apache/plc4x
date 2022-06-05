@@ -99,7 +99,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_field_value_response_serialize(pl
 
   // Optional Field (value)
   if(_message->value != NULL) {
-    _res = plc4c_plc4x_read_write_plc4x_value_serialize(writeBuffer, _message->value);
+    _res = plc4c_plc4x_read_write_plc4x_value_serialize(writeBuffer, _message->value_type, &_message->value);
     if(_res != OK) {
       return _res;
     }
@@ -126,7 +126,7 @@ uint16_t plc4c_plc4x_read_write_plc4x_field_value_response_length_in_bits(plc4c_
 
   // Optional Field (value)
   if(_message->value != NULL) {
-    lengthInBits += plc4c_plc4x_read_write_plc4x_value_length_in_bits(_message->value);
+    lengthInBits += plc4c_plc4x_read_write_plc4x_value_length_in_bits(_message->value, _message->value_type);
   }
 
   return lengthInBits;

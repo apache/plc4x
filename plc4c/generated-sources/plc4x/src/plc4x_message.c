@@ -368,7 +368,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
   }
 
   // Simple Field (connectionString)
-  _res = plc4c_spi_write_string(writeBuffer, -1, "UTF-8", _message->plc4x_connect_request_connection_string);
+  _res = plc4c_spi_write_string(writeBuffer, (plc4c_spi_evaluation_helper_str_len(_message->plc4x_connect_request_connection_string)) * (8), "UTF-8", _message->plc4x_connect_request_connection_string);
   if(_res != OK) {
     return _res;
   }

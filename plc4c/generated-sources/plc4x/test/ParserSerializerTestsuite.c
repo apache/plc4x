@@ -337,7 +337,7 @@ void parser_serializer_test_plc4x_read_write(void) {
     RUN_TEST(
         parser_serializer_test_plc4x_read_write_connection_response);
         
-/*    RUN_TEST(
+    RUN_TEST(
         parser_serializer_test_plc4x_read_write_read_request_single_item);
         
     RUN_TEST(
@@ -353,7 +353,7 @@ void parser_serializer_test_plc4x_read_write(void) {
         parser_serializer_test_plc4x_read_write_write_request);
         
     RUN_TEST(
-        parser_serializer_test_plc4x_read_write_write_response);*/
+        parser_serializer_test_plc4x_read_write_write_response);
         
 }
     

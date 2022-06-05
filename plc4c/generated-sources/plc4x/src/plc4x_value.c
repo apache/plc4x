@@ -23,6 +23,7 @@
 #include <plc4c/data.h>
 #include <plc4c/utils/list.h>
 #include <plc4c/spi/evaluation_helper.h>
+#include <plc4c/spi/types_private.h>
 #include <plc4c/driver_plc4x_static.h>
 
 #include "plc4x_value.h"
@@ -58,38 +59,77 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
 
                 *data_item = plc4c_data_create_bool_data(value);
 
-    } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_BYTE) { /* BitString */
+    } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_BYTE) { /* List */
 
-                // Simple Field (value)
-                uint8_t value = 0;
-                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &value);
-                if(_res != OK) {
-                    return _res;
-                }
+        // Array field (value)
+        // Count array
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) 8;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            bool* _val = malloc(sizeof(bool) * 1);
+            _res = plc4c_spi_read_bit(readBuffer, (bool*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(value);
 
-                *data_item = plc4c_data_create_uint8_t_bit_string_data(value);
+    } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_WORD) { /* List */
 
-    } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_WORD) { /* BitString */
+        // Array field (value)
+        // Count array
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) 16;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            bool* _val = malloc(sizeof(bool) * 1);
+            _res = plc4c_spi_read_bit(readBuffer, (bool*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(value);
 
-                // Simple Field (value)
-                uint16_t value = 0;
-                _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &value);
-                if(_res != OK) {
-                    return _res;
-                }
+    } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_DWORD) { /* List */
 
-                *data_item = plc4c_data_create_uint16_t_bit_string_data(value);
+        // Array field (value)
+        // Count array
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) 32;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            bool* _val = malloc(sizeof(bool) * 1);
+            _res = plc4c_spi_read_bit(readBuffer, (bool*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(value);
 
-    } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_DWORD) { /* BitString */
+    } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LWORD) { /* List */
 
-                // Simple Field (value)
-                uint32_t value = 0;
-                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &value);
-                if(_res != OK) {
-                    return _res;
-                }
-
-                *data_item = plc4c_data_create_uint32_t_bit_string_data(value);
+        // Array field (value)
+        // Count array
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) 64;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            bool* _val = malloc(sizeof(bool) * 1);
+            _res = plc4c_spi_read_bit(readBuffer, (bool*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(value);
 
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_USINT) { /* USINT */
 
@@ -100,7 +140,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint8_t_data(value);
+                *data_item = plc4c_data_create_usint_data(value);
 
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_UINT) { /* UINT */
 
@@ -111,7 +151,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint16_t_data(value);
+                *data_item = plc4c_data_create_uint_data(value);
 
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_UDINT) { /* UDINT */
 
@@ -122,7 +162,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint32_t_data(value);
+                *data_item = plc4c_data_create_udint_data(value);
 
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_ULINT) { /* ULINT */
 
@@ -133,7 +173,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_uint64_t_data(value);
+                *data_item = plc4c_data_create_ulint_data(value);
 
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_SINT) { /* SINT */
 
@@ -144,7 +184,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_int8_t_data(value);
+                *data_item = plc4c_data_create_sint_data(value);
 
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_INT) { /* INT */
 
@@ -155,7 +195,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_int16_t_data(value);
+                *data_item = plc4c_data_create_int_data(value);
 
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_DINT) { /* DINT */
 
@@ -166,7 +206,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_int32_t_data(value);
+                *data_item = plc4c_data_create_dint_data(value);
 
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LINT) { /* LINT */
 
@@ -177,7 +217,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_int64_t_data(value);
+                *data_item = plc4c_data_create_lint_data(value);
 
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_REAL) { /* REAL */
 
@@ -188,7 +228,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_float_data(value);
+                *data_item = plc4c_data_create_real_data(value);
 
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LREAL) { /* LREAL */
 
@@ -199,7 +239,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_double_data(value);
+                *data_item = plc4c_data_create_lreal_data(value);
 
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_CHAR) { /* STRING */
 
@@ -236,19 +276,211 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
   return OK;
 }
 
-plc4c_return_code plc4c_plc4x_read_write_plc4x_value_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_data** data_item) {
+plc4c_return_code plc4c_plc4x_read_write_plc4x_value_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_plc4x_read_write_plc4x_value_type valueType, plc4c_data** data_item) {
   plc4c_return_code _res = OK;
+        if(valueType == plc4c_plc4x_read_write_plc4x_value_type_BOOL) { /* BOOL */
 
+                    // Reserved Field (reserved)
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_bit(writeBuffer, (*data_item)->data.bool_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_BYTE) { /* List */
+
+                    // Array field
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_WORD) { /* List */
+
+                    // Array field
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_DWORD) { /* List */
+
+                    // Array field
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LWORD) { /* List */
+
+                    // Array field
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_USINT) { /* USINT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.usint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_UINT) { /* UINT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (*data_item)->data.uint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_UDINT) { /* UDINT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_unsigned_int(writeBuffer, 32, (*data_item)->data.udint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_ULINT) { /* ULINT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_unsigned_long(writeBuffer, 64, (*data_item)->data.ulint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_SINT) { /* SINT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_signed_byte(writeBuffer, 8, (*data_item)->data.sint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_INT) { /* INT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_signed_short(writeBuffer, 16, (*data_item)->data.int_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_DINT) { /* DINT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_signed_int(writeBuffer, 32, (*data_item)->data.dint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LINT) { /* LINT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_signed_long(writeBuffer, 64, (*data_item)->data.lint_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_REAL) { /* REAL */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_float(writeBuffer, 32, (*data_item)->data.real_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LREAL) { /* LREAL */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_double(writeBuffer, 64, (*data_item)->data.lreal_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_CHAR) { /* STRING */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_string(writeBuffer, 8, "UTF-8", (*data_item)->data.string_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_WCHAR) { /* STRING */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_string(writeBuffer, 16, "UTF-16", (*data_item)->data.string_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_STRING) { /* STRING */
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_WSTRING) { /* STRING */
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_TIME) { /* TIME */
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_TIME_OF_DAY) { /* TIME_OF_DAY */
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_DATE) { /* DATE */
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_DATE_AND_TIME) { /* DATE_AND_TIME */
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_Struct) { /* Struct */
+        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_List) { /* List */
+        }
   return OK;
 }
 
-uint16_t plc4c_plc4x_read_write_plc4x_value_length_in_bytes(plc4c_data* data_item) {
-  return plc4c_plc4x_read_write_plc4x_value_length_in_bits(data_item) / 8;
+uint16_t plc4c_plc4x_read_write_plc4x_value_length_in_bytes(plc4c_data* data_item, plc4c_plc4x_read_write_plc4x_value_type value_type) {
+  return plc4c_plc4x_read_write_plc4x_value_length_in_bits(data_item, value_type) / 8;
 }
 
-uint16_t plc4c_plc4x_read_write_plc4x_value_length_in_bits(plc4c_data* data_item) {
+uint16_t plc4c_plc4x_read_write_plc4x_value_length_in_bits(plc4c_data* data_item, plc4c_plc4x_read_write_plc4x_value_type valueType) {
   uint16_t lengthInBits = 0;
+    if(valueType == plc4c_plc4x_read_write_plc4x_value_type_BOOL) { /* BOOL */
 
+        // Reserved Field (reserved)
+        lengthInBits += 7;
+
+        // Simple field (value)
+        lengthInBits += 1;
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_BYTE) { /* List */
+
+        // Array field
+        lengthInBits += 1 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_WORD) { /* List */
+
+        // Array field
+        lengthInBits += 1 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_DWORD) { /* List */
+
+        // Array field
+        lengthInBits += 1 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LWORD) { /* List */
+
+        // Array field
+        lengthInBits += 1 * plc4c_utils_list_size(data_item->data.list_value);
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_USINT) { /* USINT */
+
+        // Simple field (value)
+        lengthInBits += 8;
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_UINT) { /* UINT */
+
+        // Simple field (value)
+        lengthInBits += 16;
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_UDINT) { /* UDINT */
+
+        // Simple field (value)
+        lengthInBits += 32;
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_ULINT) { /* ULINT */
+
+        // Simple field (value)
+        lengthInBits += 64;
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_SINT) { /* SINT */
+
+        // Simple field (value)
+        lengthInBits += 8;
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_INT) { /* INT */
+
+        // Simple field (value)
+        lengthInBits += 16;
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_DINT) { /* DINT */
+
+        // Simple field (value)
+        lengthInBits += 32;
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LINT) { /* LINT */
+
+        // Simple field (value)
+        lengthInBits += 64;
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_REAL) { /* REAL */
+
+        // Simple field (value)
+        lengthInBits += 32;
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LREAL) { /* LREAL */
+
+        // Simple field (value)
+        lengthInBits += 64;
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_CHAR) { /* STRING */
+
+        // Simple field (value)
+        lengthInBits += 8;
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_WCHAR) { /* STRING */
+
+        // Simple field (value)
+        lengthInBits += 16;
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_STRING) { /* STRING */
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_WSTRING) { /* STRING */
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_TIME) { /* TIME */
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_TIME_OF_DAY) { /* TIME_OF_DAY */
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_DATE) { /* DATE */
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_DATE_AND_TIME) { /* DATE_AND_TIME */
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_Struct) { /* Struct */
+    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_List) { /* List */
+    }
   return lengthInBits;
 }
 

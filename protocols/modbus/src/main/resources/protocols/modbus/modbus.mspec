@@ -310,37 +310,31 @@
 
 [dataIo DataItem(ModbusDataType dataType, uint 16 numberOfValues)
     [typeSwitch dataType,numberOfValues
-        ['BOOL','1' BOOL
-            [reserved uint 15 '0x0000']
-            [simple   bit     value   ]
+        ['BOOL','1'  BOOL
+            // TODO: Possibly change the order of the bit and the reserved part.
+            [reserved uint 15 '0x0000'                         ]
+            [simple   bit     value                            ]
         ]
-        ['BOOL' List
-            [array bit value count 'numberOfValues']
+        ['BOOL'      List
+            // TODO: Handle adding some reserved bits at the end to fill up the last word.
+            [array    bit     value count 'numberOfValues'     ]
         ]
-        ['BYTE','1' BitString
+        ['BYTE','1'  List
             [reserved uint 8 '0x00']
-            [simple   uint 8 value ]
+            [array    bit     value count '8'                  ]
         ]
         ['BYTE' List
-            [array bit value count 'numberOfValues * 8']
+            // TODO: If the number of values is odd, add a reserved byte
+            [array    bit     value count 'numberOfValues * 8' ]
         ]
-        ['WORD','1' BitString
-            [simple uint 16 value]
+        ['WORD'      List
+            [array    bit     value count 'numberOfValues * 16']
         ]
-        ['WORD' List
-            [array bit value count 'numberOfValues * 16']
-        ]
-        ['DWORD','1' BitString
-            [simple uint 32 value]
-        ]
-        ['DWORD' List
-            [array bit value count 'numberOfValues * 32']
-        ]
-        ['LWORD','1' BitString
-            [simple uint 64 value]
+        ['DWORD'     List
+            [array    bit     value count 'numberOfValues * 32']
         ]
         ['LWORD' List
-            [array bit value count 'numberOfValues * 64']
+            [array    bit     value count 'numberOfValues * 64']
         ]
         ['SINT','1' SINT
             [reserved uint 8 '0x00']

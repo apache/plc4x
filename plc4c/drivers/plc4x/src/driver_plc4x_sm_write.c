@@ -172,10 +172,10 @@ void plc4c_driver_plc4x_free_write_request(plc4c_write_request *request) {
 void plc4c_driver_plc4x_free_write_response_item(
     plc4c_list_element* write_item_element) {
   
-  plc4c_response_item* responce_item;
-  responce_item = write_item_element->value;
-  // dont free responce_item-item->item its managed by the request not responce
-  free(responce_item); 
+  plc4c_response_item* response_item;
+  response_item = write_item_element->value;
+  // dont free response_item-item->item its managed by the request not response
+  free(response_item);
 }
 
 void plc4c_driver_plc4x_free_write_response(plc4c_write_response* response) {

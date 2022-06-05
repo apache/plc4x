@@ -107,41 +107,79 @@ char *plc4c_response_code_to_message(plc4c_response_code response_code) {
 
 char *plc4c_data_type_name(plc4c_data_type data_type) {
   switch (data_type) {
-    case PLC4C_CHAR: {
-      return "PLC4C_CHAR";
-    }
-    case PLC4C_UCHAR: {
-      return "PLC4C_UCHAR";
-    }
-    case PLC4C_SHORT: {
-      return "PLC4C_SHORT";
-    }
-    case PLC4C_USHORT: {
-      return "PLC4C_USHORT";
-    }
-    case PLC4C_BOOL: {
+    // Boolean/Bit-String Types
+    case PLC4C_BOOL:
       return "PLC4C_BOOL";
-    }
-    case PLC4C_INT: {
-      return "PLC4C_INT";
-    }
-    case PLC4C_UINT: {
+    case PLC4C_BYTE:
+      return "PLC4C_BYTE";
+    case PLC4C_WORD:
+      return "PLC4C_WORD";
+    case PLC4C_DWORD:
+      return "PLC4C_DWORD";
+    case PLC4C_LWORD:
+      return "PLC4C_LWORD";
+        // Integer Types (Unsigned/Signed)
+        // 1-byte
+    case PLC4C_USINT:
+      return "PLC4C_USINT";
+    case PLC4C_SINT:
+      return "PLC4C_SINT";
+        // 2-byte
+    case PLC4C_UINT:
       return "PLC4C_UINT";
-    }
-    case PLC4C_FLOAT: {
-      return "PLC4C_FLOAT";
-    }
-    case PLC4C_STRING_POINTER: {
-      return "PLC4C_STRING_POINTER";
-    }
-    case PLC4C_CONSTANT_STRING: {
-      return "PLC4C_CONSTANT_STRING";
-    }
-    case PLC4C_VOID_POINTER: {
-      return "PLC4C_VOID_POINTER";
-    }
-    default: {
+    case PLC4C_INT:
+      return "PLC4C_INT";
+        // 4-byte
+    case PLC4C_UDINT:
+      return "PLC4C_UDINT";
+    case PLC4C_DINT:
+      return "PLC4C_DINT";
+        // 8-byte
+    case PLC4C_ULINT:
+      return "PLC4C_ULINT";
+    case PLC4C_LINT:
+      return "PLC4C_LINT";
+        // Floating-Point Types
+    case PLC4C_REAL:
+      return "PLC4C_REAL";
+    case PLC4C_LREAL:
+      return "PLC4C_LREAL";
+      // Time Types
+    case PLC4C_TIME:
+      return "PLC4C_TIME";
+    case PLC4C_LTIME:
+      return "PLC4C_LTIME";
+        // Date Types
+    case PLC4C_DATE:
+      return "PLC4C_DATE";
+    case PLC4C_LDATE:
+      return "PLC4C_LDATE";
+        // Time of day Types
+    case PLC4C_TIME_OF_DAY:
+      return "PLC4C_TIME_OF_DAY";
+    case PLC4C_LTIME_OF_DAY:
+      return "PLC4C_LTIME_OF_DAY";
+        // Date and Time Types
+    case PLC4C_DATE_AND_TIME:
+      return "PLC4C_DATE_AND_TIME";
+    case PLC4C_LDATE_AND_TIME:
+      return "PLC4C_LDATE_AND_TIME";
+        // Char and String Types
+    case PLC4C_CHAR:
+      return "PLC4C_CHAR";
+    case PLC4C_WCHAR:
+      return "PLC4C_WCHAR";
+    case PLC4C_STRING:
+      return "PLC4C_STRING";
+    case PLC4C_WSTRING:
+      return "PLC4C_WSTRING";
+
+    case PLC4C_LIST:
+      return "PLC4C_LIST";
+    case PLC4C_STRUCT:
+      return "PLC4C_STRUCT";
+
+    default:
       return "UNKNOWN";
     }
   }
-}

@@ -43,7 +43,7 @@ int16_t plc4c_driver_modbus_select_message_function(uint8_t* buffer_data,
     uint16_t packet_length =
         ((uint16_t)*(buffer_data + 4) << 8) | ((uint16_t)*(buffer_data + 5));
     packet_length += 6;
-    return packet_length;
+    return (int16_t) packet_length;
   }
   // In all other cases, we'll just have to wait for the next time.
   return 0;

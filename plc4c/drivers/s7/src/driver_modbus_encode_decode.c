@@ -20,7 +20,6 @@
 #include <cotp_protocol_class.h>
 #include <ctype.h>
 #include <plc4c/driver_s7.h>
-#include <plc4c/spi/types_private.h>
 #include <stdlib.h>
 #include <string.h>
 #include <tpkt_packet.h>
@@ -67,10 +66,10 @@ plc4c_driver_s7_controller_type decode_controller_type(char* article_number) {
 
 int8_t decode_hex_char(char c) {
   if (('0' <= c) && (c <= '9')) {
-    return c - 48;
+    return (int8_t) (c - 48);
   }
   if (('A' <= c) && (c <= 'D')) {
-    return c - 55;
+    return (int8_t) (c - 55);
   }
   return -1;
 }

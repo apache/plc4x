@@ -34,6 +34,7 @@ enum plc4c_plc4x_read_write_plc4x_value_type {
   plc4c_plc4x_read_write_plc4x_value_type_BYTE = 0x02,
   plc4c_plc4x_read_write_plc4x_value_type_WORD = 0x03,
   plc4c_plc4x_read_write_plc4x_value_type_DWORD = 0x04,
+  plc4c_plc4x_read_write_plc4x_value_type_LWORD = 0x05,
   plc4c_plc4x_read_write_plc4x_value_type_USINT = 0x11,
   plc4c_plc4x_read_write_plc4x_value_type_UINT = 0x12,
   plc4c_plc4x_read_write_plc4x_value_type_UDINT = 0x13,

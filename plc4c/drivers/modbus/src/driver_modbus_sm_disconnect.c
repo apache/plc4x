@@ -19,7 +19,6 @@
 
 #include <plc4c/plc4c.h>
 #include <plc4c/spi/types_private.h>
-#include <string.h>
 
 enum plc4c_driver_modbus_disconnect_states {
   PLC4C_DRIVER_MODBUS_DISCONNECT_INIT,

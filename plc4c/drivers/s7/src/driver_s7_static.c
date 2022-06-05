@@ -27,6 +27,9 @@
  *   Static functions
  *
  */
+uint8_t plc4c_spi_evaluation_helper_str_len(char* str) {
+  return strlen(str);
+}
 
 uint16_t plc4c_s7_read_write_event_item_length(plc4c_spi_read_buffer* io, uint16_t valueLength) {
   return 0;

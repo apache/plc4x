@@ -211,6 +211,21 @@
               <outputDirectory>${project.build.directory}/dependency</outputDirectory>
             </configuration>
           </execution>
+          <!--
+            Get ClangFormat.cmake
+          -->
+          <!--execution>
+            <id>get-clang-format</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://raw.githubusercontent.com/zemasoft/clangformat-cmake/master/cmake/ClangFormat.cmake</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/dependency/clang-format</outputDirectory>
+            </configuration>
+          </execution-->
         </executions>
       </plugin>
       <!--
