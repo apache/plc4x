@@ -26,7 +26,8 @@
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.rust.RustLanguageTemplateHelper" -->
 <#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
-${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/${type.name}.rs
+src/${type.name}.rs
+<#--${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/${type.name}.rs-->
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -46,9 +47,11 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
  * under the License.
  */
 // package ${helper.packageName(protocolName, languageName, outputFlavor)};
-use crate::plc4x_enum;
+<#--use crate::plc4x_enum;-->
 use std::io::{Error, ErrorKind, Read, Write};
-use crate::{Message, NoOption, ReadBuffer, WriteBuffer};
+use plc4rust::{Message, NoOption};
+use plc4rust::read_buffer::ReadBuffer;
+use plc4rust::write_buffer::WriteBuffer;
 
 <#list helper.generateImports(type) as import>
 <#if type.name != import>
@@ -78,7 +81,7 @@ impl TryFrom<${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(
     fn try_from(value: ${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}) -> Result<Self, Self::Error> {
         match value {
             <#list type.enumValues as enumValue>
-            ${enumValue.value} => ${enumValue.name},
+            ${enumValue.value} => Ok(${type.name}::${enumValue.name}),
             </#list>
             _ => {
                 panic!("Unable to deserialize enum!")
@@ -88,7 +91,7 @@ impl TryFrom<${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(
 }
 
 impl Into<${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}> for ${type.name} {
-    fn into(self) -> ${type.name} {
+    fn into(self) -> ${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)} {
         match self {
         <#list type.enumValues as enumValue>
             ${enumValue.name} => ${enumValue.value}<#sep>,</#sep>

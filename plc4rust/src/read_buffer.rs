@@ -43,11 +43,11 @@ impl<T: Read> ReadBuffer<T> {
 
 impl<T: Read> ReadBuffer<T> {
 
-    pub(crate) fn read_bit(&mut self) -> Result<bool, std::io::Error> {
+    pub fn read_bit(&mut self) -> Result<bool, std::io::Error> {
         Ok(self.read_u_n(1)? > 0)
     }
 
-    pub(crate) fn read_u8(&mut self) -> Result<u8, std::io::Error> {
+    pub fn read_u8(&mut self) -> Result<u8, std::io::Error> {
         let mut byte = [0_u8; 1];
         self.reader.read(&mut byte)?;
         // println!("read_u8: {}", byte[0]);
@@ -55,7 +55,7 @@ impl<T: Read> ReadBuffer<T> {
         Ok(byte[0])
     }
 
-    pub(crate) fn read_u16(&mut self) -> Result<u16, std::io::Error> {
+    pub fn read_u16(&mut self) -> Result<u16, std::io::Error> {
         let mut bytes = [0_u8; 2];
         self.reader.read(&mut bytes)?;
 
@@ -71,7 +71,11 @@ impl<T: Read> ReadBuffer<T> {
         })
     }
 
-    pub(crate) fn read_u_n(&mut self, number_of_bits: u8) -> Result<u64, std::io::Error> {
+    pub fn read_u32(&mut self) -> Result<u32, std::io::Error> {
+        todo!()
+    }
+
+    pub fn read_u_n(&mut self, number_of_bits: u8) -> Result<u64, std::io::Error> {
         match self.bit_reader.read(number_of_bits, &mut self.reader) {
             Ok(value) => {
                 Ok(value as u64)

@@ -20,14 +20,22 @@ package org.apache.plc4x.language.rust;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.apache.commons.io.FileUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageOutput;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 public class RustLanguageOutput extends FreemarkerLanguageOutput {
@@ -93,5 +101,46 @@ public class RustLanguageOutput extends FreemarkerLanguageOutput {
             LOGGER.error("Error formatting {}", outputFile, e);
         }
  */
+    }
+
+    @Override
+    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types, Map<String, String> options) throws GenerationException {
+        super.generate(outputDir, languageName, protocolName, outputFlavor, types, options);
+        // Add post generation logic here
+        try {
+            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/rust/Cargo.toml");
+            if (inputStream == null) {
+                throw new RuntimeException("Unable to generate Cargo.toml");
+            }
+            java.nio.file.Files.copy(
+                inputStream,
+                outputDir.toPath().resolve("Cargo.toml"),
+                StandardCopyOption.REPLACE_EXISTING);
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Generate lib.rs
+        try {
+            StringBuilder sb = new StringBuilder();
+
+            Collection<File> files = FileUtils.listFiles(outputDir.toPath().resolve("src").toFile(), new String[]{"rs"}, false);
+
+            for (File file : files) {
+                sb.append("mod " + file.getName().split("\\.")[0] + ";\n");
+            }
+            sb.append("\n");
+            sb.append("#[cfg(test)]\n" +
+                "mod test {\n" +
+                "\n" +
+                "    #[test]\n" +
+                "    fn test() {\n" +
+                "        println!(\"Hello world!\");\n" +
+                "    }\n" +
+                "}");
+            FileUtils.writeStringToFile(outputDir.toPath().resolve("src").resolve("lib.rs").toFile(), sb.toString(), Charset.defaultCharset());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

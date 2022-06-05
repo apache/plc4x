@@ -25,6 +25,7 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.D
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultEnumTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultSwitchField;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultArrayTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultEnumTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultBooleanLiteral;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultStringLiteral;
@@ -156,14 +157,27 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return "";
     }
 
-    public List<String> generateImports(TypeDefinition typeDefinition) {
+    private static List<String[]> getParserArgsImports(TypeDefinition typeDefinition) {
+        List<String[]> imports = new ArrayList<>();
+        if (typeDefinition.getParserArguments().isPresent()) {
+            for (Argument argument : typeDefinition.getParserArguments().get()) {
+                TypeReference type = argument.getType();
+                if (type instanceof DefaultEnumTypeReference) {
+                    imports.add(new String[]{((DefaultEnumTypeReference) type).getName(), ((DefaultEnumTypeReference) type).getName()});
+                }
+            }
+        }
+        return imports;
+    }
+
+    public List<String[]> generateImports(TypeDefinition typeDefinition) {
         // Iterate all Types to see what kind of other Enums / Objects are references
-        List<String> imports = new ArrayList<>();
+        List<String[]> imports = new ArrayList<>();
         if (typeDefinition instanceof EnumTypeDefinition) {
             for (String constantName : ((EnumTypeDefinition) typeDefinition).getConstantNames()) {
                 TypeReference constantType = ((EnumTypeDefinition) typeDefinition).getConstantType(constantName);
                 if (constantType instanceof DefaultEnumTypeReference) {
-                    imports.add(((DefaultEnumTypeReference) constantType).getName());
+                    imports.add(new String[]{((DefaultEnumTypeReference) constantType).getName(), ((DefaultEnumTypeReference) constantType).getName()});
                 }
             }
         }
@@ -171,11 +185,43 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             for (Field field : ((DefaultComplexTypeDefinition) typeDefinition).getFields()) {
                 if (field instanceof DefaultSwitchField) {
                     for (DiscriminatedComplexTypeDefinition subclass : ((DefaultSwitchField) field).getCases()) {
-                        imports.add(subclass.getName());
+                        imports.add(new String[]{subclass.getName(), subclass.getName()});
+                        // Also add options type
+                        imports.add(new String[]{subclass.getName(), subclass.getName() + "Options"});
                     }
                 }
             }
         }
+        imports.addAll(getParserArgsImports(typeDefinition));
+        // If it has a parent type, also generate imports for the paraent type
+        if (typeDefinition instanceof ComplexTypeDefinition) {
+            if (((ComplexTypeDefinition) typeDefinition).getParentType().isPresent()) {
+                imports.addAll(getParserArgsImports(((ComplexTypeDefinition) typeDefinition).getParentType().get()));
+            }
+
+            // Add Imports for fields
+            for (Field field : ((ComplexTypeDefinition) typeDefinition).getFields()) {
+                if (field instanceof TypedField) {
+                    TypeReference type = ((TypedField) field).getType();
+                    if (type instanceof ComplexTypeReference) {
+                        String typeName = ((ComplexTypeReference) type).getName();
+                        imports.add(new String[]{typeName, typeName});
+                    } else if (type instanceof DefaultArrayTypeReference) {
+                        // TODO refactor to make this more elgant
+                        TypeReference elementTypeReference = ((DefaultArrayTypeReference) type).getElementTypeReference();
+                        if (elementTypeReference instanceof ComplexTypeReference) {
+                            String typeName = ((ComplexTypeReference) elementTypeReference).getName();
+                            imports.add(new String[]{typeName, typeName});
+                        }
+                    } else if (type instanceof DefaultEnumTypeReference) {
+                        String typeName = ((DefaultEnumTypeReference) type).getName();
+                        imports.add(new String[]{typeName, typeName});
+                    }
+                }
+            }
+        }
+
+
         return imports;
     }
 
@@ -314,15 +360,35 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         });
     }
 
+    public String getReadFunctionCall(TypeReference typeReference) {
+        if (!(typeReference instanceof SimpleTypeReference)) {
+            throw new RuntimeException("Not implemented yet: " + typeReference);
+        }
+        SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT:
+                return "read_bit()?";
+            case UINT:
+                IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                if (unsignedIntegerTypeReference.getSizeInBits() < 8) {
+                    return "read_u_n(" + unsignedIntegerTypeReference.getSizeInBits() + ")? as u8";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() == 8) {
+                    return "read_u8()?";
+                }
+        }
+        throw new RuntimeException("Not implemented yet: " + typeReference);
+    }
+
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean allowPrimitive) {
         Objects.requireNonNull(typeReference);
         if (typeReference instanceof ArrayTypeReference) {
             final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
-            if (arrayTypeReference.getElementTypeReference().isByteBased()) {
-                return getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), allowPrimitive) + "[]";
-            } else {
-                return "List<" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), false) + ">";
-            }
+//            if (arrayTypeReference.getElementTypeReference().isByteBased()) {
+                return "Vec<" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), allowPrimitive) + ">";
+//            } else {
+//                return "List<" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), false) + ">";
+//            }
         }
         // DataIo data-types always have properties of type PlcValue
         if (typeReference.isDataIoTypeReference()) {
