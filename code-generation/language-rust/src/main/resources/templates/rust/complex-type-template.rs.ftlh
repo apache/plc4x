@@ -65,15 +65,19 @@ use crate::<#list import as path>${path}<#sep>::</#sep></#list>;
 #[derive(PartialEq, Debug, Clone)]
 pub struct ${type.name}Options {
 <#if type.parserArguments?? && !type.parserArguments.isEmpty()>
-<#list type.parserArguments.orElseThrow() as arg>
+<#if type.parserArguments.isPresent()>
+<#list type.parserArguments.get() as arg>
     pub ${arg.name}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}<#sep>, </#sep>
 </#list>
 </#if>
+</#if>
 <#if !type.parentType.isEmpty()>
 <#if type.parentType.get().parserArguments?? && !type.parentType.get().parserArguments.isEmpty()>
-<#list type.parentType.get().parserArguments.orElseThrow() as arg>
+<#if type.parentType.get().parserArguments.isPresent()>
+<#list type.parentType.get().parserArguments.get() as arg>
     pub ${arg.name}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}<#sep>, </#sep>
 </#list>
+</#if>
 </#if>
 </#if>
 }
@@ -107,9 +111,11 @@ impl Message for ${type.name} {
     fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
         // (Re-)define the options
         let parameter = parameter.unwrap();
-    <#list type.parserArguments.orElseThrow() as arg>
+    <#if type.parserArguments.isPresent()>
+    <#list type.parserArguments.get() as arg>
         let ${arg.name} = parameter.${arg.name};
     </#list>
+    </#if>
     <#list type.fields as field>
         <#if helper.isSwitchField(field)>
         match (<#list field.getDiscriminatorExpressions() as literal>${literal.name}<#sep>, </#sep></#list>) {
@@ -132,7 +138,11 @@ impl Message for ${type.name} {
             }
         }
         <#else>
+        <#if field.isSimpleField()>
         let ${field.name} = reader.${helper.getReadFunctionCall(field.type)};
+        <#else>
+            -> ${field}
+        </#if>
         </#if>
 <#--        ${helper.generateFieldParseCode(field)}-->
     </#list>
@@ -142,7 +152,11 @@ impl Message for ${type.name} {
 #[derive(PartialEq, Debug, Clone)]
 pub struct ${type.name} {
     <#list type.fields as field>
+    <#if field.isSimpleField()>
     pub ${field.name}: ${helper.getLanguageTypeNameForTypeReference(field.type)}<#sep>,</#sep>
+    <#else>
+        -> ${field}
+    </#if>
     </#list>
 }
 

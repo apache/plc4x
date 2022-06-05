@@ -361,11 +361,21 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     public String getReadFunctionCall(TypeReference typeReference) {
-        if (!(typeReference instanceof SimpleTypeReference)) {
-            throw new RuntimeException("Not implemented yet: " + typeReference);
+        SimpleTypeReference simpleTypeReference;
+        if (typeReference instanceof SimpleTypeReference) {
+            simpleTypeReference = (SimpleTypeReference) typeReference;
+        } else if (typeReference instanceof DefaultEnumTypeReference) {
+            if (((DefaultEnumTypeReference) typeReference).getBaseTypeReference().isPresent()) {
+                simpleTypeReference = ((DefaultEnumTypeReference) typeReference).getBaseTypeReference().get();
+            } else {
+                throw new RuntimeException("No idea whats happening here?!");
+            }
+        } else {
+            throw new RuntimeException("Not implemented yet!");
         }
-        SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
-        switch (simpleTypeReference.getBaseType()) {
+        SimpleTypeReference.SimpleBaseType baseType;
+        baseType = simpleTypeReference.getBaseType();
+        switch (baseType) {
             case BIT:
                 return "read_bit()?";
             case UINT:
@@ -375,6 +385,12 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() == 8) {
                     return "read_u8()?";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() < 16) {
+                    return "read_u_n(" + unsignedIntegerTypeReference.getSizeInBits() + ")? as u16";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() == 16) {
+                    return "read_u16()?";
                 }
         }
         throw new RuntimeException("Not implemented yet: " + typeReference);
