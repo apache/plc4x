@@ -160,6 +160,8 @@ pub struct ${type.name} {
     pub ${field.name}: ${helper.getLanguageTypeNameForTypeReference(field.type)}<#sep>,</#sep>
     <#elseif field.isConstField()>
     // Intentionally do nothing
+    <#elseif field.isChecksumField()>
+    pub ${field.name}: ${helper.getLanguageTypeNameForTypeReference(field.type)}<#sep>,</#sep>
     <#else>
         // -> ${field}
     </#if>
@@ -241,7 +243,7 @@ impl Message for ${type.name} {
         let ${field.name} = ${helper.getReadFunctionCall(field.type)};
     <#if field.isConstField()>
         // assert value of constant
-        assert!(${field.getReferenceValue().stringRepresentation()}, ${field.name});
+        assert_eq!(${field.getReferenceValue().stringRepresentation()}, ${field.name});
     </#if>
     </#if>
     </#list>
