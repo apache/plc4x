@@ -26,7 +26,7 @@ pub struct WriteBuffer<T: Write> {
     pub(crate) position: u64,
     pub(crate) endianness: Endianess,
     pub(crate) bit_writer: BitWriter<T>,
-    pub(crate) writer: T,
+    pub writer: T,
 }
 
 pub struct BitWriter<T: Write> {
