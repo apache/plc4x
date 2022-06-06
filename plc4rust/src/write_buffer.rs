@@ -114,6 +114,13 @@ impl<T: Write> WriteBuffer<T> {
         Ok(bytes_written)
     }
 
+    pub fn write_bit(&mut self, value: bool) -> std::io::Result<usize> {
+        if value {
+            self.write_u_n(1, 1)
+        } else {
+            self.write_u_n(1, 0)
+        }
+    }
     pub fn write_u_n(&mut self, num_bits: u8, value: u64) -> std::io::Result<usize> {
         self.bit_writer.write(value, num_bits, &mut self.writer)
     }

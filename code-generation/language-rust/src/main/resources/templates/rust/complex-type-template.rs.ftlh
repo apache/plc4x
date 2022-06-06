@@ -169,7 +169,7 @@ pub struct ${type.name} {
 impl ${type.name} {
     <#list type.fields as field>
     <#if field.isImplicitField()>
-    pub fn ${field.name}(&mut self) -> ${helper.getLanguageTypeNameForTypeReference(field.type)} {
+    pub fn ${field.name}(&self) -> ${helper.getLanguageTypeNameForTypeReference(field.type)} {
         0
     }
     </#if>

@@ -24,6 +24,7 @@ import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultEnumTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultImplicitField;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultSwitchField;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultTypedNamedField;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultArrayTypeReference;
@@ -367,20 +368,22 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     public String getWriteFunctionCall(DefaultTypedNamedField field) {
         TypeReference typeReference = field.getType();
         SimpleTypeReference simpleTypeReference;
+        String fieldName = field.getName();
         if (typeReference instanceof SimpleTypeReference) {
             simpleTypeReference = (SimpleTypeReference) typeReference;
         } else if (typeReference instanceof DefaultEnumTypeReference) {
-            if (((DefaultEnumTypeReference) typeReference).getBaseTypeReference().isPresent()) {
-                simpleTypeReference = ((DefaultEnumTypeReference) typeReference).getBaseTypeReference().get();
-            } else {
-                throw new RuntimeException("No idea whats happening here?!");
-            }
+            return "self." + fieldName + ".serialize(writer)?";
+//            if (((DefaultEnumTypeReference) typeReference).getBaseTypeReference().isPresent()) {
+//                simpleTypeReference = ((DefaultEnumTypeReference) typeReference).getBaseTypeReference().get();
+//            } else {
+//                throw new RuntimeException("No idea whats happening here?!");
+//            }
         } else if (typeReference instanceof DefaultArrayTypeReference) {
             // Get length
             TypeReference elementTypeReference = ((DefaultArrayTypeReference) typeReference).getElementTypeReference();
             if (elementTypeReference instanceof SimpleTypeReference) {
                 if (((SimpleTypeReference) elementTypeReference).getBaseType() == SimpleTypeReference.SimpleBaseType.BYTE) {
-                    return "writer.write_bytes(self." + field.getName() + ".as_slice())?";
+                    return "writer.write_bytes(self." + fieldName + ".as_slice())?";
                 }
             } else if (elementTypeReference instanceof ComplexTypeReference) {
                 return "// not handled yet";
@@ -393,29 +396,33 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             // Get Options
             List<Argument> parserArguments = ((ComplexTypeReference) typeReference).getTypeDefinition().getParserArguments().orElse(Collections.emptyList());
             String options = parserArguments.stream().map(argument -> argument.getName()).collect(Collectors.joining(","));
-            return "self." + field.getName() + ".serialize(writer)?";
+            return "self." + fieldName + ".serialize(writer)?";
         } else {
             return "// not handled yet";
 //            throw new RuntimeException("Not implemented yet: " + typeReference);
         }
         SimpleTypeReference.SimpleBaseType baseType;
         baseType = simpleTypeReference.getBaseType();
+        String argument = fieldName;
+        if (field instanceof DefaultImplicitField) {
+            argument = argument + "()";
+        }
         switch (baseType) {
             case BIT:
-                return "writer.write_bit(self." + field.getName() + ")?";
+                return String.format("writer.write_bit(self.%s)?", argument);
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() < 8) {
-                    return "writer.write_u_n(self." + unsignedIntegerTypeReference.getSizeInBits() + ", self." + field.getName() + " as u64)? as u8";
+                    return "writer.write_u_n(self." + unsignedIntegerTypeReference.getSizeInBits() + ", self." + argument + " as u64)? as u8";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() == 8) {
-                    return "writer.write_u8(self." + field.getName() + ")?";
+                    return "writer.write_u8(self." + argument + ")?";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() < 16) {
-                    return "writer.write_u_n(self." + unsignedIntegerTypeReference.getSizeInBits() + ", self." + field.getName() + " as u64)? as u16";
+                    return "writer.write_u_n(self." + unsignedIntegerTypeReference.getSizeInBits() + ", self." + argument + " as u64)? as u16";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() == 16) {
-                    return "writer.write_u16(self." + field.getName() + ")?";
+                    return "writer.write_u16(self." + argument + ")?";
                 }
         }
         throw new RuntimeException("Not implemented yet: " + typeReference);
@@ -426,11 +433,7 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         if (typeReference instanceof SimpleTypeReference) {
             simpleTypeReference = (SimpleTypeReference) typeReference;
         } else if (typeReference instanceof DefaultEnumTypeReference) {
-            if (((DefaultEnumTypeReference) typeReference).getBaseTypeReference().isPresent()) {
-                simpleTypeReference = ((DefaultEnumTypeReference) typeReference).getBaseTypeReference().get();
-            } else {
-                throw new RuntimeException("No idea whats happening here?!");
-            }
+            return ((DefaultEnumTypeReference) typeReference).getTypeDefinition().getName() + "::parse(reader, None)?";
         } else if (typeReference instanceof DefaultArrayTypeReference) {
             // Get length
             TypeReference elementTypeReference = ((DefaultArrayTypeReference) typeReference).getElementTypeReference();
