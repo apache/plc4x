@@ -122,7 +122,7 @@ impl Message for ${type.name} {
         <#list field.cases as aCase>
             <#assign n=aCase.discriminatorValueTerms?size - 1>
             <#assign m=field.getDiscriminatorExpressions()?size - 1>
-            (<#list 0..m as i><#if i <= n><#assign caseType=field.getDiscriminatorExpressions()[i]><#assign term=aCase.discriminatorValueTerms[i]>${helper.formatLiteral(caseType.typeReference, term)}<#else>_</#if><#sep>, </#sep></#list>) => {
+            (<#list 0..m as i><#if i <= n><#assign caseType=field.getDiscriminatorExpressions()[i]><#assign term=aCase.discriminatorValueTerms[i]><#attempt>${helper.formatLiteral(caseType.typeReference, term)}<#recover>asdfasdf</#attempt><#else>_</#if><#sep>, </#sep></#list>) => {
                 Ok(${type.name}::${aCase.name}(${aCase.name}::parse::<T>(reader, Some(${aCase.name}Options {
                 <#if type.parserArguments?? && !type.parserArguments.isEmpty()>
                 <#list type.parserArguments.orElseThrow() as arg>
@@ -188,7 +188,11 @@ impl Message for ${type.name} {
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
     <#list type.fields as field>
+        <#if field.isNamedField() && field.isTypedField()>
         ${helper.getWriteFunctionCall(field)};
+        <#else>
+        ---> ${field}
+        </#if>
 <#--    <#if field.isArrayField()>-->
 <#--        // writer.write_${helper.getLanguageTypeNameForTypeReference(field.type)}(self.${field.name})?;-->
 <#--    <#elseif field.isImplicitField()>-->
@@ -240,7 +244,12 @@ impl Message for ${type.name} {
         // }
         </#if>
     <#else>
+        <#if field.isReservedField()>
+        // Reserved field
+        let _ = ${helper.getReadFunctionCall(field.type)};
+        <#else>
         let ${field.name} = ${helper.getReadFunctionCall(field.type)};
+        </#if>
     <#if field.isConstField()>
         // assert value of constant
         assert_eq!(${field.getReferenceValue().stringRepresentation()}, ${field.name});
@@ -249,7 +258,7 @@ impl Message for ${type.name} {
     </#list>
         Ok(Self::M {
         <#list type.fields as field>
-        <#if !field.isImplicitField() && !field.isConstField()>
+        <#if !field.isImplicitField() && !field.isConstField() && field.isNamedField()>
             ${field.name}<#sep>,</#sep>
         </#if>
         </#list>

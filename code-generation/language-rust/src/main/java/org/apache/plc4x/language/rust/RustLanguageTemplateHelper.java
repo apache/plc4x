@@ -434,8 +434,16 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 if (unsignedIntegerTypeReference.getSizeInBits() == 16) {
                     return "writer.write_u16(" + argument + ")?";
                 }
+                if (unsignedIntegerTypeReference.getSizeInBits() < 32) {
+                    return "writer.write_u_n(" + unsignedIntegerTypeReference.getSizeInBits() + ", self." + argument + " as u64)? as u32";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() == 32) {
+                    return "writer.write_u32(" + argument + ")?";
+                }
+            case STRING:
+                return "writer.write_bytes(" + argument + ".as_str())?";
         }
-        throw new RuntimeException("Not implemented yet!");
+        throw new RuntimeException("Type in generateSerializerCode Not implemented yet: " + simpleTypeReference + " / " + argument);
     }
 
     public String getReadFunctionCall(TypeReference typeReference) {
@@ -485,6 +493,14 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 if (unsignedIntegerTypeReference.getSizeInBits() == 16) {
                     return "reader.read_u16()?";
                 }
+                if (unsignedIntegerTypeReference.getSizeInBits() < 32) {
+                    return "reader.read_u_n(" + unsignedIntegerTypeReference.getSizeInBits() + ")? as u32";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() == 32) {
+                    return "reader.read_u32()?";
+                }
+            case STRING:
+                return "reader.read_bytes(" + simpleTypeReference.getSizeInBits()/8 + " as usize)?;";
         }
         throw new RuntimeException("Not implemented yet: " + typeReference);
     }

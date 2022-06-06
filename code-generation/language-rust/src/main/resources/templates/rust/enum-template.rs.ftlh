@@ -54,9 +54,9 @@ use plc4rust::read_buffer::ReadBuffer;
 use plc4rust::write_buffer::WriteBuffer;
 
 <#list helper.generateImports(type) as import>
-<#if type.name != import>
+<#if type.name != import[import?size - 1]>
 <#--  File -> Struct  -->
-use crate::${import}::${import};
+use crate::<#list import as path>${path}<#sep>::</#sep></#list>;
 </#if>
 </#list>
 
