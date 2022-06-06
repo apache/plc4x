@@ -51,6 +51,7 @@
     <module>s7</module>
     <module>simulated</module>
     <module>socketcan</module>
+    <module>tsfile</module>
   </modules>
 
   <build>

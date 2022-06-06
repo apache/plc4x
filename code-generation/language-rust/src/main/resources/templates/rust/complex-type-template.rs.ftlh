@@ -239,6 +239,10 @@ impl Message for ${type.name} {
         </#if>
     <#else>
         let ${field.name} = ${helper.getReadFunctionCall(field.type)};
+    <#if field.isConstField()>
+        // assert value of constant
+        assert!(${field.getReferenceValue().stringRepresentation()}, ${field.name});
+    </#if>
     </#if>
     </#list>
         Ok(Self::M {

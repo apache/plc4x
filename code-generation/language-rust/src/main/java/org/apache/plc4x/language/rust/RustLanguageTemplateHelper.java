@@ -23,6 +23,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultEnumTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultConstField;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultImplicitField;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultSwitchField;
@@ -369,6 +370,10 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         TypeReference typeReference = field.getType();
         SimpleTypeReference simpleTypeReference;
         String fieldName = field.getName();
+        if (field instanceof DefaultConstField) {
+            TypeReference type = field.getType();
+            return this.generateSerializerCode(((SimpleTypeReference) typeReference), ((DefaultConstField) field).getReferenceValue().stringRepresentation());
+        }
         if (typeReference instanceof SimpleTypeReference) {
             simpleTypeReference = (SimpleTypeReference) typeReference;
         } else if (typeReference instanceof DefaultEnumTypeReference) {
@@ -403,29 +408,34 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
         SimpleTypeReference.SimpleBaseType baseType;
         baseType = simpleTypeReference.getBaseType();
-        String argument = fieldName;
+        String argument = "self." + fieldName;
         if (field instanceof DefaultImplicitField) {
             argument = argument + "()";
         }
+        return this.generateSerializerCode(simpleTypeReference, argument);
+    }
+
+    private String generateSerializerCode(SimpleTypeReference simpleTypeReference, String argument) {
+        SimpleTypeReference.SimpleBaseType baseType = simpleTypeReference.getBaseType();
         switch (baseType) {
             case BIT:
-                return String.format("writer.write_bit(self.%s)?", argument);
+                return String.format("writer.write_bit(%s)?", argument);
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() < 8) {
-                    return "writer.write_u_n(self." + unsignedIntegerTypeReference.getSizeInBits() + ", self." + argument + " as u64)? as u8";
+                    return "writer.write_u_n(" + unsignedIntegerTypeReference.getSizeInBits() + ", self." + argument + " as u64)? as u8";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() == 8) {
-                    return "writer.write_u8(self." + argument + ")?";
+                    return "writer.write_u8(" + argument + ")?";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() < 16) {
-                    return "writer.write_u_n(self." + unsignedIntegerTypeReference.getSizeInBits() + ", self." + argument + " as u64)? as u16";
+                    return "writer.write_u_n(" + unsignedIntegerTypeReference.getSizeInBits() + ", self." + argument + " as u64)? as u16";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() == 16) {
-                    return "writer.write_u16(self." + argument + ")?";
+                    return "writer.write_u16(" + argument + ")?";
                 }
         }
-        throw new RuntimeException("Not implemented yet: " + typeReference);
+        throw new RuntimeException("Not implemented yet!");
     }
 
     public String getReadFunctionCall(TypeReference typeReference) {
