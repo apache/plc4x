@@ -31,7 +31,6 @@ pub struct ModbusPDUGetComEventLogResponseOptions {
 }
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUGetComEventLogResponse {
-        // -> DefaultImplicitField{serializeExpression=DefaultBinaryTerm{a=DefaultVariableLiteral{name='COUNT', typeReference='null', args=[DefaultVariableLiteral{name='events', typeReference='null', args=null, index=null, child=null}], index=null, child=null}, b=DefaultNumericLiteral{number=6}, operation='+'}} DefaultTypedNamedField{name='byteCount'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=8}} DefaultField{attributes={}}
     pub status: u16,
     pub eventCount: u16,
     pub messageCount: u16,
@@ -40,7 +39,7 @@ pub struct ModbusPDUGetComEventLogResponse {
 
 impl ModbusPDUGetComEventLogResponse {
     pub fn byteCount(&self) -> u8 {
-        0
+        (self.events.len() + 6) as u8
     }
 }
 

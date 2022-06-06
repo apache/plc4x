@@ -505,6 +505,14 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         throw new RuntimeException("Not implemented yet: " + typeReference);
     }
 
+    public String[] implementImplicit(Field field, DefaultComplexTypeDefinition type) {
+        if (!(field instanceof DefaultImplicitField)) {
+            throw new RuntimeException("Not supported yet");
+        }
+        ExpressionVisitor visitor = new ExpressionVisitor(type, this);
+        return visitor.visit(((DefaultImplicitField) field).getSerializeExpression());
+    }
+
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean allowPrimitive) {
         Objects.requireNonNull(typeReference);
         if (typeReference instanceof ArrayTypeReference) {

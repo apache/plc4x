@@ -55,6 +55,8 @@ impl Message for S7Payload {
     }
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
+        let a = vec![];
+        a.len()
         match self {
             S7Payload::S7PayloadReadVarResponse(msg) => {
                 msg.serialize(writer)

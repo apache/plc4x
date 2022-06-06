@@ -35,13 +35,12 @@ pub struct ModbusPDUReadWriteMultipleHoldingRegistersRequest {
     pub readQuantity: u16,
     pub writeStartingAddress: u16,
     pub writeQuantity: u16,
-        // -> DefaultImplicitField{serializeExpression=DefaultVariableLiteral{name='COUNT', typeReference='null', args=[DefaultVariableLiteral{name='value', typeReference='null', args=null, index=null, child=null}], index=null, child=null}} DefaultTypedNamedField{name='byteCount'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=8}} DefaultField{attributes={}}
     pub value: Vec<u8>
 }
 
 impl ModbusPDUReadWriteMultipleHoldingRegistersRequest {
     pub fn byteCount(&self) -> u8 {
-        0
+        (self.value.len()) as u8
     }
 }
 

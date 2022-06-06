@@ -31,13 +31,12 @@ pub struct ModbusDeviceInformationObjectOptions {
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusDeviceInformationObject {
     pub objectId: u8,
-        // -> DefaultImplicitField{serializeExpression=DefaultVariableLiteral{name='COUNT', typeReference='null', args=[DefaultVariableLiteral{name='data', typeReference='null', args=null, index=null, child=null}], index=null, child=null}} DefaultTypedNamedField{name='objectLength'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=8}} DefaultField{attributes={}}
     pub data: Vec<u8>
 }
 
 impl ModbusDeviceInformationObject {
     pub fn objectLength(&self) -> u8 {
-        0
+        (self.data.len()) as u8
     }
 }
 

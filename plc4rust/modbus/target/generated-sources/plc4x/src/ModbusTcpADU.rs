@@ -36,15 +36,13 @@ pub struct ModbusTcpADUOptions {
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusTcpADU {
     pub transactionIdentifier: u16,
-    // Intentionally do nothing
-        // -> DefaultImplicitField{serializeExpression=DefaultBinaryTerm{a=DefaultVariableLiteral{name='pdu', typeReference='null', args=null, index=null, child=DefaultVariableLiteral{name='lengthInBytes', typeReference='null', args=null, index=null, child=null}}, b=DefaultNumericLiteral{number=1}, operation='+'}} DefaultTypedNamedField{name='length'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=16}} DefaultField{attributes={byteOrder=DefaultVariableLiteral{name='BIG_ENDIAN', typeReference='null', args=null, index=null, child=null}}}
     pub unitIdentifier: u8,
     pub pdu: ModbusPDU
 }
 
 impl ModbusTcpADU {
     pub fn length(&self) -> u16 {
-        0
+        (self.pdu.get_length_in_bytes() + 1) as u16
     }
 }
 

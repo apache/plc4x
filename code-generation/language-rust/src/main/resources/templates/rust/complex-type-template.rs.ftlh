@@ -158,8 +158,8 @@ pub struct ${type.name} {
     pub ${field.name}: ${helper.getLanguageTypeNameForTypeReference(field.type)}<#sep>,</#sep>
     <#elseif field.isArrayField()>
     pub ${field.name}: ${helper.getLanguageTypeNameForTypeReference(field.type)}<#sep>,</#sep>
-    <#elseif field.isConstField()>
-    // Intentionally do nothing
+    <#elseif field.isConstField() || field.isImplicitField()>
+<#--    Intentionally do nothing-->
     <#elseif field.isChecksumField()>
     pub ${field.name}: ${helper.getLanguageTypeNameForTypeReference(field.type)}<#sep>,</#sep>
     <#else>
@@ -172,7 +172,10 @@ impl ${type.name} {
     <#list type.fields as field>
     <#if field.isImplicitField()>
     pub fn ${field.name}(&self) -> ${helper.getLanguageTypeNameForTypeReference(field.type)} {
-        0
+        <#list helper.implementImplicit(field, type) as line>
+        <#if !line_has_next>(</#if>${line}<#if !line_has_next>) as ${helper.getLanguageTypeNameForTypeReference(field.type)}</#if>
+        </#list>
+<#--        ${helper.implementImplicit(field, type)} as ${helper.getLanguageTypeNameForTypeReference(field.type)}-->
     }
     </#if>
     </#list>

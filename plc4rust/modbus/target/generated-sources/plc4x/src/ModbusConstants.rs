@@ -30,7 +30,6 @@ pub struct ModbusConstantsOptions {
 }
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusConstants {
-    // Intentionally do nothing
 }
 
 impl ModbusConstants {

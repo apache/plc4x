@@ -31,17 +31,15 @@ pub struct ModbusPDUReadFifoQueueResponseOptions {
 }
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUReadFifoQueueResponse {
-        // -> DefaultImplicitField{serializeExpression=DefaultBinaryTerm{a=DefaultUnaryTerm{a=DefaultBinaryTerm{a=DefaultVariableLiteral{name='COUNT', typeReference='null', args=[DefaultVariableLiteral{name='fifoValue', typeReference='null', args=null, index=null, child=null}], index=null, child=null}, b=DefaultNumericLiteral{number=2}, operation='*'}, operation='()'}, b=DefaultNumericLiteral{number=2}, operation='+'}} DefaultTypedNamedField{name='byteCount'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=16}} DefaultField{attributes={}}
-        // -> DefaultImplicitField{serializeExpression=DefaultBinaryTerm{a=DefaultUnaryTerm{a=DefaultBinaryTerm{a=DefaultVariableLiteral{name='COUNT', typeReference='null', args=[DefaultVariableLiteral{name='fifoValue', typeReference='null', args=null, index=null, child=null}], index=null, child=null}, b=DefaultNumericLiteral{number=2}, operation='*'}, operation='()'}, b=DefaultNumericLiteral{number=2}, operation='/'}} DefaultTypedNamedField{name='fifoCount'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=16}} DefaultField{attributes={}}
     pub fifoValue: Vec<u16>
 }
 
 impl ModbusPDUReadFifoQueueResponse {
     pub fn byteCount(&self) -> u16 {
-        0
+        (self.fifoValue.len() * 2 + 2) as u16
     }
     pub fn fifoCount(&self) -> u16 {
-        0
+        (self.fifoValue.len() * 2 / 2) as u16
     }
 }
 

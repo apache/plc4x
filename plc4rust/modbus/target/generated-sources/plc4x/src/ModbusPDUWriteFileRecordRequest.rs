@@ -33,13 +33,16 @@ pub struct ModbusPDUWriteFileRecordRequestOptions {
 }
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUWriteFileRecordRequest {
-        // -> DefaultImplicitField{serializeExpression=DefaultVariableLiteral{name='ARRAY_SIZE_IN_BYTES', typeReference='null', args=[DefaultVariableLiteral{name='items', typeReference='null', args=null, index=null, child=null}], index=null, child=null}} DefaultTypedNamedField{name='byteCount'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=8}} DefaultField{attributes={}}
     pub items: Vec<ModbusPDUWriteFileRecordRequestItem>
 }
 
 impl ModbusPDUWriteFileRecordRequest {
     pub fn byteCount(&self) -> u8 {
-        0
+        let mut s: u32 = 0;
+        for x in &self.items {
+        	s += x.get_length_in_bits();
+        };
+        (s) as u8
     }
 }
 

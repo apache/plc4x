@@ -36,19 +36,17 @@ pub struct ModbusPDUReadDeviceIdentificationResponseOptions {
 }
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUReadDeviceIdentificationResponse {
-    // Intentionally do nothing
     pub level: ModbusDeviceInformationLevel,
     pub individualAccess: bool,
     pub conformityLevel: ModbusDeviceInformationConformityLevel,
     pub moreFollows: ModbusDeviceInformationMoreFollows,
     pub nextObjectId: u8,
-        // -> DefaultImplicitField{serializeExpression=DefaultVariableLiteral{name='COUNT', typeReference='null', args=[DefaultVariableLiteral{name='objects', typeReference='null', args=null, index=null, child=null}], index=null, child=null}} DefaultTypedNamedField{name='numberOfObjects'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=8}} DefaultField{attributes={}}
     pub objects: Vec<ModbusDeviceInformationObject>
 }
 
 impl ModbusPDUReadDeviceIdentificationResponse {
     pub fn numberOfObjects(&self) -> u8 {
-        0
+        (self.objects.len()) as u8
     }
 }
 

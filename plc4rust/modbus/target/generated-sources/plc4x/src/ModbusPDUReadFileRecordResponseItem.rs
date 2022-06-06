@@ -30,14 +30,13 @@ pub struct ModbusPDUReadFileRecordResponseItemOptions {
 }
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUReadFileRecordResponseItem {
-        // -> DefaultImplicitField{serializeExpression=DefaultBinaryTerm{a=DefaultVariableLiteral{name='COUNT', typeReference='null', args=[DefaultVariableLiteral{name='data', typeReference='null', args=null, index=null, child=null}], index=null, child=null}, b=DefaultNumericLiteral{number=1}, operation='+'}} DefaultTypedNamedField{name='dataLength'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=8}} DefaultField{attributes={}}
     pub referenceType: u8,
     pub data: Vec<u8>
 }
 
 impl ModbusPDUReadFileRecordResponseItem {
     pub fn dataLength(&self) -> u8 {
-        0
+        (self.data.len() + 1) as u8
     }
 }
 

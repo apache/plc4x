@@ -33,13 +33,12 @@ pub struct ModbusPDUWriteFileRecordRequestItem {
     pub referenceType: u8,
     pub fileNumber: u16,
     pub recordNumber: u16,
-        // -> DefaultImplicitField{serializeExpression=DefaultBinaryTerm{a=DefaultVariableLiteral{name='COUNT', typeReference='null', args=[DefaultVariableLiteral{name='recordData', typeReference='null', args=null, index=null, child=null}], index=null, child=null}, b=DefaultNumericLiteral{number=2}, operation='/'}} DefaultTypedNamedField{name='recordLength'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=16}} DefaultField{attributes={}}
     pub recordData: Vec<u8>
 }
 
 impl ModbusPDUWriteFileRecordRequestItem {
     pub fn recordLength(&self) -> u16 {
-        0
+        (self.recordData.len() / 2) as u16
     }
 }
 

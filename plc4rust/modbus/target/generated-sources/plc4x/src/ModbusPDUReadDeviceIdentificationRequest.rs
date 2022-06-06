@@ -32,7 +32,6 @@ pub struct ModbusPDUReadDeviceIdentificationRequestOptions {
 }
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUReadDeviceIdentificationRequest {
-    // Intentionally do nothing
     pub level: ModbusDeviceInformationLevel,
     pub objectId: u8
 }
