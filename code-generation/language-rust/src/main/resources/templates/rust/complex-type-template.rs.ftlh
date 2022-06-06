@@ -139,9 +139,11 @@ impl Message for ${type.name} {
         }
         <#else>
         <#if field.isSimpleField()>
-        let ${field.name} = reader.${helper.getReadFunctionCall(field.type)};
+        let ${field.name} = ${helper.getReadFunctionCall(field.type)};
+        <#elseif field.isDiscriminatorField()>
+        let ${field.name} = ${helper.getReadFunctionCall(field.type)};
         <#else>
-            -> ${field}
+            // -> ${field}
         </#if>
         </#if>
 <#--        ${helper.generateFieldParseCode(field)}-->
@@ -154,8 +156,22 @@ pub struct ${type.name} {
     <#list type.fields as field>
     <#if field.isSimpleField()>
     pub ${field.name}: ${helper.getLanguageTypeNameForTypeReference(field.type)}<#sep>,</#sep>
+    <#elseif field.isArrayField()>
+    pub ${field.name}: ${helper.getLanguageTypeNameForTypeReference(field.type)}<#sep>,</#sep>
+    <#elseif field.isConstField()>
+    // Intentionally do nothing
     <#else>
-        -> ${field}
+        // -> ${field}
+    </#if>
+    </#list>
+}
+
+impl ${type.name} {
+    <#list type.fields as field>
+    <#if field.isImplicitField()>
+    pub fn ${field.name}(&mut self) -> ${helper.getLanguageTypeNameForTypeReference(field.type)} {
+        0
+    }
     </#if>
     </#list>
 }
@@ -169,11 +185,69 @@ impl Message for ${type.name} {
     }
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
-        todo!()
+    <#list type.fields as field>
+        ${helper.getWriteFunctionCall(field)};
+<#--    <#if field.isArrayField()>-->
+<#--        // writer.write_${helper.getLanguageTypeNameForTypeReference(field.type)}(self.${field.name})?;-->
+<#--    <#elseif field.isImplicitField()>-->
+<#--        writer.write_${helper.getLanguageTypeNameForTypeReference(field.type)}(self.${field.name}())?;-->
+<#--    <#elseif field.isConstField()>-->
+<#--    <#else>-->
+<#--        writer.write_${helper.getLanguageTypeNameForTypeReference(field.type)}(self.${field.name})?;-->
+<#--    </#if>-->
+<#--    <#elseif field.isArrayField()>-->
+<#--        pub ${field.name}: ${helper.getLanguageTypeNameForTypeReference(field.type)}<#sep>,</#sep>-->
+<#--    <#else>-->
+<#--        // -> ${field}-->
+<#--    </#if>-->
+    </#list>
+        Ok(0)
     }
 
     fn parse<T: Read>(reader: &mut ReadBuffer<T>, parameter: Option<Self::P>) -> Result<Self::M, Error> {
-        todo!()
+        // (Re-)define the options
+        let parameter = parameter.unwrap();
+        <#if type.parserArguments?? && !type.parserArguments.isEmpty()>
+        <#if type.parserArguments.isPresent()>
+        <#list type.parserArguments.get() as arg>
+        let ${arg.name} = parameter.${arg.name};
+        </#list>
+        </#if>
+        </#if>
+        <#if !type.parentType.isEmpty()>
+        <#if type.parentType.get().parserArguments?? && !type.parentType.get().parserArguments.isEmpty()>
+        <#if type.parentType.get().parserArguments.isPresent()>
+        <#list type.parentType.get().parserArguments.get() as arg>
+        let ${arg.name} = parameter.${arg.name};
+        </#list>
+        </#if>
+        </#if>
+        </#if>
+    <#list type.fields as field>
+    <#if field.isArrayField()>
+        let ${field.name} = vec![];
+        let ${field.name}_read = 0 as usize;
+        <#if field.loopType == "LENGTH">
+        // while ${field.name}_read < ${field.loopExpression} {
+            // do something
+        // }
+        </#if>
+        <#if field.loopType == "COUNT">
+        // for _ in 0..(${field.loopExpression}) {
+            // do something
+        // }
+        </#if>
+    <#else>
+        let ${field.name} = ${helper.getReadFunctionCall(field.type)};
+    </#if>
+    </#list>
+        Ok(Self::M {
+        <#list type.fields as field>
+        <#if !field.isImplicitField() && !field.isConstField()>
+            ${field.name}<#sep>,</#sep>
+        </#if>
+        </#list>
+        })
     }
 }
 </#if>

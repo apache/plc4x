@@ -25,6 +25,7 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.D
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultEnumTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultSwitchField;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultTypedNamedField;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultArrayTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultEnumTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultBooleanLiteral;
@@ -47,6 +48,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
@@ -206,12 +208,14 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     if (type instanceof ComplexTypeReference) {
                         String typeName = ((ComplexTypeReference) type).getName();
                         imports.add(new String[]{typeName, typeName});
+                        imports.add(new String[]{typeName, typeName + "Options"});
                     } else if (type instanceof DefaultArrayTypeReference) {
                         // TODO refactor to make this more elgant
                         TypeReference elementTypeReference = ((DefaultArrayTypeReference) type).getElementTypeReference();
                         if (elementTypeReference instanceof ComplexTypeReference) {
                             String typeName = ((ComplexTypeReference) elementTypeReference).getName();
                             imports.add(new String[]{typeName, typeName});
+                            imports.add(new String[]{typeName, typeName + "Options"});
                         }
                     } else if (type instanceof DefaultEnumTypeReference) {
                         String typeName = ((DefaultEnumTypeReference) type).getName();
@@ -360,6 +364,63 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         });
     }
 
+    public String getWriteFunctionCall(DefaultTypedNamedField field) {
+        TypeReference typeReference = field.getType();
+        SimpleTypeReference simpleTypeReference;
+        if (typeReference instanceof SimpleTypeReference) {
+            simpleTypeReference = (SimpleTypeReference) typeReference;
+        } else if (typeReference instanceof DefaultEnumTypeReference) {
+            if (((DefaultEnumTypeReference) typeReference).getBaseTypeReference().isPresent()) {
+                simpleTypeReference = ((DefaultEnumTypeReference) typeReference).getBaseTypeReference().get();
+            } else {
+                throw new RuntimeException("No idea whats happening here?!");
+            }
+        } else if (typeReference instanceof DefaultArrayTypeReference) {
+            // Get length
+            TypeReference elementTypeReference = ((DefaultArrayTypeReference) typeReference).getElementTypeReference();
+            if (elementTypeReference instanceof SimpleTypeReference) {
+                if (((SimpleTypeReference) elementTypeReference).getBaseType() == SimpleTypeReference.SimpleBaseType.BYTE) {
+                    return "writer.write_bytes(self." + field.getName() + ".as_slice())?";
+                }
+            } else if (elementTypeReference instanceof ComplexTypeReference) {
+                return "// not handled yet";
+            }
+            return "// not handled yet";
+//            throw new RuntimeException("Not implemented yet: " + typeReference);
+        } else if (typeReference instanceof ComplexTypeReference) {
+            // Just call the parse method on it
+            String typeName = ((ComplexTypeReference) typeReference).getTypeDefinition().getName();
+            // Get Options
+            List<Argument> parserArguments = ((ComplexTypeReference) typeReference).getTypeDefinition().getParserArguments().orElse(Collections.emptyList());
+            String options = parserArguments.stream().map(argument -> argument.getName()).collect(Collectors.joining(","));
+            return "self." + field.getName() + ".serialize(writer)?";
+        } else {
+            return "// not handled yet";
+//            throw new RuntimeException("Not implemented yet: " + typeReference);
+        }
+        SimpleTypeReference.SimpleBaseType baseType;
+        baseType = simpleTypeReference.getBaseType();
+        switch (baseType) {
+            case BIT:
+                return "writer.write_bit(self." + field.getName() + ")?";
+            case UINT:
+                IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                if (unsignedIntegerTypeReference.getSizeInBits() < 8) {
+                    return "writer.write_u_n(self." + unsignedIntegerTypeReference.getSizeInBits() + ", self." + field.getName() + " as u64)? as u8";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() == 8) {
+                    return "writer.write_u8(self." + field.getName() + ")?";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() < 16) {
+                    return "writer.write_u_n(self." + unsignedIntegerTypeReference.getSizeInBits() + ", self." + field.getName() + " as u64)? as u16";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() == 16) {
+                    return "writer.write_u16(self." + field.getName() + ")?";
+                }
+        }
+        throw new RuntimeException("Not implemented yet: " + typeReference);
+    }
+
     public String getReadFunctionCall(TypeReference typeReference) {
         SimpleTypeReference simpleTypeReference;
         if (typeReference instanceof SimpleTypeReference) {
@@ -370,27 +431,46 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             } else {
                 throw new RuntimeException("No idea whats happening here?!");
             }
+        } else if (typeReference instanceof DefaultArrayTypeReference) {
+            // Get length
+            TypeReference elementTypeReference = ((DefaultArrayTypeReference) typeReference).getElementTypeReference();
+            if (elementTypeReference instanceof SimpleTypeReference) {
+                if (((SimpleTypeReference) elementTypeReference).getBaseType() == SimpleTypeReference.SimpleBaseType.BYTE) {
+                    return "reader.read_bytes()?";
+                }
+            } else if (elementTypeReference instanceof ComplexTypeReference) {
+                return "// not handled yet";
+            }
+            throw new RuntimeException("Not implemented yet: " + typeReference);
+        } else if (typeReference instanceof ComplexTypeReference) {
+            // Just call the parse method on it
+            String typeName = ((ComplexTypeReference) typeReference).getTypeDefinition().getName();
+            // Get Options
+            List<Argument> parserArguments = ((ComplexTypeReference) typeReference).getTypeDefinition().getParserArguments().orElse(Collections.emptyList());
+            String options = parserArguments.stream().map(argument -> argument.getName()).collect(Collectors.joining(","));
+            return typeName + "::parse(reader, Some(" + typeName + "Options { " + options + " }))?";
         } else {
-            throw new RuntimeException("Not implemented yet!");
+            return "// not handled yet";
+//            throw new RuntimeException("Not implemented yet: " + typeReference);
         }
         SimpleTypeReference.SimpleBaseType baseType;
         baseType = simpleTypeReference.getBaseType();
         switch (baseType) {
             case BIT:
-                return "read_bit()?";
+                return "reader.read_bit()?";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() < 8) {
-                    return "read_u_n(" + unsignedIntegerTypeReference.getSizeInBits() + ")? as u8";
+                    return "reader.read_u_n(" + unsignedIntegerTypeReference.getSizeInBits() + ")? as u8";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() == 8) {
-                    return "read_u8()?";
+                    return "reader.read_u8()?";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() < 16) {
-                    return "read_u_n(" + unsignedIntegerTypeReference.getSizeInBits() + ")? as u16";
+                    return "reader.read_u_n(" + unsignedIntegerTypeReference.getSizeInBits() + ")? as u16";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() == 16) {
-                    return "read_u16()?";
+                    return "reader.read_u16()?";
                 }
         }
         throw new RuntimeException("Not implemented yet: " + typeReference);
@@ -418,7 +498,7 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case BIT:
                 return "bool";
             case BYTE:
-                return "i8";
+                return "u8";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
