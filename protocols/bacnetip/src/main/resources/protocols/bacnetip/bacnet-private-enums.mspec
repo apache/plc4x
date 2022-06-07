@@ -365,6 +365,13 @@
 ]
 
 // Attention: No proprietary extension allowed
+[enum uint 8 BACnetRouterEntryStatus
+    ['0'  AVAILABLE                              ]
+    ['1'  BUSY                                   ]
+    ['2'  DISCONNECTED                           ]
+]
+
+// Attention: No proprietary extension allowed
 [enum uint 8 BACnetSecurityLevel
     ['0'  INCAPABLE                             ] // indicates that the device is configured to not use security
     ['1'  PLAIN                                 ]

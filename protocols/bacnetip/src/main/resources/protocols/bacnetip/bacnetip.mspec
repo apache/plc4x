@@ -2567,7 +2567,9 @@
 
         //[*, 'ALL_WRITES_SUCCESSFUL'                   BACnetConstructedDataAllWritesSuccessful [validation    '1 == 2'    "TODO: implement me ALL_WRITES_SUCCESSFUL BACnetConstructedDataAllWritesSuccessful"]]
         //[*, 'ALLOW_GROUP_DELAY_INHIBIT'               BACnetConstructedDataAllowGroupDelayInhibit [validation    '1 == 2'    "TODO: implement me ALLOW_GROUP_DELAY_INHIBIT BACnetConstructedDataAllowGroupDelayInhibit"]]
-        //[*, 'APDU_LENGTH'                             BACnetConstructedDataAPDULength [validation    '1 == 2'    "TODO: implement me APDU_LENGTH BACnetConstructedDataAPDULength"]]
+        [*, 'APDU_LENGTH'                             BACnetConstructedDataAPDULength
+            [simple BACnetApplicationTagUnsignedInteger                               apduLength                        ]
+        ]
         //[*, 'APDU_SEGMENT_TIMEOUT'                    BACnetConstructedDataApduSegmentTimeout [validation    '1 == 2'    "TODO: implement me APDU_SEGMENT_TIMEOUT BACnetConstructedDataApduSegmentTimeout"]]
         //[*, 'APDU_TIMEOUT'                            BACnetConstructedDataAPDUTimeout [validation    '1 == 2'    "TODO: implement me APDU_TIMEOUT BACnetConstructedDataAPDUTimeout"]]
         //[*, 'APPLICATION_SOFTWARE_VERSION'            BACnetConstructedDataApplicationSoftwareVersion [validation    '1 == 2'    "TODO: implement me APPLICATION_SOFTWARE_VERSION BACnetConstructedDataApplicationSoftwareVersion"]]
@@ -2584,13 +2586,13 @@
             [array    BACnetCredentialAuthenticationFactor
                             authenticationFactors
                                     terminated
-                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         [*, 'AUTHENTICATION_POLICY_LIST'              BACnetConstructedDataAuthenticationPolicyList
             [array    BACnetAuthenticationPolicy
                             authenticationPolicyList
                                     terminated
-                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         [*, 'AUTHENTICATION_POLICY_NAMES'             BACnetConstructedDataAuthenticationPolicyNames
             [array    BACnetApplicationTagCharacterString
@@ -2610,27 +2612,55 @@
         [*, 'AUTHORIZATION_MODE'                      BACnetConstructedDataAuthorizationMode
             [simple   BACnetAuthorizationModeTagged('0', 'TagClass.APPLICATION_TAGS') authorizationMode                 ]
         ]
-        //[*, 'AUTO_SLAVE_DISCOVERY'                    BACnetConstructedDataAutoSlaveDiscovery [validation    '1 == 2'    "TODO: implement me AUTO_SLAVE_DISCOVERY BACnetConstructedDataAutoSlaveDiscovery"]]
+        [*, 'AUTO_SLAVE_DISCOVERY'                    BACnetConstructedDataAutoSlaveDiscovery
+            [simple   BACnetApplicationTagBoolean                                       autoSlaveDiscovery              ]
+        ]
         //[*, 'AVERAGE_VALUE'                           BACnetConstructedDataAverageValue [validation    '1 == 2'    "TODO: implement me AVERAGE_VALUE BACnetConstructedDataAverageValue"]]
         //[*, 'BACKUP_AND_RESTORE_STATE'                BACnetConstructedDataBackupAndRestoreState [validation    '1 == 2'    "TODO: implement me BACKUP_AND_RESTORE_STATE BACnetConstructedDataBackupAndRestoreState"]]
         //[*, 'BACKUP_FAILURE_TIMEOUT'                  BACnetConstructedDataBackupFailureTimeout [validation    '1 == 2'    "TODO: implement me BACKUP_FAILURE_TIMEOUT BACnetConstructedDataBackupFailureTimeout"]]
         //[*, 'BACKUP_PREPARATION_TIME'                 BACnetConstructedDataBackupPreparationTime [validation    '1 == 2'    "TODO: implement me BACKUP_PREPARATION_TIME BACnetConstructedDataBackupPreparationTime"]]
-        //[*, 'BACNET_IP_GLOBAL_ADDRESS'                BACnetConstructedDataBACnetIpGlobalAddress [validation    '1 == 2'    "TODO: implement me BACNET_IP_GLOBAL_ADDRESS BACnetConstructedDataBACnetIpGlobalAddress"]]
-        //[*, 'BACNET_IP_MODE'                          BACnetConstructedDataBACnetIpMode [validation    '1 == 2'    "TODO: implement me BACNET_IP_MODE BACnetConstructedDataBACnetIpMode"]]
-        //[*, 'BACNET_IP_MULTICAST_ADDRESS'             BACnetConstructedDataBACnetIpMulticastAddress [validation    '1 == 2'    "TODO: implement me BACNET_IP_MULTICAST_ADDRESS BACnetConstructedDataBACnetIpMulticastAddress"]]
-        //[*, 'BACNET_IP_NAT_TRAVERSAL'                 BACnetConstructedDataBACnetIpNatTraversal [validation    '1 == 2'    "TODO: implement me BACNET_IP_NAT_TRAVERSAL BACnetConstructedDataBACnetIpNatTraversal"]]
-        //[*, 'BACNET_IP_UDP_PORT'                      BACnetConstructedDataBACnetIpUdpPort [validation    '1 == 2'    "TODO: implement me BACNET_IP_UDP_PORT BACnetConstructedDataBACnetIpUdpPort"]]
-        //[*, 'BACNET_IPV6_MODE'                        BACnetConstructedDataBACnetIpV6Mode [validation    '1 == 2'    "TODO: implement me BACNET_IPV6_MODE BACnetConstructedDataBACnetIpV6Mode"]]
-        //[*, 'BACNET_IPV6_UDP_PORT'                    BACnetConstructedDataBACnetIpV6UdpPort [validation    '1 == 2'    "TODO: implement me BACNET_IPV6_UDP_PORT BACnetConstructedDataBACnetIpV6UdpPort"]]
-        //[*, 'BACNET_IPV6_MULTICAST_ADDRESS'           BACnetConstructedDataBACnetIpV6MulticastAddress [validation    '1 == 2'    "TODO: implement me BACNET_IPV6_MULTICAST_ADDRESS BACnetConstructedDataBACnetIpV6MulticastAddress"]]
+        [*, 'BACNET_IP_GLOBAL_ADDRESS'                BACnetConstructedDataBACnetIPGlobalAddress
+            [simple   BACnetHostNPort                   bacnetIpGlobalAddress                                           ]
+        ]
+        [*, 'BACNET_IP_MODE'                          BACnetConstructedDataBACnetIPMode
+            [simple BACnetIPModeTagged('0', 'TagClass.APPLICATION_TAGS') bacnetIpMode                                   ]
+        ]
+        [*, 'BACNET_IP_MULTICAST_ADDRESS'             BACnetConstructedDataBACnetIPMulticastAddress
+            [simple   BACnetApplicationTagOctetString   ipMulticastAddress                                              ]
+        ]
+        [*, 'BACNET_IP_NAT_TRAVERSAL'                 BACnetConstructedDataBACnetIPNATTraversal
+            [simple BACnetApplicationTagBoolean                               bacnetIPNATTraversal                      ]
+        ]
+        [*, 'BACNET_IP_UDP_PORT'                      BACnetConstructedDataBACnetIPUDPPort
+            [simple BACnetApplicationTagUnsignedInteger                               ipUdpPort                         ]
+        ]
+        [*, 'BACNET_IPV6_MODE'                        BACnetConstructedDataBACnetIPv6Mode
+            [simple   BACnetIPModeTagged('0', 'TagClass.APPLICATION_TAGS') bacnetIpv6Mode                               ]
+        ]
+        [*, 'BACNET_IPV6_UDP_PORT'                    BACnetConstructedDataBACnetIPv6UDPPort
+            [simple BACnetApplicationTagUnsignedInteger                               ipv6UdpPort                       ]
+        ]
+        [*, 'BACNET_IPV6_MULTICAST_ADDRESS'           BACnetConstructedDataBACnetIPv6MulticastAddress
+            [simple   BACnetApplicationTagOctetString   ipv6MulticastAddress                                            ]
+        ]
         [*, 'BASE_DEVICE_SECURITY_POLICY'             BACnetConstructedDataBaseDeviceSecurityPolicy
             [simple BACnetSecurityLevelTagged('0', 'TagClass.APPLICATION_TAGS')     baseDeviceSecurityPolicy            ]
         ]
         [*, 'BBMD_ACCEPT_FD_REGISTRATIONS'            BACnetConstructedDataBBMDAcceptFDRegistrations
             [simple BACnetApplicationTagBoolean                               bbmdAcceptFDRegistrations                 ]
         ]
-        //[*, 'BBMD_BROADCAST_DISTRIBUTION_TABLE'       BACnetConstructedDataBBMDBroadcastDistributionTable [validation    '1 == 2'    "TODO: implement me BBMD_BROADCAST_DISTRIBUTION_TABLE BACnetConstructedDataBBMDBroadcastDistributionTable"]]
-        //[*, 'BBMD_FOREIGN_DEVICE_TABLE'               BACnetConstructedDataBBMDForeignDeviceTable [validation    '1 == 2'    "TODO: implement me BBMD_FOREIGN_DEVICE_TABLE BACnetConstructedDataBBMDForeignDeviceTable"]]
+        [*, 'BBMD_BROADCAST_DISTRIBUTION_TABLE'       BACnetConstructedDataBBMDBroadcastDistributionTable
+            [array    BACnetBDTEntry
+                                bbmdBroadcastDistributionTable
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
+        [*, 'BBMD_FOREIGN_DEVICE_TABLE'               BACnetConstructedDataBBMDForeignDeviceTable
+            [array    BACnetBDTEntry
+                                bbmdForeignDeviceTable
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         [*, 'BELONGS_TO'                              BACnetConstructedDataBelongsTo
             [simple   BACnetDeviceObjectReference       belongsTo                                                      ]
         ]
@@ -2640,7 +2670,7 @@
         ]
         [*, 'BIT_TEXT'                                BACnetConstructedDataBitText
             [array    BACnetApplicationTagCharacterString
-                    bitText
+                        bitText
                             terminated
                             'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
@@ -2661,10 +2691,14 @@
         //[*, 'CAR_POSITION'                            BACnetConstructedDataCarPosition [validation    '1 == 2'    "TODO: implement me CAR_POSITION BACnetConstructedDataCarPosition"]]
         //[*, 'CHANGE_OF_STATE_COUNT'                   BACnetConstructedDataChangeOfStateCount [validation    '1 == 2'    "TODO: implement me CHANGE_OF_STATE_COUNT BACnetConstructedDataChangeOfStateCount"]]
         //[*, 'CHANGE_OF_STATE_TIME'                    BACnetConstructedDataChangeOfStateTime [validation    '1 == 2'    "TODO: implement me CHANGE_OF_STATE_TIME BACnetConstructedDataChangeOfStateTime"]]
-        //[*, 'CHANGES_PENDING'                         BACnetConstructedDataChangesPending [validation    '1 == 2'    "TODO: implement me CHANGES_PENDING BACnetConstructedDataChangesPending"]]
+        [*, 'CHANGES_PENDING'                         BACnetConstructedDataChangesPending
+            [simple   BACnetApplicationTagBoolean                                       changesPending                  ]
+        ]
         //[*, 'CHANNEL_NUMBER'                          BACnetConstructedDataChannelNumber [validation    '1 == 2'    "TODO: implement me CHANNEL_NUMBER BACnetConstructedDataChannelNumber"]]
         //[*, 'CLIENT_COV_INCREMENT'                    BACnetConstructedDataClientCovIncrement [validation    '1 == 2'    "TODO: implement me CLIENT_COV_INCREMENT BACnetConstructedDataClientCovIncrement"]]
-        //[*, 'COMMAND'                                 BACnetConstructedDataCommand [validation    '1 == 2'    "TODO: implement me COMMAND BACnetConstructedDataCommand"]]
+        [*, 'COMMAND'                                 BACnetConstructedDataCommand
+            [simple   BACnetNetworkPortCommandTagged('0', 'TagClass.APPLICATION_TAGS')                  command         ]
+        ]
         //[*, 'COMMAND_TIME_ARRAY'                      BACnetConstructedDataCommandTimeArray [validation    '1 == 2'    "TODO: implement me COMMAND_TIME_ARRAY BACnetConstructedDataCommandTimeArray"]]
         //[*, 'CONFIGURATION_FILES'                     BACnetConstructedDataConfigurationFiles [validation    '1 == 2'    "TODO: implement me CONFIGURATION_FILES BACnetConstructedDataConfigurationFiles"]]
         //[*, 'CONTROL_GROUPS'                          BACnetConstructedDataControlGroups [validation    '1 == 2'    "TODO: implement me CONTROL_GROUPS BACnetConstructedDataControlGroups"]]
@@ -2854,8 +2888,12 @@
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         //[*, 'FAULT_VALUES'                            BACnetConstructedDataFaultValues [validation    '1 == 2'    "TODO: implement me FAULT_VALUES BACnetConstructedDataFaultValues"]]
-        //[*, 'FD_BBMD_ADDRESS'                         BACnetConstructedDataFdBbmdAddress [validation    '1 == 2'    "TODO: implement me FD_BBMD_ADDRESS BACnetConstructedDataFdBbmdAddress"]]
-        //[*, 'FD_SUBSCRIPTION_LIFETIME'                BACnetConstructedDataFdSubscriptionLifetime [validation    '1 == 2'    "TODO: implement me FD_SUBSCRIPTION_LIFETIME BACnetConstructedDataFdSubscriptionLifetime"]]
+        [*, 'FD_BBMD_ADDRESS'                         BACnetConstructedDataFDBBMDAddress
+            [simple   BACnetHostNPort          fDBBMDAddress]
+        ]
+        [*, 'FD_SUBSCRIPTION_LIFETIME'                BACnetConstructedDataFDSubscriptionLifetime
+            [simple   BACnetApplicationTagUnsignedInteger                               fdSubscriptionLifetime          ]
+        ]
         //[*, 'FEEDBACK_VALUE'                          BACnetConstructedDataFeedbackValue [validation    '1 == 2'    "TODO: implement me FEEDBACK_VALUE BACnetConstructedDataFeedbackValue"]]
         //[*, 'FILE_ACCESS_METHOD'                      BACnetConstructedDataFileAccessMethod [validation    '1 == 2'    "TODO: implement me FILE_ACCESS_METHOD BACnetConstructedDataFileAccessMethod"]]
         //[*, 'FILE_SIZE'                               BACnetConstructedDataFileSize [validation    '1 == 2'    "TODO: implement me FILE_SIZE BACnetConstructedDataFileSize"]]
@@ -2898,34 +2936,70 @@
         ]
         //[*, 'INTERFACE_VALUE'                         BACnetConstructedDataInterfaceValue [validation    '1 == 2'    "TODO: implement me INTERFACE_VALUE BACnetConstructedDataInterfaceValue"]]
         //[*, 'INTERVAL_OFFSET'                         BACnetConstructedDataIntervalOffset [validation    '1 == 2'    "TODO: implement me INTERVAL_OFFSET BACnetConstructedDataIntervalOffset"]]
-        //[*, 'IP_ADDRESS'                              BACnetConstructedDataIpAddress [validation    '1 == 2'    "TODO: implement me IP_ADDRESS BACnetConstructedDataIpAddress"]]
-        //[*, 'IP_DEFAULT_GATEWAY'                      BACnetConstructedDataIpDefaultGateway [validation    '1 == 2'    "TODO: implement me IP_DEFAULT_GATEWAY BACnetConstructedDataIpDefaultGateway"]]
-        //[*, 'IP_DHCP_ENABLE'                          BACnetConstructedDataIpDhcpEnable [validation    '1 == 2'    "TODO: implement me IP_DHCP_ENABLE BACnetConstructedDataIpDhcpEnable"]]
-        //[*, 'IP_DHCP_LEASE_TIME'                      BACnetConstructedDataIPDHCLeaseTime [validation    '1 == 2'    "TODO: implement me IP_DHCP_LEASE_TIME BACnetConstructedDataIpDhcpLeaseTime"]]
+        [*, 'IP_ADDRESS'                              BACnetConstructedDataIPAddress
+            [simple   BACnetApplicationTagOctetString   ipAddress                                                       ]
+        ]
+        [*, 'IP_DEFAULT_GATEWAY'                      BACnetConstructedDataIPDefaultGateway
+            [simple   BACnetApplicationTagOctetString   ipDefaultGateway                                                ]
+        ]
+        [*, 'IP_DHCP_ENABLE'                          BACnetConstructedDataIPDHCPEnable
+            [simple   BACnetApplicationTagBoolean       ipDhcpEnable                                                    ]
+        ]
+        [*, 'IP_DHCP_LEASE_TIME'                      BACnetConstructedDataIPDHCPLeaseTime
+            [simple BACnetApplicationTagUnsignedInteger                               ipDhcpLeaseTime                   ]
+        ]
         [*, 'IP_DHCP_LEASE_TIME_REMAINING'            BACnetConstructedDataIPDHCPLeaseTimeRemaining
-            [simple BACnetApplicationTagUnsignedInteger                               ipDhcpLeaseTimeRemaining        ]
+            [simple BACnetApplicationTagUnsignedInteger                               ipDhcpLeaseTimeRemaining          ]
         ]
-        //[*, 'IP_DHCP_SERVER'                          BACnetConstructedDataIpDhcpServer [validation    '1 == 2'    "TODO: implement me IP_DHCP_SERVER BACnetConstructedDataIpDhcpServer"]]
-        //[*, 'IP_DNS_SERVER'                           BACnetConstructedDataIpDnsServer [validation    '1 == 2'    "TODO: implement me IP_DNS_SERVER BACnetConstructedDataIpDnsServer"]]
-        //[*, 'IP_SUBNET_MASK'                          BACnetConstructedDataIpSubnetMask [validation    '1 == 2'    "TODO: implement me IP_SUBNET_MASK BACnetConstructedDataIpSubnetMask"]]
-        //[*, 'IPV6_ADDRESS'                            BACnetConstructedDataIPv6Address [validation    '1 == 2'    "TODO: implement me IPV6_ADDRESS BACnetConstructedDataIpv6Address"]]
-        //[*, 'IPV6_AUTO_ADDRESSING_ENABLE'             BACnetConstructedDataIPv6AutoAddressingEnable [validation    '1 == 2'    "TODO: implement me IPV6_AUTO_ADDRESSING_ENABLE BACnetConstructedDataIpv6AutoAddressingEnable"]]
-        //[*, 'IPV6_DEFAULT_GATEWAY'                    BACnetConstructedDataIPv6DefaultGateway [validation    '1 == 2'    "TODO: implement me IPV6_DEFAULT_GATEWAY BACnetConstructedDataIpv6DefaultGateway"]]
-        //[*, 'IPV6_DHCP_LEASE_TIME'                    BACnetConstructedDataIPv6DhcpLeaseTime [validation    '1 == 2'    "TODO: implement me IPV6_DHCP_LEASE_TIME BACnetConstructedDataIpv6DhcpLeaseTime"]]
+        [*, 'IP_DHCP_SERVER'                          BACnetConstructedDataIPDHCPServer
+            [simple   BACnetApplicationTagOctetString   dhcpServer                                                      ]
+        ]
+        [*, 'IP_DNS_SERVER'                           BACnetConstructedDataIPDNSServer
+            [array    BACnetApplicationTagOctetString
+                                        ipDnsServer
+                                                terminated
+                                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
+        [*, 'IP_SUBNET_MASK'                          BACnetConstructedDataIPSubnetMask
+            [simple   BACnetApplicationTagOctetString   ipSubnetMask                                                    ]
+        ]
+        [*, 'IPV6_ADDRESS'                            BACnetConstructedDataIPv6Address
+            [simple   BACnetApplicationTagOctetString   ipv6Address                                                     ]
+        ]
+        [*, 'IPV6_AUTO_ADDRESSING_ENABLE'             BACnetConstructedDataIPv6AutoAddressingEnable
+            [simple   BACnetApplicationTagBoolean                                       autoAddressingEnable            ]
+        ]
+        [*, 'IPV6_DEFAULT_GATEWAY'                    BACnetConstructedDataIPv6DefaultGateway
+            [simple   BACnetApplicationTagOctetString   ipv6DefaultGateway                                              ]
+        ]
+        [*, 'IPV6_DHCP_LEASE_TIME'                    BACnetConstructedDataIPv6DHCPLeaseTime
+            [simple   BACnetApplicationTagUnsignedInteger                               ipv6DhcpLeaseTime               ]
+        ]
         [*, 'IPV6_DHCP_LEASE_TIME_REMAINING'          BACnetConstructedDataIPv6DHCPLeaseTimeRemaining
-            [simple BACnetApplicationTagUnsignedInteger                               ipv6DhcpLeaseTimeRemaining        ]
+            [simple   BACnetApplicationTagUnsignedInteger                               ipv6DhcpLeaseTimeRemaining      ]
         ]
-        //[*, 'IPV6_DHCP_SERVER'                        BACnetConstructedDataIPv6DhcpServer [validation    '1 == 2'    "TODO: implement me IPV6_DHCP_SERVER BACnetConstructedDataIpv6DhcpServer"]]
-        //[*, 'IPV6_DNS_SERVER'                         BACnetConstructedDataIPv6DnsServer [validation    '1 == 2'    "TODO: implement me IPV6_DNS_SERVER BACnetConstructedDataIpv6DnsServer"]]
-        //[*, 'IPV6_PREFIX_LENGTH'                      BACnetConstructedDataIPv6PrefixLength [validation    '1 == 2'    "TODO: implement me IPV6_PREFIX_LENGTH BACnetConstructedDataIpv6PrefixLength"]]
-        //[*, 'IPV6_ZONE_INDEX'                         BACnetConstructedDataIPv6ZoneIndex [validation    '1 == 2'    "TODO: implement me IPV6_ZONE_INDEX BACnetConstructedDataIpv6ZoneIndex"]]
+        [*, 'IPV6_DHCP_SERVER'                        BACnetConstructedDataIPv6DHCPServer
+            [simple   BACnetApplicationTagOctetString   dhcpServer                                                      ]
+        ]
+        [*, 'IPV6_DNS_SERVER'                         BACnetConstructedDataIPv6DNSServer
+            [array    BACnetApplicationTagOctetString
+                                        ipv6DnsServer
+                                                terminated
+                                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
+        [*, 'IPV6_PREFIX_LENGTH'                      BACnetConstructedDataIPv6PrefixLength
+            [simple   BACnetApplicationTagUnsignedInteger                               ipv6PrefixLength                ]
+        ]
+        [*, 'IPV6_ZONE_INDEX'                         BACnetConstructedDataIPv6ZoneIndex
+            [simple   BACnetApplicationTagCharacterString ipv6ZoneIndex                                                 ]
+        ]
         //[*, 'IS_UTC'                                  BACnetConstructedDataIsUtc [validation    '1 == 2'    "TODO: implement me IS_UTC BACnetConstructedDataIsUtc"]]
         [*, 'KEY_SETS'                                BACnetConstructedDataKeySets
             [array    BACnetSecurityKeySet
                                 keySets
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
-            [validation 'COUNT(keySets) == 2' "keySets should have exactly 2 values"                ]
+            [validation 'COUNT(keySets) == 2' "keySets should have exactly 2 values"                                    ]
         ]
         //[*, 'LANDING_CALL_CONTROL'                    BACnetConstructedDataLandingCallControl [validation    '1 == 2'    "TODO: implement me LANDING_CALL_CONTROL BACnetConstructedDataLandingCallControl"]]
         //[*, 'LANDING_CALLS'                           BACnetConstructedDataLandingCalls [validation    '1 == 2'    "TODO: implement me LANDING_CALLS BACnetConstructedDataLandingCalls"]]
@@ -2965,9 +3039,18 @@
             [simple   BACnetLimitEnableTagged('0', 'TagClass.APPLICATION_TAGS')         limitEnable                     ]
         ]
         //[*, 'LIMIT_MONITORING_INTERVAL'               BACnetConstructedDataLimitMonitoringInterval [validation    '1 == 2'    "TODO: implement me LIMIT_MONITORING_INTERVAL BACnetConstructedDataLimitMonitoringInterval"]]
-        //[*, 'LINK_SPEED'                              BACnetConstructedDataLinkSpeed [validation    '1 == 2'    "TODO: implement me LINK_SPEED BACnetConstructedDataLinkSpeed"]]
-        //[*, 'LINK_SPEED_AUTONEGOTIATE'                BACnetConstructedDataLinkSpeedAutonegotiate [validation    '1 == 2'    "TODO: implement me LINK_SPEED_AUTONEGOTIATE BACnetConstructedDataLinkSpeedAutonegotiate"]]
-        //[*, 'LINK_SPEEDS'                             BACnetConstructedDataLinkSpeeds [validation    '1 == 2'    "TODO: implement me LINK_SPEEDS BACnetConstructedDataLinkSpeeds"]]
+        [*, 'LINK_SPEED'                              BACnetConstructedDataLinkSpeed
+            [simple   BACnetApplicationTagReal                                          linkSpeed                       ]
+        ]
+        [*, 'LINK_SPEED_AUTONEGOTIATE'                BACnetConstructedDataLinkSpeedAutonegotiate
+            [simple   BACnetApplicationTagBoolean                                       linkSpeedAutonegotiate          ]
+        ]
+        [*, 'LINK_SPEEDS'                             BACnetConstructedDataLinkSpeeds
+            [array    BACnetApplicationTagReal
+                                        linkSpeeds
+                                                terminated
+                                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         //[*, 'LIST_OF_GROUP_MEMBERS'                   BACnetConstructedDataListOfGroupMembers [validation    '1 == 2'    "TODO: implement me LIST_OF_GROUP_MEMBERS BACnetConstructedDataListOfGroupMembers"]]
         [*, 'LIST_OF_OBJECT_PROPERTY_REFERENCES'        BACnetConstructedDataListOfObjectPropertyReferences
             [array    BACnetDeviceObjectPropertyReference
@@ -3003,7 +3086,9 @@
             [simple   BACnetApplicationTagReal                                          lowLimit                        ]
         ]
         //[*, 'LOWER_DECK'                              BACnetConstructedDataLowerDeck [validation    '1 == 2'    "TODO: implement me LOWER_DECK BACnetConstructedDataLowerDeck"]]
-        //[*, 'MAC_ADDRESS'                             BACnetConstructedDataMacAddress [validation    '1 == 2'    "TODO: implement me MAC_ADDRESS BACnetConstructedDataMacAddress"]]
+        [*, 'MAC_ADDRESS'                             BACnetConstructedDataMACAddress
+            [simple   BACnetApplicationTagOctetString   macAddress                                                      ]
+        ]
         //[*, 'MACHINE_ROOM_ID'                         BACnetConstructedDataMachineRoomId [validation    '1 == 2'    "TODO: implement me MACHINE_ROOM_ID BACnetConstructedDataMachineRoomId"]]
         //[*, 'MAINTENANCE_REQUIRED'                    BACnetConstructedDataMaintenanceRequired [validation    '1 == 2'    "TODO: implement me MAINTENANCE_REQUIRED BACnetConstructedDataMaintenanceRequired"]]
         //[*, 'MAKING_CAR_CALL'                         BACnetConstructedDataMakingCarCall [validation    '1 == 2'    "TODO: implement me MAKING_CAR_CALL BACnetConstructedDataMakingCarCall"]]
@@ -3082,10 +3167,18 @@
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
-        //[*, 'NETWORK_INTERFACE_NAME'                  BACnetConstructedDataNetworkInterfaceName [validation    '1 == 2'    "TODO: implement me NETWORK_INTERFACE_NAME BACnetConstructedDataNetworkInterfaceName"]]
-        //[*, 'NETWORK_NUMBER'                          BACnetConstructedDataNetworkNumber [validation    '1 == 2'    "TODO: implement me NETWORK_NUMBER BACnetConstructedDataNetworkNumber"]]
-        //[*, 'NETWORK_NUMBER_QUALITY'                  BACnetConstructedDataNetworkNumberQuality [validation    '1 == 2'    "TODO: implement me NETWORK_NUMBER_QUALITY BACnetConstructedDataNetworkNumberQuality"]]
-        //[*, 'NETWORK_TYPE'                            BACnetConstructedDataNetworkType [validation    '1 == 2'    "TODO: implement me NETWORK_TYPE BACnetConstructedDataNetworkType"]]
+        [*, 'NETWORK_INTERFACE_NAME'                  BACnetConstructedDataNetworkInterfaceName
+            [simple BACnetApplicationTagCharacterString                  networkInterfaceName                           ]
+        ]
+        [*, 'NETWORK_NUMBER'                          BACnetConstructedDataNetworkNumber
+            [simple BACnetApplicationTagUnsignedInteger                               networkNumber                     ]
+        ]
+        [*, 'NETWORK_NUMBER_QUALITY'                  BACnetConstructedDataNetworkNumberQuality
+            [simple   BACnetNetworkNumberQualityTagged('0', 'TagClass.APPLICATION_TAGS')    networkNumberQuality        ]
+        ]
+        [*, 'NETWORK_TYPE'                            BACnetConstructedDataNetworkType
+            [simple   BACnetNetworkTypeTagged('0', 'TagClass.APPLICATION_TAGS')    networkType                          ]
+        ]
         //[*, 'NEXT_STOPPING_FLOOR'                     BACnetConstructedDataNextStoppingFloor [validation    '1 == 2'    "TODO: implement me NEXT_STOPPING_FLOOR BACnetConstructedDataNextStoppingFloor"]]
         [*, 'NODE_SUBTYPE'                            BACnetConstructedDataNodeSubtype
             [simple BACnetApplicationTagCharacterString                  nodeSubType                                    ]
@@ -3205,7 +3298,9 @@
         [*, 'PROPORTIONAL_CONSTANT_UNITS'             BACnetConstructedDataProportionalConstantUnits
             [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS')                    units           ]
         ]
-        //[*, 'PROTOCOL_LEVEL'                          BACnetConstructedDataProtocolLevel [validation    '1 == 2'    "TODO: implement me PROTOCOL_LEVEL BACnetConstructedDataProtocolLevel"]]
+        [*, 'PROTOCOL_LEVEL'                          BACnetConstructedDataProtocolLevel
+            [simple   BACnetProtocolLevelTagged('0', 'TagClass.APPLICATION_TAGS')                    protocolLevel      ]
+        ]
         //[*, 'PROTOCOL_CONFORMANCE_CLASS'              BACnetConstructedDataProtocolConformanceClass [validation    '1 == 2'    "TODO: implement me PROTOCOL_CONFORMANCE_CLASS BACnetConstructedDataProtocolConformanceClass"]]
         //[*, 'PROTOCOL_OBJECT_TYPES_SUPPORTED'         BACnetConstructedDataProtocolObjectTypesSupported [validation    '1 == 2'    "TODO: implement me PROTOCOL_OBJECT_TYPES_SUPPORTED BACnetConstructedDataProtocolObjectTypesSupported"]]
         //[*, 'PROTOCOL_REVISION'                       BACnetConstructedDataProtocolRevision [validation    '1 == 2'    "TODO: implement me PROTOCOL_REVISION BACnetConstructedDataProtocolRevision"]]
@@ -3225,7 +3320,9 @@
         //[*, 'RECIPIENT_LIST'                          BACnetConstructedDataRecipientList [validation    '1 == 2'    "TODO: implement me RECIPIENT_LIST BACnetConstructedDataRecipientList"]]
         //[*, 'RECORD_COUNT'                            BACnetConstructedDataRecordCount [validation    '1 == 2'    "TODO: implement me RECORD_COUNT BACnetConstructedDataRecordCount"]]
         //[*, 'RECORDS_SINCE_NOTIFICATION'              BACnetConstructedDataRecordsSinceNotification [validation    '1 == 2'    "TODO: implement me RECORDS_SINCE_NOTIFICATION BACnetConstructedDataRecordsSinceNotification"]]
-        //[*, 'REFERENCE_PORT'                          BACnetConstructedDataReferencePort [validation    '1 == 2'    "TODO: implement me REFERENCE_PORT BACnetConstructedDataReferencePort"]]
+        [*, 'REFERENCE_PORT'                          BACnetConstructedDataReferencePort
+            [simple BACnetApplicationTagUnsignedInteger                     referencePort                               ]
+        ]
         //[*, 'REGISTERED_CAR_CALL'                     BACnetConstructedDataRegisteredCarCall [validation    '1 == 2'    "TODO: implement me REGISTERED_CAR_CALL BACnetConstructedDataRegisteredCarCall"]]
         [*, 'RELIABILITY'                             BACnetConstructedDataReliability
             [simple   BACnetReliabilityTagged('0', 'TagClass.APPLICATION_TAGS')                         reliability     ]
@@ -3246,7 +3343,12 @@
         //[*, 'RESTART_NOTIFICATION_RECIPIENTS'         BACnetConstructedDataRestartNotificationRecipients [validation    '1 == 2'    "TODO: implement me RESTART_NOTIFICATION_RECIPIENTS BACnetConstructedDataRestartNotificationRecipients"]]
         //[*, 'RESTORE_COMPLETION_TIME'                 BACnetConstructedDataRestoreCompletionTime [validation    '1 == 2'    "TODO: implement me RESTORE_COMPLETION_TIME BACnetConstructedDataRestoreCompletionTime"]]
         //[*, 'RESTORE_PREPARATION_TIME'                BACnetConstructedDataRestorePreparationTime [validation    '1 == 2'    "TODO: implement me RESTORE_PREPARATION_TIME BACnetConstructedDataRestorePreparationTime"]]
-        //[*, 'ROUTING_TABLE'                           BACnetConstructedDataRoutingTable [validation    '1 == 2'    "TODO: implement me ROUTING_TABLE BACnetConstructedDataRoutingTable"]]
+        [*, 'ROUTING_TABLE'                           BACnetConstructedDataRoutingTable
+            [array    BACnetRouterEntry
+                                routingTable
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         //[*, 'SCALE'                                   BACnetConstructedDataScale [validation    '1 == 2'    "TODO: implement me SCALE BACnetConstructedDataScale"]]
         [*, 'SCALE_FACTOR'                            BACnetConstructedDataScaleFactor
             [simple   BACnetApplicationTagReal                                          scaleFactor                     ]
@@ -3272,8 +3374,15 @@
         //[*, 'SHED_LEVEL_DESCRIPTIONS'                 BACnetConstructedDataShedLevelDescriptions [validation    '1 == 2'    "TODO: implement me SHED_LEVEL_DESCRIPTIONS BACnetConstructedDataShedLevelDescriptions"]]
         //[*, 'SHED_LEVELS'                             BACnetConstructedDataShedLevels [validation    '1 == 2'    "TODO: implement me SHED_LEVELS BACnetConstructedDataShedLevels"]]
         //[*, 'SILENCED'                                BACnetConstructedDataSilenced [validation    '1 == 2'    "TODO: implement me SILENCED BACnetConstructedDataSilenced"]]
-        //[*, 'SLAVE_ADDRESS_BINDING'                   BACnetConstructedDataSlaveAddressBinding [validation    '1 == 2'    "TODO: implement me SLAVE_ADDRESS_BINDING BACnetConstructedDataSlaveAddressBinding"]]
-        //[*, 'SLAVE_PROXY_ENABLE'                      BACnetConstructedDataSlaveProxyEnable [validation    '1 == 2'    "TODO: implement me SLAVE_PROXY_ENABLE BACnetConstructedDataSlaveProxyEnable"]]
+        [*, 'SLAVE_ADDRESS_BINDING'                   BACnetConstructedDataSlaveAddressBinding
+            [array    BACnetAddressBinding
+                                slaveAddressBinding
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
+        [*, 'SLAVE_PROXY_ENABLE'                      BACnetConstructedDataSlaveProxyEnable
+            [simple   BACnetApplicationTagBoolean                                       slaveProxyEnable                ]
+        ]
         //[*, 'START_TIME'                              BACnetConstructedDataStartTime [validation    '1 == 2'    "TODO: implement me START_TIME BACnetConstructedDataStartTime"]]
         [*, 'STATE_CHANGE_VALUES'                     BACnetConstructedDataStateChangeValues
             [array    BACnetTimerStateChangeValue('objectTypeArgument')
@@ -3419,7 +3528,12 @@
         [*, 'VERIFICATION_TIME'                       BACnetConstructedDataVerificationTime
             [simple   BACnetApplicationTagSignedInteger                     verificationTime                            ]
         ]
-        //[*, 'VIRTUAL_MAC_ADDRESS_TABLE'               BACnetConstructedDataVirtualMacAddressTable [validation    '1 == 2'    "TODO: implement me VIRTUAL_MAC_ADDRESS_TABLE BACnetConstructedDataVirtualMacAddressTable"]]
+        [*, 'VIRTUAL_MAC_ADDRESS_TABLE'               BACnetConstructedDataVirtualMACAddressTable
+            [array    BACnetVMACEntry
+                                virtualMacAddressTable
+                                    terminated
+                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
+        ]
         //[*, 'VT_CLASSES_SUPPORTED'                    BACnetConstructedDataVtClassesSupported [validation    '1 == 2'    "TODO: implement me VT_CLASSES_SUPPORTED BACnetConstructedDataVtClassesSupported"]]
         [*, 'WEEKLY_SCHEDULE'                         BACnetConstructedDataWeeklySchedule
             [array    BACnetDailySchedule
@@ -3964,4 +4078,74 @@
                                 algorithm                                                                   ]
     [simple   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
                                 keyId                                                                       ]
+]
+
+[type BACnetRouterEntry
+    [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')
+                                networkNumber                                                               ]
+    [simple   BACnetContextTagOctetString('1', 'BACnetDataType.OCTET_STRING')
+                                macAddress                                                                  ]
+    [simple   BACnetRouterEntryStatusTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                status                                                                      ]
+    [optional BACnetContextTagOctetString('3', 'BACnetDataType.OCTET_STRING')
+                                performanceIndex                                                            ]
+]
+
+[type BACnetHostNPort
+    [simple   BACnetHostAddressEnclosed('0')
+                                host                                                                        ]
+    [simple   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+                                port                                                                        ]
+]
+
+[type BACnetHostNPortEnclosed(uint 8 tagNumber)
+     [simple   BACnetOpeningTag('tagNumber')
+                                 openingTag                                                                  ]
+     [simple   BACnetHostNPort
+                                 bacnetHostNPort                                                             ]
+     [simple   BACnetClosingTag('tagNumber')
+                                 closingTag                                                                  ]
+ ]
+
+[type BACnetHostAddress
+    [peek     BACnetTagHeader
+                        peekedTagHeader                 ]
+    [virtual  uint 8    peekedTagNumber     'peekedTagHeader.actualTagNumber']
+    [typeSwitch peekedTagNumber
+        ['0' BACnetHostAddressNull
+            [simple   BACnetContextTagNull('0', 'BACnetDataType.NULL')
+                                        none                                                                ]
+        ]
+        ['1' BACnetHostAddressIpAddress
+            [simple   BACnetContextTagOctetString('1', 'BACnetDataType.OCTET_STRING')
+                                        ipAddress                                                           ]
+        ]
+        ['2' BACnetHostAddressName
+            [simple   BACnetContextTagCharacterString('2', 'BACnetDataType.CHARACTER_STRING')
+                                        name                                                                ]
+        ]
+    ]
+]
+
+[type BACnetHostAddressEnclosed(uint 8 tagNumber)
+    [simple   BACnetOpeningTag('tagNumber')
+                                openingTag                                                                  ]
+    [simple   BACnetHostAddress
+                                hostAddress                                                                 ]
+    [simple   BACnetClosingTag('tagNumber')
+                                closingTag                                                                  ]
+]
+
+[type BACnetBDTEntry
+    [simple   BACnetHostNPortEnclosed('0')
+                                bbmdAddress                                                                 ]
+    [optional BACnetContextTagOctetString('1', 'BACnetDataType.OCTET_STRING')
+                                broadcastMask                                                               ]
+]
+
+[type BACnetVMACEntry
+    [optional BACnetContextTagOctetString('0', 'BACnetDataType.OCTET_STRING')
+                                virtualMacAddress                                                           ]
+    [optional BACnetContextTagOctetString('1', 'BACnetDataType.OCTET_STRING')
+                                nativeMacAddress                                                            ]
 ]
