@@ -312,6 +312,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		actualLength := uint32(parsedUint0)
 		return model.BACnetTagPayloadBitStringParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), actualLength)
+	case "BACnetSetpointReference":
+		return model.BACnetSetpointReferenceParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetObjectPropertyReferenceEnclosed":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {

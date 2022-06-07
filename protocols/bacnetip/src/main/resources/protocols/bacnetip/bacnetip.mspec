@@ -2662,9 +2662,11 @@
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
         [*, 'BELONGS_TO'                              BACnetConstructedDataBelongsTo
-            [simple   BACnetDeviceObjectReference       belongsTo                                                      ]
+            [simple   BACnetDeviceObjectReference       belongsTo                                                       ]
         ]
-        //[*, 'BIAS'                                    BACnetConstructedDataBias [validation    '1 == 2'    "TODO: implement me BIAS BACnetConstructedDataBias"]]
+        [*, 'BIAS'                                    BACnetConstructedDataBias
+            [simple   BACnetApplicationTagReal                                          bias                            ]
+        ]
         [*, 'BIT_MASK'                                BACnetConstructedDataBitMask
             [simple   BACnetApplicationTagBitString     bitString                                                       ]
         ]
@@ -2702,7 +2704,9 @@
         //[*, 'COMMAND_TIME_ARRAY'                      BACnetConstructedDataCommandTimeArray [validation    '1 == 2'    "TODO: implement me COMMAND_TIME_ARRAY BACnetConstructedDataCommandTimeArray"]]
         //[*, 'CONFIGURATION_FILES'                     BACnetConstructedDataConfigurationFiles [validation    '1 == 2'    "TODO: implement me CONFIGURATION_FILES BACnetConstructedDataConfigurationFiles"]]
         //[*, 'CONTROL_GROUPS'                          BACnetConstructedDataControlGroups [validation    '1 == 2'    "TODO: implement me CONTROL_GROUPS BACnetConstructedDataControlGroups"]]
-        //[*, 'CONTROLLED_VARIABLE_REFERENCE'           BACnetConstructedDataControlledVariableReference [validation    '1 == 2'    "TODO: implement me CONTROLLED_VARIABLE_REFERENCE BACnetConstructedDataControlledVariableReference"]]
+        [*, 'CONTROLLED_VARIABLE_REFERENCE'           BACnetConstructedDataControlledVariableReference
+            [simple   BACnetObjectPropertyReference                                     controlledVariableReference     ]
+        ]
         [*, 'CONTROLLED_VARIABLE_UNITS'               BACnetConstructedDataControlledVariableUnits
             [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS')                    units           ]
         ]
@@ -2760,7 +2764,9 @@
             [simple   BACnetApplicationTagUnsignedInteger                     defaultTimeout                            ]
         ]
         //[*, 'DEPLOYED_PROFILE_LOCATION'               BACnetConstructedDataDeployedProfileLocation [validation    '1 == 2'    "TODO: implement me DEPLOYED_PROFILE_LOCATION BACnetConstructedDataDeployedProfileLocation"]]
-        //[*, 'DERIVATIVE_CONSTANT'                     BACnetConstructedDataDerivativeConstant [validation    '1 == 2'    "TODO: implement me DERIVATIVE_CONSTANT BACnetConstructedDataDerivativeConstant"]]
+        [*, 'DERIVATIVE_CONSTANT'                     BACnetConstructedDataDerivativeConstant
+            [simple   BACnetApplicationTagReal                                          derivativeConstant              ]
+        ]
         [*, 'DERIVATIVE_CONSTANT_UNITS'               BACnetConstructedDataDerivativeConstantUnits
             [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS')                    units           ]
         ]
@@ -2819,7 +2825,9 @@
         //[*, 'ENERGY_METER'                            BACnetConstructedDataEnergyMeter [validation    '1 == 2'    "TODO: implement me ENERGY_METER BACnetConstructedDataEnergyMeter"]]
         //[*, 'ENERGY_METER_REF'                        BACnetConstructedDataEnergyMeterRef [validation    '1 == 2'    "TODO: implement me ENERGY_METER_REF BACnetConstructedDataEnergyMeterRef"]]
         //[*, 'ENTRY_POINTS'                            BACnetConstructedDataEntryPoints [validation    '1 == 2'    "TODO: implement me ENTRY_POINTS BACnetConstructedDataEntryPoints"]]
-        //[*, 'ERROR_LIMIT'                             BACnetConstructedDataErrorLimit [validation    '1 == 2'    "TODO: implement me ERROR_LIMIT BACnetConstructedDataErrorLimit"]]
+        [*, 'ERROR_LIMIT'                             BACnetConstructedDataErrorLimit
+            [simple   BACnetApplicationTagReal                                          errorLimit                      ]
+        ]
         //[*, 'ESCALATOR_MODE'                          BACnetConstructedDataEscalatorMode [validation    '1 == 2'    "TODO: implement me ESCALATOR_MODE BACnetConstructedDataEscalatorMode"]]
         [*, 'EVENT_ALGORITHM_INHIBIT'                 BACnetConstructedDataEventAlgorithmInhibit
             [simple   BACnetApplicationTagBoolean                                       eventAlgorithmInhibit           ]
@@ -2927,12 +2935,14 @@
             [simple   BACnetApplicationTagCharacterString                               instanceOf                      ]
         ]
         //[*, 'INSTANTANEOUS_POWER'                     BACnetConstructedDataInstantaneousPower [validation    '1 == 2'    "TODO: implement me INSTANTANEOUS_POWER BACnetConstructedDataInstantaneousPower"]]
-        //[*, 'INTEGRAL_CONSTANT'                       BACnetConstructedDataIntegralConstant [validation    '1 == 2'    "TODO: implement me INTEGRAL_CONSTANT BACnetConstructedDataIntegralConstant"]]
+        [*, 'INTEGRAL_CONSTANT'                       BACnetConstructedDataIntegralConstant
+             [simple   BACnetApplicationTagReal                                integralConstant                         ]
+        ]
         [*, 'INTEGRAL_CONSTANT_UNITS'                 BACnetConstructedDataIntegralConstantUnits
             [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS')                    units           ]
         ]
         ['ANALOG_INPUT', 'INTERFACE_VALUE'                         BACnetConstructedDataAnalogInputInterfaceValue
-            [optional BACnetOptionalREAL                            interfaceValue                                      ]
+            [simple   BACnetOptionalREAL                            interfaceValue                                      ]
         ]
         //[*, 'INTERFACE_VALUE'                         BACnetConstructedDataInterfaceValue [validation    '1 == 2'    "TODO: implement me INTERFACE_VALUE BACnetConstructedDataInterfaceValue"]]
         //[*, 'INTERVAL_OFFSET'                         BACnetConstructedDataIntervalOffset [validation    '1 == 2'    "TODO: implement me INTERVAL_OFFSET BACnetConstructedDataIntervalOffset"]]
@@ -3078,7 +3088,9 @@
         //[*, 'LOGGING_OBJECT'                          BACnetConstructedDataLoggingObject [validation    '1 == 2'    "TODO: implement me LOGGING_OBJECT BACnetConstructedDataLoggingObject"]]
         //[*, 'LOGGING_RECORD'                          BACnetConstructedDataLoggingRecord [validation    '1 == 2'    "TODO: implement me LOGGING_RECORD BACnetConstructedDataLoggingRecord"]]
         //[*, 'LOGGING_TYPE'                            BACnetConstructedDataLoggingType [validation    '1 == 2'    "TODO: implement me LOGGING_TYPE BACnetConstructedDataLoggingType"]]
-        //[*, 'LOW_DIFF_LIMIT'                          BACnetConstructedDataLowDiffLimit [validation    '1 == 2'    "TODO: implement me LOW_DIFF_LIMIT BACnetConstructedDataLowDiffLimit"]]
+        [*, 'LOW_DIFF_LIMIT'                          BACnetConstructedDataLowDiffLimit
+            [simple   BACnetOptionalREAL                            lowDiffLimit                                        ]
+        ]
         ['ACCUMULATOR', 'LOW_LIMIT'                     BACnetConstructedDataAccumulatorLowLimit
             [simple   BACnetApplicationTagUnsignedInteger                               lowLimit                        ]
         ]
@@ -3092,7 +3104,9 @@
         //[*, 'MACHINE_ROOM_ID'                         BACnetConstructedDataMachineRoomId [validation    '1 == 2'    "TODO: implement me MACHINE_ROOM_ID BACnetConstructedDataMachineRoomId"]]
         //[*, 'MAINTENANCE_REQUIRED'                    BACnetConstructedDataMaintenanceRequired [validation    '1 == 2'    "TODO: implement me MAINTENANCE_REQUIRED BACnetConstructedDataMaintenanceRequired"]]
         //[*, 'MAKING_CAR_CALL'                         BACnetConstructedDataMakingCarCall [validation    '1 == 2'    "TODO: implement me MAKING_CAR_CALL BACnetConstructedDataMakingCarCall"]]
-        //[*, 'MANIPULATED_VARIABLE_REFERENCE'          BACnetConstructedDataManipulatedVariableReference [validation    '1 == 2'    "TODO: implement me MANIPULATED_VARIABLE_REFERENCE BACnetConstructedDataManipulatedVariableReference"]]
+        [*, 'MANIPULATED_VARIABLE_REFERENCE'          BACnetConstructedDataManipulatedVariableReference
+            [simple   BACnetObjectPropertyReference                                     manipulatedVariableReference    ]
+        ]
         [*, 'MANUAL_SLAVE_ADDRESS_BINDING'            BACnetConstructedDataManualSlaveAddressBinding
             [array    BACnetAddressBinding
                                 manualSlaveAddressBinding
@@ -3119,7 +3133,9 @@
             [simple BACnetApplicationTagReal                                maxPresValue                                ]
         ]
         //[*, 'MAX_SEGMENTS_ACCEPTED'                   BACnetConstructedDataMaxSegmentsAccepted [validation    '1 == 2'    "TODO: implement me MAX_SEGMENTS_ACCEPTED BACnetConstructedDataMaxSegmentsAccepted"]]
-        //[*, 'MAXIMUM_OUTPUT'                          BACnetConstructedDataMaximumOutput [validation    '1 == 2'    "TODO: implement me MAXIMUM_OUTPUT BACnetConstructedDataMaximumOutput"]]
+        [*, 'MAXIMUM_OUTPUT'                          BACnetConstructedDataMaximumOutput
+            [simple BACnetApplicationTagReal                                maximumOutput                               ]
+        ]
         //[*, 'MAXIMUM_VALUE'                           BACnetConstructedDataMaximumValue [validation    '1 == 2'    "TODO: implement me MAXIMUM_VALUE BACnetConstructedDataMaximumValue"]]
         //[*, 'MAXIMUM_VALUE_TIMESTAMP'                 BACnetConstructedDataMaximumValueTimestamp [validation    '1 == 2'    "TODO: implement me MAXIMUM_VALUE_TIMESTAMP BACnetConstructedDataMaximumValueTimestamp"]]
         [*, 'MEMBER_OF' BACnetConstructedDataMemberOf
@@ -3144,7 +3160,9 @@
         ]
         //[*, 'MINIMUM_OFF_TIME'                        BACnetConstructedDataMinimumOffTime [validation    '1 == 2'    "TODO: implement me MINIMUM_OFF_TIME BACnetConstructedDataMinimumOffTime"]]
         //[*, 'MINIMUM_ON_TIME'                         BACnetConstructedDataMinimumOnTime [validation    '1 == 2'    "TODO: implement me MINIMUM_ON_TIME BACnetConstructedDataMinimumOnTime"]]
-        //[*, 'MINIMUM_OUTPUT'                          BACnetConstructedDataMinimumOutput [validation    '1 == 2'    "TODO: implement me MINIMUM_OUTPUT BACnetConstructedDataMinimumOutput"]]
+        [*, 'MINIMUM_OUTPUT'                          BACnetConstructedDataMinimumOutput
+            [simple   BACnetApplicationTagReal                                minimumOutput                             ]
+        ]
         [*, 'MINIMUM_VALUE'                           BACnetConstructedDataMinimumValue
             [simple   BACnetApplicationTagReal                              minimumValue                                ]
         ]
@@ -3294,7 +3312,9 @@
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
-        //[*, 'PROPORTIONAL_CONSTANT'                   BACnetConstructedDataProportionalConstant [validation    '1 == 2'    "TODO: implement me PROPORTIONAL_CONSTANT BACnetConstructedDataProportionalConstant"]]
+        [*, 'PROPORTIONAL_CONSTANT'                   BACnetConstructedDataProportionalConstant
+            [simple BACnetApplicationTagReal                                proportionalConstant                        ]
+        ]
         [*, 'PROPORTIONAL_CONSTANT_UNITS'             BACnetConstructedDataProportionalConstantUnits
             [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS')                    units           ]
         ]
@@ -3367,8 +3387,12 @@
         ]
         //[*, 'SEGMENTATION_SUPPORTED'                  BACnetConstructedDataSegmentationSupported [validation    '1 == 2'    "TODO: implement me SEGMENTATION_SUPPORTED BACnetConstructedDataSegmentationSupported"]]
         //[*, 'SERIAL_NUMBER'                           BACnetConstructedDataSerialNumber [validation    '1 == 2'    "TODO: implement me SERIAL_NUMBER BACnetConstructedDataSerialNumber"]]
-        //[*, 'SETPOINT'                                BACnetConstructedDataSetpoint [validation    '1 == 2'    "TODO: implement me SETPOINT BACnetConstructedDataSetpoint"]]
-        //[*, 'SETPOINT_REFERENCE'                      BACnetConstructedDataSetpointReference [validation    '1 == 2'    "TODO: implement me SETPOINT_REFERENCE BACnetConstructedDataSetpointReference"]]
+        [*, 'SETPOINT'                                BACnetConstructedDataSetpoint
+            [simple   BACnetApplicationTagReal                                          setpoint                        ]
+        ]
+        [*, 'SETPOINT_REFERENCE'                      BACnetConstructedDataSetpointReference
+            [simple   BACnetSetpointReference                                           setpointReference               ]
+        ]
         //[*, 'SETTING'                                 BACnetConstructedDataSetting [validation    '1 == 2'    "TODO: implement me SETTING BACnetConstructedDataSetting"]]
         //[*, 'SHED_DURATION'                           BACnetConstructedDataShedDuration [validation    '1 == 2'    "TODO: implement me SHED_DURATION BACnetConstructedDataShedDuration"]]
         //[*, 'SHED_LEVEL_DESCRIPTIONS'                 BACnetConstructedDataShedLevelDescriptions [validation    '1 == 2'    "TODO: implement me SHED_LEVEL_DESCRIPTIONS BACnetConstructedDataShedLevelDescriptions"]]
@@ -4148,4 +4172,9 @@
                                 virtualMacAddress                                                           ]
     [optional BACnetContextTagOctetString('1', 'BACnetDataType.OCTET_STRING')
                                 nativeMacAddress                                                            ]
+]
+
+[type BACnetSetpointReference
+    [optional BACnetObjectPropertyReferenceEnclosed('0')
+                                setPointReference                                                           ]
 ]

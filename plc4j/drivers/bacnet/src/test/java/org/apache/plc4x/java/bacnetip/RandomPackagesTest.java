@@ -1265,7 +1265,9 @@ public class RandomPackagesTest {
     @DisplayName("RPM_ALL_Allobjecttypes1")
     Collection<DynamicNode> RPM_ALL_Allobjecttypes1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("RPM_ALL_Allobjecttypes1.pcap");
-        return List.of(pcapEvaluator.parseEmAll());
+        return List.of(pcapEvaluator.parseEmAll(
+            skip(31, "set point reference looks completly broken")
+        ));
     }
 
     @TestFactory

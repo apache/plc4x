@@ -269,6 +269,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetTagPayloadBitStringParse(io, actualLength)
+	case "BACnetSetpointReference":
+		return model.BACnetSetpointReferenceParse(io)
 	case "BACnetObjectPropertyReferenceEnclosed":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
