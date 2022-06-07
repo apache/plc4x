@@ -205,6 +205,10 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetSegmentationTaggedParse(io, tagNumber, tagClass)
+	case "BACnetSecurityKeySet":
+		return model.BACnetSecurityKeySetParse(io)
+	case "BACnetNetworkSecurityPolicy":
+		return model.BACnetNetworkSecurityPolicyParse(io)
 	case "BACnetPropertyIdentifierTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -702,7 +706,11 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "BACnetEventTimestamps":
 		return model.BACnetEventTimestampsParse(io)
 	case "BACnetNameValueCollection":
-		return model.BACnetNameValueCollectionParse(io)
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetNameValueCollectionParse(io, tagNumber)
 	case "BACnetTagPayloadEnumerated":
 		actualLength, err := utils.StrToUint32(arguments[0])
 		if err != nil {
@@ -846,6 +854,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetTimerStateChangeValueParse(io, objectTypeArgument)
 	case "BACnetSpecialEventPeriod":
 		return model.BACnetSpecialEventPeriodParse(io)
+	case "BACnetKeyIdentifier":
+		return model.BACnetKeyIdentifierParse(io)
 	case "BACnetNetworkNumberQualityTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -1059,6 +1069,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetLightingOperationTaggedParse(io, tagNumber, tagClass)
+	case "BACnetSecurityKeySetKeyIds":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetSecurityKeySetKeyIdsParse(io, tagNumber)
 	case "BACnetTimeStamp":
 		return model.BACnetTimeStampParse(io)
 	case "BACnetNotificationParameters":

@@ -239,6 +239,10 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass := model.TagClassByName(parserArguments[1])
 		return model.BACnetSegmentationTaggedParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
+	case "BACnetSecurityKeySet":
+		return model.BACnetSecurityKeySetParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetNetworkSecurityPolicy":
+		return model.BACnetNetworkSecurityPolicyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetPropertyIdentifierTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -802,7 +806,12 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "BACnetEventTimestamps":
 		return model.BACnetEventTimestampsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetNameValueCollection":
-		return model.BACnetNameValueCollectionParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
+		if err != nil {
+			return nil, err
+		}
+		tagNumber := uint8(parsedUint0)
+		return model.BACnetNameValueCollectionParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetTagPayloadEnumerated":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
@@ -962,6 +971,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetTimerStateChangeValueParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument)
 	case "BACnetSpecialEventPeriod":
 		return model.BACnetSpecialEventPeriodParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetKeyIdentifier":
+		return model.BACnetKeyIdentifierParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetNetworkNumberQualityTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1201,6 +1212,13 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass := model.TagClassByName(parserArguments[1])
 		return model.BACnetLightingOperationTaggedParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
+	case "BACnetSecurityKeySetKeyIds":
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
+		if err != nil {
+			return nil, err
+		}
+		tagNumber := uint8(parsedUint0)
+		return model.BACnetSecurityKeySetKeyIdsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetTimeStamp":
 		return model.BACnetTimeStampParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetNotificationParameters":

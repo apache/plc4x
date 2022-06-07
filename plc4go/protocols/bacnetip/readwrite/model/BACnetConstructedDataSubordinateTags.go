@@ -157,7 +157,7 @@ func BACnetConstructedDataSubordinateTagsParse(readBuffer utils.ReadBuffer, tagN
 	subordinateList := make([]*BACnetNameValueCollection, 0)
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetNameValueCollectionParse(readBuffer)
+			_item, _err := BACnetNameValueCollectionParse(readBuffer, uint8(0))
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'subordinateList' field")
 			}

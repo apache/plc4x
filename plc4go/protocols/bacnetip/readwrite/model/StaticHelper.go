@@ -80,6 +80,16 @@ func ReadEnumGenericFailing(readBuffer utils.ReadBuffer, actualLength uint32, te
 			return 0, errors.Errorf("unmapped value %d", rawValue)
 		}
 		return BACnetNodeType(rawValue), nil
+	case BACnetProgramState:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetProgramStateKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetProgramState(rawValue), nil
+	case BACnetProgramRequest:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetProgramRequestKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetProgramRequest(rawValue), nil
 	default:
 		panic(fmt.Sprintf("support for %T not yet implemented", template))
 	}

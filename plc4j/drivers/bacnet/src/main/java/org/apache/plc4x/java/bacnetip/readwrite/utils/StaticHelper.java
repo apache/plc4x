@@ -78,10 +78,18 @@ public class StaticHelper {
             if (!BACnetDoorSecuredStatus.isDefined((short) rawValue))
                 throw new ParseException("Invalid value " + rawValue + " for " + BACnetDoorSecuredStatus.class.getSimpleName());
             return BACnetDoorSecuredStatus.enumForValue((short) rawValue);
-        }else if (declaringClass == BACnetNodeType.class) {
+        } else if (declaringClass == BACnetNodeType.class) {
             if (!BACnetNodeType.isDefined((short) rawValue))
                 throw new ParseException("Invalid value " + rawValue + " for " + BACnetNodeType.class.getSimpleName());
             return BACnetNodeType.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetProgramState.class) {
+            if (!BACnetProgramState.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetProgramState.class.getSimpleName());
+            return BACnetProgramState.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetProgramRequest.class) {
+            if (!BACnetProgramRequest.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetProgramRequest.class.getSimpleName());
+            return BACnetProgramRequest.enumForValue((short) rawValue);
         }
         throw new ParseException("Unmapped type " + declaringClass);
     }
