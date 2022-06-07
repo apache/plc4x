@@ -2883,7 +2883,9 @@
         [*, 'ERROR_LIMIT'                             BACnetConstructedDataErrorLimit
             [simple   BACnetApplicationTagReal                                          errorLimit                      ]
         ]
-        //[*, 'ESCALATOR_MODE'                          BACnetConstructedDataEscalatorMode [validation    '1 == 2'    "TODO: implement me ESCALATOR_MODE BACnetConstructedDataEscalatorMode"]]
+        [*, 'ESCALATOR_MODE'                          BACnetConstructedDataEscalatorMode
+            [simple   BACnetEscalatorModeTagged('0', 'TagClass.APPLICATION_TAGS')       escalatorMode                   ]
+        ]
         [*, 'EVENT_ALGORITHM_INHIBIT'                 BACnetConstructedDataEventAlgorithmInhibit
             [simple   BACnetApplicationTagBoolean                                       eventAlgorithmInhibit           ]
         ]
@@ -3361,7 +3363,9 @@
         [*, 'OCCUPANCY_UPPER_LIMIT_ENFORCED'          BACnetConstructedDataOccupancyUpperLimitEnforced
             [simple BACnetApplicationTagBoolean                               occupancyUpperLimitEnforced               ]
         ]
-        //[*, 'OPERATION_DIRECTION'                     BACnetConstructedDataOperationDirection [validation    '1 == 2'    "TODO: implement me OPERATION_DIRECTION BACnetConstructedDataOperationDirection"]]
+        [*, 'OPERATION_DIRECTION'                     BACnetConstructedDataOperationDirection
+            [simple BACnetEscalatorOperationDirectionTagged('0', 'TagClass.APPLICATION_TAGS')   operationDirection      ]
+        ]
         //[*, 'OPERATION_EXPECTED'                      BACnetConstructedDataOperationExpected [validation    '1 == 2'    "TODO: implement me OPERATION_EXPECTED BACnetConstructedDataOperationExpected"]]
         //[*, 'OPTIONAL'                                BACnetConstructedDataOptional [validation    '1 == 2'    "TODO: implement me OPTIONAL BACnetConstructedDataOptional"]]
         [*, 'OUT_OF_SERVICE'                          BACnetConstructedDataOutOfService
@@ -3390,7 +3394,9 @@
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         //[*, 'POWER'                                   BACnetConstructedDataPower [validation    '1 == 2'    "TODO: implement me POWER BACnetConstructedDataPower"]]
-        //[*, 'POWER_MODE'                              BACnetConstructedDataPowerMode [validation    '1 == 2'    "TODO: implement me POWER_MODE BACnetConstructedDataPowerMode"]]
+        [*, 'POWER_MODE'                              BACnetConstructedDataPowerMode
+           [simple   BACnetApplicationTagBoolean               powerMode                                                ]
+        ]
         //[*, 'PRESCALE'                                BACnetConstructedDataPrescale [validation    '1 == 2'    "TODO: implement me PRESCALE BACnetConstructedDataPrescale"]]
         ['ANALOG_INPUT', 'PRESENT_VALUE'                           BACnetConstructedDataAnalogInputPresentValue
             [simple   BACnetApplicationTagReal                                          presentValue                    ]
