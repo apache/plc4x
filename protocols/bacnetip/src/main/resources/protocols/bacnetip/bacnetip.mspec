@@ -2726,9 +2726,11 @@
             [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS')                    units           ]
         ]
         [*, 'DESCRIPTION'                             BACnetConstructedDataDescription
-            [simple   BACnetApplicationTagCharacterString                               description]
+            [simple   BACnetApplicationTagCharacterString                               description                     ]
         ]
-        //[*, 'DESCRIPTION_OF_HALT'                     BACnetConstructedDataDescriptionOfHalt [validation    '1 == 2'    "TODO: implement me DESCRIPTION_OF_HALT BACnetConstructedDataDescriptionOfHalt"]]
+        [*, 'DESCRIPTION_OF_HALT'                     BACnetConstructedDataDescriptionOfHalt
+            [simple   BACnetApplicationTagCharacterString   descriptionForHalt                                          ]
+        ]
         //[*, 'DEVICE_ADDRESS_BINDING'                  BACnetConstructedDataDeviceAddressBinding [validation    '1 == 2'    "TODO: implement me DEVICE_ADDRESS_BINDING BACnetConstructedDataDeviceAddressBinding"]]
         [*, 'DEVICE_TYPE'                             BACnetConstructedDataDeviceType
             [simple   BACnetApplicationTagCharacterString                               deviceType  ]
@@ -2874,7 +2876,9 @@
             [simple   BACnetObjectPropertyReference                                     inputReference                  ]
         ]
         //[*, 'INSTALLATION_ID'                         BACnetConstructedDataInstallationId [validation    '1 == 2'    "TODO: implement me INSTALLATION_ID BACnetConstructedDataInstallationId"]]
-        //[*, 'INSTANCE_OF'                             BACnetConstructedDataInstanceOf [validation    '1 == 2'    "TODO: implement me INSTANCE_OF BACnetConstructedDataInstanceOf"]]
+        [*, 'INSTANCE_OF'                             BACnetConstructedDataInstanceOf
+            [simple   BACnetApplicationTagCharacterString                               instanceOf                      ]
+        ]
         //[*, 'INSTANTANEOUS_POWER'                     BACnetConstructedDataInstantaneousPower [validation    '1 == 2'    "TODO: implement me INSTANTANEOUS_POWER BACnetConstructedDataInstantaneousPower"]]
         //[*, 'INTEGRAL_CONSTANT'                       BACnetConstructedDataIntegralConstant [validation    '1 == 2'    "TODO: implement me INTEGRAL_CONSTANT BACnetConstructedDataIntegralConstant"]]
         [*, 'INTEGRAL_CONSTANT_UNITS'                 BACnetConstructedDataIntegralConstantUnits
@@ -3143,9 +3147,15 @@
         [*, 'PROFILE_NAME'                            BACnetConstructedDataProfileName
             [simple   BACnetApplicationTagCharacterString                               profileName                     ]
         ]
-        //[*, 'PROGRAM_CHANGE'                          BACnetConstructedDataProgramChange [validation    '1 == 2'    "TODO: implement me PROGRAM_CHANGE BACnetConstructedDataProgramChange"]]
-        //[*, 'PROGRAM_LOCATION'                        BACnetConstructedDataProgramLocation [validation    '1 == 2'    "TODO: implement me PROGRAM_LOCATION BACnetConstructedDataProgramLocation"]]
-        //[*, 'PROGRAM_STATE'                           BACnetConstructedDataProgramState [validation    '1 == 2'    "TODO: implement me PROGRAM_STATE BACnetConstructedDataProgramState"]]
+        [*, 'PROGRAM_CHANGE'                          BACnetConstructedDataProgramChange
+            [simple   BACnetProgramRequestTagged('0', 'TagClass.APPLICATION_TAGS')           programChange              ]
+        ]
+        [*, 'PROGRAM_LOCATION'                        BACnetConstructedDataProgramLocation
+            [simple   BACnetApplicationTagCharacterString                               programLocation                 ]
+        ]
+        [*, 'PROGRAM_STATE'                           BACnetConstructedDataProgramState
+            [simple   BACnetProgramStateTagged('0', 'TagClass.APPLICATION_TAGS')           programState                 ]
+        ]
         [*, 'PROPERTY_LIST'                           BACnetConstructedDataPropertyList
             [array    BACnetPropertyIdentifierTagged('0', 'TagClass.APPLICATION_TAGS')
                                 propertyList
@@ -3170,7 +3180,9 @@
                                                     terminated
                                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
-        //[*, 'REASON_FOR_HALT'                         BACnetConstructedDataReasonForHalt [validation    '1 == 2'    "TODO: implement me REASON_FOR_HALT BACnetConstructedDataReasonForHalt"]]
+        [*, 'REASON_FOR_HALT'                         BACnetConstructedDataReasonForHalt
+            [simple   BACnetProgramErrorTagged('0', 'TagClass.APPLICATION_TAGS')           programError                 ]
+        ]
         //[*, 'RECIPIENT_LIST'                          BACnetConstructedDataRecipientList [validation    '1 == 2'    "TODO: implement me RECIPIENT_LIST BACnetConstructedDataRecipientList"]]
         //[*, 'RECORD_COUNT'                            BACnetConstructedDataRecordCount [validation    '1 == 2'    "TODO: implement me RECORD_COUNT BACnetConstructedDataRecordCount"]]
         //[*, 'RECORDS_SINCE_NOTIFICATION'              BACnetConstructedDataRecordsSinceNotification [validation    '1 == 2'    "TODO: implement me RECORDS_SINCE_NOTIFICATION BACnetConstructedDataRecordsSinceNotification"]]
