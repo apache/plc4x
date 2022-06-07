@@ -2284,8 +2284,8 @@
 [type BACnetAddressEnclosed(uint 8 tagNumber)
     [simple   BACnetOpeningTag('tagNumber')
                     openingTag                  ]
-    [simple   BACnetRecipient
-                    recipient                   ]
+    [simple   BACnetAddress
+                    address                     ]
     [simple   BACnetClosingTag('tagNumber')
                     closingTag                  ]
 ]
@@ -2364,10 +2364,25 @@
         [*, 'ACTIVE_AUTHENTICATION_POLICY'            BACnetConstructedDataActiveAuthenticationPolicy
             [simple   BACnetApplicationTagUnsignedInteger                               activeAuthenticationPolicy      ]
         ]
-        //[*, 'ACTIVE_COV_MULTIPLE_SUBSCRIPTIONS'       BACnetConstructedDataActiveCOVMultipleSubscriptions [validation    '1 == 2'    "TODO: implement me ACTIVE_COV_MULTIPLE_SUBSCRIPTIONS BACnetConstructedDataActiveCOVMultipleSubscriptions"]]
-        //[*, 'ACTIVE_COV_SUBSCRIPTIONS'                BACnetConstructedDataActiveCOVSubscriptions [validation    '1 == 2'    "TODO: implement me ACTIVE_COV_SUBSCRIPTIONS BACnetConstructedDataActiveCOVSubscriptions"]]
+        [*, 'ACTIVE_COV_MULTIPLE_SUBSCRIPTIONS'       BACnetConstructedDataActiveCOVMultipleSubscriptions
+            [array    BACnetCOVMultipleSubscription
+                                activeCOVMultipleSubscriptions
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
+        [*, 'ACTIVE_COV_SUBSCRIPTIONS'                BACnetConstructedDataActiveCOVSubscriptions
+            [array    BACnetCOVSubscription
+                            activeCOVSubscriptions
+                                    terminated
+                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
+        ]
         //[*, 'ACTIVE_TEXT'                             BACnetConstructedDataActiveText [validation    '1 == 2'    "TODO: implement me ACTIVE_TEXT BACnetConstructedDataActiveText"]]
-        //[*, 'ACTIVE_VT_SESSIONS'                      BACnetConstructedDataActiveVTSessions [validation    '1 == 2'    "TODO: implement me ACTIVE_VT_SESSIONS BACnetConstructedDataActiveVTSessions"]]
+        [*, 'ACTIVE_VT_SESSIONS'                      BACnetConstructedDataActiveVTSessions
+            [array    BACnetVTSession
+                                activeVTSession
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         [*, 'ACTUAL_SHED_LEVEL'                       BACnetConstructedDataActualShedLevel
             [simple  BACnetShedLevel            actualShedLevel                                                         ]
         ]
@@ -2572,9 +2587,15 @@
         [*, 'APDU_LENGTH'                             BACnetConstructedDataAPDULength
             [simple BACnetApplicationTagUnsignedInteger                               apduLength                        ]
         ]
-        //[*, 'APDU_SEGMENT_TIMEOUT'                    BACnetConstructedDataApduSegmentTimeout [validation    '1 == 2'    "TODO: implement me APDU_SEGMENT_TIMEOUT BACnetConstructedDataApduSegmentTimeout"]]
-        //[*, 'APDU_TIMEOUT'                            BACnetConstructedDataAPDUTimeout [validation    '1 == 2'    "TODO: implement me APDU_TIMEOUT BACnetConstructedDataAPDUTimeout"]]
-        //[*, 'APPLICATION_SOFTWARE_VERSION'            BACnetConstructedDataApplicationSoftwareVersion [validation    '1 == 2'    "TODO: implement me APPLICATION_SOFTWARE_VERSION BACnetConstructedDataApplicationSoftwareVersion"]]
+        [*, 'APDU_SEGMENT_TIMEOUT'                    BACnetConstructedDataAPDUSegmentTimeout
+            [simple   BACnetApplicationTagUnsignedInteger                               apduSegmentTimeout              ]
+        ]
+        [*, 'APDU_TIMEOUT'                            BACnetConstructedDataAPDUTimeout
+            [simple   BACnetApplicationTagUnsignedInteger                               apduTimeout                     ]
+        ]
+        [*, 'APPLICATION_SOFTWARE_VERSION'            BACnetConstructedDataApplicationSoftwareVersion
+            [simple   BACnetApplicationTagCharacterString                               applicationSoftwareVersion      ]
+        ]
         [*, 'ARCHIVE'                                 BACnetConstructedDataArchive
             [simple BACnetApplicationTagBoolean                                          archive                        ]
         ]
@@ -2625,9 +2646,15 @@
             [simple   BACnetApplicationTagBoolean                                       autoSlaveDiscovery              ]
         ]
         //[*, 'AVERAGE_VALUE'                           BACnetConstructedDataAverageValue [validation    '1 == 2'    "TODO: implement me AVERAGE_VALUE BACnetConstructedDataAverageValue"]]
-        //[*, 'BACKUP_AND_RESTORE_STATE'                BACnetConstructedDataBackupAndRestoreState [validation    '1 == 2'    "TODO: implement me BACKUP_AND_RESTORE_STATE BACnetConstructedDataBackupAndRestoreState"]]
-        //[*, 'BACKUP_FAILURE_TIMEOUT'                  BACnetConstructedDataBackupFailureTimeout [validation    '1 == 2'    "TODO: implement me BACKUP_FAILURE_TIMEOUT BACnetConstructedDataBackupFailureTimeout"]]
-        //[*, 'BACKUP_PREPARATION_TIME'                 BACnetConstructedDataBackupPreparationTime [validation    '1 == 2'    "TODO: implement me BACKUP_PREPARATION_TIME BACnetConstructedDataBackupPreparationTime"]]
+        [*, 'BACKUP_AND_RESTORE_STATE'                BACnetConstructedDataBackupAndRestoreState
+            [simple   BACnetBackupStateTagged('0', 'TagClass.APPLICATION_TAGS')         backupAndRestoreState           ]
+        ]
+        [*, 'BACKUP_FAILURE_TIMEOUT'                  BACnetConstructedDataBackupFailureTimeout
+            [simple   BACnetApplicationTagUnsignedInteger                               backupFailureTimeout            ]
+        ]
+        [*, 'BACKUP_PREPARATION_TIME'                 BACnetConstructedDataBackupPreparationTime
+            [simple   BACnetApplicationTagUnsignedInteger                               backupPreparationTime           ]
+        ]
         [*, 'BACNET_IP_GLOBAL_ADDRESS'                BACnetConstructedDataBACnetIPGlobalAddress
             [simple   BACnetHostNPort                   bacnetIpGlobalAddress                                           ]
         ]
@@ -2740,7 +2767,12 @@
             [simple   BACnetNetworkPortCommandTagged('0', 'TagClass.APPLICATION_TAGS')                  command         ]
         ]
         //[*, 'COMMAND_TIME_ARRAY'                      BACnetConstructedDataCommandTimeArray [validation    '1 == 2'    "TODO: implement me COMMAND_TIME_ARRAY BACnetConstructedDataCommandTimeArray"]]
-        //[*, 'CONFIGURATION_FILES'                     BACnetConstructedDataConfigurationFiles [validation    '1 == 2'    "TODO: implement me CONFIGURATION_FILES BACnetConstructedDataConfigurationFiles"]]
+        [*, 'CONFIGURATION_FILES'                     BACnetConstructedDataConfigurationFiles
+            [array    BACnetApplicationTagObjectIdentifier
+                                configurationFiles
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         //[*, 'CONTROL_GROUPS'                          BACnetConstructedDataControlGroups [validation    '1 == 2'    "TODO: implement me CONTROL_GROUPS BACnetConstructedDataControlGroups"]]
         [*, 'CONTROLLED_VARIABLE_REFERENCE'           BACnetConstructedDataControlledVariableReference
             [simple   BACnetObjectPropertyReference                                     controlledVariableReference     ]
@@ -2790,9 +2822,13 @@
         ]
         //[*, 'CREDENTIALS_IN_ZONE'                     BACnetConstructedDataCredentialsInZone [validation    '1 == 2'    "TODO: implement me CREDENTIALS_IN_ZONE BACnetConstructedDataCredentialsInZone"]]
         //[*, 'CURRENT_COMMAND_PRIORITY'                BACnetConstructedDataCurrentCommandPriority [validation    '1 == 2'    "TODO: implement me CURRENT_COMMAND_PRIORITY BACnetConstructedDataCurrentCommandPriority"]]
-        //[*, 'DATABASE_REVISION'                       BACnetConstructedDataDatabaseRevision [validation    '1 == 2'    "TODO: implement me DATABASE_REVISION BACnetConstructedDataDatabaseRevision"]]
+        [*, 'DATABASE_REVISION'                       BACnetConstructedDataDatabaseRevision
+            [simple   BACnetApplicationTagUnsignedInteger                     databaseRevision                          ]
+        ]
         //[*, 'DATE_LIST'                               BACnetConstructedDataDateList [validation    '1 == 2'    "TODO: implement me DATE_LIST BACnetConstructedDataDateList"]]
-        //[*, 'DAYLIGHT_SAVINGS_STATUS'                 BACnetConstructedDataDaylightSavingsStatus [validation    '1 == 2'    "TODO: implement me DAYLIGHT_SAVINGS_STATUS BACnetConstructedDataDaylightSavingsStatus"]]
+        [*, 'DAYLIGHT_SAVINGS_STATUS'                 BACnetConstructedDataDaylightSavingsStatus
+            [simple   BACnetApplicationTagBoolean                               daylightSavingsStatus                   ]
+        ]
         [*, 'DAYS_REMAINING'                          BACnetConstructedDataDaysRemaining
             [simple   BACnetApplicationTagSignedInteger                     daysRemaining                               ]
         ]
@@ -2800,7 +2836,7 @@
             [simple   BACnetApplicationTagReal                                          deadband                        ]
         ]
         [*, 'DEFAULT_FADE_TIME'                       BACnetConstructedDataDefaultFadeTime
-                [simple   BACnetApplicationTagUnsignedInteger                     defaultFadeTime                       ]
+            [simple   BACnetApplicationTagUnsignedInteger                     defaultFadeTime                           ]
         ]
         [*, 'DEFAULT_RAMP_RATE'                       BACnetConstructedDataDefaultRampRate
             [simple   BACnetApplicationTagReal                                          defaultRampRate                 ]
@@ -2814,7 +2850,9 @@
         [*, 'DEFAULT_TIMEOUT'                         BACnetConstructedDataDefaultTimeout
             [simple   BACnetApplicationTagUnsignedInteger                     defaultTimeout                            ]
         ]
-        //[*, 'DEPLOYED_PROFILE_LOCATION'               BACnetConstructedDataDeployedProfileLocation [validation    '1 == 2'    "TODO: implement me DEPLOYED_PROFILE_LOCATION BACnetConstructedDataDeployedProfileLocation"]]
+        [*, 'DEPLOYED_PROFILE_LOCATION'               BACnetConstructedDataDeployedProfileLocation
+           [simple   BACnetApplicationTagCharacterString deployedProfileLocation                                        ]
+        ]
         [*, 'DERIVATIVE_CONSTANT'                     BACnetConstructedDataDerivativeConstant
             [simple   BACnetApplicationTagReal                                          derivativeConstant              ]
         ]
@@ -2827,7 +2865,12 @@
         [*, 'DESCRIPTION_OF_HALT'                     BACnetConstructedDataDescriptionOfHalt
             [simple   BACnetApplicationTagCharacterString   descriptionForHalt                                          ]
         ]
-        //[*, 'DEVICE_ADDRESS_BINDING'                  BACnetConstructedDataDeviceAddressBinding [validation    '1 == 2'    "TODO: implement me DEVICE_ADDRESS_BINDING BACnetConstructedDataDeviceAddressBinding"]]
+        [*, 'DEVICE_ADDRESS_BINDING'                  BACnetConstructedDataDeviceAddressBinding
+            [array    BACnetAddressBinding
+                                deviceAddressBinding
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         [*, 'DEVICE_TYPE'                             BACnetConstructedDataDeviceType
             [simple   BACnetApplicationTagCharacterString                               deviceType                      ]
         ]
@@ -2979,7 +3022,9 @@
         [*, 'FILE_TYPE'                               BACnetConstructedDataFileType
             [simple   BACnetApplicationTagCharacterString                                   fileType                    ]
         ]
-        //[*, 'FIRMWARE_REVISION'                       BACnetConstructedDataFirmwareRevision [validation    '1 == 2'    "TODO: implement me FIRMWARE_REVISION BACnetConstructedDataFirmwareRevision"]]
+        [*, 'FIRMWARE_REVISION'                       BACnetConstructedDataFirmwareRevision
+           [simple   BACnetApplicationTagCharacterString    firmwareRevision                                            ]
+        ]
         [*, 'FLOOR_TEXT'                              BACnetConstructedDataFloorText
             [array    BACnetApplicationTagCharacterString
                             floorText
@@ -3135,8 +3180,12 @@
         ]
         //[*, 'LAST_NOTIFY_RECORD'                      BACnetConstructedDataLastNotifyRecord [validation    '1 == 2'    "TODO: implement me LAST_NOTIFY_RECORD BACnetConstructedDataLastNotifyRecord"]]
         //[*, 'LAST_PRIORITY'                           BACnetConstructedDataLastPriority [validation    '1 == 2'    "TODO: implement me LAST_PRIORITY BACnetConstructedDataLastPriority"]]
-        //[*, 'LAST_RESTART_REASON'                     BACnetConstructedDataLastRestartReason [validation    '1 == 2'    "TODO: implement me LAST_RESTART_REASON BACnetConstructedDataLastRestartReason"]]
-        //[*, 'LAST_RESTORE_TIME'                       BACnetConstructedDataLastRestoreTime [validation    '1 == 2'    "TODO: implement me LAST_RESTORE_TIME BACnetConstructedDataLastRestoreTime"]]
+        [*, 'LAST_RESTART_REASON'                     BACnetConstructedDataLastRestartReason
+            [simple   BACnetRestartReasonTagged('0', 'TagClass.APPLICATION_TAGS')   lastRestartReason                   ]
+        ]
+        [*, 'LAST_RESTORE_TIME'                       BACnetConstructedDataLastRestoreTime
+            [simple   BACnetTimeStamp                                                     lastRestoreTime               ]
+        ]
         [*, 'LAST_STATE_CHANGE'                       BACnetConstructedDataLastStateChange
             [simple   BACnetTimerTransitionTagged('0', 'TagClass.APPLICATION_TAGS')             lastStateChange         ]
         ]
@@ -3181,12 +3230,18 @@
                             references              terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
-        //[*, 'LOCAL_DATE'                              BACnetConstructedDataLocalDate [validation    '1 == 2'    "TODO: implement me LOCAL_DATE BACnetConstructedDataLocalDate"]]
+        [*, 'LOCAL_DATE'                              BACnetConstructedDataLocalDate
+            [simple   BACnetApplicationTagDate          localDate                                                       ]
+        ]
         [*, 'LOCAL_FORWARDING_ONLY'                   BACnetConstructedDataLocalForwardingOnly
             [simple BACnetApplicationTagBoolean                               localForwardingOnly                       ]
         ]
-        //[*, 'LOCAL_TIME'                              BACnetConstructedDataLocalTime [validation    '1 == 2'    "TODO: implement me LOCAL_TIME BACnetConstructedDataLocalTime"]]
-        //[*, 'LOCATION'                                BACnetConstructedDataLocation [validation    '1 == 2'    "TODO: implement me LOCATION BACnetConstructedDataLocation"]]
+        [*, 'LOCAL_TIME'                              BACnetConstructedDataLocalTime
+            [simple BACnetApplicationTagTime                                  localTime                                 ]
+        ]
+        [*, 'LOCATION'                                BACnetConstructedDataLocation
+            [simple BACnetApplicationTagCharacterString     location                                                    ]
+        ]
         [*, 'LOCK_STATUS'                             BACnetConstructedDataLockStatus
             [simple   BACnetLockStatusTagged('0', 'TagClass.APPLICATION_TAGS')      lockStatus                          ]
         ]
@@ -3245,19 +3300,23 @@
         [*, 'MAX_ACTUAL_VALUE'                        BACnetConstructedDataMaxActualValue
             [simple   BACnetApplicationTagReal                                          maxActualValue                  ]
         ]
-        //[*, 'MAX_APDU_LENGTH_ACCEPTED'                BACnetConstructedDataMaxApduLengthAccepted [validation    '1 == 2'    "TODO: implement me MAX_APDU_LENGTH_ACCEPTED BACnetConstructedDataMaxApduLengthAccepted"]]
+        [*, 'MAX_APDU_LENGTH_ACCEPTED'                BACnetConstructedDataMaxAPDULengthAccepted
+            [simple BACnetApplicationTagUnsignedInteger                     maxApduLengthAccepted                       ]
+        ]
         [*, 'MAX_FAILED_ATTEMPTS'                     BACnetConstructedDataMaxFailedAttempts
             [simple BACnetApplicationTagUnsignedInteger                     maxFailedAttempts                           ]
         ]
         //[*, 'MAX_INFO_FRAMES'                         BACnetConstructedDataMaxInfoFrames [validation    '1 == 2'    "TODO: implement me MAX_INFO_FRAMES BACnetConstructedDataMaxInfoFrames"]]
         //[*, 'MAX_MASTER'                              BACnetConstructedDataMaxMaster [validation    '1 == 2'    "TODO: implement me MAX_MASTER BACnetConstructedDataMaxMaster"]]
         ['ACCUMULATOR', 'MAX_PRES_VALUE'               BACnetConstructedDataAccumulatorMaxPresValue
-            [simple BACnetApplicationTagUnsignedInteger                     maxPresValue                                 ]
+            [simple BACnetApplicationTagUnsignedInteger                     maxPresValue                                ]
         ]
         [*, 'MAX_PRES_VALUE'                            BACnetConstructedDataMaxPresValue
             [simple BACnetApplicationTagReal                                maxPresValue                                ]
         ]
-        //[*, 'MAX_SEGMENTS_ACCEPTED'                   BACnetConstructedDataMaxSegmentsAccepted [validation    '1 == 2'    "TODO: implement me MAX_SEGMENTS_ACCEPTED BACnetConstructedDataMaxSegmentsAccepted"]]
+        [*, 'MAX_SEGMENTS_ACCEPTED'                   BACnetConstructedDataMaxSegmentsAccepted
+            [simple BACnetApplicationTagUnsignedInteger                               maxSegmentsAccepted               ]
+        ]
         [*, 'MAXIMUM_OUTPUT'                          BACnetConstructedDataMaximumOutput
             [simple BACnetApplicationTagReal                                maximumOutput                               ]
         ]
@@ -3297,7 +3356,9 @@
         ]
         //[*, 'MINIMUM_VALUE_TIMESTAMP'                 BACnetConstructedDataMinimumValueTimestamp [validation    '1 == 2'    "TODO: implement me MINIMUM_VALUE_TIMESTAMP BACnetConstructedDataMinimumValueTimestamp"]]
         //[*, 'MODE'                                    BACnetConstructedDataMode [validation    '1 == 2'    "TODO: implement me MODE BACnetConstructedDataMode"]]
-        //[*, 'MODEL_NAME'                              BACnetConstructedDataModelName [validation    '1 == 2'    "TODO: implement me MODEL_NAME BACnetConstructedDataModelName"]]
+        [*, 'MODEL_NAME'                              BACnetConstructedDataModelName
+           [simple   BACnetApplicationTagCharacterString               modelName                                        ]
+        ]
         [*, 'MODIFICATION_DATE'                       BACnetConstructedDataModificationDate
             [simple   BACnetDateTime                                        modificationDate                            ]
         ]
@@ -3344,7 +3405,9 @@
         [*, 'NOTIFY_TYPE'                             BACnetConstructedDataNotifyType
             [simple BACnetNotifyTypeTagged('0', 'TagClass.APPLICATION_TAGS')          notifyType                        ]
         ]
-        //[*, 'NUMBER_OF_APDU_RETRIES'                  BACnetConstructedDataNumberOfApduRetries [validation    '1 == 2'    "TODO: implement me NUMBER_OF_APDU_RETRIES BACnetConstructedDataNumberOfApduRetries"]]
+        [*, 'NUMBER_OF_APDU_RETRIES'                  BACnetConstructedDataNumberOfAPDURetries
+            [simple   BACnetApplicationTagUnsignedInteger                               numberOfApduRetries             ]
+        ]
         [*, 'NUMBER_OF_AUTHENTICATION_POLICIES'       BACnetConstructedDataNumberOfAuthenticationPolicies
             [simple   BACnetApplicationTagUnsignedInteger                               numberOfAuthenticationPolicies  ]
         ]
@@ -3352,7 +3415,13 @@
         [*, 'OBJECT_IDENTIFIER'                       BACnetConstructedDataObjectIdentifier
             [simple   BACnetApplicationTagObjectIdentifier                              objectIdentifier                ]
         ]
-        //[*, 'OBJECT_LIST'                             BACnetConstructedDataObjectList [validation    '1 == 2'    "TODO: implement me OBJECT_LIST BACnetConstructedDataObjectList"]]
+        [*, 'OBJECT_LIST'                             BACnetConstructedDataObjectList
+            // TODO: we need property support
+            [array    BACnetObjectIdentifierOrUnsignedInteger
+                                objectList
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         [*, 'OBJECT_NAME'                             BACnetConstructedDataObjectName
             [simple   BACnetApplicationTagCharacterString                               objectName                      ]
         ]
@@ -3459,10 +3528,18 @@
             [simple   BACnetProtocolLevelTagged('0', 'TagClass.APPLICATION_TAGS')                    protocolLevel      ]
         ]
         //[*, 'PROTOCOL_CONFORMANCE_CLASS'              BACnetConstructedDataProtocolConformanceClass [validation    '1 == 2'    "TODO: implement me PROTOCOL_CONFORMANCE_CLASS BACnetConstructedDataProtocolConformanceClass"]]
-        //[*, 'PROTOCOL_OBJECT_TYPES_SUPPORTED'         BACnetConstructedDataProtocolObjectTypesSupported [validation    '1 == 2'    "TODO: implement me PROTOCOL_OBJECT_TYPES_SUPPORTED BACnetConstructedDataProtocolObjectTypesSupported"]]
-        //[*, 'PROTOCOL_REVISION'                       BACnetConstructedDataProtocolRevision [validation    '1 == 2'    "TODO: implement me PROTOCOL_REVISION BACnetConstructedDataProtocolRevision"]]
-        //[*, 'PROTOCOL_SERVICES_SUPPORTED'             BACnetConstructedDataProtocolServicesSupported [validation    '1 == 2'    "TODO: implement me PROTOCOL_SERVICES_SUPPORTED BACnetConstructedDataProtocolServicesSupported"]]
-        //[*, 'PROTOCOL_VERSION'                        BACnetConstructedDataProtocolVersion [validation    '1 == 2'    "TODO: implement me PROTOCOL_VERSION BACnetConstructedDataProtocolVersion"]]
+        [*, 'PROTOCOL_OBJECT_TYPES_SUPPORTED'         BACnetConstructedDataProtocolObjectTypesSupported
+            [simple   BACnetObjectTypesSupportedTagged('0', 'TagClass.APPLICATION_TAGS')            protocolObjectTypesSupported         ]
+        ]
+        [*, 'PROTOCOL_REVISION'                       BACnetConstructedDataProtocolRevision
+            [simple   BACnetApplicationTagUnsignedInteger                                           protocolRevision    ]
+        ]
+        [*, 'PROTOCOL_SERVICES_SUPPORTED'             BACnetConstructedDataProtocolServicesSupported
+            [simple   BACnetServicesSupportedTagged('0', 'TagClass.APPLICATION_TAGS')   protocolServicesSupported       ]
+        ]
+        [*, 'PROTOCOL_VERSION'                        BACnetConstructedDataProtocolVersion
+            [simple   BACnetApplicationTagUnsignedInteger                                           protocolVersion     ]
+        ]
         //[*, 'PULSE_RATE'                              BACnetConstructedDataPulseRate [validation    '1 == 2'    "TODO: implement me PULSE_RATE BACnetConstructedDataPulseRate"]]
         [*, 'READ_ONLY'                               BACnetConstructedDataReadOnly
             [simple BACnetApplicationTagBoolean                                readOnly                                 ]
@@ -3508,14 +3585,23 @@
         [*, 'RESOLUTION'                              BACnetConstructedDataResolution
             [simple   BACnetApplicationTagReal                                          resolution                      ]
         ]
-        //[*, 'RESTART_NOTIFICATION_RECIPIENTS'         BACnetConstructedDataRestartNotificationRecipients [validation    '1 == 2'    "TODO: implement me RESTART_NOTIFICATION_RECIPIENTS BACnetConstructedDataRestartNotificationRecipients"]]
-        //[*, 'RESTORE_COMPLETION_TIME'                 BACnetConstructedDataRestoreCompletionTime [validation    '1 == 2'    "TODO: implement me RESTORE_COMPLETION_TIME BACnetConstructedDataRestoreCompletionTime"]]
-        //[*, 'RESTORE_PREPARATION_TIME'                BACnetConstructedDataRestorePreparationTime [validation    '1 == 2'    "TODO: implement me RESTORE_PREPARATION_TIME BACnetConstructedDataRestorePreparationTime"]]
+        [*, 'RESTART_NOTIFICATION_RECIPIENTS'         BACnetConstructedDataRestartNotificationRecipients
+            [array    BACnetRecipient
+                                restartNotificationRecipients
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
+        [*, 'RESTORE_COMPLETION_TIME'                 BACnetConstructedDataRestoreCompletionTime
+            [simple BACnetApplicationTagUnsignedInteger                       completionTime                            ]
+        ]
+        [*, 'RESTORE_PREPARATION_TIME'                BACnetConstructedDataRestorePreparationTime
+            [simple   BACnetApplicationTagUnsignedInteger               restorePreparationTime                          ]
+        ]
         [*, 'ROUTING_TABLE'                           BACnetConstructedDataRoutingTable
             [array    BACnetRouterEntry
                                 routingTable
                                         terminated
-                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         //[*, 'SCALE'                                   BACnetConstructedDataScale [validation    '1 == 2'    "TODO: implement me SCALE BACnetConstructedDataScale"]]
         [*, 'SCALE_FACTOR'                            BACnetConstructedDataScaleFactor
@@ -3533,8 +3619,12 @@
         [*, 'SECURITY_TIME_WINDOW'                    BACnetConstructedDataSecurityTimeWindow
             [simple BACnetApplicationTagUnsignedInteger                       securityTimeWindow                        ]
         ]
-        //[*, 'SEGMENTATION_SUPPORTED'                  BACnetConstructedDataSegmentationSupported [validation    '1 == 2'    "TODO: implement me SEGMENTATION_SUPPORTED BACnetConstructedDataSegmentationSupported"]]
-        //[*, 'SERIAL_NUMBER'                           BACnetConstructedDataSerialNumber [validation    '1 == 2'    "TODO: implement me SERIAL_NUMBER BACnetConstructedDataSerialNumber"]]
+        [*, 'SEGMENTATION_SUPPORTED'                  BACnetConstructedDataSegmentationSupported
+            [simple BACnetSegmentationTagged('0', 'TagClass.APPLICATION_TAGS')  segmentationSupported                   ]
+        ]
+        [*, 'SERIAL_NUMBER'                           BACnetConstructedDataSerialNumber
+            [simple   BACnetApplicationTagCharacterString                         serialNumber                          ]
+        ]
         [*, 'SETPOINT'                                BACnetConstructedDataSetpoint
             [simple   BACnetApplicationTagReal                                          setpoint                        ]
         ]
@@ -3589,7 +3679,12 @@
         [*, 'STRIKE_COUNT'                            BACnetConstructedDataStrikeCount
             [simple BACnetApplicationTagUnsignedInteger                       strikeCount                     ]
         ]
-        //[*, 'STRUCTURED_OBJECT_LIST'                  BACnetConstructedDataStructuredObjectList [validation    '1 == 2'    "TODO: implement me STRUCTURED_OBJECT_LIST BACnetConstructedDataStructuredObjectList"]]
+        [*, 'STRUCTURED_OBJECT_LIST'                  BACnetConstructedDataStructuredObjectList
+            [array    BACnetApplicationTagObjectIdentifier
+                                structuredObjectList
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         [*, 'SUBORDINATE_ANNOTATIONS'                 BACnetConstructedDataSubordinateAnnotations
             [array    BACnetApplicationTagCharacterString
                     subordinateAnnotations
@@ -3634,12 +3729,14 @@
                                                 terminated
                                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
-        //[*, 'SYSTEM_STATUS'                           BACnetConstructedDataSystemStatus [validation    '1 == 2'    "TODO: implement me SYSTEM_STATUS BACnetConstructedDataSystemStatus"]]
+        [*, 'SYSTEM_STATUS'                           BACnetConstructedDataSystemStatus
+            [simple   BACnetDeviceStatusTagged('0', 'TagClass.APPLICATION_TAGS')    systemStatus                        ]
+        ]
         [*, 'TAGS'                                    BACnetConstructedDataTags
             [array    BACnetNameValue
                             tags
                                 terminated
-                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'        ]
         ]
         [*, 'THREAT_AUTHORITY'                        BACnetConstructedDataThreatAuthority
             [simple   BACnetAccessThreatLevel                                           threatAuthority                 ]
@@ -3654,15 +3751,24 @@
             [simple   BACnetApplicationTagUnsignedInteger                               timeDelayNormal                 ]
         ]
         //[*, 'TIME_OF_ACTIVE_TIME_RESET'               BACnetConstructedDataTimeOfActiveTimeReset [validation    '1 == 2'    "TODO: implement me TIME_OF_ACTIVE_TIME_RESET BACnetConstructedDataTimeOfActiveTimeReset"]]
-        //[*, 'TIME_OF_DEVICE_RESTART'                  BACnetConstructedDataTimeOfDeviceRestart [validation    '1 == 2'    "TODO: implement me TIME_OF_DEVICE_RESTART BACnetConstructedDataTimeOfDeviceRestart"]]
+        [*, 'TIME_OF_DEVICE_RESTART'                  BACnetConstructedDataTimeOfDeviceRestart
+            [simple   BACnetTimeStamp                                                    timeOfDeviceRestart            ]
+        ]
         //[*, 'TIME_OF_STATE_COUNT_RESET'               BACnetConstructedDataTimeOfStateCountReset [validation    '1 == 2'    "TODO: implement me TIME_OF_STATE_COUNT_RESET BACnetConstructedDataTimeOfStateCountReset"]]
         [*, 'TIME_OF_STRIKE_COUNT_RESET'              BACnetConstructedDataTimeOfStrikeCountReset
             [simple   BACnetDateTime                                        timeOfStrikeCountReset                      ]
         ]
-        //[*, 'TIME_SYNCHRONIZATION_INTERVAL'           BACnetConstructedDataTimeSynchronizationInterval [validation    '1 == 2'    "TODO: implement me TIME_SYNCHRONIZATION_INTERVAL BACnetConstructedDataTimeSynchronizationInterval"]]
-        //[*, 'TIME_SYNCHRONIZATION_RECIPIENTS'         BACnetConstructedDataTimeSynchronizationRecipients [validation    '1 == 2'    "TODO: implement me TIME_SYNCHRONIZATION_RECIPIENTS BACnetConstructedDataTimeSynchronizationRecipients"]]
+        [*, 'TIME_SYNCHRONIZATION_INTERVAL'           BACnetConstructedDataTimeSynchronizationInterval
+            [simple   BACnetApplicationTagUnsignedInteger                               timeSynchronization             ]
+        ]
+        [*, 'TIME_SYNCHRONIZATION_RECIPIENTS'         BACnetConstructedDataTimeSynchronizationRecipients
+            [array    BACnetRecipient
+                            timeSynchronizationRecipients
+                                    terminated
+                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         [*, 'TIMER_RUNNING'                           BACnetConstructedDataTimerRunning
-            [simple   BACnetApplicationTagBoolean                               timerRunning                 ]
+            [simple   BACnetApplicationTagBoolean                               timerRunning                            ]
         ]
         [*, 'TIMER_STATE'                             BACnetConstructedDataTimerState
             [simple  BACnetTimerStateTagged('0', 'TagClass.APPLICATION_TAGS')   timerState] 
@@ -3704,8 +3810,15 @@
         [*, 'USES_REMAINING'                          BACnetConstructedDataUsesRemaining
             [simple   BACnetApplicationTagSignedInteger                     usesRemaining                               ]
         ]
-        //[*, 'UTC_OFFSET'                              BACnetConstructedDataUtcOffset [validation    '1 == 2'    "TODO: implement me UTC_OFFSET BACnetConstructedDataUtcOffset"]]
-        //[*, 'UTC_TIME_SYNCHRONIZATION_RECIPIENTS'     BACnetConstructedDataUtcTimeSynchronizationRecipients [validation    '1 == 2'    "TODO: implement me UTC_TIME_SYNCHRONIZATION_RECIPIENTS BACnetConstructedDataUtcTimeSynchronizationRecipients"]]
+        [*, 'UTC_OFFSET'                              BACnetConstructedDataUTCOffset
+            [simple   BACnetApplicationTagSignedInteger                     utcOffset                                   ]
+        ]
+        [*, 'UTC_TIME_SYNCHRONIZATION_RECIPIENTS'     BACnetConstructedDataUTCTimeSynchronizationRecipients
+            [array    BACnetRecipient
+                                utcTimeSynchronizationRecipients
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         //[*, 'VALID_SAMPLES'                           BACnetConstructedDataValidSamples [validation    '1 == 2'    "TODO: implement me VALID_SAMPLES BACnetConstructedDataValidSamples"]]
         //[*, 'VALUE_BEFORE_CHANGE'                     BACnetConstructedDataValueBeforeChange [validation    '1 == 2'    "TODO: implement me VALUE_BEFORE_CHANGE BACnetConstructedDataValueBeforeChange"]]
         //[*, 'VALUE_CHANGE_TIME'                       BACnetConstructedDataValueChangeTime [validation    '1 == 2'    "TODO: implement me VALUE_CHANGE_TIME BACnetConstructedDataValueChangeTime"]]
@@ -3713,8 +3826,12 @@
         //[*, 'VALUE_SOURCE'                            BACnetConstructedDataValueSource [validation    '1 == 2'    "TODO: implement me VALUE_SOURCE BACnetConstructedDataValueSource"]]
         //[*, 'VALUE_SOURCE_ARRAY'                      BACnetConstructedDataValueSourceArray [validation    '1 == 2'    "TODO: implement me VALUE_SOURCE_ARRAY BACnetConstructedDataValueSourceArray"]]
         //[*, 'VARIANCE_VALUE'                          BACnetConstructedDataVarianceValue [validation    '1 == 2'    "TODO: implement me VARIANCE_VALUE BACnetConstructedDataVarianceValue"]]
-        //[*, 'VENDOR_IDENTIFIER'                       BACnetConstructedDataVendorIdentifier [validation    '1 == 2'    "TODO: implement me VENDOR_IDENTIFIER BACnetConstructedDataVendorIdentifier"]]
-        //[*, 'VENDOR_NAME'                             BACnetConstructedDataVendorName [validation    '1 == 2'    "TODO: implement me VENDOR_NAME BACnetConstructedDataVendorName"]]
+        [*, 'VENDOR_IDENTIFIER'                       BACnetConstructedDataVendorIdentifier
+            [simple   BACnetVendorIdTagged('0', 'TagClass.APPLICATION_TAGS') vendorIdentifier                           ]
+        ]
+        [*, 'VENDOR_NAME'                             BACnetConstructedDataVendorName
+           [simple   BACnetApplicationTagCharacterString    vendorName                                                  ]
+        ]
         [*, 'VERIFICATION_TIME'                       BACnetConstructedDataVerificationTime
             [simple   BACnetApplicationTagSignedInteger                     verificationTime                            ]
         ]
@@ -3724,7 +3841,12 @@
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
-        //[*, 'VT_CLASSES_SUPPORTED'                    BACnetConstructedDataVtClassesSupported [validation    '1 == 2'    "TODO: implement me VT_CLASSES_SUPPORTED BACnetConstructedDataVtClassesSupported"]]
+        [*, 'VT_CLASSES_SUPPORTED'                    BACnetConstructedDataVTClassesSupported
+            [array    BACnetVTClassTagged('0', 'TagClass.APPLICATION_TAGS')
+                                vtClassesSupported
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         [*, 'WEEKLY_SCHEDULE'                         BACnetConstructedDataWeeklySchedule
             [array    BACnetDailySchedule
                                 weeklySchedule
@@ -5035,14 +5157,14 @@
 
 
 [type BACnetEventParameterChangeOfCharacterStringListOfAlarmValues(uint 8 tagNumber)
-   [simple   BACnetOpeningTag('tagNumber')
+    [simple   BACnetOpeningTag('tagNumber')
                    openingTag                                                          ]
-   [array    BACnetApplicationTagCharacterString
+    [array    BACnetApplicationTagCharacterString
                    listOfAlarmValues
                        terminated
                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'
                                                                                        ]
-   [simple   BACnetClosingTag('tagNumber')
+    [simple   BACnetClosingTag('tagNumber')
                    closingTag                                                          ]
 ]
 
@@ -5082,4 +5204,92 @@
                                             destination                             ]
         ]
     ]
+]
+
+[type BACnetCOVMultipleSubscription
+    [simple   BACnetRecipientProcessEnclosed('0')
+                                        recipient                                       ]
+    [simple   BACnetContextTagBoolean('1', 'BACnetDataType.BOOLEAN')
+                                        issueConfirmedNotifications                     ]
+    [simple   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
+                                        timeRemaining                                   ]
+    [simple   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
+                                        maxNotificationDelay                            ]
+    [simple   BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification('4')
+                                        listOfCovSubscriptionSpecification              ]
+]
+
+[type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification(uint 8 tagNumber)
+    [simple   BACnetOpeningTag('tagNumber')
+                    openingTag                                                          ]
+
+    [array    BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
+                    listOfCovSubscriptionSpecificationEntry
+                            terminated
+                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+    [simple   BACnetClosingTag('tagNumber')
+                    closingTag                                                          ]
+]
+
+[type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
+    [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                    monitoredObjectIdentifier                                           ]
+    [simple   BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences('1')
+                    listOfCovReferences                                                 ]
+]
+
+[type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences(uint 8 tagNumber)
+    [simple   BACnetOpeningTag('tagNumber')
+                    openingTag                                                          ]
+
+    [array    BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry
+                    listOfCovReferences
+                            terminated
+                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+    [simple   BACnetClosingTag('tagNumber')
+                    closingTag                                                          ]
+]
+
+[type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry
+    [simple   BACnetPropertyReferenceEnclosed('0')
+                    monitoredProperty                                                   ]
+    [optional BACnetContextTagReal('1', 'BACnetDataType.REAL')
+                    covIncrement                                                        ]
+    [simple   BACnetContextTagBoolean('1', 'BACnetDataType.BOOLEAN')
+                    timestamped                                                         ]
+]
+
+[type BACnetVTSession
+    [simple   BACnetApplicationTagUnsignedInteger
+                    localVtSessionId                                                    ]
+    [simple   BACnetApplicationTagUnsignedInteger
+                    removeVtSessionId                                                   ]
+    [simple   BACnetAddress
+                    remoteVtAddress                                                     ]
+]
+
+[type BACnetCOVSubscription
+    [simple   BACnetRecipientProcessEnclosed('0')
+                                        recipient                                       ]
+    [simple   BACnetObjectPropertyReferenceEnclosed('1')
+                                        monitoredPropertyReference                      ]
+    [simple   BACnetContextTagBoolean('2', 'BACnetDataType.BOOLEAN')
+                                        issueConfirmedNotifications                     ]
+    [simple   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
+                                        timeRemaining                                   ]
+    [optional BACnetContextTagReal('4', 'BACnetDataType.REAL')
+                                        covIncrement                                    ]
+]
+
+// TODO: can be removed once we implement proper index support
+[type BACnetObjectIdentifierOrUnsignedInteger
+    [peek     BACnetTagHeader
+                        peekedTagHeader                                             ]
+    [virtual  uint 8    peekedTagNumber     'peekedTagHeader.actualTagNumber'       ]
+    [optional BACnetApplicationTagObjectIdentifier
+                    objectIdentifier    'peekedTagNumber == 0xC'                    ]
+    [optional BACnetApplicationTagUnsignedInteger
+                    fallbackIdentifier  'peekedTagNumber == 0x2 '                  ]
+    [optional BACnetApplicationTagNull
+                    nullValue           'objectIdentifier == null && fallbackIdentifier == null'                ]
 ]

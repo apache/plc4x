@@ -29,7 +29,7 @@ import (
 // BACnetAddressEnclosed is the data-structure of this message
 type BACnetAddressEnclosed struct {
 	OpeningTag *BACnetOpeningTag
-	Recipient  *BACnetRecipient
+	Address    *BACnetAddress
 	ClosingTag *BACnetClosingTag
 
 	// Arguments.
@@ -40,8 +40,8 @@ type BACnetAddressEnclosed struct {
 type IBACnetAddressEnclosed interface {
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() *BACnetOpeningTag
-	// GetRecipient returns Recipient (property field)
-	GetRecipient() *BACnetRecipient
+	// GetAddress returns Address (property field)
+	GetAddress() *BACnetAddress
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() *BACnetClosingTag
 	// GetLengthInBytes returns the length in bytes
@@ -61,8 +61,8 @@ func (m *BACnetAddressEnclosed) GetOpeningTag() *BACnetOpeningTag {
 	return m.OpeningTag
 }
 
-func (m *BACnetAddressEnclosed) GetRecipient() *BACnetRecipient {
-	return m.Recipient
+func (m *BACnetAddressEnclosed) GetAddress() *BACnetAddress {
+	return m.Address
 }
 
 func (m *BACnetAddressEnclosed) GetClosingTag() *BACnetClosingTag {
@@ -75,8 +75,8 @@ func (m *BACnetAddressEnclosed) GetClosingTag() *BACnetClosingTag {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetAddressEnclosed factory function for BACnetAddressEnclosed
-func NewBACnetAddressEnclosed(openingTag *BACnetOpeningTag, recipient *BACnetRecipient, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetAddressEnclosed {
-	return &BACnetAddressEnclosed{OpeningTag: openingTag, Recipient: recipient, ClosingTag: closingTag, TagNumber: tagNumber}
+func NewBACnetAddressEnclosed(openingTag *BACnetOpeningTag, address *BACnetAddress, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetAddressEnclosed {
+	return &BACnetAddressEnclosed{OpeningTag: openingTag, Address: address, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
 func CastBACnetAddressEnclosed(structType interface{}) *BACnetAddressEnclosed {
@@ -103,8 +103,8 @@ func (m *BACnetAddressEnclosed) GetLengthInBitsConditional(lastItem bool) uint16
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.GetLengthInBits()
 
-	// Simple field (recipient)
-	lengthInBits += m.Recipient.GetLengthInBits()
+	// Simple field (address)
+	lengthInBits += m.Address.GetLengthInBits()
 
 	// Simple field (closingTag)
 	lengthInBits += m.ClosingTag.GetLengthInBits()
@@ -138,16 +138,16 @@ func BACnetAddressEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*
 		return nil, closeErr
 	}
 
-	// Simple Field (recipient)
-	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
+	// Simple Field (address)
+	if pullErr := readBuffer.PullContext("address"); pullErr != nil {
 		return nil, pullErr
 	}
-	_recipient, _recipientErr := BACnetRecipientParse(readBuffer)
-	if _recipientErr != nil {
-		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field")
+	_address, _addressErr := BACnetAddressParse(readBuffer)
+	if _addressErr != nil {
+		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
-	recipient := CastBACnetRecipient(_recipient)
-	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
+	address := CastBACnetAddress(_address)
+	if closeErr := readBuffer.CloseContext("address"); closeErr != nil {
 		return nil, closeErr
 	}
 
@@ -169,7 +169,7 @@ func BACnetAddressEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*
 	}
 
 	// Create the instance
-	return NewBACnetAddressEnclosed(openingTag, recipient, closingTag, tagNumber), nil
+	return NewBACnetAddressEnclosed(openingTag, address, closingTag, tagNumber), nil
 }
 
 func (m *BACnetAddressEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -191,16 +191,16 @@ func (m *BACnetAddressEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Simple Field (recipient)
-	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
+	// Simple Field (address)
+	if pushErr := writeBuffer.PushContext("address"); pushErr != nil {
 		return pushErr
 	}
-	_recipientErr := m.Recipient.Serialize(writeBuffer)
-	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
+	_addressErr := m.Address.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("address"); popErr != nil {
 		return popErr
 	}
-	if _recipientErr != nil {
-		return errors.Wrap(_recipientErr, "Error serializing 'recipient' field")
+	if _addressErr != nil {
+		return errors.Wrap(_addressErr, "Error serializing 'address' field")
 	}
 
 	// Simple Field (closingTag)
