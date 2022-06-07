@@ -90,6 +90,10 @@ public class StaticHelper {
             if (!BACnetProgramRequest.isDefined((short) rawValue))
                 throw new ParseException("Invalid value " + rawValue + " for " + BACnetProgramRequest.class.getSimpleName());
             return BACnetProgramRequest.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetFileAccessMethod.class) {
+            if (!BACnetFileAccessMethod.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetFileAccessMethod.class.getSimpleName());
+            return BACnetFileAccessMethod.enumForValue((short) rawValue);
         }
         throw new ParseException("Unmapped type " + declaringClass);
     }

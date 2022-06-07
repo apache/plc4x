@@ -2575,7 +2575,9 @@
         //[*, 'APDU_SEGMENT_TIMEOUT'                    BACnetConstructedDataApduSegmentTimeout [validation    '1 == 2'    "TODO: implement me APDU_SEGMENT_TIMEOUT BACnetConstructedDataApduSegmentTimeout"]]
         //[*, 'APDU_TIMEOUT'                            BACnetConstructedDataAPDUTimeout [validation    '1 == 2'    "TODO: implement me APDU_TIMEOUT BACnetConstructedDataAPDUTimeout"]]
         //[*, 'APPLICATION_SOFTWARE_VERSION'            BACnetConstructedDataApplicationSoftwareVersion [validation    '1 == 2'    "TODO: implement me APPLICATION_SOFTWARE_VERSION BACnetConstructedDataApplicationSoftwareVersion"]]
-        //[*, 'ARCHIVE'                                 BACnetConstructedDataArchive [validation    '1 == 2'    "TODO: implement me ARCHIVE BACnetConstructedDataArchive"]]
+        [*, 'ARCHIVE'                                 BACnetConstructedDataArchive
+            [simple BACnetApplicationTagBoolean                                          archive                        ]
+        ]
         [*, 'ASSIGNED_ACCESS_RIGHTS'                  BACnetConstructedDataAssignedAccessRights
             [array    BACnetAssignedAccessRights
                                         assignedAccessRights
@@ -2958,15 +2960,21 @@
             [simple   BACnetApplicationTagUnsignedInteger                               fdSubscriptionLifetime          ]
         ]
         //[*, 'FEEDBACK_VALUE'                          BACnetConstructedDataFeedbackValue [validation    '1 == 2'    "TODO: implement me FEEDBACK_VALUE BACnetConstructedDataFeedbackValue"]]
-        //[*, 'FILE_ACCESS_METHOD'                      BACnetConstructedDataFileAccessMethod [validation    '1 == 2'    "TODO: implement me FILE_ACCESS_METHOD BACnetConstructedDataFileAccessMethod"]]
-        //[*, 'FILE_SIZE'                               BACnetConstructedDataFileSize [validation    '1 == 2'    "TODO: implement me FILE_SIZE BACnetConstructedDataFileSize"]]
-        //[*, 'FILE_TYPE'                               BACnetConstructedDataFileType [validation    '1 == 2'    "TODO: implement me FILE_TYPE BACnetConstructedDataFileType"]]
+        [*, 'FILE_ACCESS_METHOD'                      BACnetConstructedDataFileAccessMethod
+            [simple   BACnetFileAccessMethodTagged('0', 'TagClass.APPLICATION_TAGS')     fileAccessMethod               ]
+        ]
+        [*, 'FILE_SIZE'                               BACnetConstructedDataFileSize
+            [simple   BACnetApplicationTagUnsignedInteger                                fileSize                       ]
+        ]
+        [*, 'FILE_TYPE'                               BACnetConstructedDataFileType
+            [simple   BACnetApplicationTagCharacterString                                   fileType                    ]
+        ]
         //[*, 'FIRMWARE_REVISION'                       BACnetConstructedDataFirmwareRevision [validation    '1 == 2'    "TODO: implement me FIRMWARE_REVISION BACnetConstructedDataFirmwareRevision"]]
         [*, 'FLOOR_TEXT'                              BACnetConstructedDataFloorText
             [array    BACnetApplicationTagCharacterString
                             floorText
                                     terminated
-                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         [*, 'FULL_DUTY_BASELINE'                      BACnetConstructedDataFullDutyBaseline
             [simple   BACnetApplicationTagReal                                          fullDutyBaseLine                ]
@@ -3269,7 +3277,9 @@
         //[*, 'MINIMUM_VALUE_TIMESTAMP'                 BACnetConstructedDataMinimumValueTimestamp [validation    '1 == 2'    "TODO: implement me MINIMUM_VALUE_TIMESTAMP BACnetConstructedDataMinimumValueTimestamp"]]
         //[*, 'MODE'                                    BACnetConstructedDataMode [validation    '1 == 2'    "TODO: implement me MODE BACnetConstructedDataMode"]]
         //[*, 'MODEL_NAME'                              BACnetConstructedDataModelName [validation    '1 == 2'    "TODO: implement me MODEL_NAME BACnetConstructedDataModelName"]]
-        //[*, 'MODIFICATION_DATE'                       BACnetConstructedDataModificationDate [validation    '1 == 2'    "TODO: implement me MODIFICATION_DATE BACnetConstructedDataModificationDate"]]
+        [*, 'MODIFICATION_DATE'                       BACnetConstructedDataModificationDate
+            [simple   BACnetDateTime                                        modificationDate                            ]
+        ]
         [*, 'MUSTER_POINT'                            BACnetConstructedDataMusterPoint
             [simple   BACnetApplicationTagBoolean                                       musterPoint                     ]
         ]
@@ -3429,7 +3439,9 @@
         //[*, 'PROTOCOL_SERVICES_SUPPORTED'             BACnetConstructedDataProtocolServicesSupported [validation    '1 == 2'    "TODO: implement me PROTOCOL_SERVICES_SUPPORTED BACnetConstructedDataProtocolServicesSupported"]]
         //[*, 'PROTOCOL_VERSION'                        BACnetConstructedDataProtocolVersion [validation    '1 == 2'    "TODO: implement me PROTOCOL_VERSION BACnetConstructedDataProtocolVersion"]]
         //[*, 'PULSE_RATE'                              BACnetConstructedDataPulseRate [validation    '1 == 2'    "TODO: implement me PULSE_RATE BACnetConstructedDataPulseRate"]]
-        //[*, 'READ_ONLY'                               BACnetConstructedDataReadOnly [validation    '1 == 2'    "TODO: implement me READ_ONLY BACnetConstructedDataReadOnly"]]
+        [*, 'READ_ONLY'                               BACnetConstructedDataReadOnly
+            [simple BACnetApplicationTagBoolean                                readOnly                                 ]
+        ]
         [*, 'REASON_FOR_DISABLE'                      BACnetConstructedDataReasonForDisable
             [array    BACnetAccessCredentialDisableReasonTagged('0', 'TagClass.APPLICATION_TAGS')
                                             reasonForDisable
