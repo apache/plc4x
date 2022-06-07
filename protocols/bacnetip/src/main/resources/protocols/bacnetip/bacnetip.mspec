@@ -2756,9 +2756,15 @@
         [*, 'DEADBAND'                                BACnetConstructedDataDeadband
             [simple   BACnetApplicationTagReal                                          deadband                        ]
         ]
-        //[*, 'DEFAULT_FADE_TIME'                       BACnetConstructedDataDefaultFadeTime [validation    '1 == 2'    "TODO: implement me DEFAULT_FADE_TIME BACnetConstructedDataDefaultFadeTime"]]
-        //[*, 'DEFAULT_RAMP_RATE'                       BACnetConstructedDataDefaultRampRate [validation    '1 == 2'    "TODO: implement me DEFAULT_RAMP_RATE BACnetConstructedDataDefaultRampRate"]]
-        //[*, 'DEFAULT_STEP_INCREMENT'                  BACnetConstructedDataDefaultStepIncrement [validation    '1 == 2'    "TODO: implement me DEFAULT_STEP_INCREMENT BACnetConstructedDataDefaultStepIncrement"]]
+        [*, 'DEFAULT_FADE_TIME'                       BACnetConstructedDataDefaultFadeTime
+                [simple   BACnetApplicationTagUnsignedInteger                     defaultFadeTime                       ]
+        ]
+        [*, 'DEFAULT_RAMP_RATE'                       BACnetConstructedDataDefaultRampRate
+            [simple   BACnetApplicationTagReal                                          defaultRampRate                 ]
+        ]
+        [*, 'DEFAULT_STEP_INCREMENT'                  BACnetConstructedDataDefaultStepIncrement
+            [simple   BACnetApplicationTagReal                                          defaultStepIncrement            ]
+        ]
         [*, 'DEFAULT_SUBORDINATE_RELATIONSHIP'        BACnetConstructedDataDefaultSubordinateRelationship
             [simple   BACnetRelationshipTagged('0', 'TagClass.APPLICATION_TAGS') defaultSubordinateRelationship         ]
         ]
@@ -2930,7 +2936,9 @@
         ]
         //[*, 'HIGHER_DECK'                             BACnetConstructedDataHigherDeck [validation    '1 == 2'    "TODO: implement me HIGHER_DECK BACnetConstructedDataHigherDeck"]]
         //[*, 'IN_PROCESS'                              BACnetConstructedDataInProcess [validation    '1 == 2'    "TODO: implement me IN_PROCESS BACnetConstructedDataInProcess"]]
-        //[*, 'IN_PROGRESS'                             BACnetConstructedDataInProgress [validation    '1 == 2'    "TODO: implement me IN_PROGRESS BACnetConstructedDataInProgress"]]
+        [*, 'IN_PROGRESS'                             BACnetConstructedDataInProgress
+            [simple   BACnetLightingInProgressTagged('0', 'TagClass.APPLICATION_TAGS')         inProgress               ]
+        ]
         //[*, 'INACTIVE_TEXT'                           BACnetConstructedDataInactiveText [validation    '1 == 2'    "TODO: implement me INACTIVE_TEXT BACnetConstructedDataInactiveText"]]
         [*, 'INITIAL_TIMEOUT'                         BACnetConstructedDataInitialTimeout
             [simple   BACnetApplicationTagUnsignedInteger                               initialTimeout                  ]
@@ -2942,7 +2950,9 @@
         [*, 'INSTANCE_OF'                             BACnetConstructedDataInstanceOf
             [simple   BACnetApplicationTagCharacterString                               instanceOf                      ]
         ]
-        //[*, 'INSTANTANEOUS_POWER'                     BACnetConstructedDataInstantaneousPower [validation    '1 == 2'    "TODO: implement me INSTANTANEOUS_POWER BACnetConstructedDataInstantaneousPower"]]
+        [*, 'INSTANTANEOUS_POWER'                     BACnetConstructedDataInstantaneousPower
+            [simple   BACnetApplicationTagReal                                          instantaneousPower              ]
+        ]
         [*, 'INTEGRAL_CONSTANT'                       BACnetConstructedDataIntegralConstant
              [simple   BACnetApplicationTagReal                                integralConstant                         ]
         ]
@@ -3044,15 +3054,19 @@
             [simple   BACnetTimerTransitionTagged('0', 'TagClass.APPLICATION_TAGS')             lastStateChange         ]
         ]
         [*, 'LAST_USE_TIME'                           BACnetConstructedDataLastUseTime
-            [simple   BACnetDateTime                                        lastUseTime             ]
+            [simple   BACnetDateTime                                        lastUseTime                                 ]
         ]
         [*, 'LIFE_SAFETY_ALARM_VALUES'                BACnetConstructedDataLifeSafetyAlarmValues
             [array    BACnetLifeSafetyStateTagged('0', 'TagClass.APPLICATION_TAGS')
                             alarmValues              terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
-        //[*, 'LIGHTING_COMMAND'                        BACnetConstructedDataLightingCommand [validation    '1 == 2'    "TODO: implement me LIGHTING_COMMAND BACnetConstructedDataLightingCommand"]]
-        //[*, 'LIGHTING_COMMAND_DEFAULT_PRIORITY'       BACnetConstructedDataLightingCommandDefaultPriority [validation    '1 == 2'    "TODO: implement me LIGHTING_COMMAND_DEFAULT_PRIORITY BACnetConstructedDataLightingCommandDefaultPriority"]]
+        [*, 'LIGHTING_COMMAND'                        BACnetConstructedDataLightingCommand
+            [simple   BACnetLightingCommand     lightingCommand                                                         ]
+        ]
+        [*, 'LIGHTING_COMMAND_DEFAULT_PRIORITY'       BACnetConstructedDataLightingCommandDefaultPriority
+            [simple BACnetApplicationTagUnsignedInteger                       lightingCommandDefaultPriority            ]
+        ]
         [*, 'LIMIT_ENABLE'                            BACnetConstructedDataLimitEnable
             [simple   BACnetLimitEnableTagged('0', 'TagClass.APPLICATION_TAGS')         limitEnable                     ]
         ]
@@ -3127,7 +3141,9 @@
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
-        //[*, 'MAX_ACTUAL_VALUE'                        BACnetConstructedDataMaxActualValue [validation    '1 == 2'    "TODO: implement me MAX_ACTUAL_VALUE BACnetConstructedDataMaxActualValue"]]
+        [*, 'MAX_ACTUAL_VALUE'                        BACnetConstructedDataMaxActualValue
+            [simple   BACnetApplicationTagReal                                          maxActualValue                  ]
+        ]
         //[*, 'MAX_APDU_LENGTH_ACCEPTED'                BACnetConstructedDataMaxApduLengthAccepted [validation    '1 == 2'    "TODO: implement me MAX_APDU_LENGTH_ACCEPTED BACnetConstructedDataMaxApduLengthAccepted"]]
         [*, 'MAX_FAILED_ATTEMPTS'                     BACnetConstructedDataMaxFailedAttempts
             [simple BACnetApplicationTagUnsignedInteger                     maxFailedAttempts                           ]
@@ -3159,7 +3175,9 @@
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
-        //[*, 'MIN_ACTUAL_VALUE'                        BACnetConstructedDataMinActualValue [validation    '1 == 2'    "TODO: implement me MIN_ACTUAL_VALUE BACnetConstructedDataMinActualValue"]]
+        [*, 'MIN_ACTUAL_VALUE'                        BACnetConstructedDataMinActualValue
+            [simple   BACnetApplicationTagReal                                          minActualValue                  ]
+        ]
         ['ACCUMULATOR', 'MIN_PRES_VALUE'               BACnetConstructedDataAccumulatorMinPresValue
             [simple   BACnetApplicationTagUnsignedInteger                     minPresValue                              ]
         ]
@@ -3535,7 +3553,9 @@
         [*, 'TRANSACTION_NOTIFICATION_CLASS'          BACnetConstructedDataTransactionNotificationClass
             [simple BACnetApplicationTagUnsignedInteger                     transactionNotificationClass                ]
         ]
-        //[*, 'TRANSITION'                              BACnetConstructedDataTransition [validation    '1 == 2'    "TODO: implement me TRANSITION BACnetConstructedDataTransition"]]
+        [*, 'TRANSITION'                              BACnetConstructedDataTransition
+            [simple BACnetLightingTransitionTagged('0', 'TagClass.APPLICATION_TAGS')                    transition      ]
+        ]
         //[*, 'TRIGGER'                                 BACnetConstructedDataTrigger [validation    '1 == 2'    "TODO: implement me TRIGGER BACnetConstructedDataTrigger"]]
         [*, 'UNITS'                                   BACnetConstructedDataUnits
             [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS')                    units           ]
