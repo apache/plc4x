@@ -580,8 +580,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataScheduleDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SECURED_STATUS: // BACnetConstructedDataSecuredStatus
 		_child, typeSwitchError = BACnetConstructedDataSecuredStatusParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
-	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SECURITY_PDU_TIMEOUT: // BACnetConstructedDataSecurityPduTimeout
-		_child, typeSwitchError = BACnetConstructedDataSecurityPduTimeoutParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SECURITY_PDU_TIMEOUT: // BACnetConstructedDataSecurityPDUTimeout
+		_child, typeSwitchError = BACnetConstructedDataSecurityPDUTimeoutParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SECURITY_TIME_WINDOW: // BACnetConstructedDataSecurityTimeWindow
 		_child, typeSwitchError = BACnetConstructedDataSecurityTimeWindowParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_STATE_CHANGE_VALUES: // BACnetConstructedDataStateChangeValues

@@ -3257,7 +3257,7 @@
         [*, 'SECURED_STATUS'                          BACnetConstructedDataSecuredStatus
             [simple   BACnetDoorSecuredStatusTagged('0', 'TagClass.APPLICATION_TAGS')         securedStatus             ]
         ]
-        [*, 'SECURITY_PDU_TIMEOUT'                    BACnetConstructedDataSecurityPduTimeout
+        [*, 'SECURITY_PDU_TIMEOUT'                    BACnetConstructedDataSecurityPDUTimeout
             [simple BACnetApplicationTagUnsignedInteger                       securityPduTimeout                        ]
         ]
         [*, 'SECURITY_TIME_WINDOW'                    BACnetConstructedDataSecurityTimeWindow
