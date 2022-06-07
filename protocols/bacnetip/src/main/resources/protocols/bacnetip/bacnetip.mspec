@@ -2341,7 +2341,10 @@
         [*, 'ACCOMPANIMENT_TIME'                      BACnetConstructedDataAccompanimentTime
             [simple   BACnetApplicationTagUnsignedInteger                               accompanimentTime               ]
         ]
-        //[*, 'ACK_REQUIRED'                            BACnetConstructedDataAckRequired [validation    '1 == 2'    "TODO: implement me ACK_REQUIRED BACnetConstructedDataAckRequired"]]
+        [*, 'ACK_REQUIRED'                            BACnetConstructedDataAckRequired
+            [simple   BACnetEventTransitionBitsTagged('0', 'TagClass.APPLICATION_TAGS')
+                                                                                        ackRequired                     ]
+        ]
         [*, 'ACKED_TRANSITIONS'                       BACnetConstructedDataAckedTransitions
             [simple   BACnetEventTransitionBitsTagged('0', 'TagClass.APPLICATION_TAGS') ackedTransitions                ]
         ]
@@ -3141,7 +3144,13 @@
             [simple   BACnetApplicationTagReal                                          presentValue                    ]
         ]
         //[*, 'PRESENT_VALUE'                           BACnetConstructedDataPresentValue [validation    '1 == 2'    "TODO: implement me PRESENT_VALUE BACnetConstructedDataPresentValue"]]
-        //[*, 'PRIORITY'                                BACnetConstructedDataPriority [validation    '1 == 2'    "TODO: implement me PRIORITY BACnetConstructedDataPriority"]]
+        [*, 'PRIORITY'                                BACnetConstructedDataPriority
+            [array    BACnetApplicationTagUnsignedInteger
+                            priority
+                                    terminated
+                                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
+            [validation 'COUNT(priority) == 3' "priority should have exactly 3 values"                         ]
+        ]
         [*, 'PRIORITY_ARRAY'                          BACnetConstructedDataPriorityArray
             [simple   BACnetPriorityArray('objectTypeArgument', 'tagNumber')                            priorityArray   ]
         ]

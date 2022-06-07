@@ -186,6 +186,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataAccompanimentParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCOMPANIMENT_TIME: // BACnetConstructedDataAccompanimentTime
 		_child, typeSwitchError = BACnetConstructedDataAccompanimentTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACK_REQUIRED: // BACnetConstructedDataAckRequired
+		_child, typeSwitchError = BACnetConstructedDataAckRequiredParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACKED_TRANSITIONS: // BACnetConstructedDataAckedTransitions
 		_child, typeSwitchError = BACnetConstructedDataAckedTransitionsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_LOOP && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataLoopAction
@@ -526,6 +528,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataPositiveAccessRulesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_ANALOG_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE: // BACnetConstructedDataAnalogInputPresentValue
 		_child, typeSwitchError = BACnetConstructedDataAnalogInputPresentValueParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PRIORITY: // BACnetConstructedDataPriority
+		_child, typeSwitchError = BACnetConstructedDataPriorityParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PRIORITY_ARRAY: // BACnetConstructedDataPriorityArray
 		_child, typeSwitchError = BACnetConstructedDataPriorityArrayParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PROCESS_IDENTIFIER_FILTER: // BACnetConstructedDataProcessIdentifierFilter
