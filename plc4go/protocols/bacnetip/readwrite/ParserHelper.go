@@ -596,6 +596,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceParse(io)
 	case "BACnetApplicationTag":
 		return model.BACnetApplicationTagParse(io)
+	case "BACnetShedLevel":
+		return model.BACnetShedLevelParse(io)
 	case "BACnetActionTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

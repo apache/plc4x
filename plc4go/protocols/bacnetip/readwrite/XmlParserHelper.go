@@ -681,6 +681,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetApplicationTag":
 		return model.BACnetApplicationTagParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetShedLevel":
+		return model.BACnetShedLevelParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetActionTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {

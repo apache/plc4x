@@ -2368,7 +2368,9 @@
         //[*, 'ACTIVE_COV_SUBSCRIPTIONS'                BACnetConstructedDataActiveCOVSubscriptions [validation    '1 == 2'    "TODO: implement me ACTIVE_COV_SUBSCRIPTIONS BACnetConstructedDataActiveCOVSubscriptions"]]
         //[*, 'ACTIVE_TEXT'                             BACnetConstructedDataActiveText [validation    '1 == 2'    "TODO: implement me ACTIVE_TEXT BACnetConstructedDataActiveText"]]
         //[*, 'ACTIVE_VT_SESSIONS'                      BACnetConstructedDataActiveVTSessions [validation    '1 == 2'    "TODO: implement me ACTIVE_VT_SESSIONS BACnetConstructedDataActiveVTSessions"]]
-        //[*, 'ACTUAL_SHED_LEVEL'                       BACnetConstructedDataActualShedLevel [validation    '1 == 2'    "TODO: implement me ACTUAL_SHED_LEVEL BACnetConstructedDataActualShedLevel"]]
+        [*, 'ACTUAL_SHED_LEVEL'                       BACnetConstructedDataActualShedLevel
+            [simple  BACnetShedLevel            actualShedLevel                                                         ]
+        ]
         //[*, 'ADJUST_VALUE'                            BACnetConstructedDataAdjustValue [validation    '1 == 2'    "TODO: implement me ADJUST_VALUE BACnetConstructedDataAdjustValue"]]
         //[*, 'ALARM_VALUE'                             BACnetConstructedDataAlarmValue [validation    '1 == 2'    "TODO: implement me ALARM_VALUE BACnetConstructedDataAlarmValue"]]
         ['LIFE_SAFETY_POINT', 'ALARM_VALUES'                            BACnetConstructedDataLifeSafetyPointAlarmValues
@@ -2811,9 +2813,11 @@
                                             doorStatus                      ]
         ]
         [*, 'DOOR_UNLOCK_DELAY_TIME'                  BACnetConstructedDataDoorUnlockDelayTime
-            [simple   BACnetApplicationTagUnsignedInteger                     doorUnlockDelayTime                         ]
+            [simple   BACnetApplicationTagUnsignedInteger                     doorUnlockDelayTime                       ]
         ]
-        //[*, 'DUTY_WINDOW'                             BACnetConstructedDataDutyWindow [validation    '1 == 2'    "TODO: implement me DUTY_WINDOW BACnetConstructedDataDutyWindow"]]
+        [*, 'DUTY_WINDOW'                             BACnetConstructedDataDutyWindow
+            [simple   BACnetApplicationTagUnsignedInteger                     dutyWindow                                ]
+        ]
         [*, 'EFFECTIVE_PERIOD'                        BACnetConstructedDataEffectivePeriod
             [simple   BACnetDateRange               dateRange   ]
         ]
@@ -2863,7 +2867,9 @@
         ]
         //[*, 'EXECUTION_DELAY'                         BACnetConstructedDataExecutionDelay [validation    '1 == 2'    "TODO: implement me EXECUTION_DELAY BACnetConstructedDataExecutionDelay"]]
         //[*, 'EXIT_POINTS'                             BACnetConstructedDataExitPoints [validation    '1 == 2'    "TODO: implement me EXIT_POINTS BACnetConstructedDataExitPoints"]]
-        //[*, 'EXPECTED_SHED_LEVEL'                     BACnetConstructedDataExpectedShedLevel [validation    '1 == 2'    "TODO: implement me EXPECTED_SHED_LEVEL BACnetConstructedDataExpectedShedLevel"]]
+        [*, 'EXPECTED_SHED_LEVEL'                     BACnetConstructedDataExpectedShedLevel
+            [simple  BACnetShedLevel            expectedShedLevel                                                       ]
+        ]
         //[*, 'EXPIRATION_TIME'                         BACnetConstructedDataExpirationTime [validation    '1 == 2'    "TODO: implement me EXPIRATION_TIME BACnetConstructedDataExpirationTime"]]
         [*, 'EXTENDED_TIME_ENABLE'                    BACnetConstructedDataExtendedTimeEnable
             [simple   BACnetApplicationTagBoolean                               extendedTimeEnable                      ]
@@ -2908,7 +2914,9 @@
         //[*, 'FILE_TYPE'                               BACnetConstructedDataFileType [validation    '1 == 2'    "TODO: implement me FILE_TYPE BACnetConstructedDataFileType"]]
         //[*, 'FIRMWARE_REVISION'                       BACnetConstructedDataFirmwareRevision [validation    '1 == 2'    "TODO: implement me FIRMWARE_REVISION BACnetConstructedDataFirmwareRevision"]]
         //[*, 'FLOOR_TEXT'                              BACnetConstructedDataFloorText [validation    '1 == 2'    "TODO: implement me FLOOR_TEXT BACnetConstructedDataFloorText"]]
-        //[*, 'FULL_DUTY_BASELINE'                      BACnetConstructedDataFullDutyBaseline [validation    '1 == 2'    "TODO: implement me FULL_DUTY_BASELINE BACnetConstructedDataFullDutyBaseline"]]
+        [*, 'FULL_DUTY_BASELINE'                      BACnetConstructedDataFullDutyBaseline
+            [simple   BACnetApplicationTagReal                                          fullDutyBaseLine                ]
+        ]
         //[*, 'GLOBAL_IDENTIFIER'                       BACnetConstructedDataGlobalIdentifier [validation    '1 == 2'    "TODO: implement me GLOBAL_IDENTIFIER BACnetConstructedDataGlobalIdentifier"]]
         //[*, 'GROUP_ID'                                BACnetConstructedDataGroupId [validation    '1 == 2'    "TODO: implement me GROUP_ID BACnetConstructedDataGroupId"]]
         //[*, 'GROUP_MEMBER_NAMES'                      BACnetConstructedDataGroupMemberNames [validation    '1 == 2'    "TODO: implement me GROUP_MEMBER_NAMES BACnetConstructedDataGroupMemberNames"]]
@@ -3354,7 +3362,9 @@
         [*, 'REPRESENTS'                              BACnetConstructedDataRepresents
             [simple   BACnetDeviceObjectReference       represents                                                      ]
         ]
-        //[*, 'REQUESTED_SHED_LEVEL'                    BACnetConstructedDataRequestedShedLevel [validation    '1 == 2'    "TODO: implement me REQUESTED_SHED_LEVEL BACnetConstructedDataRequestedShedLevel"]]
+        [*, 'REQUESTED_SHED_LEVEL'                    BACnetConstructedDataRequestedShedLevel
+            [simple  BACnetShedLevel            requestedShedLevel                                                      ]
+        ]
         //[*, 'REQUESTED_UPDATE_INTERVAL'               BACnetConstructedDataRequestedUpdateInterval [validation    '1 == 2'    "TODO: implement me REQUESTED_UPDATE_INTERVAL BACnetConstructedDataRequestedUpdateInterval"]]
         //[*, 'REQUIRED'                                BACnetConstructedDataRequired [validation    '1 == 2'    "TODO: implement me REQUIRED BACnetConstructedDataRequired"]]
         [*, 'RESOLUTION'                              BACnetConstructedDataResolution
@@ -3394,9 +3404,21 @@
             [simple   BACnetSetpointReference                                           setpointReference               ]
         ]
         //[*, 'SETTING'                                 BACnetConstructedDataSetting [validation    '1 == 2'    "TODO: implement me SETTING BACnetConstructedDataSetting"]]
-        //[*, 'SHED_DURATION'                           BACnetConstructedDataShedDuration [validation    '1 == 2'    "TODO: implement me SHED_DURATION BACnetConstructedDataShedDuration"]]
-        //[*, 'SHED_LEVEL_DESCRIPTIONS'                 BACnetConstructedDataShedLevelDescriptions [validation    '1 == 2'    "TODO: implement me SHED_LEVEL_DESCRIPTIONS BACnetConstructedDataShedLevelDescriptions"]]
-        //[*, 'SHED_LEVELS'                             BACnetConstructedDataShedLevels [validation    '1 == 2'    "TODO: implement me SHED_LEVELS BACnetConstructedDataShedLevels"]]
+        [*, 'SHED_DURATION'                           BACnetConstructedDataShedDuration
+            [simple BACnetApplicationTagUnsignedInteger                       shedDuration                              ]
+        ]
+        [*, 'SHED_LEVEL_DESCRIPTIONS'                 BACnetConstructedDataShedLevelDescriptions
+            [array    BACnetApplicationTagCharacterString
+                                shedLevelDescriptions
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
+        [*, 'SHED_LEVELS'                             BACnetConstructedDataShedLevels
+            [array    BACnetApplicationTagUnsignedInteger
+                                shedLevels
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         //[*, 'SILENCED'                                BACnetConstructedDataSilenced [validation    '1 == 2'    "TODO: implement me SILENCED BACnetConstructedDataSilenced"]]
         [*, 'SLAVE_ADDRESS_BINDING'                   BACnetConstructedDataSlaveAddressBinding
             [array    BACnetAddressBinding
@@ -3415,7 +3437,9 @@
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
             [validation 'COUNT(stateChangeValues) == 7' "stateChangeValues should have exactly 7 values"                ]
         ]
-        //[*, 'STATE_DESCRIPTION'                       BACnetConstructedDataStateDescription [validation    '1 == 2'    "TODO: implement me STATE_DESCRIPTION BACnetConstructedDataStateDescription"]]
+        [*, 'STATE_DESCRIPTION'                       BACnetConstructedDataStateDescription
+            [simple   BACnetApplicationTagCharacterString                               stateDescription                ]
+        ]
         //[*, 'STATE_TEXT'                              BACnetConstructedDataStateText [validation    '1 == 2'    "TODO: implement me STATE_TEXT BACnetConstructedDataStateText"]]
         [*, 'STATUS_FLAGS'                            BACnetConstructedDataStatusFlags
             [simple   BACnetStatusFlagsTagged('0', 'TagClass.APPLICATION_TAGS')         statusFlags                     ]
@@ -4177,4 +4201,24 @@
 [type BACnetSetpointReference
     [optional BACnetObjectPropertyReferenceEnclosed('0')
                                 setPointReference                                                           ]
+]
+
+[type BACnetShedLevel
+    [peek     BACnetTagHeader
+                        peekedTagHeader                 ]
+    [virtual  uint 8    peekedTagNumber     'peekedTagHeader.actualTagNumber']
+    [typeSwitch peekedTagNumber
+        ['0' BACnetShedLevelPercent
+            [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')
+                                        percent                                                             ]
+        ]
+        ['1' BACnetShedLevelLevel
+            [simple   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+                                        level                                                               ]
+        ]
+        ['2' BACnetShedLevelAmount
+            [simple   BACnetContextTagReal('2', 'BACnetDataType.REAL')
+                                        amount                                                              ]
+        ]
+    ]
 ]
