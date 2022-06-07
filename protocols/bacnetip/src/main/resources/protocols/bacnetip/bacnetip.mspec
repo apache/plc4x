@@ -2820,9 +2820,11 @@
         ]
         //[*, 'DEVICE_ADDRESS_BINDING'                  BACnetConstructedDataDeviceAddressBinding [validation    '1 == 2'    "TODO: implement me DEVICE_ADDRESS_BINDING BACnetConstructedDataDeviceAddressBinding"]]
         [*, 'DEVICE_TYPE'                             BACnetConstructedDataDeviceType
-            [simple   BACnetApplicationTagCharacterString                               deviceType  ]
+            [simple   BACnetApplicationTagCharacterString                               deviceType                      ]
         ]
-        //[*, 'DIRECT_READING'                          BACnetConstructedDataDirectReading [validation    '1 == 2'    "TODO: implement me DIRECT_READING BACnetConstructedDataDirectReading"]]
+        [*, 'DIRECT_READING'                          BACnetConstructedDataDirectReading
+            [simple   BACnetApplicationTagReal                                          directReading                   ]
+        ]
         [*, 'DISTRIBUTION_KEY_REVISION'               BACnetConstructedDataDistributionKeyRevision
             [simple BACnetApplicationTagUnsignedInteger                       distributionKeyRevision                   ]
         ]
@@ -3129,7 +3131,12 @@
                                                 terminated
                                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
-        //[*, 'LIST_OF_GROUP_MEMBERS'                   BACnetConstructedDataListOfGroupMembers [validation    '1 == 2'    "TODO: implement me LIST_OF_GROUP_MEMBERS BACnetConstructedDataListOfGroupMembers"]]
+        [*, 'LIST_OF_GROUP_MEMBERS'                   BACnetConstructedDataListOfGroupMembers
+            [array    BACnetReadAccessSpecification
+                                        listOfGroupMembers
+                                                terminated
+                                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         [*, 'LIST_OF_OBJECT_PROPERTY_REFERENCES'        BACnetConstructedDataListOfObjectPropertyReferences
             [array    BACnetDeviceObjectPropertyReference
                             references              terminated
@@ -3481,7 +3488,9 @@
         [*, 'SETPOINT_REFERENCE'                      BACnetConstructedDataSetpointReference
             [simple   BACnetSetpointReference                                           setpointReference               ]
         ]
-        //[*, 'SETTING'                                 BACnetConstructedDataSetting [validation    '1 == 2'    "TODO: implement me SETTING BACnetConstructedDataSetting"]]
+        [*, 'SETTING'                                 BACnetConstructedDataSetting
+            [simple   BACnetApplicationTagUnsignedInteger                     setting                                   ]
+        ]
         [*, 'SHED_DURATION'                           BACnetConstructedDataShedDuration
             [simple BACnetApplicationTagUnsignedInteger                       shedDuration                              ]
         ]
