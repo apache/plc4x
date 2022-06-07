@@ -538,6 +538,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataFullDutyBaselineParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_GROUP_MEMBER_NAMES: // BACnetConstructedDataGroupMemberNames
 		_child, typeSwitchError = BACnetConstructedDataGroupMemberNamesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_GROUP_MODE: // BACnetConstructedDataGroupMode
+		_child, typeSwitchError = BACnetConstructedDataGroupModeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_ACCUMULATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_HIGH_LIMIT: // BACnetConstructedDataAccumulatorHighLimit
 		_child, typeSwitchError = BACnetConstructedDataAccumulatorHighLimitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_HIGH_LIMIT: // BACnetConstructedDataHighLimit
@@ -596,6 +598,10 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataIPv6ZoneIndexParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_KEY_SETS: // BACnetConstructedDataKeySets
 		_child, typeSwitchError = BACnetConstructedDataKeySetsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LANDING_CALL_CONTROL: // BACnetConstructedDataLandingCallControl
+		_child, typeSwitchError = BACnetConstructedDataLandingCallControlParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LANDING_CALLS: // BACnetConstructedDataLandingCalls
+		_child, typeSwitchError = BACnetConstructedDataLandingCallsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LANDING_DOOR_STATUS: // BACnetConstructedDataLandingDoorStatus
 		_child, typeSwitchError = BACnetConstructedDataLandingDoorStatusParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_ACCESS_EVENT: // BACnetConstructedDataLastAccessEvent
@@ -644,6 +650,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataLowerDeckParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MAC_ADDRESS: // BACnetConstructedDataMACAddress
 		_child, typeSwitchError = BACnetConstructedDataMACAddressParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MACHINE_ROOM_ID: // BACnetConstructedDataMachineRoomID
+		_child, typeSwitchError = BACnetConstructedDataMachineRoomIDParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MAKING_CAR_CALL: // BACnetConstructedDataMakingCarCall
 		_child, typeSwitchError = BACnetConstructedDataMakingCarCallParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MANIPULATED_VARIABLE_REFERENCE: // BACnetConstructedDataManipulatedVariableReference

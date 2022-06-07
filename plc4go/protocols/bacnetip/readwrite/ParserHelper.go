@@ -914,9 +914,13 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(io, tagNumber)
 	case "BACnetAddressBinding":
 		return model.BACnetAddressBindingParse(io)
+	case "BACnetLandingCallStatusCommand":
+		return model.BACnetLandingCallStatusCommandParse(io)
 	case "ListOfCovNotificationsValue":
 		objectTypeArgument := model.BACnetObjectTypeByName(arguments[0])
 		return model.ListOfCovNotificationsValueParse(io, objectTypeArgument)
+	case "BACnetLandingCallStatus":
+		return model.BACnetLandingCallStatusParse(io)
 	case "BACnetEventParameterChangeOfStateListOfValues":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

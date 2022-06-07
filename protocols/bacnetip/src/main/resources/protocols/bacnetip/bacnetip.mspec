@@ -2998,7 +2998,9 @@
                                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
         //[*, 'GROUP_MEMBERS'                           BACnetConstructedDataGroupMembers [validation    '1 == 2'    "TODO: implement me GROUP_MEMBERS BACnetConstructedDataGroupMembers"]]
-        //[*, 'GROUP_MODE'                              BACnetConstructedDataGroupMode [validation    '1 == 2'    "TODO: implement me GROUP_MODE BACnetConstructedDataGroupMode"]]
+        [*, 'GROUP_MODE'                              BACnetConstructedDataGroupMode
+            [simple   BACnetLiftGroupModeTagged('0', 'TagClass.APPLICATION_TAGS')       groupMode                       ]
+        ]
         ['ACCUMULATOR', 'HIGH_LIMIT'                    BACnetConstructedDataAccumulatorHighLimit
             [simple   BACnetApplicationTagUnsignedInteger                               highLimit                       ]
         ]
@@ -3102,8 +3104,15 @@
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
             [validation 'COUNT(keySets) == 2' "keySets should have exactly 2 values"                                    ]
         ]
-        //[*, 'LANDING_CALL_CONTROL'                    BACnetConstructedDataLandingCallControl [validation    '1 == 2'    "TODO: implement me LANDING_CALL_CONTROL BACnetConstructedDataLandingCallControl"]]
-        //[*, 'LANDING_CALLS'                           BACnetConstructedDataLandingCalls [validation    '1 == 2'    "TODO: implement me LANDING_CALLS BACnetConstructedDataLandingCalls"]]
+        [*, 'LANDING_CALL_CONTROL'                    BACnetConstructedDataLandingCallControl
+            [simple   BACnetLandingCallStatus             landingCallControl                                            ]
+        ]
+        [*, 'LANDING_CALLS'                           BACnetConstructedDataLandingCalls
+            [array    BACnetLandingCallStatus
+                                landingCallStatus
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         [*, 'LANDING_DOOR_STATUS'                     BACnetConstructedDataLandingDoorStatus
             [array    BACnetLandingDoorStatus
                                 landingDoorStatus
@@ -3208,7 +3217,9 @@
         [*, 'MAC_ADDRESS'                             BACnetConstructedDataMACAddress
             [simple   BACnetApplicationTagOctetString   macAddress                                                      ]
         ]
-        //[*, 'MACHINE_ROOM_ID'                         BACnetConstructedDataMachineRoomId [validation    '1 == 2'    "TODO: implement me MACHINE_ROOM_ID BACnetConstructedDataMachineRoomId"]]
+        [*, 'MACHINE_ROOM_ID'                         BACnetConstructedDataMachineRoomID
+            [simple   BACnetApplicationTagObjectIdentifier          machineRoomId                                       ]
+        ]
         //[*, 'MAINTENANCE_REQUIRED'                    BACnetConstructedDataMaintenanceRequired [validation    '1 == 2'    "TODO: implement me MAINTENANCE_REQUIRED BACnetConstructedDataMaintenanceRequired"]]
         [*, 'MAKING_CAR_CALL'                         BACnetConstructedDataMakingCarCall
             [array    BACnetApplicationTagUnsignedInteger
@@ -5046,4 +5057,29 @@
                                                                                        ]
    [simple   BACnetClosingTag('tagNumber')
                    closingTag                                                          ]
+]
+
+[type BACnetLandingCallStatus
+    [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')
+                                        floorNumber                                     ]
+    [simple   BACnetLandingCallStatusCommand
+                                        command                                         ]
+    [optional BACnetContextTagCharacterString('3', 'BACnetDataType.CHARACTER_STRING')
+                                        floorText                                       ]
+]
+
+[type BACnetLandingCallStatusCommand
+    [peek     BACnetTagHeader
+                        peekedTagHeader                                             ]
+    [virtual  uint 8    peekedTagNumber     'peekedTagHeader.actualTagNumber'       ]
+    [typeSwitch peekedTagNumber
+        ['1' BACnetLandingCallStatusCommandDirection
+            [simple BACnetLiftCarDirectionTagged('1', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+                                            direction                               ]
+        ]
+        ['2' BACnetLandingCallStatusCommandDestination
+             [simple   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
+                                            destination                             ]
+        ]
+    ]
 ]

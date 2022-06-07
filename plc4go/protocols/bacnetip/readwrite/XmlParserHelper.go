@@ -1041,9 +1041,13 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetAddressBinding":
 		return model.BACnetAddressBindingParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetLandingCallStatusCommand":
+		return model.BACnetLandingCallStatusCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ListOfCovNotificationsValue":
 		objectTypeArgument := model.BACnetObjectTypeByName(parserArguments[0])
 		return model.ListOfCovNotificationsValueParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument)
+	case "BACnetLandingCallStatus":
+		return model.BACnetLandingCallStatusParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetEventParameterChangeOfStateListOfValues":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
