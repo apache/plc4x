@@ -113,6 +113,12 @@ public class ObjectPropertyDeDuplicationTest {
                         () -> {
                             String searchedTypeName = "BACnetConstructedData" + propertyIdentifier;
                             searchedTypeName = searchedTypeName.replaceAll("_", "");
+                            switch (searchedTypeName) {
+                                case "BACnetConstructedDataOutofService":
+                                    // Global group has a typo in this and writes the "o" lowercase
+                                    searchedTypeName = "BACnetConstructedDataOutOfService";
+                                    break;
+                            }
                             assertNotNull(typeDefinitions.get(searchedTypeName), searchedTypeName + " not found");
                         })
                 );

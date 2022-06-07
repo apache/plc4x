@@ -2765,8 +2765,15 @@
             [simple   BACnetApplicationTagUnsignedInteger                               covPeriod                       ]
         ]
         //[*, 'COV_RESUBSCRIPTION_INTERVAL'             BACnetConstructedDataCOVResubscriptionInterval [validation    '1 == 2'    "TODO: implement me COV_RESUBSCRIPTION_INTERVAL BACnetConstructedDataCOVResubscriptionInterval"]]
-        //[*, 'COVU_PERIOD'                             BACnetConstructedDataCOVUPeriod [validation    '1 == 2'    "TODO: implement me COVU_PERIOD BACnetConstructedDataCOVUPeriod"]]
-        //[*, 'COVU_RECIPIENTS'                         BACnetConstructedDataCOVURecipients [validation    '1 == 2'    "TODO: implement me COVU_RECIPIENTS BACnetConstructedDataCOVURecipients"]]
+        [*, 'COVU_PERIOD'                             BACnetConstructedDataCOVUPeriod
+            [simple   BACnetApplicationTagUnsignedInteger                               covuPeriod                      ]
+        ]
+        [*, 'COVU_RECIPIENTS'                         BACnetConstructedDataCOVURecipients
+            [array    BACnetRecipient
+                                        covuRecipients
+                                                terminated
+                                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         [*, 'CREDENTIAL_DISABLE'                      BACnetConstructedDataCredentialDisable
             [simple   BACnetAccessCredentialDisableTagged('0', 'TagClass.APPLICATION_TAGS')             credentialDisable]
         ]
@@ -2966,7 +2973,12 @@
         ]
         //[*, 'GLOBAL_IDENTIFIER'                       BACnetConstructedDataGlobalIdentifier [validation    '1 == 2'    "TODO: implement me GLOBAL_IDENTIFIER BACnetConstructedDataGlobalIdentifier"]]
         //[*, 'GROUP_ID'                                BACnetConstructedDataGroupId [validation    '1 == 2'    "TODO: implement me GROUP_ID BACnetConstructedDataGroupId"]]
-        //[*, 'GROUP_MEMBER_NAMES'                      BACnetConstructedDataGroupMemberNames [validation    '1 == 2'    "TODO: implement me GROUP_MEMBER_NAMES BACnetConstructedDataGroupMemberNames"]]
+        [*, 'GROUP_MEMBER_NAMES'                      BACnetConstructedDataGroupMemberNames
+            [array    BACnetApplicationTagCharacterString
+                                        groupMemberNames
+                                                terminated
+                                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         //[*, 'GROUP_MEMBERS'                           BACnetConstructedDataGroupMembers [validation    '1 == 2'    "TODO: implement me GROUP_MEMBERS BACnetConstructedDataGroupMembers"]]
         //[*, 'GROUP_MODE'                              BACnetConstructedDataGroupMode [validation    '1 == 2'    "TODO: implement me GROUP_MODE BACnetConstructedDataGroupMode"]]
         ['ACCUMULATOR', 'HIGH_LIMIT'                    BACnetConstructedDataAccumulatorHighLimit
@@ -3228,7 +3240,9 @@
                             terminated
                             'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
-        //[*, 'MEMBER_STATUS_FLAGS'                     BACnetConstructedDataMemberStatusFlags [validation    '1 == 2'    "TODO: implement me MEMBER_STATUS_FLAGS BACnetConstructedDataMemberStatusFlags"]]
+        [*, 'MEMBER_STATUS_FLAGS'                     BACnetConstructedDataMemberStatusFlags
+            [simple   BACnetStatusFlagsTagged('0', 'TagClass.APPLICATION_TAGS')         statusFlags                     ]
+        ]
         [*, 'MEMBERS'                                 BACnetConstructedDataMembers
             [array    BACnetDeviceObjectReference
                                     members
@@ -3450,7 +3464,9 @@
         [*, 'REQUESTED_SHED_LEVEL'                    BACnetConstructedDataRequestedShedLevel
             [simple  BACnetShedLevel            requestedShedLevel                                                      ]
         ]
-        //[*, 'REQUESTED_UPDATE_INTERVAL'               BACnetConstructedDataRequestedUpdateInterval [validation    '1 == 2'    "TODO: implement me REQUESTED_UPDATE_INTERVAL BACnetConstructedDataRequestedUpdateInterval"]]
+        [*, 'REQUESTED_UPDATE_INTERVAL'               BACnetConstructedDataRequestedUpdateInterval
+            [simple BACnetApplicationTagUnsignedInteger                       requestedUpdateInterval                   ]
+        ]
         //[*, 'REQUIRED'                                BACnetConstructedDataRequired [validation    '1 == 2'    "TODO: implement me REQUIRED BACnetConstructedDataRequired"]]
         [*, 'RESOLUTION'                              BACnetConstructedDataResolution
             [simple   BACnetApplicationTagReal                                          resolution                      ]
