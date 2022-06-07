@@ -29,6 +29,7 @@ use plc4rust::write_buffer::WriteBuffer;
 pub struct ModbusPDUGetComEventCounterRequestOptions {
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUGetComEventCounterRequest {
 }

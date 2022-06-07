@@ -29,6 +29,7 @@ use plc4rust::write_buffer::WriteBuffer;
 pub struct ModbusPDUReadDiscreteInputsRequestOptions {
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUReadDiscreteInputsRequest {
     pub startingAddress: u16,

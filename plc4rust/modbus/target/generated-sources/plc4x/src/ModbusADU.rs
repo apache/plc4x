@@ -37,6 +37,7 @@ pub struct ModbusADUOptions {
     pub driverType: DriverType, 
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum ModbusADU {
     ModbusTcpADU(ModbusTcpADU),

@@ -29,6 +29,7 @@ use plc4rust::write_buffer::WriteBuffer;
 pub struct ModbusPDUReadWriteMultipleHoldingRegistersRequestOptions {
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUReadWriteMultipleHoldingRegistersRequest {
     pub readStartingAddress: u16,
@@ -40,7 +41,7 @@ pub struct ModbusPDUReadWriteMultipleHoldingRegistersRequest {
 
 impl ModbusPDUReadWriteMultipleHoldingRegistersRequest {
     pub fn byteCount(&self) -> u8 {
-        (self.value.len()) as u8
+        self.value.len() as u8
     }
 }
 

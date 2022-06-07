@@ -81,7 +81,7 @@ pub struct ${type.name}Options {
 </#if>
 </#if>
 }
-<#--</#if>-->
+
 <#if helper.isAbstract(type)>
 #[derive(PartialEq, Debug, Clone)]
 pub enum ${type.name} {
@@ -173,7 +173,7 @@ impl ${type.name} {
     <#if field.isImplicitField()>
     pub fn ${field.name}(&self) -> ${helper.getLanguageTypeNameForTypeReference(field.type)} {
         <#list helper.implementImplicit(field, type) as line>
-        <#if !line_has_next>(</#if>${line}<#if !line_has_next>) as ${helper.getLanguageTypeNameForTypeReference(field.type)}</#if>
+        <#if !line_has_next><#if line?contains(" ")>(</#if></#if>${line}<#if !line_has_next><#if line?contains(" ")>)</#if> as ${helper.getLanguageTypeNameForTypeReference(field.type)}</#if>
         </#list>
 <#--        ${helper.implementImplicit(field, type)} as ${helper.getLanguageTypeNameForTypeReference(field.type)}-->
     }

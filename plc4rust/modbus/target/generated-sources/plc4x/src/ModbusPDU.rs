@@ -107,6 +107,7 @@ use crate::ModbusPDUReadDeviceIdentificationResponse::ModbusPDUReadDeviceIdentif
 pub struct ModbusPDUOptions {
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum ModbusPDU {
     ModbusPDUError(ModbusPDUError),

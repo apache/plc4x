@@ -30,6 +30,7 @@ use crate::ModbusErrorCode::ModbusErrorCode;
 pub struct ModbusPDUErrorOptions {
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUError {
     pub exceptionCode: ModbusErrorCode

@@ -33,6 +33,7 @@ pub struct ModbusAsciiADUOptions {
     pub driverType: DriverType, 
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusAsciiADU {
     pub address: u8,

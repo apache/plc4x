@@ -29,6 +29,7 @@ use plc4rust::write_buffer::WriteBuffer;
 pub struct ModbusPDUWriteMultipleHoldingRegistersResponseOptions {
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUWriteMultipleHoldingRegistersResponse {
     pub startingAddress: u16,

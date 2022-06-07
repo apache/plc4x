@@ -29,6 +29,7 @@ use plc4rust::write_buffer::WriteBuffer;
 pub struct ModbusPDUReadCoilsResponseOptions {
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUReadCoilsResponse {
     pub value: Vec<u8>
@@ -36,7 +37,7 @@ pub struct ModbusPDUReadCoilsResponse {
 
 impl ModbusPDUReadCoilsResponse {
     pub fn byteCount(&self) -> u8 {
-        (self.value.len()) as u8
+        self.value.len() as u8
     }
 }
 

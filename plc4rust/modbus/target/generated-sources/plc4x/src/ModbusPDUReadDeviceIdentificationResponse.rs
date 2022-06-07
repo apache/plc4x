@@ -34,6 +34,7 @@ use crate::ModbusDeviceInformationObject::ModbusDeviceInformationObjectOptions;
 pub struct ModbusPDUReadDeviceIdentificationResponseOptions {
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUReadDeviceIdentificationResponse {
     pub level: ModbusDeviceInformationLevel,
@@ -46,7 +47,7 @@ pub struct ModbusPDUReadDeviceIdentificationResponse {
 
 impl ModbusPDUReadDeviceIdentificationResponse {
     pub fn numberOfObjects(&self) -> u8 {
-        (self.objects.len()) as u8
+        self.objects.len() as u8
     }
 }
 

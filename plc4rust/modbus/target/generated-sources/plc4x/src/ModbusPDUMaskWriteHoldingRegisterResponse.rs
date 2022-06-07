@@ -29,6 +29,7 @@ use plc4rust::write_buffer::WriteBuffer;
 pub struct ModbusPDUMaskWriteHoldingRegisterResponseOptions {
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUMaskWriteHoldingRegisterResponse {
     pub referenceAddress: u16,

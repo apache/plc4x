@@ -28,6 +28,7 @@ use plc4rust::write_buffer::WriteBuffer;
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusDeviceInformationObjectOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusDeviceInformationObject {
     pub objectId: u8,
@@ -36,7 +37,7 @@ pub struct ModbusDeviceInformationObject {
 
 impl ModbusDeviceInformationObject {
     pub fn objectLength(&self) -> u8 {
-        (self.data.len()) as u8
+        self.data.len() as u8
     }
 }
 

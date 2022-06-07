@@ -29,6 +29,7 @@ use plc4rust::write_buffer::WriteBuffer;
 pub struct ModbusPDUWriteMultipleCoilsRequestOptions {
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUWriteMultipleCoilsRequest {
     pub startingAddress: u16,
@@ -38,7 +39,7 @@ pub struct ModbusPDUWriteMultipleCoilsRequest {
 
 impl ModbusPDUWriteMultipleCoilsRequest {
     pub fn byteCount(&self) -> u8 {
-        (self.value.len()) as u8
+        self.value.len() as u8
     }
 }
 

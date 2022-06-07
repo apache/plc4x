@@ -28,6 +28,7 @@ use plc4rust::write_buffer::WriteBuffer;
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUReadFileRecordRequestItemOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUReadFileRecordRequestItem {
     pub referenceType: u8,

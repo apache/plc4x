@@ -31,6 +31,7 @@ use crate::ModbusPDUReadFileRecordRequestItem::ModbusPDUReadFileRecordRequestIte
 pub struct ModbusPDUReadFileRecordRequestOptions {
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUReadFileRecordRequest {
     pub items: Vec<ModbusPDUReadFileRecordRequestItem>
@@ -42,7 +43,7 @@ impl ModbusPDUReadFileRecordRequest {
         for x in &self.items {
         	s += x.get_length_in_bits();
         };
-        (s) as u8
+        s as u8
     }
 }
 

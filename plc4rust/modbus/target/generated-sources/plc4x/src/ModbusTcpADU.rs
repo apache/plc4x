@@ -33,6 +33,7 @@ pub struct ModbusTcpADUOptions {
     pub driverType: DriverType, 
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusTcpADU {
     pub transactionIdentifier: u16,

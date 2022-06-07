@@ -30,6 +30,7 @@ use crate::ModbusDeviceInformationLevel::ModbusDeviceInformationLevel;
 pub struct ModbusPDUReadDeviceIdentificationRequestOptions {
     pub response: bool
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ModbusPDUReadDeviceIdentificationRequest {
     pub level: ModbusDeviceInformationLevel,
