@@ -2620,7 +2620,9 @@
                                                 terminated
                                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
-        //[*, 'ATTEMPTED_SAMPLES'                       BACnetConstructedDataAttemptedSamples [validation    '1 == 2'    "TODO: implement me ATTEMPTED_SAMPLES BACnetConstructedDataAttemptedSamples"]]
+        [*, 'ATTEMPTED_SAMPLES'                       BACnetConstructedDataAttemptedSamples
+            [simple   BACnetApplicationTagUnsignedInteger                               attemptedSamples                ]
+        ]
         [*, 'AUTHENTICATION_FACTORS'                  BACnetConstructedDataAuthenticationFactors
             [array    BACnetCredentialAuthenticationFactor
                             authenticationFactors
@@ -2654,7 +2656,9 @@
         [*, 'AUTO_SLAVE_DISCOVERY'                    BACnetConstructedDataAutoSlaveDiscovery
             [simple   BACnetApplicationTagBoolean                                       autoSlaveDiscovery              ]
         ]
-        //[*, 'AVERAGE_VALUE'                           BACnetConstructedDataAverageValue [validation    '1 == 2'    "TODO: implement me AVERAGE_VALUE BACnetConstructedDataAverageValue"]]
+        [*, 'AVERAGE_VALUE'                           BACnetConstructedDataAverageValue
+            [simple BACnetApplicationTagReal                                averageValue                                ]
+        ]
         [*, 'BACKUP_AND_RESTORE_STATE'                BACnetConstructedDataBackupAndRestoreState
             [simple   BACnetBackupStateTagged('0', 'TagClass.APPLICATION_TAGS')         backupAndRestoreState           ]
         ]
@@ -3350,8 +3354,12 @@
         [*, 'MAXIMUM_OUTPUT'                          BACnetConstructedDataMaximumOutput
             [simple BACnetApplicationTagReal                                maximumOutput                               ]
         ]
-        //[*, 'MAXIMUM_VALUE'                           BACnetConstructedDataMaximumValue [validation    '1 == 2'    "TODO: implement me MAXIMUM_VALUE BACnetConstructedDataMaximumValue"]]
-        //[*, 'MAXIMUM_VALUE_TIMESTAMP'                 BACnetConstructedDataMaximumValueTimestamp [validation    '1 == 2'    "TODO: implement me MAXIMUM_VALUE_TIMESTAMP BACnetConstructedDataMaximumValueTimestamp"]]
+        [*, 'MAXIMUM_VALUE'                           BACnetConstructedDataMaximumValue
+            [simple BACnetApplicationTagReal                                maximumValue                                ]
+        ]
+        [*, 'MAXIMUM_VALUE_TIMESTAMP'                 BACnetConstructedDataMaximumValueTimestamp
+            [simple   BACnetDateTime                                        maximumValueTimestamp                       ]
+        ]
         [*, 'MEMBER_OF' BACnetConstructedDataMemberOf
             [array    BACnetDeviceObjectReference
                     zones
@@ -3384,7 +3392,9 @@
         [*, 'MINIMUM_VALUE'                           BACnetConstructedDataMinimumValue
             [simple   BACnetApplicationTagReal                              minimumValue                                ]
         ]
-        //[*, 'MINIMUM_VALUE_TIMESTAMP'                 BACnetConstructedDataMinimumValueTimestamp [validation    '1 == 2'    "TODO: implement me MINIMUM_VALUE_TIMESTAMP BACnetConstructedDataMinimumValueTimestamp"]]
+        [*, 'MINIMUM_VALUE_TIMESTAMP'                 BACnetConstructedDataMinimumValueTimestamp
+            [simple   BACnetDateTime                                        minimumValueTimestamp                       ]
+        ]
         //[*, 'MODE'                                    BACnetConstructedDataMode [validation    '1 == 2'    "TODO: implement me MODE BACnetConstructedDataMode"]]
         [*, 'MODEL_NAME'                              BACnetConstructedDataModelName
            [simple   BACnetApplicationTagCharacterString               modelName                                        ]
@@ -3860,13 +3870,17 @@
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
-        //[*, 'VALID_SAMPLES'                           BACnetConstructedDataValidSamples [validation    '1 == 2'    "TODO: implement me VALID_SAMPLES BACnetConstructedDataValidSamples"]]
+        [*, 'VALID_SAMPLES'                           BACnetConstructedDataValidSamples
+            [simple   BACnetApplicationTagUnsignedInteger                               validSamples                    ]
+        ]
         //[*, 'VALUE_BEFORE_CHANGE'                     BACnetConstructedDataValueBeforeChange [validation    '1 == 2'    "TODO: implement me VALUE_BEFORE_CHANGE BACnetConstructedDataValueBeforeChange"]]
         //[*, 'VALUE_CHANGE_TIME'                       BACnetConstructedDataValueChangeTime [validation    '1 == 2'    "TODO: implement me VALUE_CHANGE_TIME BACnetConstructedDataValueChangeTime"]]
         //[*, 'VALUE_SET'                               BACnetConstructedDataValueSet [validation    '1 == 2'    "TODO: implement me VALUE_SET BACnetConstructedDataValueSet"]]
         //[*, 'VALUE_SOURCE'                            BACnetConstructedDataValueSource [validation    '1 == 2'    "TODO: implement me VALUE_SOURCE BACnetConstructedDataValueSource"]]
         //[*, 'VALUE_SOURCE_ARRAY'                      BACnetConstructedDataValueSourceArray [validation    '1 == 2'    "TODO: implement me VALUE_SOURCE_ARRAY BACnetConstructedDataValueSourceArray"]]
-        //[*, 'VARIANCE_VALUE'                          BACnetConstructedDataVarianceValue [validation    '1 == 2'    "TODO: implement me VARIANCE_VALUE BACnetConstructedDataVarianceValue"]]
+        [*, 'VARIANCE_VALUE'                          BACnetConstructedDataVarianceValue
+            [simple BACnetApplicationTagReal                                varianceValue                               ]
+        ]
         [*, 'VENDOR_IDENTIFIER'                       BACnetConstructedDataVendorIdentifier
             [simple   BACnetVendorIdTagged('0', 'TagClass.APPLICATION_TAGS') vendorIdentifier                           ]
         ]
@@ -3896,8 +3910,12 @@
             // TODO: check if we have an array index... in this case it can be below 7... till then we deactivate this check
             //[validation 'COUNT(weeklySchedule) == 7' "weeklySchedule should have exactly 7 values"                      ]
         ]
-        //[*, 'WINDOW_INTERVAL'                         BACnetConstructedDataWindowInterval [validation    '1 == 2'    "TODO: implement me WINDOW_INTERVAL BACnetConstructedDataWindowInterval"]]
-        //[*, 'WINDOW_SAMPLES'                          BACnetConstructedDataWindowSamples [validation    '1 == 2'    "TODO: implement me WINDOW_SAMPLES BACnetConstructedDataWindowSamples"]]
+        [*, 'WINDOW_INTERVAL'                         BACnetConstructedDataWindowInterval
+            [simple   BACnetApplicationTagUnsignedInteger                               windowInterval                  ]
+        ]
+        [*, 'WINDOW_SAMPLES'                          BACnetConstructedDataWindowSamples
+            [simple   BACnetApplicationTagUnsignedInteger                               windowSamples                   ]
+        ]
         [*, 'WRITE_STATUS'                            BACnetConstructedDataWriteStatus
             [simple   BACnetWriteStatusTagged('0', 'TagClass.APPLICATION_TAGS') writeStatus                             ]
         ]
