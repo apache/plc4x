@@ -43,6 +43,15 @@
 ]
 
 // Attention: No proprietary extension allowed
+[enum uint 8 BACnetAccumulatorRecordAccumulatorStatus
+    ['0'    NORMAL                                  ]
+    ['1'    STARTING                                ]
+    ['2'    RECOVERED                               ]
+    ['3'    ABNORMAL                                ]
+    ['4'    FAILED                                  ]
+]
+
+// Attention: No proprietary extension allowed
 [enum uint 8 BACnetAuthenticationFactorType
     ['0'    UNDEFINED                               ]
     ['1'    ERROR                                   ]

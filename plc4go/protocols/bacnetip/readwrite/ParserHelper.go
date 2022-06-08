@@ -228,6 +228,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetDeviceStatusTaggedParse(io, tagNumber, tagClass)
+	case "BACnetPrescale":
+		return model.BACnetPrescaleParse(io)
 	case "ErrorEnclosed":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -364,6 +366,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetIPModeTaggedParse(io, tagNumber, tagClass)
+	case "BACnetAccumulatorRecord":
+		return model.BACnetAccumulatorRecordParse(io)
 	case "BACnetDailySchedule":
 		return model.BACnetDailyScheduleParse(io)
 	case "BACnetOptionalBinaryPV":
@@ -1016,6 +1020,13 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetAssignedLandingCallsLandingCallsListParse(io, tagNumber)
 	case "BACnetTagPayloadDouble":
 		return model.BACnetTagPayloadDoubleParse(io)
+	case "BACnetAccumulatorRecordAccumulatorStatusTagged":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		tagClass := model.TagClassByName(arguments[1])
+		return model.BACnetAccumulatorRecordAccumulatorStatusTaggedParse(io, tagNumber, tagClass)
 	case "BACnetTimerStateChangeValue":
 		objectTypeArgument := model.BACnetObjectTypeByName(arguments[0])
 		return model.BACnetTimerStateChangeValueParse(io, objectTypeArgument)
@@ -1128,6 +1139,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetDoorValueTaggedParse(io, tagNumber, tagClass)
+	case "BACnetScale":
+		return model.BACnetScaleParse(io)
 	case "BACnetNotificationParametersChangeOfValueNewValue":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
