@@ -60,8 +60,10 @@ public class RustLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
-    protected List<Template> getSpecTemplates(Configuration freemarkerConfiguration) {
-        return Collections.emptyList();
+    protected List<Template> getSpecTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return Arrays.asList(
+            freemarkerConfiguration.getTemplate("templates/rust/Cargo.toml.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/rust/lib.rs.ftlh"));
     }
 
     @Override
@@ -87,60 +89,4 @@ public class RustLanguageOutput extends FreemarkerLanguageOutput {
         return new RustLanguageTemplateHelper(thisType, protocolName, flavorName, types, options);
     }
 
-    @Override
-    protected void postProcessTemplateOutput(File outputFile) {
-/*        try {
-            FileUtils.writeStringToFile(
-                outputFile,
-                formatter.formatSourceAndFixImports(
-                    FileUtils.readFileToString(outputFile, StandardCharsets.UTF_8)
-                ),
-                StandardCharsets.UTF_8
-            );
-        } catch (IOException | FormatterException e) {
-            LOGGER.error("Error formatting {}", outputFile, e);
-        }
- */
-    }
-
-    @Override
-    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types, Map<String, String> options) throws GenerationException {
-        super.generate(outputDir, languageName, protocolName, outputFlavor, types, options);
-        // Add post generation logic here
-        try {
-            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/rust/Cargo.toml");
-            if (inputStream == null) {
-                throw new RuntimeException("Unable to generate Cargo.toml");
-            }
-            java.nio.file.Files.copy(
-                inputStream,
-                outputDir.toPath().resolve("Cargo.toml"),
-                StandardCopyOption.REPLACE_EXISTING);
-            inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // Generate lib.rs
-        try {
-            StringBuilder sb = new StringBuilder();
-
-            Collection<File> files = FileUtils.listFiles(outputDir.toPath().resolve("src").toFile(), new String[]{"rs"}, false);
-
-            for (File file : files) {
-                sb.append("mod " + file.getName().split("\\.")[0] + ";\n");
-            }
-            sb.append("\n");
-            sb.append("#[cfg(test)]\n" +
-                "mod test {\n" +
-                "\n" +
-                "    #[test]\n" +
-                "    fn test() {\n" +
-                "        println!(\"Hello world!\");\n" +
-                "    }\n" +
-                "}");
-            FileUtils.writeStringToFile(outputDir.toPath().resolve("src").resolve("lib.rs").toFile(), sb.toString(), Charset.defaultCharset());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

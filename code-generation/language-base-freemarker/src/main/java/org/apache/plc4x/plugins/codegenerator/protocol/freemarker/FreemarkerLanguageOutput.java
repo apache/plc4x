@@ -40,7 +40,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
     private static final Logger LOGGER = LoggerFactory.getLogger(FreemarkerLanguageOutput.class);
 
     @Override
-    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types,
+    public void generate(File outputDir, String version, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types,
                          Map<String, String> options)
         throws GenerationException {
 
@@ -70,6 +70,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             typeContext.put("languageName", languageName);
             typeContext.put("protocolName", protocolName);
             typeContext.put("outputFlavor", outputFlavor);
+            typeContext.put("version", version);
             typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types, options));
             typeContext.put("tracer", Tracer.start("global"));
             typeContext.putAll(options);

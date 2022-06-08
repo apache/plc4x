@@ -1,6 +1,6 @@
 [package]
-name = "modbus-server"
-version = "0.1.0"
+name = "plc4rust-modbus-server"
+version = "0.10.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
