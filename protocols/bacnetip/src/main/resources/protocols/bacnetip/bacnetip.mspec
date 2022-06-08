@@ -2841,7 +2841,12 @@
         [*, 'DATABASE_REVISION'                       BACnetConstructedDataDatabaseRevision
             [simple   BACnetApplicationTagUnsignedInteger                     databaseRevision                          ]
         ]
-        //[*, 'DATE_LIST'                               BACnetConstructedDataDateList [validation    '1 == 2'    "TODO: implement me DATE_LIST BACnetConstructedDataDateList"]]
+        [*, 'DATE_LIST'                               BACnetConstructedDataDateList
+            [array    BACnetCalendarEntry
+                        dateList
+                            terminated
+                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         [*, 'DAYLIGHT_SAVINGS_STATUS'                 BACnetConstructedDataDaylightSavingsStatus
             [simple   BACnetApplicationTagBoolean                               daylightSavingsStatus                   ]
         ]

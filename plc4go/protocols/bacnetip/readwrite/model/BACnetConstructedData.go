@@ -460,6 +460,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataCredentialsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DATABASE_REVISION: // BACnetConstructedDataDatabaseRevision
 		_child, typeSwitchError = BACnetConstructedDataDatabaseRevisionParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DATE_LIST: // BACnetConstructedDataDateList
+		_child, typeSwitchError = BACnetConstructedDataDateListParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DAYLIGHT_SAVINGS_STATUS: // BACnetConstructedDataDaylightSavingsStatus
 		_child, typeSwitchError = BACnetConstructedDataDaylightSavingsStatusParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DAYS_REMAINING: // BACnetConstructedDataDaysRemaining
