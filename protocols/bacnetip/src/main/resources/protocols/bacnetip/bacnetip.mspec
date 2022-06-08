@@ -2590,7 +2590,9 @@
         [*, 'ALL_WRITES_SUCCESSFUL'                   BACnetConstructedDataAllWritesSuccessful
             [simple   BACnetApplicationTagBoolean                               allWritesSuccessful                     ]
         ]
-        //[*, 'ALLOW_GROUP_DELAY_INHIBIT'               BACnetConstructedDataAllowGroupDelayInhibit [validation    '1 == 2'    "TODO: implement me ALLOW_GROUP_DELAY_INHIBIT BACnetConstructedDataAllowGroupDelayInhibit"]]
+        [*, 'ALLOW_GROUP_DELAY_INHIBIT'               BACnetConstructedDataAllowGroupDelayInhibit
+            [simple   BACnetApplicationTagBoolean                               allowGroupDelayInhibit                  ]
+        ]
         [*, 'APDU_LENGTH'                             BACnetConstructedDataAPDULength
             [simple BACnetApplicationTagUnsignedInteger                               apduLength                        ]
         ]
@@ -2768,7 +2770,9 @@
         [*, 'CHANGES_PENDING'                         BACnetConstructedDataChangesPending
             [simple   BACnetApplicationTagBoolean                                       changesPending                  ]
         ]
-        //[*, 'CHANNEL_NUMBER'                          BACnetConstructedDataChannelNumber [validation    '1 == 2'    "TODO: implement me CHANNEL_NUMBER BACnetConstructedDataChannelNumber"]]
+        [*, 'CHANNEL_NUMBER'                          BACnetConstructedDataChannelNumber
+            [simple   BACnetApplicationTagUnsignedInteger                     channelNumber                             ]
+        ]
         //[*, 'CLIENT_COV_INCREMENT'                    BACnetConstructedDataClientCovIncrement [validation    '1 == 2'    "TODO: implement me CLIENT_COV_INCREMENT BACnetConstructedDataClientCovIncrement"]]
         [*, 'COMMAND'                                 BACnetConstructedDataCommand
             [simple   BACnetNetworkPortCommandTagged('0', 'TagClass.APPLICATION_TAGS')                  command         ]
@@ -2780,7 +2784,12 @@
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
-        //[*, 'CONTROL_GROUPS'                          BACnetConstructedDataControlGroups [validation    '1 == 2'    "TODO: implement me CONTROL_GROUPS BACnetConstructedDataControlGroups"]]
+        [*, 'CONTROL_GROUPS'                          BACnetConstructedDataControlGroups
+            [array    BACnetApplicationTagUnsignedInteger
+                                        controlGroups
+                                                terminated
+                                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
+        ]
         [*, 'CONTROLLED_VARIABLE_REFERENCE'           BACnetConstructedDataControlledVariableReference
             [simple   BACnetObjectPropertyReference                                     controlledVariableReference     ]
         ]
@@ -2972,7 +2981,12 @@
                                 terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'        ]
         ]
-        //[*, 'EXECUTION_DELAY'                         BACnetConstructedDataExecutionDelay [validation    '1 == 2'    "TODO: implement me EXECUTION_DELAY BACnetConstructedDataExecutionDelay"]]
+        [*, 'EXECUTION_DELAY'                         BACnetConstructedDataExecutionDelay
+            [array    BACnetApplicationTagUnsignedInteger
+                                        executionDelay
+                                                terminated
+                                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
+        ]
         //[*, 'EXIT_POINTS'                             BACnetConstructedDataExitPoints [validation    '1 == 2'    "TODO: implement me EXIT_POINTS BACnetConstructedDataExitPoints"]]
         [*, 'EXPECTED_SHED_LEVEL'                     BACnetConstructedDataExpectedShedLevel
             [simple  BACnetShedLevel            expectedShedLevel                                                       ]
@@ -3188,7 +3202,9 @@
             [simple   BACnetAddressBinding              lastKeyServer                                                   ]
         ]
         //[*, 'LAST_NOTIFY_RECORD'                      BACnetConstructedDataLastNotifyRecord [validation    '1 == 2'    "TODO: implement me LAST_NOTIFY_RECORD BACnetConstructedDataLastNotifyRecord"]]
-        //[*, 'LAST_PRIORITY'                           BACnetConstructedDataLastPriority [validation    '1 == 2'    "TODO: implement me LAST_PRIORITY BACnetConstructedDataLastPriority"]]
+        [*, 'LAST_PRIORITY'                           BACnetConstructedDataLastPriority
+            [simple   BACnetApplicationTagUnsignedInteger                               lastPriority                    ]
+        ]
         [*, 'LAST_RESTART_REASON'                     BACnetConstructedDataLastRestartReason
             [simple   BACnetRestartReasonTagged('0', 'TagClass.APPLICATION_TAGS')   lastRestartReason                   ]
         ]
@@ -3877,7 +3893,9 @@
         ]
         //[*, 'WINDOW_INTERVAL'                         BACnetConstructedDataWindowInterval [validation    '1 == 2'    "TODO: implement me WINDOW_INTERVAL BACnetConstructedDataWindowInterval"]]
         //[*, 'WINDOW_SAMPLES'                          BACnetConstructedDataWindowSamples [validation    '1 == 2'    "TODO: implement me WINDOW_SAMPLES BACnetConstructedDataWindowSamples"]]
-        //[*, 'WRITE_STATUS'                            BACnetConstructedDataWriteStatus [validation    '1 == 2'    "TODO: implement me WRITE_STATUS BACnetConstructedDataWriteStatus"]]
+        [*, 'WRITE_STATUS'                            BACnetConstructedDataWriteStatus
+            [simple   BACnetWriteStatusTagged('0', 'TagClass.APPLICATION_TAGS') writeStatus                             ]
+        ]
         [*, 'ZONE_FROM'                               BACnetConstructedDataZoneFrom
             [simple   BACnetDeviceObjectReference       zoneFrom                                                        ]
         ]
