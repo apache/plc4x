@@ -2840,7 +2840,12 @@
                             terminated
                             'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
-        //[*, 'CREDENTIALS_IN_ZONE'                     BACnetConstructedDataCredentialsInZone [validation    '1 == 2'    "TODO: implement me CREDENTIALS_IN_ZONE BACnetConstructedDataCredentialsInZone"]]
+        [*, 'CREDENTIALS_IN_ZONE'                     BACnetConstructedDataCredentialsInZone
+            [array    BACnetDeviceObjectReference
+                        credentialsInZone
+                            terminated
+                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         //[*, 'CURRENT_COMMAND_PRIORITY'                BACnetConstructedDataCurrentCommandPriority [validation    '1 == 2'    "TODO: implement me CURRENT_COMMAND_PRIORITY BACnetConstructedDataCurrentCommandPriority"]]
         [*, 'DATABASE_REVISION'                       BACnetConstructedDataDatabaseRevision
             [simple   BACnetApplicationTagUnsignedInteger                     databaseRevision                          ]
@@ -2947,7 +2952,12 @@
         //[*, 'ENABLE'                                  BACnetConstructedDataEnable [validation    '1 == 2'    "TODO: implement me ENABLE BACnetConstructedDataEnable"]]
         //[*, 'ENERGY_METER'                            BACnetConstructedDataEnergyMeter [validation    '1 == 2'    "TODO: implement me ENERGY_METER BACnetConstructedDataEnergyMeter"]]
         //[*, 'ENERGY_METER_REF'                        BACnetConstructedDataEnergyMeterRef [validation    '1 == 2'    "TODO: implement me ENERGY_METER_REF BACnetConstructedDataEnergyMeterRef"]]
-        //[*, 'ENTRY_POINTS'                            BACnetConstructedDataEntryPoints [validation    '1 == 2'    "TODO: implement me ENTRY_POINTS BACnetConstructedDataEntryPoints"]]
+        [*, 'ENTRY_POINTS'                            BACnetConstructedDataEntryPoints
+            [array    BACnetDeviceObjectReference
+                                entryPoints
+                                        terminated
+                                        'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         [*, 'ERROR_LIMIT'                             BACnetConstructedDataErrorLimit
             [simple   BACnetApplicationTagReal                                          errorLimit                      ]
         ]
@@ -2996,7 +3006,12 @@
                                                 terminated
                                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
-        //[*, 'EXIT_POINTS'                             BACnetConstructedDataExitPoints [validation    '1 == 2'    "TODO: implement me EXIT_POINTS BACnetConstructedDataExitPoints"]]
+        [*, 'EXIT_POINTS'                             BACnetConstructedDataExitPoints
+            [array    BACnetDeviceObjectReference
+                        exitPoints
+                            terminated
+                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         [*, 'EXPECTED_SHED_LEVEL'                     BACnetConstructedDataExpectedShedLevel
             [simple  BACnetShedLevel            expectedShedLevel                                                       ]
         ]
@@ -3203,10 +3218,18 @@
             [simple   BACnetDeviceObjectReference       lastAccessPoint                                                 ]
         ]
         //[*, 'LAST_COMMAND_TIME'                       BACnetConstructedDataLastCommandTime [validation    '1 == 2'    "TODO: implement me LAST_COMMAND_TIME BACnetConstructedDataLastCommandTime"]]
-        //[*, 'LAST_CREDENTIAL_ADDED'                   BACnetConstructedDataLastCredentialAdded [validation    '1 == 2'    "TODO: implement me LAST_CREDENTIAL_ADDED BACnetConstructedDataLastCredentialAdded"]]
-        //[*, 'LAST_CREDENTIAL_ADDED_TIME'              BACnetConstructedDataLastCredentialAddedTime [validation    '1 == 2'    "TODO: implement me LAST_CREDENTIAL_ADDED_TIME BACnetConstructedDataLastCredentialAddedTime"]]
-        //[*, 'LAST_CREDENTIAL_REMOVED'                 BACnetConstructedDataLastCredentialRemoved [validation    '1 == 2'    "TODO: implement me LAST_CREDENTIAL_REMOVED BACnetConstructedDataLastCredentialRemoved"]]
-        //[*, 'LAST_CREDENTIAL_REMOVED_TIME'            BACnetConstructedDataLastCredentialRemovedTime [validation    '1 == 2'    "TODO: implement me LAST_CREDENTIAL_REMOVED_TIME BACnetConstructedDataLastCredentialRemovedTime"]]
+        [*, 'LAST_CREDENTIAL_ADDED'                   BACnetConstructedDataLastCredentialAdded
+            [simple   BACnetDeviceObjectReference       lastCredentialAdded                                             ]
+        ]
+        [*, 'LAST_CREDENTIAL_ADDED_TIME'              BACnetConstructedDataLastCredentialAddedTime
+            [simple   BACnetDateTime    lastCredentialAddedTime                                                         ]
+        ]
+        [*, 'LAST_CREDENTIAL_REMOVED'                 BACnetConstructedDataLastCredentialRemoved
+            [simple   BACnetDeviceObjectReference       lastCredentialRemoved                                           ]
+        ]
+        [*, 'LAST_CREDENTIAL_REMOVED_TIME'            BACnetConstructedDataLastCredentialRemovedTime
+            [simple   BACnetDateTime    lastCredentialRemovedTime                                                       ]
+        ]
         [*, 'LAST_KEY_SERVER'                         BACnetConstructedDataLastKeyServer
             [simple   BACnetAddressBinding              lastKeyServer                                                   ]
         ]
@@ -3462,7 +3485,7 @@
             [simple   BACnetApplicationTagObjectIdentifier                              objectIdentifier                ]
         ]
         [*, 'OBJECT_LIST'                             BACnetConstructedDataObjectList
-            // TODO: we need property support
+            // TODO: we need index support
             [array    BACnetObjectIdentifierOrUnsignedInteger
                                 objectList
                                         terminated
@@ -3475,17 +3498,27 @@
         [*, 'OBJECT_TYPE'                             BACnetConstructedDataObjectType
             [simple   BACnetObjectTypeTagged('0', 'TagClass.APPLICATION_TAGS')          objectType                      ]
         ]
-        //[*, 'OCCUPANCY_COUNT'                         BACnetConstructedDataOccupancyCount [validation    '1 == 2'    "TODO: implement me OCCUPANCY_COUNT BACnetConstructedDataOccupancyCount"]]
+        [*, 'OCCUPANCY_COUNT'                         BACnetConstructedDataOccupancyCount
+            [simple BACnetApplicationTagUnsignedInteger                       occupancyCount                            ]
+        ]
         [*, 'OCCUPANCY_COUNT_ADJUST'                  BACnetConstructedDataOccupancyCountAdjust
             [simple BACnetApplicationTagBoolean                               occupancyCountAdjust                      ]
         ]
-        //[*, 'OCCUPANCY_COUNT_ENABLE'                  BACnetConstructedDataOccupancyCountEnable [validation    '1 == 2'    "TODO: implement me OCCUPANCY_COUNT_ENABLE BACnetConstructedDataOccupancyCountEnable"]]
-        //[*, 'OCCUPANCY_LOWER_LIMIT'                   BACnetConstructedDataOccupancyLowerLimit [validation    '1 == 2'    "TODO: implement me OCCUPANCY_LOWER_LIMIT BACnetConstructedDataOccupancyLowerLimit"]]
+        [*, 'OCCUPANCY_COUNT_ENABLE'                  BACnetConstructedDataOccupancyCountEnable
+            [simple BACnetApplicationTagBoolean                               occupancyCountEnable                      ]
+        ]
+        [*, 'OCCUPANCY_LOWER_LIMIT'                   BACnetConstructedDataOccupancyLowerLimit
+            [simple BACnetApplicationTagUnsignedInteger                       occupancyLowerLimit                       ]
+        ]
         [*, 'OCCUPANCY_LOWER_LIMIT_ENFORCED'          BACnetConstructedDataOccupancyLowerLimitEnforced
             [simple BACnetApplicationTagBoolean                               occupancyLowerLimitEnforced               ]
         ]
-        //[*, 'OCCUPANCY_STATE'                         BACnetConstructedDataOccupancyState [validation    '1 == 2'    "TODO: implement me OCCUPANCY_STATE BACnetConstructedDataOccupancyState"]]
-        //[*, 'OCCUPANCY_UPPER_LIMIT'                   BACnetConstructedDataOccupancyUpperLimit [validation    '1 == 2'    "TODO: implement me OCCUPANCY_UPPER_LIMIT BACnetConstructedDataOccupancyUpperLimit"]]
+        [*, 'OCCUPANCY_STATE'                         BACnetConstructedDataOccupancyState
+            [simple BACnetAccessZoneOccupancyStateTagged('0', 'TagClass.APPLICATION_TAGS') occupancyState               ]
+        ]
+        [*, 'OCCUPANCY_UPPER_LIMIT'                   BACnetConstructedDataOccupancyUpperLimit
+            [simple BACnetApplicationTagUnsignedInteger                       occupancyUpperLimit                       ]
+        ]
         [*, 'OCCUPANCY_UPPER_LIMIT_ENFORCED'          BACnetConstructedDataOccupancyUpperLimitEnforced
             [simple BACnetApplicationTagBoolean                               occupancyUpperLimitEnforced               ]
         ]
@@ -3503,8 +3536,12 @@
         [*, 'PACKET_REORDER_TIME'                     BACnetConstructedDataPacketReorderTime
             [simple BACnetApplicationTagUnsignedInteger                       packetReorderTime                         ]
         ]
-        //[*, 'PASSBACK_MODE'                           BACnetConstructedDataPassbackMode [validation    '1 == 2'    "TODO: implement me PASSBACK_MODE BACnetConstructedDataPassbackMode"]]
-        //[*, 'PASSBACK_TIMEOUT'                        BACnetConstructedDataPassbackTimeout [validation    '1 == 2'    "TODO: implement me PASSBACK_TIMEOUT BACnetConstructedDataPassbackTimeout"]]
+        [*, 'PASSBACK_MODE'                           BACnetConstructedDataPassbackMode
+            [simple BACnetAccessPassbackModeTagged('0', 'TagClass.APPLICATION_TAGS')             passbackMode           ]
+        ]
+        [*, 'PASSBACK_TIMEOUT'                        BACnetConstructedDataPassbackTimeout
+            [simple BACnetApplicationTagUnsignedInteger                       passbackTimeout                           ]
+        ]
         //[*, 'PASSENGER_ALARM'                         BACnetConstructedDataPassengerAlarm [validation    '1 == 2'    "TODO: implement me PASSENGER_ALARM BACnetConstructedDataPassengerAlarm"]]
         //[*, 'POLARITY'                                BACnetConstructedDataPolarity [validation    '1 == 2'    "TODO: implement me POLARITY BACnetConstructedDataPolarity"]]
         [*, 'PORT_FILTER'                             BACnetConstructedDataPortFilter

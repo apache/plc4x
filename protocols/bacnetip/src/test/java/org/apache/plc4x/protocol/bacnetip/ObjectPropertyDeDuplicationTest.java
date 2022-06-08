@@ -97,7 +97,6 @@ public class ObjectPropertyDeDuplicationTest {
         return tests;
     }
 
-    @Disabled("disabled till every type is implemented")
     @TestFactory
     Collection<DynamicNode> testUniqueUsagesAreMappedGeneric() {
         List<DynamicNode> tests = new LinkedList<>();

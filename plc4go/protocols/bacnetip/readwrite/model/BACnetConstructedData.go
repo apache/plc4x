@@ -462,6 +462,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataCredentialStatusParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_CREDENTIALS: // BACnetConstructedDataCredentials
 		_child, typeSwitchError = BACnetConstructedDataCredentialsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_CREDENTIALS_IN_ZONE: // BACnetConstructedDataCredentialsInZone
+		_child, typeSwitchError = BACnetConstructedDataCredentialsInZoneParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DATABASE_REVISION: // BACnetConstructedDataDatabaseRevision
 		_child, typeSwitchError = BACnetConstructedDataDatabaseRevisionParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DATE_LIST: // BACnetConstructedDataDateList
@@ -520,6 +522,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataDutyWindowParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_EFFECTIVE_PERIOD: // BACnetConstructedDataEffectivePeriod
 		_child, typeSwitchError = BACnetConstructedDataEffectivePeriodParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ENTRY_POINTS: // BACnetConstructedDataEntryPoints
+		_child, typeSwitchError = BACnetConstructedDataEntryPointsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ERROR_LIMIT: // BACnetConstructedDataErrorLimit
 		_child, typeSwitchError = BACnetConstructedDataErrorLimitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ESCALATOR_MODE: // BACnetConstructedDataEscalatorMode
@@ -548,6 +552,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataExceptionScheduleParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_EXECUTION_DELAY: // BACnetConstructedDataExecutionDelay
 		_child, typeSwitchError = BACnetConstructedDataExecutionDelayParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_EXIT_POINTS: // BACnetConstructedDataExitPoints
+		_child, typeSwitchError = BACnetConstructedDataExitPointsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_EXPECTED_SHED_LEVEL: // BACnetConstructedDataExpectedShedLevel
 		_child, typeSwitchError = BACnetConstructedDataExpectedShedLevelParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_EXTENDED_TIME_ENABLE: // BACnetConstructedDataExtendedTimeEnable
@@ -658,6 +664,14 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataLastAccessEventParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_ACCESS_POINT: // BACnetConstructedDataLastAccessPoint
 		_child, typeSwitchError = BACnetConstructedDataLastAccessPointParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_CREDENTIAL_ADDED: // BACnetConstructedDataLastCredentialAdded
+		_child, typeSwitchError = BACnetConstructedDataLastCredentialAddedParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_CREDENTIAL_ADDED_TIME: // BACnetConstructedDataLastCredentialAddedTime
+		_child, typeSwitchError = BACnetConstructedDataLastCredentialAddedTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_CREDENTIAL_REMOVED: // BACnetConstructedDataLastCredentialRemoved
+		_child, typeSwitchError = BACnetConstructedDataLastCredentialRemovedParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_CREDENTIAL_REMOVED_TIME: // BACnetConstructedDataLastCredentialRemovedTime
+		_child, typeSwitchError = BACnetConstructedDataLastCredentialRemovedTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_KEY_SERVER: // BACnetConstructedDataLastKeyServer
 		_child, typeSwitchError = BACnetConstructedDataLastKeyServerParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_PRIORITY: // BACnetConstructedDataLastPriority
@@ -804,10 +818,20 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataObjectNameParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_OBJECT_TYPE: // BACnetConstructedDataObjectType
 		_child, typeSwitchError = BACnetConstructedDataObjectTypeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_COUNT: // BACnetConstructedDataOccupancyCount
+		_child, typeSwitchError = BACnetConstructedDataOccupancyCountParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_COUNT_ADJUST: // BACnetConstructedDataOccupancyCountAdjust
 		_child, typeSwitchError = BACnetConstructedDataOccupancyCountAdjustParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_COUNT_ENABLE: // BACnetConstructedDataOccupancyCountEnable
+		_child, typeSwitchError = BACnetConstructedDataOccupancyCountEnableParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_LOWER_LIMIT: // BACnetConstructedDataOccupancyLowerLimit
+		_child, typeSwitchError = BACnetConstructedDataOccupancyLowerLimitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_LOWER_LIMIT_ENFORCED: // BACnetConstructedDataOccupancyLowerLimitEnforced
 		_child, typeSwitchError = BACnetConstructedDataOccupancyLowerLimitEnforcedParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_STATE: // BACnetConstructedDataOccupancyState
+		_child, typeSwitchError = BACnetConstructedDataOccupancyStateParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_UPPER_LIMIT: // BACnetConstructedDataOccupancyUpperLimit
+		_child, typeSwitchError = BACnetConstructedDataOccupancyUpperLimitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_UPPER_LIMIT_ENFORCED: // BACnetConstructedDataOccupancyUpperLimitEnforced
 		_child, typeSwitchError = BACnetConstructedDataOccupancyUpperLimitEnforcedParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_OPERATION_DIRECTION: // BACnetConstructedDataOperationDirection
@@ -818,6 +842,10 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataOutputUnitsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PACKET_REORDER_TIME: // BACnetConstructedDataPacketReorderTime
 		_child, typeSwitchError = BACnetConstructedDataPacketReorderTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PASSBACK_MODE: // BACnetConstructedDataPassbackMode
+		_child, typeSwitchError = BACnetConstructedDataPassbackModeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PASSBACK_TIMEOUT: // BACnetConstructedDataPassbackTimeout
+		_child, typeSwitchError = BACnetConstructedDataPassbackTimeoutParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PORT_FILTER: // BACnetConstructedDataPortFilter
 		_child, typeSwitchError = BACnetConstructedDataPortFilterParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_POSITIVE_ACCESS_RULES: // BACnetConstructedDataPositiveAccessRules
