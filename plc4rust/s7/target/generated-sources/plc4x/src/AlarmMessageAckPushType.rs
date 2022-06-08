@@ -32,6 +32,7 @@ use crate::AlarmMessageAckObjectPushType::AlarmMessageAckObjectPushTypeOptions;
 #[derive(PartialEq, Debug, Clone)]
 pub struct AlarmMessageAckPushTypeOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct AlarmMessageAckPushType {
     pub TimeStamp: DateAndTime,

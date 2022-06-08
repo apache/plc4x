@@ -30,6 +30,7 @@ use crate::S7VarRequestParameterItemAddress::S7VarRequestParameterItemAddressOpt
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7VarRequestParameterItemOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum S7VarRequestParameterItem {
     S7VarRequestParameterItemAddress(S7VarRequestParameterItemAddress)

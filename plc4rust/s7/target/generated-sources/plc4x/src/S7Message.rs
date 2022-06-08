@@ -40,6 +40,7 @@ use crate::S7Payload::S7PayloadOptions;
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7MessageOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum S7Message {
     S7MessageRequest(S7MessageRequest),

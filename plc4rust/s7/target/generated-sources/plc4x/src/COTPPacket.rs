@@ -45,6 +45,7 @@ use crate::S7Message::S7MessageOptions;
 pub struct COTPPacketOptions {
     pub cotpLen: u16
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum COTPPacket {
     COTPPacketData(COTPPacketData),
@@ -127,8 +128,8 @@ impl Message for COTPPacket {
                 panic!("Unable to parse!");
             }
         }
-            // -> DefaultArrayField{loopType=LENGTH, loopExpression=DefaultBinaryTerm{a=DefaultUnaryTerm{a=DefaultBinaryTerm{a=DefaultVariableLiteral{name='headerLength', typeReference='null', args=null, index=null, child=null}, b=DefaultNumericLiteral{number=1}, operation='+'}, operation='()'}, b=DefaultVariableLiteral{name='curPos', typeReference='org.apache.plc4x.plugins.codegenerator.types.definitions.BuiltIns$1@282c4da0', args=null, index=null, child=null}, operation='-'}} DefaultTypedNamedField{name='parameters'} DefaultTypedField{type=org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultArrayTypeReference@b506ed0} DefaultField{attributes={}}
-            // -> DefaultOptionalField{conditionExpression=DefaultBinaryTerm{a=DefaultVariableLiteral{name='curPos', typeReference='org.apache.plc4x.plugins.codegenerator.types.definitions.BuiltIns$1@282c4da0', args=null, index=null, child=null}, b=DefaultVariableLiteral{name='cotpLen', typeReference='AbstractSimpleTypeReference{baseType=UINT, sizeInBits=16}', args=null, index=null, child=null}, operation='<'}} DefaultTypedNamedField{name='payload'} DefaultTypedField{type=DefaultComplexTypeReference{name='S7Message', params=null}} DefaultField{attributes={}}
+            // -> DefaultArrayField{loopType=LENGTH, loopExpression=DefaultBinaryTerm{a=DefaultUnaryTerm{a=DefaultBinaryTerm{a=DefaultVariableLiteral{name='headerLength', typeReference='null', args=null, index=null, child=null}, b=DefaultNumericLiteral{number=1}, operation='+'}, operation='()'}, b=DefaultVariableLiteral{name='curPos', typeReference='org.apache.plc4x.plugins.codegenerator.types.definitions.BuiltIns$1@20216016', args=null, index=null, child=null}, operation='-'}} DefaultTypedNamedField{name='parameters'} DefaultTypedField{type=org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultArrayTypeReference@54326e9} DefaultField{attributes={}}
+            // -> DefaultOptionalField{conditionExpression=DefaultBinaryTerm{a=DefaultVariableLiteral{name='curPos', typeReference='org.apache.plc4x.plugins.codegenerator.types.definitions.BuiltIns$1@20216016', args=null, index=null, child=null}, b=DefaultVariableLiteral{name='cotpLen', typeReference='AbstractSimpleTypeReference{baseType=UINT, sizeInBits=16}', args=null, index=null, child=null}, operation='<'}} DefaultTypedNamedField{name='payload'} DefaultTypedField{type=DefaultComplexTypeReference{name='S7Message', params=null}} DefaultField{attributes={}}
     }
 }
 

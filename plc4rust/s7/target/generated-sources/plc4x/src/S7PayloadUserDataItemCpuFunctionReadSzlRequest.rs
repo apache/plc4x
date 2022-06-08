@@ -32,6 +32,7 @@ pub struct S7PayloadUserDataItemCpuFunctionReadSzlRequestOptions {
     pub cpuFunctionType: u8, 
     pub cpuSubfunction: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7PayloadUserDataItemCpuFunctionReadSzlRequest {
     pub szlId: SzlId,

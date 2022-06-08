@@ -30,17 +30,16 @@ use crate::COTPPacket::COTPPacketOptions;
 #[derive(PartialEq, Debug, Clone)]
 pub struct TPKTPacketOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct TPKTPacket {
-    // Intentionally do nothing
         // -> DefaultReservedField{referenceValue=0x00} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=8}} DefaultField{attributes={byteOrder=DefaultVariableLiteral{name='BIG_ENDIAN', typeReference='null', args=null, index=null, child=null}}}
-        // -> DefaultImplicitField{serializeExpression=DefaultBinaryTerm{a=DefaultVariableLiteral{name='payload', typeReference='DefaultComplexTypeReference{name='COTPPacket', params=[DefaultBinaryTerm{a=DefaultVariableLiteral{name='len', typeReference='null', args=null, index=null, child=null}, b=DefaultNumericLiteral{number=4}, operation='-'}]}', args=null, index=null, child=DefaultVariableLiteral{name='lengthInBytes', typeReference='null', args=null, index=null, child=null}}, b=DefaultNumericLiteral{number=4}, operation='+'}} DefaultTypedNamedField{name='len'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=16}} DefaultField{attributes={byteOrder=DefaultVariableLiteral{name='BIG_ENDIAN', typeReference='null', args=null, index=null, child=null}}}
     pub payload: COTPPacket
 }
 
 impl TPKTPacket {
     pub fn len(&self) -> u16 {
-        0
+        (self.payload.get_length_in_bytes() + 4) as u16
     }
 }
 

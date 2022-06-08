@@ -31,15 +31,15 @@ use crate::S7VarRequestParameterItem::S7VarRequestParameterItemOptions;
 pub struct S7ParameterWriteVarRequestOptions {
     pub messageType: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7ParameterWriteVarRequest {
-        // -> DefaultImplicitField{serializeExpression=DefaultVariableLiteral{name='COUNT', typeReference='null', args=[DefaultVariableLiteral{name='items', typeReference='null', args=null, index=null, child=null}], index=null, child=null}} DefaultTypedNamedField{name='numItems'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=8}} DefaultField{attributes={}}
     pub items: Vec<S7VarRequestParameterItem>
 }
 
 impl S7ParameterWriteVarRequest {
     pub fn numItems(&self) -> u8 {
-        0
+        self.items.len() as u8
     }
 }
 

@@ -30,6 +30,7 @@ use crate::AlarmMessageObjectAckType::AlarmMessageObjectAckTypeOptions;
 #[derive(PartialEq, Debug, Clone)]
 pub struct AlarmMessageAckTypeOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct AlarmMessageAckType {
     pub functionId: u8,

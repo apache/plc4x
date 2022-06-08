@@ -33,10 +33,9 @@ use crate::State::StateOptions;
 #[derive(PartialEq, Debug, Clone)]
 pub struct AlarmMessageObjectAckTypeOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct AlarmMessageObjectAckType {
-    // Intentionally do nothing
-    // Intentionally do nothing
     pub syntaxId: SyntaxIdType,
     pub numberOfValues: u8,
     pub eventId: u32,

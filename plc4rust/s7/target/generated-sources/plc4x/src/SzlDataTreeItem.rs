@@ -28,6 +28,7 @@ use plc4rust::write_buffer::WriteBuffer;
 #[derive(PartialEq, Debug, Clone)]
 pub struct SzlDataTreeItemOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct SzlDataTreeItem {
     pub itemIndex: u16,

@@ -28,6 +28,7 @@ use plc4rust::write_buffer::WriteBuffer;
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7MessageResponseDataOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7MessageResponseData {
     pub errorClass: u8,

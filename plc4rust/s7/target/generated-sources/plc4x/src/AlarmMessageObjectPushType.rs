@@ -39,9 +39,9 @@ use crate::AssociatedValueType::AssociatedValueTypeOptions;
 #[derive(PartialEq, Debug, Clone)]
 pub struct AlarmMessageObjectPushTypeOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct AlarmMessageObjectPushType {
-    // Intentionally do nothing
     pub lengthSpec: u8,
     pub syntaxId: SyntaxIdType,
     pub numberOfValues: u8,

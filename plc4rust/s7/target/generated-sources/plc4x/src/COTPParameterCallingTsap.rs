@@ -29,6 +29,7 @@ use plc4rust::write_buffer::WriteBuffer;
 pub struct COTPParameterCallingTsapOptions {
     pub rest: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct COTPParameterCallingTsap {
     pub tsapId: u16

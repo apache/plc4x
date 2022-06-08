@@ -30,6 +30,7 @@ use crate::DataTransportSize::DataTransportSize;
 #[derive(PartialEq, Debug, Clone)]
 pub struct AssociatedValueTypeOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct AssociatedValueType {
     pub returnCode: DataTransportErrorCode,

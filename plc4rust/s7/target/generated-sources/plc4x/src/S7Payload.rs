@@ -38,6 +38,7 @@ pub struct S7PayloadOptions {
     pub messageType: u8, 
     pub parameter: S7Parameter
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum S7Payload {
     S7PayloadReadVarResponse(S7PayloadReadVarResponse),
@@ -55,8 +56,6 @@ impl Message for S7Payload {
     }
 
     fn serialize<T: Write>(&self, writer: &mut WriteBuffer<T>) -> Result<usize, Error> {
-        let a = vec![];
-        a.len()
         match self {
             S7Payload::S7PayloadReadVarResponse(msg) => {
                 msg.serialize(writer)

@@ -30,6 +30,7 @@ use crate::COTPTpduSize::COTPTpduSize;
 pub struct COTPParameterTpduSizeOptions {
     pub rest: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct COTPParameterTpduSize {
     pub tpduSize: COTPTpduSize

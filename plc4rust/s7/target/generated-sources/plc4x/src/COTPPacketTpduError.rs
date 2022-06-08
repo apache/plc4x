@@ -29,6 +29,7 @@ use plc4rust::write_buffer::WriteBuffer;
 pub struct COTPPacketTpduErrorOptions {
     pub cotpLen: u16
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct COTPPacketTpduError {
     pub destinationReference: u16,

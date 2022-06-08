@@ -29,6 +29,7 @@ use plc4rust::write_buffer::WriteBuffer;
 pub struct COTPParameterDisconnectAdditionalInformationOptions {
     pub rest: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct COTPParameterDisconnectAdditionalInformation {
     pub data: Vec<u8>

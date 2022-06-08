@@ -32,6 +32,7 @@ pub struct S7PayloadUserDataOptions {
     pub messageType: u8, 
     pub parameter: S7Parameter
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7PayloadUserData {
     pub items: Vec<S7PayloadUserDataItem>

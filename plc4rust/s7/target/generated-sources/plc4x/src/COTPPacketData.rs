@@ -29,6 +29,7 @@ use plc4rust::write_buffer::WriteBuffer;
 pub struct COTPPacketDataOptions {
     pub cotpLen: u16
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct COTPPacketData {
     pub eot: bool,

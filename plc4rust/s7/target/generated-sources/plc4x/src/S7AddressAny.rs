@@ -30,6 +30,7 @@ use crate::MemoryArea::MemoryArea;
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7AddressAnyOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7AddressAny {
         // -> DefaultEnumField{fieldName='code'} DefaultTypedNamedField{name='transportSize'} DefaultTypedField{type=DefaultEnumTypeReference{name='TransportSize', params=null}} DefaultField{attributes={}}

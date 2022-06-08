@@ -24,3 +24,4 @@ edition = "2021"
 
 [dependencies]
 plc4rust = {path = "../../../../"}
+heapless = "0.7.13"

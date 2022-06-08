@@ -32,6 +32,7 @@ pub struct S7PayloadAlarmSQOptions {
     pub cpuFunctionType: u8, 
     pub cpuSubfunction: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7PayloadAlarmSQ {
     pub alarmMessage: AlarmMessagePushType

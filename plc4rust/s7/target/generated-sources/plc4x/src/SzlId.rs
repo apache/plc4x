@@ -30,6 +30,7 @@ use crate::SzlSublist::SzlSublist;
 #[derive(PartialEq, Debug, Clone)]
 pub struct SzlIdOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct SzlId {
     pub typeClass: SzlModuleTypeClass,

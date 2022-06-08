@@ -29,6 +29,7 @@ use plc4rust::write_buffer::WriteBuffer;
 pub struct S7ParameterReadVarResponseOptions {
     pub messageType: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7ParameterReadVarResponse {
     pub numItems: u8

@@ -32,6 +32,7 @@ pub struct S7PayloadWriteVarResponseOptions {
     pub messageType: u8, 
     pub parameter: S7Parameter
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7PayloadWriteVarResponse {
     pub items: Vec<S7VarPayloadStatusItem>

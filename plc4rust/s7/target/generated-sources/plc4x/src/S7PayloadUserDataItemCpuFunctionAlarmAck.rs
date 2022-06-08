@@ -32,16 +32,16 @@ pub struct S7PayloadUserDataItemCpuFunctionAlarmAckOptions {
     pub cpuFunctionType: u8, 
     pub cpuSubfunction: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7PayloadUserDataItemCpuFunctionAlarmAck {
     pub functionId: u8,
-        // -> DefaultImplicitField{serializeExpression=DefaultVariableLiteral{name='COUNT', typeReference='null', args=[DefaultVariableLiteral{name='messageObjects', typeReference='null', args=null, index=null, child=null}], index=null, child=null}} DefaultTypedNamedField{name='numberOfObjects'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=8}} DefaultField{attributes={}}
     pub messageObjects: Vec<AlarmMessageObjectAckType>
 }
 
 impl S7PayloadUserDataItemCpuFunctionAlarmAck {
     pub fn numberOfObjects(&self) -> u8 {
-        0
+        self.messageObjects.len() as u8
     }
 }
 

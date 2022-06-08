@@ -30,6 +30,7 @@ pub struct S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseOptions {
     pub cpuFunctionType: u8, 
     pub cpuSubfunction: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
     pub result: u8,

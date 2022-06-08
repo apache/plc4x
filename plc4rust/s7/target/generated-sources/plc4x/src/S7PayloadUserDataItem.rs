@@ -68,6 +68,7 @@ pub struct S7PayloadUserDataItemOptions {
     pub cpuFunctionType: u8, 
     pub cpuSubfunction: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum S7PayloadUserDataItem {
     S7PayloadDiagnosticMessage(S7PayloadDiagnosticMessage),

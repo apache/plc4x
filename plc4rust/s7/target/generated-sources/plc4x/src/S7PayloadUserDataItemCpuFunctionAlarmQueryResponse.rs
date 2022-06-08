@@ -32,10 +32,9 @@ pub struct S7PayloadUserDataItemCpuFunctionAlarmQueryResponseOptions {
     pub cpuFunctionType: u8, 
     pub cpuSubfunction: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
-    // Intentionally do nothing
-    // Intentionally do nothing
     pub pudicfReturnCode: DataTransportErrorCode,
     pub pudicftransportSize: DataTransportSize,
         // -> DefaultReservedField{referenceValue=0x00} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=8}} DefaultField{attributes={}}

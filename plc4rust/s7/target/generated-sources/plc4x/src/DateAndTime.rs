@@ -28,6 +28,7 @@ use plc4rust::write_buffer::WriteBuffer;
 #[derive(PartialEq, Debug, Clone)]
 pub struct DateAndTimeOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct DateAndTime {
         // -> DefaultManualField{parseExpression=DefaultVariableLiteral{name='STATIC_CALL', typeReference='null', args=[DefaultStringLiteral{value='BcdToInt'}, DefaultVariableLiteral{name='readBuffer', typeReference='null', args=null, index=null, child=null}], index=null, child=null}, serializeExpression=DefaultVariableLiteral{name='STATIC_CALL', typeReference='null', args=[DefaultStringLiteral{value='ByteToBcd'}, DefaultVariableLiteral{name='writeBuffer', typeReference='null', args=null, index=null, child=null}, DefaultVariableLiteral{name='year', typeReference='null', args=null, index=null, child=null}], index=null, child=null}, lengthExpression=DefaultNumericLiteral{number=8}} DefaultTypedNamedField{name='year'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=8}} DefaultField{attributes={}}

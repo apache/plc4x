@@ -518,7 +518,7 @@ public class RustLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         if (typeReference instanceof ArrayTypeReference) {
             final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
 //            if (arrayTypeReference.getElementTypeReference().isByteBased()) {
-                return "Vec<" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), allowPrimitive) + ">";
+                return "Vec<" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), allowPrimitive) + ", 1024>";
 //            } else {
 //                return "List<" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), false) + ">";
 //            }

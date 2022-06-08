@@ -30,6 +30,7 @@ use crate::COTPProtocolClass::COTPProtocolClass;
 pub struct COTPPacketDisconnectRequestOptions {
     pub cotpLen: u16
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct COTPPacketDisconnectRequest {
     pub destinationReference: u16,

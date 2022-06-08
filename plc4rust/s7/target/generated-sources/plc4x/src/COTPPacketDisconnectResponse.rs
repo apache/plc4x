@@ -29,6 +29,7 @@ use plc4rust::write_buffer::WriteBuffer;
 pub struct COTPPacketDisconnectResponseOptions {
     pub cotpLen: u16
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct COTPPacketDisconnectResponse {
     pub destinationReference: u16,

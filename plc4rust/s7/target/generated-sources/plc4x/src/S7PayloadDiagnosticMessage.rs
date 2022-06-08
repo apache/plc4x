@@ -32,6 +32,7 @@ pub struct S7PayloadDiagnosticMessageOptions {
     pub cpuFunctionType: u8, 
     pub cpuSubfunction: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7PayloadDiagnosticMessage {
     pub EventId: u16,

@@ -28,6 +28,7 @@ use plc4rust::write_buffer::WriteBuffer;
 #[derive(PartialEq, Debug, Clone)]
 pub struct StateOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct State {
     pub SIG_8: bool,

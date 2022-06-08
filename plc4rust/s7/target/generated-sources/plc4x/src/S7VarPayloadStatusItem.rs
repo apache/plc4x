@@ -29,6 +29,7 @@ use crate::DataTransportErrorCode::DataTransportErrorCode;
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7VarPayloadStatusItemOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7VarPayloadStatusItem {
     pub returnCode: DataTransportErrorCode

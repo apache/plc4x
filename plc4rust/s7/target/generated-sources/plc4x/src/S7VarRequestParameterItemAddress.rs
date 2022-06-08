@@ -30,15 +30,15 @@ use crate::S7Address::S7AddressOptions;
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7VarRequestParameterItemAddressOptions {
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7VarRequestParameterItemAddress {
-        // -> DefaultImplicitField{serializeExpression=DefaultVariableLiteral{name='address', typeReference='null', args=null, index=null, child=DefaultVariableLiteral{name='lengthInBytes', typeReference='null', args=null, index=null, child=null}}} DefaultTypedNamedField{name='itemLength'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=8}} DefaultField{attributes={}}
     pub address: S7Address
 }
 
 impl S7VarRequestParameterItemAddress {
     pub fn itemLength(&self) -> u8 {
-        0
+        self.address.get_length_in_bytes() as u8
     }
 }
 

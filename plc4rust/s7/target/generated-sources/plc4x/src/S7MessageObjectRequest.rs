@@ -32,10 +32,9 @@ use crate::AlarmType::AlarmType;
 pub struct S7MessageObjectRequestOptions {
     pub cpuFunctionType: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7MessageObjectRequest {
-    // Intentionally do nothing
-    // Intentionally do nothing
     pub syntaxId: SyntaxIdType,
         // -> DefaultReservedField{referenceValue=0x00} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=8}} DefaultField{attributes={}}
     pub queryType: QueryType,

@@ -31,6 +31,7 @@ use crate::DataTransportSize::DataTransportSize;
 pub struct S7MessageObjectResponseOptions {
     pub cpuFunctionType: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7MessageObjectResponse {
     pub returnCode: DataTransportErrorCode,

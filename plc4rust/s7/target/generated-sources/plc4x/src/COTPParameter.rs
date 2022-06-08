@@ -39,6 +39,7 @@ use crate::COTPParameterDisconnectAdditionalInformation::COTPParameterDisconnect
 pub struct COTPParameterOptions {
     pub rest: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum COTPParameter {
     COTPParameterTpduSize(COTPParameterTpduSize),

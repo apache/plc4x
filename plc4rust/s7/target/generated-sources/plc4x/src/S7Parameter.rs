@@ -43,6 +43,7 @@ use crate::S7ParameterModeTransition::S7ParameterModeTransitionOptions;
 pub struct S7ParameterOptions {
     pub messageType: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum S7Parameter {
     S7ParameterSetupCommunication(S7ParameterSetupCommunication),

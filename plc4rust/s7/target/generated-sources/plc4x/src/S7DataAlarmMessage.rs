@@ -33,6 +33,7 @@ use crate::S7MessageObjectResponse::S7MessageObjectResponseOptions;
 pub struct S7DataAlarmMessageOptions {
     pub cpuFunctionType: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum S7DataAlarmMessage {
     S7MessageObjectRequest(S7MessageObjectRequest),

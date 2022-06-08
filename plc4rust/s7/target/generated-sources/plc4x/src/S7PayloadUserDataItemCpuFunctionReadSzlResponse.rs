@@ -34,18 +34,17 @@ pub struct S7PayloadUserDataItemCpuFunctionReadSzlResponseOptions {
     pub cpuFunctionType: u8, 
     pub cpuSubfunction: u8
 }
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct S7PayloadUserDataItemCpuFunctionReadSzlResponse {
     pub szlId: SzlId,
     pub szlIndex: u16,
-    // Intentionally do nothing
-        // -> DefaultImplicitField{serializeExpression=DefaultVariableLiteral{name='COUNT', typeReference='null', args=[DefaultVariableLiteral{name='items', typeReference='null', args=null, index=null, child=null}], index=null, child=null}} DefaultTypedNamedField{name='szlItemCount'} DefaultTypedField{type=AbstractSimpleTypeReference{baseType=UINT, sizeInBits=16}} DefaultField{attributes={}}
     pub items: Vec<SzlDataTreeItem>
 }
 
 impl S7PayloadUserDataItemCpuFunctionReadSzlResponse {
     pub fn szlItemCount(&self) -> u16 {
-        0
+        self.items.len() as u16
     }
 }
 
