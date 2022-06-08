@@ -906,6 +906,10 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataSubordinateTagsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SUBSCRIBED_RECIPIENTS: // BACnetConstructedDataSubscribedRecipients
 		_child, typeSwitchError = BACnetConstructedDataSubscribedRecipientsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SUPPORTED_FORMAT_CLASSES: // BACnetConstructedDataSupportedFormatClasses
+		_child, typeSwitchError = BACnetConstructedDataSupportedFormatClassesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SUPPORTED_FORMATS: // BACnetConstructedDataSupportedFormats
+		_child, typeSwitchError = BACnetConstructedDataSupportedFormatsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SUPPORTED_SECURITY_ALGORITHMS: // BACnetConstructedDataSupportedSecurityAlgorithms
 		_child, typeSwitchError = BACnetConstructedDataSupportedSecurityAlgorithmsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SYSTEM_STATUS: // BACnetConstructedDataSystemStatus
