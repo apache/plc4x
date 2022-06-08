@@ -5440,6 +5440,6 @@
                                 presentValue                                        ]
     [simple   BACnetContextTagSignedInteger('2', 'BACnetDataType.SIGNED_INTEGER')
                                 accumulatedValue                                    ]
-    [simple   BACnetAccumulatorRecordAccumulatorStatusTagged('0', 'TagClass.APPLICATION_TAGS')
+    [simple   BACnetAccumulatorRecordAccumulatorStatusTagged('3', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                                 accumulatorStatus                                   ]
 ]

@@ -175,7 +175,7 @@ func BACnetAccumulatorRecordParse(readBuffer utils.ReadBuffer) (*BACnetAccumulat
 	if pullErr := readBuffer.PullContext("accumulatorStatus"); pullErr != nil {
 		return nil, pullErr
 	}
-	_accumulatorStatus, _accumulatorStatusErr := BACnetAccumulatorRecordAccumulatorStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_accumulatorStatus, _accumulatorStatusErr := BACnetAccumulatorRecordAccumulatorStatusTaggedParse(readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _accumulatorStatusErr != nil {
 		return nil, errors.Wrap(_accumulatorStatusErr, "Error parsing 'accumulatorStatus' field")
 	}
