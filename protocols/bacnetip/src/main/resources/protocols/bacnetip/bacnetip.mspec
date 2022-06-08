@@ -2357,7 +2357,12 @@
                                 terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
-        //[*, 'ACTION_TEXT'                             BACnetConstructedDataActionText [validation    '1 == 2'    "TODO: implement me ACTION_TEXT BACnetConstructedDataActionText"]]
+        [*, 'ACTION_TEXT'                             BACnetConstructedDataActionText
+            [array    BACnetApplicationTagCharacterString
+                    actionText
+                            terminated
+                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
+        ]
         [*, 'ACTIVATION_TIME'                         BACnetConstructedDataActivationTime
             [simple   BACnetDateTime    activationTime                                                                  ]
         ]
@@ -2582,7 +2587,9 @@
         //
         /////
 
-        //[*, 'ALL_WRITES_SUCCESSFUL'                   BACnetConstructedDataAllWritesSuccessful [validation    '1 == 2'    "TODO: implement me ALL_WRITES_SUCCESSFUL BACnetConstructedDataAllWritesSuccessful"]]
+        [*, 'ALL_WRITES_SUCCESSFUL'                   BACnetConstructedDataAllWritesSuccessful
+            [simple   BACnetApplicationTagBoolean                               allWritesSuccessful                     ]
+        ]
         //[*, 'ALLOW_GROUP_DELAY_INHIBIT'               BACnetConstructedDataAllowGroupDelayInhibit [validation    '1 == 2'    "TODO: implement me ALLOW_GROUP_DELAY_INHIBIT BACnetConstructedDataAllowGroupDelayInhibit"]]
         [*, 'APDU_LENGTH'                             BACnetConstructedDataAPDULength
             [simple BACnetApplicationTagUnsignedInteger                               apduLength                        ]
@@ -3055,7 +3062,9 @@
         [*, 'HIGHER_DECK'                             BACnetConstructedDataHigherDeck
             [simple   BACnetApplicationTagObjectIdentifier              higherDeck                                      ]
         ]
-        //[*, 'IN_PROCESS'                              BACnetConstructedDataInProcess [validation    '1 == 2'    "TODO: implement me IN_PROCESS BACnetConstructedDataInProcess"]]
+        [*, 'IN_PROCESS'                              BACnetConstructedDataInProcess
+            [simple   BACnetApplicationTagBoolean                               inProcess                               ]
+        ]
         [*, 'IN_PROGRESS'                             BACnetConstructedDataInProgress
             [simple   BACnetLightingInProgressTagged('0', 'TagClass.APPLICATION_TAGS')         inProgress               ]
         ]

@@ -194,6 +194,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataLoopActionParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataAction
 		_child, typeSwitchError = BACnetConstructedDataActionParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTION_TEXT: // BACnetConstructedDataActionText
+		_child, typeSwitchError = BACnetConstructedDataActionTextParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTIVATION_TIME: // BACnetConstructedDataActivationTime
 		_child, typeSwitchError = BACnetConstructedDataActivationTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTIVE_AUTHENTICATION_POLICY: // BACnetConstructedDataActiveAuthenticationPolicy
@@ -328,6 +330,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataTrendLogAllParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_TREND_LOG_MULTIPLE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataTrendLogMultipleAll
 		_child, typeSwitchError = BACnetConstructedDataTrendLogMultipleAllParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL_WRITES_SUCCESSFUL: // BACnetConstructedDataAllWritesSuccessful
+		_child, typeSwitchError = BACnetConstructedDataAllWritesSuccessfulParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_APDU_LENGTH: // BACnetConstructedDataAPDULength
 		_child, typeSwitchError = BACnetConstructedDataAPDULengthParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_APDU_SEGMENT_TIMEOUT: // BACnetConstructedDataAPDUSegmentTimeout
@@ -576,6 +580,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataHighLimitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_HIGHER_DECK: // BACnetConstructedDataHigherDeck
 		_child, typeSwitchError = BACnetConstructedDataHigherDeckParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IN_PROCESS: // BACnetConstructedDataInProcess
+		_child, typeSwitchError = BACnetConstructedDataInProcessParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IN_PROGRESS: // BACnetConstructedDataInProgress
 		_child, typeSwitchError = BACnetConstructedDataInProgressParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_INITIAL_TIMEOUT: // BACnetConstructedDataInitialTimeout
