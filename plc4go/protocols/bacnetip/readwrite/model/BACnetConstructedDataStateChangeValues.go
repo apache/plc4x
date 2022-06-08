@@ -169,11 +169,6 @@ func BACnetConstructedDataStateChangeValuesParse(readBuffer utils.ReadBuffer, ta
 		return nil, closeErr
 	}
 
-	// Validation
-	if !(bool((len(stateChangeValues)) == (7))) {
-		return nil, utils.ParseValidationError{"stateChangeValues should have exactly 7 values"}
-	}
-
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStateChangeValues"); closeErr != nil {
 		return nil, closeErr
 	}

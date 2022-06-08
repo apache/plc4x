@@ -28,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.apache.plc4x.protocol.bacnetip.BACnetObjectsDefinitions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -125,6 +127,72 @@ public class ObjectPropertyDeDuplicationTest {
         return tests;
     }
 
+    @Disabled("disabled till all of those issues are resolbed within")
+    @TestFactory
+    Collection<DynamicNode> testNonUniqueUsagesAreMappedGeneric() {
+        List<DynamicNode> tests = new LinkedList<>();
+        new LinkedList<>(propertyTypeCombinationToObjectNameMap.entrySet())
+            .stream()
+            .sorted(Map.Entry.comparingByKey())
+            .forEach(propertyTypeCombinationToObjectNameEntry -> {
+                PropertyTypeCombination propertyTypeCombination = propertyTypeCombinationToObjectNameEntry.getKey();
+                propertyTypeCombinationToObjectNameEntry.getValue().forEach(bacNetObjectName -> {
+                        String propertyIdentifier = propertyTypeCombination.propertyIdentifier;
+                        Set<String> listOfTypes = propertyToPropertyTypesMaps.get(propertyIdentifier);
+                        if (listOfTypes.size() < 2) {
+                            tests.add(
+                                DynamicTest.dynamicTest(propertyTypeCombination + " is used by " + bacNetObjectName + " uses property shared with all having the same type",
+                                    () -> {
+                                        String searchedTypeName = "BACnetConstructedData" + propertyIdentifier;
+                                        searchedTypeName = searchedTypeName.replaceAll("_", "");
+                                        assertNotNull(typeDefinitions.get(searchedTypeName), "shared " + searchedTypeName + " not found (" + propertyTypeCombination + ")");
+                                    })
+                            );
+                        } else {
+                            boolean isThisCombinationTheMostCommon = true;
+                            Integer numberOfOccurences = propertyTypeCombinationCount.get(propertyTypeCombination);
+                            for (String otherType : listOfTypes) {
+                                if (otherType.equals(propertyTypeCombination.propertyDataType)) continue;
+                                Integer otherOccurence = propertyTypeCombinationCount.get(new PropertyTypeCombination(propertyIdentifier, otherType));
+                                if (otherOccurence >= numberOfOccurences) {
+                                    isThisCombinationTheMostCommon = false;
+                                    break;
+                                }
+                            }
+                            if (isThisCombinationTheMostCommon) {
+                                tests.add(DynamicTest.dynamicTest(propertyTypeCombination + " is used by " + bacNetObjectName + " uses property shared with " + numberOfOccurences + " using the same type",
+                                    () -> {
+                                        // This is the case when there are more than 1 occurrence of this propertyIdentifier with one type and this combination is the one with the most occurrences
+                                        String searchedTypeName = "BACnetConstructedData" + propertyIdentifier;
+                                        searchedTypeName = searchedTypeName.replaceAll("_", "");
+                                        assertNotNull(typeDefinitions.get(searchedTypeName), "shared " + searchedTypeName + " not found (most occurring case with " + numberOfOccurences + " occurrences)");
+                                    })
+                                );
+                            } else {
+                                tests.add(DynamicTest.dynamicTest(propertyTypeCombination + " is used by " + bacNetObjectName + " uses property shared with this type in the minority.",
+                                    () -> {
+                                        // This is the case when there are more than 1 occurrence of this propertyIdentifier with one type
+                                        String searchedTypeName = "BACnetConstructedData" + bacNetObjectName + propertyIdentifier;
+                                        searchedTypeName = searchedTypeName.replaceAll("[_ ]", "");
+                                        Pattern pattern = Pattern.compile("-([a-z])");
+                                        Matcher matcher = pattern.matcher(searchedTypeName);
+                                        StringBuilder result = new StringBuilder();
+                                        while (matcher.find()) {
+                                            matcher.appendReplacement(result, matcher.group(1).toUpperCase());
+                                        }
+                                        matcher.appendTail(result);
+                                        searchedTypeName = result.toString();
+                                        assertNotNull(typeDefinitions.get(searchedTypeName), "dedicated " + searchedTypeName + " not found (this occurrence: " + numberOfOccurences + ", other variants " + listOfTypes + ").");
+                                    })
+                                );
+                            }
+                        }
+                    }
+                );
+            });
+        return tests;
+    }
+
     @Nested
     @Tag("just-output")
     class JustOutputs {
@@ -158,6 +226,11 @@ public class ObjectPropertyDeDuplicationTest {
         void outputTypeCombinationsSorted() {
             Set<PropertyTypeCombination> propertyTypeCombinations = propertyTypeCombinationToObjectNameMap.keySet();
             propertyTypeCombinations.stream().sorted().forEach(propertyTypeCombination -> LOGGER.info("{}", propertyTypeCombination));
+        }
+
+        @Test
+        void outputTypeCombinationCountSorted() {
+            propertyTypeCombinationCount.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(propertyTypeCombinationCount -> LOGGER.info("{}", propertyTypeCombinationCount));
         }
 
         @Test

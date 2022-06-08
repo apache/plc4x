@@ -47,14 +47,26 @@ public class BACnetObjectsDefinitions {
      */
     static Map<PropertyTypeCombination, List<String>> propertyTypeCombinationToObjectNameMap;
 
+    /**
+     * a map which maps the property id to a property name
+     */
     static Map<String, String> propertyIdToPropertyNameMap;
+
+    /**
+     * a map which maps property to type variants
+     */
+    static Map<String, Set<String>> propertyToPropertyTypesMaps;
+
+    static Map<PropertyTypeCombination, Integer> propertyTypeCombinationCount;
 
     static {
         createBacnetObjectsList();
         createObjectNameToBacNetObjectMap();
         createPropertyToObjectNameMap();
         createPropertyTypeCombinationToObjectNameMap();
+        createPropertyTypeCombinationCount();
         createPropertyIdToPropertyNameMap();
+        createPropertyToPropertyTypesMaps();
     }
 
     private static void createBacnetObjectsList() {
@@ -799,9 +811,9 @@ public class BACnetObjectsDefinitions {
             p("Event_Enable", "BACnetEventTransitionBits", c(O, 4, 6)),
             p("Acked_Transitions", "BACnetEventTransitionBits", c(O, 4, 6)),
             p("Notify_Type", "BACnetNotifyType", c(O, 4, 6)),
-            p("Event_Time_Stamps", "BACnetARRAY[3]of BACnetTimeStamp", c(O, 4, 6)),
-            p("Event_Message_Texts", "BACnetARRAY[3]of CharacterString", c(O, 6)),
-            p("Event_Message_Texts_Config", "BACnetARRAY[3]of CharacterString", c(O, 6)),
+            p("Event_Time_Stamps", "BACnetARRAY[3] of BACnetTimeStamp", c(O, 4, 6)),
+            p("Event_Message_Texts", "BACnetARRAY[3] of CharacterString", c(O, 6)),
+            p("Event_Message_Texts_Config", "BACnetARRAY[3] of CharacterString", c(O, 6)),
             p("Event_Detection_Enable", "BOOLEAN", c(O, 4, 6)),
             p("Event_Algorithm_Inhibit_Ref", "BACnetObjectPropertyReference", c(O, 6)),
             p("Event_Algorithm_Inhibit", "BOOLEAN", c(O, 6, 7)),
@@ -810,15 +822,15 @@ public class BACnetObjectsDefinitions {
             p("Min_Pres_Value", "Unsigned", c(O)),
             p("Max_Pres_Value", "Unsigned", c(O)),
             p("Resolution", "Unsigned", c(O)),
-            p("Property_List", "BACnetARRAY[N]of BACnetPropertyIdentifier", c(R)),
+            p("Property_List", "BACnetARRAY[N] of BACnetPropertyIdentifier", c(R)),
             p("Fault_High_Limit", "Unsigned", c(O, 9)),
             p("Fault_Low_Limit", "Unsigned", c(O, 9)),
             p("Current_Command_Priority", "BACnetOptionalUnsigned", c(O, 2)),
             p("Value_Source", "BACnetValueSource", c(O, 10, 12, 14)),
-            p("Value_Source_Array", "BACnetARRAY[16]of BACnetValueSource", c(O, 11, 13)),
+            p("Value_Source_Array", "BACnetARRAY[16] of BACnetValueSource", c(O, 11, 13)),
             p("Last_Command_Time", "BACnetTimeStamp", c(O, 11, 13)),
-            p("Command_Time_Array", "BACnetARRAY[16]of BACnetTimeStamp", c(O, 13)),
-            p("Tags", "BACnetARRAY[N]of BACnetNameValue", c(O)),
+            p("Command_Time_Array", "BACnetARRAY[16] of BACnetTimeStamp", c(O, 13)),
+            p("Tags", "BACnetARRAY[N] of BACnetNameValue", c(O)),
             p("Profile_Location", "CharacterString", c(O)),
             p("Profile_Name", "CharacterString", c(O))
         );
@@ -2404,7 +2416,7 @@ public class BACnetObjectsDefinitions {
             p("Value_Source", "BACnetValueSource", c(O, 7, 9, 11)),
             p("Value_Source_Array", "BACnetARRAY[16] of BACnetValueSource", c(O, 8, 10)),
             p("Last_Command_Time", "BACnetTimeStamp", c(O, 8, 10)),
-            p("Command_Time_Array", "BACnetARRAY[16] of BACnetTimeStamp", c(O,10)),
+            p("Command_Time_Array", "BACnetARRAY[16] of BACnetTimeStamp", c(O, 10)),
             p("Tags", "BACnetARRAY[N] of BACnetNameValue", c(O)),
             p("Profile_Location", "CharacterString", c(O)),
             p("Profile_Name", "CharacterString", c(O))
@@ -2440,7 +2452,7 @@ public class BACnetObjectsDefinitions {
             p("Acked_Transitions", "BACnetEventTransitionBits", c(O, 3, 5)),
             p("Notify_Type", "BACnetNotifyType", c(O, 3, 5)),
             p("Event_Time_Stamps", "BACnetARRAY[3] of BACnetTimeStamp", c(O, 3, 5)),
-            p("Event_Message_Texts", "BACnetARRAY[c(3)),] of CharacterString", c(O, 5)),
+            p("Event_Message_Texts", "BACnetARRAY[3] of CharacterString", c(O, 5)),
             p("Event_Message_Texts_Config", "BACnetARRAY[3] of CharacterString", c(O, 5)),
             p("Event_Detection_Enable", "BOOLEAN", c(O, 3, 5)),
             p("Event_Algorithm_Inhibit_Ref", "BACnetObjectPropertyReference", c(O, 5)),
@@ -2462,7 +2474,10 @@ public class BACnetObjectsDefinitions {
     }
 
     static String mapObjectNameToEnumName(BacNetObject bacNetObject) {
-        String name = bacNetObject.name;
+        return mapObjectNameToEnumName(bacNetObject.name);
+    }
+
+    static String mapObjectNameToEnumName(String name) {
         String upperCase = name.toUpperCase();
         String minusReplaced = upperCase.replaceAll("-", "_");
         String spacesReplaced = minusReplaced.replaceAll(" ", "_");
@@ -2505,14 +2520,35 @@ public class BACnetObjectsDefinitions {
         });
     }
 
+    private static void createPropertyTypeCombinationCount() {
+        propertyTypeCombinationCount = new HashMap<>();
+        bacNetObjects.forEach(bacNetObject -> {
+            bacNetObject.properties.forEach(bacNetProperty -> {
+                PropertyTypeCombination propertyTypeCombination = new PropertyTypeCombination(bacNetProperty);
+                propertyTypeCombinationCount.putIfAbsent(propertyTypeCombination, 0);
+                int count = propertyTypeCombinationCount.get(propertyTypeCombination);
+                propertyTypeCombinationCount.put(propertyTypeCombination, ++count);
+            });
+        });
+    }
+
     static void createPropertyIdToPropertyNameMap() {
         propertyIdToPropertyNameMap = new HashMap<>();
-        propertyToObjectNamesMap.keySet().forEach(propertyName -> propertyIdToPropertyNameMap.put(mapPropertyNameToEnumName(propertyName), propertyName));
+        propertyToObjectNamesMap.keySet().forEach(propertyName ->
+            propertyIdToPropertyNameMap.put(mapPropertyNameToEnumName(propertyName), propertyName)
+        );
+    }
+
+    static void createPropertyToPropertyTypesMaps() {
+        propertyToPropertyTypesMaps = new HashMap<>();
+        propertyTypeCombinationToObjectNameMap.keySet().forEach(propertyTypeCombination -> {
+            propertyToPropertyTypesMaps.putIfAbsent(propertyTypeCombination.propertyIdentifier, new HashSet<>());
+            propertyToPropertyTypesMaps.get(propertyTypeCombination.propertyIdentifier).add(propertyTypeCombination.propertyDataType);
+        });
     }
 
     static String mapPropertyNameToEnumName(String propertyName) {
-        String name = propertyName;
-        String upperCase = name.toUpperCase();
+        String upperCase = propertyName.toUpperCase();
         String minusReplaced = upperCase.replaceAll("-", "_");
         String spacesReplaced = minusReplaced.replaceAll(" ", "_");
         String mappedName = spacesReplaced;
@@ -2582,6 +2618,11 @@ public class BACnetObjectsDefinitions {
             propertyDataType = bacNetProperty.propertyDataType;
         }
 
+        PropertyTypeCombination(String propertyIdentifier, String propertyDataType) {
+            this.propertyIdentifier = propertyIdentifier;
+            this.propertyDataType = propertyDataType;
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -2603,9 +2644,6 @@ public class BACnetObjectsDefinitions {
 
         @Override
         public int compareTo(PropertyTypeCombination propertyTypeCombination) {
-            if (propertyTypeCombination == null) {
-                return 0;
-            }
             return this.toString().compareTo(propertyTypeCombination.toString());
         }
     }

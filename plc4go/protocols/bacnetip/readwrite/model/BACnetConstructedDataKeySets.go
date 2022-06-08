@@ -169,11 +169,6 @@ func BACnetConstructedDataKeySetsParse(readBuffer utils.ReadBuffer, tagNumber ui
 		return nil, closeErr
 	}
 
-	// Validation
-	if !(bool((len(keySets)) == (2))) {
-		return nil, utils.ParseValidationError{"keySets should have exactly 2 values"}
-	}
-
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataKeySets"); closeErr != nil {
 		return nil, closeErr
 	}

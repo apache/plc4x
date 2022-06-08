@@ -58,6 +58,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass := model.TagClassByName(parserArguments[1])
 		return model.BACnetLiftGroupModeTaggedParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
+	case "BACnetValueSource":
+		return model.BACnetValueSourceParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetOpeningTag":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -364,6 +366,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		actualLength := uint32(parsedUint0)
 		return model.BACnetTagPayloadBitStringParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), actualLength)
+	case "BACnetClientCOV":
+		return model.BACnetClientCOVParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetSetpointReference":
 		return model.BACnetSetpointReferenceParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetObjectPropertyReferenceEnclosed":

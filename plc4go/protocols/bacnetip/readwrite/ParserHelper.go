@@ -46,6 +46,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetLiftGroupModeTaggedParse(io, tagNumber, tagClass)
+	case "BACnetValueSource":
+		return model.BACnetValueSourceParse(io)
 	case "BACnetOpeningTag":
 		tagNumberArgument, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -314,6 +316,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetTagPayloadBitStringParse(io, actualLength)
+	case "BACnetClientCOV":
+		return model.BACnetClientCOVParse(io)
 	case "BACnetSetpointReference":
 		return model.BACnetSetpointReferenceParse(io)
 	case "BACnetObjectPropertyReferenceEnclosed":
