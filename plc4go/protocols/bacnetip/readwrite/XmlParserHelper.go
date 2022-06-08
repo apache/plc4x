@@ -253,6 +253,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return model.BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
+	case "BACnetDestination":
+		return model.BACnetDestinationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -722,8 +724,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass := model.TagClassByName(parserArguments[1])
 		return model.MaxApduLengthAcceptedTaggedParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "BACnetObjectIdentifierOrUnsignedInteger":
-		return model.BACnetObjectIdentifierOrUnsignedIntegerParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetPropertyStatesEnclosed":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {

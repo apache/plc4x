@@ -29,14 +29,14 @@ import (
 // BACnetRecipientDevice is the data-structure of this message
 type BACnetRecipientDevice struct {
 	*BACnetRecipient
-	DeviceValue *BACnetApplicationTagObjectIdentifier
+	DeviceValue *BACnetContextTagObjectIdentifier
 }
 
 // IBACnetRecipientDevice is the corresponding interface of BACnetRecipientDevice
 type IBACnetRecipientDevice interface {
 	IBACnetRecipient
 	// GetDeviceValue returns DeviceValue (property field)
-	GetDeviceValue() *BACnetApplicationTagObjectIdentifier
+	GetDeviceValue() *BACnetContextTagObjectIdentifier
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -68,7 +68,7 @@ func (m *BACnetRecipientDevice) GetParent() *BACnetRecipient {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetRecipientDevice) GetDeviceValue() *BACnetApplicationTagObjectIdentifier {
+func (m *BACnetRecipientDevice) GetDeviceValue() *BACnetContextTagObjectIdentifier {
 	return m.DeviceValue
 }
 
@@ -78,7 +78,7 @@ func (m *BACnetRecipientDevice) GetDeviceValue() *BACnetApplicationTagObjectIden
 ///////////////////////////////////////////////////////////
 
 // NewBACnetRecipientDevice factory function for BACnetRecipientDevice
-func NewBACnetRecipientDevice(deviceValue *BACnetApplicationTagObjectIdentifier, peekedTagHeader *BACnetTagHeader) *BACnetRecipientDevice {
+func NewBACnetRecipientDevice(deviceValue *BACnetContextTagObjectIdentifier, peekedTagHeader *BACnetTagHeader) *BACnetRecipientDevice {
 	_result := &BACnetRecipientDevice{
 		DeviceValue:     deviceValue,
 		BACnetRecipient: NewBACnetRecipient(peekedTagHeader),
@@ -137,11 +137,11 @@ func BACnetRecipientDeviceParse(readBuffer utils.ReadBuffer) (*BACnetRecipientDe
 	if pullErr := readBuffer.PullContext("deviceValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_deviceValue, _deviceValueErr := BACnetApplicationTagParse(readBuffer)
+	_deviceValue, _deviceValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _deviceValueErr != nil {
 		return nil, errors.Wrap(_deviceValueErr, "Error parsing 'deviceValue' field")
 	}
-	deviceValue := CastBACnetApplicationTagObjectIdentifier(_deviceValue)
+	deviceValue := CastBACnetContextTagObjectIdentifier(_deviceValue)
 	if closeErr := readBuffer.CloseContext("deviceValue"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -152,7 +152,7 @@ func BACnetRecipientDeviceParse(readBuffer utils.ReadBuffer) (*BACnetRecipientDe
 
 	// Create a partially initialized instance
 	_child := &BACnetRecipientDevice{
-		DeviceValue:     CastBACnetApplicationTagObjectIdentifier(deviceValue),
+		DeviceValue:     CastBACnetContextTagObjectIdentifier(deviceValue),
 		BACnetRecipient: &BACnetRecipient{},
 	}
 	_child.BACnetRecipient.Child = _child

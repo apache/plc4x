@@ -100,6 +100,11 @@ func ReadEnumGenericFailing(readBuffer utils.ReadBuffer, actualLength uint32, te
 			return 0, errors.Errorf("unmapped value %d", rawValue)
 		}
 		return BACnetAccumulatorRecordAccumulatorStatus(rawValue), nil
+	case BACnetPolarity:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetPolarityKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetPolarity(rawValue), nil
 	default:
 		panic(fmt.Sprintf("support for %T not yet implemented", template))
 	}

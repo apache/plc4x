@@ -145,6 +145,12 @@ public class ObjectPropertyDeDuplicationTest {
                                     () -> {
                                         String searchedTypeName = "BACnetConstructedData" + propertyIdentifier;
                                         searchedTypeName = searchedTypeName.replaceAll("_", "");
+                                        switch (searchedTypeName){
+                                            case "BACnetConstructedDataOutofService":
+                                                // Typo in spec again
+                                                searchedTypeName = "BACnetConstructedDataOutOfService";
+                                                break;
+                                        }
                                         assertNotNull(typeDefinitions.get(searchedTypeName), "shared " + searchedTypeName + " not found (" + propertyTypeCombination + ")");
                                     })
                             );

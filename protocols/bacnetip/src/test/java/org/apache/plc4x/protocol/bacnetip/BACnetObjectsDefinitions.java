@@ -1301,7 +1301,7 @@ public class BACnetObjectsDefinitions {
             p("Access_Event_Credential", "BACnetDeviceObjectReference", c(R)),
             p("Access_Event_Authentication_Factor", "BACnetAuthenticationFactor", c(O)),
             p("Access_Doors", "BACnetARRAY[N] of BACnetDeviceObjectReference", c(R)),
-            p("Priority_For_Writing", "Unsigned (1..16)", c(R)),
+            p("Priority_For_Writing", "Unsigned(1..16)", c(R)),
             p("Muster_Point", "BOOLEAN", c(O)),
             p("Zone_To", "BACnetDeviceObjectReference", c(O)),
             p("Zone_From", "BACnetDeviceObjectReference", c(O)),
