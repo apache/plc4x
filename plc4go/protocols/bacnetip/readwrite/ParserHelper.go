@@ -376,6 +376,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetAccumulatorRecordParse(io)
 	case "BACnetDailySchedule":
 		return model.BACnetDailyScheduleParse(io)
+	case "BACnetLogDataLogDataEntry":
+		return model.BACnetLogDataLogDataEntryParse(io)
 	case "BACnetOptionalBinaryPV":
 		return model.BACnetOptionalBinaryPVParse(io)
 	case "BACnetBDTEntry":
@@ -521,6 +523,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetEventTransitionBitsTaggedParse(io, tagNumber, tagClass)
+	case "BACnetLogData":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetLogDataParse(io, tagNumber)
 	case "BACnetFaultParameterFaultCharacterStringListOfFaultValues":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -587,6 +595,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetSecurityLevelTaggedParse(io, tagNumber, tagClass)
+	case "BACnetLogRecordLogDatum":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetLogRecordLogDatumParse(io, tagNumber)
 	case "BACnetDateTimeEnclosed":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -600,6 +614,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetTimerTransitionTaggedParse(io, tagNumber, tagClass)
+	case "BACnetLogMultipleRecord":
+		return model.BACnetLogMultipleRecordParse(io)
 	case "BACnetProgramRequestTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -659,6 +675,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetTagPayloadCharacterStringParse(io, actualLength)
+	case "BACnetEventLogRecordLogDatum":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetEventLogRecordLogDatumParse(io, tagNumber)
 	case "BACnetStatusFlagsTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -939,6 +961,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(io)
 	case "BVLC":
 		return model.BVLCParse(io)
+	case "ConfirmedEventNotificationRequest":
+		return model.ConfirmedEventNotificationRequestParse(io)
 	case "BACnetLandingDoorStatusLandingDoorsListEntry":
 		return model.BACnetLandingDoorStatusLandingDoorsListEntryParse(io)
 	case "BACnetLiftCarDirectionTagged":
@@ -1101,6 +1125,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "BACnetPriorityValue":
 		objectTypeArgument := model.BACnetObjectTypeByName(arguments[0])
 		return model.BACnetPriorityValueParse(io, objectTypeArgument)
+	case "BACnetLogRecord":
+		return model.BACnetLogRecordParse(io)
 	case "BACnetCalendarEntry":
 		return model.BACnetCalendarEntryParse(io)
 	case "BACnetAccessPassbackModeTagged":
@@ -1239,6 +1265,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "BACnetPropertyWriteDefinition":
 		objectTypeArgument := model.BACnetObjectTypeByName(arguments[0])
 		return model.BACnetPropertyWriteDefinitionParse(io, objectTypeArgument)
+	case "BACnetEventLogRecord":
+		return model.BACnetEventLogRecordParse(io)
 	case "BACnetBinaryPVTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

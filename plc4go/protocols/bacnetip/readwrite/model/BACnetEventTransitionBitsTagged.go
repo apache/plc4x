@@ -79,15 +79,15 @@ func (m *BACnetEventTransitionBitsTagged) GetPayload() *BACnetTagPayloadBitStrin
 ///////////////////////
 
 func (m *BACnetEventTransitionBitsTagged) GetToOffnormal() bool {
-	return bool(m.GetPayload().GetData()[0])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetEventTransitionBitsTagged) GetToFault() bool {
-	return bool(m.GetPayload().GetData()[1])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetEventTransitionBitsTagged) GetToNormal() bool {
-	return bool(m.GetPayload().GetData()[2])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -186,17 +186,17 @@ func BACnetEventTransitionBitsTaggedParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 
 	// Virtual field
-	_toOffnormal := payload.GetData()[0]
+	_toOffnormal := utils.InlineIf(bool(bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	toOffnormal := bool(_toOffnormal)
 	_ = toOffnormal
 
 	// Virtual field
-	_toFault := payload.GetData()[1]
+	_toFault := utils.InlineIf(bool(bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	toFault := bool(_toFault)
 	_ = toFault
 
 	// Virtual field
-	_toNormal := payload.GetData()[2]
+	_toNormal := utils.InlineIf(bool(bool((len(payload.GetData())) > (2))), func() interface{} { return bool(payload.GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	toNormal := bool(_toNormal)
 	_ = toNormal
 

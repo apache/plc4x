@@ -77,11 +77,11 @@ func (m *BACnetLimitEnableTagged) GetPayload() *BACnetTagPayloadBitString {
 ///////////////////////
 
 func (m *BACnetLimitEnableTagged) GetLowLimitEnable() bool {
-	return bool(m.GetPayload().GetData()[0])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetLimitEnableTagged) GetHighLimitEnable() bool {
-	return bool(m.GetPayload().GetData()[1])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -178,12 +178,12 @@ func BACnetLimitEnableTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	}
 
 	// Virtual field
-	_lowLimitEnable := payload.GetData()[0]
+	_lowLimitEnable := utils.InlineIf(bool(bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	lowLimitEnable := bool(_lowLimitEnable)
 	_ = lowLimitEnable
 
 	// Virtual field
-	_highLimitEnable := payload.GetData()[1]
+	_highLimitEnable := utils.InlineIf(bool(bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	highLimitEnable := bool(_highLimitEnable)
 	_ = highLimitEnable
 

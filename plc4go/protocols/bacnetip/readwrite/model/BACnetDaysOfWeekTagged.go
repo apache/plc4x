@@ -87,31 +87,31 @@ func (m *BACnetDaysOfWeekTagged) GetPayload() *BACnetTagPayloadBitString {
 ///////////////////////
 
 func (m *BACnetDaysOfWeekTagged) GetMonday() bool {
-	return bool(m.GetPayload().GetData()[0])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetDaysOfWeekTagged) GetTuesday() bool {
-	return bool(m.GetPayload().GetData()[1])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetDaysOfWeekTagged) GetWednesday() bool {
-	return bool(m.GetPayload().GetData()[2])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetDaysOfWeekTagged) GetThursday() bool {
-	return bool(m.GetPayload().GetData()[3])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (3))), func() interface{} { return bool(m.GetPayload().GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetDaysOfWeekTagged) GetFriday() bool {
-	return bool(m.GetPayload().GetData()[4])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (4))), func() interface{} { return bool(m.GetPayload().GetData()[4]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetDaysOfWeekTagged) GetSaturday() bool {
-	return bool(m.GetPayload().GetData()[5])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (5))), func() interface{} { return bool(m.GetPayload().GetData()[5]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetDaysOfWeekTagged) GetSunday() bool {
-	return bool(m.GetPayload().GetData()[6])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (6))), func() interface{} { return bool(m.GetPayload().GetData()[6]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -218,37 +218,37 @@ func BACnetDaysOfWeekTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, t
 	}
 
 	// Virtual field
-	_monday := payload.GetData()[0]
+	_monday := utils.InlineIf(bool(bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	monday := bool(_monday)
 	_ = monday
 
 	// Virtual field
-	_tuesday := payload.GetData()[1]
+	_tuesday := utils.InlineIf(bool(bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	tuesday := bool(_tuesday)
 	_ = tuesday
 
 	// Virtual field
-	_wednesday := payload.GetData()[2]
+	_wednesday := utils.InlineIf(bool(bool((len(payload.GetData())) > (2))), func() interface{} { return bool(payload.GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	wednesday := bool(_wednesday)
 	_ = wednesday
 
 	// Virtual field
-	_thursday := payload.GetData()[3]
+	_thursday := utils.InlineIf(bool(bool((len(payload.GetData())) > (3))), func() interface{} { return bool(payload.GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	thursday := bool(_thursday)
 	_ = thursday
 
 	// Virtual field
-	_friday := payload.GetData()[4]
+	_friday := utils.InlineIf(bool(bool((len(payload.GetData())) > (4))), func() interface{} { return bool(payload.GetData()[4]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	friday := bool(_friday)
 	_ = friday
 
 	// Virtual field
-	_saturday := payload.GetData()[5]
+	_saturday := utils.InlineIf(bool(bool((len(payload.GetData())) > (5))), func() interface{} { return bool(payload.GetData()[5]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	saturday := bool(_saturday)
 	_ = saturday
 
 	// Virtual field
-	_sunday := payload.GetData()[6]
+	_sunday := utils.InlineIf(bool(bool((len(payload.GetData())) > (6))), func() interface{} { return bool(payload.GetData()[6]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	sunday := bool(_sunday)
 	_ = sunday
 

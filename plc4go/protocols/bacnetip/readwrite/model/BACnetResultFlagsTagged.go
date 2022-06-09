@@ -79,15 +79,15 @@ func (m *BACnetResultFlagsTagged) GetPayload() *BACnetTagPayloadBitString {
 ///////////////////////
 
 func (m *BACnetResultFlagsTagged) GetFirstItem() bool {
-	return bool(m.GetPayload().GetData()[0])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetResultFlagsTagged) GetLastItem() bool {
-	return bool(m.GetPayload().GetData()[1])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetResultFlagsTagged) GetMoreItems() bool {
-	return bool(m.GetPayload().GetData()[2])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -186,17 +186,17 @@ func BACnetResultFlagsTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	}
 
 	// Virtual field
-	_firstItem := payload.GetData()[0]
+	_firstItem := utils.InlineIf(bool(bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	firstItem := bool(_firstItem)
 	_ = firstItem
 
 	// Virtual field
-	_lastItem := payload.GetData()[1]
+	_lastItem := utils.InlineIf(bool(bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	lastItem := bool(_lastItem)
 	_ = lastItem
 
 	// Virtual field
-	_moreItems := payload.GetData()[2]
+	_moreItems := utils.InlineIf(bool(bool((len(payload.GetData())) > (2))), func() interface{} { return bool(payload.GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	moreItems := bool(_moreItems)
 	_ = moreItems
 

@@ -2260,7 +2260,7 @@ public class BACnetObjectsDefinitions {
     }
 
     private static BacNetObject createBinarInput() {
-        return b("Binary input",
+        return b("Binary Input",
             p("Object_Identifier", "BACnetObjectIdentifier", c(R)),
             p("Object_Name", "CharacterString", c(R)),
             p("Object_Type", "BACnetObjectType", c(R)),

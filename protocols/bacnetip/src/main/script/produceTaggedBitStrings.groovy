@@ -76,8 +76,7 @@ taggedEnumsTemplate = """
                                                     "tagnumber doesn't match" shouldFail=false                  ]
     [simple BACnetTagPayloadBitString('header.actualLength')
                     payload                                                                                     ]
-
-<% for (enumIndex in item.enumEntries.keySet().sort()) { %>    [virtual    bit <%= item.enumEntries[enumIndex].enumCamelCase %>         'payload.data[<%= enumIndex %>]'          ]\n<% } %>
+<% for (enumIndex in item.enumEntries.keySet().sort()) { %>    [virtual    bit <%= item.enumEntries[enumIndex].enumCamelCase %>         '(COUNT(payload.data)><%= enumIndex %>)?payload.data[<%= enumIndex %>]:false'          ]\n<% } %>
 ]
 <% } %>
 """

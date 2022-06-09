@@ -81,19 +81,19 @@ func (m *BACnetStatusFlagsTagged) GetPayload() *BACnetTagPayloadBitString {
 ///////////////////////
 
 func (m *BACnetStatusFlagsTagged) GetInAlarm() bool {
-	return bool(m.GetPayload().GetData()[0])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetStatusFlagsTagged) GetFault() bool {
-	return bool(m.GetPayload().GetData()[1])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetStatusFlagsTagged) GetOverridden() bool {
-	return bool(m.GetPayload().GetData()[2])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetStatusFlagsTagged) GetOutOfService() bool {
-	return bool(m.GetPayload().GetData()[3])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (3))), func() interface{} { return bool(m.GetPayload().GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -194,22 +194,22 @@ func BACnetStatusFlagsTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, 
 	}
 
 	// Virtual field
-	_inAlarm := payload.GetData()[0]
+	_inAlarm := utils.InlineIf(bool(bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	inAlarm := bool(_inAlarm)
 	_ = inAlarm
 
 	// Virtual field
-	_fault := payload.GetData()[1]
+	_fault := utils.InlineIf(bool(bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	fault := bool(_fault)
 	_ = fault
 
 	// Virtual field
-	_overridden := payload.GetData()[2]
+	_overridden := utils.InlineIf(bool(bool((len(payload.GetData())) > (2))), func() interface{} { return bool(payload.GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	overridden := bool(_overridden)
 	_ = overridden
 
 	// Virtual field
-	_outOfService := payload.GetData()[3]
+	_outOfService := utils.InlineIf(bool(bool((len(payload.GetData())) > (3))), func() interface{} { return bool(payload.GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	outOfService := bool(_outOfService)
 	_ = outOfService
 

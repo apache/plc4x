@@ -79,15 +79,15 @@ func (m *BACnetLogStatusTagged) GetPayload() *BACnetTagPayloadBitString {
 ///////////////////////
 
 func (m *BACnetLogStatusTagged) GetLogDisabled() bool {
-	return bool(m.GetPayload().GetData()[0])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetLogStatusTagged) GetBufferPurged() bool {
-	return bool(m.GetPayload().GetData()[1])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *BACnetLogStatusTagged) GetLogInterrupted() bool {
-	return bool(m.GetPayload().GetData()[2])
+	return bool(utils.InlineIf(bool(bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -186,17 +186,17 @@ func BACnetLogStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	}
 
 	// Virtual field
-	_logDisabled := payload.GetData()[0]
+	_logDisabled := utils.InlineIf(bool(bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	logDisabled := bool(_logDisabled)
 	_ = logDisabled
 
 	// Virtual field
-	_bufferPurged := payload.GetData()[1]
+	_bufferPurged := utils.InlineIf(bool(bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	bufferPurged := bool(_bufferPurged)
 	_ = bufferPurged
 
 	// Virtual field
-	_logInterrupted := payload.GetData()[2]
+	_logInterrupted := utils.InlineIf(bool(bool((len(payload.GetData())) > (2))), func() interface{} { return bool(payload.GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool)
 	logInterrupted := bool(_logInterrupted)
 	_ = logInterrupted
 
