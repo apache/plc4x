@@ -32,7 +32,8 @@ type BACnetConstructedDataActivationTime struct {
 	ActivationTime *BACnetDateTime
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataActivationTime is the corresponding interface of BACnetConstructedDataActivationTime
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataActivationTime) GetActivationTime() *BACnetDateTim
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActivationTime factory function for BACnetConstructedDataActivationTime
-func NewBACnetConstructedDataActivationTime(activationTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataActivationTime {
+func NewBACnetConstructedDataActivationTime(activationTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataActivationTime {
 	_result := &BACnetConstructedDataActivationTime{
 		ActivationTime:        activationTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataActivationTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActivationTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataActivationTime, error) {
+func BACnetConstructedDataActivationTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataActivationTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActivationTime"); pullErr != nil {

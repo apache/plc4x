@@ -32,7 +32,8 @@ type BACnetConstructedDataReasonForHalt struct {
 	ProgramError *BACnetProgramErrorTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataReasonForHalt is the corresponding interface of BACnetConstructedDataReasonForHalt
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataReasonForHalt) GetProgramError() *BACnetProgramErr
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReasonForHalt factory function for BACnetConstructedDataReasonForHalt
-func NewBACnetConstructedDataReasonForHalt(programError *BACnetProgramErrorTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataReasonForHalt {
+func NewBACnetConstructedDataReasonForHalt(programError *BACnetProgramErrorTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataReasonForHalt {
 	_result := &BACnetConstructedDataReasonForHalt{
 		ProgramError:          programError,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataReasonForHalt) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataReasonForHaltParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataReasonForHalt, error) {
+func BACnetConstructedDataReasonForHaltParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataReasonForHalt, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReasonForHalt"); pullErr != nil {

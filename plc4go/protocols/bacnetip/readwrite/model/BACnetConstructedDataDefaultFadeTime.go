@@ -32,7 +32,8 @@ type BACnetConstructedDataDefaultFadeTime struct {
 	DefaultFadeTime *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDefaultFadeTime is the corresponding interface of BACnetConstructedDataDefaultFadeTime
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataDefaultFadeTime) GetDefaultFadeTime() *BACnetAppli
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDefaultFadeTime factory function for BACnetConstructedDataDefaultFadeTime
-func NewBACnetConstructedDataDefaultFadeTime(defaultFadeTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDefaultFadeTime {
+func NewBACnetConstructedDataDefaultFadeTime(defaultFadeTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDefaultFadeTime {
 	_result := &BACnetConstructedDataDefaultFadeTime{
 		DefaultFadeTime:       defaultFadeTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataDefaultFadeTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDefaultFadeTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDefaultFadeTime, error) {
+func BACnetConstructedDataDefaultFadeTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDefaultFadeTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultFadeTime"); pullErr != nil {

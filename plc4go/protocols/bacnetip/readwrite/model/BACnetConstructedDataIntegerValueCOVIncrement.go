@@ -32,7 +32,8 @@ type BACnetConstructedDataIntegerValueCOVIncrement struct {
 	CovIncrement *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataIntegerValueCOVIncrement is the corresponding interface of BACnetConstructedDataIntegerValueCOVIncrement
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataIntegerValueCOVIncrement) GetCovIncrement() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIntegerValueCOVIncrement factory function for BACnetConstructedDataIntegerValueCOVIncrement
-func NewBACnetConstructedDataIntegerValueCOVIncrement(covIncrement *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIntegerValueCOVIncrement {
+func NewBACnetConstructedDataIntegerValueCOVIncrement(covIncrement *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIntegerValueCOVIncrement {
 	_result := &BACnetConstructedDataIntegerValueCOVIncrement{
 		CovIncrement:          covIncrement,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataIntegerValueCOVIncrement) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIntegerValueCOVIncrementParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataIntegerValueCOVIncrement, error) {
+func BACnetConstructedDataIntegerValueCOVIncrementParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataIntegerValueCOVIncrement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegerValueCOVIncrement"); pullErr != nil {

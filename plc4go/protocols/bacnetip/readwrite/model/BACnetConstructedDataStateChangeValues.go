@@ -32,7 +32,8 @@ type BACnetConstructedDataStateChangeValues struct {
 	StateChangeValues []*BACnetTimerStateChangeValue
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataStateChangeValues is the corresponding interface of BACnetConstructedDataStateChangeValues
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataStateChangeValues) GetStateChangeValues() []*BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataStateChangeValues factory function for BACnetConstructedDataStateChangeValues
-func NewBACnetConstructedDataStateChangeValues(stateChangeValues []*BACnetTimerStateChangeValue, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataStateChangeValues {
+func NewBACnetConstructedDataStateChangeValues(stateChangeValues []*BACnetTimerStateChangeValue, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataStateChangeValues {
 	_result := &BACnetConstructedDataStateChangeValues{
 		StateChangeValues:     stateChangeValues,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataStateChangeValues) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataStateChangeValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataStateChangeValues, error) {
+func BACnetConstructedDataStateChangeValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataStateChangeValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStateChangeValues"); pullErr != nil {

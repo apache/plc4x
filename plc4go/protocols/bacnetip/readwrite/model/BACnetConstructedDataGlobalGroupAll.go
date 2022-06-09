@@ -30,7 +30,8 @@ type BACnetConstructedDataGlobalGroupAll struct {
 	*BACnetConstructedData
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataGlobalGroupAll is the corresponding interface of BACnetConstructedDataGlobalGroupAll
@@ -73,9 +74,9 @@ func (m *BACnetConstructedDataGlobalGroupAll) GetParent() *BACnetConstructedData
 }
 
 // NewBACnetConstructedDataGlobalGroupAll factory function for BACnetConstructedDataGlobalGroupAll
-func NewBACnetConstructedDataGlobalGroupAll(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataGlobalGroupAll {
+func NewBACnetConstructedDataGlobalGroupAll(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataGlobalGroupAll {
 	_result := &BACnetConstructedDataGlobalGroupAll{
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -115,7 +116,7 @@ func (m *BACnetConstructedDataGlobalGroupAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataGlobalGroupAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataGlobalGroupAll, error) {
+func BACnetConstructedDataGlobalGroupAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataGlobalGroupAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGlobalGroupAll"); pullErr != nil {

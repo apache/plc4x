@@ -32,7 +32,8 @@ type BACnetConstructedDataDaylightSavingsStatus struct {
 	DaylightSavingsStatus *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDaylightSavingsStatus is the corresponding interface of BACnetConstructedDataDaylightSavingsStatus
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataDaylightSavingsStatus) GetDaylightSavingsStatus() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDaylightSavingsStatus factory function for BACnetConstructedDataDaylightSavingsStatus
-func NewBACnetConstructedDataDaylightSavingsStatus(daylightSavingsStatus *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDaylightSavingsStatus {
+func NewBACnetConstructedDataDaylightSavingsStatus(daylightSavingsStatus *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDaylightSavingsStatus {
 	_result := &BACnetConstructedDataDaylightSavingsStatus{
 		DaylightSavingsStatus: daylightSavingsStatus,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataDaylightSavingsStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDaylightSavingsStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDaylightSavingsStatus, error) {
+func BACnetConstructedDataDaylightSavingsStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDaylightSavingsStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDaylightSavingsStatus"); pullErr != nil {

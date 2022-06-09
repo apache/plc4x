@@ -32,7 +32,8 @@ type BACnetConstructedDataOperationDirection struct {
 	OperationDirection *BACnetEscalatorOperationDirectionTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataOperationDirection is the corresponding interface of BACnetConstructedDataOperationDirection
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataOperationDirection) GetOperationDirection() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOperationDirection factory function for BACnetConstructedDataOperationDirection
-func NewBACnetConstructedDataOperationDirection(operationDirection *BACnetEscalatorOperationDirectionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataOperationDirection {
+func NewBACnetConstructedDataOperationDirection(operationDirection *BACnetEscalatorOperationDirectionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataOperationDirection {
 	_result := &BACnetConstructedDataOperationDirection{
 		OperationDirection:    operationDirection,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataOperationDirection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOperationDirectionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataOperationDirection, error) {
+func BACnetConstructedDataOperationDirectionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataOperationDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOperationDirection"); pullErr != nil {

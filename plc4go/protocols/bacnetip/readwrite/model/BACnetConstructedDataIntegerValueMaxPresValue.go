@@ -32,7 +32,8 @@ type BACnetConstructedDataIntegerValueMaxPresValue struct {
 	MaxPresValue *BACnetApplicationTagSignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataIntegerValueMaxPresValue is the corresponding interface of BACnetConstructedDataIntegerValueMaxPresValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataIntegerValueMaxPresValue) GetMaxPresValue() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIntegerValueMaxPresValue factory function for BACnetConstructedDataIntegerValueMaxPresValue
-func NewBACnetConstructedDataIntegerValueMaxPresValue(maxPresValue *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIntegerValueMaxPresValue {
+func NewBACnetConstructedDataIntegerValueMaxPresValue(maxPresValue *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIntegerValueMaxPresValue {
 	_result := &BACnetConstructedDataIntegerValueMaxPresValue{
 		MaxPresValue:          maxPresValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataIntegerValueMaxPresValue) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIntegerValueMaxPresValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataIntegerValueMaxPresValue, error) {
+func BACnetConstructedDataIntegerValueMaxPresValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataIntegerValueMaxPresValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegerValueMaxPresValue"); pullErr != nil {

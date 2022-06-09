@@ -32,7 +32,8 @@ type BACnetConstructedDataSerialNumber struct {
 	SerialNumber *BACnetApplicationTagCharacterString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSerialNumber is the corresponding interface of BACnetConstructedDataSerialNumber
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSerialNumber) GetSerialNumber() *BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSerialNumber factory function for BACnetConstructedDataSerialNumber
-func NewBACnetConstructedDataSerialNumber(serialNumber *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSerialNumber {
+func NewBACnetConstructedDataSerialNumber(serialNumber *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSerialNumber {
 	_result := &BACnetConstructedDataSerialNumber{
 		SerialNumber:          serialNumber,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataSerialNumber) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSerialNumberParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSerialNumber, error) {
+func BACnetConstructedDataSerialNumberParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSerialNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSerialNumber"); pullErr != nil {

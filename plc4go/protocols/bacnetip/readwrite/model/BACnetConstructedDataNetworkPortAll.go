@@ -30,7 +30,8 @@ type BACnetConstructedDataNetworkPortAll struct {
 	*BACnetConstructedData
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataNetworkPortAll is the corresponding interface of BACnetConstructedDataNetworkPortAll
@@ -73,9 +74,9 @@ func (m *BACnetConstructedDataNetworkPortAll) GetParent() *BACnetConstructedData
 }
 
 // NewBACnetConstructedDataNetworkPortAll factory function for BACnetConstructedDataNetworkPortAll
-func NewBACnetConstructedDataNetworkPortAll(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNetworkPortAll {
+func NewBACnetConstructedDataNetworkPortAll(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNetworkPortAll {
 	_result := &BACnetConstructedDataNetworkPortAll{
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -115,7 +116,7 @@ func (m *BACnetConstructedDataNetworkPortAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNetworkPortAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNetworkPortAll, error) {
+func BACnetConstructedDataNetworkPortAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataNetworkPortAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkPortAll"); pullErr != nil {

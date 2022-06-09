@@ -32,7 +32,8 @@ type BACnetConstructedDataBACnetIPNATTraversal struct {
 	BacnetIPNATTraversal *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBACnetIPNATTraversal is the corresponding interface of BACnetConstructedDataBACnetIPNATTraversal
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBACnetIPNATTraversal) GetBacnetIPNATTraversal() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPNATTraversal factory function for BACnetConstructedDataBACnetIPNATTraversal
-func NewBACnetConstructedDataBACnetIPNATTraversal(bacnetIPNATTraversal *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPNATTraversal {
+func NewBACnetConstructedDataBACnetIPNATTraversal(bacnetIPNATTraversal *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBACnetIPNATTraversal {
 	_result := &BACnetConstructedDataBACnetIPNATTraversal{
 		BacnetIPNATTraversal:  bacnetIPNATTraversal,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBACnetIPNATTraversalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBACnetIPNATTraversal, error) {
+func BACnetConstructedDataBACnetIPNATTraversalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBACnetIPNATTraversal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPNATTraversal"); pullErr != nil {

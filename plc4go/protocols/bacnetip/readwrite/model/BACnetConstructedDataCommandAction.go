@@ -32,7 +32,8 @@ type BACnetConstructedDataCommandAction struct {
 	ActionLists []*BACnetActionList
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataCommandAction is the corresponding interface of BACnetConstructedDataCommandAction
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataCommandAction) GetActionLists() []*BACnetActionLis
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCommandAction factory function for BACnetConstructedDataCommandAction
-func NewBACnetConstructedDataCommandAction(actionLists []*BACnetActionList, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCommandAction {
+func NewBACnetConstructedDataCommandAction(actionLists []*BACnetActionList, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCommandAction {
 	_result := &BACnetConstructedDataCommandAction{
 		ActionLists:           actionLists,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataCommandAction) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCommandActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCommandAction, error) {
+func BACnetConstructedDataCommandActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataCommandAction, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCommandAction"); pullErr != nil {

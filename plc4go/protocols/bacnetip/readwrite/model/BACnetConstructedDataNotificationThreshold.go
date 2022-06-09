@@ -32,7 +32,8 @@ type BACnetConstructedDataNotificationThreshold struct {
 	NotificationThreshold *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataNotificationThreshold is the corresponding interface of BACnetConstructedDataNotificationThreshold
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataNotificationThreshold) GetNotificationThreshold() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNotificationThreshold factory function for BACnetConstructedDataNotificationThreshold
-func NewBACnetConstructedDataNotificationThreshold(notificationThreshold *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNotificationThreshold {
+func NewBACnetConstructedDataNotificationThreshold(notificationThreshold *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNotificationThreshold {
 	_result := &BACnetConstructedDataNotificationThreshold{
 		NotificationThreshold: notificationThreshold,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataNotificationThreshold) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNotificationThresholdParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNotificationThreshold, error) {
+func BACnetConstructedDataNotificationThresholdParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataNotificationThreshold, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotificationThreshold"); pullErr != nil {

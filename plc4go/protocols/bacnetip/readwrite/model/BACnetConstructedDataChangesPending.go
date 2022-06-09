@@ -32,7 +32,8 @@ type BACnetConstructedDataChangesPending struct {
 	ChangesPending *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataChangesPending is the corresponding interface of BACnetConstructedDataChangesPending
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataChangesPending) GetChangesPending() *BACnetApplica
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataChangesPending factory function for BACnetConstructedDataChangesPending
-func NewBACnetConstructedDataChangesPending(changesPending *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataChangesPending {
+func NewBACnetConstructedDataChangesPending(changesPending *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataChangesPending {
 	_result := &BACnetConstructedDataChangesPending{
 		ChangesPending:        changesPending,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataChangesPending) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataChangesPendingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataChangesPending, error) {
+func BACnetConstructedDataChangesPendingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataChangesPending, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChangesPending"); pullErr != nil {

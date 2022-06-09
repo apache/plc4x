@@ -32,7 +32,8 @@ type BACnetConstructedDataLastAccessPoint struct {
 	LastAccessPoint *BACnetDeviceObjectReference
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLastAccessPoint is the corresponding interface of BACnetConstructedDataLastAccessPoint
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLastAccessPoint) GetLastAccessPoint() *BACnetDevic
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastAccessPoint factory function for BACnetConstructedDataLastAccessPoint
-func NewBACnetConstructedDataLastAccessPoint(lastAccessPoint *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastAccessPoint {
+func NewBACnetConstructedDataLastAccessPoint(lastAccessPoint *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastAccessPoint {
 	_result := &BACnetConstructedDataLastAccessPoint{
 		LastAccessPoint:       lastAccessPoint,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLastAccessPoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastAccessPointParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLastAccessPoint, error) {
+func BACnetConstructedDataLastAccessPointParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLastAccessPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastAccessPoint"); pullErr != nil {

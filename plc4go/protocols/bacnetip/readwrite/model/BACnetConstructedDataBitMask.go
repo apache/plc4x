@@ -32,7 +32,8 @@ type BACnetConstructedDataBitMask struct {
 	BitString *BACnetApplicationTagBitString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBitMask is the corresponding interface of BACnetConstructedDataBitMask
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBitMask) GetBitString() *BACnetApplicationTagBitSt
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBitMask factory function for BACnetConstructedDataBitMask
-func NewBACnetConstructedDataBitMask(bitString *BACnetApplicationTagBitString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBitMask {
+func NewBACnetConstructedDataBitMask(bitString *BACnetApplicationTagBitString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBitMask {
 	_result := &BACnetConstructedDataBitMask{
 		BitString:             bitString,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBitMask) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBitMaskParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBitMask, error) {
+func BACnetConstructedDataBitMaskParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBitMask, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBitMask"); pullErr != nil {

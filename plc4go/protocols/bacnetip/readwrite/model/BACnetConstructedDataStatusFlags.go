@@ -32,7 +32,8 @@ type BACnetConstructedDataStatusFlags struct {
 	StatusFlags *BACnetStatusFlagsTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataStatusFlags is the corresponding interface of BACnetConstructedDataStatusFlags
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataStatusFlags) GetStatusFlags() *BACnetStatusFlagsTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataStatusFlags factory function for BACnetConstructedDataStatusFlags
-func NewBACnetConstructedDataStatusFlags(statusFlags *BACnetStatusFlagsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataStatusFlags {
+func NewBACnetConstructedDataStatusFlags(statusFlags *BACnetStatusFlagsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataStatusFlags {
 	_result := &BACnetConstructedDataStatusFlags{
 		StatusFlags:           statusFlags,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataStatusFlags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataStatusFlags, error) {
+func BACnetConstructedDataStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStatusFlags"); pullErr != nil {

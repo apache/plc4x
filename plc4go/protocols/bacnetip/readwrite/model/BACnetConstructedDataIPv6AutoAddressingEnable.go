@@ -32,7 +32,8 @@ type BACnetConstructedDataIPv6AutoAddressingEnable struct {
 	AutoAddressingEnable *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataIPv6AutoAddressingEnable is the corresponding interface of BACnetConstructedDataIPv6AutoAddressingEnable
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataIPv6AutoAddressingEnable) GetAutoAddressingEnable(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6AutoAddressingEnable factory function for BACnetConstructedDataIPv6AutoAddressingEnable
-func NewBACnetConstructedDataIPv6AutoAddressingEnable(autoAddressingEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPv6AutoAddressingEnable {
+func NewBACnetConstructedDataIPv6AutoAddressingEnable(autoAddressingEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPv6AutoAddressingEnable {
 	_result := &BACnetConstructedDataIPv6AutoAddressingEnable{
 		AutoAddressingEnable:  autoAddressingEnable,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPv6AutoAddressingEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataIPv6AutoAddressingEnable, error) {
+func BACnetConstructedDataIPv6AutoAddressingEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataIPv6AutoAddressingEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6AutoAddressingEnable"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataSlaveAddressBinding struct {
 	SlaveAddressBinding []*BACnetAddressBinding
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSlaveAddressBinding is the corresponding interface of BACnetConstructedDataSlaveAddressBinding
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSlaveAddressBinding) GetSlaveAddressBinding() []*B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSlaveAddressBinding factory function for BACnetConstructedDataSlaveAddressBinding
-func NewBACnetConstructedDataSlaveAddressBinding(slaveAddressBinding []*BACnetAddressBinding, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSlaveAddressBinding {
+func NewBACnetConstructedDataSlaveAddressBinding(slaveAddressBinding []*BACnetAddressBinding, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSlaveAddressBinding {
 	_result := &BACnetConstructedDataSlaveAddressBinding{
 		SlaveAddressBinding:   slaveAddressBinding,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataSlaveAddressBinding) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSlaveAddressBindingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSlaveAddressBinding, error) {
+func BACnetConstructedDataSlaveAddressBindingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSlaveAddressBinding, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSlaveAddressBinding"); pullErr != nil {

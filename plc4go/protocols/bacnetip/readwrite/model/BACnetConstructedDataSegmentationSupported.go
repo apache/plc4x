@@ -32,7 +32,8 @@ type BACnetConstructedDataSegmentationSupported struct {
 	SegmentationSupported *BACnetSegmentationTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSegmentationSupported is the corresponding interface of BACnetConstructedDataSegmentationSupported
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSegmentationSupported) GetSegmentationSupported() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSegmentationSupported factory function for BACnetConstructedDataSegmentationSupported
-func NewBACnetConstructedDataSegmentationSupported(segmentationSupported *BACnetSegmentationTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSegmentationSupported {
+func NewBACnetConstructedDataSegmentationSupported(segmentationSupported *BACnetSegmentationTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSegmentationSupported {
 	_result := &BACnetConstructedDataSegmentationSupported{
 		SegmentationSupported: segmentationSupported,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataSegmentationSupported) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSegmentationSupportedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSegmentationSupported, error) {
+func BACnetConstructedDataSegmentationSupportedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSegmentationSupported, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSegmentationSupported"); pullErr != nil {

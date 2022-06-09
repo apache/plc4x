@@ -32,7 +32,8 @@ type BACnetConstructedDataDefaultRampRate struct {
 	DefaultRampRate *BACnetApplicationTagReal
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDefaultRampRate is the corresponding interface of BACnetConstructedDataDefaultRampRate
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataDefaultRampRate) GetDefaultRampRate() *BACnetAppli
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDefaultRampRate factory function for BACnetConstructedDataDefaultRampRate
-func NewBACnetConstructedDataDefaultRampRate(defaultRampRate *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDefaultRampRate {
+func NewBACnetConstructedDataDefaultRampRate(defaultRampRate *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDefaultRampRate {
 	_result := &BACnetConstructedDataDefaultRampRate{
 		DefaultRampRate:       defaultRampRate,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataDefaultRampRate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDefaultRampRateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDefaultRampRate, error) {
+func BACnetConstructedDataDefaultRampRateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDefaultRampRate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultRampRate"); pullErr != nil {

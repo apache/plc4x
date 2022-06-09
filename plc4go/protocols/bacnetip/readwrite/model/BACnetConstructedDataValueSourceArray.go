@@ -32,7 +32,8 @@ type BACnetConstructedDataValueSourceArray struct {
 	VtClassesSupported []*BACnetValueSource
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataValueSourceArray is the corresponding interface of BACnetConstructedDataValueSourceArray
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataValueSourceArray) GetVtClassesSupported() []*BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataValueSourceArray factory function for BACnetConstructedDataValueSourceArray
-func NewBACnetConstructedDataValueSourceArray(vtClassesSupported []*BACnetValueSource, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataValueSourceArray {
+func NewBACnetConstructedDataValueSourceArray(vtClassesSupported []*BACnetValueSource, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataValueSourceArray {
 	_result := &BACnetConstructedDataValueSourceArray{
 		VtClassesSupported:    vtClassesSupported,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataValueSourceArray) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataValueSourceArrayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataValueSourceArray, error) {
+func BACnetConstructedDataValueSourceArrayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataValueSourceArray, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValueSourceArray"); pullErr != nil {

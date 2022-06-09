@@ -32,7 +32,8 @@ type BACnetConstructedDataAuthenticationFactors struct {
 	AuthenticationFactors []*BACnetCredentialAuthenticationFactor
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAuthenticationFactors is the corresponding interface of BACnetConstructedDataAuthenticationFactors
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAuthenticationFactors) GetAuthenticationFactors() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAuthenticationFactors factory function for BACnetConstructedDataAuthenticationFactors
-func NewBACnetConstructedDataAuthenticationFactors(authenticationFactors []*BACnetCredentialAuthenticationFactor, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAuthenticationFactors {
+func NewBACnetConstructedDataAuthenticationFactors(authenticationFactors []*BACnetCredentialAuthenticationFactor, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAuthenticationFactors {
 	_result := &BACnetConstructedDataAuthenticationFactors{
 		AuthenticationFactors: authenticationFactors,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataAuthenticationFactors) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAuthenticationFactorsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAuthenticationFactors, error) {
+func BACnetConstructedDataAuthenticationFactorsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAuthenticationFactors, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthenticationFactors"); pullErr != nil {

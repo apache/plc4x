@@ -32,7 +32,8 @@ type BACnetConstructedDataActiveVTSessions struct {
 	ActiveVTSession []*BACnetVTSession
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataActiveVTSessions is the corresponding interface of BACnetConstructedDataActiveVTSessions
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataActiveVTSessions) GetActiveVTSession() []*BACnetVT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActiveVTSessions factory function for BACnetConstructedDataActiveVTSessions
-func NewBACnetConstructedDataActiveVTSessions(activeVTSession []*BACnetVTSession, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataActiveVTSessions {
+func NewBACnetConstructedDataActiveVTSessions(activeVTSession []*BACnetVTSession, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataActiveVTSessions {
 	_result := &BACnetConstructedDataActiveVTSessions{
 		ActiveVTSession:       activeVTSession,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataActiveVTSessions) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActiveVTSessionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataActiveVTSessions, error) {
+func BACnetConstructedDataActiveVTSessionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataActiveVTSessions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveVTSessions"); pullErr != nil {

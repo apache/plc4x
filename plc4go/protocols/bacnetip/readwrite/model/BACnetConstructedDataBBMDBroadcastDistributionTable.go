@@ -32,7 +32,8 @@ type BACnetConstructedDataBBMDBroadcastDistributionTable struct {
 	BbmdBroadcastDistributionTable []*BACnetBDTEntry
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBBMDBroadcastDistributionTable is the corresponding interface of BACnetConstructedDataBBMDBroadcastDistributionTable
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBBMDBroadcastDistributionTable) GetBbmdBroadcastDi
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBBMDBroadcastDistributionTable factory function for BACnetConstructedDataBBMDBroadcastDistributionTable
-func NewBACnetConstructedDataBBMDBroadcastDistributionTable(bbmdBroadcastDistributionTable []*BACnetBDTEntry, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBBMDBroadcastDistributionTable {
+func NewBACnetConstructedDataBBMDBroadcastDistributionTable(bbmdBroadcastDistributionTable []*BACnetBDTEntry, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBBMDBroadcastDistributionTable {
 	_result := &BACnetConstructedDataBBMDBroadcastDistributionTable{
 		BbmdBroadcastDistributionTable: bbmdBroadcastDistributionTable,
-		BACnetConstructedData:          NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:          NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataBBMDBroadcastDistributionTable) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
+func BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBBMDBroadcastDistributionTable"); pullErr != nil {

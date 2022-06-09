@@ -32,7 +32,8 @@ type BACnetConstructedDataLifeSafetyZoneMaintenanceRequired struct {
 	MaintenanceRequired *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLifeSafetyZoneMaintenanceRequired is the corresponding interface of BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetMaintenanceR
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired factory function for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
-func NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(maintenanceRequired *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
+func NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(maintenanceRequired *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
 	_result := &BACnetConstructedDataLifeSafetyZoneMaintenanceRequired{
 		MaintenanceRequired:   maintenanceRequired,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInByte
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLifeSafetyZoneMaintenanceRequired, error) {
+func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLifeSafetyZoneMaintenanceRequired, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired"); pullErr != nil {

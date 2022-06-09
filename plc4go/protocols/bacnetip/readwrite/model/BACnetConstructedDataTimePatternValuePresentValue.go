@@ -32,7 +32,8 @@ type BACnetConstructedDataTimePatternValuePresentValue struct {
 	PresentValue *BACnetApplicationTagTime
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataTimePatternValuePresentValue is the corresponding interface of BACnetConstructedDataTimePatternValuePresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataTimePatternValuePresentValue) GetPresentValue() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimePatternValuePresentValue factory function for BACnetConstructedDataTimePatternValuePresentValue
-func NewBACnetConstructedDataTimePatternValuePresentValue(presentValue *BACnetApplicationTagTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTimePatternValuePresentValue {
+func NewBACnetConstructedDataTimePatternValuePresentValue(presentValue *BACnetApplicationTagTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTimePatternValuePresentValue {
 	_result := &BACnetConstructedDataTimePatternValuePresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataTimePatternValuePresentValue) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimePatternValuePresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTimePatternValuePresentValue, error) {
+func BACnetConstructedDataTimePatternValuePresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataTimePatternValuePresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimePatternValuePresentValue"); pullErr != nil {

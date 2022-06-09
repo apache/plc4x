@@ -32,7 +32,8 @@ type BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty struct {
 	GroupMembers []*BACnetDeviceObjectPropertyReference
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty is the corresponding interface of BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty) GetGroupM
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty factory function for BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty
-func NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty(groupMembers []*BACnetDeviceObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty {
+func NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty(groupMembers []*BACnetDeviceObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty {
 	_result := &BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty{
 		GroupMembers:          groupMembers,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty) GetLength
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty, error) {
+func BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty"); pullErr != nil {

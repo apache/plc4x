@@ -200,7 +200,7 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("commandValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_commandValue, _commandValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
+	_commandValue, _commandValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _commandValueErr != nil {
 		return nil, errors.Wrap(_commandValueErr, "Error parsing 'commandValue' field")
 	}
@@ -226,7 +226,7 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("feedbackValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_feedbackValue, _feedbackValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
+	_feedbackValue, _feedbackValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _feedbackValueErr != nil {
 		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field")
 	}

@@ -32,7 +32,8 @@ type BACnetConstructedDataMaximumValueTimestamp struct {
 	MaximumValueTimestamp *BACnetDateTime
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataMaximumValueTimestamp is the corresponding interface of BACnetConstructedDataMaximumValueTimestamp
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataMaximumValueTimestamp) GetMaximumValueTimestamp() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMaximumValueTimestamp factory function for BACnetConstructedDataMaximumValueTimestamp
-func NewBACnetConstructedDataMaximumValueTimestamp(maximumValueTimestamp *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMaximumValueTimestamp {
+func NewBACnetConstructedDataMaximumValueTimestamp(maximumValueTimestamp *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMaximumValueTimestamp {
 	_result := &BACnetConstructedDataMaximumValueTimestamp{
 		MaximumValueTimestamp: maximumValueTimestamp,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataMaximumValueTimestamp) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMaximumValueTimestampParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataMaximumValueTimestamp, error) {
+func BACnetConstructedDataMaximumValueTimestampParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataMaximumValueTimestamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaximumValueTimestamp"); pullErr != nil {

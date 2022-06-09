@@ -30,7 +30,8 @@ type BACnetConstructedDataElevatorGroupAll struct {
 	*BACnetConstructedData
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataElevatorGroupAll is the corresponding interface of BACnetConstructedDataElevatorGroupAll
@@ -73,9 +74,9 @@ func (m *BACnetConstructedDataElevatorGroupAll) GetParent() *BACnetConstructedDa
 }
 
 // NewBACnetConstructedDataElevatorGroupAll factory function for BACnetConstructedDataElevatorGroupAll
-func NewBACnetConstructedDataElevatorGroupAll(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataElevatorGroupAll {
+func NewBACnetConstructedDataElevatorGroupAll(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataElevatorGroupAll {
 	_result := &BACnetConstructedDataElevatorGroupAll{
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -115,7 +116,7 @@ func (m *BACnetConstructedDataElevatorGroupAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataElevatorGroupAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataElevatorGroupAll, error) {
+func BACnetConstructedDataElevatorGroupAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataElevatorGroupAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElevatorGroupAll"); pullErr != nil {

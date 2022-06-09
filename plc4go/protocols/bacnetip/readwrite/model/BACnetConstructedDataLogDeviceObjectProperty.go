@@ -32,7 +32,8 @@ type BACnetConstructedDataLogDeviceObjectProperty struct {
 	LogDeviceObjectProperty *BACnetDeviceObjectPropertyReference
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLogDeviceObjectProperty is the corresponding interface of BACnetConstructedDataLogDeviceObjectProperty
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLogDeviceObjectProperty) GetLogDeviceObjectPropert
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLogDeviceObjectProperty factory function for BACnetConstructedDataLogDeviceObjectProperty
-func NewBACnetConstructedDataLogDeviceObjectProperty(logDeviceObjectProperty *BACnetDeviceObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLogDeviceObjectProperty {
+func NewBACnetConstructedDataLogDeviceObjectProperty(logDeviceObjectProperty *BACnetDeviceObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLogDeviceObjectProperty {
 	_result := &BACnetConstructedDataLogDeviceObjectProperty{
 		LogDeviceObjectProperty: logDeviceObjectProperty,
-		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLogDeviceObjectProperty) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLogDeviceObjectPropertyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLogDeviceObjectProperty, error) {
+func BACnetConstructedDataLogDeviceObjectPropertyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLogDeviceObjectProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLogDeviceObjectProperty"); pullErr != nil {

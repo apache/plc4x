@@ -32,7 +32,8 @@ type BACnetConstructedDataNetworkAccessSecurityPolicies struct {
 	NetworkAccessSecurityPolicies []*BACnetNetworkSecurityPolicy
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataNetworkAccessSecurityPolicies is the corresponding interface of BACnetConstructedDataNetworkAccessSecurityPolicies
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataNetworkAccessSecurityPolicies) GetNetworkAccessSec
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNetworkAccessSecurityPolicies factory function for BACnetConstructedDataNetworkAccessSecurityPolicies
-func NewBACnetConstructedDataNetworkAccessSecurityPolicies(networkAccessSecurityPolicies []*BACnetNetworkSecurityPolicy, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNetworkAccessSecurityPolicies {
+func NewBACnetConstructedDataNetworkAccessSecurityPolicies(networkAccessSecurityPolicies []*BACnetNetworkSecurityPolicy, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNetworkAccessSecurityPolicies {
 	_result := &BACnetConstructedDataNetworkAccessSecurityPolicies{
 		NetworkAccessSecurityPolicies: networkAccessSecurityPolicies,
-		BACnetConstructedData:         NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:         NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataNetworkAccessSecurityPolicies) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNetworkAccessSecurityPoliciesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNetworkAccessSecurityPolicies, error) {
+func BACnetConstructedDataNetworkAccessSecurityPoliciesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataNetworkAccessSecurityPolicies, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkAccessSecurityPolicies"); pullErr != nil {

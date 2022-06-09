@@ -32,7 +32,8 @@ type BACnetConstructedDataUnspecified struct {
 	Data []*BACnetConstructedDataElement
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataUnspecified is the corresponding interface of BACnetConstructedDataUnspecified
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataUnspecified) GetData() []*BACnetConstructedDataEle
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUnspecified factory function for BACnetConstructedDataUnspecified
-func NewBACnetConstructedDataUnspecified(data []*BACnetConstructedDataElement, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataUnspecified {
+func NewBACnetConstructedDataUnspecified(data []*BACnetConstructedDataElement, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataUnspecified {
 	_result := &BACnetConstructedDataUnspecified{
 		Data:                  data,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataUnspecified) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataUnspecified, error) {
+func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataUnspecified, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUnspecified"); pullErr != nil {
@@ -158,7 +159,7 @@ func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumbe
 	data := make([]*BACnetConstructedDataElement, 0)
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetConstructedDataElementParse(readBuffer, objectTypeArgument, propertyIdentifierArgument)
+			_item, _err := BACnetConstructedDataElementParse(readBuffer, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field")
 			}

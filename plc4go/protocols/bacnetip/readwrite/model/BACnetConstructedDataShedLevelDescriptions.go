@@ -32,7 +32,8 @@ type BACnetConstructedDataShedLevelDescriptions struct {
 	ShedLevelDescriptions []*BACnetApplicationTagCharacterString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataShedLevelDescriptions is the corresponding interface of BACnetConstructedDataShedLevelDescriptions
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataShedLevelDescriptions) GetShedLevelDescriptions() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataShedLevelDescriptions factory function for BACnetConstructedDataShedLevelDescriptions
-func NewBACnetConstructedDataShedLevelDescriptions(shedLevelDescriptions []*BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataShedLevelDescriptions {
+func NewBACnetConstructedDataShedLevelDescriptions(shedLevelDescriptions []*BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataShedLevelDescriptions {
 	_result := &BACnetConstructedDataShedLevelDescriptions{
 		ShedLevelDescriptions: shedLevelDescriptions,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataShedLevelDescriptions) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataShedLevelDescriptionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataShedLevelDescriptions, error) {
+func BACnetConstructedDataShedLevelDescriptionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataShedLevelDescriptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataShedLevelDescriptions"); pullErr != nil {

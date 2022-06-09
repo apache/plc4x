@@ -32,7 +32,8 @@ type BACnetConstructedDataEgressActive struct {
 	EgressActive *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataEgressActive is the corresponding interface of BACnetConstructedDataEgressActive
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataEgressActive) GetEgressActive() *BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEgressActive factory function for BACnetConstructedDataEgressActive
-func NewBACnetConstructedDataEgressActive(egressActive *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEgressActive {
+func NewBACnetConstructedDataEgressActive(egressActive *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEgressActive {
 	_result := &BACnetConstructedDataEgressActive{
 		EgressActive:          egressActive,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataEgressActive) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEgressActiveParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEgressActive, error) {
+func BACnetConstructedDataEgressActiveParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataEgressActive, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEgressActive"); pullErr != nil {

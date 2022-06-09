@@ -32,7 +32,8 @@ type BACnetConstructedDataBACnetIPMode struct {
 	BacnetIpMode *BACnetIPModeTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBACnetIPMode is the corresponding interface of BACnetConstructedDataBACnetIPMode
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBACnetIPMode) GetBacnetIpMode() *BACnetIPModeTagge
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPMode factory function for BACnetConstructedDataBACnetIPMode
-func NewBACnetConstructedDataBACnetIPMode(bacnetIpMode *BACnetIPModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPMode {
+func NewBACnetConstructedDataBACnetIPMode(bacnetIpMode *BACnetIPModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBACnetIPMode {
 	_result := &BACnetConstructedDataBACnetIPMode{
 		BacnetIpMode:          bacnetIpMode,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBACnetIPMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBACnetIPModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBACnetIPMode, error) {
+func BACnetConstructedDataBACnetIPModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBACnetIPMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPMode"); pullErr != nil {

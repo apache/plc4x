@@ -32,7 +32,8 @@ type BACnetConstructedDataAnalogOutputRelinquishDefault struct {
 	RelinquishDefault *BACnetApplicationTagReal
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAnalogOutputRelinquishDefault is the corresponding interface of BACnetConstructedDataAnalogOutputRelinquishDefault
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAnalogOutputRelinquishDefault) GetRelinquishDefaul
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAnalogOutputRelinquishDefault factory function for BACnetConstructedDataAnalogOutputRelinquishDefault
-func NewBACnetConstructedDataAnalogOutputRelinquishDefault(relinquishDefault *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAnalogOutputRelinquishDefault {
+func NewBACnetConstructedDataAnalogOutputRelinquishDefault(relinquishDefault *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAnalogOutputRelinquishDefault {
 	_result := &BACnetConstructedDataAnalogOutputRelinquishDefault{
 		RelinquishDefault:     relinquishDefault,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAnalogOutputRelinquishDefault) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAnalogOutputRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAnalogOutputRelinquishDefault, error) {
+func BACnetConstructedDataAnalogOutputRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAnalogOutputRelinquishDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogOutputRelinquishDefault"); pullErr != nil {

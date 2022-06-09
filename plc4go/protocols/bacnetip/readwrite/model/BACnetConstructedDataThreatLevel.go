@@ -32,7 +32,8 @@ type BACnetConstructedDataThreatLevel struct {
 	ThreatLevel *BACnetAccessThreatLevel
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataThreatLevel is the corresponding interface of BACnetConstructedDataThreatLevel
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataThreatLevel) GetThreatLevel() *BACnetAccessThreatL
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataThreatLevel factory function for BACnetConstructedDataThreatLevel
-func NewBACnetConstructedDataThreatLevel(threatLevel *BACnetAccessThreatLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataThreatLevel {
+func NewBACnetConstructedDataThreatLevel(threatLevel *BACnetAccessThreatLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataThreatLevel {
 	_result := &BACnetConstructedDataThreatLevel{
 		ThreatLevel:           threatLevel,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataThreatLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataThreatLevelParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataThreatLevel, error) {
+func BACnetConstructedDataThreatLevelParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataThreatLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataThreatLevel"); pullErr != nil {

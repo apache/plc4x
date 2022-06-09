@@ -32,7 +32,8 @@ type BACnetConstructedDataStopWhenFull struct {
 	StopWhenFull *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataStopWhenFull is the corresponding interface of BACnetConstructedDataStopWhenFull
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataStopWhenFull) GetStopWhenFull() *BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataStopWhenFull factory function for BACnetConstructedDataStopWhenFull
-func NewBACnetConstructedDataStopWhenFull(stopWhenFull *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataStopWhenFull {
+func NewBACnetConstructedDataStopWhenFull(stopWhenFull *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataStopWhenFull {
 	_result := &BACnetConstructedDataStopWhenFull{
 		StopWhenFull:          stopWhenFull,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataStopWhenFull) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataStopWhenFullParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataStopWhenFull, error) {
+func BACnetConstructedDataStopWhenFullParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataStopWhenFull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStopWhenFull"); pullErr != nil {

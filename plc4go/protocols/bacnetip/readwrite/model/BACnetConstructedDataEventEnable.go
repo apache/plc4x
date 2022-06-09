@@ -32,7 +32,8 @@ type BACnetConstructedDataEventEnable struct {
 	EventEnable *BACnetEventTransitionBitsTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataEventEnable is the corresponding interface of BACnetConstructedDataEventEnable
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataEventEnable) GetEventEnable() *BACnetEventTransiti
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventEnable factory function for BACnetConstructedDataEventEnable
-func NewBACnetConstructedDataEventEnable(eventEnable *BACnetEventTransitionBitsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEventEnable {
+func NewBACnetConstructedDataEventEnable(eventEnable *BACnetEventTransitionBitsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEventEnable {
 	_result := &BACnetConstructedDataEventEnable{
 		EventEnable:           eventEnable,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataEventEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEventEnable, error) {
+func BACnetConstructedDataEventEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataEventEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventEnable"); pullErr != nil {

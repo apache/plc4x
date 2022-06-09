@@ -32,7 +32,8 @@ type BACnetConstructedDataTimeSynchronizationInterval struct {
 	TimeSynchronization *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataTimeSynchronizationInterval is the corresponding interface of BACnetConstructedDataTimeSynchronizationInterval
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataTimeSynchronizationInterval) GetTimeSynchronizatio
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimeSynchronizationInterval factory function for BACnetConstructedDataTimeSynchronizationInterval
-func NewBACnetConstructedDataTimeSynchronizationInterval(timeSynchronization *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTimeSynchronizationInterval {
+func NewBACnetConstructedDataTimeSynchronizationInterval(timeSynchronization *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTimeSynchronizationInterval {
 	_result := &BACnetConstructedDataTimeSynchronizationInterval{
 		TimeSynchronization:   timeSynchronization,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataTimeSynchronizationInterval) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimeSynchronizationIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTimeSynchronizationInterval, error) {
+func BACnetConstructedDataTimeSynchronizationIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataTimeSynchronizationInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeSynchronizationInterval"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataAccessEvent struct {
 	AccessEvent *BACnetAccessEventTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAccessEvent is the corresponding interface of BACnetConstructedDataAccessEvent
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAccessEvent) GetAccessEvent() *BACnetAccessEventTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessEvent factory function for BACnetConstructedDataAccessEvent
-func NewBACnetConstructedDataAccessEvent(accessEvent *BACnetAccessEventTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessEvent {
+func NewBACnetConstructedDataAccessEvent(accessEvent *BACnetAccessEventTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessEvent {
 	_result := &BACnetConstructedDataAccessEvent{
 		AccessEvent:           accessEvent,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAccessEvent) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessEventParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccessEvent, error) {
+func BACnetConstructedDataAccessEventParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAccessEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessEvent"); pullErr != nil {

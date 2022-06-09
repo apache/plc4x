@@ -32,7 +32,8 @@ type BACnetConstructedDataElevatorGroupGroupMembers struct {
 	GroupMembers []*BACnetApplicationTagObjectIdentifier
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataElevatorGroupGroupMembers is the corresponding interface of BACnetConstructedDataElevatorGroupGroupMembers
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataElevatorGroupGroupMembers) GetGroupMembers() []*BA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataElevatorGroupGroupMembers factory function for BACnetConstructedDataElevatorGroupGroupMembers
-func NewBACnetConstructedDataElevatorGroupGroupMembers(groupMembers []*BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataElevatorGroupGroupMembers {
+func NewBACnetConstructedDataElevatorGroupGroupMembers(groupMembers []*BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataElevatorGroupGroupMembers {
 	_result := &BACnetConstructedDataElevatorGroupGroupMembers{
 		GroupMembers:          groupMembers,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataElevatorGroupGroupMembers) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataElevatorGroupGroupMembersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataElevatorGroupGroupMembers, error) {
+func BACnetConstructedDataElevatorGroupGroupMembersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataElevatorGroupGroupMembers, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElevatorGroupGroupMembers"); pullErr != nil {

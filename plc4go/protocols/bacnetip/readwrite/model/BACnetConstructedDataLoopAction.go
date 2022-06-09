@@ -32,7 +32,8 @@ type BACnetConstructedDataLoopAction struct {
 	Action *BACnetActionTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLoopAction is the corresponding interface of BACnetConstructedDataLoopAction
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLoopAction) GetAction() *BACnetActionTagged {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLoopAction factory function for BACnetConstructedDataLoopAction
-func NewBACnetConstructedDataLoopAction(action *BACnetActionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLoopAction {
+func NewBACnetConstructedDataLoopAction(action *BACnetActionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLoopAction {
 	_result := &BACnetConstructedDataLoopAction{
 		Action:                action,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLoopAction) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLoopActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLoopAction, error) {
+func BACnetConstructedDataLoopActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLoopAction, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoopAction"); pullErr != nil {

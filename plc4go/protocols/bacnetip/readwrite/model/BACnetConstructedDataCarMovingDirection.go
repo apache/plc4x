@@ -32,7 +32,8 @@ type BACnetConstructedDataCarMovingDirection struct {
 	CarMovingDirection *BACnetLiftCarDirectionTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataCarMovingDirection is the corresponding interface of BACnetConstructedDataCarMovingDirection
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataCarMovingDirection) GetCarMovingDirection() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCarMovingDirection factory function for BACnetConstructedDataCarMovingDirection
-func NewBACnetConstructedDataCarMovingDirection(carMovingDirection *BACnetLiftCarDirectionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCarMovingDirection {
+func NewBACnetConstructedDataCarMovingDirection(carMovingDirection *BACnetLiftCarDirectionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCarMovingDirection {
 	_result := &BACnetConstructedDataCarMovingDirection{
 		CarMovingDirection:    carMovingDirection,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataCarMovingDirection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCarMovingDirectionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCarMovingDirection, error) {
+func BACnetConstructedDataCarMovingDirectionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataCarMovingDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarMovingDirection"); pullErr != nil {

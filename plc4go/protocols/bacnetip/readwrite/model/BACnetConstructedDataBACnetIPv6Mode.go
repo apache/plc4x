@@ -32,7 +32,8 @@ type BACnetConstructedDataBACnetIPv6Mode struct {
 	BacnetIpv6Mode *BACnetIPModeTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBACnetIPv6Mode is the corresponding interface of BACnetConstructedDataBACnetIPv6Mode
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBACnetIPv6Mode) GetBacnetIpv6Mode() *BACnetIPModeT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPv6Mode factory function for BACnetConstructedDataBACnetIPv6Mode
-func NewBACnetConstructedDataBACnetIPv6Mode(bacnetIpv6Mode *BACnetIPModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPv6Mode {
+func NewBACnetConstructedDataBACnetIPv6Mode(bacnetIpv6Mode *BACnetIPModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBACnetIPv6Mode {
 	_result := &BACnetConstructedDataBACnetIPv6Mode{
 		BacnetIpv6Mode:        bacnetIpv6Mode,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBACnetIPv6Mode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBACnetIPv6ModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBACnetIPv6Mode, error) {
+func BACnetConstructedDataBACnetIPv6ModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBACnetIPv6Mode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPv6Mode"); pullErr != nil {

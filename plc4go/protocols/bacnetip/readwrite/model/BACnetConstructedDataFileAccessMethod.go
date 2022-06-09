@@ -32,7 +32,8 @@ type BACnetConstructedDataFileAccessMethod struct {
 	FileAccessMethod *BACnetFileAccessMethodTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataFileAccessMethod is the corresponding interface of BACnetConstructedDataFileAccessMethod
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataFileAccessMethod) GetFileAccessMethod() *BACnetFil
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFileAccessMethod factory function for BACnetConstructedDataFileAccessMethod
-func NewBACnetConstructedDataFileAccessMethod(fileAccessMethod *BACnetFileAccessMethodTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFileAccessMethod {
+func NewBACnetConstructedDataFileAccessMethod(fileAccessMethod *BACnetFileAccessMethodTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFileAccessMethod {
 	_result := &BACnetConstructedDataFileAccessMethod{
 		FileAccessMethod:      fileAccessMethod,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataFileAccessMethod) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFileAccessMethodParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataFileAccessMethod, error) {
+func BACnetConstructedDataFileAccessMethodParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataFileAccessMethod, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFileAccessMethod"); pullErr != nil {

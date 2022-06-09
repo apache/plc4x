@@ -32,7 +32,8 @@ type BACnetConstructedDataFaultSignals struct {
 	FaultSignals []*BACnetLiftFaultTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataFaultSignals is the corresponding interface of BACnetConstructedDataFaultSignals
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataFaultSignals) GetFaultSignals() []*BACnetLiftFault
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFaultSignals factory function for BACnetConstructedDataFaultSignals
-func NewBACnetConstructedDataFaultSignals(faultSignals []*BACnetLiftFaultTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFaultSignals {
+func NewBACnetConstructedDataFaultSignals(faultSignals []*BACnetLiftFaultTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFaultSignals {
 	_result := &BACnetConstructedDataFaultSignals{
 		FaultSignals:          faultSignals,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataFaultSignals) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFaultSignalsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataFaultSignals, error) {
+func BACnetConstructedDataFaultSignalsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataFaultSignals, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFaultSignals"); pullErr != nil {

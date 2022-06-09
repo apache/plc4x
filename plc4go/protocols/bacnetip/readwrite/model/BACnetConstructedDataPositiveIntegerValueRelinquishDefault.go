@@ -32,7 +32,8 @@ type BACnetConstructedDataPositiveIntegerValueRelinquishDefault struct {
 	RelinquishDefault *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataPositiveIntegerValueRelinquishDefault is the corresponding interface of BACnetConstructedDataPositiveIntegerValueRelinquishDefault
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataPositiveIntegerValueRelinquishDefault) GetRelinqui
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPositiveIntegerValueRelinquishDefault factory function for BACnetConstructedDataPositiveIntegerValueRelinquishDefault
-func NewBACnetConstructedDataPositiveIntegerValueRelinquishDefault(relinquishDefault *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPositiveIntegerValueRelinquishDefault {
+func NewBACnetConstructedDataPositiveIntegerValueRelinquishDefault(relinquishDefault *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPositiveIntegerValueRelinquishDefault {
 	_result := &BACnetConstructedDataPositiveIntegerValueRelinquishDefault{
 		RelinquishDefault:     relinquishDefault,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataPositiveIntegerValueRelinquishDefault) GetLengthIn
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPositiveIntegerValueRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPositiveIntegerValueRelinquishDefault, error) {
+func BACnetConstructedDataPositiveIntegerValueRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataPositiveIntegerValueRelinquishDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueRelinquishDefault"); pullErr != nil {

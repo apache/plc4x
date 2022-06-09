@@ -32,7 +32,8 @@ type BACnetConstructedDataLockStatus struct {
 	LockStatus *BACnetLockStatusTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLockStatus is the corresponding interface of BACnetConstructedDataLockStatus
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLockStatus) GetLockStatus() *BACnetLockStatusTagge
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLockStatus factory function for BACnetConstructedDataLockStatus
-func NewBACnetConstructedDataLockStatus(lockStatus *BACnetLockStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLockStatus {
+func NewBACnetConstructedDataLockStatus(lockStatus *BACnetLockStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLockStatus {
 	_result := &BACnetConstructedDataLockStatus{
 		LockStatus:            lockStatus,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLockStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLockStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLockStatus, error) {
+func BACnetConstructedDataLockStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLockStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLockStatus"); pullErr != nil {

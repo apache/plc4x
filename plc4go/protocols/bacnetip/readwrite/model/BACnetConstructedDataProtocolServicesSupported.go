@@ -32,7 +32,8 @@ type BACnetConstructedDataProtocolServicesSupported struct {
 	ProtocolServicesSupported *BACnetServicesSupportedTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataProtocolServicesSupported is the corresponding interface of BACnetConstructedDataProtocolServicesSupported
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataProtocolServicesSupported) GetProtocolServicesSupp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProtocolServicesSupported factory function for BACnetConstructedDataProtocolServicesSupported
-func NewBACnetConstructedDataProtocolServicesSupported(protocolServicesSupported *BACnetServicesSupportedTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProtocolServicesSupported {
+func NewBACnetConstructedDataProtocolServicesSupported(protocolServicesSupported *BACnetServicesSupportedTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProtocolServicesSupported {
 	_result := &BACnetConstructedDataProtocolServicesSupported{
 		ProtocolServicesSupported: protocolServicesSupported,
-		BACnetConstructedData:     NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:     NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataProtocolServicesSupported) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProtocolServicesSupportedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataProtocolServicesSupported, error) {
+func BACnetConstructedDataProtocolServicesSupportedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataProtocolServicesSupported, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolServicesSupported"); pullErr != nil {

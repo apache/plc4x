@@ -32,7 +32,8 @@ type BACnetConstructedDataAlertEnrollmentPresentValue struct {
 	PresentValue *BACnetApplicationTagObjectIdentifier
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAlertEnrollmentPresentValue is the corresponding interface of BACnetConstructedDataAlertEnrollmentPresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAlertEnrollmentPresentValue) GetPresentValue() *BA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAlertEnrollmentPresentValue factory function for BACnetConstructedDataAlertEnrollmentPresentValue
-func NewBACnetConstructedDataAlertEnrollmentPresentValue(presentValue *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAlertEnrollmentPresentValue {
+func NewBACnetConstructedDataAlertEnrollmentPresentValue(presentValue *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAlertEnrollmentPresentValue {
 	_result := &BACnetConstructedDataAlertEnrollmentPresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAlertEnrollmentPresentValue) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAlertEnrollmentPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAlertEnrollmentPresentValue, error) {
+func BACnetConstructedDataAlertEnrollmentPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAlertEnrollmentPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAlertEnrollmentPresentValue"); pullErr != nil {

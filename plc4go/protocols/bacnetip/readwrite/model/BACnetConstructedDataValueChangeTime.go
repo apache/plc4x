@@ -32,7 +32,8 @@ type BACnetConstructedDataValueChangeTime struct {
 	ValueChangeTime *BACnetDateTime
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataValueChangeTime is the corresponding interface of BACnetConstructedDataValueChangeTime
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataValueChangeTime) GetValueChangeTime() *BACnetDateT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataValueChangeTime factory function for BACnetConstructedDataValueChangeTime
-func NewBACnetConstructedDataValueChangeTime(valueChangeTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataValueChangeTime {
+func NewBACnetConstructedDataValueChangeTime(valueChangeTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataValueChangeTime {
 	_result := &BACnetConstructedDataValueChangeTime{
 		ValueChangeTime:       valueChangeTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataValueChangeTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataValueChangeTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataValueChangeTime, error) {
+func BACnetConstructedDataValueChangeTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataValueChangeTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValueChangeTime"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataWindowInterval struct {
 	WindowInterval *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataWindowInterval is the corresponding interface of BACnetConstructedDataWindowInterval
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataWindowInterval) GetWindowInterval() *BACnetApplica
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataWindowInterval factory function for BACnetConstructedDataWindowInterval
-func NewBACnetConstructedDataWindowInterval(windowInterval *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataWindowInterval {
+func NewBACnetConstructedDataWindowInterval(windowInterval *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataWindowInterval {
 	_result := &BACnetConstructedDataWindowInterval{
 		WindowInterval:        windowInterval,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataWindowInterval) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataWindowIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataWindowInterval, error) {
+func BACnetConstructedDataWindowIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataWindowInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataWindowInterval"); pullErr != nil {

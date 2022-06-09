@@ -32,7 +32,8 @@ type BACnetConstructedDataUserInformationReference struct {
 	UserInformationReference *BACnetApplicationTagCharacterString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataUserInformationReference is the corresponding interface of BACnetConstructedDataUserInformationReference
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataUserInformationReference) GetUserInformationRefere
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUserInformationReference factory function for BACnetConstructedDataUserInformationReference
-func NewBACnetConstructedDataUserInformationReference(userInformationReference *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataUserInformationReference {
+func NewBACnetConstructedDataUserInformationReference(userInformationReference *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataUserInformationReference {
 	_result := &BACnetConstructedDataUserInformationReference{
 		UserInformationReference: userInformationReference,
-		BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataUserInformationReference) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUserInformationReferenceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataUserInformationReference, error) {
+func BACnetConstructedDataUserInformationReferenceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataUserInformationReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUserInformationReference"); pullErr != nil {

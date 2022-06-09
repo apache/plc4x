@@ -219,7 +219,7 @@ func BACnetPropertyAccessResultParse(readBuffer utils.ReadBuffer) (*BACnetProper
 	if pullErr := readBuffer.PullContext("accessResult"); pullErr != nil {
 		return nil, pullErr
 	}
-	_accessResult, _accessResultErr := BACnetPropertyAccessResultAccessResultParse(readBuffer, BACnetObjectType(objectIdentifier.GetObjectType()), BACnetPropertyIdentifier(propertyIdentifier.GetValue()))
+	_accessResult, _accessResultErr := BACnetPropertyAccessResultAccessResultParse(readBuffer, BACnetObjectType(objectIdentifier.GetObjectType()), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), CastBACnetTagPayloadUnsignedInteger(CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((propertyArrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((*propertyArrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 	if _accessResultErr != nil {
 		return nil, errors.Wrap(_accessResultErr, "Error parsing 'accessResult' field")
 	}

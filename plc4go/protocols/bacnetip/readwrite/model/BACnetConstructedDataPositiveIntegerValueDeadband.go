@@ -32,7 +32,8 @@ type BACnetConstructedDataPositiveIntegerValueDeadband struct {
 	Deadband *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataPositiveIntegerValueDeadband is the corresponding interface of BACnetConstructedDataPositiveIntegerValueDeadband
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataPositiveIntegerValueDeadband) GetDeadband() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPositiveIntegerValueDeadband factory function for BACnetConstructedDataPositiveIntegerValueDeadband
-func NewBACnetConstructedDataPositiveIntegerValueDeadband(deadband *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPositiveIntegerValueDeadband {
+func NewBACnetConstructedDataPositiveIntegerValueDeadband(deadband *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPositiveIntegerValueDeadband {
 	_result := &BACnetConstructedDataPositiveIntegerValueDeadband{
 		Deadband:              deadband,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataPositiveIntegerValueDeadband) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPositiveIntegerValueDeadbandParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPositiveIntegerValueDeadband, error) {
+func BACnetConstructedDataPositiveIntegerValueDeadbandParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataPositiveIntegerValueDeadband, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueDeadband"); pullErr != nil {

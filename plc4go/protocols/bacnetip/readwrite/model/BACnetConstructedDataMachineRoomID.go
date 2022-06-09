@@ -32,7 +32,8 @@ type BACnetConstructedDataMachineRoomID struct {
 	MachineRoomId *BACnetApplicationTagObjectIdentifier
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataMachineRoomID is the corresponding interface of BACnetConstructedDataMachineRoomID
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataMachineRoomID) GetMachineRoomId() *BACnetApplicati
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMachineRoomID factory function for BACnetConstructedDataMachineRoomID
-func NewBACnetConstructedDataMachineRoomID(machineRoomId *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMachineRoomID {
+func NewBACnetConstructedDataMachineRoomID(machineRoomId *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMachineRoomID {
 	_result := &BACnetConstructedDataMachineRoomID{
 		MachineRoomId:         machineRoomId,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataMachineRoomID) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMachineRoomIDParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataMachineRoomID, error) {
+func BACnetConstructedDataMachineRoomIDParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataMachineRoomID, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMachineRoomID"); pullErr != nil {

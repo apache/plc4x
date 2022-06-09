@@ -32,7 +32,8 @@ type BACnetConstructedDataAccessDoorRelinquishDefault struct {
 	RelinquishDefault *BACnetDoorValueTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAccessDoorRelinquishDefault is the corresponding interface of BACnetConstructedDataAccessDoorRelinquishDefault
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAccessDoorRelinquishDefault) GetRelinquishDefault(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessDoorRelinquishDefault factory function for BACnetConstructedDataAccessDoorRelinquishDefault
-func NewBACnetConstructedDataAccessDoorRelinquishDefault(relinquishDefault *BACnetDoorValueTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessDoorRelinquishDefault {
+func NewBACnetConstructedDataAccessDoorRelinquishDefault(relinquishDefault *BACnetDoorValueTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessDoorRelinquishDefault {
 	_result := &BACnetConstructedDataAccessDoorRelinquishDefault{
 		RelinquishDefault:     relinquishDefault,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAccessDoorRelinquishDefault) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessDoorRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccessDoorRelinquishDefault, error) {
+func BACnetConstructedDataAccessDoorRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAccessDoorRelinquishDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessDoorRelinquishDefault"); pullErr != nil {

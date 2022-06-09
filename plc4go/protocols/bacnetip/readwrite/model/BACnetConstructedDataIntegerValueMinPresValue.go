@@ -32,7 +32,8 @@ type BACnetConstructedDataIntegerValueMinPresValue struct {
 	MinPresValue *BACnetApplicationTagSignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataIntegerValueMinPresValue is the corresponding interface of BACnetConstructedDataIntegerValueMinPresValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataIntegerValueMinPresValue) GetMinPresValue() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIntegerValueMinPresValue factory function for BACnetConstructedDataIntegerValueMinPresValue
-func NewBACnetConstructedDataIntegerValueMinPresValue(minPresValue *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIntegerValueMinPresValue {
+func NewBACnetConstructedDataIntegerValueMinPresValue(minPresValue *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIntegerValueMinPresValue {
 	_result := &BACnetConstructedDataIntegerValueMinPresValue{
 		MinPresValue:          minPresValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataIntegerValueMinPresValue) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIntegerValueMinPresValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataIntegerValueMinPresValue, error) {
+func BACnetConstructedDataIntegerValueMinPresValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataIntegerValueMinPresValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegerValueMinPresValue"); pullErr != nil {

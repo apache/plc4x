@@ -32,7 +32,8 @@ type BACnetConstructedDataLargeAnalogValueHighLimit struct {
 	HighLimit *BACnetApplicationTagDouble
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLargeAnalogValueHighLimit is the corresponding interface of BACnetConstructedDataLargeAnalogValueHighLimit
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLargeAnalogValueHighLimit) GetHighLimit() *BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLargeAnalogValueHighLimit factory function for BACnetConstructedDataLargeAnalogValueHighLimit
-func NewBACnetConstructedDataLargeAnalogValueHighLimit(highLimit *BACnetApplicationTagDouble, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLargeAnalogValueHighLimit {
+func NewBACnetConstructedDataLargeAnalogValueHighLimit(highLimit *BACnetApplicationTagDouble, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLargeAnalogValueHighLimit {
 	_result := &BACnetConstructedDataLargeAnalogValueHighLimit{
 		HighLimit:             highLimit,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLargeAnalogValueHighLimit) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLargeAnalogValueHighLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLargeAnalogValueHighLimit, error) {
+func BACnetConstructedDataLargeAnalogValueHighLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLargeAnalogValueHighLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueHighLimit"); pullErr != nil {

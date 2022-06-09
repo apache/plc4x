@@ -32,7 +32,8 @@ type BACnetConstructedDataReasonForDisable struct {
 	ReasonForDisable []*BACnetAccessCredentialDisableReasonTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataReasonForDisable is the corresponding interface of BACnetConstructedDataReasonForDisable
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataReasonForDisable) GetReasonForDisable() []*BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReasonForDisable factory function for BACnetConstructedDataReasonForDisable
-func NewBACnetConstructedDataReasonForDisable(reasonForDisable []*BACnetAccessCredentialDisableReasonTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataReasonForDisable {
+func NewBACnetConstructedDataReasonForDisable(reasonForDisable []*BACnetAccessCredentialDisableReasonTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataReasonForDisable {
 	_result := &BACnetConstructedDataReasonForDisable{
 		ReasonForDisable:      reasonForDisable,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataReasonForDisable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataReasonForDisableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataReasonForDisable, error) {
+func BACnetConstructedDataReasonForDisableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataReasonForDisable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReasonForDisable"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataScheduleDefault struct {
 	ScheduleDefault *BACnetConstructedDataElement
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataScheduleDefault is the corresponding interface of BACnetConstructedDataScheduleDefault
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataScheduleDefault) GetScheduleDefault() *BACnetConst
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataScheduleDefault factory function for BACnetConstructedDataScheduleDefault
-func NewBACnetConstructedDataScheduleDefault(scheduleDefault *BACnetConstructedDataElement, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataScheduleDefault {
+func NewBACnetConstructedDataScheduleDefault(scheduleDefault *BACnetConstructedDataElement, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataScheduleDefault {
 	_result := &BACnetConstructedDataScheduleDefault{
 		ScheduleDefault:       scheduleDefault,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataScheduleDefault) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataScheduleDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataScheduleDefault, error) {
+func BACnetConstructedDataScheduleDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataScheduleDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataScheduleDefault"); pullErr != nil {
@@ -150,7 +151,7 @@ func BACnetConstructedDataScheduleDefaultParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("scheduleDefault"); pullErr != nil {
 		return nil, pullErr
 	}
-	_scheduleDefault, _scheduleDefaultErr := BACnetConstructedDataElementParse(readBuffer, BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifierArgument))
+	_scheduleDefault, _scheduleDefaultErr := BACnetConstructedDataElementParse(readBuffer, BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifierArgument), nil)
 	if _scheduleDefaultErr != nil {
 		return nil, errors.Wrap(_scheduleDefaultErr, "Error parsing 'scheduleDefault' field")
 	}

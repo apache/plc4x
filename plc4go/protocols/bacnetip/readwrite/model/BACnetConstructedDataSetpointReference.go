@@ -32,7 +32,8 @@ type BACnetConstructedDataSetpointReference struct {
 	SetpointReference *BACnetSetpointReference
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSetpointReference is the corresponding interface of BACnetConstructedDataSetpointReference
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSetpointReference) GetSetpointReference() *BACnetS
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSetpointReference factory function for BACnetConstructedDataSetpointReference
-func NewBACnetConstructedDataSetpointReference(setpointReference *BACnetSetpointReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSetpointReference {
+func NewBACnetConstructedDataSetpointReference(setpointReference *BACnetSetpointReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSetpointReference {
 	_result := &BACnetConstructedDataSetpointReference{
 		SetpointReference:     setpointReference,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataSetpointReference) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSetpointReferenceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSetpointReference, error) {
+func BACnetConstructedDataSetpointReferenceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSetpointReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSetpointReference"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataExecutionDelay struct {
 	ExecutionDelay []*BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataExecutionDelay is the corresponding interface of BACnetConstructedDataExecutionDelay
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataExecutionDelay) GetExecutionDelay() []*BACnetAppli
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataExecutionDelay factory function for BACnetConstructedDataExecutionDelay
-func NewBACnetConstructedDataExecutionDelay(executionDelay []*BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataExecutionDelay {
+func NewBACnetConstructedDataExecutionDelay(executionDelay []*BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataExecutionDelay {
 	_result := &BACnetConstructedDataExecutionDelay{
 		ExecutionDelay:        executionDelay,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataExecutionDelay) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataExecutionDelayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataExecutionDelay, error) {
+func BACnetConstructedDataExecutionDelayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataExecutionDelay, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExecutionDelay"); pullErr != nil {

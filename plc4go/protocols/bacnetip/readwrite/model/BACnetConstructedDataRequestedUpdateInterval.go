@@ -32,7 +32,8 @@ type BACnetConstructedDataRequestedUpdateInterval struct {
 	RequestedUpdateInterval *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataRequestedUpdateInterval is the corresponding interface of BACnetConstructedDataRequestedUpdateInterval
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataRequestedUpdateInterval) GetRequestedUpdateInterva
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRequestedUpdateInterval factory function for BACnetConstructedDataRequestedUpdateInterval
-func NewBACnetConstructedDataRequestedUpdateInterval(requestedUpdateInterval *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataRequestedUpdateInterval {
+func NewBACnetConstructedDataRequestedUpdateInterval(requestedUpdateInterval *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataRequestedUpdateInterval {
 	_result := &BACnetConstructedDataRequestedUpdateInterval{
 		RequestedUpdateInterval: requestedUpdateInterval,
-		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataRequestedUpdateInterval) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataRequestedUpdateIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataRequestedUpdateInterval, error) {
+func BACnetConstructedDataRequestedUpdateIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataRequestedUpdateInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRequestedUpdateInterval"); pullErr != nil {

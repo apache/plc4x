@@ -32,7 +32,8 @@ type BACnetConstructedDataLifeSafetyZonePresentValue struct {
 	PresentValue *BACnetLifeSafetyStateTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLifeSafetyZonePresentValue is the corresponding interface of BACnetConstructedDataLifeSafetyZonePresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLifeSafetyZonePresentValue) GetPresentValue() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLifeSafetyZonePresentValue factory function for BACnetConstructedDataLifeSafetyZonePresentValue
-func NewBACnetConstructedDataLifeSafetyZonePresentValue(presentValue *BACnetLifeSafetyStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLifeSafetyZonePresentValue {
+func NewBACnetConstructedDataLifeSafetyZonePresentValue(presentValue *BACnetLifeSafetyStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLifeSafetyZonePresentValue {
 	_result := &BACnetConstructedDataLifeSafetyZonePresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLifeSafetyZonePresentValue) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLifeSafetyZonePresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLifeSafetyZonePresentValue, error) {
+func BACnetConstructedDataLifeSafetyZonePresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLifeSafetyZonePresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyZonePresentValue"); pullErr != nil {

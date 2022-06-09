@@ -33,6 +33,7 @@ type BACnetPropertyAccessResultAccessResult struct {
 	// Arguments.
 	ObjectTypeArgument         BACnetObjectType
 	PropertyIdentifierArgument BACnetPropertyIdentifier
+	PropertyArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 	Child                      IBACnetPropertyAccessResultAccessResultChild
 }
 
@@ -92,8 +93,8 @@ func (m *BACnetPropertyAccessResultAccessResult) GetPeekedTagNumber() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyAccessResultAccessResult factory function for BACnetPropertyAccessResultAccessResult
-func NewBACnetPropertyAccessResultAccessResult(peekedTagHeader *BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) *BACnetPropertyAccessResultAccessResult {
-	return &BACnetPropertyAccessResultAccessResult{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument}
+func NewBACnetPropertyAccessResultAccessResult(peekedTagHeader *BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetPropertyAccessResultAccessResult {
+	return &BACnetPropertyAccessResultAccessResult{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, PropertyArrayIndexArgument: propertyArrayIndexArgument}
 }
 
 func CastBACnetPropertyAccessResultAccessResult(structType interface{}) *BACnetPropertyAccessResultAccessResult {
@@ -133,7 +134,7 @@ func (m *BACnetPropertyAccessResultAccessResult) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyAccessResultAccessResultParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetPropertyAccessResultAccessResult, error) {
+func BACnetPropertyAccessResultAccessResultParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetPropertyAccessResultAccessResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyAccessResultAccessResult"); pullErr != nil {
@@ -164,9 +165,9 @@ func BACnetPropertyAccessResultAccessResultParse(readBuffer utils.ReadBuffer, ob
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(4): // BACnetPropertyAccessResultAccessResultPropertyValue
-		_child, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyValueParse(readBuffer, objectTypeArgument, propertyIdentifierArgument)
+		_child, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyValueParse(readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
 	case peekedTagNumber == uint8(5): // BACnetPropertyAccessResultAccessResultPropertyAccessError
-		_child, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyAccessErrorParse(readBuffer, objectTypeArgument, propertyIdentifierArgument)
+		_child, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyAccessErrorParse(readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

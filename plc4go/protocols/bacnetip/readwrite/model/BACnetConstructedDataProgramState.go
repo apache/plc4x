@@ -32,7 +32,8 @@ type BACnetConstructedDataProgramState struct {
 	ProgramState *BACnetProgramStateTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataProgramState is the corresponding interface of BACnetConstructedDataProgramState
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataProgramState) GetProgramState() *BACnetProgramStat
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProgramState factory function for BACnetConstructedDataProgramState
-func NewBACnetConstructedDataProgramState(programState *BACnetProgramStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProgramState {
+func NewBACnetConstructedDataProgramState(programState *BACnetProgramStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProgramState {
 	_result := &BACnetConstructedDataProgramState{
 		ProgramState:          programState,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataProgramState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProgramStateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataProgramState, error) {
+func BACnetConstructedDataProgramStateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataProgramState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProgramState"); pullErr != nil {

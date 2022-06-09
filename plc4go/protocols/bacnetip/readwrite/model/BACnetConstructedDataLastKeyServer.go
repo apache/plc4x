@@ -32,7 +32,8 @@ type BACnetConstructedDataLastKeyServer struct {
 	LastKeyServer *BACnetAddressBinding
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLastKeyServer is the corresponding interface of BACnetConstructedDataLastKeyServer
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLastKeyServer) GetLastKeyServer() *BACnetAddressBi
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastKeyServer factory function for BACnetConstructedDataLastKeyServer
-func NewBACnetConstructedDataLastKeyServer(lastKeyServer *BACnetAddressBinding, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastKeyServer {
+func NewBACnetConstructedDataLastKeyServer(lastKeyServer *BACnetAddressBinding, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastKeyServer {
 	_result := &BACnetConstructedDataLastKeyServer{
 		LastKeyServer:         lastKeyServer,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLastKeyServer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastKeyServerParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLastKeyServer, error) {
+func BACnetConstructedDataLastKeyServerParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLastKeyServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastKeyServer"); pullErr != nil {

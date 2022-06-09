@@ -32,7 +32,8 @@ type BACnetConstructedDataNetworkPortMaxInfoFrames struct {
 	MaxInfoFrames *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataNetworkPortMaxInfoFrames is the corresponding interface of BACnetConstructedDataNetworkPortMaxInfoFrames
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataNetworkPortMaxInfoFrames) GetMaxInfoFrames() *BACn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNetworkPortMaxInfoFrames factory function for BACnetConstructedDataNetworkPortMaxInfoFrames
-func NewBACnetConstructedDataNetworkPortMaxInfoFrames(maxInfoFrames *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNetworkPortMaxInfoFrames {
+func NewBACnetConstructedDataNetworkPortMaxInfoFrames(maxInfoFrames *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNetworkPortMaxInfoFrames {
 	_result := &BACnetConstructedDataNetworkPortMaxInfoFrames{
 		MaxInfoFrames:         maxInfoFrames,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataNetworkPortMaxInfoFrames) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNetworkPortMaxInfoFramesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNetworkPortMaxInfoFrames, error) {
+func BACnetConstructedDataNetworkPortMaxInfoFramesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataNetworkPortMaxInfoFrames, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkPortMaxInfoFrames"); pullErr != nil {

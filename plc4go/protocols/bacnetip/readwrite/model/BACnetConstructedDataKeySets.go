@@ -32,7 +32,8 @@ type BACnetConstructedDataKeySets struct {
 	KeySets []*BACnetSecurityKeySet
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataKeySets is the corresponding interface of BACnetConstructedDataKeySets
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataKeySets) GetKeySets() []*BACnetSecurityKeySet {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataKeySets factory function for BACnetConstructedDataKeySets
-func NewBACnetConstructedDataKeySets(keySets []*BACnetSecurityKeySet, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataKeySets {
+func NewBACnetConstructedDataKeySets(keySets []*BACnetSecurityKeySet, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataKeySets {
 	_result := &BACnetConstructedDataKeySets{
 		KeySets:               keySets,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataKeySets) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataKeySetsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataKeySets, error) {
+func BACnetConstructedDataKeySetsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataKeySets, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataKeySets"); pullErr != nil {

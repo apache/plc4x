@@ -32,7 +32,8 @@ type BACnetConstructedDataPulseConverterAdjustValue struct {
 	AdjustValue *BACnetApplicationTagReal
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataPulseConverterAdjustValue is the corresponding interface of BACnetConstructedDataPulseConverterAdjustValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataPulseConverterAdjustValue) GetAdjustValue() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPulseConverterAdjustValue factory function for BACnetConstructedDataPulseConverterAdjustValue
-func NewBACnetConstructedDataPulseConverterAdjustValue(adjustValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPulseConverterAdjustValue {
+func NewBACnetConstructedDataPulseConverterAdjustValue(adjustValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPulseConverterAdjustValue {
 	_result := &BACnetConstructedDataPulseConverterAdjustValue{
 		AdjustValue:           adjustValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataPulseConverterAdjustValue) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPulseConverterAdjustValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPulseConverterAdjustValue, error) {
+func BACnetConstructedDataPulseConverterAdjustValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataPulseConverterAdjustValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPulseConverterAdjustValue"); pullErr != nil {

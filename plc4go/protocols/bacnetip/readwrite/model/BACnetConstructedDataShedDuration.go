@@ -32,7 +32,8 @@ type BACnetConstructedDataShedDuration struct {
 	ShedDuration *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataShedDuration is the corresponding interface of BACnetConstructedDataShedDuration
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataShedDuration) GetShedDuration() *BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataShedDuration factory function for BACnetConstructedDataShedDuration
-func NewBACnetConstructedDataShedDuration(shedDuration *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataShedDuration {
+func NewBACnetConstructedDataShedDuration(shedDuration *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataShedDuration {
 	_result := &BACnetConstructedDataShedDuration{
 		ShedDuration:          shedDuration,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataShedDuration) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataShedDurationParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataShedDuration, error) {
+func BACnetConstructedDataShedDurationParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataShedDuration, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataShedDuration"); pullErr != nil {

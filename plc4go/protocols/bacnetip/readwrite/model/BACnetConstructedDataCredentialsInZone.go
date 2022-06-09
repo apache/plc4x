@@ -32,7 +32,8 @@ type BACnetConstructedDataCredentialsInZone struct {
 	CredentialsInZone []*BACnetDeviceObjectReference
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataCredentialsInZone is the corresponding interface of BACnetConstructedDataCredentialsInZone
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataCredentialsInZone) GetCredentialsInZone() []*BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCredentialsInZone factory function for BACnetConstructedDataCredentialsInZone
-func NewBACnetConstructedDataCredentialsInZone(credentialsInZone []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCredentialsInZone {
+func NewBACnetConstructedDataCredentialsInZone(credentialsInZone []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCredentialsInZone {
 	_result := &BACnetConstructedDataCredentialsInZone{
 		CredentialsInZone:     credentialsInZone,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataCredentialsInZone) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCredentialsInZoneParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCredentialsInZone, error) {
+func BACnetConstructedDataCredentialsInZoneParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataCredentialsInZone, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCredentialsInZone"); pullErr != nil {

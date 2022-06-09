@@ -32,7 +32,8 @@ type BACnetConstructedDataUpdateTime struct {
 	UpdateTime *BACnetDateTime
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataUpdateTime is the corresponding interface of BACnetConstructedDataUpdateTime
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataUpdateTime) GetUpdateTime() *BACnetDateTime {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUpdateTime factory function for BACnetConstructedDataUpdateTime
-func NewBACnetConstructedDataUpdateTime(updateTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataUpdateTime {
+func NewBACnetConstructedDataUpdateTime(updateTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataUpdateTime {
 	_result := &BACnetConstructedDataUpdateTime{
 		UpdateTime:            updateTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataUpdateTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUpdateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataUpdateTime, error) {
+func BACnetConstructedDataUpdateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataUpdateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUpdateTime"); pullErr != nil {

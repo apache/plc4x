@@ -32,7 +32,8 @@ type BACnetConstructedDataOccupancyLowerLimitEnforced struct {
 	OccupancyLowerLimitEnforced *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataOccupancyLowerLimitEnforced is the corresponding interface of BACnetConstructedDataOccupancyLowerLimitEnforced
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataOccupancyLowerLimitEnforced) GetOccupancyLowerLimi
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOccupancyLowerLimitEnforced factory function for BACnetConstructedDataOccupancyLowerLimitEnforced
-func NewBACnetConstructedDataOccupancyLowerLimitEnforced(occupancyLowerLimitEnforced *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataOccupancyLowerLimitEnforced {
+func NewBACnetConstructedDataOccupancyLowerLimitEnforced(occupancyLowerLimitEnforced *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataOccupancyLowerLimitEnforced {
 	_result := &BACnetConstructedDataOccupancyLowerLimitEnforced{
 		OccupancyLowerLimitEnforced: occupancyLowerLimitEnforced,
-		BACnetConstructedData:       NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:       NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataOccupancyLowerLimitEnforced) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOccupancyLowerLimitEnforcedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataOccupancyLowerLimitEnforced, error) {
+func BACnetConstructedDataOccupancyLowerLimitEnforcedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataOccupancyLowerLimitEnforced, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyLowerLimitEnforced"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataRestartNotificationRecipients struct {
 	RestartNotificationRecipients []*BACnetRecipient
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataRestartNotificationRecipients is the corresponding interface of BACnetConstructedDataRestartNotificationRecipients
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataRestartNotificationRecipients) GetRestartNotificat
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRestartNotificationRecipients factory function for BACnetConstructedDataRestartNotificationRecipients
-func NewBACnetConstructedDataRestartNotificationRecipients(restartNotificationRecipients []*BACnetRecipient, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataRestartNotificationRecipients {
+func NewBACnetConstructedDataRestartNotificationRecipients(restartNotificationRecipients []*BACnetRecipient, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataRestartNotificationRecipients {
 	_result := &BACnetConstructedDataRestartNotificationRecipients{
 		RestartNotificationRecipients: restartNotificationRecipients,
-		BACnetConstructedData:         NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:         NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataRestartNotificationRecipients) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataRestartNotificationRecipientsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataRestartNotificationRecipients, error) {
+func BACnetConstructedDataRestartNotificationRecipientsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataRestartNotificationRecipients, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRestartNotificationRecipients"); pullErr != nil {

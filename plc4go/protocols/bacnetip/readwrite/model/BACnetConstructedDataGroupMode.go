@@ -32,7 +32,8 @@ type BACnetConstructedDataGroupMode struct {
 	GroupMode *BACnetLiftGroupModeTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataGroupMode is the corresponding interface of BACnetConstructedDataGroupMode
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataGroupMode) GetGroupMode() *BACnetLiftGroupModeTagg
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataGroupMode factory function for BACnetConstructedDataGroupMode
-func NewBACnetConstructedDataGroupMode(groupMode *BACnetLiftGroupModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataGroupMode {
+func NewBACnetConstructedDataGroupMode(groupMode *BACnetLiftGroupModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataGroupMode {
 	_result := &BACnetConstructedDataGroupMode{
 		GroupMode:             groupMode,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataGroupMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataGroupModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataGroupMode, error) {
+func BACnetConstructedDataGroupModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataGroupMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGroupMode"); pullErr != nil {

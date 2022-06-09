@@ -32,7 +32,8 @@ type BACnetConstructedDataAnalogOutputMaxPresValue struct {
 	MaxPresValue *BACnetApplicationTagReal
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAnalogOutputMaxPresValue is the corresponding interface of BACnetConstructedDataAnalogOutputMaxPresValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAnalogOutputMaxPresValue) GetMaxPresValue() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAnalogOutputMaxPresValue factory function for BACnetConstructedDataAnalogOutputMaxPresValue
-func NewBACnetConstructedDataAnalogOutputMaxPresValue(maxPresValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAnalogOutputMaxPresValue {
+func NewBACnetConstructedDataAnalogOutputMaxPresValue(maxPresValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAnalogOutputMaxPresValue {
 	_result := &BACnetConstructedDataAnalogOutputMaxPresValue{
 		MaxPresValue:          maxPresValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAnalogOutputMaxPresValue) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAnalogOutputMaxPresValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAnalogOutputMaxPresValue, error) {
+func BACnetConstructedDataAnalogOutputMaxPresValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAnalogOutputMaxPresValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogOutputMaxPresValue"); pullErr != nil {

@@ -37,6 +37,7 @@ type BACnetConstructedDataElement struct {
 	// Arguments.
 	ObjectTypeArgument         BACnetObjectType
 	PropertyIdentifierArgument BACnetPropertyIdentifier
+	ArrayIndexArgument         *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataElement is the corresponding interface of BACnetConstructedDataElement
@@ -141,8 +142,8 @@ func (m *BACnetConstructedDataElement) GetIsContextTag() bool {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataElement factory function for BACnetConstructedDataElement
-func NewBACnetConstructedDataElement(peekedTagHeader *BACnetTagHeader, applicationTag *BACnetApplicationTag, contextTag *BACnetContextTag, constructedData *BACnetConstructedData, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) *BACnetConstructedDataElement {
-	return &BACnetConstructedDataElement{PeekedTagHeader: peekedTagHeader, ApplicationTag: applicationTag, ContextTag: contextTag, ConstructedData: constructedData, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument}
+func NewBACnetConstructedDataElement(peekedTagHeader *BACnetTagHeader, applicationTag *BACnetApplicationTag, contextTag *BACnetContextTag, constructedData *BACnetConstructedData, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataElement {
+	return &BACnetConstructedDataElement{PeekedTagHeader: peekedTagHeader, ApplicationTag: applicationTag, ContextTag: contextTag, ConstructedData: constructedData, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}
 }
 
 func CastBACnetConstructedDataElement(structType interface{}) *BACnetConstructedDataElement {
@@ -196,7 +197,7 @@ func (m *BACnetConstructedDataElement) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataElement, error) {
+func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataElement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElement"); pullErr != nil {
@@ -287,7 +288,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 		if pullErr := readBuffer.PullContext("constructedData"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, peekedTagNumber, objectTypeArgument, propertyIdentifierArgument)
+		_val, _err := BACnetConstructedDataParse(readBuffer, peekedTagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
@@ -311,7 +312,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	}
 
 	// Create the instance
-	return NewBACnetConstructedDataElement(peekedTagHeader, applicationTag, contextTag, constructedData, objectTypeArgument, propertyIdentifierArgument), nil
+	return NewBACnetConstructedDataElement(peekedTagHeader, applicationTag, contextTag, constructedData, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument), nil
 }
 
 func (m *BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) error {

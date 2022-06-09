@@ -32,7 +32,8 @@ type BACnetConstructedDataNotifyType struct {
 	NotifyType *BACnetNotifyTypeTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataNotifyType is the corresponding interface of BACnetConstructedDataNotifyType
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataNotifyType) GetNotifyType() *BACnetNotifyTypeTagge
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNotifyType factory function for BACnetConstructedDataNotifyType
-func NewBACnetConstructedDataNotifyType(notifyType *BACnetNotifyTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNotifyType {
+func NewBACnetConstructedDataNotifyType(notifyType *BACnetNotifyTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNotifyType {
 	_result := &BACnetConstructedDataNotifyType{
 		NotifyType:            notifyType,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataNotifyType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNotifyType, error) {
+func BACnetConstructedDataNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataNotifyType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotifyType"); pullErr != nil {

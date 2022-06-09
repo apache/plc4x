@@ -32,7 +32,8 @@ type BACnetConstructedDataTrendLogMultipleLogBuffer struct {
 	FloorText []*BACnetLogMultipleRecord
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataTrendLogMultipleLogBuffer is the corresponding interface of BACnetConstructedDataTrendLogMultipleLogBuffer
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataTrendLogMultipleLogBuffer) GetFloorText() []*BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTrendLogMultipleLogBuffer factory function for BACnetConstructedDataTrendLogMultipleLogBuffer
-func NewBACnetConstructedDataTrendLogMultipleLogBuffer(floorText []*BACnetLogMultipleRecord, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTrendLogMultipleLogBuffer {
+func NewBACnetConstructedDataTrendLogMultipleLogBuffer(floorText []*BACnetLogMultipleRecord, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTrendLogMultipleLogBuffer {
 	_result := &BACnetConstructedDataTrendLogMultipleLogBuffer{
 		FloorText:             floorText,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataTrendLogMultipleLogBuffer) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTrendLogMultipleLogBufferParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTrendLogMultipleLogBuffer, error) {
+func BACnetConstructedDataTrendLogMultipleLogBufferParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataTrendLogMultipleLogBuffer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrendLogMultipleLogBuffer"); pullErr != nil {

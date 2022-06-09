@@ -32,7 +32,8 @@ type BACnetConstructedDataLoggingRecord struct {
 	LoggingRecord *BACnetAccumulatorRecord
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLoggingRecord is the corresponding interface of BACnetConstructedDataLoggingRecord
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLoggingRecord) GetLoggingRecord() *BACnetAccumulat
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLoggingRecord factory function for BACnetConstructedDataLoggingRecord
-func NewBACnetConstructedDataLoggingRecord(loggingRecord *BACnetAccumulatorRecord, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLoggingRecord {
+func NewBACnetConstructedDataLoggingRecord(loggingRecord *BACnetAccumulatorRecord, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLoggingRecord {
 	_result := &BACnetConstructedDataLoggingRecord{
 		LoggingRecord:         loggingRecord,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLoggingRecord) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLoggingRecordParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLoggingRecord, error) {
+func BACnetConstructedDataLoggingRecordParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLoggingRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoggingRecord"); pullErr != nil {

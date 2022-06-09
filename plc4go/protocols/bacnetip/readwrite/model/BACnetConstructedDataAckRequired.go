@@ -32,7 +32,8 @@ type BACnetConstructedDataAckRequired struct {
 	AckRequired *BACnetEventTransitionBitsTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAckRequired is the corresponding interface of BACnetConstructedDataAckRequired
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAckRequired) GetAckRequired() *BACnetEventTransiti
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAckRequired factory function for BACnetConstructedDataAckRequired
-func NewBACnetConstructedDataAckRequired(ackRequired *BACnetEventTransitionBitsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAckRequired {
+func NewBACnetConstructedDataAckRequired(ackRequired *BACnetEventTransitionBitsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAckRequired {
 	_result := &BACnetConstructedDataAckRequired{
 		AckRequired:           ackRequired,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAckRequired) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAckRequiredParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAckRequired, error) {
+func BACnetConstructedDataAckRequiredParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAckRequired, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAckRequired"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataLoadControlPresentValue struct {
 	PresentValue *BACnetShedStateTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLoadControlPresentValue is the corresponding interface of BACnetConstructedDataLoadControlPresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLoadControlPresentValue) GetPresentValue() *BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLoadControlPresentValue factory function for BACnetConstructedDataLoadControlPresentValue
-func NewBACnetConstructedDataLoadControlPresentValue(presentValue *BACnetShedStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLoadControlPresentValue {
+func NewBACnetConstructedDataLoadControlPresentValue(presentValue *BACnetShedStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLoadControlPresentValue {
 	_result := &BACnetConstructedDataLoadControlPresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLoadControlPresentValue) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLoadControlPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLoadControlPresentValue, error) {
+func BACnetConstructedDataLoadControlPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLoadControlPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoadControlPresentValue"); pullErr != nil {

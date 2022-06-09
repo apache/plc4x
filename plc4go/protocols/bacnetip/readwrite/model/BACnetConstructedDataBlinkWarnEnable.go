@@ -32,7 +32,8 @@ type BACnetConstructedDataBlinkWarnEnable struct {
 	BlinkWarnEnable *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBlinkWarnEnable is the corresponding interface of BACnetConstructedDataBlinkWarnEnable
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBlinkWarnEnable) GetBlinkWarnEnable() *BACnetAppli
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBlinkWarnEnable factory function for BACnetConstructedDataBlinkWarnEnable
-func NewBACnetConstructedDataBlinkWarnEnable(blinkWarnEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBlinkWarnEnable {
+func NewBACnetConstructedDataBlinkWarnEnable(blinkWarnEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBlinkWarnEnable {
 	_result := &BACnetConstructedDataBlinkWarnEnable{
 		BlinkWarnEnable:       blinkWarnEnable,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBlinkWarnEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBlinkWarnEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBlinkWarnEnable, error) {
+func BACnetConstructedDataBlinkWarnEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBlinkWarnEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBlinkWarnEnable"); pullErr != nil {

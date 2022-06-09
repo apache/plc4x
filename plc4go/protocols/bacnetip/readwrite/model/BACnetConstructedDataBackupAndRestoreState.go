@@ -32,7 +32,8 @@ type BACnetConstructedDataBackupAndRestoreState struct {
 	BackupAndRestoreState *BACnetBackupStateTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBackupAndRestoreState is the corresponding interface of BACnetConstructedDataBackupAndRestoreState
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBackupAndRestoreState) GetBackupAndRestoreState() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBackupAndRestoreState factory function for BACnetConstructedDataBackupAndRestoreState
-func NewBACnetConstructedDataBackupAndRestoreState(backupAndRestoreState *BACnetBackupStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBackupAndRestoreState {
+func NewBACnetConstructedDataBackupAndRestoreState(backupAndRestoreState *BACnetBackupStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBackupAndRestoreState {
 	_result := &BACnetConstructedDataBackupAndRestoreState{
 		BackupAndRestoreState: backupAndRestoreState,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBackupAndRestoreState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBackupAndRestoreStateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBackupAndRestoreState, error) {
+func BACnetConstructedDataBackupAndRestoreStateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBackupAndRestoreState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBackupAndRestoreState"); pullErr != nil {

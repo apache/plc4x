@@ -32,7 +32,8 @@ type BACnetConstructedDataAuthorizationMode struct {
 	AuthorizationMode *BACnetAuthorizationModeTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAuthorizationMode is the corresponding interface of BACnetConstructedDataAuthorizationMode
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAuthorizationMode) GetAuthorizationMode() *BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAuthorizationMode factory function for BACnetConstructedDataAuthorizationMode
-func NewBACnetConstructedDataAuthorizationMode(authorizationMode *BACnetAuthorizationModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAuthorizationMode {
+func NewBACnetConstructedDataAuthorizationMode(authorizationMode *BACnetAuthorizationModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAuthorizationMode {
 	_result := &BACnetConstructedDataAuthorizationMode{
 		AuthorizationMode:     authorizationMode,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAuthorizationMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAuthorizationModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAuthorizationMode, error) {
+func BACnetConstructedDataAuthorizationModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAuthorizationMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthorizationMode"); pullErr != nil {

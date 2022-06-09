@@ -30,7 +30,8 @@ type BACnetConstructedDataNotificationForwarderAll struct {
 	*BACnetConstructedData
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataNotificationForwarderAll is the corresponding interface of BACnetConstructedDataNotificationForwarderAll
@@ -73,9 +74,9 @@ func (m *BACnetConstructedDataNotificationForwarderAll) GetParent() *BACnetConst
 }
 
 // NewBACnetConstructedDataNotificationForwarderAll factory function for BACnetConstructedDataNotificationForwarderAll
-func NewBACnetConstructedDataNotificationForwarderAll(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNotificationForwarderAll {
+func NewBACnetConstructedDataNotificationForwarderAll(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNotificationForwarderAll {
 	_result := &BACnetConstructedDataNotificationForwarderAll{
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -115,7 +116,7 @@ func (m *BACnetConstructedDataNotificationForwarderAll) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNotificationForwarderAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNotificationForwarderAll, error) {
+func BACnetConstructedDataNotificationForwarderAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataNotificationForwarderAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotificationForwarderAll"); pullErr != nil {

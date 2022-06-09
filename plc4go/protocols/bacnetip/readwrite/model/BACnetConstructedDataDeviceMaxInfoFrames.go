@@ -32,7 +32,8 @@ type BACnetConstructedDataDeviceMaxInfoFrames struct {
 	MaxInfoFrames *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDeviceMaxInfoFrames is the corresponding interface of BACnetConstructedDataDeviceMaxInfoFrames
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataDeviceMaxInfoFrames) GetMaxInfoFrames() *BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDeviceMaxInfoFrames factory function for BACnetConstructedDataDeviceMaxInfoFrames
-func NewBACnetConstructedDataDeviceMaxInfoFrames(maxInfoFrames *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDeviceMaxInfoFrames {
+func NewBACnetConstructedDataDeviceMaxInfoFrames(maxInfoFrames *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDeviceMaxInfoFrames {
 	_result := &BACnetConstructedDataDeviceMaxInfoFrames{
 		MaxInfoFrames:         maxInfoFrames,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataDeviceMaxInfoFrames) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDeviceMaxInfoFramesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDeviceMaxInfoFrames, error) {
+func BACnetConstructedDataDeviceMaxInfoFramesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDeviceMaxInfoFrames, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeviceMaxInfoFrames"); pullErr != nil {

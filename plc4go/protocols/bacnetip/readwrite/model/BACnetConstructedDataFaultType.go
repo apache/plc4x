@@ -32,7 +32,8 @@ type BACnetConstructedDataFaultType struct {
 	FaultType *BACnetFaultTypeTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataFaultType is the corresponding interface of BACnetConstructedDataFaultType
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataFaultType) GetFaultType() *BACnetFaultTypeTagged {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFaultType factory function for BACnetConstructedDataFaultType
-func NewBACnetConstructedDataFaultType(faultType *BACnetFaultTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFaultType {
+func NewBACnetConstructedDataFaultType(faultType *BACnetFaultTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFaultType {
 	_result := &BACnetConstructedDataFaultType{
 		FaultType:             faultType,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataFaultType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFaultTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataFaultType, error) {
+func BACnetConstructedDataFaultTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataFaultType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFaultType"); pullErr != nil {

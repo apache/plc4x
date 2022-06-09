@@ -32,7 +32,8 @@ type BACnetConstructedDataLowerDeck struct {
 	LowerDeck *BACnetApplicationTagObjectIdentifier
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLowerDeck is the corresponding interface of BACnetConstructedDataLowerDeck
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLowerDeck) GetLowerDeck() *BACnetApplicationTagObj
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLowerDeck factory function for BACnetConstructedDataLowerDeck
-func NewBACnetConstructedDataLowerDeck(lowerDeck *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLowerDeck {
+func NewBACnetConstructedDataLowerDeck(lowerDeck *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLowerDeck {
 	_result := &BACnetConstructedDataLowerDeck{
 		LowerDeck:             lowerDeck,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLowerDeck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLowerDeckParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLowerDeck, error) {
+func BACnetConstructedDataLowerDeckParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLowerDeck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLowerDeck"); pullErr != nil {

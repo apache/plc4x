@@ -32,7 +32,8 @@ type BACnetConstructedDataLinkSpeedAutonegotiate struct {
 	LinkSpeedAutonegotiate *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLinkSpeedAutonegotiate is the corresponding interface of BACnetConstructedDataLinkSpeedAutonegotiate
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLinkSpeedAutonegotiate) GetLinkSpeedAutonegotiate(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLinkSpeedAutonegotiate factory function for BACnetConstructedDataLinkSpeedAutonegotiate
-func NewBACnetConstructedDataLinkSpeedAutonegotiate(linkSpeedAutonegotiate *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLinkSpeedAutonegotiate {
+func NewBACnetConstructedDataLinkSpeedAutonegotiate(linkSpeedAutonegotiate *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLinkSpeedAutonegotiate {
 	_result := &BACnetConstructedDataLinkSpeedAutonegotiate{
 		LinkSpeedAutonegotiate: linkSpeedAutonegotiate,
-		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLinkSpeedAutonegotiateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLinkSpeedAutonegotiate, error) {
+func BACnetConstructedDataLinkSpeedAutonegotiateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLinkSpeedAutonegotiate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLinkSpeedAutonegotiate"); pullErr != nil {

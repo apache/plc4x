@@ -32,7 +32,8 @@ type BACnetConstructedDataIsUTC struct {
 	IsUtc *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataIsUTC is the corresponding interface of BACnetConstructedDataIsUTC
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataIsUTC) GetIsUtc() *BACnetApplicationTagBoolean {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIsUTC factory function for BACnetConstructedDataIsUTC
-func NewBACnetConstructedDataIsUTC(isUtc *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIsUTC {
+func NewBACnetConstructedDataIsUTC(isUtc *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIsUTC {
 	_result := &BACnetConstructedDataIsUTC{
 		IsUtc:                 isUtc,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataIsUTC) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIsUTCParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataIsUTC, error) {
+func BACnetConstructedDataIsUTCParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataIsUTC, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIsUTC"); pullErr != nil {

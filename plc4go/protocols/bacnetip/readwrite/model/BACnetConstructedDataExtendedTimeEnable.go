@@ -32,7 +32,8 @@ type BACnetConstructedDataExtendedTimeEnable struct {
 	ExtendedTimeEnable *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataExtendedTimeEnable is the corresponding interface of BACnetConstructedDataExtendedTimeEnable
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataExtendedTimeEnable) GetExtendedTimeEnable() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataExtendedTimeEnable factory function for BACnetConstructedDataExtendedTimeEnable
-func NewBACnetConstructedDataExtendedTimeEnable(extendedTimeEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataExtendedTimeEnable {
+func NewBACnetConstructedDataExtendedTimeEnable(extendedTimeEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataExtendedTimeEnable {
 	_result := &BACnetConstructedDataExtendedTimeEnable{
 		ExtendedTimeEnable:    extendedTimeEnable,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataExtendedTimeEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataExtendedTimeEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataExtendedTimeEnable, error) {
+func BACnetConstructedDataExtendedTimeEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataExtendedTimeEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExtendedTimeEnable"); pullErr != nil {

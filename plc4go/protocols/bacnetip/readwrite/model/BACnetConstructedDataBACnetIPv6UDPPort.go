@@ -32,7 +32,8 @@ type BACnetConstructedDataBACnetIPv6UDPPort struct {
 	Ipv6UdpPort *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBACnetIPv6UDPPort is the corresponding interface of BACnetConstructedDataBACnetIPv6UDPPort
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBACnetIPv6UDPPort) GetIpv6UdpPort() *BACnetApplica
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPv6UDPPort factory function for BACnetConstructedDataBACnetIPv6UDPPort
-func NewBACnetConstructedDataBACnetIPv6UDPPort(ipv6UdpPort *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPv6UDPPort {
+func NewBACnetConstructedDataBACnetIPv6UDPPort(ipv6UdpPort *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBACnetIPv6UDPPort {
 	_result := &BACnetConstructedDataBACnetIPv6UDPPort{
 		Ipv6UdpPort:           ipv6UdpPort,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBACnetIPv6UDPPort) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBACnetIPv6UDPPortParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBACnetIPv6UDPPort, error) {
+func BACnetConstructedDataBACnetIPv6UDPPortParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBACnetIPv6UDPPort, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPv6UDPPort"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataTimeSynchronizationRecipients struct {
 	TimeSynchronizationRecipients []*BACnetRecipient
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataTimeSynchronizationRecipients is the corresponding interface of BACnetConstructedDataTimeSynchronizationRecipients
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataTimeSynchronizationRecipients) GetTimeSynchronizat
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimeSynchronizationRecipients factory function for BACnetConstructedDataTimeSynchronizationRecipients
-func NewBACnetConstructedDataTimeSynchronizationRecipients(timeSynchronizationRecipients []*BACnetRecipient, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTimeSynchronizationRecipients {
+func NewBACnetConstructedDataTimeSynchronizationRecipients(timeSynchronizationRecipients []*BACnetRecipient, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTimeSynchronizationRecipients {
 	_result := &BACnetConstructedDataTimeSynchronizationRecipients{
 		TimeSynchronizationRecipients: timeSynchronizationRecipients,
-		BACnetConstructedData:         NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:         NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataTimeSynchronizationRecipients) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimeSynchronizationRecipientsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTimeSynchronizationRecipients, error) {
+func BACnetConstructedDataTimeSynchronizationRecipientsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataTimeSynchronizationRecipients, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeSynchronizationRecipients"); pullErr != nil {

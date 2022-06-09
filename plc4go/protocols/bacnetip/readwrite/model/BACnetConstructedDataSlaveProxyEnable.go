@@ -32,7 +32,8 @@ type BACnetConstructedDataSlaveProxyEnable struct {
 	SlaveProxyEnable *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSlaveProxyEnable is the corresponding interface of BACnetConstructedDataSlaveProxyEnable
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSlaveProxyEnable) GetSlaveProxyEnable() *BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSlaveProxyEnable factory function for BACnetConstructedDataSlaveProxyEnable
-func NewBACnetConstructedDataSlaveProxyEnable(slaveProxyEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSlaveProxyEnable {
+func NewBACnetConstructedDataSlaveProxyEnable(slaveProxyEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSlaveProxyEnable {
 	_result := &BACnetConstructedDataSlaveProxyEnable{
 		SlaveProxyEnable:      slaveProxyEnable,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataSlaveProxyEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSlaveProxyEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSlaveProxyEnable, error) {
+func BACnetConstructedDataSlaveProxyEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSlaveProxyEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSlaveProxyEnable"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataSubordinateAnnotations struct {
 	SubordinateAnnotations []*BACnetApplicationTagCharacterString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSubordinateAnnotations is the corresponding interface of BACnetConstructedDataSubordinateAnnotations
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSubordinateAnnotations) GetSubordinateAnnotations(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSubordinateAnnotations factory function for BACnetConstructedDataSubordinateAnnotations
-func NewBACnetConstructedDataSubordinateAnnotations(subordinateAnnotations []*BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSubordinateAnnotations {
+func NewBACnetConstructedDataSubordinateAnnotations(subordinateAnnotations []*BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSubordinateAnnotations {
 	_result := &BACnetConstructedDataSubordinateAnnotations{
 		SubordinateAnnotations: subordinateAnnotations,
-		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataSubordinateAnnotations) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSubordinateAnnotationsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSubordinateAnnotations, error) {
+func BACnetConstructedDataSubordinateAnnotationsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSubordinateAnnotations, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubordinateAnnotations"); pullErr != nil {

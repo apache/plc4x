@@ -30,7 +30,8 @@ type BACnetConstructedDataTrendLogMultipleAll struct {
 	*BACnetConstructedData
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataTrendLogMultipleAll is the corresponding interface of BACnetConstructedDataTrendLogMultipleAll
@@ -73,9 +74,9 @@ func (m *BACnetConstructedDataTrendLogMultipleAll) GetParent() *BACnetConstructe
 }
 
 // NewBACnetConstructedDataTrendLogMultipleAll factory function for BACnetConstructedDataTrendLogMultipleAll
-func NewBACnetConstructedDataTrendLogMultipleAll(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTrendLogMultipleAll {
+func NewBACnetConstructedDataTrendLogMultipleAll(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTrendLogMultipleAll {
 	_result := &BACnetConstructedDataTrendLogMultipleAll{
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -115,7 +116,7 @@ func (m *BACnetConstructedDataTrendLogMultipleAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTrendLogMultipleAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTrendLogMultipleAll, error) {
+func BACnetConstructedDataTrendLogMultipleAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataTrendLogMultipleAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrendLogMultipleAll"); pullErr != nil {

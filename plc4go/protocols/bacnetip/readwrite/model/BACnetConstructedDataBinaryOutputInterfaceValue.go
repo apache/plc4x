@@ -32,7 +32,8 @@ type BACnetConstructedDataBinaryOutputInterfaceValue struct {
 	InterfaceValue *BACnetOptionalBinaryPV
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBinaryOutputInterfaceValue is the corresponding interface of BACnetConstructedDataBinaryOutputInterfaceValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBinaryOutputInterfaceValue) GetInterfaceValue() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBinaryOutputInterfaceValue factory function for BACnetConstructedDataBinaryOutputInterfaceValue
-func NewBACnetConstructedDataBinaryOutputInterfaceValue(interfaceValue *BACnetOptionalBinaryPV, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBinaryOutputInterfaceValue {
+func NewBACnetConstructedDataBinaryOutputInterfaceValue(interfaceValue *BACnetOptionalBinaryPV, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBinaryOutputInterfaceValue {
 	_result := &BACnetConstructedDataBinaryOutputInterfaceValue{
 		InterfaceValue:        interfaceValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBinaryOutputInterfaceValue) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBinaryOutputInterfaceValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBinaryOutputInterfaceValue, error) {
+func BACnetConstructedDataBinaryOutputInterfaceValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBinaryOutputInterfaceValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryOutputInterfaceValue"); pullErr != nil {

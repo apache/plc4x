@@ -32,7 +32,8 @@ type BACnetConstructedDataStructuredObjectList struct {
 	StructuredObjectList []*BACnetApplicationTagObjectIdentifier
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataStructuredObjectList is the corresponding interface of BACnetConstructedDataStructuredObjectList
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataStructuredObjectList) GetStructuredObjectList() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataStructuredObjectList factory function for BACnetConstructedDataStructuredObjectList
-func NewBACnetConstructedDataStructuredObjectList(structuredObjectList []*BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataStructuredObjectList {
+func NewBACnetConstructedDataStructuredObjectList(structuredObjectList []*BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataStructuredObjectList {
 	_result := &BACnetConstructedDataStructuredObjectList{
 		StructuredObjectList:  structuredObjectList,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataStructuredObjectList) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataStructuredObjectListParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataStructuredObjectList, error) {
+func BACnetConstructedDataStructuredObjectListParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataStructuredObjectList, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStructuredObjectList"); pullErr != nil {

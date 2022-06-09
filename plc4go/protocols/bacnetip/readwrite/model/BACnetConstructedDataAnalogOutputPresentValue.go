@@ -32,7 +32,8 @@ type BACnetConstructedDataAnalogOutputPresentValue struct {
 	PresentValue *BACnetApplicationTagReal
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAnalogOutputPresentValue is the corresponding interface of BACnetConstructedDataAnalogOutputPresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAnalogOutputPresentValue) GetPresentValue() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAnalogOutputPresentValue factory function for BACnetConstructedDataAnalogOutputPresentValue
-func NewBACnetConstructedDataAnalogOutputPresentValue(presentValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAnalogOutputPresentValue {
+func NewBACnetConstructedDataAnalogOutputPresentValue(presentValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAnalogOutputPresentValue {
 	_result := &BACnetConstructedDataAnalogOutputPresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAnalogOutputPresentValue) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAnalogOutputPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAnalogOutputPresentValue, error) {
+func BACnetConstructedDataAnalogOutputPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAnalogOutputPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogOutputPresentValue"); pullErr != nil {

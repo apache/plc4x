@@ -32,7 +32,8 @@ type BACnetConstructedDataNumberOfAuthenticationPolicies struct {
 	NumberOfAuthenticationPolicies *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataNumberOfAuthenticationPolicies is the corresponding interface of BACnetConstructedDataNumberOfAuthenticationPolicies
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataNumberOfAuthenticationPolicies) GetNumberOfAuthent
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNumberOfAuthenticationPolicies factory function for BACnetConstructedDataNumberOfAuthenticationPolicies
-func NewBACnetConstructedDataNumberOfAuthenticationPolicies(numberOfAuthenticationPolicies *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNumberOfAuthenticationPolicies {
+func NewBACnetConstructedDataNumberOfAuthenticationPolicies(numberOfAuthenticationPolicies *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNumberOfAuthenticationPolicies {
 	_result := &BACnetConstructedDataNumberOfAuthenticationPolicies{
 		NumberOfAuthenticationPolicies: numberOfAuthenticationPolicies,
-		BACnetConstructedData:          NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:          NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataNumberOfAuthenticationPolicies) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNumberOfAuthenticationPoliciesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNumberOfAuthenticationPolicies, error) {
+func BACnetConstructedDataNumberOfAuthenticationPoliciesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataNumberOfAuthenticationPolicies, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNumberOfAuthenticationPolicies"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataSubordinateTags struct {
 	SubordinateList []*BACnetNameValueCollection
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSubordinateTags is the corresponding interface of BACnetConstructedDataSubordinateTags
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSubordinateTags) GetSubordinateList() []*BACnetNam
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSubordinateTags factory function for BACnetConstructedDataSubordinateTags
-func NewBACnetConstructedDataSubordinateTags(subordinateList []*BACnetNameValueCollection, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSubordinateTags {
+func NewBACnetConstructedDataSubordinateTags(subordinateList []*BACnetNameValueCollection, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSubordinateTags {
 	_result := &BACnetConstructedDataSubordinateTags{
 		SubordinateList:       subordinateList,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataSubordinateTags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSubordinateTagsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSubordinateTags, error) {
+func BACnetConstructedDataSubordinateTagsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSubordinateTags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubordinateTags"); pullErr != nil {

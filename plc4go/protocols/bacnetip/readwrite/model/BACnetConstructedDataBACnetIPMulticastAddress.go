@@ -32,7 +32,8 @@ type BACnetConstructedDataBACnetIPMulticastAddress struct {
 	IpMulticastAddress *BACnetApplicationTagOctetString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBACnetIPMulticastAddress is the corresponding interface of BACnetConstructedDataBACnetIPMulticastAddress
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBACnetIPMulticastAddress) GetIpMulticastAddress() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPMulticastAddress factory function for BACnetConstructedDataBACnetIPMulticastAddress
-func NewBACnetConstructedDataBACnetIPMulticastAddress(ipMulticastAddress *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPMulticastAddress {
+func NewBACnetConstructedDataBACnetIPMulticastAddress(ipMulticastAddress *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBACnetIPMulticastAddress {
 	_result := &BACnetConstructedDataBACnetIPMulticastAddress{
 		IpMulticastAddress:    ipMulticastAddress,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBACnetIPMulticastAddress) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBACnetIPMulticastAddressParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBACnetIPMulticastAddress, error) {
+func BACnetConstructedDataBACnetIPMulticastAddressParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBACnetIPMulticastAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPMulticastAddress"); pullErr != nil {

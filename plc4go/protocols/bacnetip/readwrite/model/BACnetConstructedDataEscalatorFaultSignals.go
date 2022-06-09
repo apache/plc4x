@@ -32,7 +32,8 @@ type BACnetConstructedDataEscalatorFaultSignals struct {
 	FaultSignals []*BACnetEscalatorFaultTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataEscalatorFaultSignals is the corresponding interface of BACnetConstructedDataEscalatorFaultSignals
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataEscalatorFaultSignals) GetFaultSignals() []*BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEscalatorFaultSignals factory function for BACnetConstructedDataEscalatorFaultSignals
-func NewBACnetConstructedDataEscalatorFaultSignals(faultSignals []*BACnetEscalatorFaultTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEscalatorFaultSignals {
+func NewBACnetConstructedDataEscalatorFaultSignals(faultSignals []*BACnetEscalatorFaultTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEscalatorFaultSignals {
 	_result := &BACnetConstructedDataEscalatorFaultSignals{
 		FaultSignals:          faultSignals,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataEscalatorFaultSignals) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEscalatorFaultSignalsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEscalatorFaultSignals, error) {
+func BACnetConstructedDataEscalatorFaultSignalsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataEscalatorFaultSignals, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEscalatorFaultSignals"); pullErr != nil {

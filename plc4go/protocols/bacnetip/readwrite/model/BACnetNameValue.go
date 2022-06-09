@@ -135,7 +135,7 @@ func BACnetNameValueParse(readBuffer utils.ReadBuffer) (*BACnetNameValue, error)
 		if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(1), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE)
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(1), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

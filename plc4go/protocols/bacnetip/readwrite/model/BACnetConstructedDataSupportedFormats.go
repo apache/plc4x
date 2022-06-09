@@ -32,7 +32,8 @@ type BACnetConstructedDataSupportedFormats struct {
 	SupportedFormats []*BACnetAuthenticationFactorFormat
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSupportedFormats is the corresponding interface of BACnetConstructedDataSupportedFormats
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSupportedFormats) GetSupportedFormats() []*BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSupportedFormats factory function for BACnetConstructedDataSupportedFormats
-func NewBACnetConstructedDataSupportedFormats(supportedFormats []*BACnetAuthenticationFactorFormat, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSupportedFormats {
+func NewBACnetConstructedDataSupportedFormats(supportedFormats []*BACnetAuthenticationFactorFormat, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSupportedFormats {
 	_result := &BACnetConstructedDataSupportedFormats{
 		SupportedFormats:      supportedFormats,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataSupportedFormats) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSupportedFormatsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSupportedFormats, error) {
+func BACnetConstructedDataSupportedFormatsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSupportedFormats, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSupportedFormats"); pullErr != nil {

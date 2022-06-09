@@ -32,7 +32,8 @@ type BACnetConstructedDataIPDHCPLeaseTimeRemaining struct {
 	IpDhcpLeaseTimeRemaining *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataIPDHCPLeaseTimeRemaining is the corresponding interface of BACnetConstructedDataIPDHCPLeaseTimeRemaining
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataIPDHCPLeaseTimeRemaining) GetIpDhcpLeaseTimeRemain
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPDHCPLeaseTimeRemaining factory function for BACnetConstructedDataIPDHCPLeaseTimeRemaining
-func NewBACnetConstructedDataIPDHCPLeaseTimeRemaining(ipDhcpLeaseTimeRemaining *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPDHCPLeaseTimeRemaining {
+func NewBACnetConstructedDataIPDHCPLeaseTimeRemaining(ipDhcpLeaseTimeRemaining *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPDHCPLeaseTimeRemaining {
 	_result := &BACnetConstructedDataIPDHCPLeaseTimeRemaining{
 		IpDhcpLeaseTimeRemaining: ipDhcpLeaseTimeRemaining,
-		BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataIPDHCPLeaseTimeRemaining) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPDHCPLeaseTimeRemainingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataIPDHCPLeaseTimeRemaining, error) {
+func BACnetConstructedDataIPDHCPLeaseTimeRemainingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataIPDHCPLeaseTimeRemaining, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPDHCPLeaseTimeRemaining"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataEntryPoints struct {
 	EntryPoints []*BACnetDeviceObjectReference
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataEntryPoints is the corresponding interface of BACnetConstructedDataEntryPoints
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataEntryPoints) GetEntryPoints() []*BACnetDeviceObjec
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEntryPoints factory function for BACnetConstructedDataEntryPoints
-func NewBACnetConstructedDataEntryPoints(entryPoints []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEntryPoints {
+func NewBACnetConstructedDataEntryPoints(entryPoints []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEntryPoints {
 	_result := &BACnetConstructedDataEntryPoints{
 		EntryPoints:           entryPoints,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataEntryPoints) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEntryPointsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEntryPoints, error) {
+func BACnetConstructedDataEntryPointsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataEntryPoints, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEntryPoints"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataLimitMonitoringInterval struct {
 	LimitMonitoringInterval *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLimitMonitoringInterval is the corresponding interface of BACnetConstructedDataLimitMonitoringInterval
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLimitMonitoringInterval) GetLimitMonitoringInterva
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLimitMonitoringInterval factory function for BACnetConstructedDataLimitMonitoringInterval
-func NewBACnetConstructedDataLimitMonitoringInterval(limitMonitoringInterval *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLimitMonitoringInterval {
+func NewBACnetConstructedDataLimitMonitoringInterval(limitMonitoringInterval *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLimitMonitoringInterval {
 	_result := &BACnetConstructedDataLimitMonitoringInterval{
 		LimitMonitoringInterval: limitMonitoringInterval,
-		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLimitMonitoringInterval) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLimitMonitoringIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLimitMonitoringInterval, error) {
+func BACnetConstructedDataLimitMonitoringIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLimitMonitoringInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLimitMonitoringInterval"); pullErr != nil {

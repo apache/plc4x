@@ -32,7 +32,8 @@ type BACnetConstructedDataBinaryInputPresentValue struct {
 	PresentValue *BACnetBinaryPVTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBinaryInputPresentValue is the corresponding interface of BACnetConstructedDataBinaryInputPresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBinaryInputPresentValue) GetPresentValue() *BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBinaryInputPresentValue factory function for BACnetConstructedDataBinaryInputPresentValue
-func NewBACnetConstructedDataBinaryInputPresentValue(presentValue *BACnetBinaryPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBinaryInputPresentValue {
+func NewBACnetConstructedDataBinaryInputPresentValue(presentValue *BACnetBinaryPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBinaryInputPresentValue {
 	_result := &BACnetConstructedDataBinaryInputPresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBinaryInputPresentValue) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBinaryInputPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBinaryInputPresentValue, error) {
+func BACnetConstructedDataBinaryInputPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBinaryInputPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryInputPresentValue"); pullErr != nil {

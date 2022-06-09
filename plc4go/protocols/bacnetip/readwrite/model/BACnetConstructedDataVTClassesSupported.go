@@ -32,7 +32,8 @@ type BACnetConstructedDataVTClassesSupported struct {
 	VtClassesSupported []*BACnetVTClassTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataVTClassesSupported is the corresponding interface of BACnetConstructedDataVTClassesSupported
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataVTClassesSupported) GetVtClassesSupported() []*BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataVTClassesSupported factory function for BACnetConstructedDataVTClassesSupported
-func NewBACnetConstructedDataVTClassesSupported(vtClassesSupported []*BACnetVTClassTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataVTClassesSupported {
+func NewBACnetConstructedDataVTClassesSupported(vtClassesSupported []*BACnetVTClassTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataVTClassesSupported {
 	_result := &BACnetConstructedDataVTClassesSupported{
 		VtClassesSupported:    vtClassesSupported,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataVTClassesSupported) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataVTClassesSupportedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataVTClassesSupported, error) {
+func BACnetConstructedDataVTClassesSupportedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataVTClassesSupported, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVTClassesSupported"); pullErr != nil {

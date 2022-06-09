@@ -32,7 +32,8 @@ type BACnetConstructedDataTimeOfStateCountReset struct {
 	TimeOfStateCountReset *BACnetDateTime
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataTimeOfStateCountReset is the corresponding interface of BACnetConstructedDataTimeOfStateCountReset
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataTimeOfStateCountReset) GetTimeOfStateCountReset() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimeOfStateCountReset factory function for BACnetConstructedDataTimeOfStateCountReset
-func NewBACnetConstructedDataTimeOfStateCountReset(timeOfStateCountReset *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTimeOfStateCountReset {
+func NewBACnetConstructedDataTimeOfStateCountReset(timeOfStateCountReset *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTimeOfStateCountReset {
 	_result := &BACnetConstructedDataTimeOfStateCountReset{
 		TimeOfStateCountReset: timeOfStateCountReset,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataTimeOfStateCountReset) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimeOfStateCountResetParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTimeOfStateCountReset, error) {
+func BACnetConstructedDataTimeOfStateCountResetParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataTimeOfStateCountReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeOfStateCountReset"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataLargeAnalogValueCOVIncrement struct {
 	CovIncrement *BACnetApplicationTagDouble
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLargeAnalogValueCOVIncrement is the corresponding interface of BACnetConstructedDataLargeAnalogValueCOVIncrement
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLargeAnalogValueCOVIncrement) GetCovIncrement() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLargeAnalogValueCOVIncrement factory function for BACnetConstructedDataLargeAnalogValueCOVIncrement
-func NewBACnetConstructedDataLargeAnalogValueCOVIncrement(covIncrement *BACnetApplicationTagDouble, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLargeAnalogValueCOVIncrement {
+func NewBACnetConstructedDataLargeAnalogValueCOVIncrement(covIncrement *BACnetApplicationTagDouble, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLargeAnalogValueCOVIncrement {
 	_result := &BACnetConstructedDataLargeAnalogValueCOVIncrement{
 		CovIncrement:          covIncrement,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLargeAnalogValueCOVIncrement) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLargeAnalogValueCOVIncrementParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLargeAnalogValueCOVIncrement, error) {
+func BACnetConstructedDataLargeAnalogValueCOVIncrementParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLargeAnalogValueCOVIncrement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueCOVIncrement"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataReliability struct {
 	Reliability *BACnetReliabilityTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataReliability is the corresponding interface of BACnetConstructedDataReliability
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataReliability) GetReliability() *BACnetReliabilityTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReliability factory function for BACnetConstructedDataReliability
-func NewBACnetConstructedDataReliability(reliability *BACnetReliabilityTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataReliability {
+func NewBACnetConstructedDataReliability(reliability *BACnetReliabilityTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataReliability {
 	_result := &BACnetConstructedDataReliability{
 		Reliability:           reliability,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataReliability) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataReliabilityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataReliability, error) {
+func BACnetConstructedDataReliabilityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataReliability, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReliability"); pullErr != nil {

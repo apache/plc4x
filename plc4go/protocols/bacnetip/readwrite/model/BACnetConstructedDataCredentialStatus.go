@@ -32,7 +32,8 @@ type BACnetConstructedDataCredentialStatus struct {
 	BinaryPv *BACnetBinaryPVTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataCredentialStatus is the corresponding interface of BACnetConstructedDataCredentialStatus
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataCredentialStatus) GetBinaryPv() *BACnetBinaryPVTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCredentialStatus factory function for BACnetConstructedDataCredentialStatus
-func NewBACnetConstructedDataCredentialStatus(binaryPv *BACnetBinaryPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCredentialStatus {
+func NewBACnetConstructedDataCredentialStatus(binaryPv *BACnetBinaryPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCredentialStatus {
 	_result := &BACnetConstructedDataCredentialStatus{
 		BinaryPv:              binaryPv,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataCredentialStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCredentialStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCredentialStatus, error) {
+func BACnetConstructedDataCredentialStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataCredentialStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCredentialStatus"); pullErr != nil {

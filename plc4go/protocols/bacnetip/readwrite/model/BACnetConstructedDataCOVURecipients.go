@@ -32,7 +32,8 @@ type BACnetConstructedDataCOVURecipients struct {
 	CovuRecipients []*BACnetRecipient
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataCOVURecipients is the corresponding interface of BACnetConstructedDataCOVURecipients
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataCOVURecipients) GetCovuRecipients() []*BACnetRecip
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCOVURecipients factory function for BACnetConstructedDataCOVURecipients
-func NewBACnetConstructedDataCOVURecipients(covuRecipients []*BACnetRecipient, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCOVURecipients {
+func NewBACnetConstructedDataCOVURecipients(covuRecipients []*BACnetRecipient, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCOVURecipients {
 	_result := &BACnetConstructedDataCOVURecipients{
 		CovuRecipients:        covuRecipients,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataCOVURecipients) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCOVURecipientsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCOVURecipients, error) {
+func BACnetConstructedDataCOVURecipientsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataCOVURecipients, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVURecipients"); pullErr != nil {

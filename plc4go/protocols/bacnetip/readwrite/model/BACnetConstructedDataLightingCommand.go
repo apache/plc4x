@@ -32,7 +32,8 @@ type BACnetConstructedDataLightingCommand struct {
 	LightingCommand *BACnetLightingCommand
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLightingCommand is the corresponding interface of BACnetConstructedDataLightingCommand
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLightingCommand) GetLightingCommand() *BACnetLight
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLightingCommand factory function for BACnetConstructedDataLightingCommand
-func NewBACnetConstructedDataLightingCommand(lightingCommand *BACnetLightingCommand, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLightingCommand {
+func NewBACnetConstructedDataLightingCommand(lightingCommand *BACnetLightingCommand, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLightingCommand {
 	_result := &BACnetConstructedDataLightingCommand{
 		LightingCommand:       lightingCommand,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLightingCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLightingCommandParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLightingCommand, error) {
+func BACnetConstructedDataLightingCommandParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingCommand"); pullErr != nil {

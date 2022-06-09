@@ -32,7 +32,8 @@ type BACnetConstructedDataSubordinateRelationships struct {
 	SubordinateRelationships []*BACnetRelationshipTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSubordinateRelationships is the corresponding interface of BACnetConstructedDataSubordinateRelationships
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSubordinateRelationships) GetSubordinateRelationsh
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSubordinateRelationships factory function for BACnetConstructedDataSubordinateRelationships
-func NewBACnetConstructedDataSubordinateRelationships(subordinateRelationships []*BACnetRelationshipTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSubordinateRelationships {
+func NewBACnetConstructedDataSubordinateRelationships(subordinateRelationships []*BACnetRelationshipTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSubordinateRelationships {
 	_result := &BACnetConstructedDataSubordinateRelationships{
 		SubordinateRelationships: subordinateRelationships,
-		BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataSubordinateRelationships) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSubordinateRelationshipsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSubordinateRelationships, error) {
+func BACnetConstructedDataSubordinateRelationshipsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSubordinateRelationships, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubordinateRelationships"); pullErr != nil {

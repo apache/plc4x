@@ -32,7 +32,8 @@ type BACnetConstructedDataBinaryLightingOutputFeedbackValue struct {
 	FeedbackValue *BACnetBinaryLightingPVTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBinaryLightingOutputFeedbackValue is the corresponding interface of BACnetConstructedDataBinaryLightingOutputFeedbackValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBinaryLightingOutputFeedbackValue) GetFeedbackValu
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBinaryLightingOutputFeedbackValue factory function for BACnetConstructedDataBinaryLightingOutputFeedbackValue
-func NewBACnetConstructedDataBinaryLightingOutputFeedbackValue(feedbackValue *BACnetBinaryLightingPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBinaryLightingOutputFeedbackValue {
+func NewBACnetConstructedDataBinaryLightingOutputFeedbackValue(feedbackValue *BACnetBinaryLightingPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBinaryLightingOutputFeedbackValue {
 	_result := &BACnetConstructedDataBinaryLightingOutputFeedbackValue{
 		FeedbackValue:         feedbackValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBinaryLightingOutputFeedbackValue) GetLengthInByte
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBinaryLightingOutputFeedbackValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBinaryLightingOutputFeedbackValue, error) {
+func BACnetConstructedDataBinaryLightingOutputFeedbackValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBinaryLightingOutputFeedbackValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryLightingOutputFeedbackValue"); pullErr != nil {

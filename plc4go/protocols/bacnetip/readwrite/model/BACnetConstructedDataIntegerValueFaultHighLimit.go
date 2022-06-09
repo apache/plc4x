@@ -32,7 +32,8 @@ type BACnetConstructedDataIntegerValueFaultHighLimit struct {
 	FaultHighLimit *BACnetApplicationTagSignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataIntegerValueFaultHighLimit is the corresponding interface of BACnetConstructedDataIntegerValueFaultHighLimit
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataIntegerValueFaultHighLimit) GetFaultHighLimit() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIntegerValueFaultHighLimit factory function for BACnetConstructedDataIntegerValueFaultHighLimit
-func NewBACnetConstructedDataIntegerValueFaultHighLimit(faultHighLimit *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIntegerValueFaultHighLimit {
+func NewBACnetConstructedDataIntegerValueFaultHighLimit(faultHighLimit *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIntegerValueFaultHighLimit {
 	_result := &BACnetConstructedDataIntegerValueFaultHighLimit{
 		FaultHighLimit:        faultHighLimit,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataIntegerValueFaultHighLimit) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIntegerValueFaultHighLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataIntegerValueFaultHighLimit, error) {
+func BACnetConstructedDataIntegerValueFaultHighLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataIntegerValueFaultHighLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegerValueFaultHighLimit"); pullErr != nil {

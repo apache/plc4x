@@ -32,7 +32,8 @@ type BACnetConstructedDataApplicationSoftwareVersion struct {
 	ApplicationSoftwareVersion *BACnetApplicationTagCharacterString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataApplicationSoftwareVersion is the corresponding interface of BACnetConstructedDataApplicationSoftwareVersion
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataApplicationSoftwareVersion) GetApplicationSoftware
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataApplicationSoftwareVersion factory function for BACnetConstructedDataApplicationSoftwareVersion
-func NewBACnetConstructedDataApplicationSoftwareVersion(applicationSoftwareVersion *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataApplicationSoftwareVersion {
+func NewBACnetConstructedDataApplicationSoftwareVersion(applicationSoftwareVersion *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataApplicationSoftwareVersion {
 	_result := &BACnetConstructedDataApplicationSoftwareVersion{
 		ApplicationSoftwareVersion: applicationSoftwareVersion,
-		BACnetConstructedData:      NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:      NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataApplicationSoftwareVersion) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataApplicationSoftwareVersionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataApplicationSoftwareVersion, error) {
+func BACnetConstructedDataApplicationSoftwareVersionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataApplicationSoftwareVersion, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataApplicationSoftwareVersion"); pullErr != nil {

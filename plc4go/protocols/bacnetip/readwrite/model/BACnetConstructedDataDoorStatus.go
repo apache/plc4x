@@ -32,7 +32,8 @@ type BACnetConstructedDataDoorStatus struct {
 	DoorStatus *BACnetDoorStatusTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDoorStatus is the corresponding interface of BACnetConstructedDataDoorStatus
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataDoorStatus) GetDoorStatus() *BACnetDoorStatusTagge
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDoorStatus factory function for BACnetConstructedDataDoorStatus
-func NewBACnetConstructedDataDoorStatus(doorStatus *BACnetDoorStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDoorStatus {
+func NewBACnetConstructedDataDoorStatus(doorStatus *BACnetDoorStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDoorStatus {
 	_result := &BACnetConstructedDataDoorStatus{
 		DoorStatus:            doorStatus,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataDoorStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDoorStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDoorStatus, error) {
+func BACnetConstructedDataDoorStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDoorStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorStatus"); pullErr != nil {

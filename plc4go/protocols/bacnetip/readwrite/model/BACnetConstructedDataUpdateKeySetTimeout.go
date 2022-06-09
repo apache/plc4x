@@ -32,7 +32,8 @@ type BACnetConstructedDataUpdateKeySetTimeout struct {
 	UpdateKeySetTimeout *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataUpdateKeySetTimeout is the corresponding interface of BACnetConstructedDataUpdateKeySetTimeout
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataUpdateKeySetTimeout) GetUpdateKeySetTimeout() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUpdateKeySetTimeout factory function for BACnetConstructedDataUpdateKeySetTimeout
-func NewBACnetConstructedDataUpdateKeySetTimeout(updateKeySetTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataUpdateKeySetTimeout {
+func NewBACnetConstructedDataUpdateKeySetTimeout(updateKeySetTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataUpdateKeySetTimeout {
 	_result := &BACnetConstructedDataUpdateKeySetTimeout{
 		UpdateKeySetTimeout:   updateKeySetTimeout,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataUpdateKeySetTimeout) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUpdateKeySetTimeoutParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataUpdateKeySetTimeout, error) {
+func BACnetConstructedDataUpdateKeySetTimeoutParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataUpdateKeySetTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUpdateKeySetTimeout"); pullErr != nil {

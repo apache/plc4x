@@ -32,7 +32,8 @@ type BACnetConstructedDataCredentialDataInputPresentValue struct {
 	PresentValue *BACnetAuthenticationFactor
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataCredentialDataInputPresentValue is the corresponding interface of BACnetConstructedDataCredentialDataInputPresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataCredentialDataInputPresentValue) GetPresentValue()
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCredentialDataInputPresentValue factory function for BACnetConstructedDataCredentialDataInputPresentValue
-func NewBACnetConstructedDataCredentialDataInputPresentValue(presentValue *BACnetAuthenticationFactor, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCredentialDataInputPresentValue {
+func NewBACnetConstructedDataCredentialDataInputPresentValue(presentValue *BACnetAuthenticationFactor, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCredentialDataInputPresentValue {
 	_result := &BACnetConstructedDataCredentialDataInputPresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataCredentialDataInputPresentValue) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCredentialDataInputPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCredentialDataInputPresentValue, error) {
+func BACnetConstructedDataCredentialDataInputPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataCredentialDataInputPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCredentialDataInputPresentValue"); pullErr != nil {

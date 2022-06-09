@@ -32,7 +32,8 @@ type BACnetConstructedDataProcessIdentifierFilter struct {
 	ProcessIdentifierFilter *BACnetProcessIdSelection
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataProcessIdentifierFilter is the corresponding interface of BACnetConstructedDataProcessIdentifierFilter
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataProcessIdentifierFilter) GetProcessIdentifierFilte
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProcessIdentifierFilter factory function for BACnetConstructedDataProcessIdentifierFilter
-func NewBACnetConstructedDataProcessIdentifierFilter(processIdentifierFilter *BACnetProcessIdSelection, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProcessIdentifierFilter {
+func NewBACnetConstructedDataProcessIdentifierFilter(processIdentifierFilter *BACnetProcessIdSelection, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProcessIdentifierFilter {
 	_result := &BACnetConstructedDataProcessIdentifierFilter{
 		ProcessIdentifierFilter: processIdentifierFilter,
-		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataProcessIdentifierFilter) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProcessIdentifierFilterParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataProcessIdentifierFilter, error) {
+func BACnetConstructedDataProcessIdentifierFilterParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataProcessIdentifierFilter, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProcessIdentifierFilter"); pullErr != nil {

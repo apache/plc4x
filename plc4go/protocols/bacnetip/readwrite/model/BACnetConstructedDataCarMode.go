@@ -32,7 +32,8 @@ type BACnetConstructedDataCarMode struct {
 	CarMode *BACnetLiftCarModeTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataCarMode is the corresponding interface of BACnetConstructedDataCarMode
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataCarMode) GetCarMode() *BACnetLiftCarModeTagged {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCarMode factory function for BACnetConstructedDataCarMode
-func NewBACnetConstructedDataCarMode(carMode *BACnetLiftCarModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCarMode {
+func NewBACnetConstructedDataCarMode(carMode *BACnetLiftCarModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCarMode {
 	_result := &BACnetConstructedDataCarMode{
 		CarMode:               carMode,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataCarMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCarModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCarMode, error) {
+func BACnetConstructedDataCarModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataCarMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarMode"); pullErr != nil {

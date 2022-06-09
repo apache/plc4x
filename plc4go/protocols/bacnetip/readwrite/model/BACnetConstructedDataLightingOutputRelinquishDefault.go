@@ -32,7 +32,8 @@ type BACnetConstructedDataLightingOutputRelinquishDefault struct {
 	RelinquishDefault *BACnetApplicationTagReal
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLightingOutputRelinquishDefault is the corresponding interface of BACnetConstructedDataLightingOutputRelinquishDefault
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLightingOutputRelinquishDefault) GetRelinquishDefa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLightingOutputRelinquishDefault factory function for BACnetConstructedDataLightingOutputRelinquishDefault
-func NewBACnetConstructedDataLightingOutputRelinquishDefault(relinquishDefault *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLightingOutputRelinquishDefault {
+func NewBACnetConstructedDataLightingOutputRelinquishDefault(relinquishDefault *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLightingOutputRelinquishDefault {
 	_result := &BACnetConstructedDataLightingOutputRelinquishDefault{
 		RelinquishDefault:     relinquishDefault,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLightingOutputRelinquishDefault) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLightingOutputRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLightingOutputRelinquishDefault, error) {
+func BACnetConstructedDataLightingOutputRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLightingOutputRelinquishDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingOutputRelinquishDefault"); pullErr != nil {

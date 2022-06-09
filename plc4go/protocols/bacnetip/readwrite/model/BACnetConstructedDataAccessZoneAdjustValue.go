@@ -32,7 +32,8 @@ type BACnetConstructedDataAccessZoneAdjustValue struct {
 	AdjustValue *BACnetApplicationTagSignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAccessZoneAdjustValue is the corresponding interface of BACnetConstructedDataAccessZoneAdjustValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAccessZoneAdjustValue) GetAdjustValue() *BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessZoneAdjustValue factory function for BACnetConstructedDataAccessZoneAdjustValue
-func NewBACnetConstructedDataAccessZoneAdjustValue(adjustValue *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessZoneAdjustValue {
+func NewBACnetConstructedDataAccessZoneAdjustValue(adjustValue *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessZoneAdjustValue {
 	_result := &BACnetConstructedDataAccessZoneAdjustValue{
 		AdjustValue:           adjustValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAccessZoneAdjustValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessZoneAdjustValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccessZoneAdjustValue, error) {
+func BACnetConstructedDataAccessZoneAdjustValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAccessZoneAdjustValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessZoneAdjustValue"); pullErr != nil {

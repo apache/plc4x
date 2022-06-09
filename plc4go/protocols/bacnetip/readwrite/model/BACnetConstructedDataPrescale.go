@@ -32,7 +32,8 @@ type BACnetConstructedDataPrescale struct {
 	Prescale *BACnetPrescale
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataPrescale is the corresponding interface of BACnetConstructedDataPrescale
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataPrescale) GetPrescale() *BACnetPrescale {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPrescale factory function for BACnetConstructedDataPrescale
-func NewBACnetConstructedDataPrescale(prescale *BACnetPrescale, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPrescale {
+func NewBACnetConstructedDataPrescale(prescale *BACnetPrescale, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPrescale {
 	_result := &BACnetConstructedDataPrescale{
 		Prescale:              prescale,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataPrescale) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPrescaleParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPrescale, error) {
+func BACnetConstructedDataPrescaleParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataPrescale, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPrescale"); pullErr != nil {

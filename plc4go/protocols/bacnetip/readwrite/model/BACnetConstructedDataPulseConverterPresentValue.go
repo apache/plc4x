@@ -32,7 +32,8 @@ type BACnetConstructedDataPulseConverterPresentValue struct {
 	PresentValue *BACnetApplicationTagReal
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataPulseConverterPresentValue is the corresponding interface of BACnetConstructedDataPulseConverterPresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataPulseConverterPresentValue) GetPresentValue() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPulseConverterPresentValue factory function for BACnetConstructedDataPulseConverterPresentValue
-func NewBACnetConstructedDataPulseConverterPresentValue(presentValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPulseConverterPresentValue {
+func NewBACnetConstructedDataPulseConverterPresentValue(presentValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPulseConverterPresentValue {
 	_result := &BACnetConstructedDataPulseConverterPresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataPulseConverterPresentValue) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPulseConverterPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPulseConverterPresentValue, error) {
+func BACnetConstructedDataPulseConverterPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataPulseConverterPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPulseConverterPresentValue"); pullErr != nil {

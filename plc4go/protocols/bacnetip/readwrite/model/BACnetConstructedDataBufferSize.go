@@ -32,7 +32,8 @@ type BACnetConstructedDataBufferSize struct {
 	BufferSize *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBufferSize is the corresponding interface of BACnetConstructedDataBufferSize
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBufferSize) GetBufferSize() *BACnetApplicationTagU
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBufferSize factory function for BACnetConstructedDataBufferSize
-func NewBACnetConstructedDataBufferSize(bufferSize *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBufferSize {
+func NewBACnetConstructedDataBufferSize(bufferSize *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBufferSize {
 	_result := &BACnetConstructedDataBufferSize{
 		BufferSize:            bufferSize,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBufferSize) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBufferSizeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBufferSize, error) {
+func BACnetConstructedDataBufferSizeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBufferSize, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBufferSize"); pullErr != nil {

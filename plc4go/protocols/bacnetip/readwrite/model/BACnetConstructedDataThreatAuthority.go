@@ -32,7 +32,8 @@ type BACnetConstructedDataThreatAuthority struct {
 	ThreatAuthority *BACnetAccessThreatLevel
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataThreatAuthority is the corresponding interface of BACnetConstructedDataThreatAuthority
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataThreatAuthority) GetThreatAuthority() *BACnetAcces
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataThreatAuthority factory function for BACnetConstructedDataThreatAuthority
-func NewBACnetConstructedDataThreatAuthority(threatAuthority *BACnetAccessThreatLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataThreatAuthority {
+func NewBACnetConstructedDataThreatAuthority(threatAuthority *BACnetAccessThreatLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataThreatAuthority {
 	_result := &BACnetConstructedDataThreatAuthority{
 		ThreatAuthority:       threatAuthority,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataThreatAuthority) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataThreatAuthorityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataThreatAuthority, error) {
+func BACnetConstructedDataThreatAuthorityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataThreatAuthority, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataThreatAuthority"); pullErr != nil {

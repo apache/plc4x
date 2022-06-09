@@ -32,7 +32,8 @@ type BACnetConstructedDataMaxFailedAttempts struct {
 	MaxFailedAttempts *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataMaxFailedAttempts is the corresponding interface of BACnetConstructedDataMaxFailedAttempts
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataMaxFailedAttempts) GetMaxFailedAttempts() *BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMaxFailedAttempts factory function for BACnetConstructedDataMaxFailedAttempts
-func NewBACnetConstructedDataMaxFailedAttempts(maxFailedAttempts *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMaxFailedAttempts {
+func NewBACnetConstructedDataMaxFailedAttempts(maxFailedAttempts *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMaxFailedAttempts {
 	_result := &BACnetConstructedDataMaxFailedAttempts{
 		MaxFailedAttempts:     maxFailedAttempts,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataMaxFailedAttempts) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMaxFailedAttemptsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataMaxFailedAttempts, error) {
+func BACnetConstructedDataMaxFailedAttemptsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataMaxFailedAttempts, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaxFailedAttempts"); pullErr != nil {

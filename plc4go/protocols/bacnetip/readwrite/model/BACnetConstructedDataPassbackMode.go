@@ -32,7 +32,8 @@ type BACnetConstructedDataPassbackMode struct {
 	PassbackMode *BACnetAccessPassbackModeTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataPassbackMode is the corresponding interface of BACnetConstructedDataPassbackMode
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataPassbackMode) GetPassbackMode() *BACnetAccessPassb
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPassbackMode factory function for BACnetConstructedDataPassbackMode
-func NewBACnetConstructedDataPassbackMode(passbackMode *BACnetAccessPassbackModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPassbackMode {
+func NewBACnetConstructedDataPassbackMode(passbackMode *BACnetAccessPassbackModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPassbackMode {
 	_result := &BACnetConstructedDataPassbackMode{
 		PassbackMode:          passbackMode,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataPassbackMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPassbackModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPassbackMode, error) {
+func BACnetConstructedDataPassbackModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataPassbackMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPassbackMode"); pullErr != nil {

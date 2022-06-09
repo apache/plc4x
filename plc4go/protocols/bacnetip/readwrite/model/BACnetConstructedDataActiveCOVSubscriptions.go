@@ -32,7 +32,8 @@ type BACnetConstructedDataActiveCOVSubscriptions struct {
 	ActiveCOVSubscriptions []*BACnetCOVSubscription
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataActiveCOVSubscriptions is the corresponding interface of BACnetConstructedDataActiveCOVSubscriptions
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataActiveCOVSubscriptions) GetActiveCOVSubscriptions(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActiveCOVSubscriptions factory function for BACnetConstructedDataActiveCOVSubscriptions
-func NewBACnetConstructedDataActiveCOVSubscriptions(activeCOVSubscriptions []*BACnetCOVSubscription, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataActiveCOVSubscriptions {
+func NewBACnetConstructedDataActiveCOVSubscriptions(activeCOVSubscriptions []*BACnetCOVSubscription, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataActiveCOVSubscriptions {
 	_result := &BACnetConstructedDataActiveCOVSubscriptions{
 		ActiveCOVSubscriptions: activeCOVSubscriptions,
-		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataActiveCOVSubscriptions) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActiveCOVSubscriptionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataActiveCOVSubscriptions, error) {
+func BACnetConstructedDataActiveCOVSubscriptionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataActiveCOVSubscriptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveCOVSubscriptions"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataValueSource struct {
 	ValueSource *BACnetValueSource
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataValueSource is the corresponding interface of BACnetConstructedDataValueSource
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataValueSource) GetValueSource() *BACnetValueSource {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataValueSource factory function for BACnetConstructedDataValueSource
-func NewBACnetConstructedDataValueSource(valueSource *BACnetValueSource, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataValueSource {
+func NewBACnetConstructedDataValueSource(valueSource *BACnetValueSource, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataValueSource {
 	_result := &BACnetConstructedDataValueSource{
 		ValueSource:           valueSource,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataValueSource) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataValueSourceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataValueSource, error) {
+func BACnetConstructedDataValueSourceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataValueSource, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValueSource"); pullErr != nil {

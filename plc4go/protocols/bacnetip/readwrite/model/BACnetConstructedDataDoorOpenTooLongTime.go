@@ -32,7 +32,8 @@ type BACnetConstructedDataDoorOpenTooLongTime struct {
 	DoorOpenTooLongTime *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDoorOpenTooLongTime is the corresponding interface of BACnetConstructedDataDoorOpenTooLongTime
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataDoorOpenTooLongTime) GetDoorOpenTooLongTime() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDoorOpenTooLongTime factory function for BACnetConstructedDataDoorOpenTooLongTime
-func NewBACnetConstructedDataDoorOpenTooLongTime(doorOpenTooLongTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDoorOpenTooLongTime {
+func NewBACnetConstructedDataDoorOpenTooLongTime(doorOpenTooLongTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDoorOpenTooLongTime {
 	_result := &BACnetConstructedDataDoorOpenTooLongTime{
 		DoorOpenTooLongTime:   doorOpenTooLongTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataDoorOpenTooLongTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDoorOpenTooLongTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDoorOpenTooLongTime, error) {
+func BACnetConstructedDataDoorOpenTooLongTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDoorOpenTooLongTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorOpenTooLongTime"); pullErr != nil {

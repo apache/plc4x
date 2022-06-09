@@ -140,7 +140,7 @@ func BACnetTimerStateChangeValueConstructedValueParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("constructedValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_constructedValue, _constructedValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(1)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
+	_constructedValue, _constructedValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(1)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _constructedValueErr != nil {
 		return nil, errors.Wrap(_constructedValueErr, "Error parsing 'constructedValue' field")
 	}

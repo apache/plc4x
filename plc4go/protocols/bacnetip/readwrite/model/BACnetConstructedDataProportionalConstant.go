@@ -32,7 +32,8 @@ type BACnetConstructedDataProportionalConstant struct {
 	ProportionalConstant *BACnetApplicationTagReal
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataProportionalConstant is the corresponding interface of BACnetConstructedDataProportionalConstant
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataProportionalConstant) GetProportionalConstant() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProportionalConstant factory function for BACnetConstructedDataProportionalConstant
-func NewBACnetConstructedDataProportionalConstant(proportionalConstant *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProportionalConstant {
+func NewBACnetConstructedDataProportionalConstant(proportionalConstant *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProportionalConstant {
 	_result := &BACnetConstructedDataProportionalConstant{
 		ProportionalConstant:  proportionalConstant,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataProportionalConstant) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProportionalConstantParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataProportionalConstant, error) {
+func BACnetConstructedDataProportionalConstantParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataProportionalConstant, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProportionalConstant"); pullErr != nil {

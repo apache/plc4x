@@ -32,7 +32,8 @@ type BACnetConstructedDataCarDoorCommand struct {
 	CarDoorCommand []*BACnetLiftCarDoorCommandTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataCarDoorCommand is the corresponding interface of BACnetConstructedDataCarDoorCommand
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataCarDoorCommand) GetCarDoorCommand() []*BACnetLiftC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCarDoorCommand factory function for BACnetConstructedDataCarDoorCommand
-func NewBACnetConstructedDataCarDoorCommand(carDoorCommand []*BACnetLiftCarDoorCommandTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCarDoorCommand {
+func NewBACnetConstructedDataCarDoorCommand(carDoorCommand []*BACnetLiftCarDoorCommandTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCarDoorCommand {
 	_result := &BACnetConstructedDataCarDoorCommand{
 		CarDoorCommand:        carDoorCommand,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataCarDoorCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCarDoorCommandParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCarDoorCommand, error) {
+func BACnetConstructedDataCarDoorCommandParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataCarDoorCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarDoorCommand"); pullErr != nil {

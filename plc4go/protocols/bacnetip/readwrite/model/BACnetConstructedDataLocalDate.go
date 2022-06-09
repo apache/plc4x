@@ -32,7 +32,8 @@ type BACnetConstructedDataLocalDate struct {
 	LocalDate *BACnetApplicationTagDate
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLocalDate is the corresponding interface of BACnetConstructedDataLocalDate
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLocalDate) GetLocalDate() *BACnetApplicationTagDat
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLocalDate factory function for BACnetConstructedDataLocalDate
-func NewBACnetConstructedDataLocalDate(localDate *BACnetApplicationTagDate, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLocalDate {
+func NewBACnetConstructedDataLocalDate(localDate *BACnetApplicationTagDate, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLocalDate {
 	_result := &BACnetConstructedDataLocalDate{
 		LocalDate:             localDate,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLocalDate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLocalDateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLocalDate, error) {
+func BACnetConstructedDataLocalDateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLocalDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLocalDate"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataZoneFrom struct {
 	ZoneFrom *BACnetDeviceObjectReference
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataZoneFrom is the corresponding interface of BACnetConstructedDataZoneFrom
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataZoneFrom) GetZoneFrom() *BACnetDeviceObjectReferen
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataZoneFrom factory function for BACnetConstructedDataZoneFrom
-func NewBACnetConstructedDataZoneFrom(zoneFrom *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataZoneFrom {
+func NewBACnetConstructedDataZoneFrom(zoneFrom *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataZoneFrom {
 	_result := &BACnetConstructedDataZoneFrom{
 		ZoneFrom:              zoneFrom,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataZoneFrom) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataZoneFromParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataZoneFrom, error) {
+func BACnetConstructedDataZoneFromParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataZoneFrom, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataZoneFrom"); pullErr != nil {

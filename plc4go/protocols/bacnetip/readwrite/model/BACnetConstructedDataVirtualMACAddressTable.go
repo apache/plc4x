@@ -32,7 +32,8 @@ type BACnetConstructedDataVirtualMACAddressTable struct {
 	VirtualMacAddressTable []*BACnetVMACEntry
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataVirtualMACAddressTable is the corresponding interface of BACnetConstructedDataVirtualMACAddressTable
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataVirtualMACAddressTable) GetVirtualMacAddressTable(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataVirtualMACAddressTable factory function for BACnetConstructedDataVirtualMACAddressTable
-func NewBACnetConstructedDataVirtualMACAddressTable(virtualMacAddressTable []*BACnetVMACEntry, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataVirtualMACAddressTable {
+func NewBACnetConstructedDataVirtualMACAddressTable(virtualMacAddressTable []*BACnetVMACEntry, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataVirtualMACAddressTable {
 	_result := &BACnetConstructedDataVirtualMACAddressTable{
 		VirtualMacAddressTable: virtualMacAddressTable,
-		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataVirtualMACAddressTable) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataVirtualMACAddressTableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataVirtualMACAddressTable, error) {
+func BACnetConstructedDataVirtualMACAddressTableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataVirtualMACAddressTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVirtualMACAddressTable"); pullErr != nil {

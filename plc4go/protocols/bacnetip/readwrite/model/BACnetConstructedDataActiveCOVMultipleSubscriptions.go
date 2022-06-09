@@ -32,7 +32,8 @@ type BACnetConstructedDataActiveCOVMultipleSubscriptions struct {
 	ActiveCOVMultipleSubscriptions []*BACnetCOVMultipleSubscription
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataActiveCOVMultipleSubscriptions is the corresponding interface of BACnetConstructedDataActiveCOVMultipleSubscriptions
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataActiveCOVMultipleSubscriptions) GetActiveCOVMultip
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActiveCOVMultipleSubscriptions factory function for BACnetConstructedDataActiveCOVMultipleSubscriptions
-func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(activeCOVMultipleSubscriptions []*BACnetCOVMultipleSubscription, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataActiveCOVMultipleSubscriptions {
+func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(activeCOVMultipleSubscriptions []*BACnetCOVMultipleSubscription, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataActiveCOVMultipleSubscriptions {
 	_result := &BACnetConstructedDataActiveCOVMultipleSubscriptions{
 		ActiveCOVMultipleSubscriptions: activeCOVMultipleSubscriptions,
-		BACnetConstructedData:          NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:          NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataActiveCOVMultipleSubscriptions) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActiveCOVMultipleSubscriptionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataActiveCOVMultipleSubscriptions, error) {
+func BACnetConstructedDataActiveCOVMultipleSubscriptionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataActiveCOVMultipleSubscriptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveCOVMultipleSubscriptions"); pullErr != nil {

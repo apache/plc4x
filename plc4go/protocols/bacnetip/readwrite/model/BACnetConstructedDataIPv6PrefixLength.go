@@ -32,7 +32,8 @@ type BACnetConstructedDataIPv6PrefixLength struct {
 	Ipv6PrefixLength *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataIPv6PrefixLength is the corresponding interface of BACnetConstructedDataIPv6PrefixLength
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataIPv6PrefixLength) GetIpv6PrefixLength() *BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6PrefixLength factory function for BACnetConstructedDataIPv6PrefixLength
-func NewBACnetConstructedDataIPv6PrefixLength(ipv6PrefixLength *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPv6PrefixLength {
+func NewBACnetConstructedDataIPv6PrefixLength(ipv6PrefixLength *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPv6PrefixLength {
 	_result := &BACnetConstructedDataIPv6PrefixLength{
 		Ipv6PrefixLength:      ipv6PrefixLength,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataIPv6PrefixLength) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPv6PrefixLengthParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataIPv6PrefixLength, error) {
+func BACnetConstructedDataIPv6PrefixLengthParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataIPv6PrefixLength, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6PrefixLength"); pullErr != nil {

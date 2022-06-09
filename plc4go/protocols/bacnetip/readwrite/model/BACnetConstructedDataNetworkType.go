@@ -32,7 +32,8 @@ type BACnetConstructedDataNetworkType struct {
 	NetworkType *BACnetNetworkTypeTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataNetworkType is the corresponding interface of BACnetConstructedDataNetworkType
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataNetworkType) GetNetworkType() *BACnetNetworkTypeTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNetworkType factory function for BACnetConstructedDataNetworkType
-func NewBACnetConstructedDataNetworkType(networkType *BACnetNetworkTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNetworkType {
+func NewBACnetConstructedDataNetworkType(networkType *BACnetNetworkTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNetworkType {
 	_result := &BACnetConstructedDataNetworkType{
 		NetworkType:           networkType,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataNetworkType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNetworkTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNetworkType, error) {
+func BACnetConstructedDataNetworkTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataNetworkType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkType"); pullErr != nil {

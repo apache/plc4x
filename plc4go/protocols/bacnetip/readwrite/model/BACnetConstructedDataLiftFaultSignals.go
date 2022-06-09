@@ -32,7 +32,8 @@ type BACnetConstructedDataLiftFaultSignals struct {
 	FaultSignals []*BACnetLiftFaultTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLiftFaultSignals is the corresponding interface of BACnetConstructedDataLiftFaultSignals
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLiftFaultSignals) GetFaultSignals() []*BACnetLiftF
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLiftFaultSignals factory function for BACnetConstructedDataLiftFaultSignals
-func NewBACnetConstructedDataLiftFaultSignals(faultSignals []*BACnetLiftFaultTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLiftFaultSignals {
+func NewBACnetConstructedDataLiftFaultSignals(faultSignals []*BACnetLiftFaultTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLiftFaultSignals {
 	_result := &BACnetConstructedDataLiftFaultSignals{
 		FaultSignals:          faultSignals,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataLiftFaultSignals) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLiftFaultSignalsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLiftFaultSignals, error) {
+func BACnetConstructedDataLiftFaultSignalsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLiftFaultSignals, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLiftFaultSignals"); pullErr != nil {

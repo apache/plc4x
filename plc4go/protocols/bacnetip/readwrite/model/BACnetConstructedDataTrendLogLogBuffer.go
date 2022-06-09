@@ -32,7 +32,8 @@ type BACnetConstructedDataTrendLogLogBuffer struct {
 	FloorText []*BACnetLogRecord
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataTrendLogLogBuffer is the corresponding interface of BACnetConstructedDataTrendLogLogBuffer
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataTrendLogLogBuffer) GetFloorText() []*BACnetLogReco
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTrendLogLogBuffer factory function for BACnetConstructedDataTrendLogLogBuffer
-func NewBACnetConstructedDataTrendLogLogBuffer(floorText []*BACnetLogRecord, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTrendLogLogBuffer {
+func NewBACnetConstructedDataTrendLogLogBuffer(floorText []*BACnetLogRecord, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTrendLogLogBuffer {
 	_result := &BACnetConstructedDataTrendLogLogBuffer{
 		FloorText:             floorText,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataTrendLogLogBuffer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTrendLogLogBufferParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTrendLogLogBuffer, error) {
+func BACnetConstructedDataTrendLogLogBufferParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataTrendLogLogBuffer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrendLogLogBuffer"); pullErr != nil {

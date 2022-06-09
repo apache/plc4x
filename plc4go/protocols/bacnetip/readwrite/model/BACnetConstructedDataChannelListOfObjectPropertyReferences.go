@@ -32,7 +32,8 @@ type BACnetConstructedDataChannelListOfObjectPropertyReferences struct {
 	References []*BACnetDeviceObjectPropertyReference
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataChannelListOfObjectPropertyReferences is the corresponding interface of BACnetConstructedDataChannelListOfObjectPropertyReferences
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataChannelListOfObjectPropertyReferences) GetReferenc
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataChannelListOfObjectPropertyReferences factory function for BACnetConstructedDataChannelListOfObjectPropertyReferences
-func NewBACnetConstructedDataChannelListOfObjectPropertyReferences(references []*BACnetDeviceObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataChannelListOfObjectPropertyReferences {
+func NewBACnetConstructedDataChannelListOfObjectPropertyReferences(references []*BACnetDeviceObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataChannelListOfObjectPropertyReferences {
 	_result := &BACnetConstructedDataChannelListOfObjectPropertyReferences{
 		References:            references,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataChannelListOfObjectPropertyReferences) GetLengthIn
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataChannelListOfObjectPropertyReferencesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataChannelListOfObjectPropertyReferences, error) {
+func BACnetConstructedDataChannelListOfObjectPropertyReferencesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataChannelListOfObjectPropertyReferences, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChannelListOfObjectPropertyReferences"); pullErr != nil {

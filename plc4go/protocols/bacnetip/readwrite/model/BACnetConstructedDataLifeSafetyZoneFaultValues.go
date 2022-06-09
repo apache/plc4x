@@ -32,7 +32,8 @@ type BACnetConstructedDataLifeSafetyZoneFaultValues struct {
 	FaultValues []*BACnetLifeSafetyStateTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLifeSafetyZoneFaultValues is the corresponding interface of BACnetConstructedDataLifeSafetyZoneFaultValues
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLifeSafetyZoneFaultValues) GetFaultValues() []*BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLifeSafetyZoneFaultValues factory function for BACnetConstructedDataLifeSafetyZoneFaultValues
-func NewBACnetConstructedDataLifeSafetyZoneFaultValues(faultValues []*BACnetLifeSafetyStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLifeSafetyZoneFaultValues {
+func NewBACnetConstructedDataLifeSafetyZoneFaultValues(faultValues []*BACnetLifeSafetyStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLifeSafetyZoneFaultValues {
 	_result := &BACnetConstructedDataLifeSafetyZoneFaultValues{
 		FaultValues:           faultValues,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataLifeSafetyZoneFaultValues) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLifeSafetyZoneFaultValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLifeSafetyZoneFaultValues, error) {
+func BACnetConstructedDataLifeSafetyZoneFaultValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLifeSafetyZoneFaultValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyZoneFaultValues"); pullErr != nil {

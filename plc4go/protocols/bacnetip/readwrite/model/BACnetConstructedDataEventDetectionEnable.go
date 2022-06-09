@@ -32,7 +32,8 @@ type BACnetConstructedDataEventDetectionEnable struct {
 	EventDetectionEnable *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataEventDetectionEnable is the corresponding interface of BACnetConstructedDataEventDetectionEnable
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataEventDetectionEnable) GetEventDetectionEnable() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventDetectionEnable factory function for BACnetConstructedDataEventDetectionEnable
-func NewBACnetConstructedDataEventDetectionEnable(eventDetectionEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEventDetectionEnable {
+func NewBACnetConstructedDataEventDetectionEnable(eventDetectionEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEventDetectionEnable {
 	_result := &BACnetConstructedDataEventDetectionEnable{
 		EventDetectionEnable:  eventDetectionEnable,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataEventDetectionEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventDetectionEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEventDetectionEnable, error) {
+func BACnetConstructedDataEventDetectionEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataEventDetectionEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventDetectionEnable"); pullErr != nil {

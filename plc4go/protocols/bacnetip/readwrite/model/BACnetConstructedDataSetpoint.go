@@ -32,7 +32,8 @@ type BACnetConstructedDataSetpoint struct {
 	Setpoint *BACnetApplicationTagReal
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSetpoint is the corresponding interface of BACnetConstructedDataSetpoint
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSetpoint) GetSetpoint() *BACnetApplicationTagReal 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSetpoint factory function for BACnetConstructedDataSetpoint
-func NewBACnetConstructedDataSetpoint(setpoint *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSetpoint {
+func NewBACnetConstructedDataSetpoint(setpoint *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSetpoint {
 	_result := &BACnetConstructedDataSetpoint{
 		Setpoint:              setpoint,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataSetpoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSetpointParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSetpoint, error) {
+func BACnetConstructedDataSetpointParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSetpoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSetpoint"); pullErr != nil {

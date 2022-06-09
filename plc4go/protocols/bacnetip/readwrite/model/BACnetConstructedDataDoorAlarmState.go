@@ -32,7 +32,8 @@ type BACnetConstructedDataDoorAlarmState struct {
 	DoorAlarmState *BACnetDoorAlarmStateTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDoorAlarmState is the corresponding interface of BACnetConstructedDataDoorAlarmState
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataDoorAlarmState) GetDoorAlarmState() *BACnetDoorAla
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDoorAlarmState factory function for BACnetConstructedDataDoorAlarmState
-func NewBACnetConstructedDataDoorAlarmState(doorAlarmState *BACnetDoorAlarmStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDoorAlarmState {
+func NewBACnetConstructedDataDoorAlarmState(doorAlarmState *BACnetDoorAlarmStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDoorAlarmState {
 	_result := &BACnetConstructedDataDoorAlarmState{
 		DoorAlarmState:        doorAlarmState,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataDoorAlarmState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDoorAlarmStateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDoorAlarmState, error) {
+func BACnetConstructedDataDoorAlarmStateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDoorAlarmState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorAlarmState"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataMaintenanceRequired struct {
 	MaintenanceRequired *BACnetMaintenanceTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataMaintenanceRequired is the corresponding interface of BACnetConstructedDataMaintenanceRequired
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataMaintenanceRequired) GetMaintenanceRequired() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMaintenanceRequired factory function for BACnetConstructedDataMaintenanceRequired
-func NewBACnetConstructedDataMaintenanceRequired(maintenanceRequired *BACnetMaintenanceTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMaintenanceRequired {
+func NewBACnetConstructedDataMaintenanceRequired(maintenanceRequired *BACnetMaintenanceTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMaintenanceRequired {
 	_result := &BACnetConstructedDataMaintenanceRequired{
 		MaintenanceRequired:   maintenanceRequired,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataMaintenanceRequired) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMaintenanceRequiredParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataMaintenanceRequired, error) {
+func BACnetConstructedDataMaintenanceRequiredParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataMaintenanceRequired, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaintenanceRequired"); pullErr != nil {

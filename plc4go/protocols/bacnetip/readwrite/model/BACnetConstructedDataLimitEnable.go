@@ -32,7 +32,8 @@ type BACnetConstructedDataLimitEnable struct {
 	LimitEnable *BACnetLimitEnableTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLimitEnable is the corresponding interface of BACnetConstructedDataLimitEnable
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLimitEnable) GetLimitEnable() *BACnetLimitEnableTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLimitEnable factory function for BACnetConstructedDataLimitEnable
-func NewBACnetConstructedDataLimitEnable(limitEnable *BACnetLimitEnableTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLimitEnable {
+func NewBACnetConstructedDataLimitEnable(limitEnable *BACnetLimitEnableTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLimitEnable {
 	_result := &BACnetConstructedDataLimitEnable{
 		LimitEnable:           limitEnable,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLimitEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLimitEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLimitEnable, error) {
+func BACnetConstructedDataLimitEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLimitEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLimitEnable"); pullErr != nil {

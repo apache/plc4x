@@ -32,7 +32,8 @@ type BACnetConstructedDataSubordinateNodeTypes struct {
 	SubordinateNodeTypes []*BACnetNodeTypeTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSubordinateNodeTypes is the corresponding interface of BACnetConstructedDataSubordinateNodeTypes
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSubordinateNodeTypes) GetSubordinateNodeTypes() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSubordinateNodeTypes factory function for BACnetConstructedDataSubordinateNodeTypes
-func NewBACnetConstructedDataSubordinateNodeTypes(subordinateNodeTypes []*BACnetNodeTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSubordinateNodeTypes {
+func NewBACnetConstructedDataSubordinateNodeTypes(subordinateNodeTypes []*BACnetNodeTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSubordinateNodeTypes {
 	_result := &BACnetConstructedDataSubordinateNodeTypes{
 		SubordinateNodeTypes:  subordinateNodeTypes,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataSubordinateNodeTypes) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSubordinateNodeTypesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSubordinateNodeTypes, error) {
+func BACnetConstructedDataSubordinateNodeTypesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSubordinateNodeTypes, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubordinateNodeTypes"); pullErr != nil {

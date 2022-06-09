@@ -32,7 +32,8 @@ type BACnetConstructedDataBitStringValuePresentValue struct {
 	PresentValue *BACnetApplicationTagBitString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBitStringValuePresentValue is the corresponding interface of BACnetConstructedDataBitStringValuePresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBitStringValuePresentValue) GetPresentValue() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBitStringValuePresentValue factory function for BACnetConstructedDataBitStringValuePresentValue
-func NewBACnetConstructedDataBitStringValuePresentValue(presentValue *BACnetApplicationTagBitString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBitStringValuePresentValue {
+func NewBACnetConstructedDataBitStringValuePresentValue(presentValue *BACnetApplicationTagBitString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBitStringValuePresentValue {
 	_result := &BACnetConstructedDataBitStringValuePresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBitStringValuePresentValue) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBitStringValuePresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBitStringValuePresentValue, error) {
+func BACnetConstructedDataBitStringValuePresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBitStringValuePresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBitStringValuePresentValue"); pullErr != nil {

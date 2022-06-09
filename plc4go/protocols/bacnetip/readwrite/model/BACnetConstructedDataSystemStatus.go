@@ -32,7 +32,8 @@ type BACnetConstructedDataSystemStatus struct {
 	SystemStatus *BACnetDeviceStatusTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSystemStatus is the corresponding interface of BACnetConstructedDataSystemStatus
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSystemStatus) GetSystemStatus() *BACnetDeviceStatu
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSystemStatus factory function for BACnetConstructedDataSystemStatus
-func NewBACnetConstructedDataSystemStatus(systemStatus *BACnetDeviceStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSystemStatus {
+func NewBACnetConstructedDataSystemStatus(systemStatus *BACnetDeviceStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSystemStatus {
 	_result := &BACnetConstructedDataSystemStatus{
 		SystemStatus:          systemStatus,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataSystemStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSystemStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSystemStatus, error) {
+func BACnetConstructedDataSystemStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSystemStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSystemStatus"); pullErr != nil {

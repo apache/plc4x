@@ -32,7 +32,8 @@ type BACnetConstructedDataAuthenticationStatus struct {
 	AuthenticationStatus *BACnetAuthenticationStatusTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAuthenticationStatus is the corresponding interface of BACnetConstructedDataAuthenticationStatus
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAuthenticationStatus) GetAuthenticationStatus() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAuthenticationStatus factory function for BACnetConstructedDataAuthenticationStatus
-func NewBACnetConstructedDataAuthenticationStatus(authenticationStatus *BACnetAuthenticationStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAuthenticationStatus {
+func NewBACnetConstructedDataAuthenticationStatus(authenticationStatus *BACnetAuthenticationStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAuthenticationStatus {
 	_result := &BACnetConstructedDataAuthenticationStatus{
 		AuthenticationStatus:  authenticationStatus,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAuthenticationStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAuthenticationStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAuthenticationStatus, error) {
+func BACnetConstructedDataAuthenticationStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAuthenticationStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthenticationStatus"); pullErr != nil {

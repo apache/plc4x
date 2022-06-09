@@ -34,6 +34,7 @@ type BACnetPropertyAccessResultAccessResultPropertyAccessError struct {
 	// Arguments.
 	ObjectTypeArgument         BACnetObjectType
 	PropertyIdentifierArgument BACnetPropertyIdentifier
+	PropertyArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetPropertyAccessResultAccessResultPropertyAccessError is the corresponding interface of BACnetPropertyAccessResultAccessResultPropertyAccessError
@@ -82,10 +83,10 @@ func (m *BACnetPropertyAccessResultAccessResultPropertyAccessError) GetPropertyA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyAccessResultAccessResultPropertyAccessError factory function for BACnetPropertyAccessResultAccessResultPropertyAccessError
-func NewBACnetPropertyAccessResultAccessResultPropertyAccessError(propertyAccessError *ErrorEnclosed, peekedTagHeader *BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) *BACnetPropertyAccessResultAccessResultPropertyAccessError {
+func NewBACnetPropertyAccessResultAccessResultPropertyAccessError(propertyAccessError *ErrorEnclosed, peekedTagHeader *BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetPropertyAccessResultAccessResultPropertyAccessError {
 	_result := &BACnetPropertyAccessResultAccessResultPropertyAccessError{
 		PropertyAccessError:                    propertyAccessError,
-		BACnetPropertyAccessResultAccessResult: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument),
+		BACnetPropertyAccessResultAccessResult: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -128,7 +129,7 @@ func (m *BACnetPropertyAccessResultAccessResultPropertyAccessError) GetLengthInB
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetPropertyAccessResultAccessResultPropertyAccessError, error) {
+func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetPropertyAccessResultAccessResultPropertyAccessError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyAccessResultAccessResultPropertyAccessError"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataLocalForwardingOnly struct {
 	LocalForwardingOnly *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLocalForwardingOnly is the corresponding interface of BACnetConstructedDataLocalForwardingOnly
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLocalForwardingOnly) GetLocalForwardingOnly() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLocalForwardingOnly factory function for BACnetConstructedDataLocalForwardingOnly
-func NewBACnetConstructedDataLocalForwardingOnly(localForwardingOnly *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLocalForwardingOnly {
+func NewBACnetConstructedDataLocalForwardingOnly(localForwardingOnly *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLocalForwardingOnly {
 	_result := &BACnetConstructedDataLocalForwardingOnly{
 		LocalForwardingOnly:   localForwardingOnly,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLocalForwardingOnly) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLocalForwardingOnlyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLocalForwardingOnly, error) {
+func BACnetConstructedDataLocalForwardingOnlyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLocalForwardingOnly, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLocalForwardingOnly"); pullErr != nil {

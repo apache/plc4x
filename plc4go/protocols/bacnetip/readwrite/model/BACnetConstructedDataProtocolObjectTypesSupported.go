@@ -32,7 +32,8 @@ type BACnetConstructedDataProtocolObjectTypesSupported struct {
 	ProtocolObjectTypesSupported *BACnetObjectTypesSupportedTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataProtocolObjectTypesSupported is the corresponding interface of BACnetConstructedDataProtocolObjectTypesSupported
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataProtocolObjectTypesSupported) GetProtocolObjectTyp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProtocolObjectTypesSupported factory function for BACnetConstructedDataProtocolObjectTypesSupported
-func NewBACnetConstructedDataProtocolObjectTypesSupported(protocolObjectTypesSupported *BACnetObjectTypesSupportedTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProtocolObjectTypesSupported {
+func NewBACnetConstructedDataProtocolObjectTypesSupported(protocolObjectTypesSupported *BACnetObjectTypesSupportedTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProtocolObjectTypesSupported {
 	_result := &BACnetConstructedDataProtocolObjectTypesSupported{
 		ProtocolObjectTypesSupported: protocolObjectTypesSupported,
-		BACnetConstructedData:        NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:        NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataProtocolObjectTypesSupported) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProtocolObjectTypesSupportedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataProtocolObjectTypesSupported, error) {
+func BACnetConstructedDataProtocolObjectTypesSupportedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataProtocolObjectTypesSupported, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolObjectTypesSupported"); pullErr != nil {

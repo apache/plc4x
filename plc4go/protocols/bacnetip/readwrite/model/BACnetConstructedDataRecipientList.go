@@ -32,7 +32,8 @@ type BACnetConstructedDataRecipientList struct {
 	RecipientList []*BACnetDestination
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataRecipientList is the corresponding interface of BACnetConstructedDataRecipientList
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataRecipientList) GetRecipientList() []*BACnetDestina
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRecipientList factory function for BACnetConstructedDataRecipientList
-func NewBACnetConstructedDataRecipientList(recipientList []*BACnetDestination, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataRecipientList {
+func NewBACnetConstructedDataRecipientList(recipientList []*BACnetDestination, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataRecipientList {
 	_result := &BACnetConstructedDataRecipientList{
 		RecipientList:         recipientList,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataRecipientList) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataRecipientListParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataRecipientList, error) {
+func BACnetConstructedDataRecipientListParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataRecipientList, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRecipientList"); pullErr != nil {

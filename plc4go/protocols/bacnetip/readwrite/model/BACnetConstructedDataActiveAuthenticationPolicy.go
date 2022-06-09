@@ -32,7 +32,8 @@ type BACnetConstructedDataActiveAuthenticationPolicy struct {
 	ActiveAuthenticationPolicy *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataActiveAuthenticationPolicy is the corresponding interface of BACnetConstructedDataActiveAuthenticationPolicy
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataActiveAuthenticationPolicy) GetActiveAuthenticatio
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActiveAuthenticationPolicy factory function for BACnetConstructedDataActiveAuthenticationPolicy
-func NewBACnetConstructedDataActiveAuthenticationPolicy(activeAuthenticationPolicy *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataActiveAuthenticationPolicy {
+func NewBACnetConstructedDataActiveAuthenticationPolicy(activeAuthenticationPolicy *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataActiveAuthenticationPolicy {
 	_result := &BACnetConstructedDataActiveAuthenticationPolicy{
 		ActiveAuthenticationPolicy: activeAuthenticationPolicy,
-		BACnetConstructedData:      NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:      NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataActiveAuthenticationPolicy) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActiveAuthenticationPolicyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataActiveAuthenticationPolicy, error) {
+func BACnetConstructedDataActiveAuthenticationPolicyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataActiveAuthenticationPolicy, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveAuthenticationPolicy"); pullErr != nil {

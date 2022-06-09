@@ -32,7 +32,8 @@ type BACnetConstructedDataOccupancyLowerLimit struct {
 	OccupancyLowerLimit *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataOccupancyLowerLimit is the corresponding interface of BACnetConstructedDataOccupancyLowerLimit
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataOccupancyLowerLimit) GetOccupancyLowerLimit() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOccupancyLowerLimit factory function for BACnetConstructedDataOccupancyLowerLimit
-func NewBACnetConstructedDataOccupancyLowerLimit(occupancyLowerLimit *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataOccupancyLowerLimit {
+func NewBACnetConstructedDataOccupancyLowerLimit(occupancyLowerLimit *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataOccupancyLowerLimit {
 	_result := &BACnetConstructedDataOccupancyLowerLimit{
 		OccupancyLowerLimit:   occupancyLowerLimit,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataOccupancyLowerLimit) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOccupancyLowerLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataOccupancyLowerLimit, error) {
+func BACnetConstructedDataOccupancyLowerLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataOccupancyLowerLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyLowerLimit"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataDatePatternValuePresentValue struct {
 	PresentValue *BACnetApplicationTagDate
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDatePatternValuePresentValue is the corresponding interface of BACnetConstructedDataDatePatternValuePresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataDatePatternValuePresentValue) GetPresentValue() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDatePatternValuePresentValue factory function for BACnetConstructedDataDatePatternValuePresentValue
-func NewBACnetConstructedDataDatePatternValuePresentValue(presentValue *BACnetApplicationTagDate, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDatePatternValuePresentValue {
+func NewBACnetConstructedDataDatePatternValuePresentValue(presentValue *BACnetApplicationTagDate, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDatePatternValuePresentValue {
 	_result := &BACnetConstructedDataDatePatternValuePresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataDatePatternValuePresentValue) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDatePatternValuePresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDatePatternValuePresentValue, error) {
+func BACnetConstructedDataDatePatternValuePresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDatePatternValuePresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDatePatternValuePresentValue"); pullErr != nil {

@@ -36,6 +36,7 @@ type BACnetReadAccessPropertyReadResult struct {
 	// Arguments.
 	ObjectTypeArgument         BACnetObjectType
 	PropertyIdentifierArgument BACnetPropertyIdentifier
+	ArrayIndexArgument         *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetReadAccessPropertyReadResult is the corresponding interface of BACnetReadAccessPropertyReadResult
@@ -96,8 +97,8 @@ func (m *BACnetReadAccessPropertyReadResult) GetPeekedTagNumber() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetReadAccessPropertyReadResult factory function for BACnetReadAccessPropertyReadResult
-func NewBACnetReadAccessPropertyReadResult(peekedTagHeader *BACnetTagHeader, propertyValue *BACnetConstructedData, propertyAccessError *ErrorEnclosed, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) *BACnetReadAccessPropertyReadResult {
-	return &BACnetReadAccessPropertyReadResult{PeekedTagHeader: peekedTagHeader, PropertyValue: propertyValue, PropertyAccessError: propertyAccessError, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument}
+func NewBACnetReadAccessPropertyReadResult(peekedTagHeader *BACnetTagHeader, propertyValue *BACnetConstructedData, propertyAccessError *ErrorEnclosed, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetReadAccessPropertyReadResult {
+	return &BACnetReadAccessPropertyReadResult{PeekedTagHeader: peekedTagHeader, PropertyValue: propertyValue, PropertyAccessError: propertyAccessError, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}
 }
 
 func CastBACnetReadAccessPropertyReadResult(structType interface{}) *BACnetReadAccessPropertyReadResult {
@@ -140,7 +141,7 @@ func (m *BACnetReadAccessPropertyReadResult) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetReadAccessPropertyReadResult, error) {
+func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetReadAccessPropertyReadResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReadAccessPropertyReadResult"); pullErr != nil {
@@ -169,7 +170,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), objectTypeArgument, propertyIdentifierArgument)
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
@@ -224,7 +225,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 	}
 
 	// Create the instance
-	return NewBACnetReadAccessPropertyReadResult(peekedTagHeader, propertyValue, propertyAccessError, objectTypeArgument, propertyIdentifierArgument), nil
+	return NewBACnetReadAccessPropertyReadResult(peekedTagHeader, propertyValue, propertyAccessError, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument), nil
 }
 
 func (m *BACnetReadAccessPropertyReadResult) Serialize(writeBuffer utils.WriteBuffer) error {

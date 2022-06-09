@@ -30,7 +30,8 @@ type BACnetConstructedDataAccessCredentialAl struct {
 	*BACnetConstructedData
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAccessCredentialAl is the corresponding interface of BACnetConstructedDataAccessCredentialAl
@@ -73,9 +74,9 @@ func (m *BACnetConstructedDataAccessCredentialAl) GetParent() *BACnetConstructed
 }
 
 // NewBACnetConstructedDataAccessCredentialAl factory function for BACnetConstructedDataAccessCredentialAl
-func NewBACnetConstructedDataAccessCredentialAl(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessCredentialAl {
+func NewBACnetConstructedDataAccessCredentialAl(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessCredentialAl {
 	_result := &BACnetConstructedDataAccessCredentialAl{
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -115,7 +116,7 @@ func (m *BACnetConstructedDataAccessCredentialAl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessCredentialAlParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccessCredentialAl, error) {
+func BACnetConstructedDataAccessCredentialAlParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAccessCredentialAl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessCredentialAl"); pullErr != nil {

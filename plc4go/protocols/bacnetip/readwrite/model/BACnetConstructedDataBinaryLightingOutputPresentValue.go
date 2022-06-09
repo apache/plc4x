@@ -32,7 +32,8 @@ type BACnetConstructedDataBinaryLightingOutputPresentValue struct {
 	PresentValue *BACnetBinaryLightingPVTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBinaryLightingOutputPresentValue is the corresponding interface of BACnetConstructedDataBinaryLightingOutputPresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBinaryLightingOutputPresentValue) GetPresentValue(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBinaryLightingOutputPresentValue factory function for BACnetConstructedDataBinaryLightingOutputPresentValue
-func NewBACnetConstructedDataBinaryLightingOutputPresentValue(presentValue *BACnetBinaryLightingPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBinaryLightingOutputPresentValue {
+func NewBACnetConstructedDataBinaryLightingOutputPresentValue(presentValue *BACnetBinaryLightingPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBinaryLightingOutputPresentValue {
 	_result := &BACnetConstructedDataBinaryLightingOutputPresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBinaryLightingOutputPresentValue) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBinaryLightingOutputPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBinaryLightingOutputPresentValue, error) {
+func BACnetConstructedDataBinaryLightingOutputPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBinaryLightingOutputPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryLightingOutputPresentValue"); pullErr != nil {

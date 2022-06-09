@@ -32,7 +32,8 @@ type BACnetConstructedDataEffectivePeriod struct {
 	DateRange *BACnetDateRange
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataEffectivePeriod is the corresponding interface of BACnetConstructedDataEffectivePeriod
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataEffectivePeriod) GetDateRange() *BACnetDateRange {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEffectivePeriod factory function for BACnetConstructedDataEffectivePeriod
-func NewBACnetConstructedDataEffectivePeriod(dateRange *BACnetDateRange, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEffectivePeriod {
+func NewBACnetConstructedDataEffectivePeriod(dateRange *BACnetDateRange, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEffectivePeriod {
 	_result := &BACnetConstructedDataEffectivePeriod{
 		DateRange:             dateRange,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataEffectivePeriod) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEffectivePeriodParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEffectivePeriod, error) {
+func BACnetConstructedDataEffectivePeriodParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataEffectivePeriod, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEffectivePeriod"); pullErr != nil {

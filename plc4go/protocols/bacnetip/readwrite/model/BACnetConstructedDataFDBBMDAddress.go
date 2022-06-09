@@ -32,7 +32,8 @@ type BACnetConstructedDataFDBBMDAddress struct {
 	FDBBMDAddress *BACnetHostNPort
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataFDBBMDAddress is the corresponding interface of BACnetConstructedDataFDBBMDAddress
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataFDBBMDAddress) GetFDBBMDAddress() *BACnetHostNPort
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFDBBMDAddress factory function for BACnetConstructedDataFDBBMDAddress
-func NewBACnetConstructedDataFDBBMDAddress(fDBBMDAddress *BACnetHostNPort, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFDBBMDAddress {
+func NewBACnetConstructedDataFDBBMDAddress(fDBBMDAddress *BACnetHostNPort, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFDBBMDAddress {
 	_result := &BACnetConstructedDataFDBBMDAddress{
 		FDBBMDAddress:         fDBBMDAddress,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataFDBBMDAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFDBBMDAddressParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataFDBBMDAddress, error) {
+func BACnetConstructedDataFDBBMDAddressParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataFDBBMDAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFDBBMDAddress"); pullErr != nil {

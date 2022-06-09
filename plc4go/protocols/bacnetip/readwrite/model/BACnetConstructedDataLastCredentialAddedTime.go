@@ -32,7 +32,8 @@ type BACnetConstructedDataLastCredentialAddedTime struct {
 	LastCredentialAddedTime *BACnetDateTime
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLastCredentialAddedTime is the corresponding interface of BACnetConstructedDataLastCredentialAddedTime
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLastCredentialAddedTime) GetLastCredentialAddedTim
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastCredentialAddedTime factory function for BACnetConstructedDataLastCredentialAddedTime
-func NewBACnetConstructedDataLastCredentialAddedTime(lastCredentialAddedTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastCredentialAddedTime {
+func NewBACnetConstructedDataLastCredentialAddedTime(lastCredentialAddedTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastCredentialAddedTime {
 	_result := &BACnetConstructedDataLastCredentialAddedTime{
 		LastCredentialAddedTime: lastCredentialAddedTime,
-		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLastCredentialAddedTime) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastCredentialAddedTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLastCredentialAddedTime, error) {
+func BACnetConstructedDataLastCredentialAddedTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLastCredentialAddedTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastCredentialAddedTime"); pullErr != nil {

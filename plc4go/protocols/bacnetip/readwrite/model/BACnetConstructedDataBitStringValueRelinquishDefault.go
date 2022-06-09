@@ -32,7 +32,8 @@ type BACnetConstructedDataBitStringValueRelinquishDefault struct {
 	RelinquishDefault *BACnetApplicationTagBitString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBitStringValueRelinquishDefault is the corresponding interface of BACnetConstructedDataBitStringValueRelinquishDefault
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBitStringValueRelinquishDefault) GetRelinquishDefa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBitStringValueRelinquishDefault factory function for BACnetConstructedDataBitStringValueRelinquishDefault
-func NewBACnetConstructedDataBitStringValueRelinquishDefault(relinquishDefault *BACnetApplicationTagBitString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBitStringValueRelinquishDefault {
+func NewBACnetConstructedDataBitStringValueRelinquishDefault(relinquishDefault *BACnetApplicationTagBitString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBitStringValueRelinquishDefault {
 	_result := &BACnetConstructedDataBitStringValueRelinquishDefault{
 		RelinquishDefault:     relinquishDefault,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBitStringValueRelinquishDefault) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBitStringValueRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBitStringValueRelinquishDefault, error) {
+func BACnetConstructedDataBitStringValueRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBitStringValueRelinquishDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBitStringValueRelinquishDefault"); pullErr != nil {

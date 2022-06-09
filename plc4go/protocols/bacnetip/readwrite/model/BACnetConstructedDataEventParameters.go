@@ -32,7 +32,8 @@ type BACnetConstructedDataEventParameters struct {
 	EventParameter *BACnetEventParameter
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataEventParameters is the corresponding interface of BACnetConstructedDataEventParameters
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataEventParameters) GetEventParameter() *BACnetEventP
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventParameters factory function for BACnetConstructedDataEventParameters
-func NewBACnetConstructedDataEventParameters(eventParameter *BACnetEventParameter, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEventParameters {
+func NewBACnetConstructedDataEventParameters(eventParameter *BACnetEventParameter, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEventParameters {
 	_result := &BACnetConstructedDataEventParameters{
 		EventParameter:        eventParameter,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataEventParameters) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventParametersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEventParameters, error) {
+func BACnetConstructedDataEventParametersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataEventParameters, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventParameters"); pullErr != nil {

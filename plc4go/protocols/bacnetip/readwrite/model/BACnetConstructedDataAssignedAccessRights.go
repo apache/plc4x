@@ -32,7 +32,8 @@ type BACnetConstructedDataAssignedAccessRights struct {
 	AssignedAccessRights []*BACnetAssignedAccessRights
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAssignedAccessRights is the corresponding interface of BACnetConstructedDataAssignedAccessRights
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAssignedAccessRights) GetAssignedAccessRights() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAssignedAccessRights factory function for BACnetConstructedDataAssignedAccessRights
-func NewBACnetConstructedDataAssignedAccessRights(assignedAccessRights []*BACnetAssignedAccessRights, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAssignedAccessRights {
+func NewBACnetConstructedDataAssignedAccessRights(assignedAccessRights []*BACnetAssignedAccessRights, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAssignedAccessRights {
 	_result := &BACnetConstructedDataAssignedAccessRights{
 		AssignedAccessRights:  assignedAccessRights,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataAssignedAccessRights) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAssignedAccessRightsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAssignedAccessRights, error) {
+func BACnetConstructedDataAssignedAccessRightsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAssignedAccessRights, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAssignedAccessRights"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataLastStateChange struct {
 	LastStateChange *BACnetTimerTransitionTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLastStateChange is the corresponding interface of BACnetConstructedDataLastStateChange
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLastStateChange) GetLastStateChange() *BACnetTimer
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastStateChange factory function for BACnetConstructedDataLastStateChange
-func NewBACnetConstructedDataLastStateChange(lastStateChange *BACnetTimerTransitionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastStateChange {
+func NewBACnetConstructedDataLastStateChange(lastStateChange *BACnetTimerTransitionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastStateChange {
 	_result := &BACnetConstructedDataLastStateChange{
 		LastStateChange:       lastStateChange,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLastStateChange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastStateChangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLastStateChange, error) {
+func BACnetConstructedDataLastStateChangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLastStateChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastStateChange"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataControlGroups struct {
 	ControlGroups []*BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataControlGroups is the corresponding interface of BACnetConstructedDataControlGroups
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataControlGroups) GetControlGroups() []*BACnetApplica
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataControlGroups factory function for BACnetConstructedDataControlGroups
-func NewBACnetConstructedDataControlGroups(controlGroups []*BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataControlGroups {
+func NewBACnetConstructedDataControlGroups(controlGroups []*BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataControlGroups {
 	_result := &BACnetConstructedDataControlGroups{
 		ControlGroups:         controlGroups,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataControlGroups) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataControlGroupsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataControlGroups, error) {
+func BACnetConstructedDataControlGroupsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataControlGroups, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataControlGroups"); pullErr != nil {

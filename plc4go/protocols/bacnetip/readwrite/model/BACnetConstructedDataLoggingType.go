@@ -32,7 +32,8 @@ type BACnetConstructedDataLoggingType struct {
 	LoggingType *BACnetLoggingTypeTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLoggingType is the corresponding interface of BACnetConstructedDataLoggingType
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLoggingType) GetLoggingType() *BACnetLoggingTypeTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLoggingType factory function for BACnetConstructedDataLoggingType
-func NewBACnetConstructedDataLoggingType(loggingType *BACnetLoggingTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLoggingType {
+func NewBACnetConstructedDataLoggingType(loggingType *BACnetLoggingTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLoggingType {
 	_result := &BACnetConstructedDataLoggingType{
 		LoggingType:           loggingType,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLoggingType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLoggingTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLoggingType, error) {
+func BACnetConstructedDataLoggingTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLoggingType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoggingType"); pullErr != nil {

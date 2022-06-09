@@ -32,7 +32,8 @@ type BACnetConstructedDataAccessTransactionEvents struct {
 	AccessTransactionEvents []*BACnetAccessEventTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAccessTransactionEvents is the corresponding interface of BACnetConstructedDataAccessTransactionEvents
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAccessTransactionEvents) GetAccessTransactionEvent
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessTransactionEvents factory function for BACnetConstructedDataAccessTransactionEvents
-func NewBACnetConstructedDataAccessTransactionEvents(accessTransactionEvents []*BACnetAccessEventTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessTransactionEvents {
+func NewBACnetConstructedDataAccessTransactionEvents(accessTransactionEvents []*BACnetAccessEventTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessTransactionEvents {
 	_result := &BACnetConstructedDataAccessTransactionEvents{
 		AccessTransactionEvents: accessTransactionEvents,
-		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataAccessTransactionEvents) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessTransactionEventsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccessTransactionEvents, error) {
+func BACnetConstructedDataAccessTransactionEventsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAccessTransactionEvents, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessTransactionEvents"); pullErr != nil {

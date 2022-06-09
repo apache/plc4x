@@ -32,7 +32,8 @@ type BACnetConstructedDataBBMDForeignDeviceTable struct {
 	BbmdForeignDeviceTable []*BACnetBDTEntry
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBBMDForeignDeviceTable is the corresponding interface of BACnetConstructedDataBBMDForeignDeviceTable
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBBMDForeignDeviceTable) GetBbmdForeignDeviceTable(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBBMDForeignDeviceTable factory function for BACnetConstructedDataBBMDForeignDeviceTable
-func NewBACnetConstructedDataBBMDForeignDeviceTable(bbmdForeignDeviceTable []*BACnetBDTEntry, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBBMDForeignDeviceTable {
+func NewBACnetConstructedDataBBMDForeignDeviceTable(bbmdForeignDeviceTable []*BACnetBDTEntry, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBBMDForeignDeviceTable {
 	_result := &BACnetConstructedDataBBMDForeignDeviceTable{
 		BbmdForeignDeviceTable: bbmdForeignDeviceTable,
-		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataBBMDForeignDeviceTable) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBBMDForeignDeviceTableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBBMDForeignDeviceTable, error) {
+func BACnetConstructedDataBBMDForeignDeviceTableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBBMDForeignDeviceTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBBMDForeignDeviceTable"); pullErr != nil {

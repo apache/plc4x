@@ -32,7 +32,8 @@ type BACnetConstructedDataFailedAttemptEvents struct {
 	FailedAttemptEvents []*BACnetAccessEventTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataFailedAttemptEvents is the corresponding interface of BACnetConstructedDataFailedAttemptEvents
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataFailedAttemptEvents) GetFailedAttemptEvents() []*B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFailedAttemptEvents factory function for BACnetConstructedDataFailedAttemptEvents
-func NewBACnetConstructedDataFailedAttemptEvents(failedAttemptEvents []*BACnetAccessEventTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFailedAttemptEvents {
+func NewBACnetConstructedDataFailedAttemptEvents(failedAttemptEvents []*BACnetAccessEventTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFailedAttemptEvents {
 	_result := &BACnetConstructedDataFailedAttemptEvents{
 		FailedAttemptEvents:   failedAttemptEvents,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataFailedAttemptEvents) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFailedAttemptEventsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataFailedAttemptEvents, error) {
+func BACnetConstructedDataFailedAttemptEventsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataFailedAttemptEvents, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFailedAttemptEvents"); pullErr != nil {

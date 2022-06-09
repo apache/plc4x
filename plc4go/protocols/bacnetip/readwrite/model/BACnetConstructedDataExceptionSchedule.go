@@ -32,7 +32,8 @@ type BACnetConstructedDataExceptionSchedule struct {
 	ExceptionSchedule []*BACnetSpecialEvent
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataExceptionSchedule is the corresponding interface of BACnetConstructedDataExceptionSchedule
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataExceptionSchedule) GetExceptionSchedule() []*BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataExceptionSchedule factory function for BACnetConstructedDataExceptionSchedule
-func NewBACnetConstructedDataExceptionSchedule(exceptionSchedule []*BACnetSpecialEvent, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataExceptionSchedule {
+func NewBACnetConstructedDataExceptionSchedule(exceptionSchedule []*BACnetSpecialEvent, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataExceptionSchedule {
 	_result := &BACnetConstructedDataExceptionSchedule{
 		ExceptionSchedule:     exceptionSchedule,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataExceptionSchedule) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataExceptionScheduleParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataExceptionSchedule, error) {
+func BACnetConstructedDataExceptionScheduleParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataExceptionSchedule, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExceptionSchedule"); pullErr != nil {

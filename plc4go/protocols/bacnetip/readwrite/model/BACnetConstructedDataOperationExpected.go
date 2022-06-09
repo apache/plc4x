@@ -32,7 +32,8 @@ type BACnetConstructedDataOperationExpected struct {
 	LifeSafetyOperations *BACnetLifeSafetyOperationTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataOperationExpected is the corresponding interface of BACnetConstructedDataOperationExpected
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataOperationExpected) GetLifeSafetyOperations() *BACn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOperationExpected factory function for BACnetConstructedDataOperationExpected
-func NewBACnetConstructedDataOperationExpected(lifeSafetyOperations *BACnetLifeSafetyOperationTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataOperationExpected {
+func NewBACnetConstructedDataOperationExpected(lifeSafetyOperations *BACnetLifeSafetyOperationTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataOperationExpected {
 	_result := &BACnetConstructedDataOperationExpected{
 		LifeSafetyOperations:  lifeSafetyOperations,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataOperationExpected) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOperationExpectedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataOperationExpected, error) {
+func BACnetConstructedDataOperationExpectedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataOperationExpected, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOperationExpected"); pullErr != nil {

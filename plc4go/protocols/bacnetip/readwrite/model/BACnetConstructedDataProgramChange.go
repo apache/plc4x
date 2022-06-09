@@ -32,7 +32,8 @@ type BACnetConstructedDataProgramChange struct {
 	ProgramChange *BACnetProgramRequestTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataProgramChange is the corresponding interface of BACnetConstructedDataProgramChange
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataProgramChange) GetProgramChange() *BACnetProgramRe
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProgramChange factory function for BACnetConstructedDataProgramChange
-func NewBACnetConstructedDataProgramChange(programChange *BACnetProgramRequestTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProgramChange {
+func NewBACnetConstructedDataProgramChange(programChange *BACnetProgramRequestTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProgramChange {
 	_result := &BACnetConstructedDataProgramChange{
 		ProgramChange:         programChange,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataProgramChange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProgramChangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataProgramChange, error) {
+func BACnetConstructedDataProgramChangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataProgramChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProgramChange"); pullErr != nil {

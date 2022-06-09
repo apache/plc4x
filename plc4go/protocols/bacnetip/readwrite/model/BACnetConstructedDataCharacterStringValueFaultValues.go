@@ -32,7 +32,8 @@ type BACnetConstructedDataCharacterStringValueFaultValues struct {
 	FaultValues []*BACnetOptionalCharacterString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataCharacterStringValueFaultValues is the corresponding interface of BACnetConstructedDataCharacterStringValueFaultValues
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataCharacterStringValueFaultValues) GetFaultValues() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCharacterStringValueFaultValues factory function for BACnetConstructedDataCharacterStringValueFaultValues
-func NewBACnetConstructedDataCharacterStringValueFaultValues(faultValues []*BACnetOptionalCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCharacterStringValueFaultValues {
+func NewBACnetConstructedDataCharacterStringValueFaultValues(faultValues []*BACnetOptionalCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCharacterStringValueFaultValues {
 	_result := &BACnetConstructedDataCharacterStringValueFaultValues{
 		FaultValues:           faultValues,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataCharacterStringValueFaultValues) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCharacterStringValueFaultValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCharacterStringValueFaultValues, error) {
+func BACnetConstructedDataCharacterStringValueFaultValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataCharacterStringValueFaultValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCharacterStringValueFaultValues"); pullErr != nil {

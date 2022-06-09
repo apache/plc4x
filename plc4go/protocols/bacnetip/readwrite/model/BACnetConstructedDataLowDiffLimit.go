@@ -32,7 +32,8 @@ type BACnetConstructedDataLowDiffLimit struct {
 	LowDiffLimit *BACnetOptionalREAL
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLowDiffLimit is the corresponding interface of BACnetConstructedDataLowDiffLimit
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLowDiffLimit) GetLowDiffLimit() *BACnetOptionalREA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLowDiffLimit factory function for BACnetConstructedDataLowDiffLimit
-func NewBACnetConstructedDataLowDiffLimit(lowDiffLimit *BACnetOptionalREAL, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLowDiffLimit {
+func NewBACnetConstructedDataLowDiffLimit(lowDiffLimit *BACnetOptionalREAL, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLowDiffLimit {
 	_result := &BACnetConstructedDataLowDiffLimit{
 		LowDiffLimit:          lowDiffLimit,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLowDiffLimit) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLowDiffLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLowDiffLimit, error) {
+func BACnetConstructedDataLowDiffLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLowDiffLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLowDiffLimit"); pullErr != nil {

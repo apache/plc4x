@@ -32,7 +32,8 @@ type BACnetConstructedDataEnergyMeterRef struct {
 	EnergyMeterRef *BACnetDeviceObjectReference
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataEnergyMeterRef is the corresponding interface of BACnetConstructedDataEnergyMeterRef
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataEnergyMeterRef) GetEnergyMeterRef() *BACnetDeviceO
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEnergyMeterRef factory function for BACnetConstructedDataEnergyMeterRef
-func NewBACnetConstructedDataEnergyMeterRef(energyMeterRef *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEnergyMeterRef {
+func NewBACnetConstructedDataEnergyMeterRef(energyMeterRef *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEnergyMeterRef {
 	_result := &BACnetConstructedDataEnergyMeterRef{
 		EnergyMeterRef:        energyMeterRef,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataEnergyMeterRef) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEnergyMeterRefParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEnergyMeterRef, error) {
+func BACnetConstructedDataEnergyMeterRefParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataEnergyMeterRef, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEnergyMeterRef"); pullErr != nil {

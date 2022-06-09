@@ -32,7 +32,8 @@ type BACnetConstructedDataMultiStateValueFaultValues struct {
 	FaultValues []*BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataMultiStateValueFaultValues is the corresponding interface of BACnetConstructedDataMultiStateValueFaultValues
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataMultiStateValueFaultValues) GetFaultValues() []*BA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMultiStateValueFaultValues factory function for BACnetConstructedDataMultiStateValueFaultValues
-func NewBACnetConstructedDataMultiStateValueFaultValues(faultValues []*BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMultiStateValueFaultValues {
+func NewBACnetConstructedDataMultiStateValueFaultValues(faultValues []*BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMultiStateValueFaultValues {
 	_result := &BACnetConstructedDataMultiStateValueFaultValues{
 		FaultValues:           faultValues,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataMultiStateValueFaultValues) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMultiStateValueFaultValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataMultiStateValueFaultValues, error) {
+func BACnetConstructedDataMultiStateValueFaultValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataMultiStateValueFaultValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMultiStateValueFaultValues"); pullErr != nil {

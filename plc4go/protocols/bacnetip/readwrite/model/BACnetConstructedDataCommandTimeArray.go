@@ -32,7 +32,8 @@ type BACnetConstructedDataCommandTimeArray struct {
 	CommandTimeArray []*BACnetTimeStamp
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataCommandTimeArray is the corresponding interface of BACnetConstructedDataCommandTimeArray
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataCommandTimeArray) GetCommandTimeArray() []*BACnetT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCommandTimeArray factory function for BACnetConstructedDataCommandTimeArray
-func NewBACnetConstructedDataCommandTimeArray(commandTimeArray []*BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCommandTimeArray {
+func NewBACnetConstructedDataCommandTimeArray(commandTimeArray []*BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCommandTimeArray {
 	_result := &BACnetConstructedDataCommandTimeArray{
 		CommandTimeArray:      commandTimeArray,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataCommandTimeArray) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCommandTimeArrayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCommandTimeArray, error) {
+func BACnetConstructedDataCommandTimeArrayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataCommandTimeArray, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCommandTimeArray"); pullErr != nil {

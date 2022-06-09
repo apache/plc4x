@@ -32,7 +32,8 @@ type BACnetConstructedDataPacketReorderTime struct {
 	PacketReorderTime *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataPacketReorderTime is the corresponding interface of BACnetConstructedDataPacketReorderTime
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataPacketReorderTime) GetPacketReorderTime() *BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPacketReorderTime factory function for BACnetConstructedDataPacketReorderTime
-func NewBACnetConstructedDataPacketReorderTime(packetReorderTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPacketReorderTime {
+func NewBACnetConstructedDataPacketReorderTime(packetReorderTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPacketReorderTime {
 	_result := &BACnetConstructedDataPacketReorderTime{
 		PacketReorderTime:     packetReorderTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataPacketReorderTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPacketReorderTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPacketReorderTime, error) {
+func BACnetConstructedDataPacketReorderTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataPacketReorderTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPacketReorderTime"); pullErr != nil {

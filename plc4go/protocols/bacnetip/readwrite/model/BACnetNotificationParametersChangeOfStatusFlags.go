@@ -189,7 +189,7 @@ func BACnetNotificationParametersChangeOfStatusFlagsParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_presentValue, _presentValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
+	_presentValue, _presentValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _presentValueErr != nil {
 		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field")
 	}

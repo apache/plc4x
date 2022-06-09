@@ -32,7 +32,8 @@ type BACnetConstructedDataRecordsSinceNotification struct {
 	RecordsSinceNotifications *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataRecordsSinceNotification is the corresponding interface of BACnetConstructedDataRecordsSinceNotification
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataRecordsSinceNotification) GetRecordsSinceNotificat
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRecordsSinceNotification factory function for BACnetConstructedDataRecordsSinceNotification
-func NewBACnetConstructedDataRecordsSinceNotification(recordsSinceNotifications *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataRecordsSinceNotification {
+func NewBACnetConstructedDataRecordsSinceNotification(recordsSinceNotifications *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataRecordsSinceNotification {
 	_result := &BACnetConstructedDataRecordsSinceNotification{
 		RecordsSinceNotifications: recordsSinceNotifications,
-		BACnetConstructedData:     NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:     NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataRecordsSinceNotification) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataRecordsSinceNotificationParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataRecordsSinceNotification, error) {
+func BACnetConstructedDataRecordsSinceNotificationParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataRecordsSinceNotification, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRecordsSinceNotification"); pullErr != nil {

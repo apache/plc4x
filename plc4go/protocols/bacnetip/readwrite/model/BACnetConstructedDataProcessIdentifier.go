@@ -32,7 +32,8 @@ type BACnetConstructedDataProcessIdentifier struct {
 	ProcessIdentifier *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataProcessIdentifier is the corresponding interface of BACnetConstructedDataProcessIdentifier
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataProcessIdentifier) GetProcessIdentifier() *BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProcessIdentifier factory function for BACnetConstructedDataProcessIdentifier
-func NewBACnetConstructedDataProcessIdentifier(processIdentifier *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProcessIdentifier {
+func NewBACnetConstructedDataProcessIdentifier(processIdentifier *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProcessIdentifier {
 	_result := &BACnetConstructedDataProcessIdentifier{
 		ProcessIdentifier:     processIdentifier,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataProcessIdentifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProcessIdentifierParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataProcessIdentifier, error) {
+func BACnetConstructedDataProcessIdentifierParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataProcessIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProcessIdentifier"); pullErr != nil {

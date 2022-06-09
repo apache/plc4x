@@ -32,7 +32,8 @@ type BACnetConstructedDataEventAlgorithmInhibitRef struct {
 	EventAlgorithmInhibitRef *BACnetObjectPropertyReference
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataEventAlgorithmInhibitRef is the corresponding interface of BACnetConstructedDataEventAlgorithmInhibitRef
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataEventAlgorithmInhibitRef) GetEventAlgorithmInhibit
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventAlgorithmInhibitRef factory function for BACnetConstructedDataEventAlgorithmInhibitRef
-func NewBACnetConstructedDataEventAlgorithmInhibitRef(eventAlgorithmInhibitRef *BACnetObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEventAlgorithmInhibitRef {
+func NewBACnetConstructedDataEventAlgorithmInhibitRef(eventAlgorithmInhibitRef *BACnetObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEventAlgorithmInhibitRef {
 	_result := &BACnetConstructedDataEventAlgorithmInhibitRef{
 		EventAlgorithmInhibitRef: eventAlgorithmInhibitRef,
-		BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataEventAlgorithmInhibitRef) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventAlgorithmInhibitRefParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEventAlgorithmInhibitRef, error) {
+func BACnetConstructedDataEventAlgorithmInhibitRefParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataEventAlgorithmInhibitRef, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventAlgorithmInhibitRef"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataProtocolLevel struct {
 	ProtocolLevel *BACnetProtocolLevelTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataProtocolLevel is the corresponding interface of BACnetConstructedDataProtocolLevel
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataProtocolLevel) GetProtocolLevel() *BACnetProtocolL
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProtocolLevel factory function for BACnetConstructedDataProtocolLevel
-func NewBACnetConstructedDataProtocolLevel(protocolLevel *BACnetProtocolLevelTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProtocolLevel {
+func NewBACnetConstructedDataProtocolLevel(protocolLevel *BACnetProtocolLevelTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProtocolLevel {
 	_result := &BACnetConstructedDataProtocolLevel{
 		ProtocolLevel:         protocolLevel,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataProtocolLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProtocolLevelParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataProtocolLevel, error) {
+func BACnetConstructedDataProtocolLevelParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataProtocolLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolLevel"); pullErr != nil {

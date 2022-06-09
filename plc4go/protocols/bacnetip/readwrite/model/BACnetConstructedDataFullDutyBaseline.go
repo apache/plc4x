@@ -32,7 +32,8 @@ type BACnetConstructedDataFullDutyBaseline struct {
 	FullDutyBaseLine *BACnetApplicationTagReal
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataFullDutyBaseline is the corresponding interface of BACnetConstructedDataFullDutyBaseline
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataFullDutyBaseline) GetFullDutyBaseLine() *BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFullDutyBaseline factory function for BACnetConstructedDataFullDutyBaseline
-func NewBACnetConstructedDataFullDutyBaseline(fullDutyBaseLine *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFullDutyBaseline {
+func NewBACnetConstructedDataFullDutyBaseline(fullDutyBaseLine *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFullDutyBaseline {
 	_result := &BACnetConstructedDataFullDutyBaseline{
 		FullDutyBaseLine:      fullDutyBaseLine,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataFullDutyBaseline) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFullDutyBaselineParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataFullDutyBaseline, error) {
+func BACnetConstructedDataFullDutyBaselineParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataFullDutyBaseline, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFullDutyBaseline"); pullErr != nil {

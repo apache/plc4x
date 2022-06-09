@@ -32,7 +32,8 @@ type BACnetConstructedDataPolarity struct {
 	Polarity *BACnetPolarityTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataPolarity is the corresponding interface of BACnetConstructedDataPolarity
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataPolarity) GetPolarity() *BACnetPolarityTagged {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPolarity factory function for BACnetConstructedDataPolarity
-func NewBACnetConstructedDataPolarity(polarity *BACnetPolarityTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPolarity {
+func NewBACnetConstructedDataPolarity(polarity *BACnetPolarityTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPolarity {
 	_result := &BACnetConstructedDataPolarity{
 		Polarity:              polarity,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataPolarity) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPolarityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPolarity, error) {
+func BACnetConstructedDataPolarityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataPolarity, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPolarity"); pullErr != nil {

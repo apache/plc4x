@@ -32,7 +32,8 @@ type BACnetConstructedDataUTCOffset struct {
 	UtcOffset *BACnetApplicationTagSignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataUTCOffset is the corresponding interface of BACnetConstructedDataUTCOffset
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataUTCOffset) GetUtcOffset() *BACnetApplicationTagSig
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUTCOffset factory function for BACnetConstructedDataUTCOffset
-func NewBACnetConstructedDataUTCOffset(utcOffset *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataUTCOffset {
+func NewBACnetConstructedDataUTCOffset(utcOffset *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataUTCOffset {
 	_result := &BACnetConstructedDataUTCOffset{
 		UtcOffset:             utcOffset,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataUTCOffset) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUTCOffsetParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataUTCOffset, error) {
+func BACnetConstructedDataUTCOffsetParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataUTCOffset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUTCOffset"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataOutOfService struct {
 	OutOfService *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataOutOfService is the corresponding interface of BACnetConstructedDataOutOfService
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataOutOfService) GetOutOfService() *BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOutOfService factory function for BACnetConstructedDataOutOfService
-func NewBACnetConstructedDataOutOfService(outOfService *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataOutOfService {
+func NewBACnetConstructedDataOutOfService(outOfService *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataOutOfService {
 	_result := &BACnetConstructedDataOutOfService{
 		OutOfService:          outOfService,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataOutOfService) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOutOfServiceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataOutOfService, error) {
+func BACnetConstructedDataOutOfServiceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataOutOfService, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOutOfService"); pullErr != nil {

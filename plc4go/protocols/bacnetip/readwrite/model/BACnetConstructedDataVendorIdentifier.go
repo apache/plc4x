@@ -32,7 +32,8 @@ type BACnetConstructedDataVendorIdentifier struct {
 	VendorIdentifier *BACnetVendorIdTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataVendorIdentifier is the corresponding interface of BACnetConstructedDataVendorIdentifier
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataVendorIdentifier) GetVendorIdentifier() *BACnetVen
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataVendorIdentifier factory function for BACnetConstructedDataVendorIdentifier
-func NewBACnetConstructedDataVendorIdentifier(vendorIdentifier *BACnetVendorIdTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataVendorIdentifier {
+func NewBACnetConstructedDataVendorIdentifier(vendorIdentifier *BACnetVendorIdTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataVendorIdentifier {
 	_result := &BACnetConstructedDataVendorIdentifier{
 		VendorIdentifier:      vendorIdentifier,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataVendorIdentifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataVendorIdentifierParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataVendorIdentifier, error) {
+func BACnetConstructedDataVendorIdentifierParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataVendorIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVendorIdentifier"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataCOVResubscriptionInterval struct {
 	CovResubscriptionInterval *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataCOVResubscriptionInterval is the corresponding interface of BACnetConstructedDataCOVResubscriptionInterval
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataCOVResubscriptionInterval) GetCovResubscriptionInt
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCOVResubscriptionInterval factory function for BACnetConstructedDataCOVResubscriptionInterval
-func NewBACnetConstructedDataCOVResubscriptionInterval(covResubscriptionInterval *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCOVResubscriptionInterval {
+func NewBACnetConstructedDataCOVResubscriptionInterval(covResubscriptionInterval *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCOVResubscriptionInterval {
 	_result := &BACnetConstructedDataCOVResubscriptionInterval{
 		CovResubscriptionInterval: covResubscriptionInterval,
-		BACnetConstructedData:     NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:     NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataCOVResubscriptionInterval) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCOVResubscriptionIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCOVResubscriptionInterval, error) {
+func BACnetConstructedDataCOVResubscriptionIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataCOVResubscriptionInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVResubscriptionInterval"); pullErr != nil {

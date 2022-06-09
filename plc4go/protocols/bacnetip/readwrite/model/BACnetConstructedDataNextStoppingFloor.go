@@ -32,7 +32,8 @@ type BACnetConstructedDataNextStoppingFloor struct {
 	NextStoppingFloor *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataNextStoppingFloor is the corresponding interface of BACnetConstructedDataNextStoppingFloor
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataNextStoppingFloor) GetNextStoppingFloor() *BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNextStoppingFloor factory function for BACnetConstructedDataNextStoppingFloor
-func NewBACnetConstructedDataNextStoppingFloor(nextStoppingFloor *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNextStoppingFloor {
+func NewBACnetConstructedDataNextStoppingFloor(nextStoppingFloor *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNextStoppingFloor {
 	_result := &BACnetConstructedDataNextStoppingFloor{
 		NextStoppingFloor:     nextStoppingFloor,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataNextStoppingFloor) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNextStoppingFloorParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNextStoppingFloor, error) {
+func BACnetConstructedDataNextStoppingFloorParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataNextStoppingFloor, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNextStoppingFloor"); pullErr != nil {

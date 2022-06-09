@@ -32,7 +32,8 @@ type BACnetConstructedDataDateValueRelinquishDefault struct {
 	RelinquishDefault *BACnetApplicationTagDate
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDateValueRelinquishDefault is the corresponding interface of BACnetConstructedDataDateValueRelinquishDefault
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataDateValueRelinquishDefault) GetRelinquishDefault()
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDateValueRelinquishDefault factory function for BACnetConstructedDataDateValueRelinquishDefault
-func NewBACnetConstructedDataDateValueRelinquishDefault(relinquishDefault *BACnetApplicationTagDate, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDateValueRelinquishDefault {
+func NewBACnetConstructedDataDateValueRelinquishDefault(relinquishDefault *BACnetApplicationTagDate, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDateValueRelinquishDefault {
 	_result := &BACnetConstructedDataDateValueRelinquishDefault{
 		RelinquishDefault:     relinquishDefault,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataDateValueRelinquishDefault) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDateValueRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDateValueRelinquishDefault, error) {
+func BACnetConstructedDataDateValueRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDateValueRelinquishDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDateValueRelinquishDefault"); pullErr != nil {

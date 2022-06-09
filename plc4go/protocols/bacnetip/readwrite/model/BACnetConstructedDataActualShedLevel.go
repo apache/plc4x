@@ -32,7 +32,8 @@ type BACnetConstructedDataActualShedLevel struct {
 	ActualShedLevel *BACnetShedLevel
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataActualShedLevel is the corresponding interface of BACnetConstructedDataActualShedLevel
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataActualShedLevel) GetActualShedLevel() *BACnetShedL
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActualShedLevel factory function for BACnetConstructedDataActualShedLevel
-func NewBACnetConstructedDataActualShedLevel(actualShedLevel *BACnetShedLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataActualShedLevel {
+func NewBACnetConstructedDataActualShedLevel(actualShedLevel *BACnetShedLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataActualShedLevel {
 	_result := &BACnetConstructedDataActualShedLevel{
 		ActualShedLevel:       actualShedLevel,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataActualShedLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActualShedLevelParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataActualShedLevel, error) {
+func BACnetConstructedDataActualShedLevelParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataActualShedLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActualShedLevel"); pullErr != nil {

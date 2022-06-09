@@ -32,7 +32,8 @@ type BACnetConstructedDataBitStringValueAlarmValues struct {
 	AlarmValues []*BACnetApplicationTagBitString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBitStringValueAlarmValues is the corresponding interface of BACnetConstructedDataBitStringValueAlarmValues
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBitStringValueAlarmValues) GetAlarmValues() []*BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBitStringValueAlarmValues factory function for BACnetConstructedDataBitStringValueAlarmValues
-func NewBACnetConstructedDataBitStringValueAlarmValues(alarmValues []*BACnetApplicationTagBitString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBitStringValueAlarmValues {
+func NewBACnetConstructedDataBitStringValueAlarmValues(alarmValues []*BACnetApplicationTagBitString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBitStringValueAlarmValues {
 	_result := &BACnetConstructedDataBitStringValueAlarmValues{
 		AlarmValues:           alarmValues,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataBitStringValueAlarmValues) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBitStringValueAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBitStringValueAlarmValues, error) {
+func BACnetConstructedDataBitStringValueAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBitStringValueAlarmValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBitStringValueAlarmValues"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataExpectedShedLevel struct {
 	ExpectedShedLevel *BACnetShedLevel
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataExpectedShedLevel is the corresponding interface of BACnetConstructedDataExpectedShedLevel
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataExpectedShedLevel) GetExpectedShedLevel() *BACnetS
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataExpectedShedLevel factory function for BACnetConstructedDataExpectedShedLevel
-func NewBACnetConstructedDataExpectedShedLevel(expectedShedLevel *BACnetShedLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataExpectedShedLevel {
+func NewBACnetConstructedDataExpectedShedLevel(expectedShedLevel *BACnetShedLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataExpectedShedLevel {
 	_result := &BACnetConstructedDataExpectedShedLevel{
 		ExpectedShedLevel:     expectedShedLevel,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataExpectedShedLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataExpectedShedLevelParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataExpectedShedLevel, error) {
+func BACnetConstructedDataExpectedShedLevelParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataExpectedShedLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExpectedShedLevel"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataLogBuffer struct {
 	FloorText []*BACnetLogRecord
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLogBuffer is the corresponding interface of BACnetConstructedDataLogBuffer
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLogBuffer) GetFloorText() []*BACnetLogRecord {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLogBuffer factory function for BACnetConstructedDataLogBuffer
-func NewBACnetConstructedDataLogBuffer(floorText []*BACnetLogRecord, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLogBuffer {
+func NewBACnetConstructedDataLogBuffer(floorText []*BACnetLogRecord, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLogBuffer {
 	_result := &BACnetConstructedDataLogBuffer{
 		FloorText:             floorText,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataLogBuffer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLogBufferParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLogBuffer, error) {
+func BACnetConstructedDataLogBufferParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLogBuffer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLogBuffer"); pullErr != nil {

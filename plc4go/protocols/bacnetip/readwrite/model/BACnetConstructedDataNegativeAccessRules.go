@@ -32,7 +32,8 @@ type BACnetConstructedDataNegativeAccessRules struct {
 	NegativeAccessRules []*BACnetAccessRule
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataNegativeAccessRules is the corresponding interface of BACnetConstructedDataNegativeAccessRules
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataNegativeAccessRules) GetNegativeAccessRules() []*B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNegativeAccessRules factory function for BACnetConstructedDataNegativeAccessRules
-func NewBACnetConstructedDataNegativeAccessRules(negativeAccessRules []*BACnetAccessRule, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNegativeAccessRules {
+func NewBACnetConstructedDataNegativeAccessRules(negativeAccessRules []*BACnetAccessRule, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNegativeAccessRules {
 	_result := &BACnetConstructedDataNegativeAccessRules{
 		NegativeAccessRules:   negativeAccessRules,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataNegativeAccessRules) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNegativeAccessRulesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNegativeAccessRules, error) {
+func BACnetConstructedDataNegativeAccessRulesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataNegativeAccessRules, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNegativeAccessRules"); pullErr != nil {

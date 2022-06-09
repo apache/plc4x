@@ -32,7 +32,8 @@ type BACnetConstructedDataOccupancyState struct {
 	OccupancyState *BACnetAccessZoneOccupancyStateTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataOccupancyState is the corresponding interface of BACnetConstructedDataOccupancyState
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataOccupancyState) GetOccupancyState() *BACnetAccessZ
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOccupancyState factory function for BACnetConstructedDataOccupancyState
-func NewBACnetConstructedDataOccupancyState(occupancyState *BACnetAccessZoneOccupancyStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataOccupancyState {
+func NewBACnetConstructedDataOccupancyState(occupancyState *BACnetAccessZoneOccupancyStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataOccupancyState {
 	_result := &BACnetConstructedDataOccupancyState{
 		OccupancyState:        occupancyState,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataOccupancyState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOccupancyStateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataOccupancyState, error) {
+func BACnetConstructedDataOccupancyStateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataOccupancyState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyState"); pullErr != nil {

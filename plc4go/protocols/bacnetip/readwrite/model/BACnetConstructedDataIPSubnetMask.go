@@ -32,7 +32,8 @@ type BACnetConstructedDataIPSubnetMask struct {
 	IpSubnetMask *BACnetApplicationTagOctetString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataIPSubnetMask is the corresponding interface of BACnetConstructedDataIPSubnetMask
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataIPSubnetMask) GetIpSubnetMask() *BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPSubnetMask factory function for BACnetConstructedDataIPSubnetMask
-func NewBACnetConstructedDataIPSubnetMask(ipSubnetMask *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPSubnetMask {
+func NewBACnetConstructedDataIPSubnetMask(ipSubnetMask *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPSubnetMask {
 	_result := &BACnetConstructedDataIPSubnetMask{
 		IpSubnetMask:          ipSubnetMask,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataIPSubnetMask) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPSubnetMaskParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataIPSubnetMask, error) {
+func BACnetConstructedDataIPSubnetMaskParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataIPSubnetMask, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPSubnetMask"); pullErr != nil {

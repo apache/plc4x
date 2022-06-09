@@ -32,7 +32,8 @@ type BACnetConstructedDataDefaultSubordinateRelationship struct {
 	DefaultSubordinateRelationship *BACnetRelationshipTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDefaultSubordinateRelationship is the corresponding interface of BACnetConstructedDataDefaultSubordinateRelationship
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataDefaultSubordinateRelationship) GetDefaultSubordin
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDefaultSubordinateRelationship factory function for BACnetConstructedDataDefaultSubordinateRelationship
-func NewBACnetConstructedDataDefaultSubordinateRelationship(defaultSubordinateRelationship *BACnetRelationshipTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDefaultSubordinateRelationship {
+func NewBACnetConstructedDataDefaultSubordinateRelationship(defaultSubordinateRelationship *BACnetRelationshipTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDefaultSubordinateRelationship {
 	_result := &BACnetConstructedDataDefaultSubordinateRelationship{
 		DefaultSubordinateRelationship: defaultSubordinateRelationship,
-		BACnetConstructedData:          NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:          NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDefaultSubordinateRelationshipParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDefaultSubordinateRelationship, error) {
+func BACnetConstructedDataDefaultSubordinateRelationshipParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDefaultSubordinateRelationship, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultSubordinateRelationship"); pullErr != nil {

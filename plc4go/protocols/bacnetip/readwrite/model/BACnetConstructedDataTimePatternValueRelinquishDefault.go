@@ -32,7 +32,8 @@ type BACnetConstructedDataTimePatternValueRelinquishDefault struct {
 	RelinquishDefault *BACnetApplicationTagTime
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataTimePatternValueRelinquishDefault is the corresponding interface of BACnetConstructedDataTimePatternValueRelinquishDefault
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataTimePatternValueRelinquishDefault) GetRelinquishDe
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimePatternValueRelinquishDefault factory function for BACnetConstructedDataTimePatternValueRelinquishDefault
-func NewBACnetConstructedDataTimePatternValueRelinquishDefault(relinquishDefault *BACnetApplicationTagTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTimePatternValueRelinquishDefault {
+func NewBACnetConstructedDataTimePatternValueRelinquishDefault(relinquishDefault *BACnetApplicationTagTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTimePatternValueRelinquishDefault {
 	_result := &BACnetConstructedDataTimePatternValueRelinquishDefault{
 		RelinquishDefault:     relinquishDefault,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataTimePatternValueRelinquishDefault) GetLengthInByte
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimePatternValueRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTimePatternValueRelinquishDefault, error) {
+func BACnetConstructedDataTimePatternValueRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataTimePatternValueRelinquishDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimePatternValueRelinquishDefault"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataSchedulePresentValue struct {
 	PresentValue *BACnetConstructedDataElement
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSchedulePresentValue is the corresponding interface of BACnetConstructedDataSchedulePresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSchedulePresentValue) GetPresentValue() *BACnetCon
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSchedulePresentValue factory function for BACnetConstructedDataSchedulePresentValue
-func NewBACnetConstructedDataSchedulePresentValue(presentValue *BACnetConstructedDataElement, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSchedulePresentValue {
+func NewBACnetConstructedDataSchedulePresentValue(presentValue *BACnetConstructedDataElement, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSchedulePresentValue {
 	_result := &BACnetConstructedDataSchedulePresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataSchedulePresentValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSchedulePresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSchedulePresentValue, error) {
+func BACnetConstructedDataSchedulePresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSchedulePresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSchedulePresentValue"); pullErr != nil {
@@ -150,7 +151,7 @@ func BACnetConstructedDataSchedulePresentValueParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_presentValue, _presentValueErr := BACnetConstructedDataElementParse(readBuffer, BACnetObjectType(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
+	_presentValue, _presentValueErr := BACnetConstructedDataElementParse(readBuffer, BACnetObjectType(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _presentValueErr != nil {
 		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field")
 	}

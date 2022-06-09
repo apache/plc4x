@@ -32,7 +32,8 @@ type BACnetConstructedDataObjectType struct {
 	ObjectType *BACnetObjectTypeTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataObjectType is the corresponding interface of BACnetConstructedDataObjectType
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataObjectType) GetObjectType() *BACnetObjectTypeTagge
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataObjectType factory function for BACnetConstructedDataObjectType
-func NewBACnetConstructedDataObjectType(objectType *BACnetObjectTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataObjectType {
+func NewBACnetConstructedDataObjectType(objectType *BACnetObjectTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataObjectType {
 	_result := &BACnetConstructedDataObjectType{
 		ObjectType:            objectType,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataObjectType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataObjectTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataObjectType, error) {
+func BACnetConstructedDataObjectTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataObjectType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataObjectType"); pullErr != nil {

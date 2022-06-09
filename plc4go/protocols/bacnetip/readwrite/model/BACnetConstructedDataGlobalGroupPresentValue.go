@@ -32,7 +32,8 @@ type BACnetConstructedDataGlobalGroupPresentValue struct {
 	PresentValue []*BACnetPropertyAccessResult
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataGlobalGroupPresentValue is the corresponding interface of BACnetConstructedDataGlobalGroupPresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataGlobalGroupPresentValue) GetPresentValue() []*BACn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataGlobalGroupPresentValue factory function for BACnetConstructedDataGlobalGroupPresentValue
-func NewBACnetConstructedDataGlobalGroupPresentValue(presentValue []*BACnetPropertyAccessResult, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataGlobalGroupPresentValue {
+func NewBACnetConstructedDataGlobalGroupPresentValue(presentValue []*BACnetPropertyAccessResult, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataGlobalGroupPresentValue {
 	_result := &BACnetConstructedDataGlobalGroupPresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataGlobalGroupPresentValue) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataGlobalGroupPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataGlobalGroupPresentValue, error) {
+func BACnetConstructedDataGlobalGroupPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataGlobalGroupPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGlobalGroupPresentValue"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataTimeOfDeviceRestart struct {
 	TimeOfDeviceRestart *BACnetTimeStamp
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataTimeOfDeviceRestart is the corresponding interface of BACnetConstructedDataTimeOfDeviceRestart
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataTimeOfDeviceRestart) GetTimeOfDeviceRestart() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimeOfDeviceRestart factory function for BACnetConstructedDataTimeOfDeviceRestart
-func NewBACnetConstructedDataTimeOfDeviceRestart(timeOfDeviceRestart *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTimeOfDeviceRestart {
+func NewBACnetConstructedDataTimeOfDeviceRestart(timeOfDeviceRestart *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTimeOfDeviceRestart {
 	_result := &BACnetConstructedDataTimeOfDeviceRestart{
 		TimeOfDeviceRestart:   timeOfDeviceRestart,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimeOfDeviceRestartParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTimeOfDeviceRestart, error) {
+func BACnetConstructedDataTimeOfDeviceRestartParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataTimeOfDeviceRestart, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeOfDeviceRestart"); pullErr != nil {

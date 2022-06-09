@@ -32,7 +32,8 @@ type BACnetConstructedDataAPDUSegmentTimeout struct {
 	ApduSegmentTimeout *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAPDUSegmentTimeout is the corresponding interface of BACnetConstructedDataAPDUSegmentTimeout
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAPDUSegmentTimeout) GetApduSegmentTimeout() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAPDUSegmentTimeout factory function for BACnetConstructedDataAPDUSegmentTimeout
-func NewBACnetConstructedDataAPDUSegmentTimeout(apduSegmentTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAPDUSegmentTimeout {
+func NewBACnetConstructedDataAPDUSegmentTimeout(apduSegmentTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAPDUSegmentTimeout {
 	_result := &BACnetConstructedDataAPDUSegmentTimeout{
 		ApduSegmentTimeout:    apduSegmentTimeout,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAPDUSegmentTimeout) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAPDUSegmentTimeoutParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAPDUSegmentTimeout, error) {
+func BACnetConstructedDataAPDUSegmentTimeoutParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAPDUSegmentTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAPDUSegmentTimeout"); pullErr != nil {

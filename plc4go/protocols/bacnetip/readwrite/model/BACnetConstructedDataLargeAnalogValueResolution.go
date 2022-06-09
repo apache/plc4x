@@ -32,7 +32,8 @@ type BACnetConstructedDataLargeAnalogValueResolution struct {
 	Resolution *BACnetApplicationTagDouble
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLargeAnalogValueResolution is the corresponding interface of BACnetConstructedDataLargeAnalogValueResolution
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLargeAnalogValueResolution) GetResolution() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLargeAnalogValueResolution factory function for BACnetConstructedDataLargeAnalogValueResolution
-func NewBACnetConstructedDataLargeAnalogValueResolution(resolution *BACnetApplicationTagDouble, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLargeAnalogValueResolution {
+func NewBACnetConstructedDataLargeAnalogValueResolution(resolution *BACnetApplicationTagDouble, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLargeAnalogValueResolution {
 	_result := &BACnetConstructedDataLargeAnalogValueResolution{
 		Resolution:            resolution,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLargeAnalogValueResolution) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLargeAnalogValueResolutionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLargeAnalogValueResolution, error) {
+func BACnetConstructedDataLargeAnalogValueResolutionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLargeAnalogValueResolution, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueResolution"); pullErr != nil {

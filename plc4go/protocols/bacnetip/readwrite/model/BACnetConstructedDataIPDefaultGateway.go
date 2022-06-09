@@ -32,7 +32,8 @@ type BACnetConstructedDataIPDefaultGateway struct {
 	IpDefaultGateway *BACnetApplicationTagOctetString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataIPDefaultGateway is the corresponding interface of BACnetConstructedDataIPDefaultGateway
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataIPDefaultGateway) GetIpDefaultGateway() *BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPDefaultGateway factory function for BACnetConstructedDataIPDefaultGateway
-func NewBACnetConstructedDataIPDefaultGateway(ipDefaultGateway *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPDefaultGateway {
+func NewBACnetConstructedDataIPDefaultGateway(ipDefaultGateway *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPDefaultGateway {
 	_result := &BACnetConstructedDataIPDefaultGateway{
 		IpDefaultGateway:      ipDefaultGateway,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataIPDefaultGateway) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPDefaultGatewayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataIPDefaultGateway, error) {
+func BACnetConstructedDataIPDefaultGatewayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataIPDefaultGateway, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPDefaultGateway"); pullErr != nil {

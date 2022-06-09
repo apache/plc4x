@@ -32,7 +32,8 @@ type BACnetConstructedDataMaxAPDULengthAccepted struct {
 	MaxApduLengthAccepted *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataMaxAPDULengthAccepted is the corresponding interface of BACnetConstructedDataMaxAPDULengthAccepted
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataMaxAPDULengthAccepted) GetMaxApduLengthAccepted() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMaxAPDULengthAccepted factory function for BACnetConstructedDataMaxAPDULengthAccepted
-func NewBACnetConstructedDataMaxAPDULengthAccepted(maxApduLengthAccepted *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMaxAPDULengthAccepted {
+func NewBACnetConstructedDataMaxAPDULengthAccepted(maxApduLengthAccepted *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMaxAPDULengthAccepted {
 	_result := &BACnetConstructedDataMaxAPDULengthAccepted{
 		MaxApduLengthAccepted: maxApduLengthAccepted,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataMaxAPDULengthAccepted) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMaxAPDULengthAcceptedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataMaxAPDULengthAccepted, error) {
+func BACnetConstructedDataMaxAPDULengthAcceptedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataMaxAPDULengthAccepted, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaxAPDULengthAccepted"); pullErr != nil {

@@ -129,7 +129,7 @@ func BACnetTimeValueParse(readBuffer utils.ReadBuffer) (*BACnetTimeValue, error)
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, pullErr
 	}
-	_value, _valueErr := BACnetConstructedDataElementParse(readBuffer, BACnetObjectType(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
+	_value, _valueErr := BACnetConstructedDataElementParse(readBuffer, BACnetObjectType(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}

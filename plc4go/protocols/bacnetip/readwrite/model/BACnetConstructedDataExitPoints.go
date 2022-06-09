@@ -32,7 +32,8 @@ type BACnetConstructedDataExitPoints struct {
 	ExitPoints []*BACnetDeviceObjectReference
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataExitPoints is the corresponding interface of BACnetConstructedDataExitPoints
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataExitPoints) GetExitPoints() []*BACnetDeviceObjectR
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataExitPoints factory function for BACnetConstructedDataExitPoints
-func NewBACnetConstructedDataExitPoints(exitPoints []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataExitPoints {
+func NewBACnetConstructedDataExitPoints(exitPoints []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataExitPoints {
 	_result := &BACnetConstructedDataExitPoints{
 		ExitPoints:            exitPoints,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataExitPoints) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataExitPointsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataExitPoints, error) {
+func BACnetConstructedDataExitPointsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataExitPoints, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExitPoints"); pullErr != nil {

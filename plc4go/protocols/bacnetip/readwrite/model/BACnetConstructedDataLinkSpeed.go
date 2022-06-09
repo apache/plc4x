@@ -32,7 +32,8 @@ type BACnetConstructedDataLinkSpeed struct {
 	LinkSpeed *BACnetApplicationTagReal
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLinkSpeed is the corresponding interface of BACnetConstructedDataLinkSpeed
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLinkSpeed) GetLinkSpeed() *BACnetApplicationTagRea
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLinkSpeed factory function for BACnetConstructedDataLinkSpeed
-func NewBACnetConstructedDataLinkSpeed(linkSpeed *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLinkSpeed {
+func NewBACnetConstructedDataLinkSpeed(linkSpeed *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLinkSpeed {
 	_result := &BACnetConstructedDataLinkSpeed{
 		LinkSpeed:             linkSpeed,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLinkSpeed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLinkSpeedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLinkSpeed, error) {
+func BACnetConstructedDataLinkSpeedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLinkSpeed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLinkSpeed"); pullErr != nil {

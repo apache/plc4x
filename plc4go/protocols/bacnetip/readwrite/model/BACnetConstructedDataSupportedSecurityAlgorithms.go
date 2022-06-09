@@ -32,7 +32,8 @@ type BACnetConstructedDataSupportedSecurityAlgorithms struct {
 	SupportedSecurityAlgorithms []*BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSupportedSecurityAlgorithms is the corresponding interface of BACnetConstructedDataSupportedSecurityAlgorithms
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSupportedSecurityAlgorithms) GetSupportedSecurityA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSupportedSecurityAlgorithms factory function for BACnetConstructedDataSupportedSecurityAlgorithms
-func NewBACnetConstructedDataSupportedSecurityAlgorithms(supportedSecurityAlgorithms []*BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSupportedSecurityAlgorithms {
+func NewBACnetConstructedDataSupportedSecurityAlgorithms(supportedSecurityAlgorithms []*BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSupportedSecurityAlgorithms {
 	_result := &BACnetConstructedDataSupportedSecurityAlgorithms{
 		SupportedSecurityAlgorithms: supportedSecurityAlgorithms,
-		BACnetConstructedData:       NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:       NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataSupportedSecurityAlgorithms) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSupportedSecurityAlgorithmsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSupportedSecurityAlgorithms, error) {
+func BACnetConstructedDataSupportedSecurityAlgorithmsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSupportedSecurityAlgorithms, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSupportedSecurityAlgorithms"); pullErr != nil {

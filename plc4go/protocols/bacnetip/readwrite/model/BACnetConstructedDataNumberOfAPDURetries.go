@@ -32,7 +32,8 @@ type BACnetConstructedDataNumberOfAPDURetries struct {
 	NumberOfApduRetries *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataNumberOfAPDURetries is the corresponding interface of BACnetConstructedDataNumberOfAPDURetries
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataNumberOfAPDURetries) GetNumberOfApduRetries() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNumberOfAPDURetries factory function for BACnetConstructedDataNumberOfAPDURetries
-func NewBACnetConstructedDataNumberOfAPDURetries(numberOfApduRetries *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNumberOfAPDURetries {
+func NewBACnetConstructedDataNumberOfAPDURetries(numberOfApduRetries *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNumberOfAPDURetries {
 	_result := &BACnetConstructedDataNumberOfAPDURetries{
 		NumberOfApduRetries:   numberOfApduRetries,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataNumberOfAPDURetries) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNumberOfAPDURetriesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNumberOfAPDURetries, error) {
+func BACnetConstructedDataNumberOfAPDURetriesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataNumberOfAPDURetries, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNumberOfAPDURetries"); pullErr != nil {

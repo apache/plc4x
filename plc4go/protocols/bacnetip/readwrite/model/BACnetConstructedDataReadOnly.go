@@ -32,7 +32,8 @@ type BACnetConstructedDataReadOnly struct {
 	ReadOnly *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataReadOnly is the corresponding interface of BACnetConstructedDataReadOnly
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataReadOnly) GetReadOnly() *BACnetApplicationTagBoole
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReadOnly factory function for BACnetConstructedDataReadOnly
-func NewBACnetConstructedDataReadOnly(readOnly *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataReadOnly {
+func NewBACnetConstructedDataReadOnly(readOnly *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataReadOnly {
 	_result := &BACnetConstructedDataReadOnly{
 		ReadOnly:              readOnly,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataReadOnly) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataReadOnlyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataReadOnly, error) {
+func BACnetConstructedDataReadOnlyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataReadOnly, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReadOnly"); pullErr != nil {

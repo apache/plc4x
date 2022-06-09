@@ -171,7 +171,7 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 		if pullErr := readBuffer.PullContext("readResult"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetReadAccessPropertyReadResultParse(readBuffer, objectTypeArgument, propertyIdentifier.GetValue())
+		_val, _err := BACnetReadAccessPropertyReadResultParse(readBuffer, objectTypeArgument, propertyIdentifier.GetValue(), CastBACnetTagPayloadUnsignedInteger(CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((*arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

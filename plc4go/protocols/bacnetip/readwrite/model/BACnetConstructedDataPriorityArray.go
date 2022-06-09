@@ -32,7 +32,8 @@ type BACnetConstructedDataPriorityArray struct {
 	PriorityArray *BACnetPriorityArray
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataPriorityArray is the corresponding interface of BACnetConstructedDataPriorityArray
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataPriorityArray) GetPriorityArray() *BACnetPriorityA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPriorityArray factory function for BACnetConstructedDataPriorityArray
-func NewBACnetConstructedDataPriorityArray(priorityArray *BACnetPriorityArray, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPriorityArray {
+func NewBACnetConstructedDataPriorityArray(priorityArray *BACnetPriorityArray, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPriorityArray {
 	_result := &BACnetConstructedDataPriorityArray{
 		PriorityArray:         priorityArray,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataPriorityArray) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPriorityArrayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPriorityArray, error) {
+func BACnetConstructedDataPriorityArrayParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataPriorityArray, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPriorityArray"); pullErr != nil {

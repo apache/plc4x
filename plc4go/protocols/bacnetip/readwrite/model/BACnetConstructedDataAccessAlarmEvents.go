@@ -32,7 +32,8 @@ type BACnetConstructedDataAccessAlarmEvents struct {
 	AccessAlarmEvents []*BACnetAccessEventTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAccessAlarmEvents is the corresponding interface of BACnetConstructedDataAccessAlarmEvents
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAccessAlarmEvents) GetAccessAlarmEvents() []*BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessAlarmEvents factory function for BACnetConstructedDataAccessAlarmEvents
-func NewBACnetConstructedDataAccessAlarmEvents(accessAlarmEvents []*BACnetAccessEventTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessAlarmEvents {
+func NewBACnetConstructedDataAccessAlarmEvents(accessAlarmEvents []*BACnetAccessEventTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessAlarmEvents {
 	_result := &BACnetConstructedDataAccessAlarmEvents{
 		AccessAlarmEvents:     accessAlarmEvents,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataAccessAlarmEvents) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessAlarmEventsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccessAlarmEvents, error) {
+func BACnetConstructedDataAccessAlarmEventsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAccessAlarmEvents, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessAlarmEvents"); pullErr != nil {

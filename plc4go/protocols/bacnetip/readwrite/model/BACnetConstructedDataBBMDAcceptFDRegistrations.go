@@ -32,7 +32,8 @@ type BACnetConstructedDataBBMDAcceptFDRegistrations struct {
 	BbmdAcceptFDRegistrations *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBBMDAcceptFDRegistrations is the corresponding interface of BACnetConstructedDataBBMDAcceptFDRegistrations
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataBBMDAcceptFDRegistrations) GetBbmdAcceptFDRegistra
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBBMDAcceptFDRegistrations factory function for BACnetConstructedDataBBMDAcceptFDRegistrations
-func NewBACnetConstructedDataBBMDAcceptFDRegistrations(bbmdAcceptFDRegistrations *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBBMDAcceptFDRegistrations {
+func NewBACnetConstructedDataBBMDAcceptFDRegistrations(bbmdAcceptFDRegistrations *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBBMDAcceptFDRegistrations {
 	_result := &BACnetConstructedDataBBMDAcceptFDRegistrations{
 		BbmdAcceptFDRegistrations: bbmdAcceptFDRegistrations,
-		BACnetConstructedData:     NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:     NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataBBMDAcceptFDRegistrations) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBBMDAcceptFDRegistrationsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBBMDAcceptFDRegistrations, error) {
+func BACnetConstructedDataBBMDAcceptFDRegistrationsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBBMDAcceptFDRegistrations, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBBMDAcceptFDRegistrations"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataAccessZoneAlarmValues struct {
 	AlarmValues []*BACnetAccessZoneOccupancyStateTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAccessZoneAlarmValues is the corresponding interface of BACnetConstructedDataAccessZoneAlarmValues
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAccessZoneAlarmValues) GetAlarmValues() []*BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessZoneAlarmValues factory function for BACnetConstructedDataAccessZoneAlarmValues
-func NewBACnetConstructedDataAccessZoneAlarmValues(alarmValues []*BACnetAccessZoneOccupancyStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessZoneAlarmValues {
+func NewBACnetConstructedDataAccessZoneAlarmValues(alarmValues []*BACnetAccessZoneOccupancyStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessZoneAlarmValues {
 	_result := &BACnetConstructedDataAccessZoneAlarmValues{
 		AlarmValues:           alarmValues,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataAccessZoneAlarmValues) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessZoneAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccessZoneAlarmValues, error) {
+func BACnetConstructedDataAccessZoneAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAccessZoneAlarmValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessZoneAlarmValues"); pullErr != nil {

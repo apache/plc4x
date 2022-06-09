@@ -32,7 +32,8 @@ type BACnetConstructedDataTimerRunning struct {
 	TimerRunning *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataTimerRunning is the corresponding interface of BACnetConstructedDataTimerRunning
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataTimerRunning) GetTimerRunning() *BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimerRunning factory function for BACnetConstructedDataTimerRunning
-func NewBACnetConstructedDataTimerRunning(timerRunning *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTimerRunning {
+func NewBACnetConstructedDataTimerRunning(timerRunning *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTimerRunning {
 	_result := &BACnetConstructedDataTimerRunning{
 		TimerRunning:          timerRunning,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataTimerRunning) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimerRunningParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataTimerRunning, error) {
+func BACnetConstructedDataTimerRunningParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataTimerRunning, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimerRunning"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataIPv6DHCPLeaseTime struct {
 	Ipv6DhcpLeaseTime *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataIPv6DHCPLeaseTime is the corresponding interface of BACnetConstructedDataIPv6DHCPLeaseTime
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataIPv6DHCPLeaseTime) GetIpv6DhcpLeaseTime() *BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6DHCPLeaseTime factory function for BACnetConstructedDataIPv6DHCPLeaseTime
-func NewBACnetConstructedDataIPv6DHCPLeaseTime(ipv6DhcpLeaseTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPv6DHCPLeaseTime {
+func NewBACnetConstructedDataIPv6DHCPLeaseTime(ipv6DhcpLeaseTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPv6DHCPLeaseTime {
 	_result := &BACnetConstructedDataIPv6DHCPLeaseTime{
 		Ipv6DhcpLeaseTime:     ipv6DhcpLeaseTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPv6DHCPLeaseTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataIPv6DHCPLeaseTime, error) {
+func BACnetConstructedDataIPv6DHCPLeaseTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataIPv6DHCPLeaseTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DHCPLeaseTime"); pullErr != nil {

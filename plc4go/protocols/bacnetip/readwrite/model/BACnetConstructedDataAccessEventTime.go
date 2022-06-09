@@ -32,7 +32,8 @@ type BACnetConstructedDataAccessEventTime struct {
 	AccessEventTime *BACnetTimeStamp
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAccessEventTime is the corresponding interface of BACnetConstructedDataAccessEventTime
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAccessEventTime) GetAccessEventTime() *BACnetTimeS
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessEventTime factory function for BACnetConstructedDataAccessEventTime
-func NewBACnetConstructedDataAccessEventTime(accessEventTime *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessEventTime {
+func NewBACnetConstructedDataAccessEventTime(accessEventTime *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessEventTime {
 	_result := &BACnetConstructedDataAccessEventTime{
 		AccessEventTime:       accessEventTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAccessEventTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessEventTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccessEventTime, error) {
+func BACnetConstructedDataAccessEventTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAccessEventTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessEventTime"); pullErr != nil {

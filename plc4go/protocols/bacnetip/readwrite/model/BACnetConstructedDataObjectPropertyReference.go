@@ -32,7 +32,8 @@ type BACnetConstructedDataObjectPropertyReference struct {
 	PropertyReference *BACnetDeviceObjectPropertyReference
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataObjectPropertyReference is the corresponding interface of BACnetConstructedDataObjectPropertyReference
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataObjectPropertyReference) GetPropertyReference() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataObjectPropertyReference factory function for BACnetConstructedDataObjectPropertyReference
-func NewBACnetConstructedDataObjectPropertyReference(propertyReference *BACnetDeviceObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataObjectPropertyReference {
+func NewBACnetConstructedDataObjectPropertyReference(propertyReference *BACnetDeviceObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataObjectPropertyReference {
 	_result := &BACnetConstructedDataObjectPropertyReference{
 		PropertyReference:     propertyReference,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataObjectPropertyReference) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataObjectPropertyReferenceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataObjectPropertyReference, error) {
+func BACnetConstructedDataObjectPropertyReferenceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataObjectPropertyReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataObjectPropertyReference"); pullErr != nil {

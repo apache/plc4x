@@ -32,7 +32,8 @@ type BACnetConstructedDataEventMessageTexts struct {
 	EventMessageTexts *BACnetEventMessageTexts
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataEventMessageTexts is the corresponding interface of BACnetConstructedDataEventMessageTexts
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataEventMessageTexts) GetEventMessageTexts() *BACnetE
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventMessageTexts factory function for BACnetConstructedDataEventMessageTexts
-func NewBACnetConstructedDataEventMessageTexts(eventMessageTexts *BACnetEventMessageTexts, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEventMessageTexts {
+func NewBACnetConstructedDataEventMessageTexts(eventMessageTexts *BACnetEventMessageTexts, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEventMessageTexts {
 	_result := &BACnetConstructedDataEventMessageTexts{
 		EventMessageTexts:     eventMessageTexts,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataEventMessageTexts) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventMessageTextsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataEventMessageTexts, error) {
+func BACnetConstructedDataEventMessageTextsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataEventMessageTexts, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventMessageTexts"); pullErr != nil {

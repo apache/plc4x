@@ -32,7 +32,8 @@ type BACnetConstructedDataCurrentCommandPriority struct {
 	CurrentCommandPriority *BACnetOptionalUnsigned
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataCurrentCommandPriority is the corresponding interface of BACnetConstructedDataCurrentCommandPriority
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataCurrentCommandPriority) GetCurrentCommandPriority(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCurrentCommandPriority factory function for BACnetConstructedDataCurrentCommandPriority
-func NewBACnetConstructedDataCurrentCommandPriority(currentCommandPriority *BACnetOptionalUnsigned, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCurrentCommandPriority {
+func NewBACnetConstructedDataCurrentCommandPriority(currentCommandPriority *BACnetOptionalUnsigned, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCurrentCommandPriority {
 	_result := &BACnetConstructedDataCurrentCommandPriority{
 		CurrentCommandPriority: currentCommandPriority,
-		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataCurrentCommandPriority) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCurrentCommandPriorityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCurrentCommandPriority, error) {
+func BACnetConstructedDataCurrentCommandPriorityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataCurrentCommandPriority, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCurrentCommandPriority"); pullErr != nil {

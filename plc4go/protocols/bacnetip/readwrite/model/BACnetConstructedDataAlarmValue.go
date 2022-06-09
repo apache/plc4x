@@ -32,7 +32,8 @@ type BACnetConstructedDataAlarmValue struct {
 	BinaryPv *BACnetBinaryPVTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAlarmValue is the corresponding interface of BACnetConstructedDataAlarmValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAlarmValue) GetBinaryPv() *BACnetBinaryPVTagged {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAlarmValue factory function for BACnetConstructedDataAlarmValue
-func NewBACnetConstructedDataAlarmValue(binaryPv *BACnetBinaryPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAlarmValue {
+func NewBACnetConstructedDataAlarmValue(binaryPv *BACnetBinaryPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAlarmValue {
 	_result := &BACnetConstructedDataAlarmValue{
 		BinaryPv:              binaryPv,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAlarmValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAlarmValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAlarmValue, error) {
+func BACnetConstructedDataAlarmValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAlarmValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAlarmValue"); pullErr != nil {

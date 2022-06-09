@@ -32,7 +32,8 @@ type BACnetConstructedDataAutoSlaveDiscovery struct {
 	AutoSlaveDiscovery *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAutoSlaveDiscovery is the corresponding interface of BACnetConstructedDataAutoSlaveDiscovery
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAutoSlaveDiscovery) GetAutoSlaveDiscovery() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAutoSlaveDiscovery factory function for BACnetConstructedDataAutoSlaveDiscovery
-func NewBACnetConstructedDataAutoSlaveDiscovery(autoSlaveDiscovery *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAutoSlaveDiscovery {
+func NewBACnetConstructedDataAutoSlaveDiscovery(autoSlaveDiscovery *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAutoSlaveDiscovery {
 	_result := &BACnetConstructedDataAutoSlaveDiscovery{
 		AutoSlaveDiscovery:    autoSlaveDiscovery,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAutoSlaveDiscoveryParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAutoSlaveDiscovery, error) {
+func BACnetConstructedDataAutoSlaveDiscoveryParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAutoSlaveDiscovery, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAutoSlaveDiscovery"); pullErr != nil {

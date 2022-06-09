@@ -32,7 +32,8 @@ type BACnetConstructedDataDeviceAddressBinding struct {
 	DeviceAddressBinding []*BACnetAddressBinding
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDeviceAddressBinding is the corresponding interface of BACnetConstructedDataDeviceAddressBinding
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataDeviceAddressBinding) GetDeviceAddressBinding() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDeviceAddressBinding factory function for BACnetConstructedDataDeviceAddressBinding
-func NewBACnetConstructedDataDeviceAddressBinding(deviceAddressBinding []*BACnetAddressBinding, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDeviceAddressBinding {
+func NewBACnetConstructedDataDeviceAddressBinding(deviceAddressBinding []*BACnetAddressBinding, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDeviceAddressBinding {
 	_result := &BACnetConstructedDataDeviceAddressBinding{
 		DeviceAddressBinding:  deviceAddressBinding,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataDeviceAddressBinding) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDeviceAddressBindingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDeviceAddressBinding, error) {
+func BACnetConstructedDataDeviceAddressBindingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDeviceAddressBinding, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeviceAddressBinding"); pullErr != nil {

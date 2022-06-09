@@ -32,7 +32,8 @@ type BACnetConstructedDataLandingCallControl struct {
 	LandingCallControl *BACnetLandingCallStatus
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLandingCallControl is the corresponding interface of BACnetConstructedDataLandingCallControl
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataLandingCallControl) GetLandingCallControl() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLandingCallControl factory function for BACnetConstructedDataLandingCallControl
-func NewBACnetConstructedDataLandingCallControl(landingCallControl *BACnetLandingCallStatus, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLandingCallControl {
+func NewBACnetConstructedDataLandingCallControl(landingCallControl *BACnetLandingCallStatus, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLandingCallControl {
 	_result := &BACnetConstructedDataLandingCallControl{
 		LandingCallControl:    landingCallControl,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataLandingCallControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLandingCallControlParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLandingCallControl, error) {
+func BACnetConstructedDataLandingCallControlParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLandingCallControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLandingCallControl"); pullErr != nil {

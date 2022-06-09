@@ -32,7 +32,8 @@ type BACnetConstructedDataAccessDoorPresentValue struct {
 	PresentValue *BACnetDoorValueTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAccessDoorPresentValue is the corresponding interface of BACnetConstructedDataAccessDoorPresentValue
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAccessDoorPresentValue) GetPresentValue() *BACnetD
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessDoorPresentValue factory function for BACnetConstructedDataAccessDoorPresentValue
-func NewBACnetConstructedDataAccessDoorPresentValue(presentValue *BACnetDoorValueTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessDoorPresentValue {
+func NewBACnetConstructedDataAccessDoorPresentValue(presentValue *BACnetDoorValueTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessDoorPresentValue {
 	_result := &BACnetConstructedDataAccessDoorPresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAccessDoorPresentValue) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessDoorPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAccessDoorPresentValue, error) {
+func BACnetConstructedDataAccessDoorPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAccessDoorPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessDoorPresentValue"); pullErr != nil {

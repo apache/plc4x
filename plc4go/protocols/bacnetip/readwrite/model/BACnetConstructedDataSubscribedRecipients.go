@@ -32,7 +32,8 @@ type BACnetConstructedDataSubscribedRecipients struct {
 	SubscribedRecipients []*BACnetEventNotificationSubscription
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSubscribedRecipients is the corresponding interface of BACnetConstructedDataSubscribedRecipients
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSubscribedRecipients) GetSubscribedRecipients() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSubscribedRecipients factory function for BACnetConstructedDataSubscribedRecipients
-func NewBACnetConstructedDataSubscribedRecipients(subscribedRecipients []*BACnetEventNotificationSubscription, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSubscribedRecipients {
+func NewBACnetConstructedDataSubscribedRecipients(subscribedRecipients []*BACnetEventNotificationSubscription, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSubscribedRecipients {
 	_result := &BACnetConstructedDataSubscribedRecipients{
 		SubscribedRecipients:  subscribedRecipients,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -141,7 +142,7 @@ func (m *BACnetConstructedDataSubscribedRecipients) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSubscribedRecipientsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSubscribedRecipients, error) {
+func BACnetConstructedDataSubscribedRecipientsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSubscribedRecipients, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubscribedRecipients"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataSilenced struct {
 	Silenced *BACnetSilencedStateTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataSilenced is the corresponding interface of BACnetConstructedDataSilenced
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataSilenced) GetSilenced() *BACnetSilencedStateTagged
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSilenced factory function for BACnetConstructedDataSilenced
-func NewBACnetConstructedDataSilenced(silenced *BACnetSilencedStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSilenced {
+func NewBACnetConstructedDataSilenced(silenced *BACnetSilencedStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSilenced {
 	_result := &BACnetConstructedDataSilenced{
 		Silenced:              silenced,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataSilenced) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSilencedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataSilenced, error) {
+func BACnetConstructedDataSilencedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataSilenced, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSilenced"); pullErr != nil {

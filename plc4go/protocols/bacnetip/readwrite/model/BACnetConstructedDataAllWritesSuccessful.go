@@ -32,7 +32,8 @@ type BACnetConstructedDataAllWritesSuccessful struct {
 	AllWritesSuccessful *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAllWritesSuccessful is the corresponding interface of BACnetConstructedDataAllWritesSuccessful
@@ -91,10 +92,10 @@ func (m *BACnetConstructedDataAllWritesSuccessful) GetAllWritesSuccessful() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAllWritesSuccessful factory function for BACnetConstructedDataAllWritesSuccessful
-func NewBACnetConstructedDataAllWritesSuccessful(allWritesSuccessful *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAllWritesSuccessful {
+func NewBACnetConstructedDataAllWritesSuccessful(allWritesSuccessful *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAllWritesSuccessful {
 	_result := &BACnetConstructedDataAllWritesSuccessful{
 		AllWritesSuccessful:   allWritesSuccessful,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -137,7 +138,7 @@ func (m *BACnetConstructedDataAllWritesSuccessful) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAllWritesSuccessfulParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAllWritesSuccessful, error) {
+func BACnetConstructedDataAllWritesSuccessfulParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAllWritesSuccessful, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAllWritesSuccessful"); pullErr != nil {
