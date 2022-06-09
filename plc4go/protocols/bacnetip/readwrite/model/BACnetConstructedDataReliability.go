@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataReliability) GetPropertyIdentifierArgument() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataReliability) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataReliability) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataReliability) GetReliability() *BACnetReliabilityTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReliability factory function for BACnetConstructedDataReliability
-func NewBACnetConstructedDataReliability(reliability *BACnetReliabilityTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataReliability {
+func NewBACnetConstructedDataReliability(reliability *BACnetReliabilityTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataReliability {
 	_result := &BACnetConstructedDataReliability{
 		Reliability:           reliability,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

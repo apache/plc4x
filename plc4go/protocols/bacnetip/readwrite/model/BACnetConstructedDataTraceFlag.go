@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataTraceFlag) GetPropertyIdentifierArgument() BACnetP
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataTraceFlag) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataTraceFlag) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataTraceFlag) GetTraceFlag() *BACnetApplicationTagBoo
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTraceFlag factory function for BACnetConstructedDataTraceFlag
-func NewBACnetConstructedDataTraceFlag(traceFlag *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTraceFlag {
+func NewBACnetConstructedDataTraceFlag(traceFlag *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTraceFlag {
 	_result := &BACnetConstructedDataTraceFlag{
 		TraceFlag:             traceFlag,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataPositiveIntegerValueDeadband) GetPropertyIdentifie
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataPositiveIntegerValueDeadband) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataPositiveIntegerValueDeadband) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataPositiveIntegerValueDeadband) GetDeadband() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPositiveIntegerValueDeadband factory function for BACnetConstructedDataPositiveIntegerValueDeadband
-func NewBACnetConstructedDataPositiveIntegerValueDeadband(deadband *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPositiveIntegerValueDeadband {
+func NewBACnetConstructedDataPositiveIntegerValueDeadband(deadband *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPositiveIntegerValueDeadband {
 	_result := &BACnetConstructedDataPositiveIntegerValueDeadband{
 		Deadband:              deadband,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

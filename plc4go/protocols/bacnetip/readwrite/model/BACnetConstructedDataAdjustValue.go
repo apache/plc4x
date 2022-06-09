@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAdjustValue) GetPropertyIdentifierArgument() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAdjustValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAdjustValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAdjustValue) GetAdjustValue() *BACnetApplicationTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAdjustValue factory function for BACnetConstructedDataAdjustValue
-func NewBACnetConstructedDataAdjustValue(adjustValue *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAdjustValue {
+func NewBACnetConstructedDataAdjustValue(adjustValue *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAdjustValue {
 	_result := &BACnetConstructedDataAdjustValue{
 		AdjustValue:           adjustValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAssignedAccessRights) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAssignedAccessRights) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAssignedAccessRights) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAssignedAccessRights) GetAssignedAccessRights() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAssignedAccessRights factory function for BACnetConstructedDataAssignedAccessRights
-func NewBACnetConstructedDataAssignedAccessRights(assignedAccessRights []*BACnetAssignedAccessRights, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAssignedAccessRights {
+func NewBACnetConstructedDataAssignedAccessRights(assignedAccessRights []*BACnetAssignedAccessRights, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAssignedAccessRights {
 	_result := &BACnetConstructedDataAssignedAccessRights{
 		AssignedAccessRights:  assignedAccessRights,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

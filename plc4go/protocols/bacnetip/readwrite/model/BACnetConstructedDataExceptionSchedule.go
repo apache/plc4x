@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataExceptionSchedule) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataExceptionSchedule) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataExceptionSchedule) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataExceptionSchedule) GetExceptionSchedule() []*BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataExceptionSchedule factory function for BACnetConstructedDataExceptionSchedule
-func NewBACnetConstructedDataExceptionSchedule(exceptionSchedule []*BACnetSpecialEvent, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataExceptionSchedule {
+func NewBACnetConstructedDataExceptionSchedule(exceptionSchedule []*BACnetSpecialEvent, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataExceptionSchedule {
 	_result := &BACnetConstructedDataExceptionSchedule{
 		ExceptionSchedule:     exceptionSchedule,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

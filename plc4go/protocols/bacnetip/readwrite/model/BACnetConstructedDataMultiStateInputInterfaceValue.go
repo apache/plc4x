@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataMultiStateInputInterfaceValue) GetPropertyIdentifi
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataMultiStateInputInterfaceValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataMultiStateInputInterfaceValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataMultiStateInputInterfaceValue) GetInterfaceValue()
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMultiStateInputInterfaceValue factory function for BACnetConstructedDataMultiStateInputInterfaceValue
-func NewBACnetConstructedDataMultiStateInputInterfaceValue(interfaceValue *BACnetOptionalBinaryPV, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMultiStateInputInterfaceValue {
+func NewBACnetConstructedDataMultiStateInputInterfaceValue(interfaceValue *BACnetOptionalBinaryPV, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMultiStateInputInterfaceValue {
 	_result := &BACnetConstructedDataMultiStateInputInterfaceValue{
 		InterfaceValue:        interfaceValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

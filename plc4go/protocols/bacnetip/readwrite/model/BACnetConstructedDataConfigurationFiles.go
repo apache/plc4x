@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataConfigurationFiles) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataConfigurationFiles) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataConfigurationFiles) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataConfigurationFiles) GetConfigurationFiles() []*BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataConfigurationFiles factory function for BACnetConstructedDataConfigurationFiles
-func NewBACnetConstructedDataConfigurationFiles(configurationFiles []*BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataConfigurationFiles {
+func NewBACnetConstructedDataConfigurationFiles(configurationFiles []*BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataConfigurationFiles {
 	_result := &BACnetConstructedDataConfigurationFiles{
 		ConfigurationFiles:    configurationFiles,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

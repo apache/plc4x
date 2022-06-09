@@ -401,6 +401,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(io, tagNumber)
 	case "BACnetAuthenticationPolicy":
 		return model.BACnetAuthenticationPolicyParse(io)
+	case "BACnetPropertyAccessResult":
+		return model.BACnetPropertyAccessResultParse(io)
 	case "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -1238,6 +1240,10 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetAccessZoneOccupancyStateTaggedParse(io, tagNumber, tagClass)
+	case "BACnetPropertyAccessResultAccessResult":
+		objectTypeArgument := model.BACnetObjectTypeByName(arguments[0])
+		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(arguments[1])
+		return model.BACnetPropertyAccessResultAccessResultParse(io, objectTypeArgument, propertyIdentifierArgument)
 	case "BACnetNetworkPortCommandTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

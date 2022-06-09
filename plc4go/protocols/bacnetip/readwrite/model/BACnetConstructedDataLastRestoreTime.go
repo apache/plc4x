@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLastRestoreTime) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLastRestoreTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLastRestoreTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLastRestoreTime) GetLastRestoreTime() *BACnetTimeS
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastRestoreTime factory function for BACnetConstructedDataLastRestoreTime
-func NewBACnetConstructedDataLastRestoreTime(lastRestoreTime *BACnetTimeStamp, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastRestoreTime {
+func NewBACnetConstructedDataLastRestoreTime(lastRestoreTime *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastRestoreTime {
 	_result := &BACnetConstructedDataLastRestoreTime{
 		LastRestoreTime:       lastRestoreTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

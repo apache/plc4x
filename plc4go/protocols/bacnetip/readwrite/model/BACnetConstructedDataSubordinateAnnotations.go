@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataSubordinateAnnotations) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataSubordinateAnnotations) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataSubordinateAnnotations) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataSubordinateAnnotations) GetSubordinateAnnotations(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSubordinateAnnotations factory function for BACnetConstructedDataSubordinateAnnotations
-func NewBACnetConstructedDataSubordinateAnnotations(subordinateAnnotations []*BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSubordinateAnnotations {
+func NewBACnetConstructedDataSubordinateAnnotations(subordinateAnnotations []*BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSubordinateAnnotations {
 	_result := &BACnetConstructedDataSubordinateAnnotations{
 		SubordinateAnnotations: subordinateAnnotations,
-		BACnetConstructedData:  NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

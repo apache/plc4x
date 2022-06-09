@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataIntegerValueCOVIncrement) GetPropertyIdentifierArg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataIntegerValueCOVIncrement) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataIntegerValueCOVIncrement) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataIntegerValueCOVIncrement) GetCovIncrement() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIntegerValueCOVIncrement factory function for BACnetConstructedDataIntegerValueCOVIncrement
-func NewBACnetConstructedDataIntegerValueCOVIncrement(covIncrement *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIntegerValueCOVIncrement {
+func NewBACnetConstructedDataIntegerValueCOVIncrement(covIncrement *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIntegerValueCOVIncrement {
 	_result := &BACnetConstructedDataIntegerValueCOVIncrement{
 		CovIncrement:          covIncrement,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

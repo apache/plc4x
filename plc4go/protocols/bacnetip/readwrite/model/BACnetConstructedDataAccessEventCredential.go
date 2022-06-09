@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAccessEventCredential) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAccessEventCredential) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAccessEventCredential) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAccessEventCredential) GetAccessEventCredential() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessEventCredential factory function for BACnetConstructedDataAccessEventCredential
-func NewBACnetConstructedDataAccessEventCredential(accessEventCredential *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessEventCredential {
+func NewBACnetConstructedDataAccessEventCredential(accessEventCredential *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessEventCredential {
 	_result := &BACnetConstructedDataAccessEventCredential{
 		AccessEventCredential: accessEventCredential,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

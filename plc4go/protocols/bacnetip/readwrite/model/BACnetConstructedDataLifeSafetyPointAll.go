@@ -62,8 +62,9 @@ func (m *BACnetConstructedDataLifeSafetyPointAll) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLifeSafetyPointAll) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLifeSafetyPointAll) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -72,9 +73,9 @@ func (m *BACnetConstructedDataLifeSafetyPointAll) GetParent() *BACnetConstructed
 }
 
 // NewBACnetConstructedDataLifeSafetyPointAll factory function for BACnetConstructedDataLifeSafetyPointAll
-func NewBACnetConstructedDataLifeSafetyPointAll(openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLifeSafetyPointAll {
+func NewBACnetConstructedDataLifeSafetyPointAll(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLifeSafetyPointAll {
 	_result := &BACnetConstructedDataLifeSafetyPointAll{
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

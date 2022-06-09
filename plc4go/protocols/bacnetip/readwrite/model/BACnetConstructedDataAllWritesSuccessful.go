@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAllWritesSuccessful) GetPropertyIdentifierArgument
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAllWritesSuccessful) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAllWritesSuccessful) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAllWritesSuccessful) GetAllWritesSuccessful() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAllWritesSuccessful factory function for BACnetConstructedDataAllWritesSuccessful
-func NewBACnetConstructedDataAllWritesSuccessful(allWritesSuccessful *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAllWritesSuccessful {
+func NewBACnetConstructedDataAllWritesSuccessful(allWritesSuccessful *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAllWritesSuccessful {
 	_result := &BACnetConstructedDataAllWritesSuccessful{
 		AllWritesSuccessful:   allWritesSuccessful,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

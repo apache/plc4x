@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataFirmwareRevision) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataFirmwareRevision) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataFirmwareRevision) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataFirmwareRevision) GetFirmwareRevision() *BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFirmwareRevision factory function for BACnetConstructedDataFirmwareRevision
-func NewBACnetConstructedDataFirmwareRevision(firmwareRevision *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFirmwareRevision {
+func NewBACnetConstructedDataFirmwareRevision(firmwareRevision *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFirmwareRevision {
 	_result := &BACnetConstructedDataFirmwareRevision{
 		FirmwareRevision:      firmwareRevision,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

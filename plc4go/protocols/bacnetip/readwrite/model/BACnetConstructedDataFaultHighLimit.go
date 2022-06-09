@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataFaultHighLimit) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataFaultHighLimit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataFaultHighLimit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataFaultHighLimit) GetFaultHighLimit() *BACnetApplica
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFaultHighLimit factory function for BACnetConstructedDataFaultHighLimit
-func NewBACnetConstructedDataFaultHighLimit(faultHighLimit *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFaultHighLimit {
+func NewBACnetConstructedDataFaultHighLimit(faultHighLimit *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFaultHighLimit {
 	_result := &BACnetConstructedDataFaultHighLimit{
 		FaultHighLimit:        faultHighLimit,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

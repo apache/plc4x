@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLandingCalls) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLandingCalls) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLandingCalls) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLandingCalls) GetLandingCallStatus() []*BACnetLand
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLandingCalls factory function for BACnetConstructedDataLandingCalls
-func NewBACnetConstructedDataLandingCalls(landingCallStatus []*BACnetLandingCallStatus, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLandingCalls {
+func NewBACnetConstructedDataLandingCalls(landingCallStatus []*BACnetLandingCallStatus, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLandingCalls {
 	_result := &BACnetConstructedDataLandingCalls{
 		LandingCallStatus:     landingCallStatus,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataMinActualValue) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataMinActualValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataMinActualValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataMinActualValue) GetMinActualValue() *BACnetApplica
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMinActualValue factory function for BACnetConstructedDataMinActualValue
-func NewBACnetConstructedDataMinActualValue(minActualValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMinActualValue {
+func NewBACnetConstructedDataMinActualValue(minActualValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMinActualValue {
 	_result := &BACnetConstructedDataMinActualValue{
 		MinActualValue:        minActualValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

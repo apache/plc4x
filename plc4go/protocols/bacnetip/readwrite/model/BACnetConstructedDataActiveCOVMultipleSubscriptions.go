@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataActiveCOVMultipleSubscriptions) GetPropertyIdentif
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataActiveCOVMultipleSubscriptions) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataActiveCOVMultipleSubscriptions) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataActiveCOVMultipleSubscriptions) GetActiveCOVMultip
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActiveCOVMultipleSubscriptions factory function for BACnetConstructedDataActiveCOVMultipleSubscriptions
-func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(activeCOVMultipleSubscriptions []*BACnetCOVMultipleSubscription, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataActiveCOVMultipleSubscriptions {
+func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(activeCOVMultipleSubscriptions []*BACnetCOVMultipleSubscription, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataActiveCOVMultipleSubscriptions {
 	_result := &BACnetConstructedDataActiveCOVMultipleSubscriptions{
 		ActiveCOVMultipleSubscriptions: activeCOVMultipleSubscriptions,
-		BACnetConstructedData:          NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:          NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

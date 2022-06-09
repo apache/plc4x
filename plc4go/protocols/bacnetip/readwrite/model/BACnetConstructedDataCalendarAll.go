@@ -62,8 +62,9 @@ func (m *BACnetConstructedDataCalendarAll) GetPropertyIdentifierArgument() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataCalendarAll) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataCalendarAll) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -72,9 +73,9 @@ func (m *BACnetConstructedDataCalendarAll) GetParent() *BACnetConstructedData {
 }
 
 // NewBACnetConstructedDataCalendarAll factory function for BACnetConstructedDataCalendarAll
-func NewBACnetConstructedDataCalendarAll(openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCalendarAll {
+func NewBACnetConstructedDataCalendarAll(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCalendarAll {
 	_result := &BACnetConstructedDataCalendarAll{
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

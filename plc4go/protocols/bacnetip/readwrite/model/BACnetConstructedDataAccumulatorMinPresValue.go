@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAccumulatorMinPresValue) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAccumulatorMinPresValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAccumulatorMinPresValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAccumulatorMinPresValue) GetMinPresValue() *BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccumulatorMinPresValue factory function for BACnetConstructedDataAccumulatorMinPresValue
-func NewBACnetConstructedDataAccumulatorMinPresValue(minPresValue *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccumulatorMinPresValue {
+func NewBACnetConstructedDataAccumulatorMinPresValue(minPresValue *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccumulatorMinPresValue {
 	_result := &BACnetConstructedDataAccumulatorMinPresValue{
 		MinPresValue:          minPresValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataBinaryOutputFeedbackValue) GetPropertyIdentifierAr
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataBinaryOutputFeedbackValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataBinaryOutputFeedbackValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataBinaryOutputFeedbackValue) GetFeedbackValue() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBinaryOutputFeedbackValue factory function for BACnetConstructedDataBinaryOutputFeedbackValue
-func NewBACnetConstructedDataBinaryOutputFeedbackValue(feedbackValue *BACnetBinaryPVTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBinaryOutputFeedbackValue {
+func NewBACnetConstructedDataBinaryOutputFeedbackValue(feedbackValue *BACnetBinaryPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBinaryOutputFeedbackValue {
 	_result := &BACnetConstructedDataBinaryOutputFeedbackValue{
 		FeedbackValue:         feedbackValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

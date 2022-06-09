@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataProgramChange) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataProgramChange) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataProgramChange) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataProgramChange) GetProgramChange() *BACnetProgramRe
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProgramChange factory function for BACnetConstructedDataProgramChange
-func NewBACnetConstructedDataProgramChange(programChange *BACnetProgramRequestTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProgramChange {
+func NewBACnetConstructedDataProgramChange(programChange *BACnetProgramRequestTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProgramChange {
 	_result := &BACnetConstructedDataProgramChange{
 		ProgramChange:         programChange,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

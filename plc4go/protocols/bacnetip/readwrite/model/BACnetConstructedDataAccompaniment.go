@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAccompaniment) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAccompaniment) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAccompaniment) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAccompaniment) GetAccompaniment() *BACnetDeviceObj
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccompaniment factory function for BACnetConstructedDataAccompaniment
-func NewBACnetConstructedDataAccompaniment(accompaniment *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccompaniment {
+func NewBACnetConstructedDataAccompaniment(accompaniment *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccompaniment {
 	_result := &BACnetConstructedDataAccompaniment{
 		Accompaniment:         accompaniment,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

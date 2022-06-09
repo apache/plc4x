@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataUserExternalIdentifier) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataUserExternalIdentifier) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataUserExternalIdentifier) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataUserExternalIdentifier) GetUserExternalIdentifier(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUserExternalIdentifier factory function for BACnetConstructedDataUserExternalIdentifier
-func NewBACnetConstructedDataUserExternalIdentifier(userExternalIdentifier *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataUserExternalIdentifier {
+func NewBACnetConstructedDataUserExternalIdentifier(userExternalIdentifier *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataUserExternalIdentifier {
 	_result := &BACnetConstructedDataUserExternalIdentifier{
 		UserExternalIdentifier: userExternalIdentifier,
-		BACnetConstructedData:  NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

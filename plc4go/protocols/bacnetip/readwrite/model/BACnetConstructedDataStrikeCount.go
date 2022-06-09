@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataStrikeCount) GetPropertyIdentifierArgument() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataStrikeCount) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataStrikeCount) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataStrikeCount) GetStrikeCount() *BACnetApplicationTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataStrikeCount factory function for BACnetConstructedDataStrikeCount
-func NewBACnetConstructedDataStrikeCount(strikeCount *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataStrikeCount {
+func NewBACnetConstructedDataStrikeCount(strikeCount *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataStrikeCount {
 	_result := &BACnetConstructedDataStrikeCount{
 		StrikeCount:           strikeCount,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataEventMessageTexts) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataEventMessageTexts) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataEventMessageTexts) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataEventMessageTexts) GetEventMessageTexts() *BACnetE
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventMessageTexts factory function for BACnetConstructedDataEventMessageTexts
-func NewBACnetConstructedDataEventMessageTexts(eventMessageTexts *BACnetEventMessageTexts, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEventMessageTexts {
+func NewBACnetConstructedDataEventMessageTexts(eventMessageTexts *BACnetEventMessageTexts, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEventMessageTexts {
 	_result := &BACnetConstructedDataEventMessageTexts{
 		EventMessageTexts:     eventMessageTexts,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

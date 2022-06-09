@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataIsUTC) GetPropertyIdentifierArgument() BACnetPrope
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataIsUTC) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataIsUTC) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataIsUTC) GetIsUtc() *BACnetApplicationTagBoolean {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIsUTC factory function for BACnetConstructedDataIsUTC
-func NewBACnetConstructedDataIsUTC(isUtc *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIsUTC {
+func NewBACnetConstructedDataIsUTC(isUtc *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIsUTC {
 	_result := &BACnetConstructedDataIsUTC{
 		IsUtc:                 isUtc,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

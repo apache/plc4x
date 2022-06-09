@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataTimerAlarmValues) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataTimerAlarmValues) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataTimerAlarmValues) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataTimerAlarmValues) GetAlarmValues() []*BACnetTimerS
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimerAlarmValues factory function for BACnetConstructedDataTimerAlarmValues
-func NewBACnetConstructedDataTimerAlarmValues(alarmValues []*BACnetTimerStateTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTimerAlarmValues {
+func NewBACnetConstructedDataTimerAlarmValues(alarmValues []*BACnetTimerStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTimerAlarmValues {
 	_result := &BACnetConstructedDataTimerAlarmValues{
 		AlarmValues:           alarmValues,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

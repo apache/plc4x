@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataMultiStateOutputFeedbackValue) GetPropertyIdentifi
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataMultiStateOutputFeedbackValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataMultiStateOutputFeedbackValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataMultiStateOutputFeedbackValue) GetFeedbackValue() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMultiStateOutputFeedbackValue factory function for BACnetConstructedDataMultiStateOutputFeedbackValue
-func NewBACnetConstructedDataMultiStateOutputFeedbackValue(feedbackValue *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMultiStateOutputFeedbackValue {
+func NewBACnetConstructedDataMultiStateOutputFeedbackValue(feedbackValue *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMultiStateOutputFeedbackValue {
 	_result := &BACnetConstructedDataMultiStateOutputFeedbackValue{
 		FeedbackValue:         feedbackValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

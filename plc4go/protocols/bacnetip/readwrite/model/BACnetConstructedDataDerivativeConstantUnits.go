@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataDerivativeConstantUnits) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataDerivativeConstantUnits) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataDerivativeConstantUnits) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataDerivativeConstantUnits) GetUnits() *BACnetEnginee
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDerivativeConstantUnits factory function for BACnetConstructedDataDerivativeConstantUnits
-func NewBACnetConstructedDataDerivativeConstantUnits(units *BACnetEngineeringUnitsTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDerivativeConstantUnits {
+func NewBACnetConstructedDataDerivativeConstantUnits(units *BACnetEngineeringUnitsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDerivativeConstantUnits {
 	_result := &BACnetConstructedDataDerivativeConstantUnits{
 		Units:                 units,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

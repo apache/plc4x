@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataOccupancyUpperLimitEnforced) GetPropertyIdentifier
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataOccupancyUpperLimitEnforced) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataOccupancyUpperLimitEnforced) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataOccupancyUpperLimitEnforced) GetOccupancyUpperLimi
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOccupancyUpperLimitEnforced factory function for BACnetConstructedDataOccupancyUpperLimitEnforced
-func NewBACnetConstructedDataOccupancyUpperLimitEnforced(occupancyUpperLimitEnforced *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataOccupancyUpperLimitEnforced {
+func NewBACnetConstructedDataOccupancyUpperLimitEnforced(occupancyUpperLimitEnforced *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataOccupancyUpperLimitEnforced {
 	_result := &BACnetConstructedDataOccupancyUpperLimitEnforced{
 		OccupancyUpperLimitEnforced: occupancyUpperLimitEnforced,
-		BACnetConstructedData:       NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:       NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataNumberOfAPDURetries) GetPropertyIdentifierArgument
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataNumberOfAPDURetries) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataNumberOfAPDURetries) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataNumberOfAPDURetries) GetNumberOfApduRetries() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNumberOfAPDURetries factory function for BACnetConstructedDataNumberOfAPDURetries
-func NewBACnetConstructedDataNumberOfAPDURetries(numberOfApduRetries *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNumberOfAPDURetries {
+func NewBACnetConstructedDataNumberOfAPDURetries(numberOfApduRetries *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNumberOfAPDURetries {
 	_result := &BACnetConstructedDataNumberOfAPDURetries{
 		NumberOfApduRetries:   numberOfApduRetries,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

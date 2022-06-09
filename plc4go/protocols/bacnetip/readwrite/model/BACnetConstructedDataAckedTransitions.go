@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAckedTransitions) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAckedTransitions) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAckedTransitions) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAckedTransitions) GetAckedTransitions() *BACnetEve
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAckedTransitions factory function for BACnetConstructedDataAckedTransitions
-func NewBACnetConstructedDataAckedTransitions(ackedTransitions *BACnetEventTransitionBitsTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAckedTransitions {
+func NewBACnetConstructedDataAckedTransitions(ackedTransitions *BACnetEventTransitionBitsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAckedTransitions {
 	_result := &BACnetConstructedDataAckedTransitions{
 		AckedTransitions:      ackedTransitions,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

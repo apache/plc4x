@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataWeeklySchedule) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataWeeklySchedule) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataWeeklySchedule) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataWeeklySchedule) GetWeeklySchedule() []*BACnetDaily
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataWeeklySchedule factory function for BACnetConstructedDataWeeklySchedule
-func NewBACnetConstructedDataWeeklySchedule(weeklySchedule []*BACnetDailySchedule, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataWeeklySchedule {
+func NewBACnetConstructedDataWeeklySchedule(weeklySchedule []*BACnetDailySchedule, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataWeeklySchedule {
 	_result := &BACnetConstructedDataWeeklySchedule{
 		WeeklySchedule:        weeklySchedule,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

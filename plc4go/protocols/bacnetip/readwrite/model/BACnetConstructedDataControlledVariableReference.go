@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataControlledVariableReference) GetPropertyIdentifier
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataControlledVariableReference) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataControlledVariableReference) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataControlledVariableReference) GetControlledVariable
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataControlledVariableReference factory function for BACnetConstructedDataControlledVariableReference
-func NewBACnetConstructedDataControlledVariableReference(controlledVariableReference *BACnetObjectPropertyReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataControlledVariableReference {
+func NewBACnetConstructedDataControlledVariableReference(controlledVariableReference *BACnetObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataControlledVariableReference {
 	_result := &BACnetConstructedDataControlledVariableReference{
 		ControlledVariableReference: controlledVariableReference,
-		BACnetConstructedData:       NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:       NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

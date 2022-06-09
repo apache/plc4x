@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataObjectList) GetPropertyIdentifierArgument() BACnet
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataObjectList) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataObjectList) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataObjectList) GetObjectList() []*BACnetApplicationTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataObjectList factory function for BACnetConstructedDataObjectList
-func NewBACnetConstructedDataObjectList(objectList []*BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataObjectList {
+func NewBACnetConstructedDataObjectList(objectList []*BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataObjectList {
 	_result := &BACnetConstructedDataObjectList{
 		ObjectList:            objectList,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataRestoreCompletionTime) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataRestoreCompletionTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataRestoreCompletionTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataRestoreCompletionTime) GetCompletionTime() *BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRestoreCompletionTime factory function for BACnetConstructedDataRestoreCompletionTime
-func NewBACnetConstructedDataRestoreCompletionTime(completionTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataRestoreCompletionTime {
+func NewBACnetConstructedDataRestoreCompletionTime(completionTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataRestoreCompletionTime {
 	_result := &BACnetConstructedDataRestoreCompletionTime{
 		CompletionTime:        completionTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

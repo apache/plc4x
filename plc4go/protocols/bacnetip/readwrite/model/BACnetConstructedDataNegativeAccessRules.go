@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataNegativeAccessRules) GetPropertyIdentifierArgument
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataNegativeAccessRules) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataNegativeAccessRules) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataNegativeAccessRules) GetNegativeAccessRules() []*B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNegativeAccessRules factory function for BACnetConstructedDataNegativeAccessRules
-func NewBACnetConstructedDataNegativeAccessRules(negativeAccessRules []*BACnetAccessRule, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNegativeAccessRules {
+func NewBACnetConstructedDataNegativeAccessRules(negativeAccessRules []*BACnetAccessRule, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNegativeAccessRules {
 	_result := &BACnetConstructedDataNegativeAccessRules{
 		NegativeAccessRules:   negativeAccessRules,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

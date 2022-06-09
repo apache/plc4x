@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataCarLoadUnits) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataCarLoadUnits) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataCarLoadUnits) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataCarLoadUnits) GetUnits() *BACnetEngineeringUnitsTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCarLoadUnits factory function for BACnetConstructedDataCarLoadUnits
-func NewBACnetConstructedDataCarLoadUnits(units *BACnetEngineeringUnitsTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCarLoadUnits {
+func NewBACnetConstructedDataCarLoadUnits(units *BACnetEngineeringUnitsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCarLoadUnits {
 	_result := &BACnetConstructedDataCarLoadUnits{
 		Units:                 units,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataActiveCOVSubscriptions) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataActiveCOVSubscriptions) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataActiveCOVSubscriptions) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataActiveCOVSubscriptions) GetActiveCOVSubscriptions(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActiveCOVSubscriptions factory function for BACnetConstructedDataActiveCOVSubscriptions
-func NewBACnetConstructedDataActiveCOVSubscriptions(activeCOVSubscriptions []*BACnetCOVSubscription, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataActiveCOVSubscriptions {
+func NewBACnetConstructedDataActiveCOVSubscriptions(activeCOVSubscriptions []*BACnetCOVSubscription, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataActiveCOVSubscriptions {
 	_result := &BACnetConstructedDataActiveCOVSubscriptions{
 		ActiveCOVSubscriptions: activeCOVSubscriptions,
-		BACnetConstructedData:  NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

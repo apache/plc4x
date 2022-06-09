@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataModificationDate) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataModificationDate) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataModificationDate) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataModificationDate) GetModificationDate() *BACnetDat
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataModificationDate factory function for BACnetConstructedDataModificationDate
-func NewBACnetConstructedDataModificationDate(modificationDate *BACnetDateTime, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataModificationDate {
+func NewBACnetConstructedDataModificationDate(modificationDate *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataModificationDate {
 	_result := &BACnetConstructedDataModificationDate{
 		ModificationDate:      modificationDate,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

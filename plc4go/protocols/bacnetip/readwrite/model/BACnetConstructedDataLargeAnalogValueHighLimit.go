@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLargeAnalogValueHighLimit) GetPropertyIdentifierAr
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLargeAnalogValueHighLimit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLargeAnalogValueHighLimit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLargeAnalogValueHighLimit) GetHighLimit() *BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLargeAnalogValueHighLimit factory function for BACnetConstructedDataLargeAnalogValueHighLimit
-func NewBACnetConstructedDataLargeAnalogValueHighLimit(highLimit *BACnetApplicationTagDouble, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLargeAnalogValueHighLimit {
+func NewBACnetConstructedDataLargeAnalogValueHighLimit(highLimit *BACnetApplicationTagDouble, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLargeAnalogValueHighLimit {
 	_result := &BACnetConstructedDataLargeAnalogValueHighLimit{
 		HighLimit:             highLimit,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

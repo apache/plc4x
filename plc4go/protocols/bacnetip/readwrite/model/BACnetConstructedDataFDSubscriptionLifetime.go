@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataFDSubscriptionLifetime) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataFDSubscriptionLifetime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataFDSubscriptionLifetime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataFDSubscriptionLifetime) GetFdSubscriptionLifetime(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFDSubscriptionLifetime factory function for BACnetConstructedDataFDSubscriptionLifetime
-func NewBACnetConstructedDataFDSubscriptionLifetime(fdSubscriptionLifetime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFDSubscriptionLifetime {
+func NewBACnetConstructedDataFDSubscriptionLifetime(fdSubscriptionLifetime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFDSubscriptionLifetime {
 	_result := &BACnetConstructedDataFDSubscriptionLifetime{
 		FdSubscriptionLifetime: fdSubscriptionLifetime,
-		BACnetConstructedData:  NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAccumulatorHighLimit) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAccumulatorHighLimit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAccumulatorHighLimit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAccumulatorHighLimit) GetHighLimit() *BACnetApplic
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccumulatorHighLimit factory function for BACnetConstructedDataAccumulatorHighLimit
-func NewBACnetConstructedDataAccumulatorHighLimit(highLimit *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccumulatorHighLimit {
+func NewBACnetConstructedDataAccumulatorHighLimit(highLimit *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccumulatorHighLimit {
 	_result := &BACnetConstructedDataAccumulatorHighLimit{
 		HighLimit:             highLimit,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

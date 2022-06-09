@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataBBMDForeignDeviceTable) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataBBMDForeignDeviceTable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataBBMDForeignDeviceTable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataBBMDForeignDeviceTable) GetBbmdForeignDeviceTable(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBBMDForeignDeviceTable factory function for BACnetConstructedDataBBMDForeignDeviceTable
-func NewBACnetConstructedDataBBMDForeignDeviceTable(bbmdForeignDeviceTable []*BACnetBDTEntry, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBBMDForeignDeviceTable {
+func NewBACnetConstructedDataBBMDForeignDeviceTable(bbmdForeignDeviceTable []*BACnetBDTEntry, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBBMDForeignDeviceTable {
 	_result := &BACnetConstructedDataBBMDForeignDeviceTable{
 		BbmdForeignDeviceTable: bbmdForeignDeviceTable,
-		BACnetConstructedData:  NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

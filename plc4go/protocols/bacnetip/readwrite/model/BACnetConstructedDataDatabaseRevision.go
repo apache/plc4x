@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataDatabaseRevision) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataDatabaseRevision) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataDatabaseRevision) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataDatabaseRevision) GetDatabaseRevision() *BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDatabaseRevision factory function for BACnetConstructedDataDatabaseRevision
-func NewBACnetConstructedDataDatabaseRevision(databaseRevision *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDatabaseRevision {
+func NewBACnetConstructedDataDatabaseRevision(databaseRevision *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDatabaseRevision {
 	_result := &BACnetConstructedDataDatabaseRevision{
 		DatabaseRevision:      databaseRevision,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

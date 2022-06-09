@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLastAccessPoint) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLastAccessPoint) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLastAccessPoint) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLastAccessPoint) GetLastAccessPoint() *BACnetDevic
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastAccessPoint factory function for BACnetConstructedDataLastAccessPoint
-func NewBACnetConstructedDataLastAccessPoint(lastAccessPoint *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastAccessPoint {
+func NewBACnetConstructedDataLastAccessPoint(lastAccessPoint *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastAccessPoint {
 	_result := &BACnetConstructedDataLastAccessPoint{
 		LastAccessPoint:       lastAccessPoint,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

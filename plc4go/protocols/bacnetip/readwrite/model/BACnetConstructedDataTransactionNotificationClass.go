@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataTransactionNotificationClass) GetPropertyIdentifie
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataTransactionNotificationClass) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataTransactionNotificationClass) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataTransactionNotificationClass) GetTransactionNotifi
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTransactionNotificationClass factory function for BACnetConstructedDataTransactionNotificationClass
-func NewBACnetConstructedDataTransactionNotificationClass(transactionNotificationClass *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTransactionNotificationClass {
+func NewBACnetConstructedDataTransactionNotificationClass(transactionNotificationClass *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTransactionNotificationClass {
 	_result := &BACnetConstructedDataTransactionNotificationClass{
 		TransactionNotificationClass: transactionNotificationClass,
-		BACnetConstructedData:        NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:        NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

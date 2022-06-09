@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataEffectivePeriod) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataEffectivePeriod) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataEffectivePeriod) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataEffectivePeriod) GetDateRange() *BACnetDateRange {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEffectivePeriod factory function for BACnetConstructedDataEffectivePeriod
-func NewBACnetConstructedDataEffectivePeriod(dateRange *BACnetDateRange, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEffectivePeriod {
+func NewBACnetConstructedDataEffectivePeriod(dateRange *BACnetDateRange, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEffectivePeriod {
 	_result := &BACnetConstructedDataEffectivePeriod{
 		DateRange:             dateRange,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

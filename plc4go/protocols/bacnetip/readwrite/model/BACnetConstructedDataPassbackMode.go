@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataPassbackMode) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataPassbackMode) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataPassbackMode) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataPassbackMode) GetPassbackMode() *BACnetAccessPassb
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPassbackMode factory function for BACnetConstructedDataPassbackMode
-func NewBACnetConstructedDataPassbackMode(passbackMode *BACnetAccessPassbackModeTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPassbackMode {
+func NewBACnetConstructedDataPassbackMode(passbackMode *BACnetAccessPassbackModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPassbackMode {
 	_result := &BACnetConstructedDataPassbackMode{
 		PassbackMode:          passbackMode,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

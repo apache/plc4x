@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAllowGroupDelayInhibit) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAllowGroupDelayInhibit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAllowGroupDelayInhibit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAllowGroupDelayInhibit) GetAllowGroupDelayInhibit(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAllowGroupDelayInhibit factory function for BACnetConstructedDataAllowGroupDelayInhibit
-func NewBACnetConstructedDataAllowGroupDelayInhibit(allowGroupDelayInhibit *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAllowGroupDelayInhibit {
+func NewBACnetConstructedDataAllowGroupDelayInhibit(allowGroupDelayInhibit *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAllowGroupDelayInhibit {
 	_result := &BACnetConstructedDataAllowGroupDelayInhibit{
 		AllowGroupDelayInhibit: allowGroupDelayInhibit,
-		BACnetConstructedData:  NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

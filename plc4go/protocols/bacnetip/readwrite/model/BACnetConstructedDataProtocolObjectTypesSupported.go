@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataProtocolObjectTypesSupported) GetPropertyIdentifie
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataProtocolObjectTypesSupported) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataProtocolObjectTypesSupported) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataProtocolObjectTypesSupported) GetProtocolObjectTyp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProtocolObjectTypesSupported factory function for BACnetConstructedDataProtocolObjectTypesSupported
-func NewBACnetConstructedDataProtocolObjectTypesSupported(protocolObjectTypesSupported *BACnetObjectTypesSupportedTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProtocolObjectTypesSupported {
+func NewBACnetConstructedDataProtocolObjectTypesSupported(protocolObjectTypesSupported *BACnetObjectTypesSupportedTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProtocolObjectTypesSupported {
 	_result := &BACnetConstructedDataProtocolObjectTypesSupported{
 		ProtocolObjectTypesSupported: protocolObjectTypesSupported,
-		BACnetConstructedData:        NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:        NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

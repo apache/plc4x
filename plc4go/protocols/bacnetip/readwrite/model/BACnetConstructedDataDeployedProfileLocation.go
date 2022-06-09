@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataDeployedProfileLocation) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataDeployedProfileLocation) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataDeployedProfileLocation) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataDeployedProfileLocation) GetDeployedProfileLocatio
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDeployedProfileLocation factory function for BACnetConstructedDataDeployedProfileLocation
-func NewBACnetConstructedDataDeployedProfileLocation(deployedProfileLocation *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDeployedProfileLocation {
+func NewBACnetConstructedDataDeployedProfileLocation(deployedProfileLocation *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDeployedProfileLocation {
 	_result := &BACnetConstructedDataDeployedProfileLocation{
 		DeployedProfileLocation: deployedProfileLocation,
-		BACnetConstructedData:   NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

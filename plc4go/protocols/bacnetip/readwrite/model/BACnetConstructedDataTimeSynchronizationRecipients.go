@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataTimeSynchronizationRecipients) GetPropertyIdentifi
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataTimeSynchronizationRecipients) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataTimeSynchronizationRecipients) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataTimeSynchronizationRecipients) GetTimeSynchronizat
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimeSynchronizationRecipients factory function for BACnetConstructedDataTimeSynchronizationRecipients
-func NewBACnetConstructedDataTimeSynchronizationRecipients(timeSynchronizationRecipients []*BACnetRecipient, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTimeSynchronizationRecipients {
+func NewBACnetConstructedDataTimeSynchronizationRecipients(timeSynchronizationRecipients []*BACnetRecipient, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTimeSynchronizationRecipients {
 	_result := &BACnetConstructedDataTimeSynchronizationRecipients{
 		TimeSynchronizationRecipients: timeSynchronizationRecipients,
-		BACnetConstructedData:         NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:         NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

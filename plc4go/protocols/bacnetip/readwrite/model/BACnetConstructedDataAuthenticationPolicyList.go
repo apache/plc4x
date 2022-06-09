@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAuthenticationPolicyList) GetPropertyIdentifierArg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAuthenticationPolicyList) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAuthenticationPolicyList) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAuthenticationPolicyList) GetAuthenticationPolicyL
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAuthenticationPolicyList factory function for BACnetConstructedDataAuthenticationPolicyList
-func NewBACnetConstructedDataAuthenticationPolicyList(authenticationPolicyList []*BACnetAuthenticationPolicy, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAuthenticationPolicyList {
+func NewBACnetConstructedDataAuthenticationPolicyList(authenticationPolicyList []*BACnetAuthenticationPolicy, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAuthenticationPolicyList {
 	_result := &BACnetConstructedDataAuthenticationPolicyList{
 		AuthenticationPolicyList: authenticationPolicyList,
-		BACnetConstructedData:    NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

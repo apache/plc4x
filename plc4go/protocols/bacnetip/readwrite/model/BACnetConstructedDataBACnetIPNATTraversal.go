@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataBACnetIPNATTraversal) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataBACnetIPNATTraversal) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataBACnetIPNATTraversal) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataBACnetIPNATTraversal) GetBacnetIPNATTraversal() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPNATTraversal factory function for BACnetConstructedDataBACnetIPNATTraversal
-func NewBACnetConstructedDataBACnetIPNATTraversal(bacnetIPNATTraversal *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPNATTraversal {
+func NewBACnetConstructedDataBACnetIPNATTraversal(bacnetIPNATTraversal *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPNATTraversal {
 	_result := &BACnetConstructedDataBACnetIPNATTraversal{
 		BacnetIPNATTraversal:  bacnetIPNATTraversal,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

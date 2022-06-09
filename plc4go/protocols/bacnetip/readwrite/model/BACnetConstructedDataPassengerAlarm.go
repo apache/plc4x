@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataPassengerAlarm) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataPassengerAlarm) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataPassengerAlarm) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataPassengerAlarm) GetPassengerAlarm() *BACnetApplica
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPassengerAlarm factory function for BACnetConstructedDataPassengerAlarm
-func NewBACnetConstructedDataPassengerAlarm(passengerAlarm *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPassengerAlarm {
+func NewBACnetConstructedDataPassengerAlarm(passengerAlarm *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPassengerAlarm {
 	_result := &BACnetConstructedDataPassengerAlarm{
 		PassengerAlarm:        passengerAlarm,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataIPDHCPEnable) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataIPDHCPEnable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataIPDHCPEnable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataIPDHCPEnable) GetIpDhcpEnable() *BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPDHCPEnable factory function for BACnetConstructedDataIPDHCPEnable
-func NewBACnetConstructedDataIPDHCPEnable(ipDhcpEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPDHCPEnable {
+func NewBACnetConstructedDataIPDHCPEnable(ipDhcpEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPDHCPEnable {
 	_result := &BACnetConstructedDataIPDHCPEnable{
 		IpDhcpEnable:          ipDhcpEnable,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

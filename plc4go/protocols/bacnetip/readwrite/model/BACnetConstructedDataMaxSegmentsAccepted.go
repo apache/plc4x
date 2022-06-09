@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataMaxSegmentsAccepted) GetPropertyIdentifierArgument
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataMaxSegmentsAccepted) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataMaxSegmentsAccepted) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataMaxSegmentsAccepted) GetMaxSegmentsAccepted() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMaxSegmentsAccepted factory function for BACnetConstructedDataMaxSegmentsAccepted
-func NewBACnetConstructedDataMaxSegmentsAccepted(maxSegmentsAccepted *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMaxSegmentsAccepted {
+func NewBACnetConstructedDataMaxSegmentsAccepted(maxSegmentsAccepted *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMaxSegmentsAccepted {
 	_result := &BACnetConstructedDataMaxSegmentsAccepted{
 		MaxSegmentsAccepted:   maxSegmentsAccepted,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

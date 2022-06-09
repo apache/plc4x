@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataBACnetIPv6Mode) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataBACnetIPv6Mode) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataBACnetIPv6Mode) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataBACnetIPv6Mode) GetBacnetIpv6Mode() *BACnetIPModeT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPv6Mode factory function for BACnetConstructedDataBACnetIPv6Mode
-func NewBACnetConstructedDataBACnetIPv6Mode(bacnetIpv6Mode *BACnetIPModeTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPv6Mode {
+func NewBACnetConstructedDataBACnetIPv6Mode(bacnetIpv6Mode *BACnetIPModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPv6Mode {
 	_result := &BACnetConstructedDataBACnetIPv6Mode{
 		BacnetIpv6Mode:        bacnetIpv6Mode,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

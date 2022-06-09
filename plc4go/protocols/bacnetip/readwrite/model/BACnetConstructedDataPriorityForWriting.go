@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataPriorityForWriting) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataPriorityForWriting) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataPriorityForWriting) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataPriorityForWriting) GetPriorityForWriting() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPriorityForWriting factory function for BACnetConstructedDataPriorityForWriting
-func NewBACnetConstructedDataPriorityForWriting(priorityForWriting *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPriorityForWriting {
+func NewBACnetConstructedDataPriorityForWriting(priorityForWriting *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPriorityForWriting {
 	_result := &BACnetConstructedDataPriorityForWriting{
 		PriorityForWriting:    priorityForWriting,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

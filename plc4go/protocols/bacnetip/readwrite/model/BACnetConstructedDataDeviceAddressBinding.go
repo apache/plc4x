@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataDeviceAddressBinding) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataDeviceAddressBinding) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataDeviceAddressBinding) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataDeviceAddressBinding) GetDeviceAddressBinding() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDeviceAddressBinding factory function for BACnetConstructedDataDeviceAddressBinding
-func NewBACnetConstructedDataDeviceAddressBinding(deviceAddressBinding []*BACnetAddressBinding, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDeviceAddressBinding {
+func NewBACnetConstructedDataDeviceAddressBinding(deviceAddressBinding []*BACnetAddressBinding, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDeviceAddressBinding {
 	_result := &BACnetConstructedDataDeviceAddressBinding{
 		DeviceAddressBinding:  deviceAddressBinding,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -525,7 +525,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
-                    BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
+                    BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) ((BACnetConstructedDataAnalogOutputPresentValue) baCnetServiceAckReadProperty.getValues()).getPresentValue();
                     assertEquals(0, baCnetApplicationTagReal.getPayload().getValue());
                 }),
             DynamicTest.dynamicTest("No. 19-26 - Skip Misc 8 packages",
@@ -600,7 +600,7 @@ public class RandomPackagesTest {
                     assertEquals(0, baCnetConfirmedServiceRequestWriteProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetConfirmedServiceRequestWriteProperty.getPropertyIdentifier().getValue());
 
-                    BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) ((BACnetConstructedDataUnspecified) baCnetConfirmedServiceRequestWriteProperty.getPropertyValue()).getData().get(0).getApplicationTag();
+                    BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) ((BACnetConstructedDataAnalogOutputPresentValue) baCnetConfirmedServiceRequestWriteProperty.getPropertyValue()).getPresentValue();
                     assertEquals(123.449997f, baCnetApplicationTagReal.getPayload().getValue());
                     BACnetContextTagUnsignedInteger priority = baCnetConfirmedServiceRequestWriteProperty.getPriority();
                     assertEquals(10, priority.getPayload().getActualValue().longValue());
@@ -680,7 +680,7 @@ public class RandomPackagesTest {
                 }),
             pcapEvaluator.parseFrom(203,
                 skip(230, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
-                )
+            )
         );
     }
 
@@ -1071,7 +1071,7 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
                     assertNotNull(serviceRequest);
                     BACnetConfirmedServiceRequestWriteProperty baCnetConfirmedServiceRequestWriteProperty = (BACnetConfirmedServiceRequestWriteProperty) serviceRequest;
-                    BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) ((BACnetConstructedDataUnspecified) baCnetConfirmedServiceRequestWriteProperty.getPropertyValue()).getData().get(0).getApplicationTag();
+                    BACnetApplicationTagReal baCnetApplicationTagReal = ((BACnetConstructedDataAnalogValuePresentValue) baCnetConfirmedServiceRequestWriteProperty.getPropertyValue()).getPresentValue();
                     assertEquals(123.0f, baCnetApplicationTagReal.getPayload().getValue());
                 }),
             pcapEvaluator.parseFrom(2,
@@ -1852,11 +1852,8 @@ public class RandomPackagesTest {
                                             .extracting(BACnetPropertyIdentifierTagged::getValue)
                                             .isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE),
                                         propertyValue -> assertThat(propertyValue)
-                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
-                                            .extracting(BACnetConstructedDataUnspecified::getData)
-                                            .asList().element(0)
-                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataElement.class))
-                                            .extracting(BACnetConstructedDataElement::getApplicationTag)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataAnalogValuePresentValue.class))
+                                            .extracting(BACnetConstructedDataAnalogValuePresentValue::getPresentValue)
                                             .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagReal.class))
                                             .extracting(BACnetApplicationTagReal::getPayload)
                                             .extracting(BACnetTagPayloadReal::getValue)
@@ -1958,7 +1955,7 @@ public class RandomPackagesTest {
             pcapEvaluator.parseFrom(2,
                 skip(32956, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
                 skip(33644, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
-                 )
+            )
         );
     }
 
@@ -2168,7 +2165,7 @@ public class RandomPackagesTest {
                 skip(80, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
                 skip(852, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
                 skip(912, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
-                )
+            )
         ));
     }
 
@@ -2227,8 +2224,6 @@ public class RandomPackagesTest {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-stack-services.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
             skip(1, SkipInstruction.SkipType.SKIP_COMPARE, "contains extra bytes that we don't serialize"),
-            // TODO: check that
-            skip(54,"TODO: real as binary input returned doesn't see right"),
             skip(77, "Malformed Package"),
             skip(79, "Malformed Package"),
             skip(81, "Malformed Package"),
@@ -2327,13 +2322,12 @@ public class RandomPackagesTest {
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
-                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
-                                        .extracting(BACnetConstructedDataUnspecified::getData)
-                                        .satisfies(baCnetConstructedDataElements -> assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
-                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
-                                            .extracting(BACnetApplicationTagUnsignedInteger::getPayload)
-                                            .extracting(BACnetTagPayloadUnsignedInteger::getValueUint16)
-                                            .isEqualTo(1576));
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataPresentValue.class))
+                                        .extracting(BACnetConstructedDataPresentValue::getPresentValue)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
+                                        .extracting(BACnetApplicationTagUnsignedInteger::getPayload)
+                                        .extracting(BACnetTagPayloadUnsignedInteger::getValueUint16)
+                                        .isEqualTo(1576);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
                                 });
                                 assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
@@ -2386,13 +2380,12 @@ public class RandomPackagesTest {
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
-                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
-                                        .extracting(BACnetConstructedDataUnspecified::getData)
-                                        .satisfies(baCnetConstructedDataElements -> assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
-                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
-                                            .extracting(BACnetApplicationTagUnsignedInteger::getPayload)
-                                            .extracting(BACnetTagPayloadUnsignedInteger::getValueUint16)
-                                            .isEqualTo(1577));
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataPresentValue.class))
+                                        .extracting(BACnetConstructedDataPresentValue::getPresentValue)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
+                                        .extracting(BACnetApplicationTagUnsignedInteger::getPayload)
+                                        .extracting(BACnetTagPayloadUnsignedInteger::getValueUint16)
+                                        .isEqualTo(1577);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
                                 });
                                 assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
@@ -2497,13 +2490,12 @@ public class RandomPackagesTest {
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
-                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
-                                        .extracting(BACnetConstructedDataUnspecified::getData)
-                                        .satisfies(baCnetConstructedDataElements -> assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
-                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
-                                            .extracting(BACnetApplicationTagUnsignedInteger::getPayload)
-                                            .extracting(BACnetTagPayloadUnsignedInteger::getValueUint16)
-                                            .isEqualTo(1577));
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataPresentValue.class))
+                                        .extracting(BACnetConstructedDataPresentValue::getPresentValue)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
+                                        .extracting(BACnetApplicationTagUnsignedInteger::getPayload)
+                                        .extracting(BACnetTagPayloadUnsignedInteger::getValueUint16)
+                                        .isEqualTo(1577);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
                                 });
                                 assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
@@ -2608,13 +2600,11 @@ public class RandomPackagesTest {
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
-                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
-                                        .extracting(BACnetConstructedDataUnspecified::getData)
-                                        .satisfies(baCnetConstructedDataElements -> assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
-                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagEnumerated.class))
-                                            .extracting(BACnetApplicationTagEnumerated::getPayload)
-                                            .extracting(BACnetTagPayloadEnumerated::getActualValue)
-                                            .isEqualTo(0L));
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataBinaryOutputPresentValue.class))
+                                        .extracting(BACnetConstructedDataBinaryOutputPresentValue::getPresentValue)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetBinaryPVTagged.class))
+                                        .extracting(BACnetBinaryPVTagged::getValue)
+                                        .isEqualTo(BACnetBinaryPV.INACTIVE);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
                                 });
                                 assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
@@ -2774,13 +2764,12 @@ public class RandomPackagesTest {
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
                                         .extracting(BACnetConstructedDataElement::getConstructedData)
-                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
-                                        .extracting(BACnetConstructedDataUnspecified::getData)
-                                        .satisfies(baCnetConstructedDataElements -> assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
-                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
-                                            .extracting(BACnetApplicationTagUnsignedInteger::getPayload)
-                                            .extracting(BACnetTagPayloadUnsignedInteger::getValueUint16)
-                                            .isEqualTo(1578));
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataPresentValue.class))
+                                        .extracting(BACnetConstructedDataPresentValue::getPresentValue)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
+                                        .extracting(BACnetApplicationTagUnsignedInteger::getPayload)
+                                        .extracting(BACnetTagPayloadUnsignedInteger::getValueUint16)
+                                        .isEqualTo(1578);
                                     assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
                                 });
                                 assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
@@ -2926,12 +2915,7 @@ public class RandomPackagesTest {
                         assertNotNull(baCnetNotificationParametersComplexEventType);
                     }
                 }),
-            pcapEvaluator.parseFrom(2,
-                // TODO: investigate
-                skip(5, "TODO: seems right but we have it mapped to binaryPV only so we might need to relax that"),
-                skip(7, "TODO: seems right but we have it mapped to binaryPV only so we might need to relax that"),
-                skip(9, "TODO: seems right but we have it mapped to binaryPV only so we might need to relax that")
-            )
+            pcapEvaluator.parseFrom(2)
         );
     }
 
@@ -3434,6 +3418,12 @@ public class RandomPackagesTest {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-siemens-1.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
             skip(225, "strange siemens package"),
+            skip(827, "This request the results in a error response as it sends wrong data"),
+            skip(828, "This request the results in a error response as it sends wrong data"),
+            skip(865, "This request the results in a error response as it sends wrong data"),
+            skip(866, "This request the results in a error response as it sends wrong data"),
+            skip(875, "This request the results in a error response as it sends wrong data"),
+            skip(876, "This request the results in a error response as it sends wrong data"),
             //TODO: investigate those
             skip(278, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
             skip(291, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
@@ -3508,7 +3498,7 @@ public class RandomPackagesTest {
                 }),
             pcapEvaluator.parseFrom(2,
                 skip(328, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
-                )
+            )
         );
     }
 
@@ -3524,7 +3514,7 @@ public class RandomPackagesTest {
             ArrayUtils.addAll(whatIsWrongHere,
                 skip(8135, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
                 skip(8200, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
-                )
+            )
         ));
     }
 
@@ -3544,7 +3534,7 @@ public class RandomPackagesTest {
                 skip(11154, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
                 skip(11658, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
                 skip(11848, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
-                )
+            )
         ));
     }
 
@@ -4584,9 +4574,8 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.MAX_INFO_FRAMES, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
-                    BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
-                    BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
-                    assertEquals((short) 40, BACnetApplicationTagUnsignedInteger.getPayload().getValueUint8());
+                    BACnetApplicationTagUnsignedInteger value = ((BACnetConstructedDataDeviceMaxInfoFrames) baCnetServiceAckReadProperty.getValues()).getMaxInfoFrames();
+                    assertEquals((short) 40, value.getPayload().getValueUint8());
                 }),
             DynamicTest.dynamicTest("No. 61 - Confirmed-REQ   readProperty[ 54] device,201 device-address-binding",
                 () -> {
@@ -5363,9 +5352,8 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.MAX_INFO_FRAMES, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
-                    BACnetApplicationTag value = ((BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues()).getData().get(0).getApplicationTag();
-                    BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
-                    assertEquals((short) 1, BACnetApplicationTagUnsignedInteger.getPayload().getValueUint8());
+                    BACnetApplicationTagUnsignedInteger value = ((BACnetConstructedDataDeviceMaxInfoFrames) baCnetServiceAckReadProperty.getValues()).getMaxInfoFrames();
+                    assertEquals((short) 1, value.getPayload().getValueUint8());
                 }),
             DynamicTest.dynamicTest("No. 117 - Confirmed-REQ   readProperty[ 82] device,61 device-address-binding",
                 () -> {

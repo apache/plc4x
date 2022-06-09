@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAuthenticationFactors) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAuthenticationFactors) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAuthenticationFactors) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAuthenticationFactors) GetAuthenticationFactors() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAuthenticationFactors factory function for BACnetConstructedDataAuthenticationFactors
-func NewBACnetConstructedDataAuthenticationFactors(authenticationFactors []*BACnetCredentialAuthenticationFactor, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAuthenticationFactors {
+func NewBACnetConstructedDataAuthenticationFactors(authenticationFactors []*BACnetCredentialAuthenticationFactor, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAuthenticationFactors {
 	_result := &BACnetConstructedDataAuthenticationFactors{
 		AuthenticationFactors: authenticationFactors,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

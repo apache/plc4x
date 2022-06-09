@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataCommandAction) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataCommandAction) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataCommandAction) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataCommandAction) GetActionLists() []*BACnetActionLis
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCommandAction factory function for BACnetConstructedDataCommandAction
-func NewBACnetConstructedDataCommandAction(actionLists []*BACnetActionList, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCommandAction {
+func NewBACnetConstructedDataCommandAction(actionLists []*BACnetActionList, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCommandAction {
 	_result := &BACnetConstructedDataCommandAction{
 		ActionLists:           actionLists,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

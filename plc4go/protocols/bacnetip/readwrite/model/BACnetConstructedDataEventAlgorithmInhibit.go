@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataEventAlgorithmInhibit) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataEventAlgorithmInhibit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataEventAlgorithmInhibit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataEventAlgorithmInhibit) GetEventAlgorithmInhibit() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventAlgorithmInhibit factory function for BACnetConstructedDataEventAlgorithmInhibit
-func NewBACnetConstructedDataEventAlgorithmInhibit(eventAlgorithmInhibit *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEventAlgorithmInhibit {
+func NewBACnetConstructedDataEventAlgorithmInhibit(eventAlgorithmInhibit *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataEventAlgorithmInhibit {
 	_result := &BACnetConstructedDataEventAlgorithmInhibit{
 		EventAlgorithmInhibit: eventAlgorithmInhibit,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

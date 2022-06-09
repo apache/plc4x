@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataThreatLevel) GetPropertyIdentifierArgument() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataThreatLevel) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataThreatLevel) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataThreatLevel) GetThreatLevel() *BACnetAccessThreatL
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataThreatLevel factory function for BACnetConstructedDataThreatLevel
-func NewBACnetConstructedDataThreatLevel(threatLevel *BACnetAccessThreatLevel, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataThreatLevel {
+func NewBACnetConstructedDataThreatLevel(threatLevel *BACnetAccessThreatLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataThreatLevel {
 	_result := &BACnetConstructedDataThreatLevel{
 		ThreatLevel:           threatLevel,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

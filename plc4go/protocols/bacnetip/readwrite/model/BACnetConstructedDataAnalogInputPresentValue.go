@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAnalogInputPresentValue) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAnalogInputPresentValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAnalogInputPresentValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAnalogInputPresentValue) GetPresentValue() *BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAnalogInputPresentValue factory function for BACnetConstructedDataAnalogInputPresentValue
-func NewBACnetConstructedDataAnalogInputPresentValue(presentValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAnalogInputPresentValue {
+func NewBACnetConstructedDataAnalogInputPresentValue(presentValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAnalogInputPresentValue {
 	_result := &BACnetConstructedDataAnalogInputPresentValue{
 		PresentValue:          presentValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataBACnetIPGlobalAddress) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataBACnetIPGlobalAddress) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataBACnetIPGlobalAddress) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataBACnetIPGlobalAddress) GetBacnetIpGlobalAddress() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPGlobalAddress factory function for BACnetConstructedDataBACnetIPGlobalAddress
-func NewBACnetConstructedDataBACnetIPGlobalAddress(bacnetIpGlobalAddress *BACnetHostNPort, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPGlobalAddress {
+func NewBACnetConstructedDataBACnetIPGlobalAddress(bacnetIpGlobalAddress *BACnetHostNPort, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPGlobalAddress {
 	_result := &BACnetConstructedDataBACnetIPGlobalAddress{
 		BacnetIpGlobalAddress: bacnetIpGlobalAddress,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

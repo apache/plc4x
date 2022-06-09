@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataOccupancyCountAdjust) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataOccupancyCountAdjust) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataOccupancyCountAdjust) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataOccupancyCountAdjust) GetOccupancyCountAdjust() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOccupancyCountAdjust factory function for BACnetConstructedDataOccupancyCountAdjust
-func NewBACnetConstructedDataOccupancyCountAdjust(occupancyCountAdjust *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataOccupancyCountAdjust {
+func NewBACnetConstructedDataOccupancyCountAdjust(occupancyCountAdjust *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataOccupancyCountAdjust {
 	_result := &BACnetConstructedDataOccupancyCountAdjust{
 		OccupancyCountAdjust:  occupancyCountAdjust,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

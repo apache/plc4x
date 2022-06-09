@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAuthorizationMode) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAuthorizationMode) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAuthorizationMode) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAuthorizationMode) GetAuthorizationMode() *BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAuthorizationMode factory function for BACnetConstructedDataAuthorizationMode
-func NewBACnetConstructedDataAuthorizationMode(authorizationMode *BACnetAuthorizationModeTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAuthorizationMode {
+func NewBACnetConstructedDataAuthorizationMode(authorizationMode *BACnetAuthorizationModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAuthorizationMode {
 	_result := &BACnetConstructedDataAuthorizationMode{
 		AuthorizationMode:     authorizationMode,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

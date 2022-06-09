@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataSlaveAddressBinding) GetPropertyIdentifierArgument
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataSlaveAddressBinding) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataSlaveAddressBinding) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataSlaveAddressBinding) GetSlaveAddressBinding() []*B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSlaveAddressBinding factory function for BACnetConstructedDataSlaveAddressBinding
-func NewBACnetConstructedDataSlaveAddressBinding(slaveAddressBinding []*BACnetAddressBinding, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSlaveAddressBinding {
+func NewBACnetConstructedDataSlaveAddressBinding(slaveAddressBinding []*BACnetAddressBinding, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSlaveAddressBinding {
 	_result := &BACnetConstructedDataSlaveAddressBinding{
 		SlaveAddressBinding:   slaveAddressBinding,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

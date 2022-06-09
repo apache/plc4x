@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataRequestedUpdateInterval) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataRequestedUpdateInterval) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataRequestedUpdateInterval) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataRequestedUpdateInterval) GetRequestedUpdateInterva
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRequestedUpdateInterval factory function for BACnetConstructedDataRequestedUpdateInterval
-func NewBACnetConstructedDataRequestedUpdateInterval(requestedUpdateInterval *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataRequestedUpdateInterval {
+func NewBACnetConstructedDataRequestedUpdateInterval(requestedUpdateInterval *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataRequestedUpdateInterval {
 	_result := &BACnetConstructedDataRequestedUpdateInterval{
 		RequestedUpdateInterval: requestedUpdateInterval,
-		BACnetConstructedData:   NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

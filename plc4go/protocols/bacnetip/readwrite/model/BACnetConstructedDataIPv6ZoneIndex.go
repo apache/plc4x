@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataIPv6ZoneIndex) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataIPv6ZoneIndex) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataIPv6ZoneIndex) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataIPv6ZoneIndex) GetIpv6ZoneIndex() *BACnetApplicati
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6ZoneIndex factory function for BACnetConstructedDataIPv6ZoneIndex
-func NewBACnetConstructedDataIPv6ZoneIndex(ipv6ZoneIndex *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPv6ZoneIndex {
+func NewBACnetConstructedDataIPv6ZoneIndex(ipv6ZoneIndex *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPv6ZoneIndex {
 	_result := &BACnetConstructedDataIPv6ZoneIndex{
 		Ipv6ZoneIndex:         ipv6ZoneIndex,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

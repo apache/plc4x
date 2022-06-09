@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataDefaultFadeTime) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataDefaultFadeTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataDefaultFadeTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataDefaultFadeTime) GetDefaultFadeTime() *BACnetAppli
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDefaultFadeTime factory function for BACnetConstructedDataDefaultFadeTime
-func NewBACnetConstructedDataDefaultFadeTime(defaultFadeTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDefaultFadeTime {
+func NewBACnetConstructedDataDefaultFadeTime(defaultFadeTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDefaultFadeTime {
 	_result := &BACnetConstructedDataDefaultFadeTime{
 		DefaultFadeTime:       defaultFadeTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

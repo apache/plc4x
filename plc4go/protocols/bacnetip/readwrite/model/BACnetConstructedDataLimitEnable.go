@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLimitEnable) GetPropertyIdentifierArgument() BACne
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLimitEnable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLimitEnable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLimitEnable) GetLimitEnable() *BACnetLimitEnableTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLimitEnable factory function for BACnetConstructedDataLimitEnable
-func NewBACnetConstructedDataLimitEnable(limitEnable *BACnetLimitEnableTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLimitEnable {
+func NewBACnetConstructedDataLimitEnable(limitEnable *BACnetLimitEnableTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLimitEnable {
 	_result := &BACnetConstructedDataLimitEnable{
 		LimitEnable:           limitEnable,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

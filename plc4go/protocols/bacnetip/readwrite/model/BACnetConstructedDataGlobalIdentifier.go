@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataGlobalIdentifier) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataGlobalIdentifier) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataGlobalIdentifier) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataGlobalIdentifier) GetGlobalIdentifier() *BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataGlobalIdentifier factory function for BACnetConstructedDataGlobalIdentifier
-func NewBACnetConstructedDataGlobalIdentifier(globalIdentifier *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataGlobalIdentifier {
+func NewBACnetConstructedDataGlobalIdentifier(globalIdentifier *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataGlobalIdentifier {
 	_result := &BACnetConstructedDataGlobalIdentifier{
 		GlobalIdentifier:      globalIdentifier,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

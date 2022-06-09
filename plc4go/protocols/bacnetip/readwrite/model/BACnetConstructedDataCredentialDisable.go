@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataCredentialDisable) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataCredentialDisable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataCredentialDisable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataCredentialDisable) GetCredentialDisable() *BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCredentialDisable factory function for BACnetConstructedDataCredentialDisable
-func NewBACnetConstructedDataCredentialDisable(credentialDisable *BACnetAccessCredentialDisableTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCredentialDisable {
+func NewBACnetConstructedDataCredentialDisable(credentialDisable *BACnetAccessCredentialDisableTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCredentialDisable {
 	_result := &BACnetConstructedDataCredentialDisable{
 		CredentialDisable:     credentialDisable,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

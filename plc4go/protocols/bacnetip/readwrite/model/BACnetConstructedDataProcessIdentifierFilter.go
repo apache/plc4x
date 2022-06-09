@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataProcessIdentifierFilter) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataProcessIdentifierFilter) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataProcessIdentifierFilter) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataProcessIdentifierFilter) GetProcessIdentifierFilte
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProcessIdentifierFilter factory function for BACnetConstructedDataProcessIdentifierFilter
-func NewBACnetConstructedDataProcessIdentifierFilter(processIdentifierFilter *BACnetProcessIdSelection, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProcessIdentifierFilter {
+func NewBACnetConstructedDataProcessIdentifierFilter(processIdentifierFilter *BACnetProcessIdSelection, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProcessIdentifierFilter {
 	_result := &BACnetConstructedDataProcessIdentifierFilter{
 		ProcessIdentifierFilter: processIdentifierFilter,
-		BACnetConstructedData:   NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

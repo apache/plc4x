@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataBACnetIPMulticastAddress) GetPropertyIdentifierArg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataBACnetIPMulticastAddress) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataBACnetIPMulticastAddress) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataBACnetIPMulticastAddress) GetIpMulticastAddress() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPMulticastAddress factory function for BACnetConstructedDataBACnetIPMulticastAddress
-func NewBACnetConstructedDataBACnetIPMulticastAddress(ipMulticastAddress *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPMulticastAddress {
+func NewBACnetConstructedDataBACnetIPMulticastAddress(ipMulticastAddress *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPMulticastAddress {
 	_result := &BACnetConstructedDataBACnetIPMulticastAddress{
 		IpMulticastAddress:    ipMulticastAddress,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

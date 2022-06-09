@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataCredentialStatus) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataCredentialStatus) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataCredentialStatus) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataCredentialStatus) GetBinaryPv() *BACnetBinaryPVTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCredentialStatus factory function for BACnetConstructedDataCredentialStatus
-func NewBACnetConstructedDataCredentialStatus(binaryPv *BACnetBinaryPVTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCredentialStatus {
+func NewBACnetConstructedDataCredentialStatus(binaryPv *BACnetBinaryPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCredentialStatus {
 	_result := &BACnetConstructedDataCredentialStatus{
 		BinaryPv:              binaryPv,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLastCredentialAddedTime) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLastCredentialAddedTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLastCredentialAddedTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLastCredentialAddedTime) GetLastCredentialAddedTim
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastCredentialAddedTime factory function for BACnetConstructedDataLastCredentialAddedTime
-func NewBACnetConstructedDataLastCredentialAddedTime(lastCredentialAddedTime *BACnetDateTime, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastCredentialAddedTime {
+func NewBACnetConstructedDataLastCredentialAddedTime(lastCredentialAddedTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastCredentialAddedTime {
 	_result := &BACnetConstructedDataLastCredentialAddedTime{
 		LastCredentialAddedTime: lastCredentialAddedTime,
-		BACnetConstructedData:   NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

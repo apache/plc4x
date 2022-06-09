@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataDoorStatus) GetPropertyIdentifierArgument() BACnet
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataDoorStatus) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataDoorStatus) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataDoorStatus) GetDoorStatus() *BACnetDoorStatusTagge
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDoorStatus factory function for BACnetConstructedDataDoorStatus
-func NewBACnetConstructedDataDoorStatus(doorStatus *BACnetDoorStatusTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDoorStatus {
+func NewBACnetConstructedDataDoorStatus(doorStatus *BACnetDoorStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDoorStatus {
 	_result := &BACnetConstructedDataDoorStatus{
 		DoorStatus:            doorStatus,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

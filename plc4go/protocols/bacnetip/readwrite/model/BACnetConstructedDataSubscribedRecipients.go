@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataSubscribedRecipients) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataSubscribedRecipients) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataSubscribedRecipients) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataSubscribedRecipients) GetSubscribedRecipients() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSubscribedRecipients factory function for BACnetConstructedDataSubscribedRecipients
-func NewBACnetConstructedDataSubscribedRecipients(subscribedRecipients []*BACnetEventNotificationSubscription, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSubscribedRecipients {
+func NewBACnetConstructedDataSubscribedRecipients(subscribedRecipients []*BACnetEventNotificationSubscription, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSubscribedRecipients {
 	_result := &BACnetConstructedDataSubscribedRecipients{
 		SubscribedRecipients:  subscribedRecipients,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

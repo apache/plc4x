@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAccessZoneAlarmValues) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAccessZoneAlarmValues) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAccessZoneAlarmValues) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAccessZoneAlarmValues) GetAlarmValues() []*BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessZoneAlarmValues factory function for BACnetConstructedDataAccessZoneAlarmValues
-func NewBACnetConstructedDataAccessZoneAlarmValues(alarmValues []*BACnetAccessZoneOccupancyStateTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessZoneAlarmValues {
+func NewBACnetConstructedDataAccessZoneAlarmValues(alarmValues []*BACnetAccessZoneOccupancyStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessZoneAlarmValues {
 	_result := &BACnetConstructedDataAccessZoneAlarmValues{
 		AlarmValues:           alarmValues,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

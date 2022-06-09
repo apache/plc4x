@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAttemptedSamples) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAttemptedSamples) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAttemptedSamples) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAttemptedSamples) GetAttemptedSamples() *BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAttemptedSamples factory function for BACnetConstructedDataAttemptedSamples
-func NewBACnetConstructedDataAttemptedSamples(attemptedSamples *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAttemptedSamples {
+func NewBACnetConstructedDataAttemptedSamples(attemptedSamples *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAttemptedSamples {
 	_result := &BACnetConstructedDataAttemptedSamples{
 		AttemptedSamples:      attemptedSamples,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

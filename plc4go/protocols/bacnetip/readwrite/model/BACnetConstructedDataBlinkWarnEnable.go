@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataBlinkWarnEnable) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataBlinkWarnEnable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataBlinkWarnEnable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataBlinkWarnEnable) GetBlinkWarnEnable() *BACnetAppli
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBlinkWarnEnable factory function for BACnetConstructedDataBlinkWarnEnable
-func NewBACnetConstructedDataBlinkWarnEnable(blinkWarnEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBlinkWarnEnable {
+func NewBACnetConstructedDataBlinkWarnEnable(blinkWarnEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBlinkWarnEnable {
 	_result := &BACnetConstructedDataBlinkWarnEnable{
 		BlinkWarnEnable:       blinkWarnEnable,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

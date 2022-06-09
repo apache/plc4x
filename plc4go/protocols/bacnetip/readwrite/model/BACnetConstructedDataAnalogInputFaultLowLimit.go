@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAnalogInputFaultLowLimit) GetPropertyIdentifierArg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAnalogInputFaultLowLimit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAnalogInputFaultLowLimit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAnalogInputFaultLowLimit) GetFaultLowLimit() *BACn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAnalogInputFaultLowLimit factory function for BACnetConstructedDataAnalogInputFaultLowLimit
-func NewBACnetConstructedDataAnalogInputFaultLowLimit(faultLowLimit *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAnalogInputFaultLowLimit {
+func NewBACnetConstructedDataAnalogInputFaultLowLimit(faultLowLimit *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAnalogInputFaultLowLimit {
 	_result := &BACnetConstructedDataAnalogInputFaultLowLimit{
 		FaultLowLimit:         faultLowLimit,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

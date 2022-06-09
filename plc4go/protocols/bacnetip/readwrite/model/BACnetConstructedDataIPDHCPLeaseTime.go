@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataIPDHCPLeaseTime) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataIPDHCPLeaseTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataIPDHCPLeaseTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataIPDHCPLeaseTime) GetIpDhcpLeaseTime() *BACnetAppli
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPDHCPLeaseTime factory function for BACnetConstructedDataIPDHCPLeaseTime
-func NewBACnetConstructedDataIPDHCPLeaseTime(ipDhcpLeaseTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPDHCPLeaseTime {
+func NewBACnetConstructedDataIPDHCPLeaseTime(ipDhcpLeaseTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPDHCPLeaseTime {
 	_result := &BACnetConstructedDataIPDHCPLeaseTime{
 		IpDhcpLeaseTime:       ipDhcpLeaseTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

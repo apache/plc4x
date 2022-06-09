@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAnalogOutputInterfaceValue) GetPropertyIdentifierA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAnalogOutputInterfaceValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAnalogOutputInterfaceValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAnalogOutputInterfaceValue) GetInterfaceValue() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAnalogOutputInterfaceValue factory function for BACnetConstructedDataAnalogOutputInterfaceValue
-func NewBACnetConstructedDataAnalogOutputInterfaceValue(interfaceValue *BACnetOptionalREAL, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAnalogOutputInterfaceValue {
+func NewBACnetConstructedDataAnalogOutputInterfaceValue(interfaceValue *BACnetOptionalREAL, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAnalogOutputInterfaceValue {
 	_result := &BACnetConstructedDataAnalogOutputInterfaceValue{
 		InterfaceValue:        interfaceValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

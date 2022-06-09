@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLocalTime) GetPropertyIdentifierArgument() BACnetP
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLocalTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLocalTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLocalTime) GetLocalTime() *BACnetApplicationTagTim
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLocalTime factory function for BACnetConstructedDataLocalTime
-func NewBACnetConstructedDataLocalTime(localTime *BACnetApplicationTagTime, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLocalTime {
+func NewBACnetConstructedDataLocalTime(localTime *BACnetApplicationTagTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLocalTime {
 	_result := &BACnetConstructedDataLocalTime{
 		LocalTime:             localTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

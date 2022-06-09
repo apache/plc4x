@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataDefaultStepIncrement) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataDefaultStepIncrement) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataDefaultStepIncrement) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataDefaultStepIncrement) GetDefaultStepIncrement() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDefaultStepIncrement factory function for BACnetConstructedDataDefaultStepIncrement
-func NewBACnetConstructedDataDefaultStepIncrement(defaultStepIncrement *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDefaultStepIncrement {
+func NewBACnetConstructedDataDefaultStepIncrement(defaultStepIncrement *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDefaultStepIncrement {
 	_result := &BACnetConstructedDataDefaultStepIncrement{
 		DefaultStepIncrement:  defaultStepIncrement,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

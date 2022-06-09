@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataBackupPreparationTime) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataBackupPreparationTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataBackupPreparationTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataBackupPreparationTime) GetBackupPreparationTime() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBackupPreparationTime factory function for BACnetConstructedDataBackupPreparationTime
-func NewBACnetConstructedDataBackupPreparationTime(backupPreparationTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBackupPreparationTime {
+func NewBACnetConstructedDataBackupPreparationTime(backupPreparationTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBackupPreparationTime {
 	_result := &BACnetConstructedDataBackupPreparationTime{
 		BackupPreparationTime: backupPreparationTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

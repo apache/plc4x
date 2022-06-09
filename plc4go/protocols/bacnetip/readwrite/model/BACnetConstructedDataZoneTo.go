@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataZoneTo) GetPropertyIdentifierArgument() BACnetProp
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataZoneTo) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataZoneTo) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataZoneTo) GetZoneTo() *BACnetDeviceObjectReference {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataZoneTo factory function for BACnetConstructedDataZoneTo
-func NewBACnetConstructedDataZoneTo(zoneTo *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataZoneTo {
+func NewBACnetConstructedDataZoneTo(zoneTo *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataZoneTo {
 	_result := &BACnetConstructedDataZoneTo{
 		ZoneTo:                zoneTo,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

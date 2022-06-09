@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataOperationDirection) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataOperationDirection) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataOperationDirection) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataOperationDirection) GetOperationDirection() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOperationDirection factory function for BACnetConstructedDataOperationDirection
-func NewBACnetConstructedDataOperationDirection(operationDirection *BACnetEscalatorOperationDirectionTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataOperationDirection {
+func NewBACnetConstructedDataOperationDirection(operationDirection *BACnetEscalatorOperationDirectionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataOperationDirection {
 	_result := &BACnetConstructedDataOperationDirection{
 		OperationDirection:    operationDirection,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

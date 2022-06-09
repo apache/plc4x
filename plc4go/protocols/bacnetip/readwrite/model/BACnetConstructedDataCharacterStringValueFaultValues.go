@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataCharacterStringValueFaultValues) GetPropertyIdenti
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataCharacterStringValueFaultValues) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataCharacterStringValueFaultValues) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataCharacterStringValueFaultValues) GetFaultValues() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCharacterStringValueFaultValues factory function for BACnetConstructedDataCharacterStringValueFaultValues
-func NewBACnetConstructedDataCharacterStringValueFaultValues(faultValues []*BACnetOptionalCharacterString, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCharacterStringValueFaultValues {
+func NewBACnetConstructedDataCharacterStringValueFaultValues(faultValues []*BACnetOptionalCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCharacterStringValueFaultValues {
 	_result := &BACnetConstructedDataCharacterStringValueFaultValues{
 		FaultValues:           faultValues,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

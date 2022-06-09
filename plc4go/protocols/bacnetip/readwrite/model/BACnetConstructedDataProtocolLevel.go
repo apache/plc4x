@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataProtocolLevel) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataProtocolLevel) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataProtocolLevel) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataProtocolLevel) GetProtocolLevel() *BACnetProtocolL
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProtocolLevel factory function for BACnetConstructedDataProtocolLevel
-func NewBACnetConstructedDataProtocolLevel(protocolLevel *BACnetProtocolLevelTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProtocolLevel {
+func NewBACnetConstructedDataProtocolLevel(protocolLevel *BACnetProtocolLevelTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataProtocolLevel {
 	_result := &BACnetConstructedDataProtocolLevel{
 		ProtocolLevel:         protocolLevel,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

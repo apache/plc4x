@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataGroupMemberNames) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataGroupMemberNames) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataGroupMemberNames) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataGroupMemberNames) GetGroupMemberNames() []*BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataGroupMemberNames factory function for BACnetConstructedDataGroupMemberNames
-func NewBACnetConstructedDataGroupMemberNames(groupMemberNames []*BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataGroupMemberNames {
+func NewBACnetConstructedDataGroupMemberNames(groupMemberNames []*BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataGroupMemberNames {
 	_result := &BACnetConstructedDataGroupMemberNames{
 		GroupMemberNames:      groupMemberNames,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

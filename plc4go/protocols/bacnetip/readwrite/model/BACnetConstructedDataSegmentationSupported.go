@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataSegmentationSupported) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataSegmentationSupported) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataSegmentationSupported) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataSegmentationSupported) GetSegmentationSupported() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSegmentationSupported factory function for BACnetConstructedDataSegmentationSupported
-func NewBACnetConstructedDataSegmentationSupported(segmentationSupported *BACnetSegmentationTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSegmentationSupported {
+func NewBACnetConstructedDataSegmentationSupported(segmentationSupported *BACnetSegmentationTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSegmentationSupported {
 	_result := &BACnetConstructedDataSegmentationSupported{
 		SegmentationSupported: segmentationSupported,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

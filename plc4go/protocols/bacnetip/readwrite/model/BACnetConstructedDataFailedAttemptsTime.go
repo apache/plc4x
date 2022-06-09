@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataFailedAttemptsTime) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataFailedAttemptsTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataFailedAttemptsTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataFailedAttemptsTime) GetFailedAttemptsTime() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFailedAttemptsTime factory function for BACnetConstructedDataFailedAttemptsTime
-func NewBACnetConstructedDataFailedAttemptsTime(failedAttemptsTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFailedAttemptsTime {
+func NewBACnetConstructedDataFailedAttemptsTime(failedAttemptsTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFailedAttemptsTime {
 	_result := &BACnetConstructedDataFailedAttemptsTime{
 		FailedAttemptsTime:    failedAttemptsTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

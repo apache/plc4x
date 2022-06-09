@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataSubordinateRelationships) GetPropertyIdentifierArg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataSubordinateRelationships) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataSubordinateRelationships) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataSubordinateRelationships) GetSubordinateRelationsh
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSubordinateRelationships factory function for BACnetConstructedDataSubordinateRelationships
-func NewBACnetConstructedDataSubordinateRelationships(subordinateRelationships []*BACnetRelationshipTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSubordinateRelationships {
+func NewBACnetConstructedDataSubordinateRelationships(subordinateRelationships []*BACnetRelationshipTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSubordinateRelationships {
 	_result := &BACnetConstructedDataSubordinateRelationships{
 		SubordinateRelationships: subordinateRelationships,
-		BACnetConstructedData:    NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

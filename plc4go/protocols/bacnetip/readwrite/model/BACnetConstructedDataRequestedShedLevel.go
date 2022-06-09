@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataRequestedShedLevel) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataRequestedShedLevel) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataRequestedShedLevel) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataRequestedShedLevel) GetRequestedShedLevel() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRequestedShedLevel factory function for BACnetConstructedDataRequestedShedLevel
-func NewBACnetConstructedDataRequestedShedLevel(requestedShedLevel *BACnetShedLevel, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataRequestedShedLevel {
+func NewBACnetConstructedDataRequestedShedLevel(requestedShedLevel *BACnetShedLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataRequestedShedLevel {
 	_result := &BACnetConstructedDataRequestedShedLevel{
 		RequestedShedLevel:    requestedShedLevel,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

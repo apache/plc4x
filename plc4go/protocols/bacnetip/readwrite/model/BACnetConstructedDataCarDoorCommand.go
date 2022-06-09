@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataCarDoorCommand) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataCarDoorCommand) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataCarDoorCommand) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataCarDoorCommand) GetCarDoorCommand() []*BACnetLiftC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCarDoorCommand factory function for BACnetConstructedDataCarDoorCommand
-func NewBACnetConstructedDataCarDoorCommand(carDoorCommand []*BACnetLiftCarDoorCommandTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCarDoorCommand {
+func NewBACnetConstructedDataCarDoorCommand(carDoorCommand []*BACnetLiftCarDoorCommandTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCarDoorCommand {
 	_result := &BACnetConstructedDataCarDoorCommand{
 		CarDoorCommand:        carDoorCommand,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

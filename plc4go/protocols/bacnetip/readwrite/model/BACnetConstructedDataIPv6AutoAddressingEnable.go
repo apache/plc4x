@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataIPv6AutoAddressingEnable) GetPropertyIdentifierArg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataIPv6AutoAddressingEnable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataIPv6AutoAddressingEnable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataIPv6AutoAddressingEnable) GetAutoAddressingEnable(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6AutoAddressingEnable factory function for BACnetConstructedDataIPv6AutoAddressingEnable
-func NewBACnetConstructedDataIPv6AutoAddressingEnable(autoAddressingEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPv6AutoAddressingEnable {
+func NewBACnetConstructedDataIPv6AutoAddressingEnable(autoAddressingEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPv6AutoAddressingEnable {
 	_result := &BACnetConstructedDataIPv6AutoAddressingEnable{
 		AutoAddressingEnable:  autoAddressingEnable,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

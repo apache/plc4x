@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataCredentialsInZone) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataCredentialsInZone) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataCredentialsInZone) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataCredentialsInZone) GetCredentialsInZone() []*BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCredentialsInZone factory function for BACnetConstructedDataCredentialsInZone
-func NewBACnetConstructedDataCredentialsInZone(credentialsInZone []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCredentialsInZone {
+func NewBACnetConstructedDataCredentialsInZone(credentialsInZone []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCredentialsInZone {
 	_result := &BACnetConstructedDataCredentialsInZone{
 		CredentialsInZone:     credentialsInZone,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

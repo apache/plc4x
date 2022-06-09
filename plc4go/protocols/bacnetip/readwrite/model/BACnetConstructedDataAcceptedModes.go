@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAcceptedModes) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAcceptedModes) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAcceptedModes) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAcceptedModes) GetAcceptedModes() []*BACnetLifeSaf
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAcceptedModes factory function for BACnetConstructedDataAcceptedModes
-func NewBACnetConstructedDataAcceptedModes(acceptedModes []*BACnetLifeSafetyModeTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAcceptedModes {
+func NewBACnetConstructedDataAcceptedModes(acceptedModes []*BACnetLifeSafetyModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAcceptedModes {
 	_result := &BACnetConstructedDataAcceptedModes{
 		AcceptedModes:         acceptedModes,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

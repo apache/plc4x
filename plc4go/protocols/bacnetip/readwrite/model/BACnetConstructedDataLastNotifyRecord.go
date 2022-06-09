@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLastNotifyRecord) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLastNotifyRecord) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLastNotifyRecord) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLastNotifyRecord) GetLastNotifyRecord() *BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastNotifyRecord factory function for BACnetConstructedDataLastNotifyRecord
-func NewBACnetConstructedDataLastNotifyRecord(lastNotifyRecord *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastNotifyRecord {
+func NewBACnetConstructedDataLastNotifyRecord(lastNotifyRecord *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastNotifyRecord {
 	_result := &BACnetConstructedDataLastNotifyRecord{
 		LastNotifyRecord:      lastNotifyRecord,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

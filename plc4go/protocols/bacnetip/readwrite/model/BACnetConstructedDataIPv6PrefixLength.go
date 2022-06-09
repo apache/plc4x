@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataIPv6PrefixLength) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataIPv6PrefixLength) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataIPv6PrefixLength) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataIPv6PrefixLength) GetIpv6PrefixLength() *BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6PrefixLength factory function for BACnetConstructedDataIPv6PrefixLength
-func NewBACnetConstructedDataIPv6PrefixLength(ipv6PrefixLength *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPv6PrefixLength {
+func NewBACnetConstructedDataIPv6PrefixLength(ipv6PrefixLength *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPv6PrefixLength {
 	_result := &BACnetConstructedDataIPv6PrefixLength{
 		Ipv6PrefixLength:      ipv6PrefixLength,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

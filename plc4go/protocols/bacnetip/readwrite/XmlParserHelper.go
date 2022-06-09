@@ -460,6 +460,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetAuthenticationPolicy":
 		return model.BACnetAuthenticationPolicyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetPropertyAccessResult":
+		return model.BACnetPropertyAccessResultParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1401,6 +1403,10 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass := model.TagClassByName(parserArguments[1])
 		return model.BACnetAccessZoneOccupancyStateTaggedParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
+	case "BACnetPropertyAccessResultAccessResult":
+		objectTypeArgument := model.BACnetObjectTypeByName(parserArguments[0])
+		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(parserArguments[1])
+		return model.BACnetPropertyAccessResultAccessResultParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument, propertyIdentifierArgument)
 	case "BACnetNetworkPortCommandTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {

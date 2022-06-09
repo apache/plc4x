@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataCommandTimeArray) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataCommandTimeArray) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataCommandTimeArray) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataCommandTimeArray) GetCommandTimeArray() []*BACnetT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCommandTimeArray factory function for BACnetConstructedDataCommandTimeArray
-func NewBACnetConstructedDataCommandTimeArray(commandTimeArray []*BACnetTimeStamp, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCommandTimeArray {
+func NewBACnetConstructedDataCommandTimeArray(commandTimeArray []*BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCommandTimeArray {
 	_result := &BACnetConstructedDataCommandTimeArray{
 		CommandTimeArray:      commandTimeArray,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

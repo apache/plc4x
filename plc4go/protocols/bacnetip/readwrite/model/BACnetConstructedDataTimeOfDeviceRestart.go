@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataTimeOfDeviceRestart) GetPropertyIdentifierArgument
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataTimeOfDeviceRestart) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataTimeOfDeviceRestart) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataTimeOfDeviceRestart) GetTimeOfDeviceRestart() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimeOfDeviceRestart factory function for BACnetConstructedDataTimeOfDeviceRestart
-func NewBACnetConstructedDataTimeOfDeviceRestart(timeOfDeviceRestart *BACnetTimeStamp, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTimeOfDeviceRestart {
+func NewBACnetConstructedDataTimeOfDeviceRestart(timeOfDeviceRestart *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataTimeOfDeviceRestart {
 	_result := &BACnetConstructedDataTimeOfDeviceRestart{
 		TimeOfDeviceRestart:   timeOfDeviceRestart,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

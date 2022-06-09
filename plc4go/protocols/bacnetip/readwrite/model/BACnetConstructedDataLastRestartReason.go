@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLastRestartReason) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLastRestartReason) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLastRestartReason) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLastRestartReason) GetLastRestartReason() *BACnetR
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastRestartReason factory function for BACnetConstructedDataLastRestartReason
-func NewBACnetConstructedDataLastRestartReason(lastRestartReason *BACnetRestartReasonTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastRestartReason {
+func NewBACnetConstructedDataLastRestartReason(lastRestartReason *BACnetRestartReasonTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastRestartReason {
 	_result := &BACnetConstructedDataLastRestartReason{
 		LastRestartReason:     lastRestartReason,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

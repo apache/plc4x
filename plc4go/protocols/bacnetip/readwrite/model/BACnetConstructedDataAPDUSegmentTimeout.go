@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAPDUSegmentTimeout) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAPDUSegmentTimeout) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAPDUSegmentTimeout) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAPDUSegmentTimeout) GetApduSegmentTimeout() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAPDUSegmentTimeout factory function for BACnetConstructedDataAPDUSegmentTimeout
-func NewBACnetConstructedDataAPDUSegmentTimeout(apduSegmentTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAPDUSegmentTimeout {
+func NewBACnetConstructedDataAPDUSegmentTimeout(apduSegmentTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAPDUSegmentTimeout {
 	_result := &BACnetConstructedDataAPDUSegmentTimeout{
 		ApduSegmentTimeout:    apduSegmentTimeout,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

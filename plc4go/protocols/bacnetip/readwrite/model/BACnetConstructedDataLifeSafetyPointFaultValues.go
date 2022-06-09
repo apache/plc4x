@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLifeSafetyPointFaultValues) GetPropertyIdentifierA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLifeSafetyPointFaultValues) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLifeSafetyPointFaultValues) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLifeSafetyPointFaultValues) GetFaultValues() []*BA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLifeSafetyPointFaultValues factory function for BACnetConstructedDataLifeSafetyPointFaultValues
-func NewBACnetConstructedDataLifeSafetyPointFaultValues(faultValues []*BACnetLifeSafetyStateTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLifeSafetyPointFaultValues {
+func NewBACnetConstructedDataLifeSafetyPointFaultValues(faultValues []*BACnetLifeSafetyStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLifeSafetyPointFaultValues {
 	_result := &BACnetConstructedDataLifeSafetyPointFaultValues{
 		FaultValues:           faultValues,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataCOVUPeriod) GetPropertyIdentifierArgument() BACnet
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataCOVUPeriod) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataCOVUPeriod) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataCOVUPeriod) GetCovuPeriod() *BACnetApplicationTagU
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCOVUPeriod factory function for BACnetConstructedDataCOVUPeriod
-func NewBACnetConstructedDataCOVUPeriod(covuPeriod *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCOVUPeriod {
+func NewBACnetConstructedDataCOVUPeriod(covuPeriod *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCOVUPeriod {
 	_result := &BACnetConstructedDataCOVUPeriod{
 		CovuPeriod:            covuPeriod,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

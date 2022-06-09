@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataFDBBMDAddress) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataFDBBMDAddress) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataFDBBMDAddress) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataFDBBMDAddress) GetFDBBMDAddress() *BACnetHostNPort
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFDBBMDAddress factory function for BACnetConstructedDataFDBBMDAddress
-func NewBACnetConstructedDataFDBBMDAddress(fDBBMDAddress *BACnetHostNPort, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFDBBMDAddress {
+func NewBACnetConstructedDataFDBBMDAddress(fDBBMDAddress *BACnetHostNPort, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataFDBBMDAddress {
 	_result := &BACnetConstructedDataFDBBMDAddress{
 		FDBBMDAddress:         fDBBMDAddress,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

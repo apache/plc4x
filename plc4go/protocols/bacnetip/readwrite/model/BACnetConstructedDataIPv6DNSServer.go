@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataIPv6DNSServer) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataIPv6DNSServer) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataIPv6DNSServer) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataIPv6DNSServer) GetIpv6DnsServer() []*BACnetApplica
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6DNSServer factory function for BACnetConstructedDataIPv6DNSServer
-func NewBACnetConstructedDataIPv6DNSServer(ipv6DnsServer []*BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPv6DNSServer {
+func NewBACnetConstructedDataIPv6DNSServer(ipv6DnsServer []*BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataIPv6DNSServer {
 	_result := &BACnetConstructedDataIPv6DNSServer{
 		Ipv6DnsServer:         ipv6DnsServer,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

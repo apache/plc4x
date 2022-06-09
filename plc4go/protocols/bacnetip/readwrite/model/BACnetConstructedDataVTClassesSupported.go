@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataVTClassesSupported) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataVTClassesSupported) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataVTClassesSupported) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataVTClassesSupported) GetVtClassesSupported() []*BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataVTClassesSupported factory function for BACnetConstructedDataVTClassesSupported
-func NewBACnetConstructedDataVTClassesSupported(vtClassesSupported []*BACnetVTClassTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataVTClassesSupported {
+func NewBACnetConstructedDataVTClassesSupported(vtClassesSupported []*BACnetVTClassTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataVTClassesSupported {
 	_result := &BACnetConstructedDataVTClassesSupported{
 		VtClassesSupported:    vtClassesSupported,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

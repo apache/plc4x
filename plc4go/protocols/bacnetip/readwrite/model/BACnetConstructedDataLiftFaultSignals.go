@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLiftFaultSignals) GetPropertyIdentifierArgument() 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLiftFaultSignals) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLiftFaultSignals) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLiftFaultSignals) GetFaultSignals() []*BACnetLiftF
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLiftFaultSignals factory function for BACnetConstructedDataLiftFaultSignals
-func NewBACnetConstructedDataLiftFaultSignals(faultSignals []*BACnetLiftFaultTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLiftFaultSignals {
+func NewBACnetConstructedDataLiftFaultSignals(faultSignals []*BACnetLiftFaultTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLiftFaultSignals {
 	_result := &BACnetConstructedDataLiftFaultSignals{
 		FaultSignals:          faultSignals,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

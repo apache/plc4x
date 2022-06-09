@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLastStateChange) GetPropertyIdentifierArgument() B
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLastStateChange) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLastStateChange) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLastStateChange) GetLastStateChange() *BACnetTimer
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastStateChange factory function for BACnetConstructedDataLastStateChange
-func NewBACnetConstructedDataLastStateChange(lastStateChange *BACnetTimerTransitionTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastStateChange {
+func NewBACnetConstructedDataLastStateChange(lastStateChange *BACnetTimerTransitionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastStateChange {
 	_result := &BACnetConstructedDataLastStateChange{
 		LastStateChange:       lastStateChange,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

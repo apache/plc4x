@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataPositiveAccessRules) GetPropertyIdentifierArgument
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataPositiveAccessRules) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataPositiveAccessRules) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataPositiveAccessRules) GetPositiveAccessRules() []*B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPositiveAccessRules factory function for BACnetConstructedDataPositiveAccessRules
-func NewBACnetConstructedDataPositiveAccessRules(positiveAccessRules []*BACnetAccessRule, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPositiveAccessRules {
+func NewBACnetConstructedDataPositiveAccessRules(positiveAccessRules []*BACnetAccessRule, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPositiveAccessRules {
 	_result := &BACnetConstructedDataPositiveAccessRules{
 		PositiveAccessRules:   positiveAccessRules,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

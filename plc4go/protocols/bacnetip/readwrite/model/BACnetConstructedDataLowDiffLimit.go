@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLowDiffLimit) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLowDiffLimit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLowDiffLimit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLowDiffLimit) GetLowDiffLimit() *BACnetOptionalREA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLowDiffLimit factory function for BACnetConstructedDataLowDiffLimit
-func NewBACnetConstructedDataLowDiffLimit(lowDiffLimit *BACnetOptionalREAL, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLowDiffLimit {
+func NewBACnetConstructedDataLowDiffLimit(lowDiffLimit *BACnetOptionalREAL, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLowDiffLimit {
 	_result := &BACnetConstructedDataLowDiffLimit{
 		LowDiffLimit:          lowDiffLimit,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

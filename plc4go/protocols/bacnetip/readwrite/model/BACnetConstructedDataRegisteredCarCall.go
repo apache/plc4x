@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataRegisteredCarCall) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataRegisteredCarCall) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataRegisteredCarCall) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataRegisteredCarCall) GetRegisteredCarCall() []*BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRegisteredCarCall factory function for BACnetConstructedDataRegisteredCarCall
-func NewBACnetConstructedDataRegisteredCarCall(registeredCarCall []*BACnetLiftCarCallList, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataRegisteredCarCall {
+func NewBACnetConstructedDataRegisteredCarCall(registeredCarCall []*BACnetLiftCarCallList, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataRegisteredCarCall {
 	_result := &BACnetConstructedDataRegisteredCarCall{
 		RegisteredCarCall:     registeredCarCall,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

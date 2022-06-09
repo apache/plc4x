@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAccumulatorMaxPresValue) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAccumulatorMaxPresValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAccumulatorMaxPresValue) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAccumulatorMaxPresValue) GetMaxPresValue() *BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccumulatorMaxPresValue factory function for BACnetConstructedDataAccumulatorMaxPresValue
-func NewBACnetConstructedDataAccumulatorMaxPresValue(maxPresValue *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccumulatorMaxPresValue {
+func NewBACnetConstructedDataAccumulatorMaxPresValue(maxPresValue *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccumulatorMaxPresValue {
 	_result := &BACnetConstructedDataAccumulatorMaxPresValue{
 		MaxPresValue:          maxPresValue,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

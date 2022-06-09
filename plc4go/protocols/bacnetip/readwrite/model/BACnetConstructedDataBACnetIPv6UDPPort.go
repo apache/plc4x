@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataBACnetIPv6UDPPort) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataBACnetIPv6UDPPort) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataBACnetIPv6UDPPort) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataBACnetIPv6UDPPort) GetIpv6UdpPort() *BACnetApplica
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPv6UDPPort factory function for BACnetConstructedDataBACnetIPv6UDPPort
-func NewBACnetConstructedDataBACnetIPv6UDPPort(ipv6UdpPort *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPv6UDPPort {
+func NewBACnetConstructedDataBACnetIPv6UDPPort(ipv6UdpPort *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBACnetIPv6UDPPort {
 	_result := &BACnetConstructedDataBACnetIPv6UDPPort{
 		Ipv6UdpPort:           ipv6UdpPort,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

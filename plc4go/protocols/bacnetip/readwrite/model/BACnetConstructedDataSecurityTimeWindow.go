@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataSecurityTimeWindow) GetPropertyIdentifierArgument(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataSecurityTimeWindow) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataSecurityTimeWindow) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataSecurityTimeWindow) GetSecurityTimeWindow() *BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSecurityTimeWindow factory function for BACnetConstructedDataSecurityTimeWindow
-func NewBACnetConstructedDataSecurityTimeWindow(securityTimeWindow *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSecurityTimeWindow {
+func NewBACnetConstructedDataSecurityTimeWindow(securityTimeWindow *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataSecurityTimeWindow {
 	_result := &BACnetConstructedDataSecurityTimeWindow{
 		SecurityTimeWindow:    securityTimeWindow,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

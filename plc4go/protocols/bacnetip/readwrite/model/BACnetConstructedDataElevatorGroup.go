@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataElevatorGroup) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataElevatorGroup) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataElevatorGroup) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataElevatorGroup) GetElevatorGroup() *BACnetApplicati
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataElevatorGroup factory function for BACnetConstructedDataElevatorGroup
-func NewBACnetConstructedDataElevatorGroup(elevatorGroup *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataElevatorGroup {
+func NewBACnetConstructedDataElevatorGroup(elevatorGroup *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataElevatorGroup {
 	_result := &BACnetConstructedDataElevatorGroup{
 		ElevatorGroup:         elevatorGroup,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

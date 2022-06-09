@@ -102,6 +102,14 @@ public class StaticHelper {
             if (!BACnetPolarity.isDefined((short) rawValue))
                 throw new ParseException("Invalid value " + rawValue + " for " + BACnetPolarity.class.getSimpleName());
             return BACnetPolarity.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetShedState.class) {
+            if (!BACnetShedState.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetShedState.class.getSimpleName());
+            return BACnetShedState.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetDoorValue.class) {
+            if (!BACnetDoorValue.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetDoorValue.class.getSimpleName());
+            return BACnetDoorValue.enumForValue((short) rawValue);
         }
         throw new ParseException("Unmapped type " + declaringClass);
     }

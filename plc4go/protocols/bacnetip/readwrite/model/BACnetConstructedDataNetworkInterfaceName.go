@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataNetworkInterfaceName) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataNetworkInterfaceName) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataNetworkInterfaceName) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataNetworkInterfaceName) GetNetworkInterfaceName() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNetworkInterfaceName factory function for BACnetConstructedDataNetworkInterfaceName
-func NewBACnetConstructedDataNetworkInterfaceName(networkInterfaceName *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNetworkInterfaceName {
+func NewBACnetConstructedDataNetworkInterfaceName(networkInterfaceName *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNetworkInterfaceName {
 	_result := &BACnetConstructedDataNetworkInterfaceName{
 		NetworkInterfaceName:  networkInterfaceName,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

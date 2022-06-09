@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLastKeyServer) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLastKeyServer) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLastKeyServer) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLastKeyServer) GetLastKeyServer() *BACnetAddressBi
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastKeyServer factory function for BACnetConstructedDataLastKeyServer
-func NewBACnetConstructedDataLastKeyServer(lastKeyServer *BACnetAddressBinding, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastKeyServer {
+func NewBACnetConstructedDataLastKeyServer(lastKeyServer *BACnetAddressBinding, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLastKeyServer {
 	_result := &BACnetConstructedDataLastKeyServer{
 		LastKeyServer:         lastKeyServer,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

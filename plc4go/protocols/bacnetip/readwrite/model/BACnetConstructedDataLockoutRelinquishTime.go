@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataLockoutRelinquishTime) GetPropertyIdentifierArgume
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLockoutRelinquishTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLockoutRelinquishTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataLockoutRelinquishTime) GetLockoutRelinquishTime() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLockoutRelinquishTime factory function for BACnetConstructedDataLockoutRelinquishTime
-func NewBACnetConstructedDataLockoutRelinquishTime(lockoutRelinquishTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLockoutRelinquishTime {
+func NewBACnetConstructedDataLockoutRelinquishTime(lockoutRelinquishTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLockoutRelinquishTime {
 	_result := &BACnetConstructedDataLockoutRelinquishTime{
 		LockoutRelinquishTime: lockoutRelinquishTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataAccessEventAuthenticationFactor) GetPropertyIdenti
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAccessEventAuthenticationFactor) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAccessEventAuthenticationFactor) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataAccessEventAuthenticationFactor) GetAccessEventAut
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessEventAuthenticationFactor factory function for BACnetConstructedDataAccessEventAuthenticationFactor
-func NewBACnetConstructedDataAccessEventAuthenticationFactor(accessEventAuthenticationFactor *BACnetAuthenticationFactor, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessEventAuthenticationFactor {
+func NewBACnetConstructedDataAccessEventAuthenticationFactor(accessEventAuthenticationFactor *BACnetAuthenticationFactor, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAccessEventAuthenticationFactor {
 	_result := &BACnetConstructedDataAccessEventAuthenticationFactor{
 		AccessEventAuthenticationFactor: accessEventAuthenticationFactor,
-		BACnetConstructedData:           NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:           NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataVirtualMACAddressTable) GetPropertyIdentifierArgum
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataVirtualMACAddressTable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataVirtualMACAddressTable) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataVirtualMACAddressTable) GetVirtualMacAddressTable(
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataVirtualMACAddressTable factory function for BACnetConstructedDataVirtualMACAddressTable
-func NewBACnetConstructedDataVirtualMACAddressTable(virtualMacAddressTable []*BACnetVMACEntry, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataVirtualMACAddressTable {
+func NewBACnetConstructedDataVirtualMACAddressTable(virtualMacAddressTable []*BACnetVMACEntry, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataVirtualMACAddressTable {
 	_result := &BACnetConstructedDataVirtualMACAddressTable{
 		VirtualMacAddressTable: virtualMacAddressTable,
-		BACnetConstructedData:  NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result

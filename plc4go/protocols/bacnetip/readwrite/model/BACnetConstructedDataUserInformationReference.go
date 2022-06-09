@@ -66,8 +66,9 @@ func (m *BACnetConstructedDataUserInformationReference) GetPropertyIdentifierArg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataUserInformationReference) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataUserInformationReference) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +91,10 @@ func (m *BACnetConstructedDataUserInformationReference) GetUserInformationRefere
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUserInformationReference factory function for BACnetConstructedDataUserInformationReference
-func NewBACnetConstructedDataUserInformationReference(userInformationReference *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataUserInformationReference {
+func NewBACnetConstructedDataUserInformationReference(userInformationReference *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataUserInformationReference {
 	_result := &BACnetConstructedDataUserInformationReference{
 		UserInformationReference: userInformationReference,
-		BACnetConstructedData:    NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result.Child = _result
 	return _result
