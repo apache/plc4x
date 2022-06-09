@@ -151,7 +151,7 @@ func BACnetConstructedDataPriorityArrayParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("priorityArray"); pullErr != nil {
 		return nil, pullErr
 	}
-	_priorityArray, _priorityArrayErr := BACnetPriorityArrayParse(readBuffer, BACnetObjectType(objectTypeArgument), uint8(tagNumber))
+	_priorityArray, _priorityArrayErr := BACnetPriorityArrayParse(readBuffer, BACnetObjectType(objectTypeArgument), uint8(tagNumber), arrayIndexArgument)
 	if _priorityArrayErr != nil {
 		return nil, errors.Wrap(_priorityArrayErr, "Error parsing 'priorityArray' field")
 	}

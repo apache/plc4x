@@ -229,7 +229,6 @@ public class RandomPackagesTest {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnet-MSTP-SNAP-Mixed.cap", BACNET_BPF_FILTER_UDP);
         return List.of(
             pcapEvaluator.parseEmAll(
-                skip(1753, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
             )
         );
     }
@@ -239,7 +238,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> BACnetARRAY_element_0() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnetARRAY-element-0.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            skip(4, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -248,7 +246,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> BACnetARRAY_elements() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnetARRAY-elements.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            skip(20, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -339,7 +336,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> BACnet_MSTP_Mix() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnetIP-MSTP-Mix.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            skip(2066, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -677,8 +673,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, objectIdentifier.getObjectType());
                     assertEquals(12345, objectIdentifier.getInstanceNumber());
                 }),
-            pcapEvaluator.parseFrom(203,
-                skip(230, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
+            pcapEvaluator.parseFrom(203
             )
         );
     }
@@ -1951,9 +1946,7 @@ public class RandomPackagesTest {
                             .extracting(BACnetTagPayloadUnsignedInteger::getValueUint8)
                             .isEqualTo((short) 1);
                     })),
-            pcapEvaluator.parseFrom(2,
-                skip(32956, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-                skip(33644, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
+            pcapEvaluator.parseFrom(2
             )
         );
     }
@@ -1963,7 +1956,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> alerton_plugfest_3() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-3.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            skip(1519, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -2159,11 +2151,7 @@ public class RandomPackagesTest {
             .mapToObj(i -> skip(i, SkipInstruction.SkipType.SKIP_COMPARE, "most of those packages contain extra undefined bytes"))
             .toArray(SkipInstruction[]::new);
         return List.of(pcapEvaluator.parseEmAll(
-            ArrayUtils.addAll(undefinedExtraBytes,
-                skip(20, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-                skip(80, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-                skip(852, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-                skip(912, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
+            ArrayUtils.addAll(undefinedExtraBytes
             )
         ));
     }
@@ -2195,8 +2183,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> bacnet_ip() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-ip.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            skip(4, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(64, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -2212,8 +2198,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> bacnet_services() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-services.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            skip(620, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(680, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -2792,7 +2776,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> btl_plugfest() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("btl-plugfest.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            skip(442, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -2808,18 +2791,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> bvlc_bac4() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bvlc-bac4.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            skip(41, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(44, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(46, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(47, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(50, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(52, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(54, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(55, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(57, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(60, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(61, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(63, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -2828,8 +2799,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> bvlc_fdreg_readprop_47809() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bvlc-fdreg-readprop-47809.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            skip(43, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(194, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -2951,9 +2920,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> epics_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("epics-1.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            skip(62, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(92, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(152, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -2962,9 +2928,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> epics_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("epics-2.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            skip(197, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(257, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(970, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -3034,47 +2997,47 @@ public class RandomPackagesTest {
                             .satisfies(baCnetConstructedDataEventTimestamps ->
                                 assertThat(baCnetConstructedDataEventTimestamps)
                                     .extracting(BACnetConstructedDataEventTimeStamps::getEventTimeStamps)
-                                    .extracting(BACnetEventTimestamps::getToOffnormal)
-                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetTimeStampTime.class))
-                                    .extracting(BACnetTimeStampTime::getTimeValue)
-                                    .extracting(BACnetContextTagTime::getPayload)
-                                    .extracting(BACnetTagPayloadTime::getHourIsWildcard, BACnetTagPayloadTime::getMinuteIsWildcard, BACnetTagPayloadTime::getSecondIsWildcard, BACnetTagPayloadTime::getFractionalIsWildcard)
-                                    .containsExactly(true, true, true, true)
+                                    .satisfies(baCnetTimeStamps -> assertThat(baCnetTimeStamps)
+                                        .element(0)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetTimeStampTime.class))
+                                        .extracting(BACnetTimeStampTime::getTimeValue)
+                                        .extracting(BACnetContextTagTime::getPayload)
+                                        .extracting(BACnetTagPayloadTime::getHourIsWildcard, BACnetTagPayloadTime::getMinuteIsWildcard, BACnetTagPayloadTime::getSecondIsWildcard, BACnetTagPayloadTime::getFractionalIsWildcard)
+                                        .containsExactly(true, true, true, true)
+                                    )
                             )
                             .satisfies(baCnetConstructedDataEventTimestamps ->
                                 assertThat(baCnetConstructedDataEventTimestamps)
                                     .extracting(BACnetConstructedDataEventTimeStamps::getEventTimeStamps)
-                                    .extracting(BACnetEventTimestamps::getToFault)
-                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetTimeStampSequence.class))
-                                    .extracting(BACnetTimeStampSequence::getSequenceNumber)
-                                    .extracting(BACnetContextTagUnsignedInteger::getPayload)
-                                    .extracting(BACnetTagPayloadUnsignedInteger::getActualValue)
-                                    .isEqualTo(BigInteger.ZERO)
+                                    .satisfies(baCnetTimeStamps -> assertThat(baCnetTimeStamps)
+                                        .hasSize(3)
+                                    )
                             )
                             .satisfies(baCnetConstructedDataEventTimestamps ->
                                 assertThat(baCnetConstructedDataEventTimestamps)
                                     .extracting(BACnetConstructedDataEventTimeStamps::getEventTimeStamps)
-                                    .extracting(BACnetEventTimestamps::getToNormal)
-                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetTimeStampDateTime.class))
-                                    .extracting(BACnetTimeStampDateTime::getDateTimeValue)
-                                    .satisfies(baCnetDateTime ->
-                                        assertThat(baCnetDateTime)
-                                            .extracting(BACnetDateTimeEnclosed::getDateTimeValue)
-                                            .extracting(BACnetDateTime::getDateValue)
-                                            .extracting(BACnetApplicationTagDate::getPayload)
-                                            .extracting(BACnetTagPayloadDate::getYearIsWildcard, BACnetTagPayloadDate::getMonthIsWildcard, BACnetTagPayloadDate::getDayOfMonthIsWildcard, BACnetTagPayloadDate::getDayOfWeekIsWildcard)
-                                            .containsExactly(true, true, true, true)
+                                    .satisfies(baCnetTimeStamps -> assertThat(baCnetTimeStamps)
+                                        .element(2)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetTimeStampDateTime.class))
+                                        .extracting(BACnetTimeStampDateTime::getDateTimeValue)
+                                        .satisfies(baCnetDateTime ->
+                                            assertThat(baCnetDateTime)
+                                                .extracting(BACnetDateTimeEnclosed::getDateTimeValue)
+                                                .extracting(BACnetDateTime::getDateValue)
+                                                .extracting(BACnetApplicationTagDate::getPayload)
+                                                .extracting(BACnetTagPayloadDate::getYearIsWildcard, BACnetTagPayloadDate::getMonthIsWildcard, BACnetTagPayloadDate::getDayOfMonthIsWildcard, BACnetTagPayloadDate::getDayOfWeekIsWildcard)
+                                                .containsExactly(true, true, true, true)
+                                        )
+                                        .satisfies(baCnetDateTime ->
+                                            assertThat(baCnetDateTime)
+                                                .extracting(BACnetDateTimeEnclosed::getDateTimeValue)
+                                                .extracting(BACnetDateTime::getTimeValue)
+                                                .extracting(BACnetApplicationTagTime::getPayload)
+                                                .extracting(BACnetTagPayloadTime::getFractionalIsWildcard, BACnetTagPayloadTime::getMinuteIsWildcard, BACnetTagPayloadTime::getSecondIsWildcard, BACnetTagPayloadTime::getFractionalIsWildcard)
+                                                .containsExactly(true, true, true, true)
+                                        )
                                     )
-                                    .satisfies(baCnetDateTime ->
-                                        assertThat(baCnetDateTime)
-                                            .extracting(BACnetDateTimeEnclosed::getDateTimeValue)
-                                            .extracting(BACnetDateTime::getTimeValue)
-                                            .extracting(BACnetApplicationTagTime::getPayload)
-                                            .extracting(BACnetTagPayloadTime::getFractionalIsWildcard, BACnetTagPayloadTime::getMinuteIsWildcard, BACnetTagPayloadTime::getSecondIsWildcard, BACnetTagPayloadTime::getFractionalIsWildcard)
-                                            .containsExactly(true, true, true, true)
-                                    )
-                            )
-                        ;
+                            );
                     }))
         );
     }
@@ -3305,7 +3268,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> mstp_mix_basrt_V124() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_mix_basrt_V124.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            skip(3517, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -3370,8 +3332,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> plugfest_2011_sauter_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-sauter-1.pcap");
         return List.of(pcapEvaluator.parseEmAll(
-            skip(162, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(168, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
             skip(70, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
             skip(72, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
             skip(74, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
@@ -3434,49 +3394,8 @@ public class RandomPackagesTest {
             skip(2345, "strange siemens package"),
             //TODO: investigate those
             skip(2586, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(2626, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(2626, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate")
 
-            skip(145, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(147, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(217, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(285, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(358, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(439, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(658, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(1119, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(1408, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(1570, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(1607, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(1941, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(2170, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(2321, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(2337, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(2452, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(2575, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(2620, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(2677, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(2771, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(2778, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(2786, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(2787, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(2890, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(2945, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(3233, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(3267, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(3455, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(3531, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(3762, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(3912, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(3989, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(4197, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(4347, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(4402, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(4598, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(4748, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(4801, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(5059, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(5150, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(5185, "TODO: skipped as long as we can't handle index 0 access")// TODO: fixme index access
         ));
     }
 
@@ -3495,8 +3414,7 @@ public class RandomPackagesTest {
                     assertNotNull(serviceRequest);
                     assertTrue(serviceRequest instanceof BACnetUnconfirmedServiceRequestWhoIs);
                 }),
-            pcapEvaluator.parseFrom(2,
-                skip(328, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
+            pcapEvaluator.parseFrom(2
             )
         );
     }
@@ -3510,9 +3428,7 @@ public class RandomPackagesTest {
             .mapToObj(i -> skip(i, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme analyze what is wrong in those"))
             .toArray(SkipInstruction[]::new);
         return List.of(pcapEvaluator.parseEmAll(
-            ArrayUtils.addAll(whatIsWrongHere,
-                skip(8135, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-                skip(8200, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
+            ArrayUtils.addAll(whatIsWrongHere
             )
         ));
     }
@@ -3526,13 +3442,7 @@ public class RandomPackagesTest {
             .mapToObj(i -> skip(i, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme analyze what is wrong in those"))
             .toArray(SkipInstruction[]::new);
         return List.of(pcapEvaluator.parseEmAll(
-            ArrayUtils.addAll(whatIsWrongHere,
-                skip(207, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-                skip(364, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-                skip(10745, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-                skip(11154, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-                skip(11658, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-                skip(11848, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
+            ArrayUtils.addAll(whatIsWrongHere
             )
         ));
     }
@@ -3560,21 +3470,7 @@ public class RandomPackagesTest {
             skip(1084, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
             skip(1086, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
             skip(3405, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(3407, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(9, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(23, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(387, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(401, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(419, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(434, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(448, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(457, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(824, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(941, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(957, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(1080, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(1096, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(3401, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
+            skip(3407, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate")
         ));
     }
 
@@ -3633,30 +3529,8 @@ public class RandomPackagesTest {
             skip(597, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
             skip(599, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
             skip(620, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(622, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(622, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate")
 
-            skip(56, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(78, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(99, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(152, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(166, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(180, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(201, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(223, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(266, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(297, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(362, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(382, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(406, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(424, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(432, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(456, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(483, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(507, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(547, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(570, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(593, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(616, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -3676,10 +3550,7 @@ public class RandomPackagesTest {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("polarsoft-free-range-router.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
             // TODO: fix me, don't know whats wrong
-            skip(6155, SkipInstruction.SkipType.SKIP_COMPARE, "fix me, don't know whats wrong"),
-            skip(2751, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(24303, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(25593, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
+            skip(6155, SkipInstruction.SkipType.SKIP_COMPARE, "fix me, don't know whats wrong")
         ));
     }
 
@@ -3688,7 +3559,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> properties() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("properties.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            skip(345, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -5458,8 +5328,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> read_property_epics() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("read-property-epics.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            skip(2, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(62, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -5527,7 +5395,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> rp_device() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("rp-device.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            skip(28, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -5616,7 +5483,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> state_text() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("state_text.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            skip(8, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -5625,7 +5491,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> state_text_good() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("state_text_good.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            skip(12, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -5665,7 +5530,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> synergy_device() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("synergy-device.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            skip(62, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -5681,7 +5545,6 @@ public class RandomPackagesTest {
     Collection<DynamicNode> tridium_jace2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("tridium%20jace2.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            skip(181, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
         ));
     }
 
@@ -5908,15 +5771,14 @@ public class RandomPackagesTest {
     Collection<DynamicNode> wp_rp_index() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("wp-rp-index.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            skip(34, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(42, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(50, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(62, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(70, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(78, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(84, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(86, "TODO: skipped as long as we can't handle index 0 access"), // TODO: fixme index access
-            skip(94, "TODO: skipped as long as we can't handle index 0 access") // TODO: fixme index access
+            skip(34, "Null doesn't seem to be a right value for object-list"),
+            skip(42, "Null doesn't seem to be a right value for object-list"),
+            skip(50, "Null doesn't seem to be a right value for object-list"),
+            skip(62, "Null doesn't seem to be a right value for object-list"),
+            skip(70, "Null doesn't seem to be a right value for object-list"),
+            skip(78, "Null doesn't seem to be a right value for object-list"),
+            skip(86, "Null doesn't seem to be a right value for object-list"),
+            skip(94, "Null doesn't seem to be a right value for object-list")
         ));
     }
 
@@ -5942,6 +5804,9 @@ public class RandomPackagesTest {
     Collection<DynamicNode> wp_weekly_schedule() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("wp_weekly_schedule.cap");
         return List.of(pcapEvaluator.parseEmAll(
+            skip(1, "Incomplete/wrong request"),
+            // TODO: there should be 7 values but apparently only 2 are transmitted.. could be right could be wrong
+            skip(13, "Incomplete/wrong request"),
             skip(19, "Seems like wrong data")
         ));
     }

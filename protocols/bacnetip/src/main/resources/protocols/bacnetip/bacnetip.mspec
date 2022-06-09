@@ -1100,26 +1100,6 @@
                     closingTag                      ]
 ]
 
-// TODO: dissolve that into the used type (use virtual if necessary) (not index save)
-[type BACnetEventMessageTexts
-    [simple  BACnetApplicationTagCharacterString
-                    toOffnormalText                 ]
-    [simple  BACnetApplicationTagCharacterString
-                    toFaultText                     ]
-    [simple  BACnetApplicationTagCharacterString
-                    toNormalText                    ]
-]
-
-// TODO: dissolve that into the used type (use virtual if necessary) (not index save)
-[type BACnetEventMessageTextsConfig
-    [simple  BACnetApplicationTagCharacterString
-                    toOffnormalTextConfig           ]
-    [simple  BACnetApplicationTagCharacterString
-                    toFaultTextConfig               ]
-    [simple  BACnetApplicationTagCharacterString
-                    toNormalTextConfig              ]
-]
-
 [type BACnetEventPriorities(uint 8 tagNumber)
     [simple  BACnetOpeningTag('tagNumber')
                     openingTag
@@ -1863,9 +1843,10 @@
                         writeSuccessful                                                         ]
 ]
 
-// TODO: inline like the other arrays
-// TODO: Note per spec this should be 16 but we reuse this for index access and non conformant transmission
-[type BACnetPriorityArray(BACnetObjectType objectTypeArgument, uint 8 tagNumber)
+[type BACnetPriorityArray(BACnetObjectType objectTypeArgument, uint 8 tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument)
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+    [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
     [array    BACnetPriorityValue('objectTypeArgument')
                             data
                                     terminated
@@ -1886,7 +1867,7 @@
     [virtual  BACnetPriorityValue   priorityValue14         'COUNT(data)>13?data[13]:null'      ]
     [virtual  BACnetPriorityValue   priorityValue15         'COUNT(data)>14?data[14]:null'      ]
     [virtual  BACnetPriorityValue   priorityValue16         'COUNT(data)>15?data[15]:null'      ]
-    [virtual  bit                   isValidPriorityArray    'COUNT(data) == 16'                 ]
+    [validation 'arrayIndexArgument != null || COUNT(data) == 16' "Either indexed access or lenght 16 expected" ]
     [virtual  bit                   isIndexedAccess         'COUNT(data) == 1'                  ]
     [virtual  BACnetPriorityValue   indexEntry              'priorityValue01'                   ]
 ]
@@ -2322,6 +2303,9 @@
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         [*, 'ACCESS_DOORS'                              BACnetConstructedDataAccessDoors
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetDeviceObjectReference
                                 accessDoors
                                         terminated
@@ -2365,18 +2349,27 @@
             [simple   BACnetActionTagged('0', 'TagClass.APPLICATION_TAGS') action]
         ]
         ['COMMAND', 'ACTION'                            BACnetConstructedDataCommandAction
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetActionList
                             actionLists
                                 terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         [*, 'ACTION'                                    BACnetConstructedDataAction
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetActionList
                             actionLists
                                 terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         [*, 'ACTION_TEXT', '7'                          BACnetConstructedDataActionText
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagCharacterString
                     actionText
                             terminated
@@ -2436,11 +2429,17 @@
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         ['BITSTRING_VALUE', 'ALARM_VALUES', '8'         BACnetConstructedDataBitStringValueAlarmValues
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagBitString
                             alarmValues              terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         ['CHARACTERSTRING_VALUE', 'ALARM_VALUES'             BACnetConstructedDataCharacterStringValueAlarmValues
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetOptionalCharacterString
                             alarmValues              terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
@@ -2471,6 +2470,9 @@
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         [*, 'ALARM_VALUES'                              BACnetConstructedDataAlarmValues
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetLifeSafetyStateTagged('0', 'TagClass.APPLICATION_TAGS')
                             alarmValues              terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
@@ -2687,12 +2689,18 @@
             [simple BACnetApplicationTagBoolean                                          archive                        ]
         ]
         [*, 'ASSIGNED_ACCESS_RIGHTS'                    BACnetConstructedDataAssignedAccessRights
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetAssignedAccessRights
                                         assignedAccessRights
                                                 terminated
                                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
         [*, 'ASSIGNED_LANDING_CALLS'                    BACnetConstructedDataAssignedLandingCalls
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetAssignedLandingCalls
                                         assignedLandingCalls
                                                 terminated
@@ -2702,18 +2710,27 @@
             [simple   BACnetApplicationTagUnsignedInteger                               attemptedSamples                ]
         ]
         [*, 'AUTHENTICATION_FACTORS'                    BACnetConstructedDataAuthenticationFactors
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetCredentialAuthenticationFactor
                             authenticationFactors
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         [*, 'AUTHENTICATION_POLICY_LIST'                BACnetConstructedDataAuthenticationPolicyList
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetAuthenticationPolicy
                             authenticationPolicyList
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         [*, 'AUTHENTICATION_POLICY_NAMES', '7'          BACnetConstructedDataAuthenticationPolicyNames
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagCharacterString
                                         authenticationPolicyNames
                                                 terminated
@@ -2798,6 +2815,9 @@
             [simple   BACnetApplicationTagBitString     bitString                                                       ]
         ]
         [*, 'BIT_TEXT', '7'                             BACnetConstructedDataBitText
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagCharacterString
                         bitText
                             terminated
@@ -2813,18 +2833,27 @@
             [simple   BACnetLiftCarDirectionTagged('0', 'TagClass.APPLICATION_TAGS')             assignedDirection      ]
         ]
         [*, 'CAR_DOOR_COMMAND', '9'                     BACnetConstructedDataCarDoorCommand
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetLiftCarDoorCommandTagged('0', 'TagClass.APPLICATION_TAGS')
                             carDoorCommand
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         [*, 'CAR_DOOR_STATUS', '9'                      BACnetConstructedDataCarDoorStatus
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetDoorStatusTagged('0', 'TagClass.APPLICATION_TAGS')
                             carDoorStatus
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         [*, 'CAR_DOOR_TEXT', '7'                        BACnetConstructedDataCarDoorText
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagCharacterString
                                 carDoorText
                                         terminated
@@ -2870,20 +2899,29 @@
             [simple   BACnetNetworkPortCommandTagged('0', 'TagClass.APPLICATION_TAGS')                  command         ]
         ]
         [*, 'COMMAND_TIME_ARRAY'                        BACnetConstructedDataCommandTimeArray
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetTimeStamp
                             commandTimeArray
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
-            // TODO: enable once index support is in
-            //[validation 'COUNT(asdasd) == 16' "asdasd should have exactly 16 values"                                  ]
+            [validation 'arrayIndexArgument!=null || COUNT(commandTimeArray) == 16'
+                        "commandTimeArray should have exactly 16 values"                                                ]
         ]
         [*, 'CONFIGURATION_FILES', '12'                 BACnetConstructedDataConfigurationFiles
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagObjectIdentifier
                                 configurationFiles
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         [*, 'CONTROL_GROUPS', '2'                       BACnetConstructedDataControlGroups
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagUnsignedInteger
                                 controlGroups
                                         terminated
@@ -3038,6 +3076,9 @@
             [simple BACnetApplicationTagUnsignedInteger                     doorExtendedPulseTime                       ]
         ]
         [*, 'DOOR_MEMBERS'                              BACnetConstructedDataDoorMembers
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetDeviceObjectReference
                         doorMembers
                             terminated
@@ -3108,10 +3149,32 @@
             [simple   BACnetEventTransitionBitsTagged('0', 'TagClass.APPLICATION_TAGS') eventEnable                     ]
         ]
         [*, 'EVENT_MESSAGE_TEXTS'                       BACnetConstructedDataEventMessageTexts
-            [simple   BACnetEventMessageTexts               eventMessageTexts                                           ]
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
+            [array    BACnetOptionalCharacterString
+                                        eventMessageTexts
+                                            terminated
+                                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+            [virtual BACnetOptionalCharacterString    toOffnormalText    'COUNT(eventMessageTexts)==3?eventMessageTexts[0]:null'            ]
+            [virtual BACnetOptionalCharacterString    toFaultText        'COUNT(eventMessageTexts)==3?eventMessageTexts[1]:null'            ]
+            [virtual BACnetOptionalCharacterString    toNormalText       'COUNT(eventMessageTexts)==3?eventMessageTexts[2]:null'            ]
+            [validation 'arrayIndexArgument!=null || COUNT(eventMessageTexts) == 3'
+                                    "eventMessageTexts should have exactly 3 values"                                    ]
         ]
         [*, 'EVENT_MESSAGE_TEXTS_CONFIG'                BACnetConstructedDataEventMessageTextsConfig
-            [simple   BACnetEventMessageTextsConfig          eventStateConfig                                           ]
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
+            [array    BACnetOptionalCharacterString
+                                        eventMessageTextsConfig
+                                            terminated
+                                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+            [virtual BACnetOptionalCharacterString    toOffnormalTextConfig    'COUNT(eventMessageTextsConfig)==3?eventMessageTextsConfig[0]:null']
+            [virtual BACnetOptionalCharacterString    toFaultTextConfig        'COUNT(eventMessageTextsConfig)==3?eventMessageTextsConfig[1]:null']
+            [virtual BACnetOptionalCharacterString    toNormalTextConfig       'COUNT(eventMessageTextsConfig)==3?eventMessageTextsConfig[2]:null']
+            [validation 'arrayIndexArgument!=null || COUNT(eventMessageTextsConfig) == 3'
+                        "eventMessageTextsConfig should have exactly 3 values"                                          ]
         ]
         [*, 'EVENT_PARAMETERS'                          BACnetConstructedDataEventParameters
             [simple   BACnetEventParameter                  eventParameter                                              ]
@@ -3120,18 +3183,35 @@
             [simple   BACnetEventStateTagged('0', 'TagClass.APPLICATION_TAGS')          eventState                      ]
         ]
         [*, 'EVENT_TIME_STAMPS'                         BACnetConstructedDataEventTimeStamps
-            [simple  BACnetEventTimestamps                        eventTimeStamps                                       ]
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
+            [array    BACnetTimeStamp
+                                        eventTimeStamps
+                                            terminated
+                                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+            [virtual BACnetTimeStamp    toOffnormal    'COUNT(eventTimeStamps)==3?eventTimeStamps[0]:null'                  ]
+            [virtual BACnetTimeStamp    toFault        'COUNT(eventTimeStamps)==3?eventTimeStamps[1]:null'                  ]
+            [virtual BACnetTimeStamp    toNormal       'COUNT(eventTimeStamps)==3?eventTimeStamps[2]:null'                  ]
+            [validation 'arrayIndexArgument!=null || COUNT(eventTimeStamps) == 3'
+                        "eventTimeStamps should have exactly 3 values"                                                  ]
         ]
         [*, 'EVENT_TYPE', '9'                           BACnetConstructedDataEventType
             [simple  BACnetEventTypeTagged('0', 'TagClass.APPLICATION_TAGS')        eventType                           ]
         ]
         [*, 'EXCEPTION_SCHEDULE'                        BACnetConstructedDataExceptionSchedule
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetSpecialEvent
                             exceptionSchedule
                                 terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'        ]
         ]
         [*, 'EXECUTION_DELAY', '2'                      BACnetConstructedDataExecutionDelay
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagUnsignedInteger
                                         executionDelay
                                                 terminated
@@ -3237,6 +3317,9 @@
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         ['CHARACTERSTRING_VALUE', 'FAULT_VALUES'        BACnetConstructedDataCharacterStringValueFaultValues
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetOptionalCharacterString
                             faultValues
                                 terminated
@@ -3267,6 +3350,9 @@
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         [*, 'FAULT_VALUES'                              BACnetConstructedDataFaultValues
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetLifeSafetyStateTagged('0', 'TagClass.APPLICATION_TAGS')
                             faultValues
                                 terminated
@@ -3305,6 +3391,9 @@
            [simple   BACnetApplicationTagCharacterString    firmwareRevision                                            ]
         ]
         [*, 'FLOOR_TEXT', '7'                           BACnetConstructedDataFloorText
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagCharacterString
                             floorText
                                     terminated
@@ -3320,24 +3409,36 @@
             [simple   BACnetApplicationTagUnsignedInteger                           groupId                             ]
         ]
         [*, 'GROUP_MEMBER_NAMES', '7'                   BACnetConstructedDataGroupMemberNames
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagCharacterString
                             groupMemberNames
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         ['GLOBAL_GROUP', 'GROUP_MEMBERS'                BACnetConstructedDataGlobalGroupGroupMembers
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetDeviceObjectPropertyReference
                             groupMembers
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         ['ELEVATOR_GROUP', 'GROUP_MEMBERS', '12'        BACnetConstructedDataElevatorGroupGroupMembers
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagObjectIdentifier
                             groupMembers
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         [*, 'GROUP_MEMBERS', '12'                       BACnetConstructedDataGroupMembers
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagObjectIdentifier
                             groupMembers
                                     terminated
@@ -3436,6 +3537,9 @@
             [simple   BACnetApplicationTagOctetString   dhcpServer                                                      ]
         ]
         [*, 'IP_DNS_SERVER', '6'                        BACnetConstructedDataIPDNSServer
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagOctetString
                                         ipDnsServer
                                                 terminated
@@ -3463,6 +3567,9 @@
             [simple   BACnetApplicationTagOctetString   dhcpServer                                                      ]
         ]
         [*, 'IPV6_DNS_SERVER', '6'                      BACnetConstructedDataIPv6DNSServer
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagOctetString
                                         ipv6DnsServer
                                                 terminated
@@ -3478,12 +3585,14 @@
             [simple   BACnetApplicationTagBoolean                                       isUtc                           ]
         ]
         [*, 'KEY_SETS'                                  BACnetConstructedDataKeySets
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetSecurityKeySet
                                 keySets
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
-            // TODO: enable once index support is in
-            //[validation 'COUNT(keySets) == 2' "keySets should have exactly 2 values"                                  ]
+            [validation 'arrayIndexArgument!=null || COUNT(keySets) == 2' "keySets should have exactly 2 values"        ]
         ]
         [*, 'LANDING_CALL_CONTROL'                      BACnetConstructedDataLandingCallControl
             [simple   BACnetLandingCallStatus             landingCallControl                                            ]
@@ -3495,6 +3604,9 @@
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         [*, 'LANDING_DOOR_STATUS'                       BACnetConstructedDataLandingDoorStatus
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetLandingDoorStatus
                                 landingDoorStatus
                                         terminated
@@ -3566,6 +3678,9 @@
             [simple   BACnetApplicationTagBoolean                                       linkSpeedAutonegotiate          ]
         ]
         [*, 'LINK_SPEEDS', '4'                          BACnetConstructedDataLinkSpeeds
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagReal
                                         linkSpeeds
                                                 terminated
@@ -3578,6 +3693,9 @@
                                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
         ['CHANNEL', 'LIST_OF_OBJECT_PROPERTY_REFERENCES'    BACnetConstructedDataChannelListOfObjectPropertyReferences
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetDeviceObjectPropertyReference
                             references              terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
@@ -3627,6 +3745,9 @@
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         [*, 'LOG_BUFFER'                                BACnetConstructedDataLogBuffer
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetLogRecord
                             floorText
                                     terminated
@@ -3636,6 +3757,9 @@
             [simple   BACnetDeviceObjectPropertyReference   logDeviceObjectProperty                                     ]
         ]
         ['TREND_LOG_MULTIPLE', 'LOG_DEVICE_OBJECT_PROPERTY' BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetDeviceObjectPropertyReference
                             groupMembers
                                     terminated
@@ -3690,6 +3814,9 @@
             [simple   BACnetMaintenanceTagged('0', 'TagClass.APPLICATION_TAGS')     maintenanceRequired                 ]
         ]
         [*, 'MAKING_CAR_CALL'                           BACnetConstructedDataMakingCarCall
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagUnsignedInteger
                                         makingCarCall
                                                 terminated
@@ -3840,12 +3967,18 @@
             [simple   BACnetApplicationTagBoolean                                       musterPoint                     ]
         ]
         [*, 'NEGATIVE_ACCESS_RULES'                     BACnetConstructedDataNegativeAccessRules
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetAccessRule
                             negativeAccessRules
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         [*, 'NETWORK_ACCESS_SECURITY_POLICIES'          BACnetConstructedDataNetworkAccessSecurityPolicies
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetNetworkSecurityPolicy
                             networkAccessSecurityPolicies
                                     terminated
@@ -3894,6 +4027,9 @@
             [simple   BACnetApplicationTagObjectIdentifier                              objectIdentifier                ]
         ]
         [*, 'OBJECT_LIST'                               BACnetConstructedDataObjectList
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagObjectIdentifier
                                 objectList
                                         terminated
@@ -3963,12 +4099,18 @@
             [simple   BACnetPolarityTagged('0', 'TagClass.APPLICATION_TAGS')  polarity                                  ]
         ]
         [*, 'PORT_FILTER'                               BACnetConstructedDataPortFilter
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetPortPermission
                             portFilter
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         [*, 'POSITIVE_ACCESS_RULES'                     BACnetConstructedDataPositiveAccessRules
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetAccessRule
                             positiveAccessRules
                                     terminated
@@ -4068,6 +4210,9 @@
                                   'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
         ['GLOBAL_GROUP', 'PRESENT_VALUE'                BACnetConstructedDataGlobalGroupPresentValue
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetPropertyAccessResult
                           presentValue
                                   terminated
@@ -4090,15 +4235,18 @@
             [simple   BACnetApplicationTagUnsignedInteger                     presentValue                              ]
         ]
         [*, 'PRIORITY'                                  BACnetConstructedDataPriority
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagUnsignedInteger
                             priority
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
-            // TODO: enable once index support is in
-            //[validation 'COUNT(priority) == 3' "priority should have exactly 3 values"                                ]
+            [validation 'arrayIndexArgument!=null || COUNT(priority) == 3'
+                        "priority should have exactly 3 values"                                                         ]
         ]
         [*, 'PRIORITY_ARRAY'                            BACnetConstructedDataPriorityArray
-            [simple   BACnetPriorityArray('objectTypeArgument', 'tagNumber')            priorityArray                   ]
+            [simple   BACnetPriorityArray('objectTypeArgument', 'tagNumber', 'arrayIndexArgument')   priorityArray      ]
         ]
         [*, 'PRIORITY_FOR_WRITING', '2'                 BACnetConstructedDataPriorityForWriting
             [simple   BACnetApplicationTagUnsignedInteger                     priorityForWriting                        ]
@@ -4125,6 +4273,9 @@
             [simple   BACnetProgramStateTagged('0', 'TagClass.APPLICATION_TAGS')           programState                 ]
         ]
         [*, 'PROPERTY_LIST', '9'                        BACnetConstructedDataPropertyList
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetPropertyIdentifierTagged('0', 'TagClass.APPLICATION_TAGS')
                                 propertyList
                                         terminated
@@ -4186,6 +4337,9 @@
             [simple BACnetApplicationTagUnsignedInteger                     referencePort                               ]
         ]
         [*, 'REGISTERED_CAR_CALL'                       BACnetConstructedDataRegisteredCarCall
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetLiftCarCallList
                                             registeredCarCall
                                                     terminated
@@ -4345,12 +4499,18 @@
             [simple BACnetApplicationTagUnsignedInteger                       shedDuration                              ]
         ]
         [*, 'SHED_LEVEL_DESCRIPTIONS', '7'              BACnetConstructedDataShedLevelDescriptions
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagCharacterString
                                 shedLevelDescriptions
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         [*, 'SHED_LEVELS', '2'                          BACnetConstructedDataShedLevels
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagUnsignedInteger
                                 shedLevels
                                         terminated
@@ -4372,17 +4532,23 @@
             [simple   BACnetDateTime                                          startTime                                 ]
         ]
         [*, 'STATE_CHANGE_VALUES'                       BACnetConstructedDataStateChangeValues
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetTimerStateChangeValue('objectTypeArgument')
                                 stateChangeValues
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
-            // TODO: enable once index support is in
-            //[validation 'COUNT(stateChangeValues) == 7' "stateChangeValues should have exactly 7 values"              ]
+            [validation 'arrayIndexArgument!=null || COUNT(stateChangeValues) == 7'
+                        "stateChangeValues should have exactly 7 values"                                                ]
         ]
         [*, 'STATE_DESCRIPTION', '7'                    BACnetConstructedDataStateDescription
             [simple   BACnetApplicationTagCharacterString                               stateDescription                ]
         ]
         [*, 'STATE_TEXT', '7'                           BACnetConstructedDataStateText
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagCharacterString
                                 stateText
                                         terminated
@@ -4401,36 +4567,54 @@
             [simple BACnetApplicationTagUnsignedInteger                       strikeCount                               ]
         ]
         [*, 'STRUCTURED_OBJECT_LIST'                    BACnetConstructedDataStructuredObjectList
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagObjectIdentifier
                                 structuredObjectList
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         [*, 'SUBORDINATE_ANNOTATIONS'                   BACnetConstructedDataSubordinateAnnotations
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagCharacterString
                     subordinateAnnotations
                             terminated
                             'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
         [*, 'SUBORDINATE_LIST'                          BACnetConstructedDataSubordinateList
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetDeviceObjectReference
                         subordinateList
                                 terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'        ]
         ]
         [*, 'SUBORDINATE_NODE_TYPES', '9'               BACnetConstructedDataSubordinateNodeTypes
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetNodeTypeTagged('0', 'TagClass.APPLICATION_TAGS')
                         subordinateNodeTypes
                                 terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'        ]
         ]
         [*, 'SUBORDINATE_RELATIONSHIPS', '9'            BACnetConstructedDataSubordinateRelationships
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetRelationshipTagged('0', 'TagClass.APPLICATION_TAGS')
                                     subordinateRelationships
                                             terminated
                                             'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
         [*, 'SUBORDINATE_TAGS'                          BACnetConstructedDataSubordinateTags
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetNameValueCollection('0')
                         subordinateList
                                 terminated
@@ -4443,6 +4627,9 @@
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
         [*, 'SUPPORTED_FORMAT_CLASSES'                  BACnetConstructedDataSupportedFormatClasses
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetApplicationTagUnsignedInteger
                                         supportedFormats
                                                 terminated
@@ -4450,6 +4637,9 @@
 
         ]
         [*, 'SUPPORTED_FORMATS'                         BACnetConstructedDataSupportedFormats
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetAuthenticationFactorFormat
                                         supportedFormats
                                                 terminated
@@ -4465,6 +4655,9 @@
             [simple   BACnetDeviceStatusTagged('0', 'TagClass.APPLICATION_TAGS')    systemStatus                        ]
         ]
         [*, 'TAGS'                                      BACnetConstructedDataTags
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetNameValue
                             tags
                                 terminated
@@ -4588,10 +4781,15 @@
             [simple   BACnetValueSource                 valueSource                                                     ]
         ]
         [*, 'VALUE_SOURCE_ARRAY'                        BACnetConstructedDataValueSourceArray
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetValueSource
                                 vtClassesSupported
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+            [validation 'arrayIndexArgument!=null || COUNT(vtClassesSupported) == 16'
+                        "vtClassesSupported should have exactly 16 values"                                              ]
         ]
         [*, 'VARIANCE_VALUE', '4'                       BACnetConstructedDataVarianceValue
             [simple BACnetApplicationTagReal                                varianceValue                               ]
@@ -4620,12 +4818,15 @@
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
         [*, 'WEEKLY_SCHEDULE'                           BACnetConstructedDataWeeklySchedule
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetDailySchedule
                                 weeklySchedule
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
-            // TODO: check if we have an array index... in this case it can be below 7... till then we deactivate this check
-            //[validation 'COUNT(weeklySchedule) == 7' "weeklySchedule should have exactly 7 values"                      ]
+            [validation 'arrayIndexArgument!=null || COUNT(weeklySchedule) == 7'
+                        "weeklySchedule should have exactly 7 values"                                                   ]
         ]
         [*, 'WINDOW_INTERVAL', '2'                      BACnetConstructedDataWindowInterval
             [simple   BACnetApplicationTagUnsignedInteger                               windowInterval                  ]
@@ -4650,6 +4851,9 @@
         ]
         // BACnetConstructedDataUnspecified is used for unmapped properties
         [BACnetConstructedDataUnspecified
+            // TODO: uint 64 ---> big int in java == boom
+            [virtual  uint 64   zero           '0'  ]
+            [optional BACnetApplicationTagUnsignedInteger numberOfDataElements 'arrayIndexArgument!=null && arrayIndexArgument.actualValue == zero']
             [array    BACnetConstructedDataElement('objectTypeArgument', 'propertyIdentifierArgument', 'arrayIndexArgument')
                             data                    terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']

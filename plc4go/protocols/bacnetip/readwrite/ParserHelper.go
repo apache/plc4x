@@ -60,7 +60,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.BACnetPriorityArrayParse(io, objectTypeArgument, tagNumber)
+		var arrayIndexArgument model.BACnetTagPayloadUnsignedInteger
+		return model.BACnetPriorityArrayParse(io, objectTypeArgument, tagNumber, &arrayIndexArgument)
 	case "BACnetNameValue":
 		return model.BACnetNameValueParse(io)
 	case "BACnetPropertyReferenceEnclosed":
@@ -637,8 +638,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetDateRangeParse(io)
 	case "BACnetEventParameter":
 		return model.BACnetEventParameterParse(io)
-	case "BACnetEventMessageTextsConfig":
-		return model.BACnetEventMessageTextsConfigParse(io)
 	case "BACnetLiftFaultTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -958,8 +957,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetSecurityPolicyTaggedParse(io, tagNumber, tagClass)
-	case "BACnetEventMessageTexts":
-		return model.BACnetEventMessageTextsParse(io)
 	case "BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord":
 		return model.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(io)
 	case "BVLC":

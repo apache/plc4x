@@ -19,9 +19,14 @@
 package org.apache.plc4x.protocol.bacnetip;
 
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
+import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
+import org.apache.plc4x.plugins.codegenerator.types.fields.FieldConversions;
+import org.apache.plc4x.plugins.codegenerator.types.fields.PropertyField;
+import org.apache.plc4x.plugins.codegenerator.types.fields.ValidationField;
 import org.junit.jupiter.api.*;
 import org.opentest4j.TestAbortedException;
 import org.slf4j.Logger;
@@ -32,8 +37,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.apache.plc4x.protocol.bacnetip.BACnetObjectsDefinitions.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ObjectPropertyDeDuplicationTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectPropertyDeDuplicationTest.class);
@@ -144,7 +148,7 @@ public class ObjectPropertyDeDuplicationTest {
                                     () -> {
                                         String searchedTypeName = "BACnetConstructedData" + propertyIdentifier;
                                         searchedTypeName = searchedTypeName.replaceAll("_", "");
-                                        switch (searchedTypeName){
+                                        switch (searchedTypeName) {
                                             case "BACnetConstructedDataOutofService":
                                                 // Typo in spec again
                                                 searchedTypeName = "BACnetConstructedDataOutOfService";
@@ -192,6 +196,119 @@ public class ObjectPropertyDeDuplicationTest {
                                 );
                             }
                         }
+                    }
+                );
+            });
+        return tests;
+    }
+
+    // Note: if this test fails check testNonUniqueUsagesAreMappedGeneric first
+    @TestFactory
+    Collection<DynamicContainer> testArrayIndexesAreHandled() {
+        List<DynamicContainer> tests = new LinkedList<>();
+        String bacnetArrayIdentifierPrefix = "BACnetARRAY";
+        String bacnetListIdentifierPrefix = "BACnetLIST";
+        new LinkedList<>(propertyTypeCombinationToObjectNameMap.entrySet())
+            .stream()
+            .filter(propertyTypeCombinationListEntry -> propertyTypeCombinationListEntry.getKey().propertyDataType.startsWith(bacnetArrayIdentifierPrefix) || propertyTypeCombinationListEntry.getKey().propertyDataType.startsWith(bacnetListIdentifierPrefix))
+            .sorted(Map.Entry.comparingByKey())
+            .forEach(propertyTypeCombinationToObjectNameEntry -> {
+                PropertyTypeCombination propertyTypeCombination = propertyTypeCombinationToObjectNameEntry.getKey();
+                propertyTypeCombinationToObjectNameEntry.getValue().forEach(bacNetObjectName -> {
+                        tests.add(DynamicContainer.dynamicContainer(propertyTypeCombination + " for " + bacNetObjectName, () -> {
+                            Collection<DynamicNode> nodes = new LinkedList<>();
+                            String propertyIdentifier = propertyTypeCombination.propertyIdentifier;
+                            String propertyDataType = propertyTypeCombination.propertyDataType;
+                            Set<String> listOfTypes = propertyToPropertyTypesMaps.get(propertyIdentifier);
+                            final TypeDefinition typeDefinition;
+                            if (listOfTypes.size() < 2) {
+                                String searchedTypeName = "BACnetConstructedData" + propertyIdentifier;
+                                searchedTypeName = searchedTypeName.replaceAll("_", "");
+                                switch (searchedTypeName) {
+                                    case "BACnetConstructedDataOutofService":
+                                        // Typo in spec again
+                                        searchedTypeName = "BACnetConstructedDataOutOfService";
+                                        break;
+                                }
+                                typeDefinition = typeDefinitions.get(searchedTypeName);
+                                assertNotNull(typeDefinition, "shared " + searchedTypeName + " not found (" + propertyTypeCombination + ")");
+                            } else {
+                                boolean isThisCombinationTheMostCommon = true;
+                                Integer numberOfOccurences = propertyTypeCombinationCount.get(propertyTypeCombination);
+                                for (String otherType : listOfTypes) {
+                                    if (otherType.equals(propertyTypeCombination.propertyDataType)) continue;
+                                    Integer otherOccurence = propertyTypeCombinationCount.get(new PropertyTypeCombination(propertyIdentifier, otherType));
+                                    if (otherOccurence >= numberOfOccurences) {
+                                        isThisCombinationTheMostCommon = false;
+                                        break;
+                                    }
+                                }
+                                if (isThisCombinationTheMostCommon) {
+                                    // This is the case when there are more than 1 occurrence of this propertyIdentifier with one type and this combination is the one with the most occurrences
+                                    String searchedTypeName = "BACnetConstructedData" + propertyIdentifier;
+                                    searchedTypeName = searchedTypeName.replaceAll("_", "");
+                                    typeDefinition = typeDefinitions.get(searchedTypeName);
+                                    assertNotNull(typeDefinition, "shared " + searchedTypeName + " not found (most occurring case with " + numberOfOccurences + " occurrences)");
+                                } else {
+                                    // This is the case when there are more than 1 occurrence of this propertyIdentifier with one type
+                                    String searchedTypeName = "BACnetConstructedData" + bacNetObjectName + propertyIdentifier;
+                                    searchedTypeName = searchedTypeName.replaceAll("[_ ]", "");
+                                    Pattern pattern = Pattern.compile("-([a-z])");
+                                    Matcher matcher = pattern.matcher(searchedTypeName);
+                                    StringBuilder result = new StringBuilder();
+                                    while (matcher.find()) {
+                                        matcher.appendReplacement(result, matcher.group(1).toUpperCase());
+                                    }
+                                    matcher.appendTail(result);
+                                    searchedTypeName = result.toString();
+                                    typeDefinition = typeDefinitions.get(searchedTypeName);
+                                    assertNotNull(typeDefinitions.get(searchedTypeName), "dedicated " + searchedTypeName + " not found (this occurrence: " + numberOfOccurences + ", other variants " + listOfTypes + ").");
+                                }
+                            }
+                            assertTrue(typeDefinition.isComplexTypeDefinition(), typeDefinition.getName() + " should be complex");
+                            ComplexTypeDefinition complexTypeDefinition = typeDefinition.asComplexTypeDefinition().orElseThrow();
+                            if (propertyDataType.startsWith(bacnetArrayIdentifierPrefix)) {
+                                nodes.add(
+                                    DynamicTest.dynamicTest("Check array count for " + propertyTypeCombination + " for " + typeDefinition.getName(),
+                                        () -> {
+                                            Optional<PropertyField> numberOfDataElements = complexTypeDefinition.getPropertyFieldByName("numberOfDataElements");
+                                            assertTrue(numberOfDataElements.isPresent(), "field numberOfDataElements for " + typeDefinition.getName() + " not found");
+                                        })
+                                );
+                                if (propertyDataType.startsWith("BACnetARRAY[") && !propertyDataType.startsWith("BACnetARRAY[N")) {
+                                    nodes.add(
+                                        DynamicTest.dynamicTest("Check bounds validation for " + propertyTypeCombination + " for " + typeDefinition.getName(),
+                                            () -> {
+                                                Pattern pattern = Pattern.compile("BACnetARRAY\\[(\\d+)]");
+                                                Matcher matcher = pattern.matcher(propertyDataType);
+                                                assertTrue(matcher.find(), "we should find the index");
+                                                String index = matcher.group(1);
+                                                Optional<ValidationField> validationField = complexTypeDefinition.getFields().stream()
+                                                    .filter(Field::isValidationField)
+                                                    .map(ValidationField.class::cast)
+                                                    .filter(foundValidationField ->
+                                                        foundValidationField.getValidationExpression().stringRepresentation().contains("COUNT")
+                                                            && foundValidationField.getValidationExpression().stringRepresentation().contains("arrayIndexArgument")
+                                                            && foundValidationField.getValidationExpression().stringRepresentation().contains(index)
+                                                    )
+                                                    .findAny();
+                                                assertTrue(validationField.isPresent(), "No validation for length of " + index + " found for " + typeDefinition.getName());
+                                            })
+                                    );
+
+                                }
+                            } else if (propertyDataType.startsWith(bacnetListIdentifierPrefix))
+                                nodes.add(
+                                    DynamicTest.dynamicTest("Check no array count for " + propertyTypeCombination + " for " + typeDefinition.getName(),
+                                        () -> {
+                                            Optional<PropertyField> numberOfDataElements = complexTypeDefinition.getPropertyFieldByName("numberOfDataElements");
+                                            assertFalse(numberOfDataElements.isPresent(), "field numberOfDataElements for " + typeDefinition.getName() + " found");
+                                        })
+                                );
+                            else
+                                throw new IllegalStateException("how on earth did we got " + propertyDataType + " here???");
+                            return nodes.iterator();
+                        }));
                     }
                 );
             });

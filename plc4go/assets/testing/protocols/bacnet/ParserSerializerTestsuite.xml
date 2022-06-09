@@ -4829,7 +4829,6 @@
     </xml>
   </testcase>
 
-  <!-- TODO: this is disabled till it is cleared why binary input should return a real here
   <testcase>
     <name>54	Unconfirmed-REQ unconfirmedCOVNotification device,2 binary-input,4 present-value </name>
     <raw>810a00250120ffff00ff100209011c020000022c00c0000439054e09552e4442c800002f4f</raw>
@@ -5006,22 +5005,32 @@
                                               </header>
                                             </BACnetOpeningTag>
                                           </openingTag>
-                                          <BACnetConstructedDataBinaryInputPresentValue>
-                                            <presentValue>
-                                              <BACnetBinaryPVTagged>
-                                                <header>
-                                                  <BACnetTagHeader>
-                                                    <tagNumber dataType="uint" bitLength="4">4</tagNumber>
-                                                    <tagClass>
-                                                      <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                                    </tagClass>
-                                                    <lengthValueType dataType="uint" bitLength="3">4</lengthValueType>
-                                                  </BACnetTagHeader>
-                                                </header>
-                                                <value dataType="uint" bitLength="8" stringRepresentation="INACTIVE">0</value>
-                                              </BACnetBinaryPVTagged>
-                                            </presentValue>
-                                          </BACnetConstructedDataBinaryInputPresentValue>
+                                          <BACnetConstructedDataUnspecified>
+                                            <data isList="true">
+                                              <BACnetConstructedDataElement>
+                                                <applicationTag>
+                                                  <BACnetApplicationTag>
+                                                    <header>
+                                                      <BACnetTagHeader>
+                                                        <tagNumber dataType="uint" bitLength="4">4</tagNumber>
+                                                        <tagClass>
+                                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                        </tagClass>
+                                                        <lengthValueType dataType="uint" bitLength="3">4</lengthValueType>
+                                                      </BACnetTagHeader>
+                                                    </header>
+                                                    <BACnetApplicationTagReal>
+                                                      <payload>
+                                                        <BACnetTagPayloadReal>
+                                                          <value dataType="float" bitLength="32">100.0</value>
+                                                        </BACnetTagPayloadReal>
+                                                      </payload>
+                                                    </BACnetApplicationTagReal>
+                                                  </BACnetApplicationTag>
+                                                </applicationTag>
+                                              </BACnetConstructedDataElement>
+                                            </data>
+                                          </BACnetConstructedDataUnspecified>
                                           <closingTag>
                                             <BACnetClosingTag>
                                               <header>
@@ -5067,7 +5076,7 @@
         </BVLCOriginalUnicastNPDU>
       </BVLC>
     </xml>
-  </testcase-->
+  </testcase>
 
   <testcase>
     <name>56	Unconfirmed-REQ who-Is 61 61 </name>
