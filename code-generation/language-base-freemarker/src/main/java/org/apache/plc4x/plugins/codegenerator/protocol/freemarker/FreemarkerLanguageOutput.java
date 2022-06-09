@@ -40,7 +40,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
     private static final Logger LOGGER = LoggerFactory.getLogger(FreemarkerLanguageOutput.class);
 
     @Override
-    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types,
+    public void generate(File outputDir, String version, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types,
                          Map<String, String> options)
         throws GenerationException {
 
