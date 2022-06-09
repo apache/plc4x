@@ -38,6 +38,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Literal;
+import org.apache.plc4x.plugins.codegenerator.types.terms.NumericLiteral;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
 import org.slf4j.Logger;
@@ -687,6 +688,36 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             case UINT:
                 int integerSize = Integer.parseInt(ctx.size.getText());
                 return new DefaultIntegerTypeReference(simpleBaseType, integerSize);
+            case VINT: {
+                final Map<String, Term> attributes = getAttributes(ctx.parent.parent);
+                SimpleTypeReference propertyType;
+                int propertySizeInBits = 32;
+                if (attributes.containsKey("propertySizeInBits")) {
+                    final Term propertySizeInBitsTerm = attributes.get("propertySizeInBits");
+                    if(!(propertySizeInBitsTerm instanceof NumericLiteral)) {
+                        throw new RuntimeException("'propertySizeInBits' attribute is required to be a numeric literal");
+                    }
+                    NumericLiteral propertySizeInBitsLiteral = (NumericLiteral) propertySizeInBitsTerm;
+                    propertySizeInBits = propertySizeInBitsLiteral.getNumber().intValue();
+                }
+                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT,propertySizeInBits);
+                return new DefaultVintegerTypeReference(simpleBaseType, propertyType);
+            }
+            case VUINT: {
+                final Map<String, Term> attributes = getAttributes(ctx.parent.parent);
+                SimpleTypeReference propertyType;
+                int propertySizeInBits = 32;
+                if (attributes.containsKey("propertySizeInBits")) {
+                    final Term propertySizeInBitsTerm = attributes.get("propertySizeInBits");
+                    if(!(propertySizeInBitsTerm instanceof NumericLiteral)) {
+                        throw new RuntimeException("'propertySizeInBits' attribute is required to be a numeric literal");
+                    }
+                    NumericLiteral propertySizeInBitsLiteral = (NumericLiteral) propertySizeInBitsTerm;
+                    propertySizeInBits = propertySizeInBitsLiteral.getNumber().intValue();
+                }
+                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT,propertySizeInBits);
+                return new DefaultVintegerTypeReference(simpleBaseType, propertyType);
+            }
             case FLOAT:
             case UFLOAT:
                 int floatSize = Integer.parseInt(ctx.size.getText());

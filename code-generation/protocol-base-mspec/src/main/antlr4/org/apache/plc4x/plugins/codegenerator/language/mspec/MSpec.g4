@@ -161,7 +161,9 @@ dataType
  : base='bit'
  | base='byte'
  | base='int' size=INTEGER_LITERAL
+ | base='vint'
  | base='uint' size=INTEGER_LITERAL
+ | base='vuint'
  | base='float' size=INTEGER_LITERAL
  | base='ufloat' size=INTEGER_LITERAL
  | base='string' size=INTEGER_LITERAL

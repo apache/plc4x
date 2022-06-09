@@ -363,3 +363,10 @@
     [implicit uint 32                stringLength 'stringValue.lengthInBytes']
     [simple   vstring 'stringLength' stringValue]
 ]
+
+[type VariableIntegerType
+    [simple vint  variableLengthInt                                              ]
+    [simple vuint variableLengthUnsignedInt                                      ]
+    [simple vint  variableLengthIntWithNonDefaultProperty propertySizeInBits='8' ]
+    [simple vuint variableLengthUnsignedInt               propertySizeInBits='16']
+]
