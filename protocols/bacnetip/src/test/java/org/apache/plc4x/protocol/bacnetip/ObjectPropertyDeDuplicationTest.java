@@ -127,7 +127,6 @@ public class ObjectPropertyDeDuplicationTest {
         return tests;
     }
 
-    @Disabled("disabled till all of those issues are resolbed within")
     @TestFactory
     Collection<DynamicNode> testNonUniqueUsagesAreMappedGeneric() {
         List<DynamicNode> tests = new LinkedList<>();

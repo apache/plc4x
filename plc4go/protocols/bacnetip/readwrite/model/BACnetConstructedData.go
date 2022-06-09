@@ -1265,8 +1265,52 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataRegisteredCarCallParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_RELIABILITY: // BACnetConstructedDataReliability
 		_child, typeSwitchError = BACnetConstructedDataReliabilityParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
-	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_RELIABILITY_EVALUATION_INHIBIT: // BACnetConstructedDataReliabilityEvaluationInhibit
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_RELIABILITY_EVALUATION_INHIBIT && peekedTagNumber == uint8(1): // BACnetConstructedDataReliabilityEvaluationInhibit
 		_child, typeSwitchError = BACnetConstructedDataReliabilityEvaluationInhibitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_ACCESS_DOOR && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(9): // BACnetConstructedDataAccessDoorRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataAccessDoorRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_ANALOG_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogOutputRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataAnalogOutputRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataAnalogValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_BINARY_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(9): // BACnetConstructedDataBinaryOutputRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataBinaryOutputRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_BINARY_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(9): // BACnetConstructedDataBinaryValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataBinaryValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_BINARY_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(9): // BACnetConstructedDataBinaryLightingOutputRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataBinaryLightingOutputRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_BITSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(8): // BACnetConstructedDataBitStringValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataBitStringValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_CHARACTERSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(7): // BACnetConstructedDataCharacterStringValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataCharacterStringValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_DATE_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(10): // BACnetConstructedDataDateValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataDateValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_DATEPATTERN_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(10): // BACnetConstructedDataDatePatternValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataDatePatternValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_DATETIME_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT: // BACnetConstructedDataDateTimeValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataDateTimeValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_DATETIMEPATTERN_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT: // BACnetConstructedDataDateTimePatternValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataDateTimePatternValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_LARGE_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(5): // BACnetConstructedDataLargeAnalogValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataLargeAnalogValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(4): // BACnetConstructedDataLightingOutputRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataLightingOutputRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_TIMEPATTERN_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(11): // BACnetConstructedDataTimePatternValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataTimePatternValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_TIME_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(11): // BACnetConstructedDataTimeValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataTimeValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(3): // BACnetConstructedDataIntegerValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataIntegerValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_OCTETSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(6): // BACnetConstructedDataOctetStringValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataOctetStringValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_POSITIVE_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(2): // BACnetConstructedDataPositiveIntegerValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataPositiveIntegerValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_MULTI_STATE_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(2): // BACnetConstructedDataMultiStateOutputRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataMultiStateOutputRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case objectTypeArgument == BACnetObjectType_MULTI_STATE_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(2): // BACnetConstructedDataMultiStateValueRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataMultiStateValueRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(2): // BACnetConstructedDataRelinquishDefault
+		_child, typeSwitchError = BACnetConstructedDataRelinquishDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_REPRESENTS: // BACnetConstructedDataRepresents
 		_child, typeSwitchError = BACnetConstructedDataRepresentsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_REQUESTED_SHED_LEVEL: // BACnetConstructedDataRequestedShedLevel

@@ -558,8 +558,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.RELINQUISH_DEFAULT, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
-                    BACnetConstructedDataUnspecified baCnetConstructedDataUnspecified = (BACnetConstructedDataUnspecified) baCnetServiceAckReadProperty.getValues();
-                    BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) baCnetConstructedDataUnspecified.getData().get(0).getApplicationTag();
+                    BACnetApplicationTagReal baCnetApplicationTagReal = ((BACnetConstructedDataAnalogOutputRelinquishDefault) baCnetServiceAckReadProperty.getValues()).getRelinquishDefault();
                     assertEquals(0.0f, baCnetApplicationTagReal.getActualValue());
                 }),
             DynamicTest.dynamicTest("No. 29-76 - Skip Misc 48 packages",

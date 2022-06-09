@@ -4093,92 +4093,92 @@
         [*, 'PRIORITY_ARRAY'                            BACnetConstructedDataPriorityArray
             [simple   BACnetPriorityArray('objectTypeArgument', 'tagNumber')            priorityArray                   ]
         ]
-        [*, 'PRIORITY_FOR_WRITING'                    BACnetConstructedDataPriorityForWriting
+        [*, 'PRIORITY_FOR_WRITING'                      BACnetConstructedDataPriorityForWriting
             [simple   BACnetApplicationTagUnsignedInteger                     priorityForWriting                        ]
         ]
-        [*, 'PROCESS_IDENTIFIER'                      BACnetConstructedDataProcessIdentifier
+        [*, 'PROCESS_IDENTIFIER'                        BACnetConstructedDataProcessIdentifier
             [simple   BACnetApplicationTagUnsignedInteger                               processIdentifier               ]
         ]
-        [*, 'PROCESS_IDENTIFIER_FILTER'               BACnetConstructedDataProcessIdentifierFilter
+        [*, 'PROCESS_IDENTIFIER_FILTER'                 BACnetConstructedDataProcessIdentifierFilter
             [simple   BACnetProcessIdSelection                          processIdentifierFilter                         ]
         ]
-        [*, 'PROFILE_LOCATION'                        BACnetConstructedDataProfileLocation
+        [*, 'PROFILE_LOCATION'                          BACnetConstructedDataProfileLocation
             [simple   BACnetApplicationTagCharacterString                               profileLocation                 ]
         ]
-        [*, 'PROFILE_NAME'                            BACnetConstructedDataProfileName
+        [*, 'PROFILE_NAME'                              BACnetConstructedDataProfileName
             [simple   BACnetApplicationTagCharacterString                               profileName                     ]
         ]
-        [*, 'PROGRAM_CHANGE'                          BACnetConstructedDataProgramChange
+        [*, 'PROGRAM_CHANGE'                            BACnetConstructedDataProgramChange
             [simple   BACnetProgramRequestTagged('0', 'TagClass.APPLICATION_TAGS')           programChange              ]
         ]
-        [*, 'PROGRAM_LOCATION'                        BACnetConstructedDataProgramLocation
+        [*, 'PROGRAM_LOCATION'                          BACnetConstructedDataProgramLocation
             [simple   BACnetApplicationTagCharacterString                               programLocation                 ]
         ]
-        [*, 'PROGRAM_STATE'                           BACnetConstructedDataProgramState
+        [*, 'PROGRAM_STATE'                             BACnetConstructedDataProgramState
             [simple   BACnetProgramStateTagged('0', 'TagClass.APPLICATION_TAGS')           programState                 ]
         ]
-        [*, 'PROPERTY_LIST'                           BACnetConstructedDataPropertyList
+        [*, 'PROPERTY_LIST'                             BACnetConstructedDataPropertyList
             [array    BACnetPropertyIdentifierTagged('0', 'TagClass.APPLICATION_TAGS')
                                 propertyList
                                         terminated
                                         'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
-        [*, 'PROPORTIONAL_CONSTANT'                   BACnetConstructedDataProportionalConstant
+        [*, 'PROPORTIONAL_CONSTANT'                     BACnetConstructedDataProportionalConstant
             [simple BACnetApplicationTagReal                                proportionalConstant                        ]
         ]
-        [*, 'PROPORTIONAL_CONSTANT_UNITS'             BACnetConstructedDataProportionalConstantUnits
+        [*, 'PROPORTIONAL_CONSTANT_UNITS'               BACnetConstructedDataProportionalConstantUnits
             [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS')                    units           ]
         ]
-        [*, 'PROTOCOL_LEVEL'                          BACnetConstructedDataProtocolLevel
+        [*, 'PROTOCOL_LEVEL'                            BACnetConstructedDataProtocolLevel
             [simple   BACnetProtocolLevelTagged('0', 'TagClass.APPLICATION_TAGS')                    protocolLevel      ]
         ]
         //[*, 'PROTOCOL_CONFORMANCE_CLASS'              BACnetConstructedDataProtocolConformanceClass [validation    '1 == 2'    "TODO: implement me PROTOCOL_CONFORMANCE_CLASS BACnetConstructedDataProtocolConformanceClass"]]
-        [*, 'PROTOCOL_OBJECT_TYPES_SUPPORTED'         BACnetConstructedDataProtocolObjectTypesSupported
+        [*, 'PROTOCOL_OBJECT_TYPES_SUPPORTED'           BACnetConstructedDataProtocolObjectTypesSupported
             [simple   BACnetObjectTypesSupportedTagged('0', 'TagClass.APPLICATION_TAGS')            protocolObjectTypesSupported         ]
         ]
-        [*, 'PROTOCOL_REVISION'                       BACnetConstructedDataProtocolRevision
+        [*, 'PROTOCOL_REVISION'                         BACnetConstructedDataProtocolRevision
             [simple   BACnetApplicationTagUnsignedInteger                                           protocolRevision    ]
         ]
-        [*, 'PROTOCOL_SERVICES_SUPPORTED'             BACnetConstructedDataProtocolServicesSupported
+        [*, 'PROTOCOL_SERVICES_SUPPORTED'               BACnetConstructedDataProtocolServicesSupported
             [simple   BACnetServicesSupportedTagged('0', 'TagClass.APPLICATION_TAGS')   protocolServicesSupported       ]
         ]
-        [*, 'PROTOCOL_VERSION'                        BACnetConstructedDataProtocolVersion
+        [*, 'PROTOCOL_VERSION'                          BACnetConstructedDataProtocolVersion
             [simple   BACnetApplicationTagUnsignedInteger                                           protocolVersion     ]
         ]
-        [*, 'PULSE_RATE'                              BACnetConstructedDataPulseRate
+        [*, 'PULSE_RATE'                                BACnetConstructedDataPulseRate
             [simple   BACnetApplicationTagUnsignedInteger                                           pulseRate           ]
         ]
-        [*, 'READ_ONLY'                               BACnetConstructedDataReadOnly
+        [*, 'READ_ONLY'                                 BACnetConstructedDataReadOnly
             [simple BACnetApplicationTagBoolean                                readOnly                                 ]
         ]
-        [*, 'REASON_FOR_DISABLE'                      BACnetConstructedDataReasonForDisable
+        [*, 'REASON_FOR_DISABLE'                        BACnetConstructedDataReasonForDisable
             [array    BACnetAccessCredentialDisableReasonTagged('0', 'TagClass.APPLICATION_TAGS')
                                             reasonForDisable
                                                     terminated
                                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
         ]
-        [*, 'REASON_FOR_HALT'                         BACnetConstructedDataReasonForHalt
+        [*, 'REASON_FOR_HALT'                           BACnetConstructedDataReasonForHalt
             [simple   BACnetProgramErrorTagged('0', 'TagClass.APPLICATION_TAGS')           programError                 ]
         ]
-        [*, 'RECIPIENT_LIST'                          BACnetConstructedDataRecipientList
+        [*, 'RECIPIENT_LIST'                            BACnetConstructedDataRecipientList
             [array    BACnetDestination
                                 recipientList
                                     terminated
                                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
         ]
-        ['FILE', 'RECORD_COUNT'                            BACnetConstructedDataFileRecordCount
+        ['FILE', 'RECORD_COUNT'                         BACnetConstructedDataFileRecordCount
             [simple BACnetApplicationTagUnsignedInteger                     recordCount                                 ]
         ]
-        [*, 'RECORD_COUNT'                            BACnetConstructedDataRecordCount
+        [*, 'RECORD_COUNT'                              BACnetConstructedDataRecordCount
             [simple BACnetApplicationTagUnsignedInteger                     recordCount                                 ]
         ]
-        [*, 'RECORDS_SINCE_NOTIFICATION'              BACnetConstructedDataRecordsSinceNotification
+        [*, 'RECORDS_SINCE_NOTIFICATION'                BACnetConstructedDataRecordsSinceNotification
             [simple BACnetApplicationTagUnsignedInteger                     recordsSinceNotifications                   ]
         ]
-        [*, 'REFERENCE_PORT'                          BACnetConstructedDataReferencePort
+        [*, 'REFERENCE_PORT'                            BACnetConstructedDataReferencePort
             [simple BACnetApplicationTagUnsignedInteger                     referencePort                               ]
         ]
-        [*, 'REGISTERED_CAR_CALL'                     BACnetConstructedDataRegisteredCarCall
+        [*, 'REGISTERED_CAR_CALL'                       BACnetConstructedDataRegisteredCarCall
             [array    BACnetLiftCarCallList
                                             registeredCarCall
                                                     terminated
@@ -4187,10 +4187,75 @@
         [*, 'RELIABILITY'                               BACnetConstructedDataReliability
             [simple   BACnetReliabilityTagged('0', 'TagClass.APPLICATION_TAGS')                         reliability     ]
         ]
-        [*, 'RELIABILITY_EVALUATION_INHIBIT'            BACnetConstructedDataReliabilityEvaluationInhibit
+        [*, 'RELIABILITY_EVALUATION_INHIBIT', '1'       BACnetConstructedDataReliabilityEvaluationInhibit
             [simple   BACnetApplicationTagBoolean                                       reliabilityEvaluationInhibit    ]
         ]
-        //[*, 'RELINQUISH_DEFAULT'                      BACnetConstructedDataRelinquishDefault [validation    '1 == 2'    "TODO: implement me RELINQUISH_DEFAULT BACnetConstructedDataRelinquishDefault"]]
+        ['ACCESS_DOOR', 'RELINQUISH_DEFAULT', '9'       BACnetConstructedDataAccessDoorRelinquishDefault
+            [simple   BACnetDoorValueTagged('0', 'TagClass.APPLICATION_TAGS')           relinquishDefault               ]
+        ]
+        ['ANALOG_OUTPUT', 'RELINQUISH_DEFAULT', '4'     BACnetConstructedDataAnalogOutputRelinquishDefault
+            [simple   BACnetApplicationTagReal                                          relinquishDefault               ]
+        ]
+        ['ANALOG_VALUE', 'RELINQUISH_DEFAULT', '4'      BACnetConstructedDataAnalogValueRelinquishDefault
+            [simple   BACnetApplicationTagReal                                          relinquishDefault               ]
+        ]
+        ['BINARY_OUTPUT', 'RELINQUISH_DEFAULT', '9'    BACnetConstructedDataBinaryOutputRelinquishDefault
+            [simple   BACnetBinaryPVTagged('0', 'TagClass.APPLICATION_TAGS')            relinquishDefault               ]
+        ]
+        ['BINARY_VALUE', 'RELINQUISH_DEFAULT', '9'    BACnetConstructedDataBinaryValueRelinquishDefault
+            [simple   BACnetBinaryPVTagged('0', 'TagClass.APPLICATION_TAGS')            relinquishDefault               ]
+        ]
+        ['BINARY_LIGHTING_OUTPUT', 'RELINQUISH_DEFAULT', '9'    BACnetConstructedDataBinaryLightingOutputRelinquishDefault
+            [simple   BACnetBinaryLightingPVTagged('0', 'TagClass.APPLICATION_TAGS')    relinquishDefault               ]
+        ]
+        ['BITSTRING_VALUE', 'RELINQUISH_DEFAULT', '8'   BACnetConstructedDataBitStringValueRelinquishDefault
+            [simple   BACnetApplicationTagBitString                                     relinquishDefault               ]
+        ]
+        ['CHARACTERSTRING_VALUE', 'RELINQUISH_DEFAULT', '7' BACnetConstructedDataCharacterStringValueRelinquishDefault
+            [simple   BACnetApplicationTagCharacterString                               relinquishDefault               ]
+        ]
+        ['DATE_VALUE', 'RELINQUISH_DEFAULT', '10'       BACnetConstructedDataDateValueRelinquishDefault
+            [simple   BACnetApplicationTagDate                                          relinquishDefault               ]
+        ]
+        ['DATEPATTERN_VALUE', 'RELINQUISH_DEFAULT', '10'     BACnetConstructedDataDatePatternValueRelinquishDefault
+            [simple   BACnetApplicationTagDate                                          relinquishDefault               ]
+        ]
+        ['DATETIME_VALUE', 'RELINQUISH_DEFAULT'         BACnetConstructedDataDateTimeValueRelinquishDefault
+            [simple   BACnetDateTime                                                    relinquishDefault               ]
+        ]
+        ['DATETIMEPATTERN_VALUE', 'RELINQUISH_DEFAULT'  BACnetConstructedDataDateTimePatternValueRelinquishDefault
+            [simple   BACnetDateTime                                                    relinquishDefault               ]
+        ]
+        ['LARGE_ANALOG_VALUE', 'RELINQUISH_DEFAULT', '5'     BACnetConstructedDataLargeAnalogValueRelinquishDefault
+            [simple   BACnetApplicationTagDouble                                        relinquishDefault               ]
+        ]
+        ['LIGHTING_OUTPUT', 'RELINQUISH_DEFAULT', '4'   BACnetConstructedDataLightingOutputRelinquishDefault
+            [simple   BACnetApplicationTagReal                                          relinquishDefault               ]
+        ]
+        ['TIMEPATTERN_VALUE', 'RELINQUISH_DEFAULT', '11'    BACnetConstructedDataTimePatternValueRelinquishDefault
+            [simple   BACnetApplicationTagTime                                          relinquishDefault               ]
+        ]
+        ['TIME_VALUE', 'RELINQUISH_DEFAULT', '11'       BACnetConstructedDataTimeValueRelinquishDefault
+            [simple   BACnetApplicationTagTime                                          relinquishDefault               ]
+        ]
+        ['INTEGER_VALUE', 'RELINQUISH_DEFAULT', '3'     BACnetConstructedDataIntegerValueRelinquishDefault
+            [simple   BACnetApplicationTagSignedInteger                                 relinquishDefault               ]
+        ]
+        ['OCTETSTRING_VALUE', 'RELINQUISH_DEFAULT', '6' BACnetConstructedDataOctetStringValueRelinquishDefault
+            [simple   BACnetApplicationTagSignedInteger                                 relinquishDefault               ]
+        ]
+        ['POSITIVE_INTEGER_VALUE', 'RELINQUISH_DEFAULT', '2'    BACnetConstructedDataPositiveIntegerValueRelinquishDefault
+            [simple   BACnetApplicationTagUnsignedInteger                               relinquishDefault               ]
+        ]
+        ['MULTI_STATE_OUTPUT', 'RELINQUISH_DEFAULT', '2'    BACnetConstructedDataMultiStateOutputRelinquishDefault
+            [simple   BACnetApplicationTagUnsignedInteger                               relinquishDefault               ]
+        ]
+        ['MULTI_STATE_VALUE', 'RELINQUISH_DEFAULT', '2' BACnetConstructedDataMultiStateValueRelinquishDefault
+            [simple   BACnetApplicationTagUnsignedInteger                               relinquishDefault               ]
+        ]
+        [*, 'RELINQUISH_DEFAULT', '2'                   BACnetConstructedDataRelinquishDefault
+            [simple   BACnetApplicationTagUnsignedInteger                               relinquishDefault               ]
+        ]
         [*, 'REPRESENTS'                                BACnetConstructedDataRepresents
             [simple   BACnetDeviceObjectReference       represents                                                      ]
         ]
