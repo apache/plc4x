@@ -32,7 +32,7 @@ type S7PayloadUserData struct {
 	Items []*S7PayloadUserDataItem
 
 	// Arguments.
-	Parameter S7Parameter
+	Parameter *S7Parameter
 }
 
 // IS7PayloadUserData is the corresponding interface of S7PayloadUserData
@@ -87,7 +87,7 @@ func (m *S7PayloadUserData) GetItems() []*S7PayloadUserDataItem {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserData factory function for S7PayloadUserData
-func NewS7PayloadUserData(items []*S7PayloadUserDataItem, parameter S7Parameter) *S7PayloadUserData {
+func NewS7PayloadUserData(items []*S7PayloadUserDataItem, parameter *S7Parameter) *S7PayloadUserData {
 	_result := &S7PayloadUserData{
 		Items:     items,
 		S7Payload: NewS7Payload(parameter),

@@ -32,7 +32,7 @@ type S7PayloadWriteVarResponse struct {
 	Items []*S7VarPayloadStatusItem
 
 	// Arguments.
-	Parameter S7Parameter
+	Parameter *S7Parameter
 }
 
 // IS7PayloadWriteVarResponse is the corresponding interface of S7PayloadWriteVarResponse
@@ -87,7 +87,7 @@ func (m *S7PayloadWriteVarResponse) GetItems() []*S7VarPayloadStatusItem {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadWriteVarResponse factory function for S7PayloadWriteVarResponse
-func NewS7PayloadWriteVarResponse(items []*S7VarPayloadStatusItem, parameter S7Parameter) *S7PayloadWriteVarResponse {
+func NewS7PayloadWriteVarResponse(items []*S7VarPayloadStatusItem, parameter *S7Parameter) *S7PayloadWriteVarResponse {
 	_result := &S7PayloadWriteVarResponse{
 		Items:     items,
 		S7Payload: NewS7Payload(parameter),

@@ -32,7 +32,7 @@ type S7PayloadReadVarResponse struct {
 	Items []*S7VarPayloadDataItem
 
 	// Arguments.
-	Parameter S7Parameter
+	Parameter *S7Parameter
 }
 
 // IS7PayloadReadVarResponse is the corresponding interface of S7PayloadReadVarResponse
@@ -87,7 +87,7 @@ func (m *S7PayloadReadVarResponse) GetItems() []*S7VarPayloadDataItem {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadReadVarResponse factory function for S7PayloadReadVarResponse
-func NewS7PayloadReadVarResponse(items []*S7VarPayloadDataItem, parameter S7Parameter) *S7PayloadReadVarResponse {
+func NewS7PayloadReadVarResponse(items []*S7VarPayloadDataItem, parameter *S7Parameter) *S7PayloadReadVarResponse {
 	_result := &S7PayloadReadVarResponse{
 		Items:     items,
 		S7Payload: NewS7Payload(parameter),

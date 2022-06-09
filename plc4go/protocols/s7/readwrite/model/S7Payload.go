@@ -30,7 +30,7 @@ import (
 type S7Payload struct {
 
 	// Arguments.
-	Parameter S7Parameter
+	Parameter *S7Parameter
 	Child     IS7PayloadChild
 }
 
@@ -63,7 +63,7 @@ type IS7PayloadChild interface {
 }
 
 // NewS7Payload factory function for S7Payload
-func NewS7Payload(parameter S7Parameter) *S7Payload {
+func NewS7Payload(parameter *S7Parameter) *S7Payload {
 	return &S7Payload{Parameter: parameter}
 }
 

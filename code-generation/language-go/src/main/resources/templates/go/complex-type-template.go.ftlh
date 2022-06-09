@@ -98,7 +98,7 @@ type ${type.name} struct {
 
 	// Arguments.
     <#list filteredParserArguments as parserArgument>
-	${parserArgument.name?cap_first} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+	${parserArgument.name?cap_first} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>*</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
     </#list>
 </#if>
 <#if type.isDiscriminatedParentTypeDefinition()>
@@ -313,7 +313,7 @@ func New${type.name}(
     <#if filteredParserArguments?has_content>
         <#if type.allPropertyFields?has_content>, </#if>
         <#list filteredParserArguments as parserArgument>
-			${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+			${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>*</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
             <#sep>, </#sep>
         </#list>
     </#if>
@@ -1482,7 +1482,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	return _child, nil
 	<#else>
 	// Create the instance
-	return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg><#if arg.type.isNonSimpleTypeReference() && !arg.type.isEnumTypeReference()>*</#if>${arg.name}<#sep>, </#sep></#list></#if>), nil
+	return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>), nil
 	</#if>
 }
 

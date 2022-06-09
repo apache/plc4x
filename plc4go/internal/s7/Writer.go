@@ -80,7 +80,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		s7MessageRequest := readWriteModel.NewS7MessageRequest(
 			tpduId,
 			readWriteModel.NewS7ParameterWriteVarRequest(parameterItems).GetParent(),
-			readWriteModel.NewS7PayloadWriteVarRequest(payloadItems, *readWriteModel.NewS7Parameter()).GetParent(),
+			readWriteModel.NewS7PayloadWriteVarRequest(payloadItems, nil).GetParent(),
 		).GetParent()
 
 		// Assemble the finished paket

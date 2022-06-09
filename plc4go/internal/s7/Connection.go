@@ -389,7 +389,7 @@ func (m *Connection) createIdentifyRemoteMessage() *readWriteModel.TPKTPacket {
 					readWriteModel.DataTransportSize_OCTET_STRING,
 				).GetParent(),
 			},
-			*readWriteModel.NewS7Parameter(),
+			nil,
 		).GetParent(),
 	).GetParent()
 	cotpPacketData := readWriteModel.NewCOTPPacketData(true, 2, nil, identifyRemoteMessage, 0).GetParent()
