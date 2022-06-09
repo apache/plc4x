@@ -32,4 +32,11 @@ paste = "1.0.7"
 opt-level = "z"
 lto = true
 codegen-units = 1
-rustflags=["-C prefer-dynamic"]
+#rustflags=["-C prefer-dynamic"]
+
+# Also build the driver modules ...
+[workspace]
+members = [
+    "generated-sources/modbus",
+    "server"
+]

@@ -62,17 +62,17 @@ mod tests {
     use crate::{Endianess, Message, ReadBuffer};
     use crate::modbus::{DriverType, ModbusADU, ModbusADUOptions};
 
-    #[test]
-    fn deserialize_adu() {
-        let options = ModbusADUOptions {
-            driver_type: DriverType::MODBUS_TCP,
-            response: false
-        };
-
-        let bytes: Vec<u8> = vec![];
-        let mut read_buffer = ReadBuffer::new(Endianess::BigEndian, &*bytes);
-
-        let _ = ModbusADU::parse(&mut read_buffer, Some(options));
-    }
+    // #[test]
+    // fn deserialize_adu() {
+    //     let options = ModbusADUOptions {
+    //         driver_type: DriverType::MODBUS_TCP,
+    //         response: false
+    //     };
+    //
+    //     let bytes: Vec<u8> = vec![];
+    //     let mut read_buffer = ReadBuffer::new(Endianess::BigEndian, &*bytes);
+    //
+    //     let _ = ModbusADU::parse(&mut read_buffer, Some(options));
+    // }
 
 }
