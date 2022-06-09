@@ -37,5 +37,6 @@ codegen-units = 1
 # Also build the driver modules ...
 [workspace]
 members = [
-    "generated-sources/modbus"
+    "generated-sources/modbus",
+    "server"
 ]
