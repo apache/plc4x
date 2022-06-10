@@ -216,6 +216,8 @@ func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template 
 		return BACnetVendorId(rawValue), nil
 	case BACnetVTClass:
 		return BACnetVTClass(rawValue), nil
+	case BACnetAccumulatorRecordAccumulatorStatus:
+		return BACnetAccumulatorRecordAccumulatorStatus(rawValue), nil
 	default:
 		panic(fmt.Sprintf("doesn't work yet... implement manually support for %T", template))
 		// TODO: this doesn't work
@@ -523,6 +525,8 @@ func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value interface{}) error {
 	case MaxSegmentsAccepted: // <<-- private enum is always defined
 		valueValue = uint32(v)
 	case MaxApduLengthAccepted: // <<-- private enum is always defined
+		valueValue = uint32(v)
+	case BACnetAccumulatorRecordAccumulatorStatus: // <<-- private enum is always defined
 		valueValue = uint32(v)
 	default:
 		panic(fmt.Sprintf("doesn't work yet... implement manually support for %T", value))
