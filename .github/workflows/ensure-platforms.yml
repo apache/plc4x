@@ -46,7 +46,7 @@ jobs:
         run: brew install libpcap
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Java
         uses: actions/setup-java@v2
