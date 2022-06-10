@@ -202,7 +202,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElement"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataElement")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -210,7 +210,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	// Peek Field (peekedTagHeader)
 	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
 	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
 	readBuffer.Reset(currentPos)
@@ -237,7 +237,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 
 	// Validation
 	if !(bool(!(isContextTag)) || bool(bool(bool(isContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
-		return nil, utils.ParseValidationError{"unexpected closing tag"}
+		return nil, errors.WithStack(utils.ParseValidationError{"unexpected closing tag"})
 	}
 
 	// Optional Field (applicationTag) (Can be skipped, if a given expression evaluates to false)
@@ -245,7 +245,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	if isApplicationTag {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("applicationTag"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for applicationTag")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -257,7 +257,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 		default:
 			applicationTag = CastBACnetApplicationTag(_val)
 			if closeErr := readBuffer.CloseContext("applicationTag"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for applicationTag")
 			}
 		}
 	}
@@ -267,7 +267,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	if isContextTag {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("contextTag"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for contextTag")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_UNKNOWN)
 		switch {
@@ -279,7 +279,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 		default:
 			contextTag = CastBACnetContextTag(_val)
 			if closeErr := readBuffer.CloseContext("contextTag"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for contextTag")
 			}
 		}
 	}
@@ -289,7 +289,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	if isConstructedData {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("constructedData"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for constructedData")
 		}
 		_val, _err := BACnetConstructedDataParse(readBuffer, peekedTagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 		switch {
@@ -301,18 +301,18 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 		default:
 			constructedData = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("constructedData"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for constructedData")
 			}
 		}
 	}
 
 	// Validation
 	if !(bool(bool(bool(bool(isApplicationTag) && bool(bool((applicationTag) != (nil))))) || bool(bool(bool(isContextTag) && bool(bool((contextTag) != (nil)))))) || bool(bool(bool(isConstructedData) && bool(bool((constructedData) != (nil)))))) {
-		return nil, utils.ParseValidationError{"BACnetConstructedDataElement could not parse anything"}
+		return nil, errors.WithStack(utils.ParseValidationError{"BACnetConstructedDataElement could not parse anything"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataElement"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataElement")
 	}
 
 	// Create the instance
@@ -323,7 +323,7 @@ func (m *BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) 
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetConstructedDataElement"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataElement")
 	}
 	// Virtual field
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
@@ -346,12 +346,12 @@ func (m *BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) 
 	var applicationTag *BACnetApplicationTag = nil
 	if m.ApplicationTag != nil {
 		if pushErr := writeBuffer.PushContext("applicationTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for applicationTag")
 		}
 		applicationTag = m.ApplicationTag
 		_applicationTagErr := applicationTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("applicationTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for applicationTag")
 		}
 		if _applicationTagErr != nil {
 			return errors.Wrap(_applicationTagErr, "Error serializing 'applicationTag' field")
@@ -362,12 +362,12 @@ func (m *BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) 
 	var contextTag *BACnetContextTag = nil
 	if m.ContextTag != nil {
 		if pushErr := writeBuffer.PushContext("contextTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for contextTag")
 		}
 		contextTag = m.ContextTag
 		_contextTagErr := contextTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("contextTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for contextTag")
 		}
 		if _contextTagErr != nil {
 			return errors.Wrap(_contextTagErr, "Error serializing 'contextTag' field")
@@ -378,12 +378,12 @@ func (m *BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) 
 	var constructedData *BACnetConstructedData = nil
 	if m.ConstructedData != nil {
 		if pushErr := writeBuffer.PushContext("constructedData"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for constructedData")
 		}
 		constructedData = m.ConstructedData
 		_constructedDataErr := constructedData.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("constructedData"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for constructedData")
 		}
 		if _constructedDataErr != nil {
 			return errors.Wrap(_constructedDataErr, "Error serializing 'constructedData' field")
@@ -391,7 +391,7 @@ func (m *BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) 
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetConstructedDataElement"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetConstructedDataElement")
 	}
 	return nil
 }

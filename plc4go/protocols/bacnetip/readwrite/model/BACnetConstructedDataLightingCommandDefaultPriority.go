@@ -142,14 +142,14 @@ func BACnetConstructedDataLightingCommandDefaultPriorityParse(readBuffer utils.R
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingCommandDefaultPriority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLightingCommandDefaultPriority")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lightingCommandDefaultPriority)
 	if pullErr := readBuffer.PullContext("lightingCommandDefaultPriority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lightingCommandDefaultPriority")
 	}
 	_lightingCommandDefaultPriority, _lightingCommandDefaultPriorityErr := BACnetApplicationTagParse(readBuffer)
 	if _lightingCommandDefaultPriorityErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLightingCommandDefaultPriorityParse(readBuffer utils.R
 	}
 	lightingCommandDefaultPriority := CastBACnetApplicationTagUnsignedInteger(_lightingCommandDefaultPriority)
 	if closeErr := readBuffer.CloseContext("lightingCommandDefaultPriority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lightingCommandDefaultPriority")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingCommandDefaultPriority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLightingCommandDefaultPriority")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLightingCommandDefaultPriority) Serialize(writeBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLightingCommandDefaultPriority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLightingCommandDefaultPriority")
 		}
 
 		// Simple Field (lightingCommandDefaultPriority)
 		if pushErr := writeBuffer.PushContext("lightingCommandDefaultPriority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lightingCommandDefaultPriority")
 		}
 		_lightingCommandDefaultPriorityErr := m.LightingCommandDefaultPriority.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lightingCommandDefaultPriority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lightingCommandDefaultPriority")
 		}
 		if _lightingCommandDefaultPriorityErr != nil {
 			return errors.Wrap(_lightingCommandDefaultPriorityErr, "Error serializing 'lightingCommandDefaultPriority' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLightingCommandDefaultPriority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLightingCommandDefaultPriority")
 		}
 		return nil
 	}

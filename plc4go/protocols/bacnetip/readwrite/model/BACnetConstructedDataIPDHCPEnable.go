@@ -142,14 +142,14 @@ func BACnetConstructedDataIPDHCPEnableParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPDHCPEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPDHCPEnable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ipDhcpEnable)
 	if pullErr := readBuffer.PullContext("ipDhcpEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipDhcpEnable")
 	}
 	_ipDhcpEnable, _ipDhcpEnableErr := BACnetApplicationTagParse(readBuffer)
 	if _ipDhcpEnableErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataIPDHCPEnableParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	ipDhcpEnable := CastBACnetApplicationTagBoolean(_ipDhcpEnable)
 	if closeErr := readBuffer.CloseContext("ipDhcpEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipDhcpEnable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPDHCPEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPDHCPEnable")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataIPDHCPEnable) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataIPDHCPEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPDHCPEnable")
 		}
 
 		// Simple Field (ipDhcpEnable)
 		if pushErr := writeBuffer.PushContext("ipDhcpEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ipDhcpEnable")
 		}
 		_ipDhcpEnableErr := m.IpDhcpEnable.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ipDhcpEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ipDhcpEnable")
 		}
 		if _ipDhcpEnableErr != nil {
 			return errors.Wrap(_ipDhcpEnableErr, "Error serializing 'ipDhcpEnable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPDHCPEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataIPDHCPEnable")
 		}
 		return nil
 	}

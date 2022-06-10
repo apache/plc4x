@@ -142,14 +142,14 @@ func BACnetConstructedDataDefaultRampRateParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultRampRate"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDefaultRampRate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (defaultRampRate)
 	if pullErr := readBuffer.PullContext("defaultRampRate"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for defaultRampRate")
 	}
 	_defaultRampRate, _defaultRampRateErr := BACnetApplicationTagParse(readBuffer)
 	if _defaultRampRateErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDefaultRampRateParse(readBuffer utils.ReadBuffer, tagN
 	}
 	defaultRampRate := CastBACnetApplicationTagReal(_defaultRampRate)
 	if closeErr := readBuffer.CloseContext("defaultRampRate"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for defaultRampRate")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultRampRate"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDefaultRampRate")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDefaultRampRate) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDefaultRampRate"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDefaultRampRate")
 		}
 
 		// Simple Field (defaultRampRate)
 		if pushErr := writeBuffer.PushContext("defaultRampRate"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for defaultRampRate")
 		}
 		_defaultRampRateErr := m.DefaultRampRate.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("defaultRampRate"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for defaultRampRate")
 		}
 		if _defaultRampRateErr != nil {
 			return errors.Wrap(_defaultRampRateErr, "Error serializing 'defaultRampRate' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDefaultRampRate"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDefaultRampRate")
 		}
 		return nil
 	}

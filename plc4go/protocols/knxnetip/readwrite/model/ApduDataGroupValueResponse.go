@@ -146,7 +146,7 @@ func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uin
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataGroupValueResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -165,7 +165,7 @@ func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uin
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataGroupValueResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ApduDataGroupValueResponse")
 	}
 
 	// Create a partially initialized instance
@@ -183,7 +183,7 @@ func (m *ApduDataGroupValueResponse) Serialize(writeBuffer utils.WriteBuffer) er
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataGroupValueResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ApduDataGroupValueResponse")
 		}
 
 		// Simple Field (dataFirstByte)
@@ -203,7 +203,7 @@ func (m *ApduDataGroupValueResponse) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataGroupValueResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ApduDataGroupValueResponse")
 		}
 		return nil
 	}

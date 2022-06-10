@@ -142,14 +142,14 @@ func BACnetConstructedDataLastPriorityParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastPriority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastPriority")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lastPriority)
 	if pullErr := readBuffer.PullContext("lastPriority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lastPriority")
 	}
 	_lastPriority, _lastPriorityErr := BACnetApplicationTagParse(readBuffer)
 	if _lastPriorityErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLastPriorityParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	lastPriority := CastBACnetApplicationTagUnsignedInteger(_lastPriority)
 	if closeErr := readBuffer.CloseContext("lastPriority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lastPriority")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastPriority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastPriority")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLastPriority) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLastPriority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastPriority")
 		}
 
 		// Simple Field (lastPriority)
 		if pushErr := writeBuffer.PushContext("lastPriority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lastPriority")
 		}
 		_lastPriorityErr := m.LastPriority.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lastPriority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lastPriority")
 		}
 		if _lastPriorityErr != nil {
 			return errors.Wrap(_lastPriorityErr, "Error serializing 'lastPriority' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastPriority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLastPriority")
 		}
 		return nil
 	}

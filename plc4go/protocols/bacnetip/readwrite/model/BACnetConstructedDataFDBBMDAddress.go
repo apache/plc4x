@@ -142,14 +142,14 @@ func BACnetConstructedDataFDBBMDAddressParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFDBBMDAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFDBBMDAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (fDBBMDAddress)
 	if pullErr := readBuffer.PullContext("fDBBMDAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for fDBBMDAddress")
 	}
 	_fDBBMDAddress, _fDBBMDAddressErr := BACnetHostNPortParse(readBuffer)
 	if _fDBBMDAddressErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataFDBBMDAddressParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	fDBBMDAddress := CastBACnetHostNPort(_fDBBMDAddress)
 	if closeErr := readBuffer.CloseContext("fDBBMDAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for fDBBMDAddress")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFDBBMDAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFDBBMDAddress")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataFDBBMDAddress) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataFDBBMDAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFDBBMDAddress")
 		}
 
 		// Simple Field (fDBBMDAddress)
 		if pushErr := writeBuffer.PushContext("fDBBMDAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for fDBBMDAddress")
 		}
 		_fDBBMDAddressErr := m.FDBBMDAddress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("fDBBMDAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for fDBBMDAddress")
 		}
 		if _fDBBMDAddressErr != nil {
 			return errors.Wrap(_fDBBMDAddressErr, "Error serializing 'fDBBMDAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFDBBMDAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataFDBBMDAddress")
 		}
 		return nil
 	}

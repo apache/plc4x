@@ -133,7 +133,7 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer) (*BACnetTimeStamp, error)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStamp"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimeStamp")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -141,7 +141,7 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer) (*BACnetTimeStamp, error)
 	// Peek Field (peekedTagHeader)
 	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
 	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
 	readBuffer.Reset(currentPos)
@@ -174,7 +174,7 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer) (*BACnetTimeStamp, error)
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimeStamp"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimeStamp")
 	}
 
 	// Finish initializing
@@ -190,7 +190,7 @@ func (m *BACnetTimeStamp) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTimeStamp"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetTimeStamp")
 	}
 	// Virtual field
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
@@ -203,7 +203,7 @@ func (m *BACnetTimeStamp) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTimeStamp"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetTimeStamp")
 	}
 	return nil
 }

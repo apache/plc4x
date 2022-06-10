@@ -163,7 +163,7 @@ func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1ResponseMessage"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DF1ResponseMessage")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -249,7 +249,7 @@ func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) 
 	}
 
 	if closeErr := readBuffer.CloseContext("DF1ResponseMessage"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DF1ResponseMessage")
 	}
 
 	// Finish initializing
@@ -265,7 +265,7 @@ func (m *DF1ResponseMessage) SerializeParent(writeBuffer utils.WriteBuffer, chil
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DF1ResponseMessage"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for DF1ResponseMessage")
 	}
 
 	// Reserved Field (reserved)
@@ -326,7 +326,7 @@ func (m *DF1ResponseMessage) SerializeParent(writeBuffer utils.WriteBuffer, chil
 	}
 
 	if popErr := writeBuffer.PopContext("DF1ResponseMessage"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for DF1ResponseMessage")
 	}
 	return nil
 }

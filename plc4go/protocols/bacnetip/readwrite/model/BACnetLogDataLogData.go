@@ -159,14 +159,14 @@ func BACnetLogDataLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogData"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(1)))
 	if _innerOpeningTagErr != nil {
@@ -174,12 +174,12 @@ func BACnetLogDataLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	}
 	innerOpeningTag := CastBACnetOpeningTag(_innerOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for innerOpeningTag")
 	}
 
 	// Array field (logData)
 	if pullErr := readBuffer.PullContext("logData", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for logData")
 	}
 	// Terminated array
 	logData := make([]*BACnetLogDataLogDataEntry, 0)
@@ -194,12 +194,12 @@ func BACnetLogDataLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 		}
 	}
 	if closeErr := readBuffer.CloseContext("logData", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for logData")
 	}
 
 	// Simple Field (innerClosingTag)
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(1)))
 	if _innerClosingTagErr != nil {
@@ -207,11 +207,11 @@ func BACnetLogDataLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	}
 	innerClosingTag := CastBACnetClosingTag(_innerClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for innerClosingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogData"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogDataLogData")
 	}
 
 	// Create a partially initialized instance
@@ -230,16 +230,16 @@ func (m *BACnetLogDataLogData) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetLogDataLogData"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogData")
 		}
 
 		// Simple Field (innerOpeningTag)
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
 		_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
 		if _innerOpeningTagErr != nil {
 			return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
@@ -248,7 +248,7 @@ func (m *BACnetLogDataLogData) Serialize(writeBuffer utils.WriteBuffer) error {
 		// Array Field (logData)
 		if m.LogData != nil {
 			if pushErr := writeBuffer.PushContext("logData", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for logData")
 			}
 			for _, _element := range m.LogData {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -257,24 +257,24 @@ func (m *BACnetLogDataLogData) Serialize(writeBuffer utils.WriteBuffer) error {
 				}
 			}
 			if popErr := writeBuffer.PopContext("logData", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for logData")
 			}
 		}
 
 		// Simple Field (innerClosingTag)
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
 		_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
 		if _innerClosingTagErr != nil {
 			return errors.Wrap(_innerClosingTagErr, "Error serializing 'innerClosingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogDataLogData"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetLogDataLogData")
 		}
 		return nil
 	}

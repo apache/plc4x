@@ -129,14 +129,14 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AssociatedValueType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AssociatedValueType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
 	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
@@ -144,12 +144,12 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType
 	}
 	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for returnCode")
 	}
 
 	// Simple Field (transportSize)
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
 	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
@@ -157,7 +157,7 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType
 	}
 	transportSize := _transportSize
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
 	}
 
 	// Manual Field (valueLength)
@@ -169,7 +169,7 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Count array
 	data := make([]uint8, EventItemLength(readBuffer, valueLength))
@@ -183,11 +183,11 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType
 		}
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for data")
 	}
 
 	if closeErr := readBuffer.CloseContext("AssociatedValueType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AssociatedValueType")
 	}
 
 	// Create the instance
@@ -198,16 +198,16 @@ func (m *AssociatedValueType) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AssociatedValueType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AssociatedValueType")
 	}
 
 	// Simple Field (returnCode)
 	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for returnCode")
 	}
 	_returnCodeErr := m.ReturnCode.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for returnCode")
 	}
 	if _returnCodeErr != nil {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
@@ -215,11 +215,11 @@ func (m *AssociatedValueType) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (transportSize)
 	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for transportSize")
 	}
 	_transportSizeErr := m.TransportSize.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for transportSize")
 	}
 	if _transportSizeErr != nil {
 		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
@@ -234,7 +234,7 @@ func (m *AssociatedValueType) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Array Field (data)
 	if m.Data != nil {
 		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for data")
 		}
 		for _, _element := range m.Data {
 			_elementErr := writeBuffer.WriteUint8("", 8, _element)
@@ -243,12 +243,12 @@ func (m *AssociatedValueType) Serialize(writeBuffer utils.WriteBuffer) error {
 			}
 		}
 		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 	}
 
 	if popErr := writeBuffer.PopContext("AssociatedValueType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AssociatedValueType")
 	}
 	return nil
 }

@@ -111,14 +111,14 @@ func BACnetPortPermissionParse(readBuffer utils.ReadBuffer) (*BACnetPortPermissi
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPortPermission"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPortPermission")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (port)
 	if pullErr := readBuffer.PullContext("port"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for port")
 	}
 	_port, _portErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _portErr != nil {
@@ -126,7 +126,7 @@ func BACnetPortPermissionParse(readBuffer utils.ReadBuffer) (*BACnetPortPermissi
 	}
 	port := CastBACnetContextTagUnsignedInteger(_port)
 	if closeErr := readBuffer.CloseContext("port"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for port")
 	}
 
 	// Optional Field (enable) (Can be skipped, if a given expression evaluates to false)
@@ -134,7 +134,7 @@ func BACnetPortPermissionParse(readBuffer utils.ReadBuffer) (*BACnetPortPermissi
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("enable"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for enable")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_BOOLEAN)
 		switch {
@@ -146,13 +146,13 @@ func BACnetPortPermissionParse(readBuffer utils.ReadBuffer) (*BACnetPortPermissi
 		default:
 			enable = CastBACnetContextTagBoolean(_val)
 			if closeErr := readBuffer.CloseContext("enable"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for enable")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPortPermission"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPortPermission")
 	}
 
 	// Create the instance
@@ -163,16 +163,16 @@ func (m *BACnetPortPermission) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPortPermission"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetPortPermission")
 	}
 
 	// Simple Field (port)
 	if pushErr := writeBuffer.PushContext("port"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for port")
 	}
 	_portErr := m.Port.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("port"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for port")
 	}
 	if _portErr != nil {
 		return errors.Wrap(_portErr, "Error serializing 'port' field")
@@ -182,12 +182,12 @@ func (m *BACnetPortPermission) Serialize(writeBuffer utils.WriteBuffer) error {
 	var enable *BACnetContextTagBoolean = nil
 	if m.Enable != nil {
 		if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for enable")
 		}
 		enable = m.Enable
 		_enableErr := enable.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("enable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for enable")
 		}
 		if _enableErr != nil {
 			return errors.Wrap(_enableErr, "Error serializing 'enable' field")
@@ -195,7 +195,7 @@ func (m *BACnetPortPermission) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPortPermission"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetPortPermission")
 	}
 	return nil
 }

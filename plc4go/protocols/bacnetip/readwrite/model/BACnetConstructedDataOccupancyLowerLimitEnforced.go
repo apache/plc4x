@@ -142,14 +142,14 @@ func BACnetConstructedDataOccupancyLowerLimitEnforcedParse(readBuffer utils.Read
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyLowerLimitEnforced"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataOccupancyLowerLimitEnforced")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (occupancyLowerLimitEnforced)
 	if pullErr := readBuffer.PullContext("occupancyLowerLimitEnforced"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for occupancyLowerLimitEnforced")
 	}
 	_occupancyLowerLimitEnforced, _occupancyLowerLimitEnforcedErr := BACnetApplicationTagParse(readBuffer)
 	if _occupancyLowerLimitEnforcedErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataOccupancyLowerLimitEnforcedParse(readBuffer utils.Read
 	}
 	occupancyLowerLimitEnforced := CastBACnetApplicationTagBoolean(_occupancyLowerLimitEnforced)
 	if closeErr := readBuffer.CloseContext("occupancyLowerLimitEnforced"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for occupancyLowerLimitEnforced")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOccupancyLowerLimitEnforced"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOccupancyLowerLimitEnforced")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataOccupancyLowerLimitEnforced) Serialize(writeBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataOccupancyLowerLimitEnforced"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOccupancyLowerLimitEnforced")
 		}
 
 		// Simple Field (occupancyLowerLimitEnforced)
 		if pushErr := writeBuffer.PushContext("occupancyLowerLimitEnforced"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for occupancyLowerLimitEnforced")
 		}
 		_occupancyLowerLimitEnforcedErr := m.OccupancyLowerLimitEnforced.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("occupancyLowerLimitEnforced"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for occupancyLowerLimitEnforced")
 		}
 		if _occupancyLowerLimitEnforcedErr != nil {
 			return errors.Wrap(_occupancyLowerLimitEnforcedErr, "Error serializing 'occupancyLowerLimitEnforced' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataOccupancyLowerLimitEnforced"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataOccupancyLowerLimitEnforced")
 		}
 		return nil
 	}

@@ -121,14 +121,14 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (*BACnetLogRecord, error)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecord"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecord")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timestamp)
 	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
 	}
 	_timestamp, _timestampErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _timestampErr != nil {
@@ -136,12 +136,12 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (*BACnetLogRecord, error)
 	}
 	timestamp := CastBACnetDateTimeEnclosed(_timestamp)
 	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timestamp")
 	}
 
 	// Simple Field (logDatum)
 	if pullErr := readBuffer.PullContext("logDatum"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for logDatum")
 	}
 	_logDatum, _logDatumErr := BACnetLogRecordLogDatumParse(readBuffer, uint8(uint8(1)))
 	if _logDatumErr != nil {
@@ -149,7 +149,7 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (*BACnetLogRecord, error)
 	}
 	logDatum := CastBACnetLogRecordLogDatum(_logDatum)
 	if closeErr := readBuffer.CloseContext("logDatum"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for logDatum")
 	}
 
 	// Optional Field (statusFlags) (Can be skipped, if a given expression evaluates to false)
@@ -157,7 +157,7 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (*BACnetLogRecord, error)
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for statusFlags")
 		}
 		_val, _err := BACnetStatusFlagsTaggedParse(readBuffer, uint8(2), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
@@ -169,13 +169,13 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (*BACnetLogRecord, error)
 		default:
 			statusFlags = CastBACnetStatusFlagsTagged(_val)
 			if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for statusFlags")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecord"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogRecord")
 	}
 
 	// Create the instance
@@ -186,16 +186,16 @@ func (m *BACnetLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLogRecord"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetLogRecord")
 	}
 
 	// Simple Field (timestamp)
 	if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for timestamp")
 	}
 	_timestampErr := m.Timestamp.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for timestamp")
 	}
 	if _timestampErr != nil {
 		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
@@ -203,11 +203,11 @@ func (m *BACnetLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (logDatum)
 	if pushErr := writeBuffer.PushContext("logDatum"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for logDatum")
 	}
 	_logDatumErr := m.LogDatum.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("logDatum"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for logDatum")
 	}
 	if _logDatumErr != nil {
 		return errors.Wrap(_logDatumErr, "Error serializing 'logDatum' field")
@@ -217,12 +217,12 @@ func (m *BACnetLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
 	var statusFlags *BACnetStatusFlagsTagged = nil
 	if m.StatusFlags != nil {
 		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
 		statusFlags = m.StatusFlags
 		_statusFlagsErr := statusFlags.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
 		if _statusFlagsErr != nil {
 			return errors.Wrap(_statusFlagsErr, "Error serializing 'statusFlags' field")
@@ -230,7 +230,7 @@ func (m *BACnetLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLogRecord"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetLogRecord")
 	}
 	return nil
 }

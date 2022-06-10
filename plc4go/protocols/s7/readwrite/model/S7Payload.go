@@ -106,7 +106,7 @@ func S7PayloadParse(readBuffer utils.ReadBuffer, messageType uint8, parameter *S
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Payload"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7Payload")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -136,7 +136,7 @@ func S7PayloadParse(readBuffer utils.ReadBuffer, messageType uint8, parameter *S
 	}
 
 	if closeErr := readBuffer.CloseContext("S7Payload"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7Payload")
 	}
 
 	// Finish initializing
@@ -152,7 +152,7 @@ func (m *S7Payload) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Payl
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7Payload"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for S7Payload")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -161,7 +161,7 @@ func (m *S7Payload) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Payl
 	}
 
 	if popErr := writeBuffer.PopContext("S7Payload"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for S7Payload")
 	}
 	return nil
 }

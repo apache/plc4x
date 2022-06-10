@@ -127,14 +127,14 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (*StatusByte, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusByte"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for StatusByte")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (gav3)
 	if pullErr := readBuffer.PullContext("gav3"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for gav3")
 	}
 	_gav3, _gav3Err := GAVStateParse(readBuffer)
 	if _gav3Err != nil {
@@ -142,12 +142,12 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (*StatusByte, error) {
 	}
 	gav3 := _gav3
 	if closeErr := readBuffer.CloseContext("gav3"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for gav3")
 	}
 
 	// Simple Field (gav2)
 	if pullErr := readBuffer.PullContext("gav2"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for gav2")
 	}
 	_gav2, _gav2Err := GAVStateParse(readBuffer)
 	if _gav2Err != nil {
@@ -155,12 +155,12 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (*StatusByte, error) {
 	}
 	gav2 := _gav2
 	if closeErr := readBuffer.CloseContext("gav2"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for gav2")
 	}
 
 	// Simple Field (gav1)
 	if pullErr := readBuffer.PullContext("gav1"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for gav1")
 	}
 	_gav1, _gav1Err := GAVStateParse(readBuffer)
 	if _gav1Err != nil {
@@ -168,12 +168,12 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (*StatusByte, error) {
 	}
 	gav1 := _gav1
 	if closeErr := readBuffer.CloseContext("gav1"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for gav1")
 	}
 
 	// Simple Field (gav0)
 	if pullErr := readBuffer.PullContext("gav0"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for gav0")
 	}
 	_gav0, _gav0Err := GAVStateParse(readBuffer)
 	if _gav0Err != nil {
@@ -181,11 +181,11 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (*StatusByte, error) {
 	}
 	gav0 := _gav0
 	if closeErr := readBuffer.CloseContext("gav0"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for gav0")
 	}
 
 	if closeErr := readBuffer.CloseContext("StatusByte"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for StatusByte")
 	}
 
 	// Create the instance
@@ -196,16 +196,16 @@ func (m *StatusByte) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("StatusByte"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for StatusByte")
 	}
 
 	// Simple Field (gav3)
 	if pushErr := writeBuffer.PushContext("gav3"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for gav3")
 	}
 	_gav3Err := m.Gav3.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("gav3"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for gav3")
 	}
 	if _gav3Err != nil {
 		return errors.Wrap(_gav3Err, "Error serializing 'gav3' field")
@@ -213,11 +213,11 @@ func (m *StatusByte) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (gav2)
 	if pushErr := writeBuffer.PushContext("gav2"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for gav2")
 	}
 	_gav2Err := m.Gav2.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("gav2"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for gav2")
 	}
 	if _gav2Err != nil {
 		return errors.Wrap(_gav2Err, "Error serializing 'gav2' field")
@@ -225,11 +225,11 @@ func (m *StatusByte) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (gav1)
 	if pushErr := writeBuffer.PushContext("gav1"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for gav1")
 	}
 	_gav1Err := m.Gav1.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("gav1"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for gav1")
 	}
 	if _gav1Err != nil {
 		return errors.Wrap(_gav1Err, "Error serializing 'gav1' field")
@@ -237,18 +237,18 @@ func (m *StatusByte) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (gav0)
 	if pushErr := writeBuffer.PushContext("gav0"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for gav0")
 	}
 	_gav0Err := m.Gav0.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("gav0"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for gav0")
 	}
 	if _gav0Err != nil {
 		return errors.Wrap(_gav0Err, "Error serializing 'gav0' field")
 	}
 
 	if popErr := writeBuffer.PopContext("StatusByte"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for StatusByte")
 	}
 	return nil
 }

@@ -142,14 +142,14 @@ func BACnetConstructedDataChangeOfStateTimeParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChangeOfStateTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataChangeOfStateTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (changeOfStateTime)
 	if pullErr := readBuffer.PullContext("changeOfStateTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for changeOfStateTime")
 	}
 	_changeOfStateTime, _changeOfStateTimeErr := BACnetDateTimeParse(readBuffer)
 	if _changeOfStateTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataChangeOfStateTimeParse(readBuffer utils.ReadBuffer, ta
 	}
 	changeOfStateTime := CastBACnetDateTime(_changeOfStateTime)
 	if closeErr := readBuffer.CloseContext("changeOfStateTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for changeOfStateTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChangeOfStateTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataChangeOfStateTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataChangeOfStateTime) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataChangeOfStateTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataChangeOfStateTime")
 		}
 
 		// Simple Field (changeOfStateTime)
 		if pushErr := writeBuffer.PushContext("changeOfStateTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for changeOfStateTime")
 		}
 		_changeOfStateTimeErr := m.ChangeOfStateTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("changeOfStateTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for changeOfStateTime")
 		}
 		if _changeOfStateTimeErr != nil {
 			return errors.Wrap(_changeOfStateTimeErr, "Error serializing 'changeOfStateTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataChangeOfStateTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataChangeOfStateTime")
 		}
 		return nil
 	}

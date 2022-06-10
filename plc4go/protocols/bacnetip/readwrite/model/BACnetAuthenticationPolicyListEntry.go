@@ -107,14 +107,14 @@ func BACnetAuthenticationPolicyListEntryParse(readBuffer utils.ReadBuffer) (*BAC
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationPolicyListEntry"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAuthenticationPolicyListEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (credentialDataInput)
 	if pullErr := readBuffer.PullContext("credentialDataInput"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for credentialDataInput")
 	}
 	_credentialDataInput, _credentialDataInputErr := BACnetDeviceObjectReferenceEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _credentialDataInputErr != nil {
@@ -122,12 +122,12 @@ func BACnetAuthenticationPolicyListEntryParse(readBuffer utils.ReadBuffer) (*BAC
 	}
 	credentialDataInput := CastBACnetDeviceObjectReferenceEnclosed(_credentialDataInput)
 	if closeErr := readBuffer.CloseContext("credentialDataInput"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for credentialDataInput")
 	}
 
 	// Simple Field (index)
 	if pullErr := readBuffer.PullContext("index"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for index")
 	}
 	_index, _indexErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _indexErr != nil {
@@ -135,11 +135,11 @@ func BACnetAuthenticationPolicyListEntryParse(readBuffer utils.ReadBuffer) (*BAC
 	}
 	index := CastBACnetContextTagUnsignedInteger(_index)
 	if closeErr := readBuffer.CloseContext("index"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for index")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthenticationPolicyListEntry"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetAuthenticationPolicyListEntry")
 	}
 
 	// Create the instance
@@ -150,16 +150,16 @@ func (m *BACnetAuthenticationPolicyListEntry) Serialize(writeBuffer utils.WriteB
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAuthenticationPolicyListEntry"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetAuthenticationPolicyListEntry")
 	}
 
 	// Simple Field (credentialDataInput)
 	if pushErr := writeBuffer.PushContext("credentialDataInput"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for credentialDataInput")
 	}
 	_credentialDataInputErr := m.CredentialDataInput.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("credentialDataInput"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for credentialDataInput")
 	}
 	if _credentialDataInputErr != nil {
 		return errors.Wrap(_credentialDataInputErr, "Error serializing 'credentialDataInput' field")
@@ -167,18 +167,18 @@ func (m *BACnetAuthenticationPolicyListEntry) Serialize(writeBuffer utils.WriteB
 
 	// Simple Field (index)
 	if pushErr := writeBuffer.PushContext("index"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for index")
 	}
 	_indexErr := m.Index.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("index"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for index")
 	}
 	if _indexErr != nil {
 		return errors.Wrap(_indexErr, "Error serializing 'index' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAuthenticationPolicyListEntry"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationPolicyListEntry")
 	}
 	return nil
 }

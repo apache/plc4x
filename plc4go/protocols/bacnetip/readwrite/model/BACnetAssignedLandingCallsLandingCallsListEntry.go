@@ -107,14 +107,14 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParse(readBuffer utils.ReadB
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAssignedLandingCallsLandingCallsListEntry"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAssignedLandingCallsLandingCallsListEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (floorNumber)
 	if pullErr := readBuffer.PullContext("floorNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for floorNumber")
 	}
 	_floorNumber, _floorNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _floorNumberErr != nil {
@@ -122,12 +122,12 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParse(readBuffer utils.ReadB
 	}
 	floorNumber := CastBACnetContextTagUnsignedInteger(_floorNumber)
 	if closeErr := readBuffer.CloseContext("floorNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for floorNumber")
 	}
 
 	// Simple Field (direction)
 	if pullErr := readBuffer.PullContext("direction"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for direction")
 	}
 	_direction, _directionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _directionErr != nil {
@@ -135,11 +135,11 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParse(readBuffer utils.ReadB
 	}
 	direction := CastBACnetLiftCarDirectionTagged(_direction)
 	if closeErr := readBuffer.CloseContext("direction"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for direction")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAssignedLandingCallsLandingCallsListEntry"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetAssignedLandingCallsLandingCallsListEntry")
 	}
 
 	// Create the instance
@@ -150,16 +150,16 @@ func (m *BACnetAssignedLandingCallsLandingCallsListEntry) Serialize(writeBuffer 
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAssignedLandingCallsLandingCallsListEntry"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetAssignedLandingCallsLandingCallsListEntry")
 	}
 
 	// Simple Field (floorNumber)
 	if pushErr := writeBuffer.PushContext("floorNumber"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for floorNumber")
 	}
 	_floorNumberErr := m.FloorNumber.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("floorNumber"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for floorNumber")
 	}
 	if _floorNumberErr != nil {
 		return errors.Wrap(_floorNumberErr, "Error serializing 'floorNumber' field")
@@ -167,18 +167,18 @@ func (m *BACnetAssignedLandingCallsLandingCallsListEntry) Serialize(writeBuffer 
 
 	// Simple Field (direction)
 	if pushErr := writeBuffer.PushContext("direction"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for direction")
 	}
 	_directionErr := m.Direction.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("direction"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for direction")
 	}
 	if _directionErr != nil {
 		return errors.Wrap(_directionErr, "Error serializing 'direction' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAssignedLandingCallsLandingCallsListEntry"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetAssignedLandingCallsLandingCallsListEntry")
 	}
 	return nil
 }

@@ -146,14 +146,14 @@ func BACnetConstructedDataSubscribedRecipientsParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubscribedRecipients"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSubscribedRecipients")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (subscribedRecipients)
 	if pullErr := readBuffer.PullContext("subscribedRecipients", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for subscribedRecipients")
 	}
 	// Terminated array
 	subscribedRecipients := make([]*BACnetEventNotificationSubscription, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataSubscribedRecipientsParse(readBuffer utils.ReadBuffer,
 		}
 	}
 	if closeErr := readBuffer.CloseContext("subscribedRecipients", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for subscribedRecipients")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSubscribedRecipients"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSubscribedRecipients")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataSubscribedRecipients) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSubscribedRecipients"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSubscribedRecipients")
 		}
 
 		// Array Field (subscribedRecipients)
 		if m.SubscribedRecipients != nil {
 			if pushErr := writeBuffer.PushContext("subscribedRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for subscribedRecipients")
 			}
 			for _, _element := range m.SubscribedRecipients {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataSubscribedRecipients) Serialize(writeBuffer utils.
 				}
 			}
 			if popErr := writeBuffer.PopContext("subscribedRecipients", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for subscribedRecipients")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSubscribedRecipients"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSubscribedRecipients")
 		}
 		return nil
 	}

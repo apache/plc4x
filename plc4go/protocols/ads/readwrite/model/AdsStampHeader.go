@@ -122,7 +122,7 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (*AdsStampHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsStampHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AdsStampHeader")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -143,7 +143,7 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (*AdsStampHeader, error) {
 
 	// Array field (adsNotificationSamples)
 	if pullErr := readBuffer.PullContext("adsNotificationSamples", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for adsNotificationSamples")
 	}
 	// Count array
 	adsNotificationSamples := make([]*AdsNotificationSample, samples)
@@ -157,11 +157,11 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (*AdsStampHeader, error) {
 		}
 	}
 	if closeErr := readBuffer.CloseContext("adsNotificationSamples", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for adsNotificationSamples")
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsStampHeader"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AdsStampHeader")
 	}
 
 	// Create the instance
@@ -172,7 +172,7 @@ func (m *AdsStampHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsStampHeader"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AdsStampHeader")
 	}
 
 	// Simple Field (timestamp)
@@ -192,7 +192,7 @@ func (m *AdsStampHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Array Field (adsNotificationSamples)
 	if m.AdsNotificationSamples != nil {
 		if pushErr := writeBuffer.PushContext("adsNotificationSamples", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for adsNotificationSamples")
 		}
 		for _, _element := range m.AdsNotificationSamples {
 			_elementErr := _element.Serialize(writeBuffer)
@@ -201,12 +201,12 @@ func (m *AdsStampHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 			}
 		}
 		if popErr := writeBuffer.PopContext("adsNotificationSamples", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for adsNotificationSamples")
 		}
 	}
 
 	if popErr := writeBuffer.PopContext("AdsStampHeader"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AdsStampHeader")
 	}
 	return nil
 }

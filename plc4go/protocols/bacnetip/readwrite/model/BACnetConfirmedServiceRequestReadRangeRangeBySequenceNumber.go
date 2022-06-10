@@ -141,14 +141,14 @@ func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(readBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (referenceSequenceNumber)
 	if pullErr := readBuffer.PullContext("referenceSequenceNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for referenceSequenceNumber")
 	}
 	_referenceSequenceNumber, _referenceSequenceNumberErr := BACnetApplicationTagParse(readBuffer)
 	if _referenceSequenceNumberErr != nil {
@@ -156,12 +156,12 @@ func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(readBuffer
 	}
 	referenceSequenceNumber := CastBACnetApplicationTagUnsignedInteger(_referenceSequenceNumber)
 	if closeErr := readBuffer.CloseContext("referenceSequenceNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for referenceSequenceNumber")
 	}
 
 	// Simple Field (count)
 	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for count")
 	}
 	_count, _countErr := BACnetApplicationTagParse(readBuffer)
 	if _countErr != nil {
@@ -169,11 +169,11 @@ func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(readBuffer
 	}
 	count := CastBACnetApplicationTagSignedInteger(_count)
 	if closeErr := readBuffer.CloseContext("count"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for count")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
 	}
 
 	// Create a partially initialized instance
@@ -191,16 +191,16 @@ func (m *BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize(
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
 		}
 
 		// Simple Field (referenceSequenceNumber)
 		if pushErr := writeBuffer.PushContext("referenceSequenceNumber"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for referenceSequenceNumber")
 		}
 		_referenceSequenceNumberErr := m.ReferenceSequenceNumber.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("referenceSequenceNumber"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for referenceSequenceNumber")
 		}
 		if _referenceSequenceNumberErr != nil {
 			return errors.Wrap(_referenceSequenceNumberErr, "Error serializing 'referenceSequenceNumber' field")
@@ -208,18 +208,18 @@ func (m *BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize(
 
 		// Simple Field (count)
 		if pushErr := writeBuffer.PushContext("count"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for count")
 		}
 		_countErr := m.Count.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("count"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for count")
 		}
 		if _countErr != nil {
 			return errors.Wrap(_countErr, "Error serializing 'count' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber")
 		}
 		return nil
 	}

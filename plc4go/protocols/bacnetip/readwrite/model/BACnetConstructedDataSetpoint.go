@@ -142,14 +142,14 @@ func BACnetConstructedDataSetpointParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSetpoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSetpoint")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (setpoint)
 	if pullErr := readBuffer.PullContext("setpoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for setpoint")
 	}
 	_setpoint, _setpointErr := BACnetApplicationTagParse(readBuffer)
 	if _setpointErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataSetpointParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	setpoint := CastBACnetApplicationTagReal(_setpoint)
 	if closeErr := readBuffer.CloseContext("setpoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for setpoint")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSetpoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSetpoint")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataSetpoint) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSetpoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSetpoint")
 		}
 
 		// Simple Field (setpoint)
 		if pushErr := writeBuffer.PushContext("setpoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for setpoint")
 		}
 		_setpointErr := m.Setpoint.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("setpoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for setpoint")
 		}
 		if _setpointErr != nil {
 			return errors.Wrap(_setpointErr, "Error serializing 'setpoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSetpoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSetpoint")
 		}
 		return nil
 	}

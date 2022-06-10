@@ -142,14 +142,14 @@ func BACnetConstructedDataDirectReadingParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDirectReading"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDirectReading")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (directReading)
 	if pullErr := readBuffer.PullContext("directReading"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for directReading")
 	}
 	_directReading, _directReadingErr := BACnetApplicationTagParse(readBuffer)
 	if _directReadingErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDirectReadingParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	directReading := CastBACnetApplicationTagReal(_directReading)
 	if closeErr := readBuffer.CloseContext("directReading"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for directReading")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDirectReading"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDirectReading")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDirectReading) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDirectReading"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDirectReading")
 		}
 
 		// Simple Field (directReading)
 		if pushErr := writeBuffer.PushContext("directReading"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for directReading")
 		}
 		_directReadingErr := m.DirectReading.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("directReading"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for directReading")
 		}
 		if _directReadingErr != nil {
 			return errors.Wrap(_directReadingErr, "Error serializing 'directReading' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDirectReading"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDirectReading")
 		}
 		return nil
 	}

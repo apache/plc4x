@@ -142,14 +142,14 @@ func BACnetConstructedDataReasonForHaltParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReasonForHalt"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataReasonForHalt")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (programError)
 	if pullErr := readBuffer.PullContext("programError"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for programError")
 	}
 	_programError, _programErrorErr := BACnetProgramErrorTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _programErrorErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataReasonForHaltParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	programError := CastBACnetProgramErrorTagged(_programError)
 	if closeErr := readBuffer.CloseContext("programError"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for programError")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReasonForHalt"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReasonForHalt")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataReasonForHalt) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataReasonForHalt"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataReasonForHalt")
 		}
 
 		// Simple Field (programError)
 		if pushErr := writeBuffer.PushContext("programError"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for programError")
 		}
 		_programErrorErr := m.ProgramError.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("programError"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for programError")
 		}
 		if _programErrorErr != nil {
 			return errors.Wrap(_programErrorErr, "Error serializing 'programError' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataReasonForHalt"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataReasonForHalt")
 		}
 		return nil
 	}

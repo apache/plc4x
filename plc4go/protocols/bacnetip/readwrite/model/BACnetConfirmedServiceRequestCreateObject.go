@@ -149,14 +149,14 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestCreateObject"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestCreateObject")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectSpecifier)
 	if pullErr := readBuffer.PullContext("objectSpecifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectSpecifier")
 	}
 	_objectSpecifier, _objectSpecifierErr := BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer, uint8(uint8(0)))
 	if _objectSpecifierErr != nil {
@@ -164,7 +164,7 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 	}
 	objectSpecifier := CastBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(_objectSpecifier)
 	if closeErr := readBuffer.CloseContext("objectSpecifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectSpecifier")
 	}
 
 	// Optional Field (listOfValues) (Can be skipped, if a given expression evaluates to false)
@@ -172,7 +172,7 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 		}
 		_val, _err := BACnetPropertyValuesParse(readBuffer, uint8(1), CastBACnetObjectType(utils.InlineIf(objectSpecifier.GetIsObjectType(), func() interface{} { return CastBACnetObjectType(objectSpecifier.GetObjectType()) }, func() interface{} { return CastBACnetObjectType(objectSpecifier.GetObjectIdentifier().GetObjectType()) })))
 		switch {
@@ -184,13 +184,13 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 		default:
 			listOfValues = CastBACnetPropertyValues(_val)
 			if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for listOfValues")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestCreateObject"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestCreateObject")
 	}
 
 	// Create a partially initialized instance
@@ -208,16 +208,16 @@ func (m *BACnetConfirmedServiceRequestCreateObject) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestCreateObject"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestCreateObject")
 		}
 
 		// Simple Field (objectSpecifier)
 		if pushErr := writeBuffer.PushContext("objectSpecifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for objectSpecifier")
 		}
 		_objectSpecifierErr := m.ObjectSpecifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("objectSpecifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for objectSpecifier")
 		}
 		if _objectSpecifierErr != nil {
 			return errors.Wrap(_objectSpecifierErr, "Error serializing 'objectSpecifier' field")
@@ -227,12 +227,12 @@ func (m *BACnetConfirmedServiceRequestCreateObject) Serialize(writeBuffer utils.
 		var listOfValues *BACnetPropertyValues = nil
 		if m.ListOfValues != nil {
 			if pushErr := writeBuffer.PushContext("listOfValues"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for listOfValues")
 			}
 			listOfValues = m.ListOfValues
 			_listOfValuesErr := listOfValues.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for listOfValues")
 			}
 			if _listOfValuesErr != nil {
 				return errors.Wrap(_listOfValuesErr, "Error serializing 'listOfValues' field")
@@ -240,7 +240,7 @@ func (m *BACnetConfirmedServiceRequestCreateObject) Serialize(writeBuffer utils.
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestCreateObject"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestCreateObject")
 		}
 		return nil
 	}

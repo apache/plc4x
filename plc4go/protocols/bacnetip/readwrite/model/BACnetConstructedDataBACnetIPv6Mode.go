@@ -142,14 +142,14 @@ func BACnetConstructedDataBACnetIPv6ModeParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPv6Mode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBACnetIPv6Mode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bacnetIpv6Mode)
 	if pullErr := readBuffer.PullContext("bacnetIpv6Mode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIpv6Mode")
 	}
 	_bacnetIpv6Mode, _bacnetIpv6ModeErr := BACnetIPModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _bacnetIpv6ModeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBACnetIPv6ModeParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	bacnetIpv6Mode := CastBACnetIPModeTagged(_bacnetIpv6Mode)
 	if closeErr := readBuffer.CloseContext("bacnetIpv6Mode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bacnetIpv6Mode")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPv6Mode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPv6Mode")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBACnetIPv6Mode) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBACnetIPv6Mode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBACnetIPv6Mode")
 		}
 
 		// Simple Field (bacnetIpv6Mode)
 		if pushErr := writeBuffer.PushContext("bacnetIpv6Mode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for bacnetIpv6Mode")
 		}
 		_bacnetIpv6ModeErr := m.BacnetIpv6Mode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("bacnetIpv6Mode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for bacnetIpv6Mode")
 		}
 		if _bacnetIpv6ModeErr != nil {
 			return errors.Wrap(_bacnetIpv6ModeErr, "Error serializing 'bacnetIpv6Mode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBACnetIPv6Mode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBACnetIPv6Mode")
 		}
 		return nil
 	}

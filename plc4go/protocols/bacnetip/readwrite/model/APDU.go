@@ -106,19 +106,19 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDU"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for APDU")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
 	if pullErr := readBuffer.PullContext("apduType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for apduType")
 	}
 	apduType_temp, _apduTypeErr := ApduTypeParse(readBuffer)
 	var apduType ApduType = apduType_temp
 	if closeErr := readBuffer.CloseContext("apduType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for apduType")
 	}
 	if _apduTypeErr != nil {
 		return nil, errors.Wrap(_apduTypeErr, "Error parsing 'apduType' field")
@@ -159,7 +159,7 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("APDU"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for APDU")
 	}
 
 	// Finish initializing
@@ -175,17 +175,17 @@ func (m *APDU) SerializeParent(writeBuffer utils.WriteBuffer, child IAPDU, seria
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("APDU"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for APDU")
 	}
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
 	apduType := ApduType(child.GetApduType())
 	if pushErr := writeBuffer.PushContext("apduType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for apduType")
 	}
 	_apduTypeErr := apduType.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("apduType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for apduType")
 	}
 
 	if _apduTypeErr != nil {
@@ -198,7 +198,7 @@ func (m *APDU) SerializeParent(writeBuffer utils.WriteBuffer, child IAPDU, seria
 	}
 
 	if popErr := writeBuffer.PopContext("APDU"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for APDU")
 	}
 	return nil
 }

@@ -128,14 +128,14 @@ func BACnetChannelValueBooleanParse(readBuffer utils.ReadBuffer) (*BACnetChannel
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueBoolean"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueBoolean")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (booleanValue)
 	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 	}
 	_booleanValue, _booleanValueErr := BACnetApplicationTagParse(readBuffer)
 	if _booleanValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetChannelValueBooleanParse(readBuffer utils.ReadBuffer) (*BACnetChannel
 	}
 	booleanValue := CastBACnetApplicationTagBoolean(_booleanValue)
 	if closeErr := readBuffer.CloseContext("booleanValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for booleanValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueBoolean"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetChannelValueBoolean")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetChannelValueBoolean) Serialize(writeBuffer utils.WriteBuffer) err
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetChannelValueBoolean"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueBoolean")
 		}
 
 		// Simple Field (booleanValue)
 		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for booleanValue")
 		}
 		_booleanValueErr := m.BooleanValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for booleanValue")
 		}
 		if _booleanValueErr != nil {
 			return errors.Wrap(_booleanValueErr, "Error serializing 'booleanValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueBoolean"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetChannelValueBoolean")
 		}
 		return nil
 	}

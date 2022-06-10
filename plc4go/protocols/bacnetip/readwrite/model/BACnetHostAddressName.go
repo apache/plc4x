@@ -128,14 +128,14 @@ func BACnetHostAddressNameParse(readBuffer utils.ReadBuffer) (*BACnetHostAddress
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetHostAddressName"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetHostAddressName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (name)
 	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for name")
 	}
 	_name, _nameErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _nameErr != nil {
@@ -143,11 +143,11 @@ func BACnetHostAddressNameParse(readBuffer utils.ReadBuffer) (*BACnetHostAddress
 	}
 	name := CastBACnetContextTagCharacterString(_name)
 	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for name")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetHostAddressName"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetHostAddressName")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetHostAddressName) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetHostAddressName"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetHostAddressName")
 		}
 
 		// Simple Field (name)
 		if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for name")
 		}
 		_nameErr := m.Name.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("name"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for name")
 		}
 		if _nameErr != nil {
 			return errors.Wrap(_nameErr, "Error serializing 'name' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetHostAddressName"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetHostAddressName")
 		}
 		return nil
 	}

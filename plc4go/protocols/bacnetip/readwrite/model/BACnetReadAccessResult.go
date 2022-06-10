@@ -111,14 +111,14 @@ func BACnetReadAccessResultParse(readBuffer utils.ReadBuffer) (*BACnetReadAccess
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReadAccessResult"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetReadAccessResult")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
@@ -126,7 +126,7 @@ func BACnetReadAccessResultParse(readBuffer utils.ReadBuffer) (*BACnetReadAccess
 	}
 	objectIdentifier := CastBACnetContextTagObjectIdentifier(_objectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 	}
 
 	// Optional Field (listOfResults) (Can be skipped, if a given expression evaluates to false)
@@ -134,7 +134,7 @@ func BACnetReadAccessResultParse(readBuffer utils.ReadBuffer) (*BACnetReadAccess
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("listOfResults"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for listOfResults")
 		}
 		_val, _err := BACnetReadAccessResultListOfResultsParse(readBuffer, uint8(1), objectIdentifier.GetObjectType())
 		switch {
@@ -146,13 +146,13 @@ func BACnetReadAccessResultParse(readBuffer utils.ReadBuffer) (*BACnetReadAccess
 		default:
 			listOfResults = CastBACnetReadAccessResultListOfResults(_val)
 			if closeErr := readBuffer.CloseContext("listOfResults"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for listOfResults")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetReadAccessResult"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetReadAccessResult")
 	}
 
 	// Create the instance
@@ -163,16 +163,16 @@ func (m *BACnetReadAccessResult) Serialize(writeBuffer utils.WriteBuffer) error 
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetReadAccessResult"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetReadAccessResult")
 	}
 
 	// Simple Field (objectIdentifier)
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
 	_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
 	if _objectIdentifierErr != nil {
 		return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
@@ -182,12 +182,12 @@ func (m *BACnetReadAccessResult) Serialize(writeBuffer utils.WriteBuffer) error 
 	var listOfResults *BACnetReadAccessResultListOfResults = nil
 	if m.ListOfResults != nil {
 		if pushErr := writeBuffer.PushContext("listOfResults"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for listOfResults")
 		}
 		listOfResults = m.ListOfResults
 		_listOfResultsErr := listOfResults.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("listOfResults"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for listOfResults")
 		}
 		if _listOfResultsErr != nil {
 			return errors.Wrap(_listOfResultsErr, "Error serializing 'listOfResults' field")
@@ -195,7 +195,7 @@ func (m *BACnetReadAccessResult) Serialize(writeBuffer utils.WriteBuffer) error 
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetReadAccessResult"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetReadAccessResult")
 	}
 	return nil
 }

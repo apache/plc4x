@@ -142,14 +142,14 @@ func BACnetConstructedDataFullDutyBaselineParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFullDutyBaseline"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFullDutyBaseline")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (fullDutyBaseLine)
 	if pullErr := readBuffer.PullContext("fullDutyBaseLine"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for fullDutyBaseLine")
 	}
 	_fullDutyBaseLine, _fullDutyBaseLineErr := BACnetApplicationTagParse(readBuffer)
 	if _fullDutyBaseLineErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataFullDutyBaselineParse(readBuffer utils.ReadBuffer, tag
 	}
 	fullDutyBaseLine := CastBACnetApplicationTagReal(_fullDutyBaseLine)
 	if closeErr := readBuffer.CloseContext("fullDutyBaseLine"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for fullDutyBaseLine")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFullDutyBaseline"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFullDutyBaseline")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataFullDutyBaseline) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataFullDutyBaseline"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFullDutyBaseline")
 		}
 
 		// Simple Field (fullDutyBaseLine)
 		if pushErr := writeBuffer.PushContext("fullDutyBaseLine"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for fullDutyBaseLine")
 		}
 		_fullDutyBaseLineErr := m.FullDutyBaseLine.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("fullDutyBaseLine"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for fullDutyBaseLine")
 		}
 		if _fullDutyBaseLineErr != nil {
 			return errors.Wrap(_fullDutyBaseLineErr, "Error serializing 'fullDutyBaseLine' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFullDutyBaseline"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataFullDutyBaseline")
 		}
 		return nil
 	}

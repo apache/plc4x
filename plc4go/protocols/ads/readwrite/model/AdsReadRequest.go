@@ -156,7 +156,7 @@ func AdsReadRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, respo
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AdsReadRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -183,7 +183,7 @@ func AdsReadRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, respo
 	length := _length
 
 	if closeErr := readBuffer.CloseContext("AdsReadRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AdsReadRequest")
 	}
 
 	// Create a partially initialized instance
@@ -202,7 +202,7 @@ func (m *AdsReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AdsReadRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for AdsReadRequest")
 		}
 
 		// Simple Field (indexGroup)
@@ -227,7 +227,7 @@ func (m *AdsReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("AdsReadRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for AdsReadRequest")
 		}
 		return nil
 	}

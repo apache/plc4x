@@ -142,14 +142,14 @@ func BACnetConstructedDataDeadbandParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeadband"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDeadband")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (deadband)
 	if pullErr := readBuffer.PullContext("deadband"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for deadband")
 	}
 	_deadband, _deadbandErr := BACnetApplicationTagParse(readBuffer)
 	if _deadbandErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDeadbandParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	deadband := CastBACnetApplicationTagReal(_deadband)
 	if closeErr := readBuffer.CloseContext("deadband"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for deadband")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeadband"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeadband")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDeadband) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDeadband"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDeadband")
 		}
 
 		// Simple Field (deadband)
 		if pushErr := writeBuffer.PushContext("deadband"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for deadband")
 		}
 		_deadbandErr := m.Deadband.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("deadband"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for deadband")
 		}
 		if _deadbandErr != nil {
 			return errors.Wrap(_deadbandErr, "Error serializing 'deadband' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDeadband"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDeadband")
 		}
 		return nil
 	}

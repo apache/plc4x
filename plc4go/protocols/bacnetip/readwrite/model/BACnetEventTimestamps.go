@@ -117,14 +117,14 @@ func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer) (*BACnetEventTimest
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventTimestamps"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventTimestamps")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (toOffnormal)
 	if pullErr := readBuffer.PullContext("toOffnormal"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for toOffnormal")
 	}
 	_toOffnormal, _toOffnormalErr := BACnetTimeStampParse(readBuffer)
 	if _toOffnormalErr != nil {
@@ -132,12 +132,12 @@ func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer) (*BACnetEventTimest
 	}
 	toOffnormal := CastBACnetTimeStamp(_toOffnormal)
 	if closeErr := readBuffer.CloseContext("toOffnormal"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for toOffnormal")
 	}
 
 	// Simple Field (toFault)
 	if pullErr := readBuffer.PullContext("toFault"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for toFault")
 	}
 	_toFault, _toFaultErr := BACnetTimeStampParse(readBuffer)
 	if _toFaultErr != nil {
@@ -145,12 +145,12 @@ func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer) (*BACnetEventTimest
 	}
 	toFault := CastBACnetTimeStamp(_toFault)
 	if closeErr := readBuffer.CloseContext("toFault"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for toFault")
 	}
 
 	// Simple Field (toNormal)
 	if pullErr := readBuffer.PullContext("toNormal"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for toNormal")
 	}
 	_toNormal, _toNormalErr := BACnetTimeStampParse(readBuffer)
 	if _toNormalErr != nil {
@@ -158,11 +158,11 @@ func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer) (*BACnetEventTimest
 	}
 	toNormal := CastBACnetTimeStamp(_toNormal)
 	if closeErr := readBuffer.CloseContext("toNormal"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for toNormal")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventTimestamps"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventTimestamps")
 	}
 
 	// Create the instance
@@ -173,16 +173,16 @@ func (m *BACnetEventTimestamps) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventTimestamps"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetEventTimestamps")
 	}
 
 	// Simple Field (toOffnormal)
 	if pushErr := writeBuffer.PushContext("toOffnormal"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for toOffnormal")
 	}
 	_toOffnormalErr := m.ToOffnormal.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("toOffnormal"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for toOffnormal")
 	}
 	if _toOffnormalErr != nil {
 		return errors.Wrap(_toOffnormalErr, "Error serializing 'toOffnormal' field")
@@ -190,11 +190,11 @@ func (m *BACnetEventTimestamps) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (toFault)
 	if pushErr := writeBuffer.PushContext("toFault"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for toFault")
 	}
 	_toFaultErr := m.ToFault.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("toFault"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for toFault")
 	}
 	if _toFaultErr != nil {
 		return errors.Wrap(_toFaultErr, "Error serializing 'toFault' field")
@@ -202,18 +202,18 @@ func (m *BACnetEventTimestamps) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (toNormal)
 	if pushErr := writeBuffer.PushContext("toNormal"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for toNormal")
 	}
 	_toNormalErr := m.ToNormal.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("toNormal"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for toNormal")
 	}
 	if _toNormalErr != nil {
 		return errors.Wrap(_toNormalErr, "Error serializing 'toNormal' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEventTimestamps"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetEventTimestamps")
 	}
 	return nil
 }

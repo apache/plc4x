@@ -319,7 +319,7 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityArray"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityArray")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -334,7 +334,7 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	if bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -346,14 +346,14 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 		default:
 			numberOfDataElements = CastBACnetApplicationTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for numberOfDataElements")
 			}
 		}
 	}
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Terminated array
 	data := make([]*BACnetPriorityValue, 0)
@@ -368,7 +368,7 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 		}
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for data")
 	}
 
 	// Virtual field
@@ -453,7 +453,7 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(data)) == (16)))) {
-		return nil, utils.ParseValidationError{"Either indexed access or lenght 16 expected"}
+		return nil, errors.WithStack(utils.ParseValidationError{"Either indexed access or lenght 16 expected"})
 	}
 
 	// Virtual field
@@ -467,7 +467,7 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	_ = indexEntry
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityArray"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityArray")
 	}
 
 	// Create the instance
@@ -478,7 +478,7 @@ func (m *BACnetPriorityArray) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPriorityArray"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetPriorityArray")
 	}
 	// Virtual field
 	if _zeroErr := writeBuffer.WriteVirtual("zero", m.GetZero()); _zeroErr != nil {
@@ -489,12 +489,12 @@ func (m *BACnetPriorityArray) Serialize(writeBuffer utils.WriteBuffer) error {
 	var numberOfDataElements *BACnetApplicationTagUnsignedInteger = nil
 	if m.NumberOfDataElements != nil {
 		if pushErr := writeBuffer.PushContext("numberOfDataElements"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
 		}
 		numberOfDataElements = m.NumberOfDataElements
 		_numberOfDataElementsErr := numberOfDataElements.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for numberOfDataElements")
 		}
 		if _numberOfDataElementsErr != nil {
 			return errors.Wrap(_numberOfDataElementsErr, "Error serializing 'numberOfDataElements' field")
@@ -504,7 +504,7 @@ func (m *BACnetPriorityArray) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Array Field (data)
 	if m.Data != nil {
 		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for data")
 		}
 		for _, _element := range m.Data {
 			_elementErr := _element.Serialize(writeBuffer)
@@ -513,7 +513,7 @@ func (m *BACnetPriorityArray) Serialize(writeBuffer utils.WriteBuffer) error {
 			}
 		}
 		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 	}
 	// Virtual field
@@ -590,7 +590,7 @@ func (m *BACnetPriorityArray) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPriorityArray"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetPriorityArray")
 	}
 	return nil
 }

@@ -128,14 +128,14 @@ func BACnetPropertyStatesFileAccessMethodParse(readBuffer utils.ReadBuffer, peek
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesFileAccessMethod"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesFileAccessMethod")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (fileAccessMethod)
 	if pullErr := readBuffer.PullContext("fileAccessMethod"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for fileAccessMethod")
 	}
 	_fileAccessMethod, _fileAccessMethodErr := BACnetFileAccessMethodTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _fileAccessMethodErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesFileAccessMethodParse(readBuffer utils.ReadBuffer, peek
 	}
 	fileAccessMethod := CastBACnetFileAccessMethodTagged(_fileAccessMethod)
 	if closeErr := readBuffer.CloseContext("fileAccessMethod"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for fileAccessMethod")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesFileAccessMethod"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesFileAccessMethod")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesFileAccessMethod) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesFileAccessMethod"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesFileAccessMethod")
 		}
 
 		// Simple Field (fileAccessMethod)
 		if pushErr := writeBuffer.PushContext("fileAccessMethod"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for fileAccessMethod")
 		}
 		_fileAccessMethodErr := m.FileAccessMethod.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("fileAccessMethod"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for fileAccessMethod")
 		}
 		if _fileAccessMethodErr != nil {
 			return errors.Wrap(_fileAccessMethodErr, "Error serializing 'fileAccessMethod' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesFileAccessMethod"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesFileAccessMethod")
 		}
 		return nil
 	}

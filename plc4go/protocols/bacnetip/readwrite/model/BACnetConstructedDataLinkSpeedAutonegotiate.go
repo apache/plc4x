@@ -142,14 +142,14 @@ func BACnetConstructedDataLinkSpeedAutonegotiateParse(readBuffer utils.ReadBuffe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLinkSpeedAutonegotiate"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLinkSpeedAutonegotiate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (linkSpeedAutonegotiate)
 	if pullErr := readBuffer.PullContext("linkSpeedAutonegotiate"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for linkSpeedAutonegotiate")
 	}
 	_linkSpeedAutonegotiate, _linkSpeedAutonegotiateErr := BACnetApplicationTagParse(readBuffer)
 	if _linkSpeedAutonegotiateErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLinkSpeedAutonegotiateParse(readBuffer utils.ReadBuffe
 	}
 	linkSpeedAutonegotiate := CastBACnetApplicationTagBoolean(_linkSpeedAutonegotiate)
 	if closeErr := readBuffer.CloseContext("linkSpeedAutonegotiate"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for linkSpeedAutonegotiate")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLinkSpeedAutonegotiate"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLinkSpeedAutonegotiate")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLinkSpeedAutonegotiate) Serialize(writeBuffer util
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLinkSpeedAutonegotiate"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLinkSpeedAutonegotiate")
 		}
 
 		// Simple Field (linkSpeedAutonegotiate)
 		if pushErr := writeBuffer.PushContext("linkSpeedAutonegotiate"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for linkSpeedAutonegotiate")
 		}
 		_linkSpeedAutonegotiateErr := m.LinkSpeedAutonegotiate.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("linkSpeedAutonegotiate"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for linkSpeedAutonegotiate")
 		}
 		if _linkSpeedAutonegotiateErr != nil {
 			return errors.Wrap(_linkSpeedAutonegotiateErr, "Error serializing 'linkSpeedAutonegotiate' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLinkSpeedAutonegotiate"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLinkSpeedAutonegotiate")
 		}
 		return nil
 	}

@@ -133,7 +133,7 @@ func BACnetOptionalBinaryPVParse(readBuffer utils.ReadBuffer) (*BACnetOptionalBi
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalBinaryPV"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalBinaryPV")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -141,7 +141,7 @@ func BACnetOptionalBinaryPVParse(readBuffer utils.ReadBuffer) (*BACnetOptionalBi
 	// Peek Field (peekedTagHeader)
 	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
 	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
 	readBuffer.Reset(currentPos)
@@ -172,7 +172,7 @@ func BACnetOptionalBinaryPVParse(readBuffer utils.ReadBuffer) (*BACnetOptionalBi
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalBinaryPV"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetOptionalBinaryPV")
 	}
 
 	// Finish initializing
@@ -188,7 +188,7 @@ func (m *BACnetOptionalBinaryPV) SerializeParent(writeBuffer utils.WriteBuffer, 
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetOptionalBinaryPV"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetOptionalBinaryPV")
 	}
 	// Virtual field
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
@@ -201,7 +201,7 @@ func (m *BACnetOptionalBinaryPV) SerializeParent(writeBuffer utils.WriteBuffer, 
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetOptionalBinaryPV"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetOptionalBinaryPV")
 	}
 	return nil
 }

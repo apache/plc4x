@@ -142,14 +142,14 @@ func BACnetConstructedDataInactiveTextParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInactiveText"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataInactiveText")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (inactiveText)
 	if pullErr := readBuffer.PullContext("inactiveText"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for inactiveText")
 	}
 	_inactiveText, _inactiveTextErr := BACnetApplicationTagParse(readBuffer)
 	if _inactiveTextErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataInactiveTextParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	inactiveText := CastBACnetApplicationTagCharacterString(_inactiveText)
 	if closeErr := readBuffer.CloseContext("inactiveText"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for inactiveText")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInactiveText"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInactiveText")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataInactiveText) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataInactiveText"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInactiveText")
 		}
 
 		// Simple Field (inactiveText)
 		if pushErr := writeBuffer.PushContext("inactiveText"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for inactiveText")
 		}
 		_inactiveTextErr := m.InactiveText.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("inactiveText"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for inactiveText")
 		}
 		if _inactiveTextErr != nil {
 			return errors.Wrap(_inactiveTextErr, "Error serializing 'inactiveText' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInactiveText"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataInactiveText")
 		}
 		return nil
 	}

@@ -165,7 +165,7 @@ func ModbusPDUWriteMultipleCoilsRequestParse(readBuffer utils.ReadBuffer, respon
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteMultipleCoilsRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUWriteMultipleCoilsRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -198,7 +198,7 @@ func ModbusPDUWriteMultipleCoilsRequestParse(readBuffer utils.ReadBuffer, respon
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUWriteMultipleCoilsRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUWriteMultipleCoilsRequest")
 	}
 
 	// Create a partially initialized instance
@@ -217,7 +217,7 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUWriteMultipleCoilsRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusPDUWriteMultipleCoilsRequest")
 		}
 
 		// Simple Field (startingAddress)
@@ -251,7 +251,7 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) Serialize(writeBuffer utils.WriteBu
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUWriteMultipleCoilsRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusPDUWriteMultipleCoilsRequest")
 		}
 		return nil
 	}

@@ -104,7 +104,7 @@ func ModbusADUParse(readBuffer utils.ReadBuffer, driverType DriverType, response
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusADU"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusADU")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -132,7 +132,7 @@ func ModbusADUParse(readBuffer utils.ReadBuffer, driverType DriverType, response
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusADU"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusADU")
 	}
 
 	// Finish initializing
@@ -148,7 +148,7 @@ func (m *ModbusADU) SerializeParent(writeBuffer utils.WriteBuffer, child IModbus
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusADU"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ModbusADU")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -157,7 +157,7 @@ func (m *ModbusADU) SerializeParent(writeBuffer utils.WriteBuffer, child IModbus
 	}
 
 	if popErr := writeBuffer.PopContext("ModbusADU"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ModbusADU")
 	}
 	return nil
 }

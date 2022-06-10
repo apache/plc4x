@@ -146,14 +146,14 @@ func BACnetConstructedDataSupportedSecurityAlgorithmsParse(readBuffer utils.Read
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSupportedSecurityAlgorithms"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSupportedSecurityAlgorithms")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (supportedSecurityAlgorithms)
 	if pullErr := readBuffer.PullContext("supportedSecurityAlgorithms", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for supportedSecurityAlgorithms")
 	}
 	// Terminated array
 	supportedSecurityAlgorithms := make([]*BACnetApplicationTagUnsignedInteger, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataSupportedSecurityAlgorithmsParse(readBuffer utils.Read
 		}
 	}
 	if closeErr := readBuffer.CloseContext("supportedSecurityAlgorithms", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for supportedSecurityAlgorithms")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSupportedSecurityAlgorithms"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSupportedSecurityAlgorithms")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataSupportedSecurityAlgorithms) Serialize(writeBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSupportedSecurityAlgorithms"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSupportedSecurityAlgorithms")
 		}
 
 		// Array Field (supportedSecurityAlgorithms)
 		if m.SupportedSecurityAlgorithms != nil {
 			if pushErr := writeBuffer.PushContext("supportedSecurityAlgorithms", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for supportedSecurityAlgorithms")
 			}
 			for _, _element := range m.SupportedSecurityAlgorithms {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataSupportedSecurityAlgorithms) Serialize(writeBuffer
 				}
 			}
 			if popErr := writeBuffer.PopContext("supportedSecurityAlgorithms", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for supportedSecurityAlgorithms")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSupportedSecurityAlgorithms"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSupportedSecurityAlgorithms")
 		}
 		return nil
 	}

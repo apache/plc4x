@@ -106,7 +106,7 @@ func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipServic
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipService"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CipService")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -148,7 +148,7 @@ func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipServic
 	}
 
 	if closeErr := readBuffer.CloseContext("CipService"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CipService")
 	}
 
 	// Finish initializing
@@ -164,7 +164,7 @@ func (m *CipService) SerializeParent(writeBuffer utils.WriteBuffer, child ICipSe
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CipService"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CipService")
 	}
 
 	// Discriminator Field (service) (Used as input to a switch field)
@@ -181,7 +181,7 @@ func (m *CipService) SerializeParent(writeBuffer utils.WriteBuffer, child ICipSe
 	}
 
 	if popErr := writeBuffer.PopContext("CipService"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CipService")
 	}
 	return nil
 }

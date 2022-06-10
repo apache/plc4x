@@ -133,14 +133,14 @@ func ApduDataOtherParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDat
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataOther"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataOther")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (extendedApdu)
 	if pullErr := readBuffer.PullContext("extendedApdu"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for extendedApdu")
 	}
 	_extendedApdu, _extendedApduErr := ApduDataExtParse(readBuffer, uint8(dataLength))
 	if _extendedApduErr != nil {
@@ -148,11 +148,11 @@ func ApduDataOtherParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDat
 	}
 	extendedApdu := CastApduDataExt(_extendedApdu)
 	if closeErr := readBuffer.CloseContext("extendedApdu"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for extendedApdu")
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataOther"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ApduDataOther")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *ApduDataOther) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataOther"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ApduDataOther")
 		}
 
 		// Simple Field (extendedApdu)
 		if pushErr := writeBuffer.PushContext("extendedApdu"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for extendedApdu")
 		}
 		_extendedApduErr := m.ExtendedApdu.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("extendedApdu"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for extendedApdu")
 		}
 		if _extendedApduErr != nil {
 			return errors.Wrap(_extendedApduErr, "Error serializing 'extendedApdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataOther"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ApduDataOther")
 		}
 		return nil
 	}

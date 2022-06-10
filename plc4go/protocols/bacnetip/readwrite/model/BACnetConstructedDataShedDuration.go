@@ -142,14 +142,14 @@ func BACnetConstructedDataShedDurationParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataShedDuration"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataShedDuration")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (shedDuration)
 	if pullErr := readBuffer.PullContext("shedDuration"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for shedDuration")
 	}
 	_shedDuration, _shedDurationErr := BACnetApplicationTagParse(readBuffer)
 	if _shedDurationErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataShedDurationParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	shedDuration := CastBACnetApplicationTagUnsignedInteger(_shedDuration)
 	if closeErr := readBuffer.CloseContext("shedDuration"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for shedDuration")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataShedDuration"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataShedDuration")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataShedDuration) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataShedDuration"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataShedDuration")
 		}
 
 		// Simple Field (shedDuration)
 		if pushErr := writeBuffer.PushContext("shedDuration"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for shedDuration")
 		}
 		_shedDurationErr := m.ShedDuration.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("shedDuration"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for shedDuration")
 		}
 		if _shedDurationErr != nil {
 			return errors.Wrap(_shedDurationErr, "Error serializing 'shedDuration' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataShedDuration"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataShedDuration")
 		}
 		return nil
 	}

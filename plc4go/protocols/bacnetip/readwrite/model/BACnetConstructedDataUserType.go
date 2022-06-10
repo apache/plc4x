@@ -142,14 +142,14 @@ func BACnetConstructedDataUserTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUserType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataUserType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (userType)
 	if pullErr := readBuffer.PullContext("userType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for userType")
 	}
 	_userType, _userTypeErr := BACnetAccessUserTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _userTypeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataUserTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	userType := CastBACnetAccessUserTypeTagged(_userType)
 	if closeErr := readBuffer.CloseContext("userType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for userType")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUserType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUserType")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataUserType) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataUserType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUserType")
 		}
 
 		// Simple Field (userType)
 		if pushErr := writeBuffer.PushContext("userType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for userType")
 		}
 		_userTypeErr := m.UserType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("userType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for userType")
 		}
 		if _userTypeErr != nil {
 			return errors.Wrap(_userTypeErr, "Error serializing 'userType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUserType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataUserType")
 		}
 		return nil
 	}

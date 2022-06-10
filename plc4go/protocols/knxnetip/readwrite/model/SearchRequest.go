@@ -130,14 +130,14 @@ func SearchRequestParse(readBuffer utils.ReadBuffer) (*SearchRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SearchRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for SearchRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (hpaiIDiscoveryEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiIDiscoveryEndpoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for hpaiIDiscoveryEndpoint")
 	}
 	_hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
 	if _hpaiIDiscoveryEndpointErr != nil {
@@ -145,11 +145,11 @@ func SearchRequestParse(readBuffer utils.ReadBuffer) (*SearchRequest, error) {
 	}
 	hpaiIDiscoveryEndpoint := CastHPAIDiscoveryEndpoint(_hpaiIDiscoveryEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiIDiscoveryEndpoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for hpaiIDiscoveryEndpoint")
 	}
 
 	if closeErr := readBuffer.CloseContext("SearchRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for SearchRequest")
 	}
 
 	// Create a partially initialized instance
@@ -166,23 +166,23 @@ func (m *SearchRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SearchRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for SearchRequest")
 		}
 
 		// Simple Field (hpaiIDiscoveryEndpoint)
 		if pushErr := writeBuffer.PushContext("hpaiIDiscoveryEndpoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for hpaiIDiscoveryEndpoint")
 		}
 		_hpaiIDiscoveryEndpointErr := m.HpaiIDiscoveryEndpoint.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("hpaiIDiscoveryEndpoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for hpaiIDiscoveryEndpoint")
 		}
 		if _hpaiIDiscoveryEndpointErr != nil {
 			return errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error serializing 'hpaiIDiscoveryEndpoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SearchRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for SearchRequest")
 		}
 		return nil
 	}

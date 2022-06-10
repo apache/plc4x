@@ -157,7 +157,7 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMessage, er
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1RequestMessage"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DF1RequestMessage")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -229,7 +229,7 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMessage, er
 	}
 
 	if closeErr := readBuffer.CloseContext("DF1RequestMessage"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DF1RequestMessage")
 	}
 
 	// Finish initializing
@@ -245,7 +245,7 @@ func (m *DF1RequestMessage) SerializeParent(writeBuffer utils.WriteBuffer, child
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DF1RequestMessage"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for DF1RequestMessage")
 	}
 
 	// Simple Field (destinationAddress)
@@ -298,7 +298,7 @@ func (m *DF1RequestMessage) SerializeParent(writeBuffer utils.WriteBuffer, child
 	}
 
 	if popErr := writeBuffer.PopContext("DF1RequestMessage"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for DF1RequestMessage")
 	}
 	return nil
 }

@@ -133,14 +133,14 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedParse(readBuffer u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (unsignedValue)
 	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
 	}
 	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParse(readBuffer)
 	if _unsignedValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedParse(readBuffer u
 	}
 	unsignedValue := CastBACnetApplicationTagUnsignedInteger(_unsignedValue)
 	if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for unsignedValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned) Serialize(wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned")
 		}
 
 		// Simple Field (unsignedValue)
 		if pushErr := writeBuffer.PushContext("unsignedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for unsignedValue")
 		}
 		_unsignedValueErr := m.UnsignedValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("unsignedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for unsignedValue")
 		}
 		if _unsignedValueErr != nil {
 			return errors.Wrap(_unsignedValueErr, "Error serializing 'unsignedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned")
 		}
 		return nil
 	}

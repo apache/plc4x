@@ -180,7 +180,7 @@ func BACnetConstructedDataDoorMembersParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorMembers"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDoorMembers")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -195,7 +195,7 @@ func BACnetConstructedDataDoorMembersParse(readBuffer utils.ReadBuffer, tagNumbe
 	if bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -207,14 +207,14 @@ func BACnetConstructedDataDoorMembersParse(readBuffer utils.ReadBuffer, tagNumbe
 		default:
 			numberOfDataElements = CastBACnetApplicationTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for numberOfDataElements")
 			}
 		}
 	}
 
 	// Array field (doorMembers)
 	if pullErr := readBuffer.PullContext("doorMembers", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for doorMembers")
 	}
 	// Terminated array
 	doorMembers := make([]*BACnetDeviceObjectReference, 0)
@@ -229,11 +229,11 @@ func BACnetConstructedDataDoorMembersParse(readBuffer utils.ReadBuffer, tagNumbe
 		}
 	}
 	if closeErr := readBuffer.CloseContext("doorMembers", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for doorMembers")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorMembers"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorMembers")
 	}
 
 	// Create a partially initialized instance
@@ -251,7 +251,7 @@ func (m *BACnetConstructedDataDoorMembers) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDoorMembers"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDoorMembers")
 		}
 		// Virtual field
 		if _zeroErr := writeBuffer.WriteVirtual("zero", m.GetZero()); _zeroErr != nil {
@@ -262,12 +262,12 @@ func (m *BACnetConstructedDataDoorMembers) Serialize(writeBuffer utils.WriteBuff
 		var numberOfDataElements *BACnetApplicationTagUnsignedInteger = nil
 		if m.NumberOfDataElements != nil {
 			if pushErr := writeBuffer.PushContext("numberOfDataElements"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
 			}
 			numberOfDataElements = m.NumberOfDataElements
 			_numberOfDataElementsErr := numberOfDataElements.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for numberOfDataElements")
 			}
 			if _numberOfDataElementsErr != nil {
 				return errors.Wrap(_numberOfDataElementsErr, "Error serializing 'numberOfDataElements' field")
@@ -277,7 +277,7 @@ func (m *BACnetConstructedDataDoorMembers) Serialize(writeBuffer utils.WriteBuff
 		// Array Field (doorMembers)
 		if m.DoorMembers != nil {
 			if pushErr := writeBuffer.PushContext("doorMembers", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for doorMembers")
 			}
 			for _, _element := range m.DoorMembers {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -286,12 +286,12 @@ func (m *BACnetConstructedDataDoorMembers) Serialize(writeBuffer utils.WriteBuff
 				}
 			}
 			if popErr := writeBuffer.PopContext("doorMembers", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for doorMembers")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDoorMembers"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDoorMembers")
 		}
 		return nil
 	}

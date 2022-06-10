@@ -142,14 +142,14 @@ func BACnetConstructedDataLargeAnalogValueMaxPresValueParse(readBuffer utils.Rea
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueMaxPresValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLargeAnalogValueMaxPresValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (maxPresValue)
 	if pullErr := readBuffer.PullContext("maxPresValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for maxPresValue")
 	}
 	_maxPresValue, _maxPresValueErr := BACnetApplicationTagParse(readBuffer)
 	if _maxPresValueErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLargeAnalogValueMaxPresValueParse(readBuffer utils.Rea
 	}
 	maxPresValue := CastBACnetApplicationTagDouble(_maxPresValue)
 	if closeErr := readBuffer.CloseContext("maxPresValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for maxPresValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueMaxPresValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLargeAnalogValueMaxPresValue")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLargeAnalogValueMaxPresValue) Serialize(writeBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLargeAnalogValueMaxPresValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLargeAnalogValueMaxPresValue")
 		}
 
 		// Simple Field (maxPresValue)
 		if pushErr := writeBuffer.PushContext("maxPresValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for maxPresValue")
 		}
 		_maxPresValueErr := m.MaxPresValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("maxPresValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for maxPresValue")
 		}
 		if _maxPresValueErr != nil {
 			return errors.Wrap(_maxPresValueErr, "Error serializing 'maxPresValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLargeAnalogValueMaxPresValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLargeAnalogValueMaxPresValue")
 		}
 		return nil
 	}

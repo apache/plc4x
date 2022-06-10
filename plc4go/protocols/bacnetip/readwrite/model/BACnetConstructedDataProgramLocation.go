@@ -142,14 +142,14 @@ func BACnetConstructedDataProgramLocationParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProgramLocation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProgramLocation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (programLocation)
 	if pullErr := readBuffer.PullContext("programLocation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for programLocation")
 	}
 	_programLocation, _programLocationErr := BACnetApplicationTagParse(readBuffer)
 	if _programLocationErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataProgramLocationParse(readBuffer utils.ReadBuffer, tagN
 	}
 	programLocation := CastBACnetApplicationTagCharacterString(_programLocation)
 	if closeErr := readBuffer.CloseContext("programLocation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for programLocation")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProgramLocation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProgramLocation")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataProgramLocation) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataProgramLocation"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProgramLocation")
 		}
 
 		// Simple Field (programLocation)
 		if pushErr := writeBuffer.PushContext("programLocation"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for programLocation")
 		}
 		_programLocationErr := m.ProgramLocation.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("programLocation"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for programLocation")
 		}
 		if _programLocationErr != nil {
 			return errors.Wrap(_programLocationErr, "Error serializing 'programLocation' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProgramLocation"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataProgramLocation")
 		}
 		return nil
 	}

@@ -128,14 +128,14 @@ func BACnetPropertyStatesBackupStateParse(readBuffer utils.ReadBuffer, peekedTag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBackupState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesBackupState")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (backupState)
 	if pullErr := readBuffer.PullContext("backupState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for backupState")
 	}
 	_backupState, _backupStateErr := BACnetBackupStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _backupStateErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesBackupStateParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	backupState := CastBACnetBackupStateTagged(_backupState)
 	if closeErr := readBuffer.CloseContext("backupState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for backupState")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesBackupState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesBackupState")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesBackupState) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesBackupState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesBackupState")
 		}
 
 		// Simple Field (backupState)
 		if pushErr := writeBuffer.PushContext("backupState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for backupState")
 		}
 		_backupStateErr := m.BackupState.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("backupState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for backupState")
 		}
 		if _backupStateErr != nil {
 			return errors.Wrap(_backupStateErr, "Error serializing 'backupState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesBackupState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesBackupState")
 		}
 		return nil
 	}

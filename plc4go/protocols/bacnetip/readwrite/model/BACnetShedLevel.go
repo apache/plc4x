@@ -133,7 +133,7 @@ func BACnetShedLevelParse(readBuffer utils.ReadBuffer) (*BACnetShedLevel, error)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetShedLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetShedLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -141,7 +141,7 @@ func BACnetShedLevelParse(readBuffer utils.ReadBuffer) (*BACnetShedLevel, error)
 	// Peek Field (peekedTagHeader)
 	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
 	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
 	readBuffer.Reset(currentPos)
@@ -174,7 +174,7 @@ func BACnetShedLevelParse(readBuffer utils.ReadBuffer) (*BACnetShedLevel, error)
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetShedLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetShedLevel")
 	}
 
 	// Finish initializing
@@ -190,7 +190,7 @@ func (m *BACnetShedLevel) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetShedLevel"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetShedLevel")
 	}
 	// Virtual field
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
@@ -203,7 +203,7 @@ func (m *BACnetShedLevel) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetShedLevel"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetShedLevel")
 	}
 	return nil
 }

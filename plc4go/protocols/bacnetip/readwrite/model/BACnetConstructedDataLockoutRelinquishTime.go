@@ -142,14 +142,14 @@ func BACnetConstructedDataLockoutRelinquishTimeParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLockoutRelinquishTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLockoutRelinquishTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lockoutRelinquishTime)
 	if pullErr := readBuffer.PullContext("lockoutRelinquishTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lockoutRelinquishTime")
 	}
 	_lockoutRelinquishTime, _lockoutRelinquishTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _lockoutRelinquishTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLockoutRelinquishTimeParse(readBuffer utils.ReadBuffer
 	}
 	lockoutRelinquishTime := CastBACnetApplicationTagUnsignedInteger(_lockoutRelinquishTime)
 	if closeErr := readBuffer.CloseContext("lockoutRelinquishTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lockoutRelinquishTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLockoutRelinquishTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLockoutRelinquishTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLockoutRelinquishTime) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLockoutRelinquishTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLockoutRelinquishTime")
 		}
 
 		// Simple Field (lockoutRelinquishTime)
 		if pushErr := writeBuffer.PushContext("lockoutRelinquishTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lockoutRelinquishTime")
 		}
 		_lockoutRelinquishTimeErr := m.LockoutRelinquishTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lockoutRelinquishTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lockoutRelinquishTime")
 		}
 		if _lockoutRelinquishTimeErr != nil {
 			return errors.Wrap(_lockoutRelinquishTimeErr, "Error serializing 'lockoutRelinquishTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLockoutRelinquishTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLockoutRelinquishTime")
 		}
 		return nil
 	}

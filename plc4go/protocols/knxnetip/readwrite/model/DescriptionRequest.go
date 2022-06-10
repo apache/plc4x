@@ -130,14 +130,14 @@ func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*DescriptionRequest, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DescriptionRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DescriptionRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (hpaiControlEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
 	}
 	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
 	if _hpaiControlEndpointErr != nil {
@@ -145,11 +145,11 @@ func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*DescriptionRequest, 
 	}
 	hpaiControlEndpoint := CastHPAIControlEndpoint(_hpaiControlEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for hpaiControlEndpoint")
 	}
 
 	if closeErr := readBuffer.CloseContext("DescriptionRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DescriptionRequest")
 	}
 
 	// Create a partially initialized instance
@@ -166,23 +166,23 @@ func (m *DescriptionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DescriptionRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for DescriptionRequest")
 		}
 
 		// Simple Field (hpaiControlEndpoint)
 		if pushErr := writeBuffer.PushContext("hpaiControlEndpoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for hpaiControlEndpoint")
 		}
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("hpaiControlEndpoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for hpaiControlEndpoint")
 		}
 		if _hpaiControlEndpointErr != nil {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DescriptionRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for DescriptionRequest")
 		}
 		return nil
 	}

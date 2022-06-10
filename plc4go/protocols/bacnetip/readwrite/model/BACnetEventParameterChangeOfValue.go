@@ -161,14 +161,14 @@ func BACnetEventParameterChangeOfValueParse(readBuffer utils.ReadBuffer) (*BACne
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(2)))
 	if _openingTagErr != nil {
@@ -176,12 +176,12 @@ func BACnetEventParameterChangeOfValueParse(readBuffer utils.ReadBuffer) (*BACne
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (timeDelay)
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
 	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
@@ -189,12 +189,12 @@ func BACnetEventParameterChangeOfValueParse(readBuffer utils.ReadBuffer) (*BACne
 	}
 	timeDelay := CastBACnetContextTagUnsignedInteger(_timeDelay)
 	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeDelay")
 	}
 
 	// Simple Field (covCriteria)
 	if pullErr := readBuffer.PullContext("covCriteria"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for covCriteria")
 	}
 	_covCriteria, _covCriteriaErr := BACnetEventParameterChangeOfValueCivCriteriaParse(readBuffer, uint8(uint8(1)))
 	if _covCriteriaErr != nil {
@@ -202,12 +202,12 @@ func BACnetEventParameterChangeOfValueParse(readBuffer utils.ReadBuffer) (*BACne
 	}
 	covCriteria := CastBACnetEventParameterChangeOfValueCivCriteria(_covCriteria)
 	if closeErr := readBuffer.CloseContext("covCriteria"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for covCriteria")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(2)))
 	if _closingTagErr != nil {
@@ -215,11 +215,11 @@ func BACnetEventParameterChangeOfValueParse(readBuffer utils.ReadBuffer) (*BACne
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterChangeOfValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterChangeOfValue")
 	}
 
 	// Create a partially initialized instance
@@ -239,16 +239,16 @@ func (m *BACnetEventParameterChangeOfValue) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetEventParameterChangeOfValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfValue")
 		}
 
 		// Simple Field (openingTag)
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
 		_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
 		if _openingTagErr != nil {
 			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -256,11 +256,11 @@ func (m *BACnetEventParameterChangeOfValue) Serialize(writeBuffer utils.WriteBuf
 
 		// Simple Field (timeDelay)
 		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeDelay")
 		}
 		_timeDelayErr := m.TimeDelay.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeDelay")
 		}
 		if _timeDelayErr != nil {
 			return errors.Wrap(_timeDelayErr, "Error serializing 'timeDelay' field")
@@ -268,11 +268,11 @@ func (m *BACnetEventParameterChangeOfValue) Serialize(writeBuffer utils.WriteBuf
 
 		// Simple Field (covCriteria)
 		if pushErr := writeBuffer.PushContext("covCriteria"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for covCriteria")
 		}
 		_covCriteriaErr := m.CovCriteria.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("covCriteria"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for covCriteria")
 		}
 		if _covCriteriaErr != nil {
 			return errors.Wrap(_covCriteriaErr, "Error serializing 'covCriteria' field")
@@ -280,18 +280,18 @@ func (m *BACnetEventParameterChangeOfValue) Serialize(writeBuffer utils.WriteBuf
 
 		// Simple Field (closingTag)
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
 		_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
 		if _closingTagErr != nil {
 			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetEventParameterChangeOfValue")
 		}
 		return nil
 	}

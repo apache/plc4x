@@ -128,14 +128,14 @@ func BACnetTimeStampSequenceParse(readBuffer utils.ReadBuffer) (*BACnetTimeStamp
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStampSequence"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimeStampSequence")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (sequenceNumber)
 	if pullErr := readBuffer.PullContext("sequenceNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for sequenceNumber")
 	}
 	_sequenceNumber, _sequenceNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _sequenceNumberErr != nil {
@@ -143,11 +143,11 @@ func BACnetTimeStampSequenceParse(readBuffer utils.ReadBuffer) (*BACnetTimeStamp
 	}
 	sequenceNumber := CastBACnetContextTagUnsignedInteger(_sequenceNumber)
 	if closeErr := readBuffer.CloseContext("sequenceNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for sequenceNumber")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimeStampSequence"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimeStampSequence")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetTimeStampSequence) Serialize(writeBuffer utils.WriteBuffer) error
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetTimeStampSequence"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetTimeStampSequence")
 		}
 
 		// Simple Field (sequenceNumber)
 		if pushErr := writeBuffer.PushContext("sequenceNumber"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for sequenceNumber")
 		}
 		_sequenceNumberErr := m.SequenceNumber.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("sequenceNumber"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for sequenceNumber")
 		}
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimeStampSequence"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetTimeStampSequence")
 		}
 		return nil
 	}

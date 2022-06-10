@@ -142,14 +142,14 @@ func BACnetConstructedDataCountChangeTimeParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCountChangeTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCountChangeTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (countChangeTime)
 	if pullErr := readBuffer.PullContext("countChangeTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for countChangeTime")
 	}
 	_countChangeTime, _countChangeTimeErr := BACnetDateTimeParse(readBuffer)
 	if _countChangeTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataCountChangeTimeParse(readBuffer utils.ReadBuffer, tagN
 	}
 	countChangeTime := CastBACnetDateTime(_countChangeTime)
 	if closeErr := readBuffer.CloseContext("countChangeTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for countChangeTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCountChangeTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCountChangeTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataCountChangeTime) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCountChangeTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCountChangeTime")
 		}
 
 		// Simple Field (countChangeTime)
 		if pushErr := writeBuffer.PushContext("countChangeTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for countChangeTime")
 		}
 		_countChangeTimeErr := m.CountChangeTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("countChangeTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for countChangeTime")
 		}
 		if _countChangeTimeErr != nil {
 			return errors.Wrap(_countChangeTimeErr, "Error serializing 'countChangeTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCountChangeTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCountChangeTime")
 		}
 		return nil
 	}

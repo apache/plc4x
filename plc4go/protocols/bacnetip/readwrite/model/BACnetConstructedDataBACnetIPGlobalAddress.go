@@ -142,14 +142,14 @@ func BACnetConstructedDataBACnetIPGlobalAddressParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPGlobalAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBACnetIPGlobalAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bacnetIpGlobalAddress)
 	if pullErr := readBuffer.PullContext("bacnetIpGlobalAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIpGlobalAddress")
 	}
 	_bacnetIpGlobalAddress, _bacnetIpGlobalAddressErr := BACnetHostNPortParse(readBuffer)
 	if _bacnetIpGlobalAddressErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBACnetIPGlobalAddressParse(readBuffer utils.ReadBuffer
 	}
 	bacnetIpGlobalAddress := CastBACnetHostNPort(_bacnetIpGlobalAddress)
 	if closeErr := readBuffer.CloseContext("bacnetIpGlobalAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bacnetIpGlobalAddress")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPGlobalAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPGlobalAddress")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBACnetIPGlobalAddress) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBACnetIPGlobalAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBACnetIPGlobalAddress")
 		}
 
 		// Simple Field (bacnetIpGlobalAddress)
 		if pushErr := writeBuffer.PushContext("bacnetIpGlobalAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for bacnetIpGlobalAddress")
 		}
 		_bacnetIpGlobalAddressErr := m.BacnetIpGlobalAddress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("bacnetIpGlobalAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for bacnetIpGlobalAddress")
 		}
 		if _bacnetIpGlobalAddressErr != nil {
 			return errors.Wrap(_bacnetIpGlobalAddressErr, "Error serializing 'bacnetIpGlobalAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBACnetIPGlobalAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBACnetIPGlobalAddress")
 		}
 		return nil
 	}

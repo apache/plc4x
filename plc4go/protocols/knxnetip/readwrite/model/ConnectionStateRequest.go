@@ -145,7 +145,7 @@ func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (*ConnectionStateR
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionStateRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionStateRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -173,7 +173,7 @@ func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (*ConnectionStateR
 
 	// Simple Field (hpaiControlEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
 	}
 	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
 	if _hpaiControlEndpointErr != nil {
@@ -181,11 +181,11 @@ func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (*ConnectionStateR
 	}
 	hpaiControlEndpoint := CastHPAIControlEndpoint(_hpaiControlEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for hpaiControlEndpoint")
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionStateRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ConnectionStateRequest")
 	}
 
 	// Create a partially initialized instance
@@ -203,7 +203,7 @@ func (m *ConnectionStateRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConnectionStateRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ConnectionStateRequest")
 		}
 
 		// Simple Field (communicationChannelId)
@@ -223,18 +223,18 @@ func (m *ConnectionStateRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Simple Field (hpaiControlEndpoint)
 		if pushErr := writeBuffer.PushContext("hpaiControlEndpoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for hpaiControlEndpoint")
 		}
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("hpaiControlEndpoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for hpaiControlEndpoint")
 		}
 		if _hpaiControlEndpointErr != nil {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConnectionStateRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ConnectionStateRequest")
 		}
 		return nil
 	}

@@ -128,14 +128,14 @@ func BACnetPropertyStatesEscalatorModeParse(readBuffer utils.ReadBuffer, peekedT
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesEscalatorMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (escalatorMode)
 	if pullErr := readBuffer.PullContext("escalatorMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for escalatorMode")
 	}
 	_escalatorMode, _escalatorModeErr := BACnetEscalatorModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _escalatorModeErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesEscalatorModeParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	escalatorMode := CastBACnetEscalatorModeTagged(_escalatorMode)
 	if closeErr := readBuffer.CloseContext("escalatorMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for escalatorMode")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesEscalatorMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesEscalatorMode")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesEscalatorMode) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesEscalatorMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesEscalatorMode")
 		}
 
 		// Simple Field (escalatorMode)
 		if pushErr := writeBuffer.PushContext("escalatorMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for escalatorMode")
 		}
 		_escalatorModeErr := m.EscalatorMode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("escalatorMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for escalatorMode")
 		}
 		if _escalatorModeErr != nil {
 			return errors.Wrap(_escalatorModeErr, "Error serializing 'escalatorMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesEscalatorMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesEscalatorMode")
 		}
 		return nil
 	}

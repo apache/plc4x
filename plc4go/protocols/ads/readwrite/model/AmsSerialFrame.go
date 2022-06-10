@@ -157,7 +157,7 @@ func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsSerialFrame"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AmsSerialFrame")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -199,7 +199,7 @@ func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialFrame, error) {
 
 	// Simple Field (userdata)
 	if pullErr := readBuffer.PullContext("userdata"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for userdata")
 	}
 	_userdata, _userdataErr := AmsPacketParse(readBuffer)
 	if _userdataErr != nil {
@@ -207,7 +207,7 @@ func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialFrame, error) {
 	}
 	userdata := CastAmsPacket(_userdata)
 	if closeErr := readBuffer.CloseContext("userdata"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for userdata")
 	}
 
 	// Simple Field (crc)
@@ -218,7 +218,7 @@ func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialFrame, error) {
 	crc := _crc
 
 	if closeErr := readBuffer.CloseContext("AmsSerialFrame"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AmsSerialFrame")
 	}
 
 	// Create the instance
@@ -229,7 +229,7 @@ func (m *AmsSerialFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsSerialFrame"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AmsSerialFrame")
 	}
 
 	// Simple Field (magicCookie)
@@ -269,11 +269,11 @@ func (m *AmsSerialFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (userdata)
 	if pushErr := writeBuffer.PushContext("userdata"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for userdata")
 	}
 	_userdataErr := m.Userdata.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("userdata"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for userdata")
 	}
 	if _userdataErr != nil {
 		return errors.Wrap(_userdataErr, "Error serializing 'userdata' field")
@@ -287,7 +287,7 @@ func (m *AmsSerialFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("AmsSerialFrame"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AmsSerialFrame")
 	}
 	return nil
 }

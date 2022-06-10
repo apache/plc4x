@@ -127,7 +127,7 @@ func ModbusPDUReadFileRecordRequestItemParse(readBuffer utils.ReadBuffer) (*Modb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFileRecordRequestItem"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadFileRecordRequestItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -161,7 +161,7 @@ func ModbusPDUReadFileRecordRequestItemParse(readBuffer utils.ReadBuffer) (*Modb
 	recordLength := _recordLength
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadFileRecordRequestItem"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadFileRecordRequestItem")
 	}
 
 	// Create the instance
@@ -172,7 +172,7 @@ func (m *ModbusPDUReadFileRecordRequestItem) Serialize(writeBuffer utils.WriteBu
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusPDUReadFileRecordRequestItem"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadFileRecordRequestItem")
 	}
 
 	// Simple Field (referenceType)
@@ -204,7 +204,7 @@ func (m *ModbusPDUReadFileRecordRequestItem) Serialize(writeBuffer utils.WriteBu
 	}
 
 	if popErr := writeBuffer.PopContext("ModbusPDUReadFileRecordRequestItem"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ModbusPDUReadFileRecordRequestItem")
 	}
 	return nil
 }

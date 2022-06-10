@@ -180,7 +180,7 @@ func BACnetConstructedDataCarDoorTextParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarDoorText"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCarDoorText")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -195,7 +195,7 @@ func BACnetConstructedDataCarDoorTextParse(readBuffer utils.ReadBuffer, tagNumbe
 	if bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -207,14 +207,14 @@ func BACnetConstructedDataCarDoorTextParse(readBuffer utils.ReadBuffer, tagNumbe
 		default:
 			numberOfDataElements = CastBACnetApplicationTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for numberOfDataElements")
 			}
 		}
 	}
 
 	// Array field (carDoorText)
 	if pullErr := readBuffer.PullContext("carDoorText", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for carDoorText")
 	}
 	// Terminated array
 	carDoorText := make([]*BACnetApplicationTagCharacterString, 0)
@@ -229,11 +229,11 @@ func BACnetConstructedDataCarDoorTextParse(readBuffer utils.ReadBuffer, tagNumbe
 		}
 	}
 	if closeErr := readBuffer.CloseContext("carDoorText", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for carDoorText")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarDoorText"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCarDoorText")
 	}
 
 	// Create a partially initialized instance
@@ -251,7 +251,7 @@ func (m *BACnetConstructedDataCarDoorText) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCarDoorText"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCarDoorText")
 		}
 		// Virtual field
 		if _zeroErr := writeBuffer.WriteVirtual("zero", m.GetZero()); _zeroErr != nil {
@@ -262,12 +262,12 @@ func (m *BACnetConstructedDataCarDoorText) Serialize(writeBuffer utils.WriteBuff
 		var numberOfDataElements *BACnetApplicationTagUnsignedInteger = nil
 		if m.NumberOfDataElements != nil {
 			if pushErr := writeBuffer.PushContext("numberOfDataElements"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
 			}
 			numberOfDataElements = m.NumberOfDataElements
 			_numberOfDataElementsErr := numberOfDataElements.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for numberOfDataElements")
 			}
 			if _numberOfDataElementsErr != nil {
 				return errors.Wrap(_numberOfDataElementsErr, "Error serializing 'numberOfDataElements' field")
@@ -277,7 +277,7 @@ func (m *BACnetConstructedDataCarDoorText) Serialize(writeBuffer utils.WriteBuff
 		// Array Field (carDoorText)
 		if m.CarDoorText != nil {
 			if pushErr := writeBuffer.PushContext("carDoorText", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for carDoorText")
 			}
 			for _, _element := range m.CarDoorText {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -286,12 +286,12 @@ func (m *BACnetConstructedDataCarDoorText) Serialize(writeBuffer utils.WriteBuff
 				}
 			}
 			if popErr := writeBuffer.PopContext("carDoorText", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for carDoorText")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCarDoorText"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCarDoorText")
 		}
 		return nil
 	}

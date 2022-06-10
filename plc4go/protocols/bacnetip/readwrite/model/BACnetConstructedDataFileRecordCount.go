@@ -142,14 +142,14 @@ func BACnetConstructedDataFileRecordCountParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFileRecordCount"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFileRecordCount")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (recordCount)
 	if pullErr := readBuffer.PullContext("recordCount"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for recordCount")
 	}
 	_recordCount, _recordCountErr := BACnetApplicationTagParse(readBuffer)
 	if _recordCountErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataFileRecordCountParse(readBuffer utils.ReadBuffer, tagN
 	}
 	recordCount := CastBACnetApplicationTagUnsignedInteger(_recordCount)
 	if closeErr := readBuffer.CloseContext("recordCount"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for recordCount")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFileRecordCount"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFileRecordCount")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataFileRecordCount) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataFileRecordCount"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFileRecordCount")
 		}
 
 		// Simple Field (recordCount)
 		if pushErr := writeBuffer.PushContext("recordCount"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for recordCount")
 		}
 		_recordCountErr := m.RecordCount.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("recordCount"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for recordCount")
 		}
 		if _recordCountErr != nil {
 			return errors.Wrap(_recordCountErr, "Error serializing 'recordCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFileRecordCount"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataFileRecordCount")
 		}
 		return nil
 	}

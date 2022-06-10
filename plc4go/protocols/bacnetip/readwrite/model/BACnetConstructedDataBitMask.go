@@ -142,14 +142,14 @@ func BACnetConstructedDataBitMaskParse(readBuffer utils.ReadBuffer, tagNumber ui
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBitMask"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBitMask")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bitString)
 	if pullErr := readBuffer.PullContext("bitString"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bitString")
 	}
 	_bitString, _bitStringErr := BACnetApplicationTagParse(readBuffer)
 	if _bitStringErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBitMaskParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	bitString := CastBACnetApplicationTagBitString(_bitString)
 	if closeErr := readBuffer.CloseContext("bitString"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bitString")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBitMask"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBitMask")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBitMask) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBitMask"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBitMask")
 		}
 
 		// Simple Field (bitString)
 		if pushErr := writeBuffer.PushContext("bitString"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for bitString")
 		}
 		_bitStringErr := m.BitString.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("bitString"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for bitString")
 		}
 		if _bitStringErr != nil {
 			return errors.Wrap(_bitStringErr, "Error serializing 'bitString' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBitMask"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBitMask")
 		}
 		return nil
 	}

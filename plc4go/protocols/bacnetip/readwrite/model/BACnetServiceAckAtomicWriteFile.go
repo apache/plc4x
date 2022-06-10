@@ -133,14 +133,14 @@ func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceAc
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicWriteFile"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckAtomicWriteFile")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (fileStartPosition)
 	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for fileStartPosition")
 	}
 	_fileStartPosition, _fileStartPositionErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _fileStartPositionErr != nil {
@@ -148,11 +148,11 @@ func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceAc
 	}
 	fileStartPosition := CastBACnetContextTagSignedInteger(_fileStartPosition)
 	if closeErr := readBuffer.CloseContext("fileStartPosition"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for fileStartPosition")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckAtomicWriteFile"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckAtomicWriteFile")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetServiceAckAtomicWriteFile) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckAtomicWriteFile"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckAtomicWriteFile")
 		}
 
 		// Simple Field (fileStartPosition)
 		if pushErr := writeBuffer.PushContext("fileStartPosition"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for fileStartPosition")
 		}
 		_fileStartPositionErr := m.FileStartPosition.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("fileStartPosition"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for fileStartPosition")
 		}
 		if _fileStartPositionErr != nil {
 			return errors.Wrap(_fileStartPositionErr, "Error serializing 'fileStartPosition' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckAtomicWriteFile"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetServiceAckAtomicWriteFile")
 		}
 		return nil
 	}

@@ -103,7 +103,7 @@ func S7AddressParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Address"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7Address")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -133,7 +133,7 @@ func S7AddressParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("S7Address"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7Address")
 	}
 
 	// Finish initializing
@@ -149,7 +149,7 @@ func (m *S7Address) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Addr
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7Address"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for S7Address")
 	}
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
@@ -166,7 +166,7 @@ func (m *S7Address) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Addr
 	}
 
 	if popErr := writeBuffer.PopContext("S7Address"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for S7Address")
 	}
 	return nil
 }

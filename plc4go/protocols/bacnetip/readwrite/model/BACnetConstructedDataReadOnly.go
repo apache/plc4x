@@ -142,14 +142,14 @@ func BACnetConstructedDataReadOnlyParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReadOnly"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataReadOnly")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (readOnly)
 	if pullErr := readBuffer.PullContext("readOnly"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for readOnly")
 	}
 	_readOnly, _readOnlyErr := BACnetApplicationTagParse(readBuffer)
 	if _readOnlyErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataReadOnlyParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	readOnly := CastBACnetApplicationTagBoolean(_readOnly)
 	if closeErr := readBuffer.CloseContext("readOnly"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for readOnly")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReadOnly"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReadOnly")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataReadOnly) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataReadOnly"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataReadOnly")
 		}
 
 		// Simple Field (readOnly)
 		if pushErr := writeBuffer.PushContext("readOnly"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for readOnly")
 		}
 		_readOnlyErr := m.ReadOnly.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("readOnly"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for readOnly")
 		}
 		if _readOnlyErr != nil {
 			return errors.Wrap(_readOnlyErr, "Error serializing 'readOnly' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataReadOnly"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataReadOnly")
 		}
 		return nil
 	}

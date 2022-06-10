@@ -142,14 +142,14 @@ func BACnetConstructedDataBelongsToParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBelongsTo"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBelongsTo")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (belongsTo)
 	if pullErr := readBuffer.PullContext("belongsTo"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for belongsTo")
 	}
 	_belongsTo, _belongsToErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _belongsToErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBelongsToParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	belongsTo := CastBACnetDeviceObjectReference(_belongsTo)
 	if closeErr := readBuffer.CloseContext("belongsTo"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for belongsTo")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBelongsTo"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBelongsTo")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBelongsTo) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBelongsTo"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBelongsTo")
 		}
 
 		// Simple Field (belongsTo)
 		if pushErr := writeBuffer.PushContext("belongsTo"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for belongsTo")
 		}
 		_belongsToErr := m.BelongsTo.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("belongsTo"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for belongsTo")
 		}
 		if _belongsToErr != nil {
 			return errors.Wrap(_belongsToErr, "Error serializing 'belongsTo' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBelongsTo"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBelongsTo")
 		}
 		return nil
 	}

@@ -128,14 +128,14 @@ func BACnetPropertyStateActionUnknownParse(readBuffer utils.ReadBuffer, peekedTa
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStateActionUnknown"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStateActionUnknown")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (unknownValue)
 	if pullErr := readBuffer.PullContext("unknownValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for unknownValue")
 	}
 	_unknownValue, _unknownValueErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNKNOWN))
 	if _unknownValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStateActionUnknownParse(readBuffer utils.ReadBuffer, peekedTa
 	}
 	unknownValue := CastBACnetContextTagUnknown(_unknownValue)
 	if closeErr := readBuffer.CloseContext("unknownValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for unknownValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStateActionUnknown"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStateActionUnknown")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStateActionUnknown) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStateActionUnknown"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStateActionUnknown")
 		}
 
 		// Simple Field (unknownValue)
 		if pushErr := writeBuffer.PushContext("unknownValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for unknownValue")
 		}
 		_unknownValueErr := m.UnknownValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("unknownValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for unknownValue")
 		}
 		if _unknownValueErr != nil {
 			return errors.Wrap(_unknownValueErr, "Error serializing 'unknownValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStateActionUnknown"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStateActionUnknown")
 		}
 		return nil
 	}

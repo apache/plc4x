@@ -142,14 +142,14 @@ func BACnetConstructedDataTimeOfActiveTimeResetParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeOfActiveTimeReset"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimeOfActiveTimeReset")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timeOfActiveTimeReset)
 	if pullErr := readBuffer.PullContext("timeOfActiveTimeReset"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeOfActiveTimeReset")
 	}
 	_timeOfActiveTimeReset, _timeOfActiveTimeResetErr := BACnetDateTimeParse(readBuffer)
 	if _timeOfActiveTimeResetErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataTimeOfActiveTimeResetParse(readBuffer utils.ReadBuffer
 	}
 	timeOfActiveTimeReset := CastBACnetDateTime(_timeOfActiveTimeReset)
 	if closeErr := readBuffer.CloseContext("timeOfActiveTimeReset"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeOfActiveTimeReset")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeOfActiveTimeReset"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeOfActiveTimeReset")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataTimeOfActiveTimeReset) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataTimeOfActiveTimeReset"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeOfActiveTimeReset")
 		}
 
 		// Simple Field (timeOfActiveTimeReset)
 		if pushErr := writeBuffer.PushContext("timeOfActiveTimeReset"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeOfActiveTimeReset")
 		}
 		_timeOfActiveTimeResetErr := m.TimeOfActiveTimeReset.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeOfActiveTimeReset"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeOfActiveTimeReset")
 		}
 		if _timeOfActiveTimeResetErr != nil {
 			return errors.Wrap(_timeOfActiveTimeResetErr, "Error serializing 'timeOfActiveTimeReset' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimeOfActiveTimeReset"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataTimeOfActiveTimeReset")
 		}
 		return nil
 	}

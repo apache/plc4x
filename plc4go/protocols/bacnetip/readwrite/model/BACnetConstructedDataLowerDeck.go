@@ -142,14 +142,14 @@ func BACnetConstructedDataLowerDeckParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLowerDeck"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLowerDeck")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lowerDeck)
 	if pullErr := readBuffer.PullContext("lowerDeck"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lowerDeck")
 	}
 	_lowerDeck, _lowerDeckErr := BACnetApplicationTagParse(readBuffer)
 	if _lowerDeckErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLowerDeckParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	lowerDeck := CastBACnetApplicationTagObjectIdentifier(_lowerDeck)
 	if closeErr := readBuffer.CloseContext("lowerDeck"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lowerDeck")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLowerDeck"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLowerDeck")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLowerDeck) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLowerDeck"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLowerDeck")
 		}
 
 		// Simple Field (lowerDeck)
 		if pushErr := writeBuffer.PushContext("lowerDeck"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lowerDeck")
 		}
 		_lowerDeckErr := m.LowerDeck.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lowerDeck"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lowerDeck")
 		}
 		if _lowerDeckErr != nil {
 			return errors.Wrap(_lowerDeckErr, "Error serializing 'lowerDeck' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLowerDeck"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLowerDeck")
 		}
 		return nil
 	}

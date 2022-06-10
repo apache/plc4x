@@ -172,14 +172,14 @@ func BACnetEventParameterUnsignedRangeParse(readBuffer utils.ReadBuffer) (*BACne
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterUnsignedRange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterUnsignedRange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(11)))
 	if _openingTagErr != nil {
@@ -187,12 +187,12 @@ func BACnetEventParameterUnsignedRangeParse(readBuffer utils.ReadBuffer) (*BACne
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (timeDelay)
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
 	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
@@ -200,12 +200,12 @@ func BACnetEventParameterUnsignedRangeParse(readBuffer utils.ReadBuffer) (*BACne
 	}
 	timeDelay := CastBACnetContextTagUnsignedInteger(_timeDelay)
 	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeDelay")
 	}
 
 	// Simple Field (lowLimit)
 	if pullErr := readBuffer.PullContext("lowLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lowLimit")
 	}
 	_lowLimit, _lowLimitErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _lowLimitErr != nil {
@@ -213,12 +213,12 @@ func BACnetEventParameterUnsignedRangeParse(readBuffer utils.ReadBuffer) (*BACne
 	}
 	lowLimit := CastBACnetContextTagUnsignedInteger(_lowLimit)
 	if closeErr := readBuffer.CloseContext("lowLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lowLimit")
 	}
 
 	// Simple Field (highLimit)
 	if pullErr := readBuffer.PullContext("highLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for highLimit")
 	}
 	_highLimit, _highLimitErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _highLimitErr != nil {
@@ -226,12 +226,12 @@ func BACnetEventParameterUnsignedRangeParse(readBuffer utils.ReadBuffer) (*BACne
 	}
 	highLimit := CastBACnetContextTagUnsignedInteger(_highLimit)
 	if closeErr := readBuffer.CloseContext("highLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for highLimit")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(11)))
 	if _closingTagErr != nil {
@@ -239,11 +239,11 @@ func BACnetEventParameterUnsignedRangeParse(readBuffer utils.ReadBuffer) (*BACne
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterUnsignedRange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterUnsignedRange")
 	}
 
 	// Create a partially initialized instance
@@ -264,16 +264,16 @@ func (m *BACnetEventParameterUnsignedRange) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetEventParameterUnsignedRange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterUnsignedRange")
 		}
 
 		// Simple Field (openingTag)
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
 		_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
 		if _openingTagErr != nil {
 			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -281,11 +281,11 @@ func (m *BACnetEventParameterUnsignedRange) Serialize(writeBuffer utils.WriteBuf
 
 		// Simple Field (timeDelay)
 		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeDelay")
 		}
 		_timeDelayErr := m.TimeDelay.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeDelay")
 		}
 		if _timeDelayErr != nil {
 			return errors.Wrap(_timeDelayErr, "Error serializing 'timeDelay' field")
@@ -293,11 +293,11 @@ func (m *BACnetEventParameterUnsignedRange) Serialize(writeBuffer utils.WriteBuf
 
 		// Simple Field (lowLimit)
 		if pushErr := writeBuffer.PushContext("lowLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lowLimit")
 		}
 		_lowLimitErr := m.LowLimit.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lowLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lowLimit")
 		}
 		if _lowLimitErr != nil {
 			return errors.Wrap(_lowLimitErr, "Error serializing 'lowLimit' field")
@@ -305,11 +305,11 @@ func (m *BACnetEventParameterUnsignedRange) Serialize(writeBuffer utils.WriteBuf
 
 		// Simple Field (highLimit)
 		if pushErr := writeBuffer.PushContext("highLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for highLimit")
 		}
 		_highLimitErr := m.HighLimit.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("highLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for highLimit")
 		}
 		if _highLimitErr != nil {
 			return errors.Wrap(_highLimitErr, "Error serializing 'highLimit' field")
@@ -317,18 +317,18 @@ func (m *BACnetEventParameterUnsignedRange) Serialize(writeBuffer utils.WriteBuf
 
 		// Simple Field (closingTag)
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
 		_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
 		if _closingTagErr != nil {
 			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterUnsignedRange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetEventParameterUnsignedRange")
 		}
 		return nil
 	}

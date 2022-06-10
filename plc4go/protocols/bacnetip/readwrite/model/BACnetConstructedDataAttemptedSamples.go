@@ -142,14 +142,14 @@ func BACnetConstructedDataAttemptedSamplesParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAttemptedSamples"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAttemptedSamples")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (attemptedSamples)
 	if pullErr := readBuffer.PullContext("attemptedSamples"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for attemptedSamples")
 	}
 	_attemptedSamples, _attemptedSamplesErr := BACnetApplicationTagParse(readBuffer)
 	if _attemptedSamplesErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAttemptedSamplesParse(readBuffer utils.ReadBuffer, tag
 	}
 	attemptedSamples := CastBACnetApplicationTagUnsignedInteger(_attemptedSamples)
 	if closeErr := readBuffer.CloseContext("attemptedSamples"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for attemptedSamples")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAttemptedSamples"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAttemptedSamples")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAttemptedSamples) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAttemptedSamples"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAttemptedSamples")
 		}
 
 		// Simple Field (attemptedSamples)
 		if pushErr := writeBuffer.PushContext("attemptedSamples"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for attemptedSamples")
 		}
 		_attemptedSamplesErr := m.AttemptedSamples.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("attemptedSamples"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for attemptedSamples")
 		}
 		if _attemptedSamplesErr != nil {
 			return errors.Wrap(_attemptedSamplesErr, "Error serializing 'attemptedSamples' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAttemptedSamples"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAttemptedSamples")
 		}
 		return nil
 	}

@@ -128,14 +128,14 @@ func BACnetPropertyStatesNetworkPortCommandParse(readBuffer utils.ReadBuffer, pe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNetworkPortCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesNetworkPortCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (networkPortCommand)
 	if pullErr := readBuffer.PullContext("networkPortCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for networkPortCommand")
 	}
 	_networkPortCommand, _networkPortCommandErr := BACnetNetworkPortCommandTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _networkPortCommandErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesNetworkPortCommandParse(readBuffer utils.ReadBuffer, pe
 	}
 	networkPortCommand := CastBACnetNetworkPortCommandTagged(_networkPortCommand)
 	if closeErr := readBuffer.CloseContext("networkPortCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for networkPortCommand")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesNetworkPortCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesNetworkPortCommand")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesNetworkPortCommand) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesNetworkPortCommand"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesNetworkPortCommand")
 		}
 
 		// Simple Field (networkPortCommand)
 		if pushErr := writeBuffer.PushContext("networkPortCommand"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for networkPortCommand")
 		}
 		_networkPortCommandErr := m.NetworkPortCommand.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("networkPortCommand"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for networkPortCommand")
 		}
 		if _networkPortCommandErr != nil {
 			return errors.Wrap(_networkPortCommandErr, "Error serializing 'networkPortCommand' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesNetworkPortCommand"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesNetworkPortCommand")
 		}
 		return nil
 	}

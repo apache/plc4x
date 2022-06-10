@@ -130,7 +130,7 @@ func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attrib
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -143,7 +143,7 @@ func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attrib
 	unitType := _unitType
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandType")
 	}
 
 	// Create a partially initialized instance
@@ -160,7 +160,7 @@ func (m *IdentifyReplyCommandType) Serialize(writeBuffer utils.WriteBuffer) erro
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandType")
 		}
 
 		// Simple Field (unitType)
@@ -171,7 +171,7 @@ func (m *IdentifyReplyCommandType) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for IdentifyReplyCommandType")
 		}
 		return nil
 	}

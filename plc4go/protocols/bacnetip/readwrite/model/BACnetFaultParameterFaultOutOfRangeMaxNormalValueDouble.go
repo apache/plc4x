@@ -133,14 +133,14 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleParse(readBuffer uti
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (doubleValue)
 	if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for doubleValue")
 	}
 	_doubleValue, _doubleValueErr := BACnetApplicationTagParse(readBuffer)
 	if _doubleValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleParse(readBuffer uti
 	}
 	doubleValue := CastBACnetApplicationTagDouble(_doubleValue)
 	if closeErr := readBuffer.CloseContext("doubleValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for doubleValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) Serialize(writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble")
 		}
 
 		// Simple Field (doubleValue)
 		if pushErr := writeBuffer.PushContext("doubleValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for doubleValue")
 		}
 		_doubleValueErr := m.DoubleValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("doubleValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for doubleValue")
 		}
 		if _doubleValueErr != nil {
 			return errors.Wrap(_doubleValueErr, "Error serializing 'doubleValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble")
 		}
 		return nil
 	}

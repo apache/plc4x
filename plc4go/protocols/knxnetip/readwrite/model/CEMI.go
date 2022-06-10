@@ -106,7 +106,7 @@ func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMI"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CEMI")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -180,7 +180,7 @@ func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("CEMI"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CEMI")
 	}
 
 	// Finish initializing
@@ -196,7 +196,7 @@ func (m *CEMI) SerializeParent(writeBuffer utils.WriteBuffer, child ICEMI, seria
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CEMI"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CEMI")
 	}
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
@@ -213,7 +213,7 @@ func (m *CEMI) SerializeParent(writeBuffer utils.WriteBuffer, child ICEMI, seria
 	}
 
 	if popErr := writeBuffer.PopContext("CEMI"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CEMI")
 	}
 	return nil
 }

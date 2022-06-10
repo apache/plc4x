@@ -128,14 +128,14 @@ func BACnetPropertyStatesLightningTransitionParse(readBuffer utils.ReadBuffer, p
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLightningTransition"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLightningTransition")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lightningTransition)
 	if pullErr := readBuffer.PullContext("lightningTransition"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lightningTransition")
 	}
 	_lightningTransition, _lightningTransitionErr := BACnetLightingTransitionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningTransitionErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesLightningTransitionParse(readBuffer utils.ReadBuffer, p
 	}
 	lightningTransition := CastBACnetLightingTransitionTagged(_lightningTransition)
 	if closeErr := readBuffer.CloseContext("lightningTransition"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lightningTransition")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLightningTransition"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLightningTransition")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesLightningTransition) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesLightningTransition"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLightningTransition")
 		}
 
 		// Simple Field (lightningTransition)
 		if pushErr := writeBuffer.PushContext("lightningTransition"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lightningTransition")
 		}
 		_lightningTransitionErr := m.LightningTransition.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lightningTransition"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lightningTransition")
 		}
 		if _lightningTransitionErr != nil {
 			return errors.Wrap(_lightningTransitionErr, "Error serializing 'lightningTransition' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLightningTransition"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesLightningTransition")
 		}
 		return nil
 	}

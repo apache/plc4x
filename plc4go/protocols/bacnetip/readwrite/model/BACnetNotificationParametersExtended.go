@@ -178,14 +178,14 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersExtended"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersExtended")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
@@ -193,12 +193,12 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	}
 	innerOpeningTag := CastBACnetOpeningTag(_innerOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for innerOpeningTag")
 	}
 
 	// Simple Field (vendorId)
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
 	}
 	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _vendorIdErr != nil {
@@ -206,12 +206,12 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	}
 	vendorId := CastBACnetVendorIdTagged(_vendorId)
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for vendorId")
 	}
 
 	// Simple Field (extendedEventType)
 	if pullErr := readBuffer.PullContext("extendedEventType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for extendedEventType")
 	}
 	_extendedEventType, _extendedEventTypeErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _extendedEventTypeErr != nil {
@@ -219,12 +219,12 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	}
 	extendedEventType := CastBACnetContextTagUnsignedInteger(_extendedEventType)
 	if closeErr := readBuffer.CloseContext("extendedEventType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for extendedEventType")
 	}
 
 	// Simple Field (parameters)
 	if pullErr := readBuffer.PullContext("parameters"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for parameters")
 	}
 	_parameters, _parametersErr := BACnetNotificationParametersExtendedParametersParse(readBuffer, uint8(uint8(2)))
 	if _parametersErr != nil {
@@ -232,12 +232,12 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	}
 	parameters := CastBACnetNotificationParametersExtendedParameters(_parameters)
 	if closeErr := readBuffer.CloseContext("parameters"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for parameters")
 	}
 
 	// Simple Field (innerClosingTag)
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
@@ -245,11 +245,11 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	}
 	innerClosingTag := CastBACnetClosingTag(_innerClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for innerClosingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersExtended"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersExtended")
 	}
 
 	// Create a partially initialized instance
@@ -270,16 +270,16 @@ func (m *BACnetNotificationParametersExtended) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersExtended"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersExtended")
 		}
 
 		// Simple Field (innerOpeningTag)
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
 		_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
 		if _innerOpeningTagErr != nil {
 			return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
@@ -287,11 +287,11 @@ func (m *BACnetNotificationParametersExtended) Serialize(writeBuffer utils.Write
 
 		// Simple Field (vendorId)
 		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
 		_vendorIdErr := m.VendorId.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
 		if _vendorIdErr != nil {
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
@@ -299,11 +299,11 @@ func (m *BACnetNotificationParametersExtended) Serialize(writeBuffer utils.Write
 
 		// Simple Field (extendedEventType)
 		if pushErr := writeBuffer.PushContext("extendedEventType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for extendedEventType")
 		}
 		_extendedEventTypeErr := m.ExtendedEventType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("extendedEventType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for extendedEventType")
 		}
 		if _extendedEventTypeErr != nil {
 			return errors.Wrap(_extendedEventTypeErr, "Error serializing 'extendedEventType' field")
@@ -311,11 +311,11 @@ func (m *BACnetNotificationParametersExtended) Serialize(writeBuffer utils.Write
 
 		// Simple Field (parameters)
 		if pushErr := writeBuffer.PushContext("parameters"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for parameters")
 		}
 		_parametersErr := m.Parameters.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("parameters"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for parameters")
 		}
 		if _parametersErr != nil {
 			return errors.Wrap(_parametersErr, "Error serializing 'parameters' field")
@@ -323,18 +323,18 @@ func (m *BACnetNotificationParametersExtended) Serialize(writeBuffer utils.Write
 
 		// Simple Field (innerClosingTag)
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
 		_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
 		if _innerClosingTagErr != nil {
 			return errors.Wrap(_innerClosingTagErr, "Error serializing 'innerClosingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersExtended"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersExtended")
 		}
 		return nil
 	}

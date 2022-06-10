@@ -130,7 +130,7 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpMessage"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for KnxNetIpMessage")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -213,7 +213,7 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error)
 	}
 
 	if closeErr := readBuffer.CloseContext("KnxNetIpMessage"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for KnxNetIpMessage")
 	}
 
 	// Finish initializing
@@ -229,7 +229,7 @@ func (m *KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("KnxNetIpMessage"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for KnxNetIpMessage")
 	}
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -266,7 +266,7 @@ func (m *KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	}
 
 	if popErr := writeBuffer.PopContext("KnxNetIpMessage"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for KnxNetIpMessage")
 	}
 	return nil
 }

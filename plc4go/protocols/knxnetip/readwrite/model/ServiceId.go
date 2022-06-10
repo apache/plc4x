@@ -103,7 +103,7 @@ func ServiceIdParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServiceId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ServiceId")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -145,7 +145,7 @@ func ServiceIdParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("ServiceId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ServiceId")
 	}
 
 	// Finish initializing
@@ -161,7 +161,7 @@ func (m *ServiceId) SerializeParent(writeBuffer utils.WriteBuffer, child IServic
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ServiceId"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ServiceId")
 	}
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
@@ -178,7 +178,7 @@ func (m *ServiceId) SerializeParent(writeBuffer utils.WriteBuffer, child IServic
 	}
 
 	if popErr := writeBuffer.PopContext("ServiceId"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ServiceId")
 	}
 	return nil
 }

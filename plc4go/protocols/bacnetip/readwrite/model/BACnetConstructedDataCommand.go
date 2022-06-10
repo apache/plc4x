@@ -142,14 +142,14 @@ func BACnetConstructedDataCommandParse(readBuffer utils.ReadBuffer, tagNumber ui
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (command)
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
 	_command, _commandErr := BACnetNetworkPortCommandTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _commandErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataCommandParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	command := CastBACnetNetworkPortCommandTagged(_command)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for command")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCommand")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataCommand) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCommand"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCommand")
 		}
 
 		// Simple Field (command)
 		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for command")
 		}
 		_commandErr := m.Command.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("command"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for command")
 		}
 		if _commandErr != nil {
 			return errors.Wrap(_commandErr, "Error serializing 'command' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCommand"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCommand")
 		}
 		return nil
 	}

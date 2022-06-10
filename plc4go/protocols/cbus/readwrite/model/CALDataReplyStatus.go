@@ -152,14 +152,14 @@ func CALDataReplyStatusParse(readBuffer utils.ReadBuffer, commandTypeContainer C
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataReplyStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CALDataReplyStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (application)
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
 	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
@@ -167,7 +167,7 @@ func CALDataReplyStatusParse(readBuffer utils.ReadBuffer, commandTypeContainer C
 	}
 	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for application")
 	}
 
 	// Simple Field (blockStart)
@@ -184,7 +184,7 @@ func CALDataReplyStatusParse(readBuffer utils.ReadBuffer, commandTypeContainer C
 	}
 
 	if closeErr := readBuffer.CloseContext("CALDataReplyStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CALDataReplyStatus")
 	}
 
 	// Create a partially initialized instance
@@ -203,16 +203,16 @@ func (m *CALDataReplyStatus) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CALDataReplyStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CALDataReplyStatus")
 		}
 
 		// Simple Field (application)
 		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for application")
 		}
 		_applicationErr := m.Application.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("application"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for application")
 		}
 		if _applicationErr != nil {
 			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
@@ -235,7 +235,7 @@ func (m *CALDataReplyStatus) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataReplyStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CALDataReplyStatus")
 		}
 		return nil
 	}

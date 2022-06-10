@@ -134,7 +134,7 @@ func SysexCommandAnalogMappingQueryResponseParse(readBuffer utils.ReadBuffer, re
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandAnalogMappingQueryResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandAnalogMappingQueryResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -147,7 +147,7 @@ func SysexCommandAnalogMappingQueryResponseParse(readBuffer utils.ReadBuffer, re
 	pin := _pin
 
 	if closeErr := readBuffer.CloseContext("SysexCommandAnalogMappingQueryResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for SysexCommandAnalogMappingQueryResponse")
 	}
 
 	// Create a partially initialized instance
@@ -164,7 +164,7 @@ func (m *SysexCommandAnalogMappingQueryResponse) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SysexCommandAnalogMappingQueryResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for SysexCommandAnalogMappingQueryResponse")
 		}
 
 		// Simple Field (pin)
@@ -175,7 +175,7 @@ func (m *SysexCommandAnalogMappingQueryResponse) Serialize(writeBuffer utils.Wri
 		}
 
 		if popErr := writeBuffer.PopContext("SysexCommandAnalogMappingQueryResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for SysexCommandAnalogMappingQueryResponse")
 		}
 		return nil
 	}

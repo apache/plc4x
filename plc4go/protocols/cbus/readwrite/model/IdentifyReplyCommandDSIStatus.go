@@ -229,14 +229,14 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandDSIStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandDSIStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (channelStatus1)
 	if pullErr := readBuffer.PullContext("channelStatus1"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus1")
 	}
 	_channelStatus1, _channelStatus1Err := ChannelStatusParse(readBuffer)
 	if _channelStatus1Err != nil {
@@ -244,12 +244,12 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	}
 	channelStatus1 := _channelStatus1
 	if closeErr := readBuffer.CloseContext("channelStatus1"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channelStatus1")
 	}
 
 	// Simple Field (channelStatus2)
 	if pullErr := readBuffer.PullContext("channelStatus2"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus2")
 	}
 	_channelStatus2, _channelStatus2Err := ChannelStatusParse(readBuffer)
 	if _channelStatus2Err != nil {
@@ -257,12 +257,12 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	}
 	channelStatus2 := _channelStatus2
 	if closeErr := readBuffer.CloseContext("channelStatus2"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channelStatus2")
 	}
 
 	// Simple Field (channelStatus3)
 	if pullErr := readBuffer.PullContext("channelStatus3"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus3")
 	}
 	_channelStatus3, _channelStatus3Err := ChannelStatusParse(readBuffer)
 	if _channelStatus3Err != nil {
@@ -270,12 +270,12 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	}
 	channelStatus3 := _channelStatus3
 	if closeErr := readBuffer.CloseContext("channelStatus3"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channelStatus3")
 	}
 
 	// Simple Field (channelStatus4)
 	if pullErr := readBuffer.PullContext("channelStatus4"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus4")
 	}
 	_channelStatus4, _channelStatus4Err := ChannelStatusParse(readBuffer)
 	if _channelStatus4Err != nil {
@@ -283,12 +283,12 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	}
 	channelStatus4 := _channelStatus4
 	if closeErr := readBuffer.CloseContext("channelStatus4"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channelStatus4")
 	}
 
 	// Simple Field (channelStatus5)
 	if pullErr := readBuffer.PullContext("channelStatus5"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus5")
 	}
 	_channelStatus5, _channelStatus5Err := ChannelStatusParse(readBuffer)
 	if _channelStatus5Err != nil {
@@ -296,12 +296,12 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	}
 	channelStatus5 := _channelStatus5
 	if closeErr := readBuffer.CloseContext("channelStatus5"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channelStatus5")
 	}
 
 	// Simple Field (channelStatus6)
 	if pullErr := readBuffer.PullContext("channelStatus6"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus6")
 	}
 	_channelStatus6, _channelStatus6Err := ChannelStatusParse(readBuffer)
 	if _channelStatus6Err != nil {
@@ -309,12 +309,12 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	}
 	channelStatus6 := _channelStatus6
 	if closeErr := readBuffer.CloseContext("channelStatus6"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channelStatus6")
 	}
 
 	// Simple Field (channelStatus7)
 	if pullErr := readBuffer.PullContext("channelStatus7"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus7")
 	}
 	_channelStatus7, _channelStatus7Err := ChannelStatusParse(readBuffer)
 	if _channelStatus7Err != nil {
@@ -322,12 +322,12 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	}
 	channelStatus7 := _channelStatus7
 	if closeErr := readBuffer.CloseContext("channelStatus7"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channelStatus7")
 	}
 
 	// Simple Field (channelStatus8)
 	if pullErr := readBuffer.PullContext("channelStatus8"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus8")
 	}
 	_channelStatus8, _channelStatus8Err := ChannelStatusParse(readBuffer)
 	if _channelStatus8Err != nil {
@@ -335,12 +335,12 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	}
 	channelStatus8 := _channelStatus8
 	if closeErr := readBuffer.CloseContext("channelStatus8"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channelStatus8")
 	}
 
 	// Simple Field (unitStatus)
 	if pullErr := readBuffer.PullContext("unitStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for unitStatus")
 	}
 	_unitStatus, _unitStatusErr := UnitStatusParse(readBuffer)
 	if _unitStatusErr != nil {
@@ -348,7 +348,7 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	}
 	unitStatus := _unitStatus
 	if closeErr := readBuffer.CloseContext("unitStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for unitStatus")
 	}
 
 	// Simple Field (dimmingUCRevisionNumber)
@@ -359,7 +359,7 @@ func IdentifyReplyCommandDSIStatusParse(readBuffer utils.ReadBuffer, attribute A
 	dimmingUCRevisionNumber := _dimmingUCRevisionNumber
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandDSIStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandDSIStatus")
 	}
 
 	// Create a partially initialized instance
@@ -385,16 +385,16 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandDSIStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandDSIStatus")
 		}
 
 		// Simple Field (channelStatus1)
 		if pushErr := writeBuffer.PushContext("channelStatus1"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for channelStatus1")
 		}
 		_channelStatus1Err := m.ChannelStatus1.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("channelStatus1"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for channelStatus1")
 		}
 		if _channelStatus1Err != nil {
 			return errors.Wrap(_channelStatus1Err, "Error serializing 'channelStatus1' field")
@@ -402,11 +402,11 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 
 		// Simple Field (channelStatus2)
 		if pushErr := writeBuffer.PushContext("channelStatus2"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for channelStatus2")
 		}
 		_channelStatus2Err := m.ChannelStatus2.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("channelStatus2"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for channelStatus2")
 		}
 		if _channelStatus2Err != nil {
 			return errors.Wrap(_channelStatus2Err, "Error serializing 'channelStatus2' field")
@@ -414,11 +414,11 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 
 		// Simple Field (channelStatus3)
 		if pushErr := writeBuffer.PushContext("channelStatus3"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for channelStatus3")
 		}
 		_channelStatus3Err := m.ChannelStatus3.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("channelStatus3"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for channelStatus3")
 		}
 		if _channelStatus3Err != nil {
 			return errors.Wrap(_channelStatus3Err, "Error serializing 'channelStatus3' field")
@@ -426,11 +426,11 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 
 		// Simple Field (channelStatus4)
 		if pushErr := writeBuffer.PushContext("channelStatus4"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for channelStatus4")
 		}
 		_channelStatus4Err := m.ChannelStatus4.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("channelStatus4"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for channelStatus4")
 		}
 		if _channelStatus4Err != nil {
 			return errors.Wrap(_channelStatus4Err, "Error serializing 'channelStatus4' field")
@@ -438,11 +438,11 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 
 		// Simple Field (channelStatus5)
 		if pushErr := writeBuffer.PushContext("channelStatus5"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for channelStatus5")
 		}
 		_channelStatus5Err := m.ChannelStatus5.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("channelStatus5"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for channelStatus5")
 		}
 		if _channelStatus5Err != nil {
 			return errors.Wrap(_channelStatus5Err, "Error serializing 'channelStatus5' field")
@@ -450,11 +450,11 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 
 		// Simple Field (channelStatus6)
 		if pushErr := writeBuffer.PushContext("channelStatus6"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for channelStatus6")
 		}
 		_channelStatus6Err := m.ChannelStatus6.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("channelStatus6"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for channelStatus6")
 		}
 		if _channelStatus6Err != nil {
 			return errors.Wrap(_channelStatus6Err, "Error serializing 'channelStatus6' field")
@@ -462,11 +462,11 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 
 		// Simple Field (channelStatus7)
 		if pushErr := writeBuffer.PushContext("channelStatus7"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for channelStatus7")
 		}
 		_channelStatus7Err := m.ChannelStatus7.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("channelStatus7"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for channelStatus7")
 		}
 		if _channelStatus7Err != nil {
 			return errors.Wrap(_channelStatus7Err, "Error serializing 'channelStatus7' field")
@@ -474,11 +474,11 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 
 		// Simple Field (channelStatus8)
 		if pushErr := writeBuffer.PushContext("channelStatus8"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for channelStatus8")
 		}
 		_channelStatus8Err := m.ChannelStatus8.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("channelStatus8"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for channelStatus8")
 		}
 		if _channelStatus8Err != nil {
 			return errors.Wrap(_channelStatus8Err, "Error serializing 'channelStatus8' field")
@@ -486,11 +486,11 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 
 		// Simple Field (unitStatus)
 		if pushErr := writeBuffer.PushContext("unitStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for unitStatus")
 		}
 		_unitStatusErr := m.UnitStatus.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("unitStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for unitStatus")
 		}
 		if _unitStatusErr != nil {
 			return errors.Wrap(_unitStatusErr, "Error serializing 'unitStatus' field")
@@ -504,7 +504,7 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandDSIStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for IdentifyReplyCommandDSIStatus")
 		}
 		return nil
 	}

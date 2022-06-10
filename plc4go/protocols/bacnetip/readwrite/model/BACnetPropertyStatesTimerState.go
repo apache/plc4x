@@ -128,14 +128,14 @@ func BACnetPropertyStatesTimerStateParse(readBuffer utils.ReadBuffer, peekedTagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesTimerState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesTimerState")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timerState)
 	if pullErr := readBuffer.PullContext("timerState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timerState")
 	}
 	_timerState, _timerStateErr := BACnetTimerStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _timerStateErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesTimerStateParse(readBuffer utils.ReadBuffer, peekedTagN
 	}
 	timerState := CastBACnetTimerStateTagged(_timerState)
 	if closeErr := readBuffer.CloseContext("timerState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timerState")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesTimerState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesTimerState")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesTimerState) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesTimerState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesTimerState")
 		}
 
 		// Simple Field (timerState)
 		if pushErr := writeBuffer.PushContext("timerState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timerState")
 		}
 		_timerStateErr := m.TimerState.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timerState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timerState")
 		}
 		if _timerStateErr != nil {
 			return errors.Wrap(_timerStateErr, "Error serializing 'timerState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesTimerState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesTimerState")
 		}
 		return nil
 	}

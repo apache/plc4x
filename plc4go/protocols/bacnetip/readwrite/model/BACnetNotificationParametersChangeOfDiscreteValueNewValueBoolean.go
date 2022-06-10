@@ -133,14 +133,14 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanParse(readB
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (booleanValue)
 	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 	}
 	_booleanValue, _booleanValueErr := BACnetApplicationTagParse(readBuffer)
 	if _booleanValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanParse(readB
 	}
 	booleanValue := CastBACnetApplicationTagBoolean(_booleanValue)
 	if closeErr := readBuffer.CloseContext("booleanValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for booleanValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) Seria
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean")
 		}
 
 		// Simple Field (booleanValue)
 		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for booleanValue")
 		}
 		_booleanValueErr := m.BooleanValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for booleanValue")
 		}
 		if _booleanValueErr != nil {
 			return errors.Wrap(_booleanValueErr, "Error serializing 'booleanValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean")
 		}
 		return nil
 	}

@@ -134,14 +134,14 @@ func AdsWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, res
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsWriteResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AdsWriteResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for result")
 	}
 	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
@@ -149,11 +149,11 @@ func AdsWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, res
 	}
 	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for result")
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsWriteResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AdsWriteResponse")
 	}
 
 	// Create a partially initialized instance
@@ -170,23 +170,23 @@ func (m *AdsWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AdsWriteResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for AdsWriteResponse")
 		}
 
 		// Simple Field (result)
 		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for result")
 		}
 		_resultErr := m.Result.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("result"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for result")
 		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsWriteResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for AdsWriteResponse")
 		}
 		return nil
 	}

@@ -117,14 +117,14 @@ func BACnetVTSessionParse(readBuffer utils.ReadBuffer) (*BACnetVTSession, error)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetVTSession"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetVTSession")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (localVtSessionId)
 	if pullErr := readBuffer.PullContext("localVtSessionId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for localVtSessionId")
 	}
 	_localVtSessionId, _localVtSessionIdErr := BACnetApplicationTagParse(readBuffer)
 	if _localVtSessionIdErr != nil {
@@ -132,12 +132,12 @@ func BACnetVTSessionParse(readBuffer utils.ReadBuffer) (*BACnetVTSession, error)
 	}
 	localVtSessionId := CastBACnetApplicationTagUnsignedInteger(_localVtSessionId)
 	if closeErr := readBuffer.CloseContext("localVtSessionId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for localVtSessionId")
 	}
 
 	// Simple Field (removeVtSessionId)
 	if pullErr := readBuffer.PullContext("removeVtSessionId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for removeVtSessionId")
 	}
 	_removeVtSessionId, _removeVtSessionIdErr := BACnetApplicationTagParse(readBuffer)
 	if _removeVtSessionIdErr != nil {
@@ -145,12 +145,12 @@ func BACnetVTSessionParse(readBuffer utils.ReadBuffer) (*BACnetVTSession, error)
 	}
 	removeVtSessionId := CastBACnetApplicationTagUnsignedInteger(_removeVtSessionId)
 	if closeErr := readBuffer.CloseContext("removeVtSessionId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for removeVtSessionId")
 	}
 
 	// Simple Field (remoteVtAddress)
 	if pullErr := readBuffer.PullContext("remoteVtAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for remoteVtAddress")
 	}
 	_remoteVtAddress, _remoteVtAddressErr := BACnetAddressParse(readBuffer)
 	if _remoteVtAddressErr != nil {
@@ -158,11 +158,11 @@ func BACnetVTSessionParse(readBuffer utils.ReadBuffer) (*BACnetVTSession, error)
 	}
 	remoteVtAddress := CastBACnetAddress(_remoteVtAddress)
 	if closeErr := readBuffer.CloseContext("remoteVtAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for remoteVtAddress")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetVTSession"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetVTSession")
 	}
 
 	// Create the instance
@@ -173,16 +173,16 @@ func (m *BACnetVTSession) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetVTSession"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetVTSession")
 	}
 
 	// Simple Field (localVtSessionId)
 	if pushErr := writeBuffer.PushContext("localVtSessionId"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for localVtSessionId")
 	}
 	_localVtSessionIdErr := m.LocalVtSessionId.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("localVtSessionId"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for localVtSessionId")
 	}
 	if _localVtSessionIdErr != nil {
 		return errors.Wrap(_localVtSessionIdErr, "Error serializing 'localVtSessionId' field")
@@ -190,11 +190,11 @@ func (m *BACnetVTSession) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (removeVtSessionId)
 	if pushErr := writeBuffer.PushContext("removeVtSessionId"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for removeVtSessionId")
 	}
 	_removeVtSessionIdErr := m.RemoveVtSessionId.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("removeVtSessionId"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for removeVtSessionId")
 	}
 	if _removeVtSessionIdErr != nil {
 		return errors.Wrap(_removeVtSessionIdErr, "Error serializing 'removeVtSessionId' field")
@@ -202,18 +202,18 @@ func (m *BACnetVTSession) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (remoteVtAddress)
 	if pushErr := writeBuffer.PushContext("remoteVtAddress"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for remoteVtAddress")
 	}
 	_remoteVtAddressErr := m.RemoteVtAddress.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("remoteVtAddress"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for remoteVtAddress")
 	}
 	if _remoteVtAddressErr != nil {
 		return errors.Wrap(_remoteVtAddressErr, "Error serializing 'remoteVtAddress' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetVTSession"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetVTSession")
 	}
 	return nil
 }

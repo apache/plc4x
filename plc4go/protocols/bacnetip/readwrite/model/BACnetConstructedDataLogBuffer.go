@@ -180,7 +180,7 @@ func BACnetConstructedDataLogBufferParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLogBuffer"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLogBuffer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -195,7 +195,7 @@ func BACnetConstructedDataLogBufferParse(readBuffer utils.ReadBuffer, tagNumber 
 	if bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -207,14 +207,14 @@ func BACnetConstructedDataLogBufferParse(readBuffer utils.ReadBuffer, tagNumber 
 		default:
 			numberOfDataElements = CastBACnetApplicationTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for numberOfDataElements")
 			}
 		}
 	}
 
 	// Array field (floorText)
 	if pullErr := readBuffer.PullContext("floorText", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for floorText")
 	}
 	// Terminated array
 	floorText := make([]*BACnetLogRecord, 0)
@@ -229,11 +229,11 @@ func BACnetConstructedDataLogBufferParse(readBuffer utils.ReadBuffer, tagNumber 
 		}
 	}
 	if closeErr := readBuffer.CloseContext("floorText", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for floorText")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLogBuffer"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLogBuffer")
 	}
 
 	// Create a partially initialized instance
@@ -251,7 +251,7 @@ func (m *BACnetConstructedDataLogBuffer) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLogBuffer"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLogBuffer")
 		}
 		// Virtual field
 		if _zeroErr := writeBuffer.WriteVirtual("zero", m.GetZero()); _zeroErr != nil {
@@ -262,12 +262,12 @@ func (m *BACnetConstructedDataLogBuffer) Serialize(writeBuffer utils.WriteBuffer
 		var numberOfDataElements *BACnetApplicationTagUnsignedInteger = nil
 		if m.NumberOfDataElements != nil {
 			if pushErr := writeBuffer.PushContext("numberOfDataElements"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
 			}
 			numberOfDataElements = m.NumberOfDataElements
 			_numberOfDataElementsErr := numberOfDataElements.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for numberOfDataElements")
 			}
 			if _numberOfDataElementsErr != nil {
 				return errors.Wrap(_numberOfDataElementsErr, "Error serializing 'numberOfDataElements' field")
@@ -277,7 +277,7 @@ func (m *BACnetConstructedDataLogBuffer) Serialize(writeBuffer utils.WriteBuffer
 		// Array Field (floorText)
 		if m.FloorText != nil {
 			if pushErr := writeBuffer.PushContext("floorText", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for floorText")
 			}
 			for _, _element := range m.FloorText {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -286,12 +286,12 @@ func (m *BACnetConstructedDataLogBuffer) Serialize(writeBuffer utils.WriteBuffer
 				}
 			}
 			if popErr := writeBuffer.PopContext("floorText", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for floorText")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLogBuffer"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLogBuffer")
 		}
 		return nil
 	}

@@ -101,7 +101,7 @@ func IdentifyReplyCommandParse(readBuffer utils.ReadBuffer, attribute Attribute)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -159,7 +159,7 @@ func IdentifyReplyCommandParse(readBuffer utils.ReadBuffer, attribute Attribute)
 	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommand")
 	}
 
 	// Finish initializing
@@ -175,7 +175,7 @@ func (m *IdentifyReplyCommand) SerializeParent(writeBuffer utils.WriteBuffer, ch
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("IdentifyReplyCommand"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommand")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -184,7 +184,7 @@ func (m *IdentifyReplyCommand) SerializeParent(writeBuffer utils.WriteBuffer, ch
 	}
 
 	if popErr := writeBuffer.PopContext("IdentifyReplyCommand"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for IdentifyReplyCommand")
 	}
 	return nil
 }

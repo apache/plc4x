@@ -128,14 +128,14 @@ func BACnetScaleIntegerScaleParse(readBuffer utils.ReadBuffer) (*BACnetScaleInte
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetScaleIntegerScale"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetScaleIntegerScale")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (integerScale)
 	if pullErr := readBuffer.PullContext("integerScale"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for integerScale")
 	}
 	_integerScale, _integerScaleErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _integerScaleErr != nil {
@@ -143,11 +143,11 @@ func BACnetScaleIntegerScaleParse(readBuffer utils.ReadBuffer) (*BACnetScaleInte
 	}
 	integerScale := CastBACnetContextTagSignedInteger(_integerScale)
 	if closeErr := readBuffer.CloseContext("integerScale"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for integerScale")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetScaleIntegerScale"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetScaleIntegerScale")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetScaleIntegerScale) Serialize(writeBuffer utils.WriteBuffer) error
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetScaleIntegerScale"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetScaleIntegerScale")
 		}
 
 		// Simple Field (integerScale)
 		if pushErr := writeBuffer.PushContext("integerScale"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for integerScale")
 		}
 		_integerScaleErr := m.IntegerScale.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("integerScale"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for integerScale")
 		}
 		if _integerScaleErr != nil {
 			return errors.Wrap(_integerScaleErr, "Error serializing 'integerScale' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetScaleIntegerScale"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetScaleIntegerScale")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataZoneFromParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataZoneFrom"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataZoneFrom")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (zoneFrom)
 	if pullErr := readBuffer.PullContext("zoneFrom"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for zoneFrom")
 	}
 	_zoneFrom, _zoneFromErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _zoneFromErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataZoneFromParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	zoneFrom := CastBACnetDeviceObjectReference(_zoneFrom)
 	if closeErr := readBuffer.CloseContext("zoneFrom"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for zoneFrom")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataZoneFrom"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataZoneFrom")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataZoneFrom) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataZoneFrom"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataZoneFrom")
 		}
 
 		// Simple Field (zoneFrom)
 		if pushErr := writeBuffer.PushContext("zoneFrom"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for zoneFrom")
 		}
 		_zoneFromErr := m.ZoneFrom.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("zoneFrom"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for zoneFrom")
 		}
 		if _zoneFromErr != nil {
 			return errors.Wrap(_zoneFromErr, "Error serializing 'zoneFrom' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataZoneFrom"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataZoneFrom")
 		}
 		return nil
 	}

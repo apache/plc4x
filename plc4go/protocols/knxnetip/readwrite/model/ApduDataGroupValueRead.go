@@ -116,7 +116,7 @@ func ApduDataGroupValueReadParse(readBuffer utils.ReadBuffer, dataLength uint8) 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueRead"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataGroupValueRead")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -136,7 +136,7 @@ func ApduDataGroupValueReadParse(readBuffer utils.ReadBuffer, dataLength uint8) 
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataGroupValueRead"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ApduDataGroupValueRead")
 	}
 
 	// Create a partially initialized instance
@@ -152,7 +152,7 @@ func (m *ApduDataGroupValueRead) Serialize(writeBuffer utils.WriteBuffer) error 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataGroupValueRead"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ApduDataGroupValueRead")
 		}
 
 		// Reserved Field (reserved)
@@ -164,7 +164,7 @@ func (m *ApduDataGroupValueRead) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataGroupValueRead"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ApduDataGroupValueRead")
 		}
 		return nil
 	}

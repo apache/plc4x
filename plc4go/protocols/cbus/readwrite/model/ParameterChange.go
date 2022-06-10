@@ -122,7 +122,7 @@ func ParameterChangeParse(readBuffer utils.ReadBuffer) (*ParameterChange, error)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterChange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ParameterChange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -164,7 +164,7 @@ func ParameterChangeParse(readBuffer utils.ReadBuffer) (*ParameterChange, error)
 	}
 
 	if closeErr := readBuffer.CloseContext("ParameterChange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ParameterChange")
 	}
 
 	// Create the instance
@@ -175,7 +175,7 @@ func (m *ParameterChange) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ParameterChange"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ParameterChange")
 	}
 
 	// Const Field (specialChar1)
@@ -203,7 +203,7 @@ func (m *ParameterChange) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("ParameterChange"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ParameterChange")
 	}
 	return nil
 }

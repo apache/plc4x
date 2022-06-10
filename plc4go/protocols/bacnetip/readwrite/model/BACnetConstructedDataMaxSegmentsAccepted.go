@@ -142,14 +142,14 @@ func BACnetConstructedDataMaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaxSegmentsAccepted"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMaxSegmentsAccepted")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (maxSegmentsAccepted)
 	if pullErr := readBuffer.PullContext("maxSegmentsAccepted"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for maxSegmentsAccepted")
 	}
 	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := BACnetApplicationTagParse(readBuffer)
 	if _maxSegmentsAcceptedErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataMaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer, 
 	}
 	maxSegmentsAccepted := CastBACnetApplicationTagUnsignedInteger(_maxSegmentsAccepted)
 	if closeErr := readBuffer.CloseContext("maxSegmentsAccepted"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for maxSegmentsAccepted")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaxSegmentsAccepted"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaxSegmentsAccepted")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataMaxSegmentsAccepted) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMaxSegmentsAccepted"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaxSegmentsAccepted")
 		}
 
 		// Simple Field (maxSegmentsAccepted)
 		if pushErr := writeBuffer.PushContext("maxSegmentsAccepted"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for maxSegmentsAccepted")
 		}
 		_maxSegmentsAcceptedErr := m.MaxSegmentsAccepted.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("maxSegmentsAccepted"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for maxSegmentsAccepted")
 		}
 		if _maxSegmentsAcceptedErr != nil {
 			return errors.Wrap(_maxSegmentsAcceptedErr, "Error serializing 'maxSegmentsAccepted' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaxSegmentsAccepted"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMaxSegmentsAccepted")
 		}
 		return nil
 	}

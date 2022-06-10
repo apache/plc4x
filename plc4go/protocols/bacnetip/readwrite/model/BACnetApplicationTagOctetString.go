@@ -128,14 +128,14 @@ func BACnetApplicationTagOctetStringParse(readBuffer utils.ReadBuffer, header *B
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagOctetString"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetApplicationTagOctetString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
 	_payload, _payloadErr := BACnetTagPayloadOctetStringParse(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
@@ -143,11 +143,11 @@ func BACnetApplicationTagOctetStringParse(readBuffer utils.ReadBuffer, header *B
 	}
 	payload := CastBACnetTagPayloadOctetString(_payload)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for payload")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagOctetString"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetApplicationTagOctetString")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetApplicationTagOctetString) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetApplicationTagOctetString"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetApplicationTagOctetString")
 		}
 
 		// Simple Field (payload)
 		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for payload")
 		}
 		_payloadErr := m.Payload.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for payload")
 		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetApplicationTagOctetString"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetApplicationTagOctetString")
 		}
 		return nil
 	}

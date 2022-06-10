@@ -152,14 +152,14 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(readBuffer utils.ReadBu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCpuFunctionReadSzlRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (szlId)
 	if pullErr := readBuffer.PullContext("szlId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for szlId")
 	}
 	_szlId, _szlIdErr := SzlIdParse(readBuffer)
 	if _szlIdErr != nil {
@@ -167,7 +167,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(readBuffer utils.ReadBu
 	}
 	szlId := CastSzlId(_szlId)
 	if closeErr := readBuffer.CloseContext("szlId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for szlId")
 	}
 
 	// Simple Field (szlIndex)
@@ -178,7 +178,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(readBuffer utils.ReadBu
 	szlIndex := _szlIndex
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemCpuFunctionReadSzlRequest")
 	}
 
 	// Create a partially initialized instance
@@ -196,16 +196,16 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(writeBuffer u
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionReadSzlRequest")
 		}
 
 		// Simple Field (szlId)
 		if pushErr := writeBuffer.PushContext("szlId"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for szlId")
 		}
 		_szlIdErr := m.SzlId.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("szlId"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for szlId")
 		}
 		if _szlIdErr != nil {
 			return errors.Wrap(_szlIdErr, "Error serializing 'szlId' field")
@@ -219,7 +219,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(writeBuffer u
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7PayloadUserDataItemCpuFunctionReadSzlRequest")
 		}
 		return nil
 	}

@@ -128,14 +128,14 @@ func BACnetChannelValueObjectidentifierParse(readBuffer utils.ReadBuffer) (*BACn
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueObjectidentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueObjectidentifier")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectidentifierValue)
 	if pullErr := readBuffer.PullContext("objectidentifierValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectidentifierValue")
 	}
 	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParse(readBuffer)
 	if _objectidentifierValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetChannelValueObjectidentifierParse(readBuffer utils.ReadBuffer) (*BACn
 	}
 	objectidentifierValue := CastBACnetApplicationTagObjectIdentifier(_objectidentifierValue)
 	if closeErr := readBuffer.CloseContext("objectidentifierValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectidentifierValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueObjectidentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetChannelValueObjectidentifier")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetChannelValueObjectidentifier) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetChannelValueObjectidentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueObjectidentifier")
 		}
 
 		// Simple Field (objectidentifierValue)
 		if pushErr := writeBuffer.PushContext("objectidentifierValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for objectidentifierValue")
 		}
 		_objectidentifierValueErr := m.ObjectidentifierValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("objectidentifierValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for objectidentifierValue")
 		}
 		if _objectidentifierValueErr != nil {
 			return errors.Wrap(_objectidentifierValueErr, "Error serializing 'objectidentifierValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueObjectidentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetChannelValueObjectidentifier")
 		}
 		return nil
 	}

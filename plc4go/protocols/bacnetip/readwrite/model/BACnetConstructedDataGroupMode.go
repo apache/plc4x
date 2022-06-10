@@ -142,14 +142,14 @@ func BACnetConstructedDataGroupModeParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGroupMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataGroupMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (groupMode)
 	if pullErr := readBuffer.PullContext("groupMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for groupMode")
 	}
 	_groupMode, _groupModeErr := BACnetLiftGroupModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _groupModeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataGroupModeParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	groupMode := CastBACnetLiftGroupModeTagged(_groupMode)
 	if closeErr := readBuffer.CloseContext("groupMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for groupMode")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataGroupMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataGroupMode")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataGroupMode) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataGroupMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataGroupMode")
 		}
 
 		// Simple Field (groupMode)
 		if pushErr := writeBuffer.PushContext("groupMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for groupMode")
 		}
 		_groupModeErr := m.GroupMode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("groupMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for groupMode")
 		}
 		if _groupModeErr != nil {
 			return errors.Wrap(_groupModeErr, "Error serializing 'groupMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataGroupMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataGroupMode")
 		}
 		return nil
 	}

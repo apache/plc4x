@@ -97,7 +97,7 @@ func NetworkNumberParse(readBuffer utils.ReadBuffer) (*NetworkNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NetworkNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for NetworkNumber")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -110,7 +110,7 @@ func NetworkNumberParse(readBuffer utils.ReadBuffer) (*NetworkNumber, error) {
 	number := _number
 
 	if closeErr := readBuffer.CloseContext("NetworkNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for NetworkNumber")
 	}
 
 	// Create the instance
@@ -121,7 +121,7 @@ func (m *NetworkNumber) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NetworkNumber"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for NetworkNumber")
 	}
 
 	// Simple Field (number)
@@ -132,7 +132,7 @@ func (m *NetworkNumber) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("NetworkNumber"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for NetworkNumber")
 	}
 	return nil
 }

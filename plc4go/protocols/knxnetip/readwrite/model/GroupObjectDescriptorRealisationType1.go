@@ -171,7 +171,7 @@ func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (*G
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType1"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for GroupObjectDescriptorRealisationType1")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -234,7 +234,7 @@ func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (*G
 
 	// Simple Field (priority)
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for priority")
 	}
 	_priority, _priorityErr := CEMIPriorityParse(readBuffer)
 	if _priorityErr != nil {
@@ -242,12 +242,12 @@ func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (*G
 	}
 	priority := _priority
 	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for priority")
 	}
 
 	// Simple Field (valueType)
 	if pullErr := readBuffer.PullContext("valueType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for valueType")
 	}
 	_valueType, _valueTypeErr := ComObjectValueTypeParse(readBuffer)
 	if _valueTypeErr != nil {
@@ -255,11 +255,11 @@ func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (*G
 	}
 	valueType := _valueType
 	if closeErr := readBuffer.CloseContext("valueType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for valueType")
 	}
 
 	if closeErr := readBuffer.CloseContext("GroupObjectDescriptorRealisationType1"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for GroupObjectDescriptorRealisationType1")
 	}
 
 	// Create the instance
@@ -270,7 +270,7 @@ func (m *GroupObjectDescriptorRealisationType1) Serialize(writeBuffer utils.Writ
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("GroupObjectDescriptorRealisationType1"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for GroupObjectDescriptorRealisationType1")
 	}
 
 	// Simple Field (dataPointer)
@@ -325,11 +325,11 @@ func (m *GroupObjectDescriptorRealisationType1) Serialize(writeBuffer utils.Writ
 
 	// Simple Field (priority)
 	if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for priority")
 	}
 	_priorityErr := m.Priority.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for priority")
 	}
 	if _priorityErr != nil {
 		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
@@ -337,18 +337,18 @@ func (m *GroupObjectDescriptorRealisationType1) Serialize(writeBuffer utils.Writ
 
 	// Simple Field (valueType)
 	if pushErr := writeBuffer.PushContext("valueType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for valueType")
 	}
 	_valueTypeErr := m.ValueType.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("valueType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for valueType")
 	}
 	if _valueTypeErr != nil {
 		return errors.Wrap(_valueTypeErr, "Error serializing 'valueType' field")
 	}
 
 	if popErr := writeBuffer.PopContext("GroupObjectDescriptorRealisationType1"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for GroupObjectDescriptorRealisationType1")
 	}
 	return nil
 }

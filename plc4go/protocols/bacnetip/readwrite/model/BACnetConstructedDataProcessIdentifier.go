@@ -142,14 +142,14 @@ func BACnetConstructedDataProcessIdentifierParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProcessIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProcessIdentifier")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (processIdentifier)
 	if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
 	}
 	_processIdentifier, _processIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _processIdentifierErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataProcessIdentifierParse(readBuffer utils.ReadBuffer, ta
 	}
 	processIdentifier := CastBACnetApplicationTagUnsignedInteger(_processIdentifier)
 	if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for processIdentifier")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProcessIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProcessIdentifier")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataProcessIdentifier) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataProcessIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProcessIdentifier")
 		}
 
 		// Simple Field (processIdentifier)
 		if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for processIdentifier")
 		}
 		_processIdentifierErr := m.ProcessIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for processIdentifier")
 		}
 		if _processIdentifierErr != nil {
 			return errors.Wrap(_processIdentifierErr, "Error serializing 'processIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProcessIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataProcessIdentifier")
 		}
 		return nil
 	}

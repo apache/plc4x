@@ -138,7 +138,7 @@ func BACnetPropertyAccessResultAccessResultParse(readBuffer utils.ReadBuffer, ob
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyAccessResultAccessResult"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyAccessResultAccessResult")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -146,7 +146,7 @@ func BACnetPropertyAccessResultAccessResultParse(readBuffer utils.ReadBuffer, ob
 	// Peek Field (peekedTagHeader)
 	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
 	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
 	readBuffer.Reset(currentPos)
@@ -177,7 +177,7 @@ func BACnetPropertyAccessResultAccessResultParse(readBuffer utils.ReadBuffer, ob
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyAccessResultAccessResult"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyAccessResultAccessResult")
 	}
 
 	// Finish initializing
@@ -193,7 +193,7 @@ func (m *BACnetPropertyAccessResultAccessResult) SerializeParent(writeBuffer uti
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPropertyAccessResultAccessResult"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetPropertyAccessResultAccessResult")
 	}
 	// Virtual field
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
@@ -206,7 +206,7 @@ func (m *BACnetPropertyAccessResultAccessResult) SerializeParent(writeBuffer uti
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPropertyAccessResultAccessResult"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetPropertyAccessResultAccessResult")
 	}
 	return nil
 }

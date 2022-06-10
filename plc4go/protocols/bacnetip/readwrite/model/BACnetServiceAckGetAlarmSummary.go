@@ -155,14 +155,14 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAc
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetAlarmSummary"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckGetAlarmSummary")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _objectIdentifierErr != nil {
@@ -170,12 +170,12 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAc
 	}
 	objectIdentifier := CastBACnetApplicationTagObjectIdentifier(_objectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 	}
 
 	// Simple Field (eventState)
 	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventState")
 	}
 	_eventState, _eventStateErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _eventStateErr != nil {
@@ -183,12 +183,12 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAc
 	}
 	eventState := CastBACnetEventStateTagged(_eventState)
 	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventState")
 	}
 
 	// Simple Field (acknowledgedTransitions)
 	if pullErr := readBuffer.PullContext("acknowledgedTransitions"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for acknowledgedTransitions")
 	}
 	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _acknowledgedTransitionsErr != nil {
@@ -196,11 +196,11 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAc
 	}
 	acknowledgedTransitions := CastBACnetEventTransitionBitsTagged(_acknowledgedTransitions)
 	if closeErr := readBuffer.CloseContext("acknowledgedTransitions"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for acknowledgedTransitions")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckGetAlarmSummary"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckGetAlarmSummary")
 	}
 
 	// Create a partially initialized instance
@@ -219,16 +219,16 @@ func (m *BACnetServiceAckGetAlarmSummary) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckGetAlarmSummary"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckGetAlarmSummary")
 		}
 
 		// Simple Field (objectIdentifier)
 		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
 		_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
 		if _objectIdentifierErr != nil {
 			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
@@ -236,11 +236,11 @@ func (m *BACnetServiceAckGetAlarmSummary) Serialize(writeBuffer utils.WriteBuffe
 
 		// Simple Field (eventState)
 		if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for eventState")
 		}
 		_eventStateErr := m.EventState.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for eventState")
 		}
 		if _eventStateErr != nil {
 			return errors.Wrap(_eventStateErr, "Error serializing 'eventState' field")
@@ -248,18 +248,18 @@ func (m *BACnetServiceAckGetAlarmSummary) Serialize(writeBuffer utils.WriteBuffe
 
 		// Simple Field (acknowledgedTransitions)
 		if pushErr := writeBuffer.PushContext("acknowledgedTransitions"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for acknowledgedTransitions")
 		}
 		_acknowledgedTransitionsErr := m.AcknowledgedTransitions.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("acknowledgedTransitions"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for acknowledgedTransitions")
 		}
 		if _acknowledgedTransitionsErr != nil {
 			return errors.Wrap(_acknowledgedTransitionsErr, "Error serializing 'acknowledgedTransitions' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckGetAlarmSummary"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetServiceAckGetAlarmSummary")
 		}
 		return nil
 	}

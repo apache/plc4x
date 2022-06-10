@@ -145,14 +145,14 @@ func BACnetApplicationTagRealParse(readBuffer utils.ReadBuffer) (*BACnetApplicat
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagReal"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetApplicationTagReal")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
 	_payload, _payloadErr := BACnetTagPayloadRealParse(readBuffer)
 	if _payloadErr != nil {
@@ -160,7 +160,7 @@ func BACnetApplicationTagRealParse(readBuffer utils.ReadBuffer) (*BACnetApplicat
 	}
 	payload := CastBACnetTagPayloadReal(_payload)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for payload")
 	}
 
 	// Virtual field
@@ -169,7 +169,7 @@ func BACnetApplicationTagRealParse(readBuffer utils.ReadBuffer) (*BACnetApplicat
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagReal"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetApplicationTagReal")
 	}
 
 	// Create a partially initialized instance
@@ -186,16 +186,16 @@ func (m *BACnetApplicationTagReal) Serialize(writeBuffer utils.WriteBuffer) erro
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetApplicationTagReal"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetApplicationTagReal")
 		}
 
 		// Simple Field (payload)
 		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for payload")
 		}
 		_payloadErr := m.Payload.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for payload")
 		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
@@ -206,7 +206,7 @@ func (m *BACnetApplicationTagReal) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetApplicationTagReal"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetApplicationTagReal")
 		}
 		return nil
 	}

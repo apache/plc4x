@@ -142,14 +142,14 @@ func BACnetConstructedDataNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotifyType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNotifyType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (notifyType)
 	if pullErr := readBuffer.PullContext("notifyType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for notifyType")
 	}
 	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _notifyTypeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	notifyType := CastBACnetNotifyTypeTagged(_notifyType)
 	if closeErr := readBuffer.CloseContext("notifyType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for notifyType")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNotifyType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNotifyType")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataNotifyType) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataNotifyType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNotifyType")
 		}
 
 		// Simple Field (notifyType)
 		if pushErr := writeBuffer.PushContext("notifyType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for notifyType")
 		}
 		_notifyTypeErr := m.NotifyType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("notifyType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for notifyType")
 		}
 		if _notifyTypeErr != nil {
 			return errors.Wrap(_notifyTypeErr, "Error serializing 'notifyType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNotifyType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataNotifyType")
 		}
 		return nil
 	}

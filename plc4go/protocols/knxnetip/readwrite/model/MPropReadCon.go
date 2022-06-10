@@ -188,7 +188,7 @@ func MPropReadConParse(readBuffer utils.ReadBuffer, size uint16) (*MPropReadCon,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MPropReadCon"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for MPropReadCon")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -236,7 +236,7 @@ func MPropReadConParse(readBuffer utils.ReadBuffer, size uint16) (*MPropReadCon,
 	data := _data
 
 	if closeErr := readBuffer.CloseContext("MPropReadCon"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for MPropReadCon")
 	}
 
 	// Create a partially initialized instance
@@ -258,7 +258,7 @@ func (m *MPropReadCon) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MPropReadCon"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for MPropReadCon")
 		}
 
 		// Simple Field (interfaceObjectType)
@@ -304,7 +304,7 @@ func (m *MPropReadCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("MPropReadCon"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for MPropReadCon")
 		}
 		return nil
 	}

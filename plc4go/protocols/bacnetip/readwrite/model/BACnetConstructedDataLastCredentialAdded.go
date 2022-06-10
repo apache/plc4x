@@ -142,14 +142,14 @@ func BACnetConstructedDataLastCredentialAddedParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastCredentialAdded"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastCredentialAdded")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lastCredentialAdded)
 	if pullErr := readBuffer.PullContext("lastCredentialAdded"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lastCredentialAdded")
 	}
 	_lastCredentialAdded, _lastCredentialAddedErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _lastCredentialAddedErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLastCredentialAddedParse(readBuffer utils.ReadBuffer, 
 	}
 	lastCredentialAdded := CastBACnetDeviceObjectReference(_lastCredentialAdded)
 	if closeErr := readBuffer.CloseContext("lastCredentialAdded"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lastCredentialAdded")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastCredentialAdded"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastCredentialAdded")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLastCredentialAdded) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLastCredentialAdded"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastCredentialAdded")
 		}
 
 		// Simple Field (lastCredentialAdded)
 		if pushErr := writeBuffer.PushContext("lastCredentialAdded"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lastCredentialAdded")
 		}
 		_lastCredentialAddedErr := m.LastCredentialAdded.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lastCredentialAdded"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lastCredentialAdded")
 		}
 		if _lastCredentialAddedErr != nil {
 			return errors.Wrap(_lastCredentialAddedErr, "Error serializing 'lastCredentialAdded' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastCredentialAdded"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLastCredentialAdded")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStatusFlags"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataStatusFlags")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (statusFlags)
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for statusFlags")
 	}
 	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _statusFlagsErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for statusFlags")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStatusFlags"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataStatusFlags")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataStatusFlags) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataStatusFlags"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataStatusFlags")
 		}
 
 		// Simple Field (statusFlags)
 		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
 		_statusFlagsErr := m.StatusFlags.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
 		if _statusFlagsErr != nil {
 			return errors.Wrap(_statusFlagsErr, "Error serializing 'statusFlags' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStatusFlags"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataStatusFlags")
 		}
 		return nil
 	}

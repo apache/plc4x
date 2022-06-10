@@ -97,7 +97,7 @@ func ChecksumParse(readBuffer utils.ReadBuffer) (*Checksum, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Checksum"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for Checksum")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -110,7 +110,7 @@ func ChecksumParse(readBuffer utils.ReadBuffer) (*Checksum, error) {
 	crc := _crc
 
 	if closeErr := readBuffer.CloseContext("Checksum"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for Checksum")
 	}
 
 	// Create the instance
@@ -121,7 +121,7 @@ func (m *Checksum) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Checksum"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for Checksum")
 	}
 
 	// Simple Field (crc)
@@ -132,7 +132,7 @@ func (m *Checksum) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("Checksum"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for Checksum")
 	}
 	return nil
 }

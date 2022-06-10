@@ -128,14 +128,14 @@ func BACnetPropertyStatesLifeSafetyStateParse(readBuffer utils.ReadBuffer, peeke
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLifeSafetyState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLifeSafetyState")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lifeSafetyState)
 	if pullErr := readBuffer.PullContext("lifeSafetyState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lifeSafetyState")
 	}
 	_lifeSafetyState, _lifeSafetyStateErr := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lifeSafetyStateErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesLifeSafetyStateParse(readBuffer utils.ReadBuffer, peeke
 	}
 	lifeSafetyState := CastBACnetLifeSafetyStateTagged(_lifeSafetyState)
 	if closeErr := readBuffer.CloseContext("lifeSafetyState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lifeSafetyState")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLifeSafetyState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLifeSafetyState")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesLifeSafetyState) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesLifeSafetyState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLifeSafetyState")
 		}
 
 		// Simple Field (lifeSafetyState)
 		if pushErr := writeBuffer.PushContext("lifeSafetyState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lifeSafetyState")
 		}
 		_lifeSafetyStateErr := m.LifeSafetyState.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lifeSafetyState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lifeSafetyState")
 		}
 		if _lifeSafetyStateErr != nil {
 			return errors.Wrap(_lifeSafetyStateErr, "Error serializing 'lifeSafetyState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLifeSafetyState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesLifeSafetyState")
 		}
 		return nil
 	}

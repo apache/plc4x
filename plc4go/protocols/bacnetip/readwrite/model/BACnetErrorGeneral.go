@@ -130,14 +130,14 @@ func BACnetErrorGeneralParse(readBuffer utils.ReadBuffer, errorChoice BACnetConf
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetErrorGeneral"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetErrorGeneral")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (error)
 	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for error")
 	}
 	_error, _errorErr := ErrorParse(readBuffer)
 	if _errorErr != nil {
@@ -145,11 +145,11 @@ func BACnetErrorGeneralParse(readBuffer utils.ReadBuffer, errorChoice BACnetConf
 	}
 	error := CastError(_error)
 	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for error")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorGeneral"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetErrorGeneral")
 	}
 
 	// Create a partially initialized instance
@@ -166,23 +166,23 @@ func (m *BACnetErrorGeneral) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetErrorGeneral"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetErrorGeneral")
 		}
 
 		// Simple Field (error)
 		if pushErr := writeBuffer.PushContext("error"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for error")
 		}
 		_errorErr := m.Error.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("error"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for error")
 		}
 		if _errorErr != nil {
 			return errors.Wrap(_errorErr, "Error serializing 'error' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetErrorGeneral"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetErrorGeneral")
 		}
 		return nil
 	}

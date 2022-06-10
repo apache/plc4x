@@ -128,14 +128,14 @@ func PowerUpReplyParse(readBuffer utils.ReadBuffer) (*PowerUpReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PowerUpReply"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for PowerUpReply")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (isA)
 	if pullErr := readBuffer.PullContext("isA"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for isA")
 	}
 	_isA, _isAErr := PowerUpParse(readBuffer)
 	if _isAErr != nil {
@@ -143,11 +143,11 @@ func PowerUpReplyParse(readBuffer utils.ReadBuffer) (*PowerUpReply, error) {
 	}
 	isA := CastPowerUp(_isA)
 	if closeErr := readBuffer.CloseContext("isA"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for isA")
 	}
 
 	if closeErr := readBuffer.CloseContext("PowerUpReply"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for PowerUpReply")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *PowerUpReply) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("PowerUpReply"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for PowerUpReply")
 		}
 
 		// Simple Field (isA)
 		if pushErr := writeBuffer.PushContext("isA"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for isA")
 		}
 		_isAErr := m.IsA.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("isA"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for isA")
 		}
 		if _isAErr != nil {
 			return errors.Wrap(_isAErr, "Error serializing 'isA' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PowerUpReply"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for PowerUpReply")
 		}
 		return nil
 	}

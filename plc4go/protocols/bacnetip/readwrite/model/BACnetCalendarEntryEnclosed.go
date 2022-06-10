@@ -120,14 +120,14 @@ func BACnetCalendarEntryEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntryEnclosed"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCalendarEntryEnclosed")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
@@ -135,12 +135,12 @@ func BACnetCalendarEntryEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (calendarEntry)
 	if pullErr := readBuffer.PullContext("calendarEntry"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for calendarEntry")
 	}
 	_calendarEntry, _calendarEntryErr := BACnetCalendarEntryParse(readBuffer)
 	if _calendarEntryErr != nil {
@@ -148,12 +148,12 @@ func BACnetCalendarEntryEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 	calendarEntry := CastBACnetCalendarEntry(_calendarEntry)
 	if closeErr := readBuffer.CloseContext("calendarEntry"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for calendarEntry")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
@@ -161,11 +161,11 @@ func BACnetCalendarEntryEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetCalendarEntryEnclosed"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetCalendarEntryEnclosed")
 	}
 
 	// Create the instance
@@ -176,16 +176,16 @@ func (m *BACnetCalendarEntryEnclosed) Serialize(writeBuffer utils.WriteBuffer) e
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetCalendarEntryEnclosed"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetCalendarEntryEnclosed")
 	}
 
 	// Simple Field (openingTag)
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
 	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -193,11 +193,11 @@ func (m *BACnetCalendarEntryEnclosed) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (calendarEntry)
 	if pushErr := writeBuffer.PushContext("calendarEntry"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for calendarEntry")
 	}
 	_calendarEntryErr := m.CalendarEntry.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("calendarEntry"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for calendarEntry")
 	}
 	if _calendarEntryErr != nil {
 		return errors.Wrap(_calendarEntryErr, "Error serializing 'calendarEntry' field")
@@ -205,18 +205,18 @@ func (m *BACnetCalendarEntryEnclosed) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (closingTag)
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
 	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetCalendarEntryEnclosed"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetCalendarEntryEnclosed")
 	}
 	return nil
 }

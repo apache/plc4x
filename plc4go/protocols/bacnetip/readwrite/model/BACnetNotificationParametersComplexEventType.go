@@ -134,14 +134,14 @@ func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuff
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersComplexEventType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersComplexEventType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (listOfValues)
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 	}
 	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(peekedTagNumber), BACnetObjectType(objectTypeArgument))
 	if _listOfValuesErr != nil {
@@ -149,11 +149,11 @@ func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuff
 	}
 	listOfValues := CastBACnetPropertyValues(_listOfValues)
 	if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for listOfValues")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersComplexEventType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersComplexEventType")
 	}
 
 	// Create a partially initialized instance
@@ -170,23 +170,23 @@ func (m *BACnetNotificationParametersComplexEventType) Serialize(writeBuffer uti
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersComplexEventType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersComplexEventType")
 		}
 
 		// Simple Field (listOfValues)
 		if pushErr := writeBuffer.PushContext("listOfValues"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for listOfValues")
 		}
 		_listOfValuesErr := m.ListOfValues.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for listOfValues")
 		}
 		if _listOfValuesErr != nil {
 			return errors.Wrap(_listOfValuesErr, "Error serializing 'listOfValues' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersComplexEventType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersComplexEventType")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataBACnetIPv6UDPPortParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPv6UDPPort"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBACnetIPv6UDPPort")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ipv6UdpPort)
 	if pullErr := readBuffer.PullContext("ipv6UdpPort"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipv6UdpPort")
 	}
 	_ipv6UdpPort, _ipv6UdpPortErr := BACnetApplicationTagParse(readBuffer)
 	if _ipv6UdpPortErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBACnetIPv6UDPPortParse(readBuffer utils.ReadBuffer, ta
 	}
 	ipv6UdpPort := CastBACnetApplicationTagUnsignedInteger(_ipv6UdpPort)
 	if closeErr := readBuffer.CloseContext("ipv6UdpPort"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipv6UdpPort")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPv6UDPPort"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPv6UDPPort")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBACnetIPv6UDPPort) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBACnetIPv6UDPPort"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBACnetIPv6UDPPort")
 		}
 
 		// Simple Field (ipv6UdpPort)
 		if pushErr := writeBuffer.PushContext("ipv6UdpPort"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ipv6UdpPort")
 		}
 		_ipv6UdpPortErr := m.Ipv6UdpPort.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ipv6UdpPort"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ipv6UdpPort")
 		}
 		if _ipv6UdpPortErr != nil {
 			return errors.Wrap(_ipv6UdpPortErr, "Error serializing 'ipv6UdpPort' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBACnetIPv6UDPPort"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBACnetIPv6UDPPort")
 		}
 		return nil
 	}

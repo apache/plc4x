@@ -146,14 +146,14 @@ func BACnetConstructedDataActiveVTSessionsParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveVTSessions"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataActiveVTSessions")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (activeVTSession)
 	if pullErr := readBuffer.PullContext("activeVTSession", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for activeVTSession")
 	}
 	// Terminated array
 	activeVTSession := make([]*BACnetVTSession, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataActiveVTSessionsParse(readBuffer utils.ReadBuffer, tag
 		}
 	}
 	if closeErr := readBuffer.CloseContext("activeVTSession", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for activeVTSession")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataActiveVTSessions"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataActiveVTSessions")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataActiveVTSessions) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataActiveVTSessions"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataActiveVTSessions")
 		}
 
 		// Array Field (activeVTSession)
 		if m.ActiveVTSession != nil {
 			if pushErr := writeBuffer.PushContext("activeVTSession", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for activeVTSession")
 			}
 			for _, _element := range m.ActiveVTSession {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataActiveVTSessions) Serialize(writeBuffer utils.Writ
 				}
 			}
 			if popErr := writeBuffer.PopContext("activeVTSession", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for activeVTSession")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActiveVTSessions"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataActiveVTSessions")
 		}
 		return nil
 	}

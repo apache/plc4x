@@ -183,14 +183,14 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (*
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfLifeSavety"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfLifeSavety")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(8)))
 	if _openingTagErr != nil {
@@ -198,12 +198,12 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (*
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (timeDelay)
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
 	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
@@ -211,12 +211,12 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (*
 	}
 	timeDelay := CastBACnetContextTagUnsignedInteger(_timeDelay)
 	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeDelay")
 	}
 
 	// Simple Field (listOfLifeSavetyAlarmValues)
 	if pullErr := readBuffer.PullContext("listOfLifeSavetyAlarmValues"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for listOfLifeSavetyAlarmValues")
 	}
 	_listOfLifeSavetyAlarmValues, _listOfLifeSavetyAlarmValuesErr := BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParse(readBuffer, uint8(uint8(1)))
 	if _listOfLifeSavetyAlarmValuesErr != nil {
@@ -224,12 +224,12 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (*
 	}
 	listOfLifeSavetyAlarmValues := CastBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues(_listOfLifeSavetyAlarmValues)
 	if closeErr := readBuffer.CloseContext("listOfLifeSavetyAlarmValues"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for listOfLifeSavetyAlarmValues")
 	}
 
 	// Simple Field (listOfAlarmValues)
 	if pullErr := readBuffer.PullContext("listOfAlarmValues"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for listOfAlarmValues")
 	}
 	_listOfAlarmValues, _listOfAlarmValuesErr := BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParse(readBuffer, uint8(uint8(2)))
 	if _listOfAlarmValuesErr != nil {
@@ -237,12 +237,12 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (*
 	}
 	listOfAlarmValues := CastBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(_listOfAlarmValues)
 	if closeErr := readBuffer.CloseContext("listOfAlarmValues"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for listOfAlarmValues")
 	}
 
 	// Simple Field (modePropertyReference)
 	if pullErr := readBuffer.PullContext("modePropertyReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for modePropertyReference")
 	}
 	_modePropertyReference, _modePropertyReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(4)))
 	if _modePropertyReferenceErr != nil {
@@ -250,12 +250,12 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (*
 	}
 	modePropertyReference := CastBACnetDeviceObjectPropertyReferenceEnclosed(_modePropertyReference)
 	if closeErr := readBuffer.CloseContext("modePropertyReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for modePropertyReference")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(8)))
 	if _closingTagErr != nil {
@@ -263,11 +263,11 @@ func BACnetEventParameterChangeOfLifeSavetyParse(readBuffer utils.ReadBuffer) (*
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterChangeOfLifeSavety"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterChangeOfLifeSavety")
 	}
 
 	// Create a partially initialized instance
@@ -289,16 +289,16 @@ func (m *BACnetEventParameterChangeOfLifeSavety) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetEventParameterChangeOfLifeSavety"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfLifeSavety")
 		}
 
 		// Simple Field (openingTag)
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
 		_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
 		if _openingTagErr != nil {
 			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -306,11 +306,11 @@ func (m *BACnetEventParameterChangeOfLifeSavety) Serialize(writeBuffer utils.Wri
 
 		// Simple Field (timeDelay)
 		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeDelay")
 		}
 		_timeDelayErr := m.TimeDelay.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeDelay")
 		}
 		if _timeDelayErr != nil {
 			return errors.Wrap(_timeDelayErr, "Error serializing 'timeDelay' field")
@@ -318,11 +318,11 @@ func (m *BACnetEventParameterChangeOfLifeSavety) Serialize(writeBuffer utils.Wri
 
 		// Simple Field (listOfLifeSavetyAlarmValues)
 		if pushErr := writeBuffer.PushContext("listOfLifeSavetyAlarmValues"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for listOfLifeSavetyAlarmValues")
 		}
 		_listOfLifeSavetyAlarmValuesErr := m.ListOfLifeSavetyAlarmValues.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("listOfLifeSavetyAlarmValues"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for listOfLifeSavetyAlarmValues")
 		}
 		if _listOfLifeSavetyAlarmValuesErr != nil {
 			return errors.Wrap(_listOfLifeSavetyAlarmValuesErr, "Error serializing 'listOfLifeSavetyAlarmValues' field")
@@ -330,11 +330,11 @@ func (m *BACnetEventParameterChangeOfLifeSavety) Serialize(writeBuffer utils.Wri
 
 		// Simple Field (listOfAlarmValues)
 		if pushErr := writeBuffer.PushContext("listOfAlarmValues"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for listOfAlarmValues")
 		}
 		_listOfAlarmValuesErr := m.ListOfAlarmValues.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("listOfAlarmValues"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for listOfAlarmValues")
 		}
 		if _listOfAlarmValuesErr != nil {
 			return errors.Wrap(_listOfAlarmValuesErr, "Error serializing 'listOfAlarmValues' field")
@@ -342,11 +342,11 @@ func (m *BACnetEventParameterChangeOfLifeSavety) Serialize(writeBuffer utils.Wri
 
 		// Simple Field (modePropertyReference)
 		if pushErr := writeBuffer.PushContext("modePropertyReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for modePropertyReference")
 		}
 		_modePropertyReferenceErr := m.ModePropertyReference.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("modePropertyReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for modePropertyReference")
 		}
 		if _modePropertyReferenceErr != nil {
 			return errors.Wrap(_modePropertyReferenceErr, "Error serializing 'modePropertyReference' field")
@@ -354,18 +354,18 @@ func (m *BACnetEventParameterChangeOfLifeSavety) Serialize(writeBuffer utils.Wri
 
 		// Simple Field (closingTag)
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
 		_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
 		if _closingTagErr != nil {
 			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfLifeSavety"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetEventParameterChangeOfLifeSavety")
 		}
 		return nil
 	}

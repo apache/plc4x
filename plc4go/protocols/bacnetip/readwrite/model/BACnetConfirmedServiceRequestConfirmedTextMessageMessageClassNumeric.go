@@ -133,14 +133,14 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(r
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (numericValue)
 	if pullErr := readBuffer.PullContext("numericValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for numericValue")
 	}
 	_numericValue, _numericValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _numericValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(r
 	}
 	numericValue := CastBACnetContextTagUnsignedInteger(_numericValue)
 	if closeErr := readBuffer.CloseContext("numericValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for numericValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) S
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric")
 		}
 
 		// Simple Field (numericValue)
 		if pushErr := writeBuffer.PushContext("numericValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for numericValue")
 		}
 		_numericValueErr := m.NumericValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("numericValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for numericValue")
 		}
 		if _numericValueErr != nil {
 			return errors.Wrap(_numericValueErr, "Error serializing 'numericValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric")
 		}
 		return nil
 	}

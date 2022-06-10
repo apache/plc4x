@@ -97,14 +97,14 @@ func BACnetLiftCarCallListParse(readBuffer utils.ReadBuffer) (*BACnetLiftCarCall
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLiftCarCallList"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLiftCarCallList")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (floorNumbers)
 	if pullErr := readBuffer.PullContext("floorNumbers"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for floorNumbers")
 	}
 	_floorNumbers, _floorNumbersErr := BACnetLiftCarCallListFloorListParse(readBuffer, uint8(uint8(0)))
 	if _floorNumbersErr != nil {
@@ -112,11 +112,11 @@ func BACnetLiftCarCallListParse(readBuffer utils.ReadBuffer) (*BACnetLiftCarCall
 	}
 	floorNumbers := CastBACnetLiftCarCallListFloorList(_floorNumbers)
 	if closeErr := readBuffer.CloseContext("floorNumbers"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for floorNumbers")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLiftCarCallList"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLiftCarCallList")
 	}
 
 	// Create the instance
@@ -127,23 +127,23 @@ func (m *BACnetLiftCarCallList) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLiftCarCallList"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetLiftCarCallList")
 	}
 
 	// Simple Field (floorNumbers)
 	if pushErr := writeBuffer.PushContext("floorNumbers"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for floorNumbers")
 	}
 	_floorNumbersErr := m.FloorNumbers.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("floorNumbers"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for floorNumbers")
 	}
 	if _floorNumbersErr != nil {
 		return errors.Wrap(_floorNumbersErr, "Error serializing 'floorNumbers' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLiftCarCallList"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetLiftCarCallList")
 	}
 	return nil
 }

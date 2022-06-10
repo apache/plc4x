@@ -146,14 +146,14 @@ func BACnetConstructedDataCredentialsInZoneParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCredentialsInZone"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCredentialsInZone")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (credentialsInZone)
 	if pullErr := readBuffer.PullContext("credentialsInZone", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for credentialsInZone")
 	}
 	// Terminated array
 	credentialsInZone := make([]*BACnetDeviceObjectReference, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataCredentialsInZoneParse(readBuffer utils.ReadBuffer, ta
 		}
 	}
 	if closeErr := readBuffer.CloseContext("credentialsInZone", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for credentialsInZone")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCredentialsInZone"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCredentialsInZone")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataCredentialsInZone) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCredentialsInZone"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCredentialsInZone")
 		}
 
 		// Array Field (credentialsInZone)
 		if m.CredentialsInZone != nil {
 			if pushErr := writeBuffer.PushContext("credentialsInZone", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for credentialsInZone")
 			}
 			for _, _element := range m.CredentialsInZone {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataCredentialsInZone) Serialize(writeBuffer utils.Wri
 				}
 			}
 			if popErr := writeBuffer.PopContext("credentialsInZone", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for credentialsInZone")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCredentialsInZone"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCredentialsInZone")
 		}
 		return nil
 	}

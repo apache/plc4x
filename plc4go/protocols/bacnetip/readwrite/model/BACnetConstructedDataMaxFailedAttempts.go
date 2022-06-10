@@ -142,14 +142,14 @@ func BACnetConstructedDataMaxFailedAttemptsParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaxFailedAttempts"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMaxFailedAttempts")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (maxFailedAttempts)
 	if pullErr := readBuffer.PullContext("maxFailedAttempts"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for maxFailedAttempts")
 	}
 	_maxFailedAttempts, _maxFailedAttemptsErr := BACnetApplicationTagParse(readBuffer)
 	if _maxFailedAttemptsErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataMaxFailedAttemptsParse(readBuffer utils.ReadBuffer, ta
 	}
 	maxFailedAttempts := CastBACnetApplicationTagUnsignedInteger(_maxFailedAttempts)
 	if closeErr := readBuffer.CloseContext("maxFailedAttempts"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for maxFailedAttempts")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaxFailedAttempts"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaxFailedAttempts")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataMaxFailedAttempts) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMaxFailedAttempts"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaxFailedAttempts")
 		}
 
 		// Simple Field (maxFailedAttempts)
 		if pushErr := writeBuffer.PushContext("maxFailedAttempts"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for maxFailedAttempts")
 		}
 		_maxFailedAttemptsErr := m.MaxFailedAttempts.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("maxFailedAttempts"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for maxFailedAttempts")
 		}
 		if _maxFailedAttemptsErr != nil {
 			return errors.Wrap(_maxFailedAttemptsErr, "Error serializing 'maxFailedAttempts' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaxFailedAttempts"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMaxFailedAttempts")
 		}
 		return nil
 	}

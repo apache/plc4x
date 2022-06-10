@@ -142,14 +142,14 @@ func S7PayloadUserDataParse(readBuffer utils.ReadBuffer, messageType uint8, para
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserData"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (items)
 	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Count array
 	items := make([]*S7PayloadUserDataItem, uint16(len(CastS7ParameterUserData(parameter).GetItems())))
@@ -163,11 +163,11 @@ func S7PayloadUserDataParse(readBuffer utils.ReadBuffer, messageType uint8, para
 		}
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for items")
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserData"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserData")
 	}
 
 	// Create a partially initialized instance
@@ -184,13 +184,13 @@ func (m *S7PayloadUserData) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7PayloadUserData"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserData")
 		}
 
 		// Array Field (items)
 		if m.Items != nil {
 			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for items")
 			}
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -199,12 +199,12 @@ func (m *S7PayloadUserData) Serialize(writeBuffer utils.WriteBuffer) error {
 				}
 			}
 			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for items")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserData"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7PayloadUserData")
 		}
 		return nil
 	}

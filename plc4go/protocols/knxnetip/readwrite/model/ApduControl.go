@@ -103,7 +103,7 @@ func ApduControlParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControl"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ApduControl")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -139,7 +139,7 @@ func ApduControlParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduControl"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ApduControl")
 	}
 
 	// Finish initializing
@@ -155,7 +155,7 @@ func (m *ApduControl) SerializeParent(writeBuffer utils.WriteBuffer, child IApdu
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ApduControl"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ApduControl")
 	}
 
 	// Discriminator Field (controlType) (Used as input to a switch field)
@@ -172,7 +172,7 @@ func (m *ApduControl) SerializeParent(writeBuffer utils.WriteBuffer, child IApdu
 	}
 
 	if popErr := writeBuffer.PopContext("ApduControl"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ApduControl")
 	}
 	return nil
 }

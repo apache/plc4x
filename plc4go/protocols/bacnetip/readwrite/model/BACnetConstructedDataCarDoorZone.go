@@ -142,14 +142,14 @@ func BACnetConstructedDataCarDoorZoneParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarDoorZone"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCarDoorZone")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (carDoorZone)
 	if pullErr := readBuffer.PullContext("carDoorZone"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for carDoorZone")
 	}
 	_carDoorZone, _carDoorZoneErr := BACnetApplicationTagParse(readBuffer)
 	if _carDoorZoneErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataCarDoorZoneParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	carDoorZone := CastBACnetApplicationTagBoolean(_carDoorZone)
 	if closeErr := readBuffer.CloseContext("carDoorZone"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for carDoorZone")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarDoorZone"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCarDoorZone")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataCarDoorZone) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCarDoorZone"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCarDoorZone")
 		}
 
 		// Simple Field (carDoorZone)
 		if pushErr := writeBuffer.PushContext("carDoorZone"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for carDoorZone")
 		}
 		_carDoorZoneErr := m.CarDoorZone.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("carDoorZone"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for carDoorZone")
 		}
 		if _carDoorZoneErr != nil {
 			return errors.Wrap(_carDoorZoneErr, "Error serializing 'carDoorZone' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCarDoorZone"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCarDoorZone")
 		}
 		return nil
 	}

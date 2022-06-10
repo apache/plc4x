@@ -128,14 +128,14 @@ func BACnetClientCOVNoneParse(readBuffer utils.ReadBuffer) (*BACnetClientCOVNone
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetClientCOVNone"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetClientCOVNone")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (defaultIncrement)
 	if pullErr := readBuffer.PullContext("defaultIncrement"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for defaultIncrement")
 	}
 	_defaultIncrement, _defaultIncrementErr := BACnetApplicationTagParse(readBuffer)
 	if _defaultIncrementErr != nil {
@@ -143,11 +143,11 @@ func BACnetClientCOVNoneParse(readBuffer utils.ReadBuffer) (*BACnetClientCOVNone
 	}
 	defaultIncrement := CastBACnetApplicationTagNull(_defaultIncrement)
 	if closeErr := readBuffer.CloseContext("defaultIncrement"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for defaultIncrement")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetClientCOVNone"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetClientCOVNone")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetClientCOVNone) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetClientCOVNone"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetClientCOVNone")
 		}
 
 		// Simple Field (defaultIncrement)
 		if pushErr := writeBuffer.PushContext("defaultIncrement"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for defaultIncrement")
 		}
 		_defaultIncrementErr := m.DefaultIncrement.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("defaultIncrement"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for defaultIncrement")
 		}
 		if _defaultIncrementErr != nil {
 			return errors.Wrap(_defaultIncrementErr, "Error serializing 'defaultIncrement' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetClientCOVNone"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetClientCOVNone")
 		}
 		return nil
 	}

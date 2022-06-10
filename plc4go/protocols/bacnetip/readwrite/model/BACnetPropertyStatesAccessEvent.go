@@ -128,14 +128,14 @@ func BACnetPropertyStatesAccessEventParse(readBuffer utils.ReadBuffer, peekedTag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAccessEvent"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesAccessEvent")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (accessEvent)
 	if pullErr := readBuffer.PullContext("accessEvent"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for accessEvent")
 	}
 	_accessEvent, _accessEventErr := BACnetAccessEventTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _accessEventErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesAccessEventParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	accessEvent := CastBACnetAccessEventTagged(_accessEvent)
 	if closeErr := readBuffer.CloseContext("accessEvent"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for accessEvent")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesAccessEvent"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesAccessEvent")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesAccessEvent) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesAccessEvent"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesAccessEvent")
 		}
 
 		// Simple Field (accessEvent)
 		if pushErr := writeBuffer.PushContext("accessEvent"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for accessEvent")
 		}
 		_accessEventErr := m.AccessEvent.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("accessEvent"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for accessEvent")
 		}
 		if _accessEventErr != nil {
 			return errors.Wrap(_accessEventErr, "Error serializing 'accessEvent' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesAccessEvent"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesAccessEvent")
 		}
 		return nil
 	}

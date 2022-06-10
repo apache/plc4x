@@ -142,14 +142,14 @@ func BACnetConstructedDataBinaryInputInterfaceValueParse(readBuffer utils.ReadBu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryInputInterfaceValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBinaryInputInterfaceValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (interfaceValue)
 	if pullErr := readBuffer.PullContext("interfaceValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for interfaceValue")
 	}
 	_interfaceValue, _interfaceValueErr := BACnetOptionalBinaryPVParse(readBuffer)
 	if _interfaceValueErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBinaryInputInterfaceValueParse(readBuffer utils.ReadBu
 	}
 	interfaceValue := CastBACnetOptionalBinaryPV(_interfaceValue)
 	if closeErr := readBuffer.CloseContext("interfaceValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for interfaceValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryInputInterfaceValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBinaryInputInterfaceValue")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBinaryInputInterfaceValue) Serialize(writeBuffer u
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBinaryInputInterfaceValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBinaryInputInterfaceValue")
 		}
 
 		// Simple Field (interfaceValue)
 		if pushErr := writeBuffer.PushContext("interfaceValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for interfaceValue")
 		}
 		_interfaceValueErr := m.InterfaceValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("interfaceValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for interfaceValue")
 		}
 		if _interfaceValueErr != nil {
 			return errors.Wrap(_interfaceValueErr, "Error serializing 'interfaceValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBinaryInputInterfaceValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBinaryInputInterfaceValue")
 		}
 		return nil
 	}

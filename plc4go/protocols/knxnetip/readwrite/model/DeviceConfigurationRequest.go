@@ -144,14 +144,14 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DeviceConfigurationRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (deviceConfigurationRequestDataBlock)
 	if pullErr := readBuffer.PullContext("deviceConfigurationRequestDataBlock"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for deviceConfigurationRequestDataBlock")
 	}
 	_deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParse(readBuffer)
 	if _deviceConfigurationRequestDataBlockErr != nil {
@@ -159,12 +159,12 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 	}
 	deviceConfigurationRequestDataBlock := CastDeviceConfigurationRequestDataBlock(_deviceConfigurationRequestDataBlock)
 	if closeErr := readBuffer.CloseContext("deviceConfigurationRequestDataBlock"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for deviceConfigurationRequestDataBlock")
 	}
 
 	// Simple Field (cemi)
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for cemi")
 	}
 	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(uint16(totalLength)-uint16(uint16(uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.GetLengthInBytes())))))
 	if _cemiErr != nil {
@@ -172,11 +172,11 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 	}
 	cemi := CastCEMI(_cemi)
 	if closeErr := readBuffer.CloseContext("cemi"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for cemi")
 	}
 
 	if closeErr := readBuffer.CloseContext("DeviceConfigurationRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DeviceConfigurationRequest")
 	}
 
 	// Create a partially initialized instance
@@ -194,16 +194,16 @@ func (m *DeviceConfigurationRequest) Serialize(writeBuffer utils.WriteBuffer) er
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DeviceConfigurationRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for DeviceConfigurationRequest")
 		}
 
 		// Simple Field (deviceConfigurationRequestDataBlock)
 		if pushErr := writeBuffer.PushContext("deviceConfigurationRequestDataBlock"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for deviceConfigurationRequestDataBlock")
 		}
 		_deviceConfigurationRequestDataBlockErr := m.DeviceConfigurationRequestDataBlock.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("deviceConfigurationRequestDataBlock"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for deviceConfigurationRequestDataBlock")
 		}
 		if _deviceConfigurationRequestDataBlockErr != nil {
 			return errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error serializing 'deviceConfigurationRequestDataBlock' field")
@@ -211,18 +211,18 @@ func (m *DeviceConfigurationRequest) Serialize(writeBuffer utils.WriteBuffer) er
 
 		// Simple Field (cemi)
 		if pushErr := writeBuffer.PushContext("cemi"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for cemi")
 		}
 		_cemiErr := m.Cemi.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("cemi"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for cemi")
 		}
 		if _cemiErr != nil {
 			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DeviceConfigurationRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for DeviceConfigurationRequest")
 		}
 		return nil
 	}

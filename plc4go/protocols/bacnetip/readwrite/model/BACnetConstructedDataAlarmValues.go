@@ -180,7 +180,7 @@ func BACnetConstructedDataAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAlarmValues"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAlarmValues")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -195,7 +195,7 @@ func BACnetConstructedDataAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumbe
 	if bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -207,14 +207,14 @@ func BACnetConstructedDataAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumbe
 		default:
 			numberOfDataElements = CastBACnetApplicationTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for numberOfDataElements")
 			}
 		}
 	}
 
 	// Array field (alarmValues)
 	if pullErr := readBuffer.PullContext("alarmValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for alarmValues")
 	}
 	// Terminated array
 	alarmValues := make([]*BACnetLifeSafetyStateTagged, 0)
@@ -229,11 +229,11 @@ func BACnetConstructedDataAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumbe
 		}
 	}
 	if closeErr := readBuffer.CloseContext("alarmValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for alarmValues")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAlarmValues"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAlarmValues")
 	}
 
 	// Create a partially initialized instance
@@ -251,7 +251,7 @@ func (m *BACnetConstructedDataAlarmValues) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAlarmValues"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAlarmValues")
 		}
 		// Virtual field
 		if _zeroErr := writeBuffer.WriteVirtual("zero", m.GetZero()); _zeroErr != nil {
@@ -262,12 +262,12 @@ func (m *BACnetConstructedDataAlarmValues) Serialize(writeBuffer utils.WriteBuff
 		var numberOfDataElements *BACnetApplicationTagUnsignedInteger = nil
 		if m.NumberOfDataElements != nil {
 			if pushErr := writeBuffer.PushContext("numberOfDataElements"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
 			}
 			numberOfDataElements = m.NumberOfDataElements
 			_numberOfDataElementsErr := numberOfDataElements.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for numberOfDataElements")
 			}
 			if _numberOfDataElementsErr != nil {
 				return errors.Wrap(_numberOfDataElementsErr, "Error serializing 'numberOfDataElements' field")
@@ -277,7 +277,7 @@ func (m *BACnetConstructedDataAlarmValues) Serialize(writeBuffer utils.WriteBuff
 		// Array Field (alarmValues)
 		if m.AlarmValues != nil {
 			if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for alarmValues")
 			}
 			for _, _element := range m.AlarmValues {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -286,12 +286,12 @@ func (m *BACnetConstructedDataAlarmValues) Serialize(writeBuffer utils.WriteBuff
 				}
 			}
 			if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for alarmValues")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAlarmValues"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAlarmValues")
 		}
 		return nil
 	}

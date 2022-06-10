@@ -135,14 +135,14 @@ func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuff
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformationTunnelConnection"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionRequestInformationTunnelConnection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (knxLayer)
 	if pullErr := readBuffer.PullContext("knxLayer"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for knxLayer")
 	}
 	_knxLayer, _knxLayerErr := KnxLayerParse(readBuffer)
 	if _knxLayerErr != nil {
@@ -150,7 +150,7 @@ func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuff
 	}
 	knxLayer := _knxLayer
 	if closeErr := readBuffer.CloseContext("knxLayer"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for knxLayer")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -168,7 +168,7 @@ func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuff
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionRequestInformationTunnelConnection"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ConnectionRequestInformationTunnelConnection")
 	}
 
 	// Create a partially initialized instance
@@ -185,16 +185,16 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(writeBuffer uti
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConnectionRequestInformationTunnelConnection"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ConnectionRequestInformationTunnelConnection")
 		}
 
 		// Simple Field (knxLayer)
 		if pushErr := writeBuffer.PushContext("knxLayer"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for knxLayer")
 		}
 		_knxLayerErr := m.KnxLayer.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("knxLayer"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for knxLayer")
 		}
 		if _knxLayerErr != nil {
 			return errors.Wrap(_knxLayerErr, "Error serializing 'knxLayer' field")
@@ -209,7 +209,7 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(writeBuffer uti
 		}
 
 		if popErr := writeBuffer.PopContext("ConnectionRequestInformationTunnelConnection"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ConnectionRequestInformationTunnelConnection")
 		}
 		return nil
 	}

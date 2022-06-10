@@ -138,14 +138,14 @@ func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, len uint16) 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPEncapsulationReadResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CIPEncapsulationReadResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (response)
 	if pullErr := readBuffer.PullContext("response"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for response")
 	}
 	_response, _responseErr := DF1ResponseMessageParse(readBuffer, uint16(len))
 	if _responseErr != nil {
@@ -153,11 +153,11 @@ func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, len uint16) 
 	}
 	response := CastDF1ResponseMessage(_response)
 	if closeErr := readBuffer.CloseContext("response"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for response")
 	}
 
 	if closeErr := readBuffer.CloseContext("CIPEncapsulationReadResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CIPEncapsulationReadResponse")
 	}
 
 	// Create a partially initialized instance
@@ -174,23 +174,23 @@ func (m *CIPEncapsulationReadResponse) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CIPEncapsulationReadResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CIPEncapsulationReadResponse")
 		}
 
 		// Simple Field (response)
 		if pushErr := writeBuffer.PushContext("response"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for response")
 		}
 		_responseErr := m.Response.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("response"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for response")
 		}
 		if _responseErr != nil {
 			return errors.Wrap(_responseErr, "Error serializing 'response' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CIPEncapsulationReadResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CIPEncapsulationReadResponse")
 		}
 		return nil
 	}

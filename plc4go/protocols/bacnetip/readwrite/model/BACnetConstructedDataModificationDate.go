@@ -142,14 +142,14 @@ func BACnetConstructedDataModificationDateParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataModificationDate"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataModificationDate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (modificationDate)
 	if pullErr := readBuffer.PullContext("modificationDate"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for modificationDate")
 	}
 	_modificationDate, _modificationDateErr := BACnetDateTimeParse(readBuffer)
 	if _modificationDateErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataModificationDateParse(readBuffer utils.ReadBuffer, tag
 	}
 	modificationDate := CastBACnetDateTime(_modificationDate)
 	if closeErr := readBuffer.CloseContext("modificationDate"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for modificationDate")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataModificationDate"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataModificationDate")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataModificationDate) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataModificationDate"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataModificationDate")
 		}
 
 		// Simple Field (modificationDate)
 		if pushErr := writeBuffer.PushContext("modificationDate"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for modificationDate")
 		}
 		_modificationDateErr := m.ModificationDate.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("modificationDate"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for modificationDate")
 		}
 		if _modificationDateErr != nil {
 			return errors.Wrap(_modificationDateErr, "Error serializing 'modificationDate' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataModificationDate"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataModificationDate")
 		}
 		return nil
 	}

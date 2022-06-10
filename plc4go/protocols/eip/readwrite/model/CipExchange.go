@@ -139,7 +139,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipExchange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CipExchange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -180,7 +180,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 
 	// Simple Field (service)
 	if pullErr := readBuffer.PullContext("service"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for service")
 	}
 	_service, _serviceErr := CipServiceParse(readBuffer, uint16(uint16(exchangeLen)-uint16(uint16(10))))
 	if _serviceErr != nil {
@@ -188,11 +188,11 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 	}
 	service := CastCipService(_service)
 	if closeErr := readBuffer.CloseContext("service"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for service")
 	}
 
 	if closeErr := readBuffer.CloseContext("CipExchange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CipExchange")
 	}
 
 	// Create the instance
@@ -203,7 +203,7 @@ func (m *CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CipExchange"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CipExchange")
 	}
 
 	// Const Field (itemCount)
@@ -233,18 +233,18 @@ func (m *CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (service)
 	if pushErr := writeBuffer.PushContext("service"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for service")
 	}
 	_serviceErr := m.Service.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("service"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for service")
 	}
 	if _serviceErr != nil {
 		return errors.Wrap(_serviceErr, "Error serializing 'service' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CipExchange"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CipExchange")
 	}
 	return nil
 }

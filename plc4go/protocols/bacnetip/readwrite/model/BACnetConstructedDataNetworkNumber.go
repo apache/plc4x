@@ -142,14 +142,14 @@ func BACnetConstructedDataNetworkNumberParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNetworkNumber")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (networkNumber)
 	if pullErr := readBuffer.PullContext("networkNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for networkNumber")
 	}
 	_networkNumber, _networkNumberErr := BACnetApplicationTagParse(readBuffer)
 	if _networkNumberErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataNetworkNumberParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	networkNumber := CastBACnetApplicationTagUnsignedInteger(_networkNumber)
 	if closeErr := readBuffer.CloseContext("networkNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for networkNumber")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNetworkNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNetworkNumber")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataNetworkNumber) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataNetworkNumber"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNetworkNumber")
 		}
 
 		// Simple Field (networkNumber)
 		if pushErr := writeBuffer.PushContext("networkNumber"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for networkNumber")
 		}
 		_networkNumberErr := m.NetworkNumber.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("networkNumber"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for networkNumber")
 		}
 		if _networkNumberErr != nil {
 			return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNetworkNumber"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataNetworkNumber")
 		}
 		return nil
 	}

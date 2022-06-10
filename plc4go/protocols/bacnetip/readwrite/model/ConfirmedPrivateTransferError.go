@@ -167,14 +167,14 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConfirmedPrivateTransferError"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ConfirmedPrivateTransferError")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (errorType)
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
 	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
@@ -182,12 +182,12 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 	}
 	errorType := CastErrorEnclosed(_errorType)
 	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for errorType")
 	}
 
 	// Simple Field (vendorId)
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
 	}
 	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _vendorIdErr != nil {
@@ -195,12 +195,12 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 	}
 	vendorId := CastBACnetVendorIdTagged(_vendorId)
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for vendorId")
 	}
 
 	// Simple Field (serviceNumber)
 	if pullErr := readBuffer.PullContext("serviceNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for serviceNumber")
 	}
 	_serviceNumber, _serviceNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _serviceNumberErr != nil {
@@ -208,7 +208,7 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 	}
 	serviceNumber := CastBACnetContextTagUnsignedInteger(_serviceNumber)
 	if closeErr := readBuffer.CloseContext("serviceNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for serviceNumber")
 	}
 
 	// Optional Field (errorParameters) (Can be skipped, if a given expression evaluates to false)
@@ -216,7 +216,7 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("errorParameters"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for errorParameters")
 		}
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
@@ -228,13 +228,13 @@ func ConfirmedPrivateTransferErrorParse(readBuffer utils.ReadBuffer, errorChoice
 		default:
 			errorParameters = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("errorParameters"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for errorParameters")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("ConfirmedPrivateTransferError"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ConfirmedPrivateTransferError")
 	}
 
 	// Create a partially initialized instance
@@ -254,16 +254,16 @@ func (m *ConfirmedPrivateTransferError) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConfirmedPrivateTransferError"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ConfirmedPrivateTransferError")
 		}
 
 		// Simple Field (errorType)
 		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for errorType")
 		}
 		_errorTypeErr := m.ErrorType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for errorType")
 		}
 		if _errorTypeErr != nil {
 			return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
@@ -271,11 +271,11 @@ func (m *ConfirmedPrivateTransferError) Serialize(writeBuffer utils.WriteBuffer)
 
 		// Simple Field (vendorId)
 		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
 		_vendorIdErr := m.VendorId.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
 		if _vendorIdErr != nil {
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
@@ -283,11 +283,11 @@ func (m *ConfirmedPrivateTransferError) Serialize(writeBuffer utils.WriteBuffer)
 
 		// Simple Field (serviceNumber)
 		if pushErr := writeBuffer.PushContext("serviceNumber"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for serviceNumber")
 		}
 		_serviceNumberErr := m.ServiceNumber.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("serviceNumber"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for serviceNumber")
 		}
 		if _serviceNumberErr != nil {
 			return errors.Wrap(_serviceNumberErr, "Error serializing 'serviceNumber' field")
@@ -297,12 +297,12 @@ func (m *ConfirmedPrivateTransferError) Serialize(writeBuffer utils.WriteBuffer)
 		var errorParameters *BACnetConstructedData = nil
 		if m.ErrorParameters != nil {
 			if pushErr := writeBuffer.PushContext("errorParameters"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for errorParameters")
 			}
 			errorParameters = m.ErrorParameters
 			_errorParametersErr := errorParameters.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("errorParameters"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for errorParameters")
 			}
 			if _errorParametersErr != nil {
 				return errors.Wrap(_errorParametersErr, "Error serializing 'errorParameters' field")
@@ -310,7 +310,7 @@ func (m *ConfirmedPrivateTransferError) Serialize(writeBuffer utils.WriteBuffer)
 		}
 
 		if popErr := writeBuffer.PopContext("ConfirmedPrivateTransferError"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ConfirmedPrivateTransferError")
 		}
 		return nil
 	}

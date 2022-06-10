@@ -159,7 +159,7 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUError,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUError"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for APDUError")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -187,7 +187,7 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUError,
 
 	// Simple Field (errorChoice)
 	if pullErr := readBuffer.PullContext("errorChoice"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for errorChoice")
 	}
 	_errorChoice, _errorChoiceErr := BACnetConfirmedServiceChoiceParse(readBuffer)
 	if _errorChoiceErr != nil {
@@ -195,12 +195,12 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUError,
 	}
 	errorChoice := _errorChoice
 	if closeErr := readBuffer.CloseContext("errorChoice"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for errorChoice")
 	}
 
 	// Simple Field (error)
 	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for error")
 	}
 	_error, _errorErr := BACnetErrorParse(readBuffer, BACnetConfirmedServiceChoice(errorChoice))
 	if _errorErr != nil {
@@ -208,11 +208,11 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUError,
 	}
 	error := CastBACnetError(_error)
 	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for error")
 	}
 
 	if closeErr := readBuffer.CloseContext("APDUError"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for APDUError")
 	}
 
 	// Create a partially initialized instance
@@ -231,7 +231,7 @@ func (m *APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUError"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for APDUError")
 		}
 
 		// Reserved Field (reserved)
@@ -251,11 +251,11 @@ func (m *APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (errorChoice)
 		if pushErr := writeBuffer.PushContext("errorChoice"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for errorChoice")
 		}
 		_errorChoiceErr := m.ErrorChoice.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("errorChoice"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for errorChoice")
 		}
 		if _errorChoiceErr != nil {
 			return errors.Wrap(_errorChoiceErr, "Error serializing 'errorChoice' field")
@@ -263,18 +263,18 @@ func (m *APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (error)
 		if pushErr := writeBuffer.PushContext("error"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for error")
 		}
 		_errorErr := m.Error.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("error"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for error")
 		}
 		if _errorErr != nil {
 			return errors.Wrap(_errorErr, "Error serializing 'error' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUError"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for APDUError")
 		}
 		return nil
 	}

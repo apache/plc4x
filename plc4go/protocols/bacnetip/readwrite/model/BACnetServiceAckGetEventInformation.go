@@ -144,14 +144,14 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEventInformation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckGetEventInformation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (listOfEventSummaries)
 	if pullErr := readBuffer.PullContext("listOfEventSummaries"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for listOfEventSummaries")
 	}
 	_listOfEventSummaries, _listOfEventSummariesErr := BACnetEventSummariesListParse(readBuffer, uint8(uint8(0)))
 	if _listOfEventSummariesErr != nil {
@@ -159,12 +159,12 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 	}
 	listOfEventSummaries := CastBACnetEventSummariesList(_listOfEventSummaries)
 	if closeErr := readBuffer.CloseContext("listOfEventSummaries"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for listOfEventSummaries")
 	}
 
 	// Simple Field (moreEvents)
 	if pullErr := readBuffer.PullContext("moreEvents"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for moreEvents")
 	}
 	_moreEvents, _moreEventsErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _moreEventsErr != nil {
@@ -172,11 +172,11 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 	}
 	moreEvents := CastBACnetContextTagBoolean(_moreEvents)
 	if closeErr := readBuffer.CloseContext("moreEvents"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for moreEvents")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckGetEventInformation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckGetEventInformation")
 	}
 
 	// Create a partially initialized instance
@@ -194,16 +194,16 @@ func (m *BACnetServiceAckGetEventInformation) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckGetEventInformation"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckGetEventInformation")
 		}
 
 		// Simple Field (listOfEventSummaries)
 		if pushErr := writeBuffer.PushContext("listOfEventSummaries"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for listOfEventSummaries")
 		}
 		_listOfEventSummariesErr := m.ListOfEventSummaries.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("listOfEventSummaries"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for listOfEventSummaries")
 		}
 		if _listOfEventSummariesErr != nil {
 			return errors.Wrap(_listOfEventSummariesErr, "Error serializing 'listOfEventSummaries' field")
@@ -211,18 +211,18 @@ func (m *BACnetServiceAckGetEventInformation) Serialize(writeBuffer utils.WriteB
 
 		// Simple Field (moreEvents)
 		if pushErr := writeBuffer.PushContext("moreEvents"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for moreEvents")
 		}
 		_moreEventsErr := m.MoreEvents.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("moreEvents"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for moreEvents")
 		}
 		if _moreEventsErr != nil {
 			return errors.Wrap(_moreEventsErr, "Error serializing 'moreEvents' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckGetEventInformation"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetServiceAckGetEventInformation")
 		}
 		return nil
 	}

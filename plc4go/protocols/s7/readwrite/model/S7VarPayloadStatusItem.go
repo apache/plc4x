@@ -97,14 +97,14 @@ func S7VarPayloadStatusItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadStat
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarPayloadStatusItem"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7VarPayloadStatusItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
 	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
@@ -112,11 +112,11 @@ func S7VarPayloadStatusItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadStat
 	}
 	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for returnCode")
 	}
 
 	if closeErr := readBuffer.CloseContext("S7VarPayloadStatusItem"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7VarPayloadStatusItem")
 	}
 
 	// Create the instance
@@ -127,23 +127,23 @@ func (m *S7VarPayloadStatusItem) Serialize(writeBuffer utils.WriteBuffer) error 
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7VarPayloadStatusItem"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for S7VarPayloadStatusItem")
 	}
 
 	// Simple Field (returnCode)
 	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for returnCode")
 	}
 	_returnCodeErr := m.ReturnCode.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for returnCode")
 	}
 	if _returnCodeErr != nil {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
 	}
 
 	if popErr := writeBuffer.PopContext("S7VarPayloadStatusItem"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for S7VarPayloadStatusItem")
 	}
 	return nil
 }

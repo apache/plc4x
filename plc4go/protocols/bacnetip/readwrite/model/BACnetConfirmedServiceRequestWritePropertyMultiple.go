@@ -139,14 +139,14 @@ func BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer utils.Re
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestWritePropertyMultiple")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Length array
 	data := make([]*BACnetWriteAccessSpecification, 0)
@@ -162,11 +162,11 @@ func BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer utils.Re
 		}
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for data")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestWritePropertyMultiple")
 	}
 
 	// Create a partially initialized instance
@@ -183,13 +183,13 @@ func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) Serialize(writeBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestWritePropertyMultiple")
 		}
 
 		// Array Field (data)
 		if m.Data != nil {
 			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for data")
 			}
 			for _, _element := range m.Data {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -198,12 +198,12 @@ func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) Serialize(writeBuff
 				}
 			}
 			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for data")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestWritePropertyMultiple")
 		}
 		return nil
 	}

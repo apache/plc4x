@@ -142,14 +142,14 @@ func BACnetConstructedDataIPv6AddressParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6Address"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPv6Address")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ipv6Address)
 	if pullErr := readBuffer.PullContext("ipv6Address"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipv6Address")
 	}
 	_ipv6Address, _ipv6AddressErr := BACnetApplicationTagParse(readBuffer)
 	if _ipv6AddressErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataIPv6AddressParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	ipv6Address := CastBACnetApplicationTagOctetString(_ipv6Address)
 	if closeErr := readBuffer.CloseContext("ipv6Address"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipv6Address")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6Address"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6Address")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataIPv6Address) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataIPv6Address"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6Address")
 		}
 
 		// Simple Field (ipv6Address)
 		if pushErr := writeBuffer.PushContext("ipv6Address"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ipv6Address")
 		}
 		_ipv6AddressErr := m.Ipv6Address.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ipv6Address"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ipv6Address")
 		}
 		if _ipv6AddressErr != nil {
 			return errors.Wrap(_ipv6AddressErr, "Error serializing 'ipv6Address' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6Address"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataIPv6Address")
 		}
 		return nil
 	}

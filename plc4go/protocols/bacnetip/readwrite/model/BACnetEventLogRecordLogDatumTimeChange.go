@@ -133,14 +133,14 @@ func BACnetEventLogRecordLogDatumTimeChangeParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventLogRecordLogDatumTimeChange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventLogRecordLogDatumTimeChange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timeChange)
 	if pullErr := readBuffer.PullContext("timeChange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeChange")
 	}
 	_timeChange, _timeChangeErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _timeChangeErr != nil {
@@ -148,11 +148,11 @@ func BACnetEventLogRecordLogDatumTimeChangeParse(readBuffer utils.ReadBuffer, ta
 	}
 	timeChange := CastBACnetContextTagReal(_timeChange)
 	if closeErr := readBuffer.CloseContext("timeChange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeChange")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventLogRecordLogDatumTimeChange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventLogRecordLogDatumTimeChange")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetEventLogRecordLogDatumTimeChange) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetEventLogRecordLogDatumTimeChange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetEventLogRecordLogDatumTimeChange")
 		}
 
 		// Simple Field (timeChange)
 		if pushErr := writeBuffer.PushContext("timeChange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeChange")
 		}
 		_timeChangeErr := m.TimeChange.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeChange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeChange")
 		}
 		if _timeChangeErr != nil {
 			return errors.Wrap(_timeChangeErr, "Error serializing 'timeChange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventLogRecordLogDatumTimeChange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetEventLogRecordLogDatumTimeChange")
 		}
 		return nil
 	}

@@ -132,7 +132,7 @@ func IdentifyReplyCommandGAVValuesStoredParse(readBuffer utils.ReadBuffer, attri
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandGAVValuesStored"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandGAVValuesStored")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -144,7 +144,7 @@ func IdentifyReplyCommandGAVValuesStoredParse(readBuffer utils.ReadBuffer, attri
 	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandGAVValuesStored"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandGAVValuesStored")
 	}
 
 	// Create a partially initialized instance
@@ -161,7 +161,7 @@ func (m *IdentifyReplyCommandGAVValuesStored) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandGAVValuesStored"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandGAVValuesStored")
 		}
 
 		// Array Field (values)
@@ -174,7 +174,7 @@ func (m *IdentifyReplyCommandGAVValuesStored) Serialize(writeBuffer utils.WriteB
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandGAVValuesStored"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for IdentifyReplyCommandGAVValuesStored")
 		}
 		return nil
 	}

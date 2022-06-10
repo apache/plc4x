@@ -124,7 +124,7 @@ func DF1SymbolParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1Symbol"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DF1Symbol")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -167,7 +167,7 @@ func DF1SymbolParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("DF1Symbol"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DF1Symbol")
 	}
 
 	// Finish initializing
@@ -183,7 +183,7 @@ func (m *DF1Symbol) SerializeParent(writeBuffer utils.WriteBuffer, child IDF1Sym
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DF1Symbol"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for DF1Symbol")
 	}
 
 	// Const Field (messageStart)
@@ -206,7 +206,7 @@ func (m *DF1Symbol) SerializeParent(writeBuffer utils.WriteBuffer, child IDF1Sym
 	}
 
 	if popErr := writeBuffer.PopContext("DF1Symbol"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for DF1Symbol")
 	}
 	return nil
 }

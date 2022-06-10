@@ -130,14 +130,14 @@ func TunnelingResponseParse(readBuffer utils.ReadBuffer) (*TunnelingResponse, er
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for TunnelingResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (tunnelingResponseDataBlock)
 	if pullErr := readBuffer.PullContext("tunnelingResponseDataBlock"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for tunnelingResponseDataBlock")
 	}
 	_tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(readBuffer)
 	if _tunnelingResponseDataBlockErr != nil {
@@ -145,11 +145,11 @@ func TunnelingResponseParse(readBuffer utils.ReadBuffer) (*TunnelingResponse, er
 	}
 	tunnelingResponseDataBlock := CastTunnelingResponseDataBlock(_tunnelingResponseDataBlock)
 	if closeErr := readBuffer.CloseContext("tunnelingResponseDataBlock"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for tunnelingResponseDataBlock")
 	}
 
 	if closeErr := readBuffer.CloseContext("TunnelingResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for TunnelingResponse")
 	}
 
 	// Create a partially initialized instance
@@ -166,23 +166,23 @@ func (m *TunnelingResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("TunnelingResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for TunnelingResponse")
 		}
 
 		// Simple Field (tunnelingResponseDataBlock)
 		if pushErr := writeBuffer.PushContext("tunnelingResponseDataBlock"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for tunnelingResponseDataBlock")
 		}
 		_tunnelingResponseDataBlockErr := m.TunnelingResponseDataBlock.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("tunnelingResponseDataBlock"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for tunnelingResponseDataBlock")
 		}
 		if _tunnelingResponseDataBlockErr != nil {
 			return errors.Wrap(_tunnelingResponseDataBlockErr, "Error serializing 'tunnelingResponseDataBlock' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TunnelingResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for TunnelingResponse")
 		}
 		return nil
 	}

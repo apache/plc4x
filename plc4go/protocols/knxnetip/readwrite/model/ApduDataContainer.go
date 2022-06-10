@@ -136,14 +136,14 @@ func ApduDataContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apd
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataContainer"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataContainer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (dataApdu)
 	if pullErr := readBuffer.PullContext("dataApdu"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dataApdu")
 	}
 	_dataApdu, _dataApduErr := ApduDataParse(readBuffer, uint8(dataLength))
 	if _dataApduErr != nil {
@@ -151,11 +151,11 @@ func ApduDataContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apd
 	}
 	dataApdu := CastApduData(_dataApdu)
 	if closeErr := readBuffer.CloseContext("dataApdu"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dataApdu")
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataContainer"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ApduDataContainer")
 	}
 
 	// Create a partially initialized instance
@@ -172,23 +172,23 @@ func (m *ApduDataContainer) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataContainer"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ApduDataContainer")
 		}
 
 		// Simple Field (dataApdu)
 		if pushErr := writeBuffer.PushContext("dataApdu"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dataApdu")
 		}
 		_dataApduErr := m.DataApdu.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dataApdu"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dataApdu")
 		}
 		if _dataApduErr != nil {
 			return errors.Wrap(_dataApduErr, "Error serializing 'dataApdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataContainer"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ApduDataContainer")
 		}
 		return nil
 	}

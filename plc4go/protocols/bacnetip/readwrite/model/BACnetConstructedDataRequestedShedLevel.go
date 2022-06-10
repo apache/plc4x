@@ -142,14 +142,14 @@ func BACnetConstructedDataRequestedShedLevelParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRequestedShedLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataRequestedShedLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (requestedShedLevel)
 	if pullErr := readBuffer.PullContext("requestedShedLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for requestedShedLevel")
 	}
 	_requestedShedLevel, _requestedShedLevelErr := BACnetShedLevelParse(readBuffer)
 	if _requestedShedLevelErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataRequestedShedLevelParse(readBuffer utils.ReadBuffer, t
 	}
 	requestedShedLevel := CastBACnetShedLevel(_requestedShedLevel)
 	if closeErr := readBuffer.CloseContext("requestedShedLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for requestedShedLevel")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRequestedShedLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRequestedShedLevel")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataRequestedShedLevel) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataRequestedShedLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRequestedShedLevel")
 		}
 
 		// Simple Field (requestedShedLevel)
 		if pushErr := writeBuffer.PushContext("requestedShedLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for requestedShedLevel")
 		}
 		_requestedShedLevelErr := m.RequestedShedLevel.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("requestedShedLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for requestedShedLevel")
 		}
 		if _requestedShedLevelErr != nil {
 			return errors.Wrap(_requestedShedLevelErr, "Error serializing 'requestedShedLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRequestedShedLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataRequestedShedLevel")
 		}
 		return nil
 	}

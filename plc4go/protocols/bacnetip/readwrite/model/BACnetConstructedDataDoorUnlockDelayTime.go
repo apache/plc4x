@@ -142,14 +142,14 @@ func BACnetConstructedDataDoorUnlockDelayTimeParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorUnlockDelayTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDoorUnlockDelayTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (doorUnlockDelayTime)
 	if pullErr := readBuffer.PullContext("doorUnlockDelayTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for doorUnlockDelayTime")
 	}
 	_doorUnlockDelayTime, _doorUnlockDelayTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _doorUnlockDelayTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDoorUnlockDelayTimeParse(readBuffer utils.ReadBuffer, 
 	}
 	doorUnlockDelayTime := CastBACnetApplicationTagUnsignedInteger(_doorUnlockDelayTime)
 	if closeErr := readBuffer.CloseContext("doorUnlockDelayTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for doorUnlockDelayTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorUnlockDelayTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorUnlockDelayTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDoorUnlockDelayTime) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDoorUnlockDelayTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDoorUnlockDelayTime")
 		}
 
 		// Simple Field (doorUnlockDelayTime)
 		if pushErr := writeBuffer.PushContext("doorUnlockDelayTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for doorUnlockDelayTime")
 		}
 		_doorUnlockDelayTimeErr := m.DoorUnlockDelayTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("doorUnlockDelayTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for doorUnlockDelayTime")
 		}
 		if _doorUnlockDelayTimeErr != nil {
 			return errors.Wrap(_doorUnlockDelayTimeErr, "Error serializing 'doorUnlockDelayTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDoorUnlockDelayTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDoorUnlockDelayTime")
 		}
 		return nil
 	}

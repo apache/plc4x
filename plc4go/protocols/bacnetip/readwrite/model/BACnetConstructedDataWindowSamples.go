@@ -142,14 +142,14 @@ func BACnetConstructedDataWindowSamplesParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataWindowSamples"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataWindowSamples")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (windowSamples)
 	if pullErr := readBuffer.PullContext("windowSamples"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for windowSamples")
 	}
 	_windowSamples, _windowSamplesErr := BACnetApplicationTagParse(readBuffer)
 	if _windowSamplesErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataWindowSamplesParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	windowSamples := CastBACnetApplicationTagUnsignedInteger(_windowSamples)
 	if closeErr := readBuffer.CloseContext("windowSamples"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for windowSamples")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataWindowSamples"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataWindowSamples")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataWindowSamples) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataWindowSamples"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataWindowSamples")
 		}
 
 		// Simple Field (windowSamples)
 		if pushErr := writeBuffer.PushContext("windowSamples"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for windowSamples")
 		}
 		_windowSamplesErr := m.WindowSamples.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("windowSamples"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for windowSamples")
 		}
 		if _windowSamplesErr != nil {
 			return errors.Wrap(_windowSamplesErr, "Error serializing 'windowSamples' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataWindowSamples"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataWindowSamples")
 		}
 		return nil
 	}

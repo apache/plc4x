@@ -144,7 +144,7 @@ func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bo
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandProtocolVersion"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for FirmataCommandProtocolVersion")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -164,7 +164,7 @@ func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bo
 	minorVersion := _minorVersion
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandProtocolVersion"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for FirmataCommandProtocolVersion")
 	}
 
 	// Create a partially initialized instance
@@ -182,7 +182,7 @@ func (m *FirmataCommandProtocolVersion) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("FirmataCommandProtocolVersion"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for FirmataCommandProtocolVersion")
 		}
 
 		// Simple Field (majorVersion)
@@ -200,7 +200,7 @@ func (m *FirmataCommandProtocolVersion) Serialize(writeBuffer utils.WriteBuffer)
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataCommandProtocolVersion"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for FirmataCommandProtocolVersion")
 		}
 		return nil
 	}

@@ -136,7 +136,7 @@ func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Apdu"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for Apdu")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -182,7 +182,7 @@ func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("Apdu"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for Apdu")
 	}
 
 	// Finish initializing
@@ -198,7 +198,7 @@ func (m *Apdu) SerializeParent(writeBuffer utils.WriteBuffer, child IApdu, seria
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Apdu"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for Apdu")
 	}
 
 	// Discriminator Field (control) (Used as input to a switch field)
@@ -229,7 +229,7 @@ func (m *Apdu) SerializeParent(writeBuffer utils.WriteBuffer, child IApdu, seria
 	}
 
 	if popErr := writeBuffer.PopContext("Apdu"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for Apdu")
 	}
 	return nil
 }

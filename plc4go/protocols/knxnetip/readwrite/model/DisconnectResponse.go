@@ -141,7 +141,7 @@ func DisconnectResponseParse(readBuffer utils.ReadBuffer) (*DisconnectResponse, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DisconnectResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DisconnectResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -155,7 +155,7 @@ func DisconnectResponseParse(readBuffer utils.ReadBuffer) (*DisconnectResponse, 
 
 	// Simple Field (status)
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
 	_status, _statusErr := StatusParse(readBuffer)
 	if _statusErr != nil {
@@ -163,11 +163,11 @@ func DisconnectResponseParse(readBuffer utils.ReadBuffer) (*DisconnectResponse, 
 	}
 	status := _status
 	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for status")
 	}
 
 	if closeErr := readBuffer.CloseContext("DisconnectResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DisconnectResponse")
 	}
 
 	// Create a partially initialized instance
@@ -185,7 +185,7 @@ func (m *DisconnectResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DisconnectResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for DisconnectResponse")
 		}
 
 		// Simple Field (communicationChannelId)
@@ -197,18 +197,18 @@ func (m *DisconnectResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (status)
 		if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for status")
 		}
 		_statusErr := m.Status.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("status"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for status")
 		}
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DisconnectResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for DisconnectResponse")
 		}
 		return nil
 	}

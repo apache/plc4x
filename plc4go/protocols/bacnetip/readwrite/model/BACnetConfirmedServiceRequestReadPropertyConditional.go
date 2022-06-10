@@ -137,7 +137,7 @@ func BACnetConfirmedServiceRequestReadPropertyConditionalParse(readBuffer utils.
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadPropertyConditional"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestReadPropertyConditional")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -149,7 +149,7 @@ func BACnetConfirmedServiceRequestReadPropertyConditionalParse(readBuffer utils.
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadPropertyConditional"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestReadPropertyConditional")
 	}
 
 	// Create a partially initialized instance
@@ -166,7 +166,7 @@ func (m *BACnetConfirmedServiceRequestReadPropertyConditional) Serialize(writeBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestReadPropertyConditional"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestReadPropertyConditional")
 		}
 
 		// Array Field (bytesOfRemovedService)
@@ -179,7 +179,7 @@ func (m *BACnetConfirmedServiceRequestReadPropertyConditional) Serialize(writeBu
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReadPropertyConditional"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestReadPropertyConditional")
 		}
 		return nil
 	}

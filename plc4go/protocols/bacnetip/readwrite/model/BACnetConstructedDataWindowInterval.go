@@ -142,14 +142,14 @@ func BACnetConstructedDataWindowIntervalParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataWindowInterval"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataWindowInterval")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (windowInterval)
 	if pullErr := readBuffer.PullContext("windowInterval"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for windowInterval")
 	}
 	_windowInterval, _windowIntervalErr := BACnetApplicationTagParse(readBuffer)
 	if _windowIntervalErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataWindowIntervalParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	windowInterval := CastBACnetApplicationTagUnsignedInteger(_windowInterval)
 	if closeErr := readBuffer.CloseContext("windowInterval"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for windowInterval")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataWindowInterval"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataWindowInterval")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataWindowInterval) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataWindowInterval"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataWindowInterval")
 		}
 
 		// Simple Field (windowInterval)
 		if pushErr := writeBuffer.PushContext("windowInterval"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for windowInterval")
 		}
 		_windowIntervalErr := m.WindowInterval.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("windowInterval"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for windowInterval")
 		}
 		if _windowIntervalErr != nil {
 			return errors.Wrap(_windowIntervalErr, "Error serializing 'windowInterval' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataWindowInterval"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataWindowInterval")
 		}
 		return nil
 	}

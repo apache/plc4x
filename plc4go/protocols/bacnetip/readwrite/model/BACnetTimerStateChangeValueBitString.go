@@ -131,14 +131,14 @@ func BACnetTimerStateChangeValueBitStringParse(readBuffer utils.ReadBuffer, obje
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueBitString"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimerStateChangeValueBitString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bitStringValue)
 	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
 	}
 	_bitStringValue, _bitStringValueErr := BACnetApplicationTagParse(readBuffer)
 	if _bitStringValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetTimerStateChangeValueBitStringParse(readBuffer utils.ReadBuffer, obje
 	}
 	bitStringValue := CastBACnetApplicationTagBitString(_bitStringValue)
 	if closeErr := readBuffer.CloseContext("bitStringValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bitStringValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValueBitString"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimerStateChangeValueBitString")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetTimerStateChangeValueBitString) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetTimerStateChangeValueBitString"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueBitString")
 		}
 
 		// Simple Field (bitStringValue)
 		if pushErr := writeBuffer.PushContext("bitStringValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for bitStringValue")
 		}
 		_bitStringValueErr := m.BitStringValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("bitStringValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for bitStringValue")
 		}
 		if _bitStringValueErr != nil {
 			return errors.Wrap(_bitStringValueErr, "Error serializing 'bitStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueBitString"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetTimerStateChangeValueBitString")
 		}
 		return nil
 	}

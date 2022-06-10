@@ -142,14 +142,14 @@ func BACnetConstructedDataControlledVariableReferenceParse(readBuffer utils.Read
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataControlledVariableReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataControlledVariableReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (controlledVariableReference)
 	if pullErr := readBuffer.PullContext("controlledVariableReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for controlledVariableReference")
 	}
 	_controlledVariableReference, _controlledVariableReferenceErr := BACnetObjectPropertyReferenceParse(readBuffer)
 	if _controlledVariableReferenceErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataControlledVariableReferenceParse(readBuffer utils.Read
 	}
 	controlledVariableReference := CastBACnetObjectPropertyReference(_controlledVariableReference)
 	if closeErr := readBuffer.CloseContext("controlledVariableReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for controlledVariableReference")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataControlledVariableReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataControlledVariableReference")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataControlledVariableReference) Serialize(writeBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataControlledVariableReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataControlledVariableReference")
 		}
 
 		// Simple Field (controlledVariableReference)
 		if pushErr := writeBuffer.PushContext("controlledVariableReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for controlledVariableReference")
 		}
 		_controlledVariableReferenceErr := m.ControlledVariableReference.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("controlledVariableReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for controlledVariableReference")
 		}
 		if _controlledVariableReferenceErr != nil {
 			return errors.Wrap(_controlledVariableReferenceErr, "Error serializing 'controlledVariableReference' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataControlledVariableReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataControlledVariableReference")
 		}
 		return nil
 	}

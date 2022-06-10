@@ -128,14 +128,14 @@ func BACnetRecipientDeviceParse(readBuffer utils.ReadBuffer) (*BACnetRecipientDe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRecipientDevice"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRecipientDevice")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (deviceValue)
 	if pullErr := readBuffer.PullContext("deviceValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for deviceValue")
 	}
 	_deviceValue, _deviceValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _deviceValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetRecipientDeviceParse(readBuffer utils.ReadBuffer) (*BACnetRecipientDe
 	}
 	deviceValue := CastBACnetContextTagObjectIdentifier(_deviceValue)
 	if closeErr := readBuffer.CloseContext("deviceValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for deviceValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetRecipientDevice"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetRecipientDevice")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetRecipientDevice) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetRecipientDevice"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetRecipientDevice")
 		}
 
 		// Simple Field (deviceValue)
 		if pushErr := writeBuffer.PushContext("deviceValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for deviceValue")
 		}
 		_deviceValueErr := m.DeviceValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("deviceValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for deviceValue")
 		}
 		if _deviceValueErr != nil {
 			return errors.Wrap(_deviceValueErr, "Error serializing 'deviceValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetRecipientDevice"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetRecipientDevice")
 		}
 		return nil
 	}

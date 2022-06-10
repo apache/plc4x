@@ -176,7 +176,7 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadTi
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -235,7 +235,7 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadTi
 	_ = fractionalIsWildcard
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadTime")
 	}
 
 	// Create the instance
@@ -246,7 +246,7 @@ func (m *BACnetTagPayloadTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadTime"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadTime")
 	}
 	// Virtual field
 	if _wildcardErr := writeBuffer.WriteVirtual("wildcard", m.GetWildcard()); _wildcardErr != nil {
@@ -298,7 +298,7 @@ func (m *BACnetTagPayloadTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadTime"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadTime")
 	}
 	return nil
 }

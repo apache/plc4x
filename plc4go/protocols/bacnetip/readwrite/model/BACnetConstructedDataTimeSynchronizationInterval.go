@@ -142,14 +142,14 @@ func BACnetConstructedDataTimeSynchronizationIntervalParse(readBuffer utils.Read
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeSynchronizationInterval"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimeSynchronizationInterval")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timeSynchronization)
 	if pullErr := readBuffer.PullContext("timeSynchronization"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeSynchronization")
 	}
 	_timeSynchronization, _timeSynchronizationErr := BACnetApplicationTagParse(readBuffer)
 	if _timeSynchronizationErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataTimeSynchronizationIntervalParse(readBuffer utils.Read
 	}
 	timeSynchronization := CastBACnetApplicationTagUnsignedInteger(_timeSynchronization)
 	if closeErr := readBuffer.CloseContext("timeSynchronization"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeSynchronization")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeSynchronizationInterval"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeSynchronizationInterval")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataTimeSynchronizationInterval) Serialize(writeBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataTimeSynchronizationInterval"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeSynchronizationInterval")
 		}
 
 		// Simple Field (timeSynchronization)
 		if pushErr := writeBuffer.PushContext("timeSynchronization"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeSynchronization")
 		}
 		_timeSynchronizationErr := m.TimeSynchronization.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeSynchronization"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeSynchronization")
 		}
 		if _timeSynchronizationErr != nil {
 			return errors.Wrap(_timeSynchronizationErr, "Error serializing 'timeSynchronization' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimeSynchronizationInterval"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataTimeSynchronizationInterval")
 		}
 		return nil
 	}

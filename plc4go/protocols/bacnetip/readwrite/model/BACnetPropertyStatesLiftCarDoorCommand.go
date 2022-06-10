@@ -128,14 +128,14 @@ func BACnetPropertyStatesLiftCarDoorCommandParse(readBuffer utils.ReadBuffer, pe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftCarDoorCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLiftCarDoorCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (liftCarDoorCommand)
 	if pullErr := readBuffer.PullContext("liftCarDoorCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for liftCarDoorCommand")
 	}
 	_liftCarDoorCommand, _liftCarDoorCommandErr := BACnetLiftCarDoorCommandTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftCarDoorCommandErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesLiftCarDoorCommandParse(readBuffer utils.ReadBuffer, pe
 	}
 	liftCarDoorCommand := CastBACnetLiftCarDoorCommandTagged(_liftCarDoorCommand)
 	if closeErr := readBuffer.CloseContext("liftCarDoorCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for liftCarDoorCommand")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftCarDoorCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLiftCarDoorCommand")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesLiftCarDoorCommand) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesLiftCarDoorCommand"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftCarDoorCommand")
 		}
 
 		// Simple Field (liftCarDoorCommand)
 		if pushErr := writeBuffer.PushContext("liftCarDoorCommand"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for liftCarDoorCommand")
 		}
 		_liftCarDoorCommandErr := m.LiftCarDoorCommand.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("liftCarDoorCommand"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for liftCarDoorCommand")
 		}
 		if _liftCarDoorCommandErr != nil {
 			return errors.Wrap(_liftCarDoorCommandErr, "Error serializing 'liftCarDoorCommand' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftCarDoorCommand"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesLiftCarDoorCommand")
 		}
 		return nil
 	}

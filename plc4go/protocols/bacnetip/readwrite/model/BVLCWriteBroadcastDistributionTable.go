@@ -137,14 +137,14 @@ func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcP
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCWriteBroadcastDistributionTable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BVLCWriteBroadcastDistributionTable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (table)
 	if pullErr := readBuffer.PullContext("table", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for table")
 	}
 	// Length array
 	table := make([]*BVLCBroadcastDistributionTableEntry, 0)
@@ -160,11 +160,11 @@ func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcP
 		}
 	}
 	if closeErr := readBuffer.CloseContext("table", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for table")
 	}
 
 	if closeErr := readBuffer.CloseContext("BVLCWriteBroadcastDistributionTable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BVLCWriteBroadcastDistributionTable")
 	}
 
 	// Create a partially initialized instance
@@ -181,13 +181,13 @@ func (m *BVLCWriteBroadcastDistributionTable) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BVLCWriteBroadcastDistributionTable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BVLCWriteBroadcastDistributionTable")
 		}
 
 		// Array Field (table)
 		if m.Table != nil {
 			if pushErr := writeBuffer.PushContext("table", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for table")
 			}
 			for _, _element := range m.Table {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -196,12 +196,12 @@ func (m *BVLCWriteBroadcastDistributionTable) Serialize(writeBuffer utils.WriteB
 				}
 			}
 			if popErr := writeBuffer.PopContext("table", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for table")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCWriteBroadcastDistributionTable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BVLCWriteBroadcastDistributionTable")
 		}
 		return nil
 	}

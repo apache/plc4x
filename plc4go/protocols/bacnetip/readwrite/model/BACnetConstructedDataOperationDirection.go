@@ -142,14 +142,14 @@ func BACnetConstructedDataOperationDirectionParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOperationDirection"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataOperationDirection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (operationDirection)
 	if pullErr := readBuffer.PullContext("operationDirection"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for operationDirection")
 	}
 	_operationDirection, _operationDirectionErr := BACnetEscalatorOperationDirectionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _operationDirectionErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataOperationDirectionParse(readBuffer utils.ReadBuffer, t
 	}
 	operationDirection := CastBACnetEscalatorOperationDirectionTagged(_operationDirection)
 	if closeErr := readBuffer.CloseContext("operationDirection"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for operationDirection")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOperationDirection"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOperationDirection")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataOperationDirection) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataOperationDirection"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOperationDirection")
 		}
 
 		// Simple Field (operationDirection)
 		if pushErr := writeBuffer.PushContext("operationDirection"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for operationDirection")
 		}
 		_operationDirectionErr := m.OperationDirection.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("operationDirection"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for operationDirection")
 		}
 		if _operationDirectionErr != nil {
 			return errors.Wrap(_operationDirectionErr, "Error serializing 'operationDirection' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataOperationDirection"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataOperationDirection")
 		}
 		return nil
 	}

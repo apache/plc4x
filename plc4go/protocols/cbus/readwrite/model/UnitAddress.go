@@ -97,7 +97,7 @@ func UnitAddressParse(readBuffer utils.ReadBuffer) (*UnitAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UnitAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for UnitAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -110,7 +110,7 @@ func UnitAddressParse(readBuffer utils.ReadBuffer) (*UnitAddress, error) {
 	address := _address
 
 	if closeErr := readBuffer.CloseContext("UnitAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for UnitAddress")
 	}
 
 	// Create the instance
@@ -121,7 +121,7 @@ func (m *UnitAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("UnitAddress"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for UnitAddress")
 	}
 
 	// Simple Field (address)
@@ -132,7 +132,7 @@ func (m *UnitAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("UnitAddress"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for UnitAddress")
 	}
 	return nil
 }

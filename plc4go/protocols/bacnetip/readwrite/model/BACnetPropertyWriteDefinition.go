@@ -138,14 +138,14 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyWriteDefinition"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyWriteDefinition")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (propertyIdentifier)
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
 	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
@@ -153,7 +153,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 	}
 	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
 	}
 
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
@@ -161,7 +161,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
@@ -173,7 +173,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 		default:
 			arrayIndex = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for arrayIndex")
 			}
 		}
 	}
@@ -183,7 +183,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
 		}
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), objectTypeArgument, propertyIdentifier.GetValue(), CastBACnetTagPayloadUnsignedInteger(CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((*arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
@@ -195,7 +195,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 		default:
 			propertyValue = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for propertyValue")
 			}
 		}
 	}
@@ -205,7 +205,7 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for priority")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
@@ -217,13 +217,13 @@ func BACnetPropertyWriteDefinitionParse(readBuffer utils.ReadBuffer, objectTypeA
 		default:
 			priority = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for priority")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyWriteDefinition"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyWriteDefinition")
 	}
 
 	// Create the instance
@@ -234,16 +234,16 @@ func (m *BACnetPropertyWriteDefinition) Serialize(writeBuffer utils.WriteBuffer)
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPropertyWriteDefinition"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetPropertyWriteDefinition")
 	}
 
 	// Simple Field (propertyIdentifier)
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
 	_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
 	if _propertyIdentifierErr != nil {
 		return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
@@ -253,12 +253,12 @@ func (m *BACnetPropertyWriteDefinition) Serialize(writeBuffer utils.WriteBuffer)
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	if m.ArrayIndex != nil {
 		if pushErr := writeBuffer.PushContext("arrayIndex"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for arrayIndex")
 		}
 		arrayIndex = m.ArrayIndex
 		_arrayIndexErr := arrayIndex.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for arrayIndex")
 		}
 		if _arrayIndexErr != nil {
 			return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
@@ -269,12 +269,12 @@ func (m *BACnetPropertyWriteDefinition) Serialize(writeBuffer utils.WriteBuffer)
 	var propertyValue *BACnetConstructedData = nil
 	if m.PropertyValue != nil {
 		if pushErr := writeBuffer.PushContext("propertyValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for propertyValue")
 		}
 		propertyValue = m.PropertyValue
 		_propertyValueErr := propertyValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for propertyValue")
 		}
 		if _propertyValueErr != nil {
 			return errors.Wrap(_propertyValueErr, "Error serializing 'propertyValue' field")
@@ -285,12 +285,12 @@ func (m *BACnetPropertyWriteDefinition) Serialize(writeBuffer utils.WriteBuffer)
 	var priority *BACnetContextTagUnsignedInteger = nil
 	if m.Priority != nil {
 		if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for priority")
 		}
 		priority = m.Priority
 		_priorityErr := priority.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for priority")
 		}
 		if _priorityErr != nil {
 			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
@@ -298,7 +298,7 @@ func (m *BACnetPropertyWriteDefinition) Serialize(writeBuffer utils.WriteBuffer)
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPropertyWriteDefinition"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetPropertyWriteDefinition")
 	}
 	return nil
 }

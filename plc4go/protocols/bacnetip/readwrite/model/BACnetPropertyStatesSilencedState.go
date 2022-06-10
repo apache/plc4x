@@ -128,14 +128,14 @@ func BACnetPropertyStatesSilencedStateParse(readBuffer utils.ReadBuffer, peekedT
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesSilencedState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesSilencedState")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (silencedState)
 	if pullErr := readBuffer.PullContext("silencedState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for silencedState")
 	}
 	_silencedState, _silencedStateErr := BACnetSilencedStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _silencedStateErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesSilencedStateParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	silencedState := CastBACnetSilencedStateTagged(_silencedState)
 	if closeErr := readBuffer.CloseContext("silencedState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for silencedState")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesSilencedState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesSilencedState")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesSilencedState) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesSilencedState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesSilencedState")
 		}
 
 		// Simple Field (silencedState)
 		if pushErr := writeBuffer.PushContext("silencedState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for silencedState")
 		}
 		_silencedStateErr := m.SilencedState.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("silencedState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for silencedState")
 		}
 		if _silencedStateErr != nil {
 			return errors.Wrap(_silencedStateErr, "Error serializing 'silencedState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesSilencedState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesSilencedState")
 		}
 		return nil
 	}

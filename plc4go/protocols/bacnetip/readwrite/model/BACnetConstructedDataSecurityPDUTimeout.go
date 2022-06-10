@@ -142,14 +142,14 @@ func BACnetConstructedDataSecurityPDUTimeoutParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSecurityPDUTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSecurityPDUTimeout")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (securityPduTimeout)
 	if pullErr := readBuffer.PullContext("securityPduTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for securityPduTimeout")
 	}
 	_securityPduTimeout, _securityPduTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _securityPduTimeoutErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataSecurityPDUTimeoutParse(readBuffer utils.ReadBuffer, t
 	}
 	securityPduTimeout := CastBACnetApplicationTagUnsignedInteger(_securityPduTimeout)
 	if closeErr := readBuffer.CloseContext("securityPduTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for securityPduTimeout")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSecurityPDUTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSecurityPDUTimeout")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataSecurityPDUTimeout) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSecurityPDUTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSecurityPDUTimeout")
 		}
 
 		// Simple Field (securityPduTimeout)
 		if pushErr := writeBuffer.PushContext("securityPduTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for securityPduTimeout")
 		}
 		_securityPduTimeoutErr := m.SecurityPduTimeout.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("securityPduTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for securityPduTimeout")
 		}
 		if _securityPduTimeoutErr != nil {
 			return errors.Wrap(_securityPduTimeoutErr, "Error serializing 'securityPduTimeout' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSecurityPDUTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSecurityPDUTimeout")
 		}
 		return nil
 	}

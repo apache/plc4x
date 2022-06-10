@@ -124,7 +124,7 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadBitString"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadBitString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -138,7 +138,7 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Count array
 	data := make([]bool, uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits))
@@ -152,12 +152,12 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 		}
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for data")
 	}
 
 	// Array field (unused)
 	if pullErr := readBuffer.PullContext("unused", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for unused")
 	}
 	// Count array
 	unused := make([]bool, unusedBits)
@@ -171,11 +171,11 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 		}
 	}
 	if closeErr := readBuffer.CloseContext("unused", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for unused")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadBitString"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadBitString")
 	}
 
 	// Create the instance
@@ -186,7 +186,7 @@ func (m *BACnetTagPayloadBitString) Serialize(writeBuffer utils.WriteBuffer) err
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadBitString"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadBitString")
 	}
 
 	// Simple Field (unusedBits)
@@ -199,7 +199,7 @@ func (m *BACnetTagPayloadBitString) Serialize(writeBuffer utils.WriteBuffer) err
 	// Array Field (data)
 	if m.Data != nil {
 		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for data")
 		}
 		for _, _element := range m.Data {
 			_elementErr := writeBuffer.WriteBit("", _element)
@@ -208,14 +208,14 @@ func (m *BACnetTagPayloadBitString) Serialize(writeBuffer utils.WriteBuffer) err
 			}
 		}
 		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 	}
 
 	// Array Field (unused)
 	if m.Unused != nil {
 		if pushErr := writeBuffer.PushContext("unused", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for unused")
 		}
 		for _, _element := range m.Unused {
 			_elementErr := writeBuffer.WriteBit("", _element)
@@ -224,12 +224,12 @@ func (m *BACnetTagPayloadBitString) Serialize(writeBuffer utils.WriteBuffer) err
 			}
 		}
 		if popErr := writeBuffer.PopContext("unused", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for unused")
 		}
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadBitString"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadBitString")
 	}
 	return nil
 }

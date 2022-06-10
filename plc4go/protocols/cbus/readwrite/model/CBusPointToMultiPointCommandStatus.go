@@ -193,7 +193,7 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToMultiPointCommandStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CBusPointToMultiPointCommandStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -228,7 +228,7 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk 
 
 	// Simple Field (statusRequest)
 	if pullErr := readBuffer.PullContext("statusRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for statusRequest")
 	}
 	_statusRequest, _statusRequestErr := StatusRequestParse(readBuffer)
 	if _statusRequestErr != nil {
@@ -236,7 +236,7 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk 
 	}
 	statusRequest := CastStatusRequest(_statusRequest)
 	if closeErr := readBuffer.CloseContext("statusRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for statusRequest")
 	}
 
 	// Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
@@ -244,7 +244,7 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk 
 	if srchk {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("crc"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for crc")
 		}
 		_val, _err := ChecksumParse(readBuffer)
 		switch {
@@ -256,7 +256,7 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk 
 		default:
 			crc = CastChecksum(_val)
 			if closeErr := readBuffer.CloseContext("crc"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for crc")
 			}
 		}
 	}
@@ -275,7 +275,7 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk 
 	if bool(bool(bool((peekAlpha) >= (0x67)))) && bool(bool(bool((peekAlpha) <= (0x7A)))) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 		}
 		_val, _err := AlphaParse(readBuffer)
 		switch {
@@ -287,7 +287,7 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk 
 		default:
 			alpha = CastAlpha(_val)
 			if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for alpha")
 			}
 		}
 	}
@@ -302,7 +302,7 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk 
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusPointToMultiPointCommandStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToMultiPointCommandStatus")
 	}
 
 	// Create a partially initialized instance
@@ -322,7 +322,7 @@ func (m *CBusPointToMultiPointCommandStatus) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CBusPointToMultiPointCommandStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CBusPointToMultiPointCommandStatus")
 		}
 
 		// Reserved Field (reserved)
@@ -343,11 +343,11 @@ func (m *CBusPointToMultiPointCommandStatus) Serialize(writeBuffer utils.WriteBu
 
 		// Simple Field (statusRequest)
 		if pushErr := writeBuffer.PushContext("statusRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for statusRequest")
 		}
 		_statusRequestErr := m.StatusRequest.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("statusRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for statusRequest")
 		}
 		if _statusRequestErr != nil {
 			return errors.Wrap(_statusRequestErr, "Error serializing 'statusRequest' field")
@@ -357,12 +357,12 @@ func (m *CBusPointToMultiPointCommandStatus) Serialize(writeBuffer utils.WriteBu
 		var crc *Checksum = nil
 		if m.Crc != nil {
 			if pushErr := writeBuffer.PushContext("crc"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for crc")
 			}
 			crc = m.Crc
 			_crcErr := crc.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("crc"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for crc")
 			}
 			if _crcErr != nil {
 				return errors.Wrap(_crcErr, "Error serializing 'crc' field")
@@ -373,12 +373,12 @@ func (m *CBusPointToMultiPointCommandStatus) Serialize(writeBuffer utils.WriteBu
 		var alpha *Alpha = nil
 		if m.Alpha != nil {
 			if pushErr := writeBuffer.PushContext("alpha"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for alpha")
 			}
 			alpha = m.Alpha
 			_alphaErr := alpha.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for alpha")
 			}
 			if _alphaErr != nil {
 				return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
@@ -392,7 +392,7 @@ func (m *CBusPointToMultiPointCommandStatus) Serialize(writeBuffer utils.WriteBu
 		}
 
 		if popErr := writeBuffer.PopContext("CBusPointToMultiPointCommandStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CBusPointToMultiPointCommandStatus")
 		}
 		return nil
 	}

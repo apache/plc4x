@@ -120,7 +120,7 @@ func HPAIDataEndpointParse(readBuffer utils.ReadBuffer) (*HPAIDataEndpoint, erro
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HPAIDataEndpoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for HPAIDataEndpoint")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -134,7 +134,7 @@ func HPAIDataEndpointParse(readBuffer utils.ReadBuffer) (*HPAIDataEndpoint, erro
 
 	// Simple Field (hostProtocolCode)
 	if pullErr := readBuffer.PullContext("hostProtocolCode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for hostProtocolCode")
 	}
 	_hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(readBuffer)
 	if _hostProtocolCodeErr != nil {
@@ -142,12 +142,12 @@ func HPAIDataEndpointParse(readBuffer utils.ReadBuffer) (*HPAIDataEndpoint, erro
 	}
 	hostProtocolCode := _hostProtocolCode
 	if closeErr := readBuffer.CloseContext("hostProtocolCode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for hostProtocolCode")
 	}
 
 	// Simple Field (ipAddress)
 	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipAddress")
 	}
 	_ipAddress, _ipAddressErr := IPAddressParse(readBuffer)
 	if _ipAddressErr != nil {
@@ -155,7 +155,7 @@ func HPAIDataEndpointParse(readBuffer utils.ReadBuffer) (*HPAIDataEndpoint, erro
 	}
 	ipAddress := CastIPAddress(_ipAddress)
 	if closeErr := readBuffer.CloseContext("ipAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipAddress")
 	}
 
 	// Simple Field (ipPort)
@@ -166,7 +166,7 @@ func HPAIDataEndpointParse(readBuffer utils.ReadBuffer) (*HPAIDataEndpoint, erro
 	ipPort := _ipPort
 
 	if closeErr := readBuffer.CloseContext("HPAIDataEndpoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for HPAIDataEndpoint")
 	}
 
 	// Create the instance
@@ -177,7 +177,7 @@ func (m *HPAIDataEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HPAIDataEndpoint"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for HPAIDataEndpoint")
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -189,11 +189,11 @@ func (m *HPAIDataEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (hostProtocolCode)
 	if pushErr := writeBuffer.PushContext("hostProtocolCode"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for hostProtocolCode")
 	}
 	_hostProtocolCodeErr := m.HostProtocolCode.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("hostProtocolCode"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for hostProtocolCode")
 	}
 	if _hostProtocolCodeErr != nil {
 		return errors.Wrap(_hostProtocolCodeErr, "Error serializing 'hostProtocolCode' field")
@@ -201,11 +201,11 @@ func (m *HPAIDataEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (ipAddress)
 	if pushErr := writeBuffer.PushContext("ipAddress"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ipAddress")
 	}
 	_ipAddressErr := m.IpAddress.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("ipAddress"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ipAddress")
 	}
 	if _ipAddressErr != nil {
 		return errors.Wrap(_ipAddressErr, "Error serializing 'ipAddress' field")
@@ -219,7 +219,7 @@ func (m *HPAIDataEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("HPAIDataEndpoint"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for HPAIDataEndpoint")
 	}
 	return nil
 }

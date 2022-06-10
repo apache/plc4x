@@ -142,14 +142,14 @@ func BACnetConstructedDataMinimumValueParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMinimumValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (minimumValue)
 	if pullErr := readBuffer.PullContext("minimumValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for minimumValue")
 	}
 	_minimumValue, _minimumValueErr := BACnetApplicationTagParse(readBuffer)
 	if _minimumValueErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataMinimumValueParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	minimumValue := CastBACnetApplicationTagReal(_minimumValue)
 	if closeErr := readBuffer.CloseContext("minimumValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for minimumValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinimumValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMinimumValue")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataMinimumValue) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMinimumValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMinimumValue")
 		}
 
 		// Simple Field (minimumValue)
 		if pushErr := writeBuffer.PushContext("minimumValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for minimumValue")
 		}
 		_minimumValueErr := m.MinimumValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("minimumValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for minimumValue")
 		}
 		if _minimumValueErr != nil {
 			return errors.Wrap(_minimumValueErr, "Error serializing 'minimumValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMinimumValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMinimumValue")
 		}
 		return nil
 	}

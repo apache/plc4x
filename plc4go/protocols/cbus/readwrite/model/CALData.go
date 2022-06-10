@@ -136,14 +136,14 @@ func CALDataParse(readBuffer utils.ReadBuffer) (*CALData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALData"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CALData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (commandTypeContainer)
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
 	_commandTypeContainer, _commandTypeContainerErr := CALCommandTypeContainerParse(readBuffer)
 	if _commandTypeContainerErr != nil {
@@ -151,7 +151,7 @@ func CALDataParse(readBuffer utils.ReadBuffer) (*CALData, error) {
 	}
 	commandTypeContainer := _commandTypeContainer
 	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
 	}
 
 	// Virtual field
@@ -192,7 +192,7 @@ func CALDataParse(readBuffer utils.ReadBuffer) (*CALData, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("CALData"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CALData")
 	}
 
 	// Finish initializing
@@ -208,16 +208,16 @@ func (m *CALData) SerializeParent(writeBuffer utils.WriteBuffer, child ICALData,
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CALData"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CALData")
 	}
 
 	// Simple Field (commandTypeContainer)
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
 	_commandTypeContainerErr := m.CommandTypeContainer.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
 	if _commandTypeContainerErr != nil {
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
@@ -233,7 +233,7 @@ func (m *CALData) SerializeParent(writeBuffer utils.WriteBuffer, child ICALData,
 	}
 
 	if popErr := writeBuffer.PopContext("CALData"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CALData")
 	}
 	return nil
 }

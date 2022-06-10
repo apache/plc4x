@@ -142,14 +142,14 @@ func BACnetConstructedDataDeployedProfileLocationParse(readBuffer utils.ReadBuff
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeployedProfileLocation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDeployedProfileLocation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (deployedProfileLocation)
 	if pullErr := readBuffer.PullContext("deployedProfileLocation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for deployedProfileLocation")
 	}
 	_deployedProfileLocation, _deployedProfileLocationErr := BACnetApplicationTagParse(readBuffer)
 	if _deployedProfileLocationErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDeployedProfileLocationParse(readBuffer utils.ReadBuff
 	}
 	deployedProfileLocation := CastBACnetApplicationTagCharacterString(_deployedProfileLocation)
 	if closeErr := readBuffer.CloseContext("deployedProfileLocation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for deployedProfileLocation")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeployedProfileLocation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeployedProfileLocation")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDeployedProfileLocation) Serialize(writeBuffer uti
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDeployedProfileLocation"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDeployedProfileLocation")
 		}
 
 		// Simple Field (deployedProfileLocation)
 		if pushErr := writeBuffer.PushContext("deployedProfileLocation"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for deployedProfileLocation")
 		}
 		_deployedProfileLocationErr := m.DeployedProfileLocation.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("deployedProfileLocation"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for deployedProfileLocation")
 		}
 		if _deployedProfileLocationErr != nil {
 			return errors.Wrap(_deployedProfileLocationErr, "Error serializing 'deployedProfileLocation' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDeployedProfileLocation"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDeployedProfileLocation")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataReliabilityParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReliability"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataReliability")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (reliability)
 	if pullErr := readBuffer.PullContext("reliability"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for reliability")
 	}
 	_reliability, _reliabilityErr := BACnetReliabilityTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _reliabilityErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataReliabilityParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	reliability := CastBACnetReliabilityTagged(_reliability)
 	if closeErr := readBuffer.CloseContext("reliability"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for reliability")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReliability"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReliability")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataReliability) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataReliability"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataReliability")
 		}
 
 		// Simple Field (reliability)
 		if pushErr := writeBuffer.PushContext("reliability"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for reliability")
 		}
 		_reliabilityErr := m.Reliability.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("reliability"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for reliability")
 		}
 		if _reliabilityErr != nil {
 			return errors.Wrap(_reliabilityErr, "Error serializing 'reliability' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataReliability"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataReliability")
 		}
 		return nil
 	}

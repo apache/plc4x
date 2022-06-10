@@ -145,7 +145,7 @@ func DisconnectRequestParse(readBuffer utils.ReadBuffer) (*DisconnectRequest, er
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DisconnectRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DisconnectRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -173,7 +173,7 @@ func DisconnectRequestParse(readBuffer utils.ReadBuffer) (*DisconnectRequest, er
 
 	// Simple Field (hpaiControlEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
 	}
 	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
 	if _hpaiControlEndpointErr != nil {
@@ -181,11 +181,11 @@ func DisconnectRequestParse(readBuffer utils.ReadBuffer) (*DisconnectRequest, er
 	}
 	hpaiControlEndpoint := CastHPAIControlEndpoint(_hpaiControlEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for hpaiControlEndpoint")
 	}
 
 	if closeErr := readBuffer.CloseContext("DisconnectRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DisconnectRequest")
 	}
 
 	// Create a partially initialized instance
@@ -203,7 +203,7 @@ func (m *DisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DisconnectRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for DisconnectRequest")
 		}
 
 		// Simple Field (communicationChannelId)
@@ -223,18 +223,18 @@ func (m *DisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (hpaiControlEndpoint)
 		if pushErr := writeBuffer.PushContext("hpaiControlEndpoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for hpaiControlEndpoint")
 		}
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("hpaiControlEndpoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for hpaiControlEndpoint")
 		}
 		if _hpaiControlEndpointErr != nil {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DisconnectRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for DisconnectRequest")
 		}
 		return nil
 	}

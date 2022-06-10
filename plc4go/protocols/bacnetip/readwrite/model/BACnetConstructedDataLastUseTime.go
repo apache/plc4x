@@ -142,14 +142,14 @@ func BACnetConstructedDataLastUseTimeParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastUseTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastUseTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lastUseTime)
 	if pullErr := readBuffer.PullContext("lastUseTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lastUseTime")
 	}
 	_lastUseTime, _lastUseTimeErr := BACnetDateTimeParse(readBuffer)
 	if _lastUseTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLastUseTimeParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	lastUseTime := CastBACnetDateTime(_lastUseTime)
 	if closeErr := readBuffer.CloseContext("lastUseTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lastUseTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastUseTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastUseTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLastUseTime) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLastUseTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastUseTime")
 		}
 
 		// Simple Field (lastUseTime)
 		if pushErr := writeBuffer.PushContext("lastUseTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lastUseTime")
 		}
 		_lastUseTimeErr := m.LastUseTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lastUseTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lastUseTime")
 		}
 		if _lastUseTimeErr != nil {
 			return errors.Wrap(_lastUseTimeErr, "Error serializing 'lastUseTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastUseTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLastUseTime")
 		}
 		return nil
 	}

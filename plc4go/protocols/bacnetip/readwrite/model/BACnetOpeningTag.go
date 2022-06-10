@@ -100,14 +100,14 @@ func BACnetOpeningTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOpeningTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOpeningTag")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (header)
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
@@ -115,26 +115,26 @@ func BACnetOpeningTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8)
 	}
 	header := CastBACnetTagHeader(_header)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for header")
 	}
 
 	// Validation
 	if !(bool((header.GetActualTagNumber()) == (tagNumberArgument))) {
-		return nil, utils.ParseAssertError{"tagnumber doesn't match"}
+		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
-		return nil, utils.ParseValidationError{"should be a context tag"}
+		return nil, errors.WithStack(utils.ParseValidationError{"should be a context tag"})
 	}
 
 	// Validation
 	if !(bool((header.GetLengthValueType()) == (6))) {
-		return nil, utils.ParseValidationError{"opening tag should have a value of 6"}
+		return nil, errors.WithStack(utils.ParseValidationError{"opening tag should have a value of 6"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetOpeningTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetOpeningTag")
 	}
 
 	// Create the instance
@@ -145,23 +145,23 @@ func (m *BACnetOpeningTag) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetOpeningTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetOpeningTag")
 	}
 
 	// Simple Field (header)
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for header")
 	}
 	_headerErr := m.Header.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for header")
 	}
 	if _headerErr != nil {
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetOpeningTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetOpeningTag")
 	}
 	return nil
 }

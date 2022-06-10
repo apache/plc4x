@@ -128,14 +128,14 @@ func BACnetPropertyStatesProtocolLevelParse(readBuffer utils.ReadBuffer, peekedT
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesProtocolLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesProtocolLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (protocolLevel)
 	if pullErr := readBuffer.PullContext("protocolLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for protocolLevel")
 	}
 	_protocolLevel, _protocolLevelErr := BACnetProtocolLevelTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _protocolLevelErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesProtocolLevelParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	protocolLevel := CastBACnetProtocolLevelTagged(_protocolLevel)
 	if closeErr := readBuffer.CloseContext("protocolLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for protocolLevel")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesProtocolLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesProtocolLevel")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesProtocolLevel) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesProtocolLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesProtocolLevel")
 		}
 
 		// Simple Field (protocolLevel)
 		if pushErr := writeBuffer.PushContext("protocolLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for protocolLevel")
 		}
 		_protocolLevelErr := m.ProtocolLevel.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("protocolLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for protocolLevel")
 		}
 		if _protocolLevelErr != nil {
 			return errors.Wrap(_protocolLevelErr, "Error serializing 'protocolLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesProtocolLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesProtocolLevel")
 		}
 		return nil
 	}

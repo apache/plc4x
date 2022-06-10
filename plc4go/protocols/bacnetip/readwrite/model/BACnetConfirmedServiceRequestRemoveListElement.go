@@ -173,14 +173,14 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRemoveListElement"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestRemoveListElement")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
@@ -188,12 +188,12 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBu
 	}
 	objectIdentifier := CastBACnetContextTagObjectIdentifier(_objectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 	}
 
 	// Simple Field (propertyIdentifier)
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
 	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
@@ -201,7 +201,7 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBu
 	}
 	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
 	}
 
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
@@ -209,7 +209,7 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBu
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
@@ -221,7 +221,7 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBu
 		default:
 			arrayIndex = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for arrayIndex")
 			}
 		}
 	}
@@ -231,7 +231,7 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBu
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("listOfElements"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for listOfElements")
 		}
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), CastBACnetTagPayloadUnsignedInteger(CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((*arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
@@ -243,13 +243,13 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBu
 		default:
 			listOfElements = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("listOfElements"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for listOfElements")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestRemoveListElement"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestRemoveListElement")
 	}
 
 	// Create a partially initialized instance
@@ -269,16 +269,16 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) Serialize(writeBuffer u
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestRemoveListElement"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestRemoveListElement")
 		}
 
 		// Simple Field (objectIdentifier)
 		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
 		_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
 		if _objectIdentifierErr != nil {
 			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
@@ -286,11 +286,11 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) Serialize(writeBuffer u
 
 		// Simple Field (propertyIdentifier)
 		if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 		}
 		_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 		}
 		if _propertyIdentifierErr != nil {
 			return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
@@ -300,12 +300,12 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) Serialize(writeBuffer u
 		var arrayIndex *BACnetContextTagUnsignedInteger = nil
 		if m.ArrayIndex != nil {
 			if pushErr := writeBuffer.PushContext("arrayIndex"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for arrayIndex")
 			}
 			arrayIndex = m.ArrayIndex
 			_arrayIndexErr := arrayIndex.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for arrayIndex")
 			}
 			if _arrayIndexErr != nil {
 				return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
@@ -316,12 +316,12 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) Serialize(writeBuffer u
 		var listOfElements *BACnetConstructedData = nil
 		if m.ListOfElements != nil {
 			if pushErr := writeBuffer.PushContext("listOfElements"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for listOfElements")
 			}
 			listOfElements = m.ListOfElements
 			_listOfElementsErr := listOfElements.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("listOfElements"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for listOfElements")
 			}
 			if _listOfElementsErr != nil {
 				return errors.Wrap(_listOfElementsErr, "Error serializing 'listOfElements' field")
@@ -329,7 +329,7 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) Serialize(writeBuffer u
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestRemoveListElement"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestRemoveListElement")
 		}
 		return nil
 	}

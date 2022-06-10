@@ -128,14 +128,14 @@ func BACnetPropertyStatesEscalatorOperationDirectionParse(readBuffer utils.ReadB
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorOperationDirection"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesEscalatorOperationDirection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (escalatorOperationDirection)
 	if pullErr := readBuffer.PullContext("escalatorOperationDirection"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for escalatorOperationDirection")
 	}
 	_escalatorOperationDirection, _escalatorOperationDirectionErr := BACnetEscalatorOperationDirectionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _escalatorOperationDirectionErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesEscalatorOperationDirectionParse(readBuffer utils.ReadB
 	}
 	escalatorOperationDirection := CastBACnetEscalatorOperationDirectionTagged(_escalatorOperationDirection)
 	if closeErr := readBuffer.CloseContext("escalatorOperationDirection"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for escalatorOperationDirection")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesEscalatorOperationDirection"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesEscalatorOperationDirection")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesEscalatorOperationDirection) Serialize(writeBuffer 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesEscalatorOperationDirection"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesEscalatorOperationDirection")
 		}
 
 		// Simple Field (escalatorOperationDirection)
 		if pushErr := writeBuffer.PushContext("escalatorOperationDirection"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for escalatorOperationDirection")
 		}
 		_escalatorOperationDirectionErr := m.EscalatorOperationDirection.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("escalatorOperationDirection"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for escalatorOperationDirection")
 		}
 		if _escalatorOperationDirectionErr != nil {
 			return errors.Wrap(_escalatorOperationDirectionErr, "Error serializing 'escalatorOperationDirection' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesEscalatorOperationDirection"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesEscalatorOperationDirection")
 		}
 		return nil
 	}

@@ -135,7 +135,7 @@ func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCSecureBVLL"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BVLCSecureBVLL")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -147,7 +147,7 @@ func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) 
 	}
 
 	if closeErr := readBuffer.CloseContext("BVLCSecureBVLL"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BVLCSecureBVLL")
 	}
 
 	// Create a partially initialized instance
@@ -164,7 +164,7 @@ func (m *BVLCSecureBVLL) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BVLCSecureBVLL"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BVLCSecureBVLL")
 		}
 
 		// Array Field (securityWrapper)
@@ -177,7 +177,7 @@ func (m *BVLCSecureBVLL) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCSecureBVLL"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BVLCSecureBVLL")
 		}
 		return nil
 	}

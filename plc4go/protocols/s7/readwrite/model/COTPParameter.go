@@ -109,7 +109,7 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameter"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for COTPParameter")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -154,7 +154,7 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter
 	}
 
 	if closeErr := readBuffer.CloseContext("COTPParameter"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for COTPParameter")
 	}
 
 	// Finish initializing
@@ -170,7 +170,7 @@ func (m *COTPParameter) SerializeParent(writeBuffer utils.WriteBuffer, child ICO
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("COTPParameter"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for COTPParameter")
 	}
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
@@ -194,7 +194,7 @@ func (m *COTPParameter) SerializeParent(writeBuffer utils.WriteBuffer, child ICO
 	}
 
 	if popErr := writeBuffer.PopContext("COTPParameter"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for COTPParameter")
 	}
 	return nil
 }

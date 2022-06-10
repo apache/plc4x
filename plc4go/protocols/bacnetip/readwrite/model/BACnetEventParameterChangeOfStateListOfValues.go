@@ -124,14 +124,14 @@ func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuf
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfStateListOfValues"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfStateListOfValues")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
@@ -139,12 +139,12 @@ func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuf
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Array field (listOfValues)
 	if pullErr := readBuffer.PullContext("listOfValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 	}
 	// Terminated array
 	listOfValues := make([]*BACnetPropertyStates, 0)
@@ -159,12 +159,12 @@ func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuf
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listOfValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for listOfValues")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
@@ -172,11 +172,11 @@ func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuf
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterChangeOfStateListOfValues"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterChangeOfStateListOfValues")
 	}
 
 	// Create the instance
@@ -187,16 +187,16 @@ func (m *BACnetEventParameterChangeOfStateListOfValues) Serialize(writeBuffer ut
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventParameterChangeOfStateListOfValues"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfStateListOfValues")
 	}
 
 	// Simple Field (openingTag)
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
 	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -205,7 +205,7 @@ func (m *BACnetEventParameterChangeOfStateListOfValues) Serialize(writeBuffer ut
 	// Array Field (listOfValues)
 	if m.ListOfValues != nil {
 		if pushErr := writeBuffer.PushContext("listOfValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for listOfValues")
 		}
 		for _, _element := range m.ListOfValues {
 			_elementErr := _element.Serialize(writeBuffer)
@@ -214,24 +214,24 @@ func (m *BACnetEventParameterChangeOfStateListOfValues) Serialize(writeBuffer ut
 			}
 		}
 		if popErr := writeBuffer.PopContext("listOfValues", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for listOfValues")
 		}
 	}
 
 	// Simple Field (closingTag)
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
 	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfStateListOfValues"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetEventParameterChangeOfStateListOfValues")
 	}
 	return nil
 }

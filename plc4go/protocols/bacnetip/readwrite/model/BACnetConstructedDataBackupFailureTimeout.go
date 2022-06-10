@@ -142,14 +142,14 @@ func BACnetConstructedDataBackupFailureTimeoutParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBackupFailureTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBackupFailureTimeout")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (backupFailureTimeout)
 	if pullErr := readBuffer.PullContext("backupFailureTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for backupFailureTimeout")
 	}
 	_backupFailureTimeout, _backupFailureTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _backupFailureTimeoutErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBackupFailureTimeoutParse(readBuffer utils.ReadBuffer,
 	}
 	backupFailureTimeout := CastBACnetApplicationTagUnsignedInteger(_backupFailureTimeout)
 	if closeErr := readBuffer.CloseContext("backupFailureTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for backupFailureTimeout")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBackupFailureTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBackupFailureTimeout")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBackupFailureTimeout) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBackupFailureTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBackupFailureTimeout")
 		}
 
 		// Simple Field (backupFailureTimeout)
 		if pushErr := writeBuffer.PushContext("backupFailureTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for backupFailureTimeout")
 		}
 		_backupFailureTimeoutErr := m.BackupFailureTimeout.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("backupFailureTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for backupFailureTimeout")
 		}
 		if _backupFailureTimeoutErr != nil {
 			return errors.Wrap(_backupFailureTimeoutErr, "Error serializing 'backupFailureTimeout' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBackupFailureTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBackupFailureTimeout")
 		}
 		return nil
 	}

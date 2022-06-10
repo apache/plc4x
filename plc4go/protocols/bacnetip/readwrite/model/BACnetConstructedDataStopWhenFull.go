@@ -142,14 +142,14 @@ func BACnetConstructedDataStopWhenFullParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStopWhenFull"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataStopWhenFull")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (stopWhenFull)
 	if pullErr := readBuffer.PullContext("stopWhenFull"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for stopWhenFull")
 	}
 	_stopWhenFull, _stopWhenFullErr := BACnetApplicationTagParse(readBuffer)
 	if _stopWhenFullErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataStopWhenFullParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	stopWhenFull := CastBACnetApplicationTagBoolean(_stopWhenFull)
 	if closeErr := readBuffer.CloseContext("stopWhenFull"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for stopWhenFull")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStopWhenFull"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataStopWhenFull")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataStopWhenFull) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataStopWhenFull"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataStopWhenFull")
 		}
 
 		// Simple Field (stopWhenFull)
 		if pushErr := writeBuffer.PushContext("stopWhenFull"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for stopWhenFull")
 		}
 		_stopWhenFullErr := m.StopWhenFull.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("stopWhenFull"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for stopWhenFull")
 		}
 		if _stopWhenFullErr != nil {
 			return errors.Wrap(_stopWhenFullErr, "Error serializing 'stopWhenFull' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStopWhenFull"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataStopWhenFull")
 		}
 		return nil
 	}

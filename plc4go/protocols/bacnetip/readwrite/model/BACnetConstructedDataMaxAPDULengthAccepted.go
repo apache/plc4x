@@ -142,14 +142,14 @@ func BACnetConstructedDataMaxAPDULengthAcceptedParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaxAPDULengthAccepted"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMaxAPDULengthAccepted")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (maxApduLengthAccepted)
 	if pullErr := readBuffer.PullContext("maxApduLengthAccepted"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for maxApduLengthAccepted")
 	}
 	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := BACnetApplicationTagParse(readBuffer)
 	if _maxApduLengthAcceptedErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataMaxAPDULengthAcceptedParse(readBuffer utils.ReadBuffer
 	}
 	maxApduLengthAccepted := CastBACnetApplicationTagUnsignedInteger(_maxApduLengthAccepted)
 	if closeErr := readBuffer.CloseContext("maxApduLengthAccepted"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for maxApduLengthAccepted")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaxAPDULengthAccepted"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaxAPDULengthAccepted")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataMaxAPDULengthAccepted) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMaxAPDULengthAccepted"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaxAPDULengthAccepted")
 		}
 
 		// Simple Field (maxApduLengthAccepted)
 		if pushErr := writeBuffer.PushContext("maxApduLengthAccepted"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for maxApduLengthAccepted")
 		}
 		_maxApduLengthAcceptedErr := m.MaxApduLengthAccepted.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("maxApduLengthAccepted"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for maxApduLengthAccepted")
 		}
 		if _maxApduLengthAcceptedErr != nil {
 			return errors.Wrap(_maxApduLengthAcceptedErr, "Error serializing 'maxApduLengthAccepted' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaxAPDULengthAccepted"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMaxAPDULengthAccepted")
 		}
 		return nil
 	}

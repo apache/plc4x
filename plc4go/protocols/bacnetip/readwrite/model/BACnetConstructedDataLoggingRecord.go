@@ -142,14 +142,14 @@ func BACnetConstructedDataLoggingRecordParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoggingRecord"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLoggingRecord")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (loggingRecord)
 	if pullErr := readBuffer.PullContext("loggingRecord"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for loggingRecord")
 	}
 	_loggingRecord, _loggingRecordErr := BACnetAccumulatorRecordParse(readBuffer)
 	if _loggingRecordErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLoggingRecordParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	loggingRecord := CastBACnetAccumulatorRecord(_loggingRecord)
 	if closeErr := readBuffer.CloseContext("loggingRecord"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for loggingRecord")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoggingRecord"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLoggingRecord")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLoggingRecord) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLoggingRecord"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLoggingRecord")
 		}
 
 		// Simple Field (loggingRecord)
 		if pushErr := writeBuffer.PushContext("loggingRecord"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for loggingRecord")
 		}
 		_loggingRecordErr := m.LoggingRecord.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("loggingRecord"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for loggingRecord")
 		}
 		if _loggingRecordErr != nil {
 			return errors.Wrap(_loggingRecordErr, "Error serializing 'loggingRecord' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLoggingRecord"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLoggingRecord")
 		}
 		return nil
 	}

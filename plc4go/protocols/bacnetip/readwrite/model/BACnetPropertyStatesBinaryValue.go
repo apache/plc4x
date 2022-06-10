@@ -128,14 +128,14 @@ func BACnetPropertyStatesBinaryValueParse(readBuffer utils.ReadBuffer, peekedTag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBinaryValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesBinaryValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (binaryValue)
 	if pullErr := readBuffer.PullContext("binaryValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for binaryValue")
 	}
 	_binaryValue, _binaryValueErr := BACnetBinaryPVTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _binaryValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesBinaryValueParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	binaryValue := CastBACnetBinaryPVTagged(_binaryValue)
 	if closeErr := readBuffer.CloseContext("binaryValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for binaryValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesBinaryValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesBinaryValue")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesBinaryValue) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesBinaryValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesBinaryValue")
 		}
 
 		// Simple Field (binaryValue)
 		if pushErr := writeBuffer.PushContext("binaryValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for binaryValue")
 		}
 		_binaryValueErr := m.BinaryValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("binaryValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for binaryValue")
 		}
 		if _binaryValueErr != nil {
 			return errors.Wrap(_binaryValueErr, "Error serializing 'binaryValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesBinaryValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesBinaryValue")
 		}
 		return nil
 	}

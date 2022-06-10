@@ -142,14 +142,14 @@ func BACnetConstructedDataProtocolRevisionParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolRevision"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProtocolRevision")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (protocolRevision)
 	if pullErr := readBuffer.PullContext("protocolRevision"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for protocolRevision")
 	}
 	_protocolRevision, _protocolRevisionErr := BACnetApplicationTagParse(readBuffer)
 	if _protocolRevisionErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataProtocolRevisionParse(readBuffer utils.ReadBuffer, tag
 	}
 	protocolRevision := CastBACnetApplicationTagUnsignedInteger(_protocolRevision)
 	if closeErr := readBuffer.CloseContext("protocolRevision"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for protocolRevision")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolRevision"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolRevision")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataProtocolRevision) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataProtocolRevision"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProtocolRevision")
 		}
 
 		// Simple Field (protocolRevision)
 		if pushErr := writeBuffer.PushContext("protocolRevision"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for protocolRevision")
 		}
 		_protocolRevisionErr := m.ProtocolRevision.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("protocolRevision"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for protocolRevision")
 		}
 		if _protocolRevisionErr != nil {
 			return errors.Wrap(_protocolRevisionErr, "Error serializing 'protocolRevision' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProtocolRevision"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataProtocolRevision")
 		}
 		return nil
 	}

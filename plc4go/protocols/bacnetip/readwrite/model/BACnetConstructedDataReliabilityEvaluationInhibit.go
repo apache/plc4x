@@ -142,14 +142,14 @@ func BACnetConstructedDataReliabilityEvaluationInhibitParse(readBuffer utils.Rea
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReliabilityEvaluationInhibit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataReliabilityEvaluationInhibit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (reliabilityEvaluationInhibit)
 	if pullErr := readBuffer.PullContext("reliabilityEvaluationInhibit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for reliabilityEvaluationInhibit")
 	}
 	_reliabilityEvaluationInhibit, _reliabilityEvaluationInhibitErr := BACnetApplicationTagParse(readBuffer)
 	if _reliabilityEvaluationInhibitErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataReliabilityEvaluationInhibitParse(readBuffer utils.Rea
 	}
 	reliabilityEvaluationInhibit := CastBACnetApplicationTagBoolean(_reliabilityEvaluationInhibit)
 	if closeErr := readBuffer.CloseContext("reliabilityEvaluationInhibit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for reliabilityEvaluationInhibit")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReliabilityEvaluationInhibit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReliabilityEvaluationInhibit")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataReliabilityEvaluationInhibit) Serialize(writeBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataReliabilityEvaluationInhibit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataReliabilityEvaluationInhibit")
 		}
 
 		// Simple Field (reliabilityEvaluationInhibit)
 		if pushErr := writeBuffer.PushContext("reliabilityEvaluationInhibit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for reliabilityEvaluationInhibit")
 		}
 		_reliabilityEvaluationInhibitErr := m.ReliabilityEvaluationInhibit.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("reliabilityEvaluationInhibit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for reliabilityEvaluationInhibit")
 		}
 		if _reliabilityEvaluationInhibitErr != nil {
 			return errors.Wrap(_reliabilityEvaluationInhibitErr, "Error serializing 'reliabilityEvaluationInhibit' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataReliabilityEvaluationInhibit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataReliabilityEvaluationInhibit")
 		}
 		return nil
 	}

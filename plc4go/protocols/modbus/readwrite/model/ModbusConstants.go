@@ -98,7 +98,7 @@ func ModbusConstantsParse(readBuffer utils.ReadBuffer) (*ModbusConstants, error)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusConstants"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusConstants")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -113,7 +113,7 @@ func ModbusConstantsParse(readBuffer utils.ReadBuffer) (*ModbusConstants, error)
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusConstants"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusConstants")
 	}
 
 	// Create the instance
@@ -124,7 +124,7 @@ func (m *ModbusConstants) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusConstants"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ModbusConstants")
 	}
 
 	// Const Field (modbusTcpDefaultPort)
@@ -134,7 +134,7 @@ func (m *ModbusConstants) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("ModbusConstants"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ModbusConstants")
 	}
 	return nil
 }

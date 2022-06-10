@@ -97,7 +97,7 @@ func BACnetTagPayloadDoubleParse(readBuffer utils.ReadBuffer) (*BACnetTagPayload
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadDouble"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadDouble")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -110,7 +110,7 @@ func BACnetTagPayloadDoubleParse(readBuffer utils.ReadBuffer) (*BACnetTagPayload
 	value := _value
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadDouble"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadDouble")
 	}
 
 	// Create the instance
@@ -121,7 +121,7 @@ func (m *BACnetTagPayloadDouble) Serialize(writeBuffer utils.WriteBuffer) error 
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadDouble"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadDouble")
 	}
 
 	// Simple Field (value)
@@ -132,7 +132,7 @@ func (m *BACnetTagPayloadDouble) Serialize(writeBuffer utils.WriteBuffer) error 
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadDouble"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadDouble")
 	}
 	return nil
 }

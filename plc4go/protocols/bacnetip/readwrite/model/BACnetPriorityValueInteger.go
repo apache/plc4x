@@ -131,14 +131,14 @@ func BACnetPriorityValueIntegerParse(readBuffer utils.ReadBuffer, objectTypeArgu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueInteger"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueInteger")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (integerValue)
 	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
 	}
 	_integerValue, _integerValueErr := BACnetApplicationTagParse(readBuffer)
 	if _integerValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetPriorityValueIntegerParse(readBuffer utils.ReadBuffer, objectTypeArgu
 	}
 	integerValue := CastBACnetApplicationTagSignedInteger(_integerValue)
 	if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for integerValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueInteger"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueInteger")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetPriorityValueInteger) Serialize(writeBuffer utils.WriteBuffer) er
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPriorityValueInteger"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueInteger")
 		}
 
 		// Simple Field (integerValue)
 		if pushErr := writeBuffer.PushContext("integerValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for integerValue")
 		}
 		_integerValueErr := m.IntegerValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("integerValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for integerValue")
 		}
 		if _integerValueErr != nil {
 			return errors.Wrap(_integerValueErr, "Error serializing 'integerValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueInteger"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPriorityValueInteger")
 		}
 		return nil
 	}

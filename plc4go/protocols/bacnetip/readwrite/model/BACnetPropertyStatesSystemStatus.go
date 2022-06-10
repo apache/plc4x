@@ -128,14 +128,14 @@ func BACnetPropertyStatesSystemStatusParse(readBuffer utils.ReadBuffer, peekedTa
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesSystemStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesSystemStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (systemStatus)
 	if pullErr := readBuffer.PullContext("systemStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for systemStatus")
 	}
 	_systemStatus, _systemStatusErr := BACnetDeviceStatusTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _systemStatusErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesSystemStatusParse(readBuffer utils.ReadBuffer, peekedTa
 	}
 	systemStatus := CastBACnetDeviceStatusTagged(_systemStatus)
 	if closeErr := readBuffer.CloseContext("systemStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for systemStatus")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesSystemStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesSystemStatus")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesSystemStatus) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesSystemStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesSystemStatus")
 		}
 
 		// Simple Field (systemStatus)
 		if pushErr := writeBuffer.PushContext("systemStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for systemStatus")
 		}
 		_systemStatusErr := m.SystemStatus.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("systemStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for systemStatus")
 		}
 		if _systemStatusErr != nil {
 			return errors.Wrap(_systemStatusErr, "Error serializing 'systemStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesSystemStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesSystemStatus")
 		}
 		return nil
 	}

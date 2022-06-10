@@ -174,7 +174,7 @@ func DF1RequestProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer) (*DF1
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1RequestProtectedTypedLogicalRead"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DF1RequestProtectedTypedLogicalRead")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -215,7 +215,7 @@ func DF1RequestProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer) (*DF1
 	subElementNumber := _subElementNumber
 
 	if closeErr := readBuffer.CloseContext("DF1RequestProtectedTypedLogicalRead"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DF1RequestProtectedTypedLogicalRead")
 	}
 
 	// Create a partially initialized instance
@@ -236,7 +236,7 @@ func (m *DF1RequestProtectedTypedLogicalRead) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DF1RequestProtectedTypedLogicalRead"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for DF1RequestProtectedTypedLogicalRead")
 		}
 
 		// Simple Field (byteSize)
@@ -275,7 +275,7 @@ func (m *DF1RequestProtectedTypedLogicalRead) Serialize(writeBuffer utils.WriteB
 		}
 
 		if popErr := writeBuffer.PopContext("DF1RequestProtectedTypedLogicalRead"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for DF1RequestProtectedTypedLogicalRead")
 		}
 		return nil
 	}

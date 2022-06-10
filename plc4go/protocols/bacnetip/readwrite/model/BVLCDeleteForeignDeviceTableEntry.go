@@ -143,14 +143,14 @@ func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (*BVLCD
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCDeleteForeignDeviceTableEntry"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BVLCDeleteForeignDeviceTableEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (ip)
 	if pullErr := readBuffer.PullContext("ip", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ip")
 	}
 	// Count array
 	ip := make([]uint8, uint16(4))
@@ -164,7 +164,7 @@ func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (*BVLCD
 		}
 	}
 	if closeErr := readBuffer.CloseContext("ip", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ip")
 	}
 
 	// Simple Field (port)
@@ -175,7 +175,7 @@ func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (*BVLCD
 	port := _port
 
 	if closeErr := readBuffer.CloseContext("BVLCDeleteForeignDeviceTableEntry"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BVLCDeleteForeignDeviceTableEntry")
 	}
 
 	// Create a partially initialized instance
@@ -193,13 +193,13 @@ func (m *BVLCDeleteForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BVLCDeleteForeignDeviceTableEntry"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BVLCDeleteForeignDeviceTableEntry")
 		}
 
 		// Array Field (ip)
 		if m.Ip != nil {
 			if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for ip")
 			}
 			for _, _element := range m.Ip {
 				_elementErr := writeBuffer.WriteUint8("", 8, _element)
@@ -208,7 +208,7 @@ func (m *BVLCDeleteForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuf
 				}
 			}
 			if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for ip")
 			}
 		}
 
@@ -220,7 +220,7 @@ func (m *BVLCDeleteForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuf
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCDeleteForeignDeviceTableEntry"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BVLCDeleteForeignDeviceTableEntry")
 		}
 		return nil
 	}

@@ -137,14 +137,14 @@ func NLMRouterAvailableToNetworkParse(readBuffer utils.ReadBuffer, apduLength ui
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMRouterAvailableToNetwork"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for NLMRouterAvailableToNetwork")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (destinationNetworkAddress)
 	if pullErr := readBuffer.PullContext("destinationNetworkAddress", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for destinationNetworkAddress")
 	}
 	// Length array
 	destinationNetworkAddress := make([]uint16, 0)
@@ -160,11 +160,11 @@ func NLMRouterAvailableToNetworkParse(readBuffer utils.ReadBuffer, apduLength ui
 		}
 	}
 	if closeErr := readBuffer.CloseContext("destinationNetworkAddress", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for destinationNetworkAddress")
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMRouterAvailableToNetwork"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for NLMRouterAvailableToNetwork")
 	}
 
 	// Create a partially initialized instance
@@ -181,13 +181,13 @@ func (m *NLMRouterAvailableToNetwork) Serialize(writeBuffer utils.WriteBuffer) e
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("NLMRouterAvailableToNetwork"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for NLMRouterAvailableToNetwork")
 		}
 
 		// Array Field (destinationNetworkAddress)
 		if m.DestinationNetworkAddress != nil {
 			if pushErr := writeBuffer.PushContext("destinationNetworkAddress", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for destinationNetworkAddress")
 			}
 			for _, _element := range m.DestinationNetworkAddress {
 				_elementErr := writeBuffer.WriteUint16("", 16, _element)
@@ -196,12 +196,12 @@ func (m *NLMRouterAvailableToNetwork) Serialize(writeBuffer utils.WriteBuffer) e
 				}
 			}
 			if popErr := writeBuffer.PopContext("destinationNetworkAddress", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for destinationNetworkAddress")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("NLMRouterAvailableToNetwork"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for NLMRouterAvailableToNetwork")
 		}
 		return nil
 	}

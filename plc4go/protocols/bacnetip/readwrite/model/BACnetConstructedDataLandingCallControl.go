@@ -142,14 +142,14 @@ func BACnetConstructedDataLandingCallControlParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLandingCallControl"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLandingCallControl")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (landingCallControl)
 	if pullErr := readBuffer.PullContext("landingCallControl"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for landingCallControl")
 	}
 	_landingCallControl, _landingCallControlErr := BACnetLandingCallStatusParse(readBuffer)
 	if _landingCallControlErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLandingCallControlParse(readBuffer utils.ReadBuffer, t
 	}
 	landingCallControl := CastBACnetLandingCallStatus(_landingCallControl)
 	if closeErr := readBuffer.CloseContext("landingCallControl"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for landingCallControl")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLandingCallControl"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLandingCallControl")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLandingCallControl) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLandingCallControl"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLandingCallControl")
 		}
 
 		// Simple Field (landingCallControl)
 		if pushErr := writeBuffer.PushContext("landingCallControl"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for landingCallControl")
 		}
 		_landingCallControlErr := m.LandingCallControl.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("landingCallControl"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for landingCallControl")
 		}
 		if _landingCallControlErr != nil {
 			return errors.Wrap(_landingCallControlErr, "Error serializing 'landingCallControl' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLandingCallControl"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLandingCallControl")
 		}
 		return nil
 	}

@@ -130,7 +130,7 @@ func KnxNetIpDeviceManagementParse(readBuffer utils.ReadBuffer) (*KnxNetIpDevice
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpDeviceManagement"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for KnxNetIpDeviceManagement")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -143,7 +143,7 @@ func KnxNetIpDeviceManagementParse(readBuffer utils.ReadBuffer) (*KnxNetIpDevice
 	version := _version
 
 	if closeErr := readBuffer.CloseContext("KnxNetIpDeviceManagement"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for KnxNetIpDeviceManagement")
 	}
 
 	// Create a partially initialized instance
@@ -160,7 +160,7 @@ func (m *KnxNetIpDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) erro
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("KnxNetIpDeviceManagement"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for KnxNetIpDeviceManagement")
 		}
 
 		// Simple Field (version)
@@ -171,7 +171,7 @@ func (m *KnxNetIpDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 
 		if popErr := writeBuffer.PopContext("KnxNetIpDeviceManagement"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for KnxNetIpDeviceManagement")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataUnitsParse(readBuffer utils.ReadBuffer, tagNumber uint
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUnits"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataUnits")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (units)
 	if pullErr := readBuffer.PullContext("units"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for units")
 	}
 	_units, _unitsErr := BACnetEngineeringUnitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _unitsErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataUnitsParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 	units := CastBACnetEngineeringUnitsTagged(_units)
 	if closeErr := readBuffer.CloseContext("units"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for units")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUnits"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUnits")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataUnits) Serialize(writeBuffer utils.WriteBuffer) er
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataUnits"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUnits")
 		}
 
 		// Simple Field (units)
 		if pushErr := writeBuffer.PushContext("units"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for units")
 		}
 		_unitsErr := m.Units.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("units"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for units")
 		}
 		if _unitsErr != nil {
 			return errors.Wrap(_unitsErr, "Error serializing 'units' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUnits"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataUnits")
 		}
 		return nil
 	}

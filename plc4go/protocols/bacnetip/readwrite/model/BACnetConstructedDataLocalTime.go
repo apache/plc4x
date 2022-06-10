@@ -142,14 +142,14 @@ func BACnetConstructedDataLocalTimeParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLocalTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLocalTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (localTime)
 	if pullErr := readBuffer.PullContext("localTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for localTime")
 	}
 	_localTime, _localTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _localTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLocalTimeParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	localTime := CastBACnetApplicationTagTime(_localTime)
 	if closeErr := readBuffer.CloseContext("localTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for localTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLocalTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLocalTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLocalTime) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLocalTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLocalTime")
 		}
 
 		// Simple Field (localTime)
 		if pushErr := writeBuffer.PushContext("localTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for localTime")
 		}
 		_localTimeErr := m.LocalTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("localTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for localTime")
 		}
 		if _localTimeErr != nil {
 			return errors.Wrap(_localTimeErr, "Error serializing 'localTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLocalTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLocalTime")
 		}
 		return nil
 	}

@@ -133,14 +133,14 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParse(r
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (octetStringValue)
 	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
 	}
 	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParse(readBuffer)
 	if _octetStringValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParse(r
 	}
 	octetStringValue := CastBACnetApplicationTagOctetString(_octetStringValue)
 	if closeErr := readBuffer.CloseContext("octetStringValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for octetStringValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) S
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString")
 		}
 
 		// Simple Field (octetStringValue)
 		if pushErr := writeBuffer.PushContext("octetStringValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for octetStringValue")
 		}
 		_octetStringValueErr := m.OctetStringValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("octetStringValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for octetStringValue")
 		}
 		if _octetStringValueErr != nil {
 			return errors.Wrap(_octetStringValueErr, "Error serializing 'octetStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString")
 		}
 		return nil
 	}

@@ -114,7 +114,7 @@ func BACnetTagPayloadBooleanParse(readBuffer utils.ReadBuffer, actualLength uint
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadBoolean"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadBoolean")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -135,7 +135,7 @@ func BACnetTagPayloadBooleanParse(readBuffer utils.ReadBuffer, actualLength uint
 	_ = isFalse
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadBoolean"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadBoolean")
 	}
 
 	// Create the instance
@@ -146,7 +146,7 @@ func (m *BACnetTagPayloadBoolean) Serialize(writeBuffer utils.WriteBuffer) error
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadBoolean"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadBoolean")
 	}
 	// Virtual field
 	if _valueErr := writeBuffer.WriteVirtual("value", m.GetValue()); _valueErr != nil {
@@ -162,7 +162,7 @@ func (m *BACnetTagPayloadBoolean) Serialize(writeBuffer utils.WriteBuffer) error
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadBoolean"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadBoolean")
 	}
 	return nil
 }

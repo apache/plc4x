@@ -145,14 +145,14 @@ func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, header 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagSignedInteger"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetApplicationTagSignedInteger")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
 	_payload, _payloadErr := BACnetTagPayloadSignedIntegerParse(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
@@ -160,7 +160,7 @@ func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, header 
 	}
 	payload := CastBACnetTagPayloadSignedInteger(_payload)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for payload")
 	}
 
 	// Virtual field
@@ -169,7 +169,7 @@ func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, header 
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagSignedInteger"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetApplicationTagSignedInteger")
 	}
 
 	// Create a partially initialized instance
@@ -186,16 +186,16 @@ func (m *BACnetApplicationTagSignedInteger) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetApplicationTagSignedInteger"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetApplicationTagSignedInteger")
 		}
 
 		// Simple Field (payload)
 		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for payload")
 		}
 		_payloadErr := m.Payload.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for payload")
 		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
@@ -206,7 +206,7 @@ func (m *BACnetApplicationTagSignedInteger) Serialize(writeBuffer utils.WriteBuf
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetApplicationTagSignedInteger"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetApplicationTagSignedInteger")
 		}
 		return nil
 	}

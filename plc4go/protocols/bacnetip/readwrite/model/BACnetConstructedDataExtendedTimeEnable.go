@@ -142,14 +142,14 @@ func BACnetConstructedDataExtendedTimeEnableParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExtendedTimeEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataExtendedTimeEnable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (extendedTimeEnable)
 	if pullErr := readBuffer.PullContext("extendedTimeEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for extendedTimeEnable")
 	}
 	_extendedTimeEnable, _extendedTimeEnableErr := BACnetApplicationTagParse(readBuffer)
 	if _extendedTimeEnableErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataExtendedTimeEnableParse(readBuffer utils.ReadBuffer, t
 	}
 	extendedTimeEnable := CastBACnetApplicationTagBoolean(_extendedTimeEnable)
 	if closeErr := readBuffer.CloseContext("extendedTimeEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for extendedTimeEnable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataExtendedTimeEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataExtendedTimeEnable")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataExtendedTimeEnable) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataExtendedTimeEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataExtendedTimeEnable")
 		}
 
 		// Simple Field (extendedTimeEnable)
 		if pushErr := writeBuffer.PushContext("extendedTimeEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for extendedTimeEnable")
 		}
 		_extendedTimeEnableErr := m.ExtendedTimeEnable.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("extendedTimeEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for extendedTimeEnable")
 		}
 		if _extendedTimeEnableErr != nil {
 			return errors.Wrap(_extendedTimeEnableErr, "Error serializing 'extendedTimeEnable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataExtendedTimeEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataExtendedTimeEnable")
 		}
 		return nil
 	}

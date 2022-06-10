@@ -142,14 +142,14 @@ func BACnetConstructedDataMACAddressParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMACAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMACAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (macAddress)
 	if pullErr := readBuffer.PullContext("macAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for macAddress")
 	}
 	_macAddress, _macAddressErr := BACnetApplicationTagParse(readBuffer)
 	if _macAddressErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataMACAddressParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	macAddress := CastBACnetApplicationTagOctetString(_macAddress)
 	if closeErr := readBuffer.CloseContext("macAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for macAddress")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMACAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMACAddress")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataMACAddress) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMACAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMACAddress")
 		}
 
 		// Simple Field (macAddress)
 		if pushErr := writeBuffer.PushContext("macAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for macAddress")
 		}
 		_macAddressErr := m.MacAddress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("macAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for macAddress")
 		}
 		if _macAddressErr != nil {
 			return errors.Wrap(_macAddressErr, "Error serializing 'macAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMACAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMACAddress")
 		}
 		return nil
 	}

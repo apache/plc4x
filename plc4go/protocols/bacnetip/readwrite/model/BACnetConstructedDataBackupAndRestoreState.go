@@ -142,14 +142,14 @@ func BACnetConstructedDataBackupAndRestoreStateParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBackupAndRestoreState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBackupAndRestoreState")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (backupAndRestoreState)
 	if pullErr := readBuffer.PullContext("backupAndRestoreState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for backupAndRestoreState")
 	}
 	_backupAndRestoreState, _backupAndRestoreStateErr := BACnetBackupStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _backupAndRestoreStateErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBackupAndRestoreStateParse(readBuffer utils.ReadBuffer
 	}
 	backupAndRestoreState := CastBACnetBackupStateTagged(_backupAndRestoreState)
 	if closeErr := readBuffer.CloseContext("backupAndRestoreState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for backupAndRestoreState")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBackupAndRestoreState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBackupAndRestoreState")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBackupAndRestoreState) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBackupAndRestoreState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBackupAndRestoreState")
 		}
 
 		// Simple Field (backupAndRestoreState)
 		if pushErr := writeBuffer.PushContext("backupAndRestoreState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for backupAndRestoreState")
 		}
 		_backupAndRestoreStateErr := m.BackupAndRestoreState.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("backupAndRestoreState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for backupAndRestoreState")
 		}
 		if _backupAndRestoreStateErr != nil {
 			return errors.Wrap(_backupAndRestoreStateErr, "Error serializing 'backupAndRestoreState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBackupAndRestoreState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBackupAndRestoreState")
 		}
 		return nil
 	}

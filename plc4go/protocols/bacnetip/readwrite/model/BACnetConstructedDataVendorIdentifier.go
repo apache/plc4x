@@ -142,14 +142,14 @@ func BACnetConstructedDataVendorIdentifierParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVendorIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataVendorIdentifier")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (vendorIdentifier)
 	if pullErr := readBuffer.PullContext("vendorIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for vendorIdentifier")
 	}
 	_vendorIdentifier, _vendorIdentifierErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _vendorIdentifierErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataVendorIdentifierParse(readBuffer utils.ReadBuffer, tag
 	}
 	vendorIdentifier := CastBACnetVendorIdTagged(_vendorIdentifier)
 	if closeErr := readBuffer.CloseContext("vendorIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for vendorIdentifier")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVendorIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataVendorIdentifier")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataVendorIdentifier) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataVendorIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataVendorIdentifier")
 		}
 
 		// Simple Field (vendorIdentifier)
 		if pushErr := writeBuffer.PushContext("vendorIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for vendorIdentifier")
 		}
 		_vendorIdentifierErr := m.VendorIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("vendorIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for vendorIdentifier")
 		}
 		if _vendorIdentifierErr != nil {
 			return errors.Wrap(_vendorIdentifierErr, "Error serializing 'vendorIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataVendorIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataVendorIdentifier")
 		}
 		return nil
 	}

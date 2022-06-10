@@ -142,14 +142,14 @@ func BACnetConstructedDataDoorExtendedPulseTimeParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorExtendedPulseTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDoorExtendedPulseTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (doorExtendedPulseTime)
 	if pullErr := readBuffer.PullContext("doorExtendedPulseTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for doorExtendedPulseTime")
 	}
 	_doorExtendedPulseTime, _doorExtendedPulseTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _doorExtendedPulseTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDoorExtendedPulseTimeParse(readBuffer utils.ReadBuffer
 	}
 	doorExtendedPulseTime := CastBACnetApplicationTagUnsignedInteger(_doorExtendedPulseTime)
 	if closeErr := readBuffer.CloseContext("doorExtendedPulseTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for doorExtendedPulseTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorExtendedPulseTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorExtendedPulseTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDoorExtendedPulseTime) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDoorExtendedPulseTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDoorExtendedPulseTime")
 		}
 
 		// Simple Field (doorExtendedPulseTime)
 		if pushErr := writeBuffer.PushContext("doorExtendedPulseTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for doorExtendedPulseTime")
 		}
 		_doorExtendedPulseTimeErr := m.DoorExtendedPulseTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("doorExtendedPulseTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for doorExtendedPulseTime")
 		}
 		if _doorExtendedPulseTimeErr != nil {
 			return errors.Wrap(_doorExtendedPulseTimeErr, "Error serializing 'doorExtendedPulseTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDoorExtendedPulseTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDoorExtendedPulseTime")
 		}
 		return nil
 	}

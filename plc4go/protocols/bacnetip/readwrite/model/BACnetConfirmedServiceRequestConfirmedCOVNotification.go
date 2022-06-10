@@ -178,14 +178,14 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestConfirmedCOVNotification")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (subscriberProcessIdentifier)
 	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for subscriberProcessIdentifier")
 	}
 	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _subscriberProcessIdentifierErr != nil {
@@ -193,12 +193,12 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 	}
 	subscriberProcessIdentifier := CastBACnetContextTagUnsignedInteger(_subscriberProcessIdentifier)
 	if closeErr := readBuffer.CloseContext("subscriberProcessIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for subscriberProcessIdentifier")
 	}
 
 	// Simple Field (initiatingDeviceIdentifier)
 	if pullErr := readBuffer.PullContext("initiatingDeviceIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for initiatingDeviceIdentifier")
 	}
 	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _initiatingDeviceIdentifierErr != nil {
@@ -206,12 +206,12 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 	}
 	initiatingDeviceIdentifier := CastBACnetContextTagObjectIdentifier(_initiatingDeviceIdentifier)
 	if closeErr := readBuffer.CloseContext("initiatingDeviceIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for initiatingDeviceIdentifier")
 	}
 
 	// Simple Field (monitoredObjectIdentifier)
 	if pullErr := readBuffer.PullContext("monitoredObjectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for monitoredObjectIdentifier")
 	}
 	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
@@ -219,12 +219,12 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 	}
 	monitoredObjectIdentifier := CastBACnetContextTagObjectIdentifier(_monitoredObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("monitoredObjectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for monitoredObjectIdentifier")
 	}
 
 	// Simple Field (lifetimeInSeconds)
 	if pullErr := readBuffer.PullContext("lifetimeInSeconds"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lifetimeInSeconds")
 	}
 	_lifetimeInSeconds, _lifetimeInSecondsErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _lifetimeInSecondsErr != nil {
@@ -232,12 +232,12 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 	}
 	lifetimeInSeconds := CastBACnetContextTagUnsignedInteger(_lifetimeInSeconds)
 	if closeErr := readBuffer.CloseContext("lifetimeInSeconds"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lifetimeInSeconds")
 	}
 
 	// Simple Field (listOfValues)
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 	}
 	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(uint8(4)), BACnetObjectType(monitoredObjectIdentifier.GetObjectType()))
 	if _listOfValuesErr != nil {
@@ -245,11 +245,11 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 	}
 	listOfValues := CastBACnetPropertyValues(_listOfValues)
 	if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for listOfValues")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestConfirmedCOVNotification")
 	}
 
 	// Create a partially initialized instance
@@ -270,16 +270,16 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(writeB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestConfirmedCOVNotification")
 		}
 
 		// Simple Field (subscriberProcessIdentifier)
 		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
 		}
 		_subscriberProcessIdentifierErr := m.SubscriberProcessIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
 		}
 		if _subscriberProcessIdentifierErr != nil {
 			return errors.Wrap(_subscriberProcessIdentifierErr, "Error serializing 'subscriberProcessIdentifier' field")
@@ -287,11 +287,11 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(writeB
 
 		// Simple Field (initiatingDeviceIdentifier)
 		if pushErr := writeBuffer.PushContext("initiatingDeviceIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for initiatingDeviceIdentifier")
 		}
 		_initiatingDeviceIdentifierErr := m.InitiatingDeviceIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("initiatingDeviceIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for initiatingDeviceIdentifier")
 		}
 		if _initiatingDeviceIdentifierErr != nil {
 			return errors.Wrap(_initiatingDeviceIdentifierErr, "Error serializing 'initiatingDeviceIdentifier' field")
@@ -299,11 +299,11 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(writeB
 
 		// Simple Field (monitoredObjectIdentifier)
 		if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
 		}
 		_monitoredObjectIdentifierErr := m.MonitoredObjectIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
 		}
 		if _monitoredObjectIdentifierErr != nil {
 			return errors.Wrap(_monitoredObjectIdentifierErr, "Error serializing 'monitoredObjectIdentifier' field")
@@ -311,11 +311,11 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(writeB
 
 		// Simple Field (lifetimeInSeconds)
 		if pushErr := writeBuffer.PushContext("lifetimeInSeconds"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lifetimeInSeconds")
 		}
 		_lifetimeInSecondsErr := m.LifetimeInSeconds.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lifetimeInSeconds"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lifetimeInSeconds")
 		}
 		if _lifetimeInSecondsErr != nil {
 			return errors.Wrap(_lifetimeInSecondsErr, "Error serializing 'lifetimeInSeconds' field")
@@ -323,18 +323,18 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(writeB
 
 		// Simple Field (listOfValues)
 		if pushErr := writeBuffer.PushContext("listOfValues"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for listOfValues")
 		}
 		_listOfValuesErr := m.ListOfValues.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for listOfValues")
 		}
 		if _listOfValuesErr != nil {
 			return errors.Wrap(_listOfValuesErr, "Error serializing 'listOfValues' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestConfirmedCOVNotification")
 		}
 		return nil
 	}

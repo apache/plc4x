@@ -142,14 +142,14 @@ func BACnetConstructedDataBACnetIPUDPPortParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPUDPPort"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBACnetIPUDPPort")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ipUdpPort)
 	if pullErr := readBuffer.PullContext("ipUdpPort"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipUdpPort")
 	}
 	_ipUdpPort, _ipUdpPortErr := BACnetApplicationTagParse(readBuffer)
 	if _ipUdpPortErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBACnetIPUDPPortParse(readBuffer utils.ReadBuffer, tagN
 	}
 	ipUdpPort := CastBACnetApplicationTagUnsignedInteger(_ipUdpPort)
 	if closeErr := readBuffer.CloseContext("ipUdpPort"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipUdpPort")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPUDPPort"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPUDPPort")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBACnetIPUDPPort) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBACnetIPUDPPort"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBACnetIPUDPPort")
 		}
 
 		// Simple Field (ipUdpPort)
 		if pushErr := writeBuffer.PushContext("ipUdpPort"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ipUdpPort")
 		}
 		_ipUdpPortErr := m.IpUdpPort.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ipUdpPort"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ipUdpPort")
 		}
 		if _ipUdpPortErr != nil {
 			return errors.Wrap(_ipUdpPortErr, "Error serializing 'ipUdpPort' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBACnetIPUDPPort"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBACnetIPUDPPort")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataAutoSlaveDiscoveryParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAutoSlaveDiscovery"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAutoSlaveDiscovery")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (autoSlaveDiscovery)
 	if pullErr := readBuffer.PullContext("autoSlaveDiscovery"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for autoSlaveDiscovery")
 	}
 	_autoSlaveDiscovery, _autoSlaveDiscoveryErr := BACnetApplicationTagParse(readBuffer)
 	if _autoSlaveDiscoveryErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAutoSlaveDiscoveryParse(readBuffer utils.ReadBuffer, t
 	}
 	autoSlaveDiscovery := CastBACnetApplicationTagBoolean(_autoSlaveDiscovery)
 	if closeErr := readBuffer.CloseContext("autoSlaveDiscovery"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for autoSlaveDiscovery")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAutoSlaveDiscovery"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAutoSlaveDiscovery")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAutoSlaveDiscovery) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAutoSlaveDiscovery"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAutoSlaveDiscovery")
 		}
 
 		// Simple Field (autoSlaveDiscovery)
 		if pushErr := writeBuffer.PushContext("autoSlaveDiscovery"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for autoSlaveDiscovery")
 		}
 		_autoSlaveDiscoveryErr := m.AutoSlaveDiscovery.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("autoSlaveDiscovery"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for autoSlaveDiscovery")
 		}
 		if _autoSlaveDiscoveryErr != nil {
 			return errors.Wrap(_autoSlaveDiscoveryErr, "Error serializing 'autoSlaveDiscovery' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAutoSlaveDiscovery"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAutoSlaveDiscovery")
 		}
 		return nil
 	}

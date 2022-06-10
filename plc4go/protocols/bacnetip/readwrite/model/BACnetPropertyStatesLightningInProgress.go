@@ -128,14 +128,14 @@ func BACnetPropertyStatesLightningInProgressParse(readBuffer utils.ReadBuffer, p
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLightningInProgress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLightningInProgress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lightningInProgress)
 	if pullErr := readBuffer.PullContext("lightningInProgress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lightningInProgress")
 	}
 	_lightningInProgress, _lightningInProgressErr := BACnetLightingInProgressTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningInProgressErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesLightningInProgressParse(readBuffer utils.ReadBuffer, p
 	}
 	lightningInProgress := CastBACnetLightingInProgressTagged(_lightningInProgress)
 	if closeErr := readBuffer.CloseContext("lightningInProgress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lightningInProgress")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLightningInProgress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLightningInProgress")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesLightningInProgress) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesLightningInProgress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLightningInProgress")
 		}
 
 		// Simple Field (lightningInProgress)
 		if pushErr := writeBuffer.PushContext("lightningInProgress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lightningInProgress")
 		}
 		_lightningInProgressErr := m.LightningInProgress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lightningInProgress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lightningInProgress")
 		}
 		if _lightningInProgressErr != nil {
 			return errors.Wrap(_lightningInProgressErr, "Error serializing 'lightningInProgress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLightningInProgress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesLightningInProgress")
 		}
 		return nil
 	}

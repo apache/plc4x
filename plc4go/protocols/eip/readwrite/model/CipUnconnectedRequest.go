@@ -197,7 +197,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipUnconnectedRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CipUnconnectedRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -295,7 +295,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 
 	// Simple Field (unconnectedService)
 	if pullErr := readBuffer.PullContext("unconnectedService"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for unconnectedService")
 	}
 	_unconnectedService, _unconnectedServiceErr := CipServiceParse(readBuffer, uint16(messageSize))
 	if _unconnectedServiceErr != nil {
@@ -303,7 +303,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	}
 	unconnectedService := CastCipService(_unconnectedService)
 	if closeErr := readBuffer.CloseContext("unconnectedService"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for unconnectedService")
 	}
 
 	// Const Field (route)
@@ -330,7 +330,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	slot := _slot
 
 	if closeErr := readBuffer.CloseContext("CipUnconnectedRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CipUnconnectedRequest")
 	}
 
 	// Create a partially initialized instance
@@ -349,7 +349,7 @@ func (m *CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CipUnconnectedRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CipUnconnectedRequest")
 		}
 
 		// Reserved Field (reserved)
@@ -409,11 +409,11 @@ func (m *CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (unconnectedService)
 		if pushErr := writeBuffer.PushContext("unconnectedService"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for unconnectedService")
 		}
 		_unconnectedServiceErr := m.UnconnectedService.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("unconnectedService"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for unconnectedService")
 		}
 		if _unconnectedServiceErr != nil {
 			return errors.Wrap(_unconnectedServiceErr, "Error serializing 'unconnectedService' field")
@@ -440,7 +440,7 @@ func (m *CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("CipUnconnectedRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CipUnconnectedRequest")
 		}
 		return nil
 	}

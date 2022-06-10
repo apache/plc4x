@@ -137,7 +137,7 @@ func BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer utils.ReadBuf
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedUnknown"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestConfirmedUnknown")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -149,7 +149,7 @@ func BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer utils.ReadBuf
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedUnknown"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestConfirmedUnknown")
 	}
 
 	// Create a partially initialized instance
@@ -166,7 +166,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedUnknown) Serialize(writeBuffer ut
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestConfirmedUnknown"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestConfirmedUnknown")
 		}
 
 		// Array Field (unknownBytes)
@@ -179,7 +179,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedUnknown) Serialize(writeBuffer ut
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedUnknown"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestConfirmedUnknown")
 		}
 		return nil
 	}

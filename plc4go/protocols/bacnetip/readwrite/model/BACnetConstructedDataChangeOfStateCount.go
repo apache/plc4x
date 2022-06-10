@@ -142,14 +142,14 @@ func BACnetConstructedDataChangeOfStateCountParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChangeOfStateCount"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataChangeOfStateCount")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (changeIfStateCount)
 	if pullErr := readBuffer.PullContext("changeIfStateCount"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for changeIfStateCount")
 	}
 	_changeIfStateCount, _changeIfStateCountErr := BACnetApplicationTagParse(readBuffer)
 	if _changeIfStateCountErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataChangeOfStateCountParse(readBuffer utils.ReadBuffer, t
 	}
 	changeIfStateCount := CastBACnetApplicationTagUnsignedInteger(_changeIfStateCount)
 	if closeErr := readBuffer.CloseContext("changeIfStateCount"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for changeIfStateCount")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChangeOfStateCount"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataChangeOfStateCount")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataChangeOfStateCount) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataChangeOfStateCount"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataChangeOfStateCount")
 		}
 
 		// Simple Field (changeIfStateCount)
 		if pushErr := writeBuffer.PushContext("changeIfStateCount"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for changeIfStateCount")
 		}
 		_changeIfStateCountErr := m.ChangeIfStateCount.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("changeIfStateCount"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for changeIfStateCount")
 		}
 		if _changeIfStateCountErr != nil {
 			return errors.Wrap(_changeIfStateCountErr, "Error serializing 'changeIfStateCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataChangeOfStateCount"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataChangeOfStateCount")
 		}
 		return nil
 	}

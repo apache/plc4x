@@ -142,14 +142,14 @@ func BACnetConstructedDataCarMovingDirectionParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarMovingDirection"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCarMovingDirection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (carMovingDirection)
 	if pullErr := readBuffer.PullContext("carMovingDirection"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for carMovingDirection")
 	}
 	_carMovingDirection, _carMovingDirectionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _carMovingDirectionErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataCarMovingDirectionParse(readBuffer utils.ReadBuffer, t
 	}
 	carMovingDirection := CastBACnetLiftCarDirectionTagged(_carMovingDirection)
 	if closeErr := readBuffer.CloseContext("carMovingDirection"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for carMovingDirection")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarMovingDirection"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCarMovingDirection")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataCarMovingDirection) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCarMovingDirection"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCarMovingDirection")
 		}
 
 		// Simple Field (carMovingDirection)
 		if pushErr := writeBuffer.PushContext("carMovingDirection"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for carMovingDirection")
 		}
 		_carMovingDirectionErr := m.CarMovingDirection.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("carMovingDirection"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for carMovingDirection")
 		}
 		if _carMovingDirectionErr != nil {
 			return errors.Wrap(_carMovingDirectionErr, "Error serializing 'carMovingDirection' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCarMovingDirection"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCarMovingDirection")
 		}
 		return nil
 	}

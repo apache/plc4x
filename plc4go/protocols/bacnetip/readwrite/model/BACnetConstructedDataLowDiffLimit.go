@@ -142,14 +142,14 @@ func BACnetConstructedDataLowDiffLimitParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLowDiffLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLowDiffLimit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lowDiffLimit)
 	if pullErr := readBuffer.PullContext("lowDiffLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lowDiffLimit")
 	}
 	_lowDiffLimit, _lowDiffLimitErr := BACnetOptionalREALParse(readBuffer)
 	if _lowDiffLimitErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLowDiffLimitParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	lowDiffLimit := CastBACnetOptionalREAL(_lowDiffLimit)
 	if closeErr := readBuffer.CloseContext("lowDiffLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lowDiffLimit")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLowDiffLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLowDiffLimit")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLowDiffLimit) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLowDiffLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLowDiffLimit")
 		}
 
 		// Simple Field (lowDiffLimit)
 		if pushErr := writeBuffer.PushContext("lowDiffLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lowDiffLimit")
 		}
 		_lowDiffLimitErr := m.LowDiffLimit.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lowDiffLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lowDiffLimit")
 		}
 		if _lowDiffLimitErr != nil {
 			return errors.Wrap(_lowDiffLimitErr, "Error serializing 'lowDiffLimit' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLowDiffLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLowDiffLimit")
 		}
 		return nil
 	}

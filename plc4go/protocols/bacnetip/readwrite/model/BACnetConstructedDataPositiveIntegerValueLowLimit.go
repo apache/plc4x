@@ -142,14 +142,14 @@ func BACnetConstructedDataPositiveIntegerValueLowLimitParse(readBuffer utils.Rea
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueLowLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPositiveIntegerValueLowLimit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lowLimit)
 	if pullErr := readBuffer.PullContext("lowLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lowLimit")
 	}
 	_lowLimit, _lowLimitErr := BACnetApplicationTagParse(readBuffer)
 	if _lowLimitErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataPositiveIntegerValueLowLimitParse(readBuffer utils.Rea
 	}
 	lowLimit := CastBACnetApplicationTagUnsignedInteger(_lowLimit)
 	if closeErr := readBuffer.CloseContext("lowLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lowLimit")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveIntegerValueLowLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPositiveIntegerValueLowLimit")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataPositiveIntegerValueLowLimit) Serialize(writeBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataPositiveIntegerValueLowLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPositiveIntegerValueLowLimit")
 		}
 
 		// Simple Field (lowLimit)
 		if pushErr := writeBuffer.PushContext("lowLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lowLimit")
 		}
 		_lowLimitErr := m.LowLimit.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lowLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lowLimit")
 		}
 		if _lowLimitErr != nil {
 			return errors.Wrap(_lowLimitErr, "Error serializing 'lowLimit' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPositiveIntegerValueLowLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataPositiveIntegerValueLowLimit")
 		}
 		return nil
 	}

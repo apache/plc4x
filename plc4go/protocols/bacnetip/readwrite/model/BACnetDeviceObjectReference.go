@@ -111,7 +111,7 @@ func BACnetDeviceObjectReferenceParse(readBuffer utils.ReadBuffer) (*BACnetDevic
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDeviceObjectReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetDeviceObjectReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -121,7 +121,7 @@ func BACnetDeviceObjectReferenceParse(readBuffer utils.ReadBuffer) (*BACnetDevic
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
@@ -133,14 +133,14 @@ func BACnetDeviceObjectReferenceParse(readBuffer utils.ReadBuffer) (*BACnetDevic
 		default:
 			deviceIdentifier = CastBACnetContextTagObjectIdentifier(_val)
 			if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for deviceIdentifier")
 			}
 		}
 	}
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
@@ -148,11 +148,11 @@ func BACnetDeviceObjectReferenceParse(readBuffer utils.ReadBuffer) (*BACnetDevic
 	}
 	objectIdentifier := CastBACnetContextTagObjectIdentifier(_objectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetDeviceObjectReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetDeviceObjectReference")
 	}
 
 	// Create the instance
@@ -163,19 +163,19 @@ func (m *BACnetDeviceObjectReference) Serialize(writeBuffer utils.WriteBuffer) e
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDeviceObjectReference"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetDeviceObjectReference")
 	}
 
 	// Optional Field (deviceIdentifier) (Can be skipped, if the value is null)
 	var deviceIdentifier *BACnetContextTagObjectIdentifier = nil
 	if m.DeviceIdentifier != nil {
 		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
 		}
 		deviceIdentifier = m.DeviceIdentifier
 		_deviceIdentifierErr := deviceIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
 		}
 		if _deviceIdentifierErr != nil {
 			return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
@@ -184,18 +184,18 @@ func (m *BACnetDeviceObjectReference) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (objectIdentifier)
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
 	_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
 	if _objectIdentifierErr != nil {
 		return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetDeviceObjectReference"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetDeviceObjectReference")
 	}
 	return nil
 }

@@ -142,14 +142,14 @@ func BACnetConstructedDataNodeTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNodeType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNodeType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (nodeType)
 	if pullErr := readBuffer.PullContext("nodeType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for nodeType")
 	}
 	_nodeType, _nodeTypeErr := BACnetNodeTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _nodeTypeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataNodeTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	nodeType := CastBACnetNodeTypeTagged(_nodeType)
 	if closeErr := readBuffer.CloseContext("nodeType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for nodeType")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNodeType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNodeType")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataNodeType) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataNodeType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNodeType")
 		}
 
 		// Simple Field (nodeType)
 		if pushErr := writeBuffer.PushContext("nodeType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for nodeType")
 		}
 		_nodeTypeErr := m.NodeType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("nodeType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for nodeType")
 		}
 		if _nodeTypeErr != nil {
 			return errors.Wrap(_nodeTypeErr, "Error serializing 'nodeType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNodeType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataNodeType")
 		}
 		return nil
 	}

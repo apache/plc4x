@@ -131,14 +131,14 @@ func BACnetTimerStateChangeValueDateParse(readBuffer utils.ReadBuffer, objectTyp
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueDate"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimerStateChangeValueDate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (dateValue)
 	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
 	}
 	_dateValue, _dateValueErr := BACnetApplicationTagParse(readBuffer)
 	if _dateValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetTimerStateChangeValueDateParse(readBuffer utils.ReadBuffer, objectTyp
 	}
 	dateValue := CastBACnetApplicationTagDate(_dateValue)
 	if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dateValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValueDate"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimerStateChangeValueDate")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetTimerStateChangeValueDate) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetTimerStateChangeValueDate"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueDate")
 		}
 
 		// Simple Field (dateValue)
 		if pushErr := writeBuffer.PushContext("dateValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dateValue")
 		}
 		_dateValueErr := m.DateValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dateValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dateValue")
 		}
 		if _dateValueErr != nil {
 			return errors.Wrap(_dateValueErr, "Error serializing 'dateValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueDate"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetTimerStateChangeValueDate")
 		}
 		return nil
 	}

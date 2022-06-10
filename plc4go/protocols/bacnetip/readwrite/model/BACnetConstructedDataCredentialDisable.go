@@ -142,14 +142,14 @@ func BACnetConstructedDataCredentialDisableParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCredentialDisable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCredentialDisable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (credentialDisable)
 	if pullErr := readBuffer.PullContext("credentialDisable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for credentialDisable")
 	}
 	_credentialDisable, _credentialDisableErr := BACnetAccessCredentialDisableTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _credentialDisableErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataCredentialDisableParse(readBuffer utils.ReadBuffer, ta
 	}
 	credentialDisable := CastBACnetAccessCredentialDisableTagged(_credentialDisable)
 	if closeErr := readBuffer.CloseContext("credentialDisable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for credentialDisable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCredentialDisable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCredentialDisable")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataCredentialDisable) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCredentialDisable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCredentialDisable")
 		}
 
 		// Simple Field (credentialDisable)
 		if pushErr := writeBuffer.PushContext("credentialDisable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for credentialDisable")
 		}
 		_credentialDisableErr := m.CredentialDisable.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("credentialDisable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for credentialDisable")
 		}
 		if _credentialDisableErr != nil {
 			return errors.Wrap(_credentialDisableErr, "Error serializing 'credentialDisable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCredentialDisable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCredentialDisable")
 		}
 		return nil
 	}

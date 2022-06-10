@@ -729,7 +729,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("${type.name}"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -768,7 +768,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 
 	// Array field (${arrayField.name})
 	if pullErr := readBuffer.PullContext("${arrayField.name}", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ${arrayField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 			<#-- Only update curPos if the length expression uses it -->
 					<#if arrayField.loopExpression.contains("curPos")>
@@ -919,7 +919,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	}
 					</#if>
 	if closeErr := readBuffer.CloseContext("${arrayField.name}", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ${arrayField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 				</#if>
 				<#break>
@@ -981,12 +981,12 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	<#if helper.isEnumField(field)>
         <#assign namedField = field.asNamedField().orElseThrow()>
 	if pullErr := readBuffer.PullContext("${namedField.name}"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 	${helper.getVariableName(field)}_temp, _${discriminatorField.name}Err := ${helper.getLanguageTypeNameForField(discriminatorField)}Parse(readBuffer)
 	var ${helper.getVariableName(field)} ${helper.getLanguageTypeNameForField(discriminatorField)} = ${helper.getVariableName(field)}_temp
 	if closeErr := readBuffer.CloseContext("${namedField.name}"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 	<#else>
         <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
@@ -1000,7 +1000,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#assign enumField = field.asEnumField().orElseThrow()>
 
 	if pullErr := readBuffer.PullContext("${enumField.name}"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ${enumField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 	// Enum field (${enumField.name})
 	${enumField.name}${enumField.fieldName?cap_first}, _${enumField.name}${enumField.fieldName?cap_first}Err := ${helper.getReadBufferReadMethodCall(enumField.type.name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), enumField)}
@@ -1012,7 +1012,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		return nil, errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 	if closeErr := readBuffer.CloseContext("${enumField.name}"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ${enumField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "implicit">
@@ -1030,7 +1030,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#assign manualArrayField = field.asManualArrayField().orElseThrow()>
             	<#assign arrayElementType = manualArrayField.type.elementTypeReference>
 	if pullErr := readBuffer.PullContext("${manualArrayField.name}", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ${manualArrayField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 	// Manual Array Field (${manualArrayField.name})
 			<#-- Only update curPos if the length expression uses it -->
@@ -1092,7 +1092,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					</#if>
 				</#if>
 	if closeErr := readBuffer.CloseContext("${manualArrayField.name}", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ${manualArrayField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "manual">
@@ -1123,7 +1123,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		${optionalField.name} = &_val
 			<#elseif helper.isEnumField(field)>
 		if pullErr := readBuffer.PullContext("${optionalField.name}"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 		_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer)
 		if _err != nil {
@@ -1131,12 +1131,12 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		}
 		${optionalField.name} = &_val
 		if closeErr := readBuffer.CloseContext("${optionalField.name}"); closeErr != nil {
-			return nil, closeErr
+			return nil, errors.Wrap(closeErr, "Error closing for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 			<#else>
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("${optionalField.name}"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 				<@compress single_line=true>
                 <#assign complexTypeReference=optionalField.type.asComplexTypeReference().orElseThrow()>
@@ -1169,7 +1169,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		default:
 			${optionalField.name} = Cast${helper.getLanguageTypeNameForField(field)}(_val)
 			if closeErr := readBuffer.CloseContext("${optionalField.name}"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 			}
 		}
 			</#if>
@@ -1212,7 +1212,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	${assertField.name} = Cast${helper.getLanguageTypeNameForField(field)}(_val)
 			</#if>
 	if ${assertField.name} != ${helper.toParseExpression(assertField, assertField.type, assertField.conditionExpression, parserArguments)} {
-		return nil, utils.ParseAssertError{"${assertField.conditionExpression} doesn't match"}
+		return nil, errors.WithStack(utils.ParseAssertError{"${assertField.conditionExpression} doesn't match"})<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "padding">
@@ -1222,7 +1222,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	// Padding Field (padding)
 	{
 		if pullErr := readBuffer.PullContext("padding", utils.WithRenderAsList(true)); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for padding")<@emitImport import="github.com/pkg/errors" />
 		}
 		_timesPadding := (${helper.toParseExpression(paddingField, helper.intTypeReference, paddingField.paddingCondition, parserArguments)})
 		for ;(readBuffer.HasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding > 0);_timesPadding-- {
@@ -1233,7 +1233,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			}
 		}
 		if closeErr := readBuffer.CloseContext("padding", utils.WithRenderAsList(true)); closeErr != nil {
-			return nil, closeErr
+			return nil, errors.Wrap(closeErr, "Error closing for padding")<@emitImport import="github.com/pkg/errors" />
 		}
 	}
 				<#break>
@@ -1261,7 +1261,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	// Simple Field (${simpleField.name})
 				<#if !simpleField.type.isSimpleTypeReference()>
 	if pullErr := readBuffer.PullContext("${simpleField.name}"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ${simpleField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 				</#if>
     <#assign simpleFieldLogicalName><#if simpleField.type.isSimpleTypeReference() && !helper.isEnumField(field)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
@@ -1305,7 +1305,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	${simpleField.name} := <#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField()>Cast${helper.getLanguageTypeNameForField(field)}(</#if>_${simpleField.name}<#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField()>)</#if>
 				<#if !simpleField.type.isSimpleTypeReference()>
 	if closeErr := readBuffer.CloseContext("${simpleField.name}"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ${simpleField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 				</#if>
 				<#break>
@@ -1396,7 +1396,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	if (!(${helper.toParseExpression(validationField, helper.boolTypeReference, validationField.getValidationExpression(), null)})) {
 		<#assign errorType="ParseValidationError">
 		<#if !validationField.shouldFail()><#assign errorType="ParseAssertError"></#if>
-		return nil, utils.${errorType}{${validationField.getDescription().orElse("\"Validation failed\"")}}
+		return nil, errors.WithStack(utils.${errorType}{${validationField.getDescription().orElse("\"Validation failed\"")}})<@emitImport import="github.com/pkg/errors" />
 	}
                 <#break>
             <#case "peek">
@@ -1412,19 +1412,19 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                 <#elseif helper.isEnumField(field)>
 				currentPos = positionAware.GetPos()
 				if pullErr := readBuffer.PullContext("${peekField.name}"); pullErr != nil {
-					return nil, pullErr
+					return nil, errors.Wrap(pullErr, "Error pulling for ${peekField.name}")<@emitImport import="github.com/pkg/errors" />
 				}
 				${peekField.name}, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer)
 				if _err != nil {
 					return nil, errors.Wrap(_err, "Error parsing '${peekField.name}' field")<@emitImport import="github.com/pkg/errors" />
 				}
 				if closeErr := readBuffer.CloseContext("${peekField.name}"); closeErr != nil {
-					return nil, closeErr
+					return nil, errors.Wrap(closeErr, "Error closing for ${peekField.name}")<@emitImport import="github.com/pkg/errors" />
 				}
                 <#else>
 				currentPos = positionAware.GetPos()
 				if pullErr := readBuffer.PullContext("${peekField.name}"); pullErr != nil {
-					return nil, pullErr
+					return nil, errors.Wrap(pullErr, "Error pulling for ${peekField.name}")<@emitImport import="github.com/pkg/errors" />
 				}
                     <@compress single_line=true>
                         <#assign complexTypeReference=peekField.type.asComplexTypeReference().orElseThrow()>
@@ -1455,7 +1455,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	</#list>
 
 	if closeErr := readBuffer.CloseContext("${type.name}"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 
 	<#if type.isDiscriminatedParentTypeDefinition()>
@@ -1503,7 +1503,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 	<#else>
 		<#if !type.isDiscriminatedChildTypeDefinition()>
 	if pushErr :=writeBuffer.PushContext("${type.name}"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 		</#if>
 		<#assign arraySizeInBytesHelpers=helper.requiresHelperFunctions("ARRAY_SIZE_IN_BYTES")>
@@ -1522,7 +1522,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 		<#if type.isDiscriminatedChildTypeDefinition()>
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("${type.name}"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ${type.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 		</#if>
 		<#list type.fields as field>
@@ -1541,7 +1541,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 					<#else>
 		if pushErr := writeBuffer.PushContext("${arrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ${arrayField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 						<#if arrayElementType.isComplexTypeReference() && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
 		itemCount := uint16(len(m.${arrayField.name?cap_first}))
@@ -1566,7 +1566,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 					</#if>
 		}
 		if popErr := writeBuffer.PopContext("${arrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ${arrayField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 					</#if>
 	}
@@ -1623,11 +1623,11 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 					<#if helper.isEnumField(field)>
                         <#assign namedField = field.asNamedField().orElseThrow()>
 	if pushErr := writeBuffer.PushContext("${namedField.name}"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 	_${discriminatorField.name}Err := ${discriminatorField.name}.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("${namedField.name}"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 					<#else>
                         <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
@@ -1642,7 +1642,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 					<#assign enumField = field.asEnumField().orElseThrow()>
 
 	if pushErr := writeBuffer.PushContext("${enumField.name}"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ${enumField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 							<#assign enumValueFieldAccessor="m."+enumField.name?cap_first+"."+enumField.fieldName?cap_first+"()">
 	// Enum field (${enumField.name})
@@ -1651,7 +1651,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 	if popErr := writeBuffer.PopContext("${enumField.name}"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ${enumField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 					<#break>
 				<#case "implicit">
@@ -1672,14 +1672,14 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Manual Array Field (${manualArrayField.name})
 	if m.${manualArrayField.name?cap_first} != nil {
 		if pushErr := writeBuffer.PushContext("${manualArrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ${manualArrayField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 		for _, m := range m.${manualArrayField.name?cap_first} {
 			<#-- TODO at the moment the implementation below is broken as element get prefixed wrong therefore we substract it with substring-->
 			${helper.toSerializationExpression(manualArrayField, arrayElementType, manualArrayField.serializeExpression, parserArguments)?replace("m.","")}
 		}
 		if popErr := writeBuffer.PopContext("${manualArrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ${manualArrayField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 	}
 					<#break>
@@ -1705,12 +1705,12 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 					<#else>
 						<#assign complexTypeReference = optionalField.type>
 		if pushErr := writeBuffer.PushContext("${optionalField.name}"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 		${optionalField.name} = m.${optionalField.name?cap_first}
 		_${optionalField.name}Err := ${optionalField.name}.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("${optionalField.name}"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 					</#if>
 		if _${optionalField.name}Err != nil {
@@ -1725,7 +1725,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Padding Field (padding)
 	{
 		if pushErr := writeBuffer.PushContext("padding", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for padding")<@emitImport import="github.com/pkg/errors" />
 		}
 		_timesPadding := uint8(${helper.toSerializationExpression(paddingField, helper.intTypeReference, paddingField.paddingCondition, parserArguments)})
 		for ;_timesPadding > 0; _timesPadding-- {
@@ -1736,7 +1736,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 			}
 		}
 		if popErr := writeBuffer.PopContext("padding", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for padding")<@emitImport import="github.com/pkg/errors" />
 		}
 	}
 					<#break>
@@ -1768,11 +1768,11 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 					<#else>
 						<#assign complexTypeReference = simpleField.type>
 	if pushErr := writeBuffer.PushContext("${simpleField.name}"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ${simpleField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 	_${simpleField.name}Err := m.${simpleField.name?cap_first}.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("${simpleField.name}"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ${simpleField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 					</#if>
 	if _${simpleField.name}Err != nil {
@@ -1801,14 +1801,14 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		<#if type.isDiscriminatedChildTypeDefinition()>
 		if popErr := writeBuffer.PopContext("${type.name}"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ${type.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
 		<#else>
 	if popErr := writeBuffer.PopContext("${type.name}"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 	return nil
 		</#if>

@@ -142,14 +142,14 @@ func BACnetConstructedDataUsesRemainingParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUsesRemaining"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataUsesRemaining")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (usesRemaining)
 	if pullErr := readBuffer.PullContext("usesRemaining"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for usesRemaining")
 	}
 	_usesRemaining, _usesRemainingErr := BACnetApplicationTagParse(readBuffer)
 	if _usesRemainingErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataUsesRemainingParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	usesRemaining := CastBACnetApplicationTagSignedInteger(_usesRemaining)
 	if closeErr := readBuffer.CloseContext("usesRemaining"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for usesRemaining")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUsesRemaining"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUsesRemaining")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataUsesRemaining) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataUsesRemaining"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUsesRemaining")
 		}
 
 		// Simple Field (usesRemaining)
 		if pushErr := writeBuffer.PushContext("usesRemaining"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for usesRemaining")
 		}
 		_usesRemainingErr := m.UsesRemaining.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("usesRemaining"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for usesRemaining")
 		}
 		if _usesRemainingErr != nil {
 			return errors.Wrap(_usesRemainingErr, "Error serializing 'usesRemaining' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUsesRemaining"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataUsesRemaining")
 		}
 		return nil
 	}

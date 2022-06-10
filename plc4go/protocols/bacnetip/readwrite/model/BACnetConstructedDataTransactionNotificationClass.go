@@ -142,14 +142,14 @@ func BACnetConstructedDataTransactionNotificationClassParse(readBuffer utils.Rea
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTransactionNotificationClass"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTransactionNotificationClass")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (transactionNotificationClass)
 	if pullErr := readBuffer.PullContext("transactionNotificationClass"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for transactionNotificationClass")
 	}
 	_transactionNotificationClass, _transactionNotificationClassErr := BACnetApplicationTagParse(readBuffer)
 	if _transactionNotificationClassErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataTransactionNotificationClassParse(readBuffer utils.Rea
 	}
 	transactionNotificationClass := CastBACnetApplicationTagUnsignedInteger(_transactionNotificationClass)
 	if closeErr := readBuffer.CloseContext("transactionNotificationClass"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for transactionNotificationClass")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTransactionNotificationClass"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTransactionNotificationClass")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataTransactionNotificationClass) Serialize(writeBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataTransactionNotificationClass"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTransactionNotificationClass")
 		}
 
 		// Simple Field (transactionNotificationClass)
 		if pushErr := writeBuffer.PushContext("transactionNotificationClass"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for transactionNotificationClass")
 		}
 		_transactionNotificationClassErr := m.TransactionNotificationClass.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("transactionNotificationClass"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for transactionNotificationClass")
 		}
 		if _transactionNotificationClassErr != nil {
 			return errors.Wrap(_transactionNotificationClassErr, "Error serializing 'transactionNotificationClass' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTransactionNotificationClass"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataTransactionNotificationClass")
 		}
 		return nil
 	}

@@ -128,14 +128,14 @@ func BACnetScaleFloatScaleParse(readBuffer utils.ReadBuffer) (*BACnetScaleFloatS
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetScaleFloatScale"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetScaleFloatScale")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (floatScale)
 	if pullErr := readBuffer.PullContext("floatScale"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for floatScale")
 	}
 	_floatScale, _floatScaleErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
 	if _floatScaleErr != nil {
@@ -143,11 +143,11 @@ func BACnetScaleFloatScaleParse(readBuffer utils.ReadBuffer) (*BACnetScaleFloatS
 	}
 	floatScale := CastBACnetContextTagReal(_floatScale)
 	if closeErr := readBuffer.CloseContext("floatScale"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for floatScale")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetScaleFloatScale"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetScaleFloatScale")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetScaleFloatScale) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetScaleFloatScale"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetScaleFloatScale")
 		}
 
 		// Simple Field (floatScale)
 		if pushErr := writeBuffer.PushContext("floatScale"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for floatScale")
 		}
 		_floatScaleErr := m.FloatScale.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("floatScale"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for floatScale")
 		}
 		if _floatScaleErr != nil {
 			return errors.Wrap(_floatScaleErr, "Error serializing 'floatScale' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetScaleFloatScale"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetScaleFloatScale")
 		}
 		return nil
 	}

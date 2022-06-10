@@ -142,14 +142,14 @@ func BACnetConstructedDataEventAlgorithmInhibitParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventAlgorithmInhibit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEventAlgorithmInhibit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (eventAlgorithmInhibit)
 	if pullErr := readBuffer.PullContext("eventAlgorithmInhibit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventAlgorithmInhibit")
 	}
 	_eventAlgorithmInhibit, _eventAlgorithmInhibitErr := BACnetApplicationTagParse(readBuffer)
 	if _eventAlgorithmInhibitErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataEventAlgorithmInhibitParse(readBuffer utils.ReadBuffer
 	}
 	eventAlgorithmInhibit := CastBACnetApplicationTagBoolean(_eventAlgorithmInhibit)
 	if closeErr := readBuffer.CloseContext("eventAlgorithmInhibit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventAlgorithmInhibit")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventAlgorithmInhibit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEventAlgorithmInhibit")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataEventAlgorithmInhibit) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataEventAlgorithmInhibit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEventAlgorithmInhibit")
 		}
 
 		// Simple Field (eventAlgorithmInhibit)
 		if pushErr := writeBuffer.PushContext("eventAlgorithmInhibit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for eventAlgorithmInhibit")
 		}
 		_eventAlgorithmInhibitErr := m.EventAlgorithmInhibit.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("eventAlgorithmInhibit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for eventAlgorithmInhibit")
 		}
 		if _eventAlgorithmInhibitErr != nil {
 			return errors.Wrap(_eventAlgorithmInhibitErr, "Error serializing 'eventAlgorithmInhibit' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEventAlgorithmInhibit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataEventAlgorithmInhibit")
 		}
 		return nil
 	}

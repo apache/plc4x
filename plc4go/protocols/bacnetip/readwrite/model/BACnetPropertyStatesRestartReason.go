@@ -128,14 +128,14 @@ func BACnetPropertyStatesRestartReasonParse(readBuffer utils.ReadBuffer, peekedT
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesRestartReason"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesRestartReason")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (restartReason)
 	if pullErr := readBuffer.PullContext("restartReason"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for restartReason")
 	}
 	_restartReason, _restartReasonErr := BACnetRestartReasonTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _restartReasonErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesRestartReasonParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	restartReason := CastBACnetRestartReasonTagged(_restartReason)
 	if closeErr := readBuffer.CloseContext("restartReason"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for restartReason")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesRestartReason"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesRestartReason")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesRestartReason) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesRestartReason"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesRestartReason")
 		}
 
 		// Simple Field (restartReason)
 		if pushErr := writeBuffer.PushContext("restartReason"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for restartReason")
 		}
 		_restartReasonErr := m.RestartReason.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("restartReason"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for restartReason")
 		}
 		if _restartReasonErr != nil {
 			return errors.Wrap(_restartReasonErr, "Error serializing 'restartReason' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesRestartReason"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesRestartReason")
 		}
 		return nil
 	}

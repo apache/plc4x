@@ -142,14 +142,14 @@ func BACnetConstructedDataMusterPointParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMusterPoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMusterPoint")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (musterPoint)
 	if pullErr := readBuffer.PullContext("musterPoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for musterPoint")
 	}
 	_musterPoint, _musterPointErr := BACnetApplicationTagParse(readBuffer)
 	if _musterPointErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataMusterPointParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	musterPoint := CastBACnetApplicationTagBoolean(_musterPoint)
 	if closeErr := readBuffer.CloseContext("musterPoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for musterPoint")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMusterPoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMusterPoint")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataMusterPoint) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMusterPoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMusterPoint")
 		}
 
 		// Simple Field (musterPoint)
 		if pushErr := writeBuffer.PushContext("musterPoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for musterPoint")
 		}
 		_musterPointErr := m.MusterPoint.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("musterPoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for musterPoint")
 		}
 		if _musterPointErr != nil {
 			return errors.Wrap(_musterPointErr, "Error serializing 'musterPoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMusterPoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMusterPoint")
 		}
 		return nil
 	}

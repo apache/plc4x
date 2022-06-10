@@ -156,14 +156,14 @@ func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, serv
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestIHave"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetUnconfirmedServiceRequestIHave")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (deviceIdentifier)
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
 	}
 	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _deviceIdentifierErr != nil {
@@ -171,12 +171,12 @@ func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, serv
 	}
 	deviceIdentifier := CastBACnetApplicationTagObjectIdentifier(_deviceIdentifier)
 	if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for deviceIdentifier")
 	}
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _objectIdentifierErr != nil {
@@ -184,12 +184,12 @@ func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, serv
 	}
 	objectIdentifier := CastBACnetApplicationTagObjectIdentifier(_objectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 	}
 
 	// Simple Field (objectName)
 	if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectName")
 	}
 	_objectName, _objectNameErr := BACnetApplicationTagParse(readBuffer)
 	if _objectNameErr != nil {
@@ -197,11 +197,11 @@ func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, serv
 	}
 	objectName := CastBACnetApplicationTagCharacterString(_objectName)
 	if closeErr := readBuffer.CloseContext("objectName"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectName")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestIHave"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetUnconfirmedServiceRequestIHave")
 	}
 
 	// Create a partially initialized instance
@@ -220,16 +220,16 @@ func (m *BACnetUnconfirmedServiceRequestIHave) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetUnconfirmedServiceRequestIHave"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestIHave")
 		}
 
 		// Simple Field (deviceIdentifier)
 		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
 		}
 		_deviceIdentifierErr := m.DeviceIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
 		}
 		if _deviceIdentifierErr != nil {
 			return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
@@ -237,11 +237,11 @@ func (m *BACnetUnconfirmedServiceRequestIHave) Serialize(writeBuffer utils.Write
 
 		// Simple Field (objectIdentifier)
 		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
 		_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
 		if _objectIdentifierErr != nil {
 			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
@@ -249,18 +249,18 @@ func (m *BACnetUnconfirmedServiceRequestIHave) Serialize(writeBuffer utils.Write
 
 		// Simple Field (objectName)
 		if pushErr := writeBuffer.PushContext("objectName"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for objectName")
 		}
 		_objectNameErr := m.ObjectName.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("objectName"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for objectName")
 		}
 		if _objectNameErr != nil {
 			return errors.Wrap(_objectNameErr, "Error serializing 'objectName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestIHave"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetUnconfirmedServiceRequestIHave")
 		}
 		return nil
 	}

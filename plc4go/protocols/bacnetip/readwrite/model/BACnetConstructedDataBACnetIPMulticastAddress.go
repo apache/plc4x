@@ -142,14 +142,14 @@ func BACnetConstructedDataBACnetIPMulticastAddressParse(readBuffer utils.ReadBuf
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPMulticastAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBACnetIPMulticastAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ipMulticastAddress)
 	if pullErr := readBuffer.PullContext("ipMulticastAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipMulticastAddress")
 	}
 	_ipMulticastAddress, _ipMulticastAddressErr := BACnetApplicationTagParse(readBuffer)
 	if _ipMulticastAddressErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBACnetIPMulticastAddressParse(readBuffer utils.ReadBuf
 	}
 	ipMulticastAddress := CastBACnetApplicationTagOctetString(_ipMulticastAddress)
 	if closeErr := readBuffer.CloseContext("ipMulticastAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipMulticastAddress")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPMulticastAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPMulticastAddress")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBACnetIPMulticastAddress) Serialize(writeBuffer ut
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBACnetIPMulticastAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBACnetIPMulticastAddress")
 		}
 
 		// Simple Field (ipMulticastAddress)
 		if pushErr := writeBuffer.PushContext("ipMulticastAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ipMulticastAddress")
 		}
 		_ipMulticastAddressErr := m.IpMulticastAddress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ipMulticastAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ipMulticastAddress")
 		}
 		if _ipMulticastAddressErr != nil {
 			return errors.Wrap(_ipMulticastAddressErr, "Error serializing 'ipMulticastAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBACnetIPMulticastAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBACnetIPMulticastAddress")
 		}
 		return nil
 	}

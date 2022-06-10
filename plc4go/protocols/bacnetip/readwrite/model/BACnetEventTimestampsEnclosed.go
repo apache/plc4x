@@ -120,14 +120,14 @@ func BACnetEventTimestampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventTimestampsEnclosed"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventTimestampsEnclosed")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
@@ -135,12 +135,12 @@ func BACnetEventTimestampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (eventTimestamps)
 	if pullErr := readBuffer.PullContext("eventTimestamps"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventTimestamps")
 	}
 	_eventTimestamps, _eventTimestampsErr := BACnetEventTimestampsParse(readBuffer)
 	if _eventTimestampsErr != nil {
@@ -148,12 +148,12 @@ func BACnetEventTimestampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	eventTimestamps := CastBACnetEventTimestamps(_eventTimestamps)
 	if closeErr := readBuffer.CloseContext("eventTimestamps"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventTimestamps")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
@@ -161,11 +161,11 @@ func BACnetEventTimestampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventTimestampsEnclosed"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventTimestampsEnclosed")
 	}
 
 	// Create the instance
@@ -176,16 +176,16 @@ func (m *BACnetEventTimestampsEnclosed) Serialize(writeBuffer utils.WriteBuffer)
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventTimestampsEnclosed"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetEventTimestampsEnclosed")
 	}
 
 	// Simple Field (openingTag)
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
 	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -193,11 +193,11 @@ func (m *BACnetEventTimestampsEnclosed) Serialize(writeBuffer utils.WriteBuffer)
 
 	// Simple Field (eventTimestamps)
 	if pushErr := writeBuffer.PushContext("eventTimestamps"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for eventTimestamps")
 	}
 	_eventTimestampsErr := m.EventTimestamps.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("eventTimestamps"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for eventTimestamps")
 	}
 	if _eventTimestampsErr != nil {
 		return errors.Wrap(_eventTimestampsErr, "Error serializing 'eventTimestamps' field")
@@ -205,18 +205,18 @@ func (m *BACnetEventTimestampsEnclosed) Serialize(writeBuffer utils.WriteBuffer)
 
 	// Simple Field (closingTag)
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
 	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEventTimestampsEnclosed"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetEventTimestampsEnclosed")
 	}
 	return nil
 }

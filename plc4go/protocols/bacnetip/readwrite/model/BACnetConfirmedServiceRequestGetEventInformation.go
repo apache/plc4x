@@ -138,7 +138,7 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.Read
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEventInformation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestGetEventInformation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -148,7 +148,7 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.Read
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("lastReceivedObjectIdentifier"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for lastReceivedObjectIdentifier")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
@@ -160,13 +160,13 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.Read
 		default:
 			lastReceivedObjectIdentifier = CastBACnetContextTagObjectIdentifier(_val)
 			if closeErr := readBuffer.CloseContext("lastReceivedObjectIdentifier"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for lastReceivedObjectIdentifier")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestGetEventInformation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestGetEventInformation")
 	}
 
 	// Create a partially initialized instance
@@ -183,19 +183,19 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) Serialize(writeBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestGetEventInformation"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestGetEventInformation")
 		}
 
 		// Optional Field (lastReceivedObjectIdentifier) (Can be skipped, if the value is null)
 		var lastReceivedObjectIdentifier *BACnetContextTagObjectIdentifier = nil
 		if m.LastReceivedObjectIdentifier != nil {
 			if pushErr := writeBuffer.PushContext("lastReceivedObjectIdentifier"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for lastReceivedObjectIdentifier")
 			}
 			lastReceivedObjectIdentifier = m.LastReceivedObjectIdentifier
 			_lastReceivedObjectIdentifierErr := lastReceivedObjectIdentifier.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("lastReceivedObjectIdentifier"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for lastReceivedObjectIdentifier")
 			}
 			if _lastReceivedObjectIdentifierErr != nil {
 				return errors.Wrap(_lastReceivedObjectIdentifierErr, "Error serializing 'lastReceivedObjectIdentifier' field")
@@ -203,7 +203,7 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) Serialize(writeBuffer
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestGetEventInformation"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestGetEventInformation")
 		}
 		return nil
 	}

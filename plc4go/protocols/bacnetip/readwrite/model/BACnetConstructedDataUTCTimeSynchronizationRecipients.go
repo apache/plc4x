@@ -146,14 +146,14 @@ func BACnetConstructedDataUTCTimeSynchronizationRecipientsParse(readBuffer utils
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUTCTimeSynchronizationRecipients"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataUTCTimeSynchronizationRecipients")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (utcTimeSynchronizationRecipients)
 	if pullErr := readBuffer.PullContext("utcTimeSynchronizationRecipients", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for utcTimeSynchronizationRecipients")
 	}
 	// Terminated array
 	utcTimeSynchronizationRecipients := make([]*BACnetRecipient, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataUTCTimeSynchronizationRecipientsParse(readBuffer utils
 		}
 	}
 	if closeErr := readBuffer.CloseContext("utcTimeSynchronizationRecipients", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for utcTimeSynchronizationRecipients")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUTCTimeSynchronizationRecipients"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUTCTimeSynchronizationRecipients")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataUTCTimeSynchronizationRecipients) Serialize(writeB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataUTCTimeSynchronizationRecipients"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUTCTimeSynchronizationRecipients")
 		}
 
 		// Array Field (utcTimeSynchronizationRecipients)
 		if m.UtcTimeSynchronizationRecipients != nil {
 			if pushErr := writeBuffer.PushContext("utcTimeSynchronizationRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for utcTimeSynchronizationRecipients")
 			}
 			for _, _element := range m.UtcTimeSynchronizationRecipients {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataUTCTimeSynchronizationRecipients) Serialize(writeB
 				}
 			}
 			if popErr := writeBuffer.PopContext("utcTimeSynchronizationRecipients", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for utcTimeSynchronizationRecipients")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUTCTimeSynchronizationRecipients"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataUTCTimeSynchronizationRecipients")
 		}
 		return nil
 	}

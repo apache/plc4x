@@ -111,14 +111,14 @@ func BACnetBDTEntryParse(readBuffer utils.ReadBuffer) (*BACnetBDTEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetBDTEntry"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetBDTEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bbmdAddress)
 	if pullErr := readBuffer.PullContext("bbmdAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bbmdAddress")
 	}
 	_bbmdAddress, _bbmdAddressErr := BACnetHostNPortEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _bbmdAddressErr != nil {
@@ -126,7 +126,7 @@ func BACnetBDTEntryParse(readBuffer utils.ReadBuffer) (*BACnetBDTEntry, error) {
 	}
 	bbmdAddress := CastBACnetHostNPortEnclosed(_bbmdAddress)
 	if closeErr := readBuffer.CloseContext("bbmdAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bbmdAddress")
 	}
 
 	// Optional Field (broadcastMask) (Can be skipped, if a given expression evaluates to false)
@@ -134,7 +134,7 @@ func BACnetBDTEntryParse(readBuffer utils.ReadBuffer) (*BACnetBDTEntry, error) {
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("broadcastMask"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for broadcastMask")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_OCTET_STRING)
 		switch {
@@ -146,13 +146,13 @@ func BACnetBDTEntryParse(readBuffer utils.ReadBuffer) (*BACnetBDTEntry, error) {
 		default:
 			broadcastMask = CastBACnetContextTagOctetString(_val)
 			if closeErr := readBuffer.CloseContext("broadcastMask"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for broadcastMask")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetBDTEntry"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetBDTEntry")
 	}
 
 	// Create the instance
@@ -163,16 +163,16 @@ func (m *BACnetBDTEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetBDTEntry"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetBDTEntry")
 	}
 
 	// Simple Field (bbmdAddress)
 	if pushErr := writeBuffer.PushContext("bbmdAddress"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for bbmdAddress")
 	}
 	_bbmdAddressErr := m.BbmdAddress.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("bbmdAddress"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for bbmdAddress")
 	}
 	if _bbmdAddressErr != nil {
 		return errors.Wrap(_bbmdAddressErr, "Error serializing 'bbmdAddress' field")
@@ -182,12 +182,12 @@ func (m *BACnetBDTEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 	var broadcastMask *BACnetContextTagOctetString = nil
 	if m.BroadcastMask != nil {
 		if pushErr := writeBuffer.PushContext("broadcastMask"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for broadcastMask")
 		}
 		broadcastMask = m.BroadcastMask
 		_broadcastMaskErr := broadcastMask.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("broadcastMask"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for broadcastMask")
 		}
 		if _broadcastMaskErr != nil {
 			return errors.Wrap(_broadcastMaskErr, "Error serializing 'broadcastMask' field")
@@ -195,7 +195,7 @@ func (m *BACnetBDTEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetBDTEntry"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetBDTEntry")
 	}
 	return nil
 }

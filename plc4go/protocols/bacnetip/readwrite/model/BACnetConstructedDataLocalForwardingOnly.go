@@ -142,14 +142,14 @@ func BACnetConstructedDataLocalForwardingOnlyParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLocalForwardingOnly"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLocalForwardingOnly")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (localForwardingOnly)
 	if pullErr := readBuffer.PullContext("localForwardingOnly"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for localForwardingOnly")
 	}
 	_localForwardingOnly, _localForwardingOnlyErr := BACnetApplicationTagParse(readBuffer)
 	if _localForwardingOnlyErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLocalForwardingOnlyParse(readBuffer utils.ReadBuffer, 
 	}
 	localForwardingOnly := CastBACnetApplicationTagBoolean(_localForwardingOnly)
 	if closeErr := readBuffer.CloseContext("localForwardingOnly"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for localForwardingOnly")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLocalForwardingOnly"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLocalForwardingOnly")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLocalForwardingOnly) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLocalForwardingOnly"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLocalForwardingOnly")
 		}
 
 		// Simple Field (localForwardingOnly)
 		if pushErr := writeBuffer.PushContext("localForwardingOnly"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for localForwardingOnly")
 		}
 		_localForwardingOnlyErr := m.LocalForwardingOnly.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("localForwardingOnly"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for localForwardingOnly")
 		}
 		if _localForwardingOnlyErr != nil {
 			return errors.Wrap(_localForwardingOnlyErr, "Error serializing 'localForwardingOnly' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLocalForwardingOnly"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLocalForwardingOnly")
 		}
 		return nil
 	}

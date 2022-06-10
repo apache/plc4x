@@ -142,14 +142,14 @@ func BACnetConstructedDataEnableParse(readBuffer utils.ReadBuffer, tagNumber uin
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEnable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (enable)
 	if pullErr := readBuffer.PullContext("enable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for enable")
 	}
 	_enable, _enableErr := BACnetApplicationTagParse(readBuffer)
 	if _enableErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataEnableParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 	enable := CastBACnetApplicationTagBoolean(_enable)
 	if closeErr := readBuffer.CloseContext("enable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for enable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEnable")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataEnable) Serialize(writeBuffer utils.WriteBuffer) e
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEnable")
 		}
 
 		// Simple Field (enable)
 		if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for enable")
 		}
 		_enableErr := m.Enable.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("enable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for enable")
 		}
 		if _enableErr != nil {
 			return errors.Wrap(_enableErr, "Error serializing 'enable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataEnable")
 		}
 		return nil
 	}

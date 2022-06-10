@@ -142,14 +142,14 @@ func BACnetConstructedDataReferencePortParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReferencePort"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataReferencePort")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (referencePort)
 	if pullErr := readBuffer.PullContext("referencePort"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for referencePort")
 	}
 	_referencePort, _referencePortErr := BACnetApplicationTagParse(readBuffer)
 	if _referencePortErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataReferencePortParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	referencePort := CastBACnetApplicationTagUnsignedInteger(_referencePort)
 	if closeErr := readBuffer.CloseContext("referencePort"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for referencePort")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReferencePort"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReferencePort")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataReferencePort) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataReferencePort"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataReferencePort")
 		}
 
 		// Simple Field (referencePort)
 		if pushErr := writeBuffer.PushContext("referencePort"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for referencePort")
 		}
 		_referencePortErr := m.ReferencePort.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("referencePort"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for referencePort")
 		}
 		if _referencePortErr != nil {
 			return errors.Wrap(_referencePortErr, "Error serializing 'referencePort' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataReferencePort"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataReferencePort")
 		}
 		return nil
 	}

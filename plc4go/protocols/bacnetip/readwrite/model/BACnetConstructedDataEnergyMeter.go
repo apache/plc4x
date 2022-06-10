@@ -142,14 +142,14 @@ func BACnetConstructedDataEnergyMeterParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEnergyMeter"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEnergyMeter")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (energyMeter)
 	if pullErr := readBuffer.PullContext("energyMeter"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for energyMeter")
 	}
 	_energyMeter, _energyMeterErr := BACnetApplicationTagParse(readBuffer)
 	if _energyMeterErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataEnergyMeterParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	energyMeter := CastBACnetApplicationTagReal(_energyMeter)
 	if closeErr := readBuffer.CloseContext("energyMeter"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for energyMeter")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEnergyMeter"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEnergyMeter")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataEnergyMeter) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataEnergyMeter"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEnergyMeter")
 		}
 
 		// Simple Field (energyMeter)
 		if pushErr := writeBuffer.PushContext("energyMeter"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for energyMeter")
 		}
 		_energyMeterErr := m.EnergyMeter.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("energyMeter"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for energyMeter")
 		}
 		if _energyMeterErr != nil {
 			return errors.Wrap(_energyMeterErr, "Error serializing 'energyMeter' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEnergyMeter"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataEnergyMeter")
 		}
 		return nil
 	}

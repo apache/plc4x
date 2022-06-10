@@ -131,14 +131,14 @@ func BACnetPriorityValueOctetStringParse(readBuffer utils.ReadBuffer, objectType
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueOctetString"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueOctetString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (octetStringValue)
 	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
 	}
 	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParse(readBuffer)
 	if _octetStringValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetPriorityValueOctetStringParse(readBuffer utils.ReadBuffer, objectType
 	}
 	octetStringValue := CastBACnetApplicationTagOctetString(_octetStringValue)
 	if closeErr := readBuffer.CloseContext("octetStringValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for octetStringValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueOctetString"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueOctetString")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetPriorityValueOctetString) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPriorityValueOctetString"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueOctetString")
 		}
 
 		// Simple Field (octetStringValue)
 		if pushErr := writeBuffer.PushContext("octetStringValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for octetStringValue")
 		}
 		_octetStringValueErr := m.OctetStringValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("octetStringValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for octetStringValue")
 		}
 		if _octetStringValueErr != nil {
 			return errors.Wrap(_octetStringValueErr, "Error serializing 'octetStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueOctetString"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPriorityValueOctetString")
 		}
 		return nil
 	}

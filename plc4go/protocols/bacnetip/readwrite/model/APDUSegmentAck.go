@@ -181,7 +181,7 @@ func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUS
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUSegmentAck"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for APDUSegmentAck")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -236,7 +236,7 @@ func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUS
 	proposedWindowSize := _proposedWindowSize
 
 	if closeErr := readBuffer.CloseContext("APDUSegmentAck"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for APDUSegmentAck")
 	}
 
 	// Create a partially initialized instance
@@ -257,7 +257,7 @@ func (m *APDUSegmentAck) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUSegmentAck"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for APDUSegmentAck")
 		}
 
 		// Reserved Field (reserved)
@@ -304,7 +304,7 @@ func (m *APDUSegmentAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("APDUSegmentAck"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for APDUSegmentAck")
 		}
 		return nil
 	}

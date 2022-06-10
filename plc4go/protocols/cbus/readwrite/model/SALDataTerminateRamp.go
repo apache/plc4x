@@ -128,7 +128,7 @@ func SALDataTerminateRampParse(readBuffer utils.ReadBuffer) (*SALDataTerminateRa
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataTerminateRamp"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for SALDataTerminateRamp")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -141,7 +141,7 @@ func SALDataTerminateRampParse(readBuffer utils.ReadBuffer) (*SALDataTerminateRa
 	group := _group
 
 	if closeErr := readBuffer.CloseContext("SALDataTerminateRamp"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for SALDataTerminateRamp")
 	}
 
 	// Create a partially initialized instance
@@ -158,7 +158,7 @@ func (m *SALDataTerminateRamp) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataTerminateRamp"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for SALDataTerminateRamp")
 		}
 
 		// Simple Field (group)
@@ -169,7 +169,7 @@ func (m *SALDataTerminateRamp) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataTerminateRamp"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for SALDataTerminateRamp")
 		}
 		return nil
 	}

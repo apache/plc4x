@@ -128,14 +128,14 @@ func BACnetOptionalCharacterStringNullParse(readBuffer utils.ReadBuffer) (*BACne
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalCharacterStringNull"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalCharacterStringNull")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (nullValue)
 	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
 	}
 	_nullValue, _nullValueErr := BACnetApplicationTagParse(readBuffer)
 	if _nullValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetOptionalCharacterStringNullParse(readBuffer utils.ReadBuffer) (*BACne
 	}
 	nullValue := CastBACnetApplicationTagNull(_nullValue)
 	if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for nullValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalCharacterStringNull"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetOptionalCharacterStringNull")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetOptionalCharacterStringNull) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetOptionalCharacterStringNull"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetOptionalCharacterStringNull")
 		}
 
 		// Simple Field (nullValue)
 		if pushErr := writeBuffer.PushContext("nullValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for nullValue")
 		}
 		_nullValueErr := m.NullValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for nullValue")
 		}
 		if _nullValueErr != nil {
 			return errors.Wrap(_nullValueErr, "Error serializing 'nullValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetOptionalCharacterStringNull"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetOptionalCharacterStringNull")
 		}
 		return nil
 	}

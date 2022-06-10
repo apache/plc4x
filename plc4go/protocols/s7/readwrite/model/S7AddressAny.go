@@ -189,13 +189,13 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7AddressAny, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7AddressAny"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7AddressAny")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
 	// Enum field (transportSize)
 	transportSizeCode, _transportSizeCodeErr := readBuffer.ReadUint8("TransportSize", 8)
@@ -207,7 +207,7 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7AddressAny, error) {
 		return nil, errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 	}
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
 	}
 
 	// Simple Field (numberOfElements)
@@ -226,7 +226,7 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7AddressAny, error) {
 
 	// Simple Field (area)
 	if pullErr := readBuffer.PullContext("area"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for area")
 	}
 	_area, _areaErr := MemoryAreaParse(readBuffer)
 	if _areaErr != nil {
@@ -234,7 +234,7 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7AddressAny, error) {
 	}
 	area := _area
 	if closeErr := readBuffer.CloseContext("area"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for area")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -266,7 +266,7 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7AddressAny, error) {
 	bitAddress := _bitAddress
 
 	if closeErr := readBuffer.CloseContext("S7AddressAny"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7AddressAny")
 	}
 
 	// Create a partially initialized instance
@@ -288,11 +288,11 @@ func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7AddressAny"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7AddressAny")
 		}
 
 		if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for transportSize")
 		}
 		// Enum field (transportSize)
 		_transportSizeErr := writeBuffer.WriteUint8("TransportSize", 8, m.TransportSize.Code(), utils.WithAdditionalStringRepresentation(m.TransportSize.name()))
@@ -300,7 +300,7 @@ func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 		}
 		if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for transportSize")
 		}
 
 		// Simple Field (numberOfElements)
@@ -319,11 +319,11 @@ func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (area)
 		if pushErr := writeBuffer.PushContext("area"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for area")
 		}
 		_areaErr := m.Area.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("area"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for area")
 		}
 		if _areaErr != nil {
 			return errors.Wrap(_areaErr, "Error serializing 'area' field")
@@ -352,7 +352,7 @@ func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("S7AddressAny"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7AddressAny")
 		}
 		return nil
 	}

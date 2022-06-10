@@ -99,7 +99,7 @@ func IPAddressParse(readBuffer utils.ReadBuffer) (*IPAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IPAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for IPAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -111,7 +111,7 @@ func IPAddressParse(readBuffer utils.ReadBuffer) (*IPAddress, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("IPAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for IPAddress")
 	}
 
 	// Create the instance
@@ -122,7 +122,7 @@ func (m *IPAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("IPAddress"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for IPAddress")
 	}
 
 	// Array Field (addr)
@@ -135,7 +135,7 @@ func (m *IPAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("IPAddress"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for IPAddress")
 	}
 	return nil
 }

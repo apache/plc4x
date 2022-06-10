@@ -142,14 +142,14 @@ func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParse(readBuffer util
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (maintenanceRequired)
 	if pullErr := readBuffer.PullContext("maintenanceRequired"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for maintenanceRequired")
 	}
 	_maintenanceRequired, _maintenanceRequiredErr := BACnetApplicationTagParse(readBuffer)
 	if _maintenanceRequiredErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParse(readBuffer util
 	}
 	maintenanceRequired := CastBACnetApplicationTagBoolean(_maintenanceRequired)
 	if closeErr := readBuffer.CloseContext("maintenanceRequired"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for maintenanceRequired")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) Serialize(write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")
 		}
 
 		// Simple Field (maintenanceRequired)
 		if pushErr := writeBuffer.PushContext("maintenanceRequired"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for maintenanceRequired")
 		}
 		_maintenanceRequiredErr := m.MaintenanceRequired.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("maintenanceRequired"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for maintenanceRequired")
 		}
 		if _maintenanceRequiredErr != nil {
 			return errors.Wrap(_maintenanceRequiredErr, "Error serializing 'maintenanceRequired' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")
 		}
 		return nil
 	}

@@ -137,14 +137,14 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (*Firm
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSysex"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for FirmataCommandSysex")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (command)
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
 	_command, _commandErr := SysexCommandParse(readBuffer, bool(response))
 	if _commandErr != nil {
@@ -152,7 +152,7 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (*Firm
 	}
 	command := CastSysexCommand(_command)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for command")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -170,7 +170,7 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (*Firm
 	}
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandSysex"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for FirmataCommandSysex")
 	}
 
 	// Create a partially initialized instance
@@ -187,16 +187,16 @@ func (m *FirmataCommandSysex) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("FirmataCommandSysex"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for FirmataCommandSysex")
 		}
 
 		// Simple Field (command)
 		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for command")
 		}
 		_commandErr := m.Command.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("command"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for command")
 		}
 		if _commandErr != nil {
 			return errors.Wrap(_commandErr, "Error serializing 'command' field")
@@ -211,7 +211,7 @@ func (m *FirmataCommandSysex) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataCommandSysex"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for FirmataCommandSysex")
 		}
 		return nil
 	}

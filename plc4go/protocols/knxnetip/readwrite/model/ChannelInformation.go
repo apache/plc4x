@@ -107,7 +107,7 @@ func ChannelInformationParse(readBuffer utils.ReadBuffer) (*ChannelInformation, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ChannelInformation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ChannelInformation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -127,7 +127,7 @@ func ChannelInformationParse(readBuffer utils.ReadBuffer) (*ChannelInformation, 
 	channelCode := _channelCode
 
 	if closeErr := readBuffer.CloseContext("ChannelInformation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ChannelInformation")
 	}
 
 	// Create the instance
@@ -138,7 +138,7 @@ func (m *ChannelInformation) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ChannelInformation"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ChannelInformation")
 	}
 
 	// Simple Field (numChannels)
@@ -156,7 +156,7 @@ func (m *ChannelInformation) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("ChannelInformation"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ChannelInformation")
 	}
 	return nil
 }

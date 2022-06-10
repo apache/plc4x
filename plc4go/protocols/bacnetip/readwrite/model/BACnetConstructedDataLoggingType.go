@@ -142,14 +142,14 @@ func BACnetConstructedDataLoggingTypeParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoggingType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLoggingType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (loggingType)
 	if pullErr := readBuffer.PullContext("loggingType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for loggingType")
 	}
 	_loggingType, _loggingTypeErr := BACnetLoggingTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _loggingTypeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLoggingTypeParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	loggingType := CastBACnetLoggingTypeTagged(_loggingType)
 	if closeErr := readBuffer.CloseContext("loggingType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for loggingType")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoggingType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLoggingType")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLoggingType) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLoggingType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLoggingType")
 		}
 
 		// Simple Field (loggingType)
 		if pushErr := writeBuffer.PushContext("loggingType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for loggingType")
 		}
 		_loggingTypeErr := m.LoggingType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("loggingType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for loggingType")
 		}
 		if _loggingTypeErr != nil {
 			return errors.Wrap(_loggingTypeErr, "Error serializing 'loggingType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLoggingType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLoggingType")
 		}
 		return nil
 	}

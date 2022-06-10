@@ -185,7 +185,7 @@ func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MultipleServiceResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for MultipleServiceResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -227,7 +227,7 @@ func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16
 
 	// Array field (offsets)
 	if pullErr := readBuffer.PullContext("offsets", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for offsets")
 	}
 	// Count array
 	offsets := make([]uint16, serviceNb)
@@ -241,7 +241,7 @@ func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16
 		}
 	}
 	if closeErr := readBuffer.CloseContext("offsets", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for offsets")
 	}
 	// Byte Array field (servicesData)
 	numberOfBytesservicesData := int(uint16(uint16(serviceLen)-uint16(uint16(6))) - uint16(uint16(uint16(uint16(2))*uint16(serviceNb))))
@@ -251,7 +251,7 @@ func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16
 	}
 
 	if closeErr := readBuffer.CloseContext("MultipleServiceResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for MultipleServiceResponse")
 	}
 
 	// Create a partially initialized instance
@@ -272,7 +272,7 @@ func (m *MultipleServiceResponse) Serialize(writeBuffer utils.WriteBuffer) error
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MultipleServiceResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for MultipleServiceResponse")
 		}
 
 		// Reserved Field (reserved)
@@ -307,7 +307,7 @@ func (m *MultipleServiceResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		// Array Field (offsets)
 		if m.Offsets != nil {
 			if pushErr := writeBuffer.PushContext("offsets", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for offsets")
 			}
 			for _, _element := range m.Offsets {
 				_elementErr := writeBuffer.WriteUint16("", 16, _element)
@@ -316,7 +316,7 @@ func (m *MultipleServiceResponse) Serialize(writeBuffer utils.WriteBuffer) error
 				}
 			}
 			if popErr := writeBuffer.PopContext("offsets", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for offsets")
 			}
 		}
 
@@ -330,7 +330,7 @@ func (m *MultipleServiceResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 
 		if popErr := writeBuffer.PopContext("MultipleServiceResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for MultipleServiceResponse")
 		}
 		return nil
 	}

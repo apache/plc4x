@@ -149,14 +149,14 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetContextTag")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (header)
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
@@ -164,17 +164,17 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	}
 	header := CastBACnetTagHeader(_header)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for header")
 	}
 
 	// Validation
 	if !(bool((header.GetActualTagNumber()) == (tagNumberArgument))) {
-		return nil, utils.ParseAssertError{"tagnumber doesn't match"}
+		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
-		return nil, utils.ParseValidationError{"should be a context tag"}
+		return nil, errors.WithStack(utils.ParseValidationError{"should be a context tag"})
 	}
 
 	// Virtual field
@@ -189,7 +189,7 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 
 	// Validation
 	if !(bool(bool((header.GetLengthValueType()) != (6))) && bool(bool((header.GetLengthValueType()) != (7)))) {
-		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
+		return nil, errors.WithStack(utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"})
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -237,7 +237,7 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetContextTag")
 	}
 
 	// Finish initializing
@@ -253,16 +253,16 @@ func (m *BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, child 
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetContextTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetContextTag")
 	}
 
 	// Simple Field (header)
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for header")
 	}
 	_headerErr := m.Header.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for header")
 	}
 	if _headerErr != nil {
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
@@ -282,7 +282,7 @@ func (m *BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, child 
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetContextTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetContextTag")
 	}
 	return nil
 }

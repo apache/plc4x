@@ -145,7 +145,7 @@ func S7MessageResponseParse(readBuffer utils.ReadBuffer) (*S7MessageResponse, er
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7MessageResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7MessageResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -165,7 +165,7 @@ func S7MessageResponseParse(readBuffer utils.ReadBuffer) (*S7MessageResponse, er
 	errorCode := _errorCode
 
 	if closeErr := readBuffer.CloseContext("S7MessageResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7MessageResponse")
 	}
 
 	// Create a partially initialized instance
@@ -183,7 +183,7 @@ func (m *S7MessageResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7MessageResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7MessageResponse")
 		}
 
 		// Simple Field (errorClass)
@@ -201,7 +201,7 @@ func (m *S7MessageResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("S7MessageResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7MessageResponse")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataAccessEventAuthenticationFactorParse(readBuffer utils.
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessEventAuthenticationFactor"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccessEventAuthenticationFactor")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (accessEventAuthenticationFactor)
 	if pullErr := readBuffer.PullContext("accessEventAuthenticationFactor"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for accessEventAuthenticationFactor")
 	}
 	_accessEventAuthenticationFactor, _accessEventAuthenticationFactorErr := BACnetAuthenticationFactorParse(readBuffer)
 	if _accessEventAuthenticationFactorErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAccessEventAuthenticationFactorParse(readBuffer utils.
 	}
 	accessEventAuthenticationFactor := CastBACnetAuthenticationFactor(_accessEventAuthenticationFactor)
 	if closeErr := readBuffer.CloseContext("accessEventAuthenticationFactor"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for accessEventAuthenticationFactor")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventAuthenticationFactor"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessEventAuthenticationFactor")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAccessEventAuthenticationFactor) Serialize(writeBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAccessEventAuthenticationFactor"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccessEventAuthenticationFactor")
 		}
 
 		// Simple Field (accessEventAuthenticationFactor)
 		if pushErr := writeBuffer.PushContext("accessEventAuthenticationFactor"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for accessEventAuthenticationFactor")
 		}
 		_accessEventAuthenticationFactorErr := m.AccessEventAuthenticationFactor.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("accessEventAuthenticationFactor"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for accessEventAuthenticationFactor")
 		}
 		if _accessEventAuthenticationFactorErr != nil {
 			return errors.Wrap(_accessEventAuthenticationFactorErr, "Error serializing 'accessEventAuthenticationFactor' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessEventAuthenticationFactor"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAccessEventAuthenticationFactor")
 		}
 		return nil
 	}

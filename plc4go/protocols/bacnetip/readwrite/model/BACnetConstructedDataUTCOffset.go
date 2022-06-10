@@ -142,14 +142,14 @@ func BACnetConstructedDataUTCOffsetParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUTCOffset"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataUTCOffset")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (utcOffset)
 	if pullErr := readBuffer.PullContext("utcOffset"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for utcOffset")
 	}
 	_utcOffset, _utcOffsetErr := BACnetApplicationTagParse(readBuffer)
 	if _utcOffsetErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataUTCOffsetParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	utcOffset := CastBACnetApplicationTagSignedInteger(_utcOffset)
 	if closeErr := readBuffer.CloseContext("utcOffset"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for utcOffset")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUTCOffset"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUTCOffset")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataUTCOffset) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataUTCOffset"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUTCOffset")
 		}
 
 		// Simple Field (utcOffset)
 		if pushErr := writeBuffer.PushContext("utcOffset"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for utcOffset")
 		}
 		_utcOffsetErr := m.UtcOffset.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("utcOffset"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for utcOffset")
 		}
 		if _utcOffsetErr != nil {
 			return errors.Wrap(_utcOffsetErr, "Error serializing 'utcOffset' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUTCOffset"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataUTCOffset")
 		}
 		return nil
 	}

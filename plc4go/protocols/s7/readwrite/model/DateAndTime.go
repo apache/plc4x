@@ -167,7 +167,7 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DateAndTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DateAndTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -229,7 +229,7 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	dow := _dow
 
 	if closeErr := readBuffer.CloseContext("DateAndTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DateAndTime")
 	}
 
 	// Create the instance
@@ -240,7 +240,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DateAndTime"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for DateAndTime")
 	}
 
 	// Manual Field (year)
@@ -293,7 +293,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("DateAndTime"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for DateAndTime")
 	}
 	return nil
 }

@@ -117,7 +117,7 @@ func KnxAddressParse(readBuffer utils.ReadBuffer) (*KnxAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for KnxAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -144,7 +144,7 @@ func KnxAddressParse(readBuffer utils.ReadBuffer) (*KnxAddress, error) {
 	subGroup := _subGroup
 
 	if closeErr := readBuffer.CloseContext("KnxAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for KnxAddress")
 	}
 
 	// Create the instance
@@ -155,7 +155,7 @@ func (m *KnxAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("KnxAddress"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for KnxAddress")
 	}
 
 	// Simple Field (mainGroup)
@@ -180,7 +180,7 @@ func (m *KnxAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("KnxAddress"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for KnxAddress")
 	}
 	return nil
 }

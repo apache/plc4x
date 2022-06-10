@@ -133,7 +133,7 @@ func BACnetFaultParameterParse(readBuffer utils.ReadBuffer) (*BACnetFaultParamet
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameter"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameter")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -141,7 +141,7 @@ func BACnetFaultParameterParse(readBuffer utils.ReadBuffer) (*BACnetFaultParamet
 	// Peek Field (peekedTagHeader)
 	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
 	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
 	readBuffer.Reset(currentPos)
@@ -184,7 +184,7 @@ func BACnetFaultParameterParse(readBuffer utils.ReadBuffer) (*BACnetFaultParamet
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameter"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameter")
 	}
 
 	// Finish initializing
@@ -200,7 +200,7 @@ func (m *BACnetFaultParameter) SerializeParent(writeBuffer utils.WriteBuffer, ch
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetFaultParameter"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameter")
 	}
 	// Virtual field
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
@@ -213,7 +213,7 @@ func (m *BACnetFaultParameter) SerializeParent(writeBuffer utils.WriteBuffer, ch
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetFaultParameter"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetFaultParameter")
 	}
 	return nil
 }

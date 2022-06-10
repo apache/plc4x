@@ -134,14 +134,14 @@ func AdsWriteControlResponseParse(readBuffer utils.ReadBuffer, commandId Command
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsWriteControlResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AdsWriteControlResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for result")
 	}
 	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
@@ -149,11 +149,11 @@ func AdsWriteControlResponseParse(readBuffer utils.ReadBuffer, commandId Command
 	}
 	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for result")
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsWriteControlResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AdsWriteControlResponse")
 	}
 
 	// Create a partially initialized instance
@@ -170,23 +170,23 @@ func (m *AdsWriteControlResponse) Serialize(writeBuffer utils.WriteBuffer) error
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AdsWriteControlResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for AdsWriteControlResponse")
 		}
 
 		// Simple Field (result)
 		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for result")
 		}
 		_resultErr := m.Result.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("result"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for result")
 		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsWriteControlResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for AdsWriteControlResponse")
 		}
 		return nil
 	}

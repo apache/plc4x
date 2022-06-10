@@ -128,14 +128,14 @@ func BACnetPropertyStatesEventTypeParse(readBuffer utils.ReadBuffer, peekedTagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEventType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesEventType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (eventType)
 	if pullErr := readBuffer.PullContext("eventType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventType")
 	}
 	_eventType, _eventTypeErr := BACnetEventTypeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventTypeErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesEventTypeParse(readBuffer utils.ReadBuffer, peekedTagNu
 	}
 	eventType := CastBACnetEventTypeTagged(_eventType)
 	if closeErr := readBuffer.CloseContext("eventType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventType")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesEventType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesEventType")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesEventType) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesEventType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesEventType")
 		}
 
 		// Simple Field (eventType)
 		if pushErr := writeBuffer.PushContext("eventType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for eventType")
 		}
 		_eventTypeErr := m.EventType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("eventType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for eventType")
 		}
 		if _eventTypeErr != nil {
 			return errors.Wrap(_eventTypeErr, "Error serializing 'eventType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesEventType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesEventType")
 		}
 		return nil
 	}

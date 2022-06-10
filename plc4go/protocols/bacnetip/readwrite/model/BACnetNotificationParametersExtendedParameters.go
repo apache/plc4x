@@ -404,14 +404,14 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersExtendedParameters"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersExtendedParameters")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
@@ -419,13 +419,13 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Peek Field (peekedTagHeader)
 	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
 	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
 	readBuffer.Reset(currentPos)
@@ -450,7 +450,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(bool(bool((peekedTagNumber) == (0x0))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -462,7 +462,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			nullValue = CastBACnetApplicationTagNull(_val)
 			if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for nullValue")
 			}
 		}
 	}
@@ -472,7 +472,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(bool(bool((peekedTagNumber) == (0x4))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for realValue")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -484,7 +484,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			realValue = CastBACnetApplicationTagReal(_val)
 			if closeErr := readBuffer.CloseContext("realValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for realValue")
 			}
 		}
 	}
@@ -494,7 +494,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(bool(bool((peekedTagNumber) == (0x2))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -506,7 +506,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			unsignedValue = CastBACnetApplicationTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for unsignedValue")
 			}
 		}
 	}
@@ -516,7 +516,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(bool(bool((peekedTagNumber) == (0x1))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -528,7 +528,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			booleanValue = CastBACnetApplicationTagBoolean(_val)
 			if closeErr := readBuffer.CloseContext("booleanValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for booleanValue")
 			}
 		}
 	}
@@ -538,7 +538,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(bool(bool((peekedTagNumber) == (0x3))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -550,7 +550,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			integerValue = CastBACnetApplicationTagSignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for integerValue")
 			}
 		}
 	}
@@ -560,7 +560,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(bool(bool((peekedTagNumber) == (0x5))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for doubleValue")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -572,7 +572,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			doubleValue = CastBACnetApplicationTagDouble(_val)
 			if closeErr := readBuffer.CloseContext("doubleValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for doubleValue")
 			}
 		}
 	}
@@ -582,7 +582,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(bool(bool((peekedTagNumber) == (0x6))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -594,7 +594,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			octetStringValue = CastBACnetApplicationTagOctetString(_val)
 			if closeErr := readBuffer.CloseContext("octetStringValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for octetStringValue")
 			}
 		}
 	}
@@ -604,7 +604,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(bool(bool((peekedTagNumber) == (0x7))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for characterStringValue")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -616,7 +616,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			characterStringValue = CastBACnetApplicationTagCharacterString(_val)
 			if closeErr := readBuffer.CloseContext("characterStringValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for characterStringValue")
 			}
 		}
 	}
@@ -626,7 +626,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(bool(bool((peekedTagNumber) == (0x8))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -638,7 +638,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			bitStringValue = CastBACnetApplicationTagBitString(_val)
 			if closeErr := readBuffer.CloseContext("bitStringValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for bitStringValue")
 			}
 		}
 	}
@@ -648,7 +648,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(bool(bool((peekedTagNumber) == (0x9))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -660,7 +660,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			enumeratedValue = CastBACnetApplicationTagEnumerated(_val)
 			if closeErr := readBuffer.CloseContext("enumeratedValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for enumeratedValue")
 			}
 		}
 	}
@@ -670,7 +670,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(bool(bool((peekedTagNumber) == (0xA))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -682,7 +682,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			dateValue = CastBACnetApplicationTagDate(_val)
 			if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for dateValue")
 			}
 		}
 	}
@@ -692,7 +692,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(bool(bool((peekedTagNumber) == (0xB))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -704,7 +704,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			timeValue = CastBACnetApplicationTagTime(_val)
 			if closeErr := readBuffer.CloseContext("timeValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for timeValue")
 			}
 		}
 	}
@@ -714,7 +714,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(bool((peekedTagNumber) == (0xC))) && bool(!(isOpeningTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -726,7 +726,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			objectIdentifier = CastBACnetApplicationTagObjectIdentifier(_val)
 			if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 			}
 		}
 	}
@@ -736,7 +736,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if bool(isOpeningTag) && bool(!(isClosingTag)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("reference"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for reference")
 		}
 		_val, _err := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(0))
 		switch {
@@ -748,14 +748,14 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		default:
 			reference = CastBACnetDeviceObjectPropertyReferenceEnclosed(_val)
 			if closeErr := readBuffer.CloseContext("reference"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for reference")
 			}
 		}
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
@@ -763,11 +763,11 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersExtendedParameters"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersExtendedParameters")
 	}
 
 	// Create the instance
@@ -778,16 +778,16 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetNotificationParametersExtendedParameters"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersExtendedParameters")
 	}
 
 	// Simple Field (openingTag)
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
 	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -809,12 +809,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var nullValue *BACnetApplicationTagNull = nil
 	if m.NullValue != nil {
 		if pushErr := writeBuffer.PushContext("nullValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for nullValue")
 		}
 		nullValue = m.NullValue
 		_nullValueErr := nullValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for nullValue")
 		}
 		if _nullValueErr != nil {
 			return errors.Wrap(_nullValueErr, "Error serializing 'nullValue' field")
@@ -825,12 +825,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var realValue *BACnetApplicationTagReal = nil
 	if m.RealValue != nil {
 		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for realValue")
 		}
 		realValue = m.RealValue
 		_realValueErr := realValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for realValue")
 		}
 		if _realValueErr != nil {
 			return errors.Wrap(_realValueErr, "Error serializing 'realValue' field")
@@ -841,12 +841,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var unsignedValue *BACnetApplicationTagUnsignedInteger = nil
 	if m.UnsignedValue != nil {
 		if pushErr := writeBuffer.PushContext("unsignedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for unsignedValue")
 		}
 		unsignedValue = m.UnsignedValue
 		_unsignedValueErr := unsignedValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("unsignedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for unsignedValue")
 		}
 		if _unsignedValueErr != nil {
 			return errors.Wrap(_unsignedValueErr, "Error serializing 'unsignedValue' field")
@@ -857,12 +857,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var booleanValue *BACnetApplicationTagBoolean = nil
 	if m.BooleanValue != nil {
 		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for booleanValue")
 		}
 		booleanValue = m.BooleanValue
 		_booleanValueErr := booleanValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for booleanValue")
 		}
 		if _booleanValueErr != nil {
 			return errors.Wrap(_booleanValueErr, "Error serializing 'booleanValue' field")
@@ -873,12 +873,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var integerValue *BACnetApplicationTagSignedInteger = nil
 	if m.IntegerValue != nil {
 		if pushErr := writeBuffer.PushContext("integerValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for integerValue")
 		}
 		integerValue = m.IntegerValue
 		_integerValueErr := integerValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("integerValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for integerValue")
 		}
 		if _integerValueErr != nil {
 			return errors.Wrap(_integerValueErr, "Error serializing 'integerValue' field")
@@ -889,12 +889,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var doubleValue *BACnetApplicationTagDouble = nil
 	if m.DoubleValue != nil {
 		if pushErr := writeBuffer.PushContext("doubleValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for doubleValue")
 		}
 		doubleValue = m.DoubleValue
 		_doubleValueErr := doubleValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("doubleValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for doubleValue")
 		}
 		if _doubleValueErr != nil {
 			return errors.Wrap(_doubleValueErr, "Error serializing 'doubleValue' field")
@@ -905,12 +905,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var octetStringValue *BACnetApplicationTagOctetString = nil
 	if m.OctetStringValue != nil {
 		if pushErr := writeBuffer.PushContext("octetStringValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for octetStringValue")
 		}
 		octetStringValue = m.OctetStringValue
 		_octetStringValueErr := octetStringValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("octetStringValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for octetStringValue")
 		}
 		if _octetStringValueErr != nil {
 			return errors.Wrap(_octetStringValueErr, "Error serializing 'octetStringValue' field")
@@ -921,12 +921,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var characterStringValue *BACnetApplicationTagCharacterString = nil
 	if m.CharacterStringValue != nil {
 		if pushErr := writeBuffer.PushContext("characterStringValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for characterStringValue")
 		}
 		characterStringValue = m.CharacterStringValue
 		_characterStringValueErr := characterStringValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("characterStringValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for characterStringValue")
 		}
 		if _characterStringValueErr != nil {
 			return errors.Wrap(_characterStringValueErr, "Error serializing 'characterStringValue' field")
@@ -937,12 +937,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var bitStringValue *BACnetApplicationTagBitString = nil
 	if m.BitStringValue != nil {
 		if pushErr := writeBuffer.PushContext("bitStringValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for bitStringValue")
 		}
 		bitStringValue = m.BitStringValue
 		_bitStringValueErr := bitStringValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("bitStringValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for bitStringValue")
 		}
 		if _bitStringValueErr != nil {
 			return errors.Wrap(_bitStringValueErr, "Error serializing 'bitStringValue' field")
@@ -953,12 +953,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var enumeratedValue *BACnetApplicationTagEnumerated = nil
 	if m.EnumeratedValue != nil {
 		if pushErr := writeBuffer.PushContext("enumeratedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for enumeratedValue")
 		}
 		enumeratedValue = m.EnumeratedValue
 		_enumeratedValueErr := enumeratedValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("enumeratedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for enumeratedValue")
 		}
 		if _enumeratedValueErr != nil {
 			return errors.Wrap(_enumeratedValueErr, "Error serializing 'enumeratedValue' field")
@@ -969,12 +969,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var dateValue *BACnetApplicationTagDate = nil
 	if m.DateValue != nil {
 		if pushErr := writeBuffer.PushContext("dateValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dateValue")
 		}
 		dateValue = m.DateValue
 		_dateValueErr := dateValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dateValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dateValue")
 		}
 		if _dateValueErr != nil {
 			return errors.Wrap(_dateValueErr, "Error serializing 'dateValue' field")
@@ -985,12 +985,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var timeValue *BACnetApplicationTagTime = nil
 	if m.TimeValue != nil {
 		if pushErr := writeBuffer.PushContext("timeValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeValue")
 		}
 		timeValue = m.TimeValue
 		_timeValueErr := timeValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeValue")
 		}
 		if _timeValueErr != nil {
 			return errors.Wrap(_timeValueErr, "Error serializing 'timeValue' field")
@@ -1001,12 +1001,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var objectIdentifier *BACnetApplicationTagObjectIdentifier = nil
 	if m.ObjectIdentifier != nil {
 		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
 		objectIdentifier = m.ObjectIdentifier
 		_objectIdentifierErr := objectIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
 		if _objectIdentifierErr != nil {
 			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
@@ -1017,12 +1017,12 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 	var reference *BACnetDeviceObjectPropertyReferenceEnclosed = nil
 	if m.Reference != nil {
 		if pushErr := writeBuffer.PushContext("reference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for reference")
 		}
 		reference = m.Reference
 		_referenceErr := reference.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("reference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for reference")
 		}
 		if _referenceErr != nil {
 			return errors.Wrap(_referenceErr, "Error serializing 'reference' field")
@@ -1031,18 +1031,18 @@ func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer u
 
 	// Simple Field (closingTag)
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
 	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetNotificationParametersExtendedParameters"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersExtendedParameters")
 	}
 	return nil
 }

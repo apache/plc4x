@@ -142,14 +142,14 @@ func BACnetConstructedDataAlignIntervalsParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAlignIntervals"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAlignIntervals")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (alignIntervals)
 	if pullErr := readBuffer.PullContext("alignIntervals"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for alignIntervals")
 	}
 	_alignIntervals, _alignIntervalsErr := BACnetApplicationTagParse(readBuffer)
 	if _alignIntervalsErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAlignIntervalsParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	alignIntervals := CastBACnetApplicationTagBoolean(_alignIntervals)
 	if closeErr := readBuffer.CloseContext("alignIntervals"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for alignIntervals")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAlignIntervals"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAlignIntervals")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAlignIntervals) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAlignIntervals"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAlignIntervals")
 		}
 
 		// Simple Field (alignIntervals)
 		if pushErr := writeBuffer.PushContext("alignIntervals"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for alignIntervals")
 		}
 		_alignIntervalsErr := m.AlignIntervals.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("alignIntervals"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for alignIntervals")
 		}
 		if _alignIntervalsErr != nil {
 			return errors.Wrap(_alignIntervalsErr, "Error serializing 'alignIntervals' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAlignIntervals"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAlignIntervals")
 		}
 		return nil
 	}

@@ -145,14 +145,14 @@ func BACnetApplicationTagBooleanParse(readBuffer utils.ReadBuffer, header *BACne
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagBoolean"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetApplicationTagBoolean")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
 	_payload, _payloadErr := BACnetTagPayloadBooleanParse(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
@@ -160,7 +160,7 @@ func BACnetApplicationTagBooleanParse(readBuffer utils.ReadBuffer, header *BACne
 	}
 	payload := CastBACnetTagPayloadBoolean(_payload)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for payload")
 	}
 
 	// Virtual field
@@ -169,7 +169,7 @@ func BACnetApplicationTagBooleanParse(readBuffer utils.ReadBuffer, header *BACne
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagBoolean"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetApplicationTagBoolean")
 	}
 
 	// Create a partially initialized instance
@@ -186,16 +186,16 @@ func (m *BACnetApplicationTagBoolean) Serialize(writeBuffer utils.WriteBuffer) e
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetApplicationTagBoolean"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetApplicationTagBoolean")
 		}
 
 		// Simple Field (payload)
 		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for payload")
 		}
 		_payloadErr := m.Payload.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for payload")
 		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
@@ -206,7 +206,7 @@ func (m *BACnetApplicationTagBoolean) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetApplicationTagBoolean"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetApplicationTagBoolean")
 		}
 		return nil
 	}

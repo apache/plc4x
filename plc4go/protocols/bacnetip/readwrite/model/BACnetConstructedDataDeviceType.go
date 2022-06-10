@@ -142,14 +142,14 @@ func BACnetConstructedDataDeviceTypeParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeviceType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDeviceType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (deviceType)
 	if pullErr := readBuffer.PullContext("deviceType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for deviceType")
 	}
 	_deviceType, _deviceTypeErr := BACnetApplicationTagParse(readBuffer)
 	if _deviceTypeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDeviceTypeParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	deviceType := CastBACnetApplicationTagCharacterString(_deviceType)
 	if closeErr := readBuffer.CloseContext("deviceType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for deviceType")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeviceType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeviceType")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDeviceType) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDeviceType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDeviceType")
 		}
 
 		// Simple Field (deviceType)
 		if pushErr := writeBuffer.PushContext("deviceType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for deviceType")
 		}
 		_deviceTypeErr := m.DeviceType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("deviceType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for deviceType")
 		}
 		if _deviceTypeErr != nil {
 			return errors.Wrap(_deviceTypeErr, "Error serializing 'deviceType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDeviceType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDeviceType")
 		}
 		return nil
 	}

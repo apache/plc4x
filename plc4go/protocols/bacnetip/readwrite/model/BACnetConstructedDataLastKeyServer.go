@@ -142,14 +142,14 @@ func BACnetConstructedDataLastKeyServerParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastKeyServer"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastKeyServer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lastKeyServer)
 	if pullErr := readBuffer.PullContext("lastKeyServer"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lastKeyServer")
 	}
 	_lastKeyServer, _lastKeyServerErr := BACnetAddressBindingParse(readBuffer)
 	if _lastKeyServerErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLastKeyServerParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	lastKeyServer := CastBACnetAddressBinding(_lastKeyServer)
 	if closeErr := readBuffer.CloseContext("lastKeyServer"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lastKeyServer")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastKeyServer"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastKeyServer")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLastKeyServer) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLastKeyServer"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastKeyServer")
 		}
 
 		// Simple Field (lastKeyServer)
 		if pushErr := writeBuffer.PushContext("lastKeyServer"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lastKeyServer")
 		}
 		_lastKeyServerErr := m.LastKeyServer.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lastKeyServer"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lastKeyServer")
 		}
 		if _lastKeyServerErr != nil {
 			return errors.Wrap(_lastKeyServerErr, "Error serializing 'lastKeyServer' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastKeyServer"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLastKeyServer")
 		}
 		return nil
 	}

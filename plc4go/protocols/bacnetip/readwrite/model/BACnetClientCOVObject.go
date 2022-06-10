@@ -128,14 +128,14 @@ func BACnetClientCOVObjectParse(readBuffer utils.ReadBuffer) (*BACnetClientCOVOb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetClientCOVObject"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetClientCOVObject")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (realIncrement)
 	if pullErr := readBuffer.PullContext("realIncrement"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for realIncrement")
 	}
 	_realIncrement, _realIncrementErr := BACnetApplicationTagParse(readBuffer)
 	if _realIncrementErr != nil {
@@ -143,11 +143,11 @@ func BACnetClientCOVObjectParse(readBuffer utils.ReadBuffer) (*BACnetClientCOVOb
 	}
 	realIncrement := CastBACnetApplicationTagReal(_realIncrement)
 	if closeErr := readBuffer.CloseContext("realIncrement"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for realIncrement")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetClientCOVObject"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetClientCOVObject")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetClientCOVObject) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetClientCOVObject"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetClientCOVObject")
 		}
 
 		// Simple Field (realIncrement)
 		if pushErr := writeBuffer.PushContext("realIncrement"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for realIncrement")
 		}
 		_realIncrementErr := m.RealIncrement.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("realIncrement"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for realIncrement")
 		}
 		if _realIncrementErr != nil {
 			return errors.Wrap(_realIncrementErr, "Error serializing 'realIncrement' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetClientCOVObject"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetClientCOVObject")
 		}
 		return nil
 	}

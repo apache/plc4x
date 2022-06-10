@@ -131,14 +131,14 @@ func BACnetPriorityValueDoubleParse(readBuffer utils.ReadBuffer, objectTypeArgum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueDouble"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueDouble")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (doubleValue)
 	if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for doubleValue")
 	}
 	_doubleValue, _doubleValueErr := BACnetApplicationTagParse(readBuffer)
 	if _doubleValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetPriorityValueDoubleParse(readBuffer utils.ReadBuffer, objectTypeArgum
 	}
 	doubleValue := CastBACnetApplicationTagDouble(_doubleValue)
 	if closeErr := readBuffer.CloseContext("doubleValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for doubleValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueDouble"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueDouble")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetPriorityValueDouble) Serialize(writeBuffer utils.WriteBuffer) err
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPriorityValueDouble"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueDouble")
 		}
 
 		// Simple Field (doubleValue)
 		if pushErr := writeBuffer.PushContext("doubleValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for doubleValue")
 		}
 		_doubleValueErr := m.DoubleValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("doubleValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for doubleValue")
 		}
 		if _doubleValueErr != nil {
 			return errors.Wrap(_doubleValueErr, "Error serializing 'doubleValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueDouble"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPriorityValueDouble")
 		}
 		return nil
 	}

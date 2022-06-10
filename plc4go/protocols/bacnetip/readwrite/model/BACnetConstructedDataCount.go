@@ -142,14 +142,14 @@ func BACnetConstructedDataCountParse(readBuffer utils.ReadBuffer, tagNumber uint
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCount"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCount")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (count)
 	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for count")
 	}
 	_count, _countErr := BACnetApplicationTagParse(readBuffer)
 	if _countErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataCountParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 	count := CastBACnetApplicationTagUnsignedInteger(_count)
 	if closeErr := readBuffer.CloseContext("count"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for count")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCount"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCount")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataCount) Serialize(writeBuffer utils.WriteBuffer) er
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCount"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCount")
 		}
 
 		// Simple Field (count)
 		if pushErr := writeBuffer.PushContext("count"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for count")
 		}
 		_countErr := m.Count.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("count"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for count")
 		}
 		if _countErr != nil {
 			return errors.Wrap(_countErr, "Error serializing 'count' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCount"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCount")
 		}
 		return nil
 	}

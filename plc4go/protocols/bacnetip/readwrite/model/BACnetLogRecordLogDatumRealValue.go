@@ -133,14 +133,14 @@ func BACnetLogRecordLogDatumRealValueParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumRealValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecordLogDatumRealValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (realValue)
 	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
 	}
 	_realValue, _realValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _realValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetLogRecordLogDatumRealValueParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	realValue := CastBACnetContextTagReal(_realValue)
 	if closeErr := readBuffer.CloseContext("realValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for realValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumRealValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogRecordLogDatumRealValue")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetLogRecordLogDatumRealValue) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetLogRecordLogDatumRealValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumRealValue")
 		}
 
 		// Simple Field (realValue)
 		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for realValue")
 		}
 		_realValueErr := m.RealValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for realValue")
 		}
 		if _realValueErr != nil {
 			return errors.Wrap(_realValueErr, "Error serializing 'realValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogRecordLogDatumRealValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetLogRecordLogDatumRealValue")
 		}
 		return nil
 	}

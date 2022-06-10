@@ -142,14 +142,14 @@ func BACnetConstructedDataScheduleDefaultParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataScheduleDefault"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataScheduleDefault")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (scheduleDefault)
 	if pullErr := readBuffer.PullContext("scheduleDefault"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for scheduleDefault")
 	}
 	_scheduleDefault, _scheduleDefaultErr := BACnetConstructedDataElementParse(readBuffer, BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifierArgument), nil)
 	if _scheduleDefaultErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataScheduleDefaultParse(readBuffer utils.ReadBuffer, tagN
 	}
 	scheduleDefault := CastBACnetConstructedDataElement(_scheduleDefault)
 	if closeErr := readBuffer.CloseContext("scheduleDefault"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for scheduleDefault")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataScheduleDefault"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataScheduleDefault")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataScheduleDefault) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataScheduleDefault"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataScheduleDefault")
 		}
 
 		// Simple Field (scheduleDefault)
 		if pushErr := writeBuffer.PushContext("scheduleDefault"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for scheduleDefault")
 		}
 		_scheduleDefaultErr := m.ScheduleDefault.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("scheduleDefault"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for scheduleDefault")
 		}
 		if _scheduleDefaultErr != nil {
 			return errors.Wrap(_scheduleDefaultErr, "Error serializing 'scheduleDefault' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataScheduleDefault"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataScheduleDefault")
 		}
 		return nil
 	}

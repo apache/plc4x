@@ -142,14 +142,14 @@ func BACnetConstructedDataSlaveProxyEnableParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSlaveProxyEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSlaveProxyEnable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (slaveProxyEnable)
 	if pullErr := readBuffer.PullContext("slaveProxyEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for slaveProxyEnable")
 	}
 	_slaveProxyEnable, _slaveProxyEnableErr := BACnetApplicationTagParse(readBuffer)
 	if _slaveProxyEnableErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataSlaveProxyEnableParse(readBuffer utils.ReadBuffer, tag
 	}
 	slaveProxyEnable := CastBACnetApplicationTagBoolean(_slaveProxyEnable)
 	if closeErr := readBuffer.CloseContext("slaveProxyEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for slaveProxyEnable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSlaveProxyEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSlaveProxyEnable")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataSlaveProxyEnable) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSlaveProxyEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSlaveProxyEnable")
 		}
 
 		// Simple Field (slaveProxyEnable)
 		if pushErr := writeBuffer.PushContext("slaveProxyEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for slaveProxyEnable")
 		}
 		_slaveProxyEnableErr := m.SlaveProxyEnable.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("slaveProxyEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for slaveProxyEnable")
 		}
 		if _slaveProxyEnableErr != nil {
 			return errors.Wrap(_slaveProxyEnableErr, "Error serializing 'slaveProxyEnable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSlaveProxyEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSlaveProxyEnable")
 		}
 		return nil
 	}

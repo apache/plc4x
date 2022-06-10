@@ -112,7 +112,7 @@ func ModbusPDUReadFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (*Mod
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFileRecordResponseItem"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadFileRecordResponseItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -138,7 +138,7 @@ func ModbusPDUReadFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (*Mod
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadFileRecordResponseItem"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadFileRecordResponseItem")
 	}
 
 	// Create the instance
@@ -149,7 +149,7 @@ func (m *ModbusPDUReadFileRecordResponseItem) Serialize(writeBuffer utils.WriteB
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusPDUReadFileRecordResponseItem"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadFileRecordResponseItem")
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -176,7 +176,7 @@ func (m *ModbusPDUReadFileRecordResponseItem) Serialize(writeBuffer utils.WriteB
 	}
 
 	if popErr := writeBuffer.PopContext("ModbusPDUReadFileRecordResponseItem"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ModbusPDUReadFileRecordResponseItem")
 	}
 	return nil
 }

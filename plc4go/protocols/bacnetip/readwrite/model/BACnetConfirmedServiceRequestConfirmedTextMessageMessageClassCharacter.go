@@ -133,14 +133,14 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (characterValue)
 	if pullErr := readBuffer.PullContext("characterValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for characterValue")
 	}
 	_characterValue, _characterValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _characterValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse
 	}
 	characterValue := CastBACnetContextTagCharacterString(_characterValue)
 	if closeErr := readBuffer.CloseContext("characterValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for characterValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter")
 		}
 
 		// Simple Field (characterValue)
 		if pushErr := writeBuffer.PushContext("characterValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for characterValue")
 		}
 		_characterValueErr := m.CharacterValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("characterValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for characterValue")
 		}
 		if _characterValueErr != nil {
 			return errors.Wrap(_characterValueErr, "Error serializing 'characterValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter")
 		}
 		return nil
 	}

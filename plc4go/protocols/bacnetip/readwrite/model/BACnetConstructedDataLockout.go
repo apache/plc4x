@@ -142,14 +142,14 @@ func BACnetConstructedDataLockoutParse(readBuffer utils.ReadBuffer, tagNumber ui
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLockout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLockout")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lockout)
 	if pullErr := readBuffer.PullContext("lockout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lockout")
 	}
 	_lockout, _lockoutErr := BACnetApplicationTagParse(readBuffer)
 	if _lockoutErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLockoutParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	lockout := CastBACnetApplicationTagBoolean(_lockout)
 	if closeErr := readBuffer.CloseContext("lockout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lockout")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLockout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLockout")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLockout) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLockout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLockout")
 		}
 
 		// Simple Field (lockout)
 		if pushErr := writeBuffer.PushContext("lockout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lockout")
 		}
 		_lockoutErr := m.Lockout.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lockout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lockout")
 		}
 		if _lockoutErr != nil {
 			return errors.Wrap(_lockoutErr, "Error serializing 'lockout' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLockout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLockout")
 		}
 		return nil
 	}

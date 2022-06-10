@@ -142,14 +142,14 @@ func BACnetConstructedDataVerificationTimeParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVerificationTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataVerificationTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (verificationTime)
 	if pullErr := readBuffer.PullContext("verificationTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for verificationTime")
 	}
 	_verificationTime, _verificationTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _verificationTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataVerificationTimeParse(readBuffer utils.ReadBuffer, tag
 	}
 	verificationTime := CastBACnetApplicationTagSignedInteger(_verificationTime)
 	if closeErr := readBuffer.CloseContext("verificationTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for verificationTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVerificationTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataVerificationTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataVerificationTime) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataVerificationTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataVerificationTime")
 		}
 
 		// Simple Field (verificationTime)
 		if pushErr := writeBuffer.PushContext("verificationTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for verificationTime")
 		}
 		_verificationTimeErr := m.VerificationTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("verificationTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for verificationTime")
 		}
 		if _verificationTimeErr != nil {
 			return errors.Wrap(_verificationTimeErr, "Error serializing 'verificationTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataVerificationTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataVerificationTime")
 		}
 		return nil
 	}

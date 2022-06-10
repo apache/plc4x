@@ -120,14 +120,14 @@ func BACnetObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetObjectPropertyReferenceEnclosed"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetObjectPropertyReferenceEnclosed")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
@@ -135,12 +135,12 @@ func BACnetObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffer, tag
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (objectPropertyReference)
 	if pullErr := readBuffer.PullContext("objectPropertyReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectPropertyReference")
 	}
 	_objectPropertyReference, _objectPropertyReferenceErr := BACnetObjectPropertyReferenceParse(readBuffer)
 	if _objectPropertyReferenceErr != nil {
@@ -148,12 +148,12 @@ func BACnetObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffer, tag
 	}
 	objectPropertyReference := CastBACnetObjectPropertyReference(_objectPropertyReference)
 	if closeErr := readBuffer.CloseContext("objectPropertyReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectPropertyReference")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
@@ -161,11 +161,11 @@ func BACnetObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffer, tag
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetObjectPropertyReferenceEnclosed"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetObjectPropertyReferenceEnclosed")
 	}
 
 	// Create the instance
@@ -176,16 +176,16 @@ func (m *BACnetObjectPropertyReferenceEnclosed) Serialize(writeBuffer utils.Writ
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetObjectPropertyReferenceEnclosed"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetObjectPropertyReferenceEnclosed")
 	}
 
 	// Simple Field (openingTag)
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
 	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -193,11 +193,11 @@ func (m *BACnetObjectPropertyReferenceEnclosed) Serialize(writeBuffer utils.Writ
 
 	// Simple Field (objectPropertyReference)
 	if pushErr := writeBuffer.PushContext("objectPropertyReference"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for objectPropertyReference")
 	}
 	_objectPropertyReferenceErr := m.ObjectPropertyReference.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("objectPropertyReference"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for objectPropertyReference")
 	}
 	if _objectPropertyReferenceErr != nil {
 		return errors.Wrap(_objectPropertyReferenceErr, "Error serializing 'objectPropertyReference' field")
@@ -205,18 +205,18 @@ func (m *BACnetObjectPropertyReferenceEnclosed) Serialize(writeBuffer utils.Writ
 
 	// Simple Field (closingTag)
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
 	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetObjectPropertyReferenceEnclosed"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetObjectPropertyReferenceEnclosed")
 	}
 	return nil
 }

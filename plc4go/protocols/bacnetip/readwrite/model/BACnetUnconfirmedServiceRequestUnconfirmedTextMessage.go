@@ -171,14 +171,14 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (textMessageSourceDevice)
 	if pullErr := readBuffer.PullContext("textMessageSourceDevice"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for textMessageSourceDevice")
 	}
 	_textMessageSourceDevice, _textMessageSourceDeviceErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _textMessageSourceDeviceErr != nil {
@@ -186,7 +186,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils
 	}
 	textMessageSourceDevice := CastBACnetContextTagObjectIdentifier(_textMessageSourceDevice)
 	if closeErr := readBuffer.CloseContext("textMessageSourceDevice"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for textMessageSourceDevice")
 	}
 
 	// Optional Field (messageClass) (Can be skipped, if a given expression evaluates to false)
@@ -194,7 +194,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("messageClass"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for messageClass")
 		}
 		_val, _err := BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(readBuffer, uint8(1))
 		switch {
@@ -206,14 +206,14 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils
 		default:
 			messageClass = CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(_val)
 			if closeErr := readBuffer.CloseContext("messageClass"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for messageClass")
 			}
 		}
 	}
 
 	// Simple Field (messagePriority)
 	if pullErr := readBuffer.PullContext("messagePriority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for messagePriority")
 	}
 	_messagePriority, _messagePriorityErr := BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _messagePriorityErr != nil {
@@ -221,12 +221,12 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils
 	}
 	messagePriority := CastBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(_messagePriority)
 	if closeErr := readBuffer.CloseContext("messagePriority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for messagePriority")
 	}
 
 	// Simple Field (message)
 	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for message")
 	}
 	_message, _messageErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _messageErr != nil {
@@ -234,11 +234,11 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils
 	}
 	message := CastBACnetContextTagCharacterString(_message)
 	if closeErr := readBuffer.CloseContext("message"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for message")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
 	}
 
 	// Create a partially initialized instance
@@ -258,16 +258,16 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(writeB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
 		}
 
 		// Simple Field (textMessageSourceDevice)
 		if pushErr := writeBuffer.PushContext("textMessageSourceDevice"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for textMessageSourceDevice")
 		}
 		_textMessageSourceDeviceErr := m.TextMessageSourceDevice.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("textMessageSourceDevice"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for textMessageSourceDevice")
 		}
 		if _textMessageSourceDeviceErr != nil {
 			return errors.Wrap(_textMessageSourceDeviceErr, "Error serializing 'textMessageSourceDevice' field")
@@ -277,12 +277,12 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(writeB
 		var messageClass *BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass = nil
 		if m.MessageClass != nil {
 			if pushErr := writeBuffer.PushContext("messageClass"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for messageClass")
 			}
 			messageClass = m.MessageClass
 			_messageClassErr := messageClass.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("messageClass"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for messageClass")
 			}
 			if _messageClassErr != nil {
 				return errors.Wrap(_messageClassErr, "Error serializing 'messageClass' field")
@@ -291,11 +291,11 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(writeB
 
 		// Simple Field (messagePriority)
 		if pushErr := writeBuffer.PushContext("messagePriority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for messagePriority")
 		}
 		_messagePriorityErr := m.MessagePriority.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("messagePriority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for messagePriority")
 		}
 		if _messagePriorityErr != nil {
 			return errors.Wrap(_messagePriorityErr, "Error serializing 'messagePriority' field")
@@ -303,18 +303,18 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(writeB
 
 		// Simple Field (message)
 		if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for message")
 		}
 		_messageErr := m.Message.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("message"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for message")
 		}
 		if _messageErr != nil {
 			return errors.Wrap(_messageErr, "Error serializing 'message' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
 		}
 		return nil
 	}

@@ -131,14 +131,14 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (*BAC
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventNotificationSubscription"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventNotificationSubscription")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (recipient)
 	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
 	}
 	_recipient, _recipientErr := BACnetRecipientEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
@@ -146,12 +146,12 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (*BAC
 	}
 	recipient := CastBACnetRecipientEnclosed(_recipient)
 	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for recipient")
 	}
 
 	// Simple Field (processIdentifier)
 	if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
 	}
 	_processIdentifier, _processIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _processIdentifierErr != nil {
@@ -159,7 +159,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (*BAC
 	}
 	processIdentifier := CastBACnetContextTagUnsignedInteger(_processIdentifier)
 	if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for processIdentifier")
 	}
 
 	// Optional Field (issueConfirmedNotifications) (Can be skipped, if a given expression evaluates to false)
@@ -167,7 +167,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (*BAC
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_BOOLEAN)
 		switch {
@@ -179,14 +179,14 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (*BAC
 		default:
 			issueConfirmedNotifications = CastBACnetContextTagBoolean(_val)
 			if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for issueConfirmedNotifications")
 			}
 		}
 	}
 
 	// Simple Field (timeRemaining)
 	if pullErr := readBuffer.PullContext("timeRemaining"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeRemaining")
 	}
 	_timeRemaining, _timeRemainingErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeRemainingErr != nil {
@@ -194,11 +194,11 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (*BAC
 	}
 	timeRemaining := CastBACnetContextTagUnsignedInteger(_timeRemaining)
 	if closeErr := readBuffer.CloseContext("timeRemaining"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeRemaining")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventNotificationSubscription"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventNotificationSubscription")
 	}
 
 	// Create the instance
@@ -209,16 +209,16 @@ func (m *BACnetEventNotificationSubscription) Serialize(writeBuffer utils.WriteB
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventNotificationSubscription"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetEventNotificationSubscription")
 	}
 
 	// Simple Field (recipient)
 	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for recipient")
 	}
 	_recipientErr := m.Recipient.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for recipient")
 	}
 	if _recipientErr != nil {
 		return errors.Wrap(_recipientErr, "Error serializing 'recipient' field")
@@ -226,11 +226,11 @@ func (m *BACnetEventNotificationSubscription) Serialize(writeBuffer utils.WriteB
 
 	// Simple Field (processIdentifier)
 	if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for processIdentifier")
 	}
 	_processIdentifierErr := m.ProcessIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for processIdentifier")
 	}
 	if _processIdentifierErr != nil {
 		return errors.Wrap(_processIdentifierErr, "Error serializing 'processIdentifier' field")
@@ -240,12 +240,12 @@ func (m *BACnetEventNotificationSubscription) Serialize(writeBuffer utils.WriteB
 	var issueConfirmedNotifications *BACnetContextTagBoolean = nil
 	if m.IssueConfirmedNotifications != nil {
 		if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
 		}
 		issueConfirmedNotifications = m.IssueConfirmedNotifications
 		_issueConfirmedNotificationsErr := issueConfirmedNotifications.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
 		}
 		if _issueConfirmedNotificationsErr != nil {
 			return errors.Wrap(_issueConfirmedNotificationsErr, "Error serializing 'issueConfirmedNotifications' field")
@@ -254,18 +254,18 @@ func (m *BACnetEventNotificationSubscription) Serialize(writeBuffer utils.WriteB
 
 	// Simple Field (timeRemaining)
 	if pushErr := writeBuffer.PushContext("timeRemaining"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for timeRemaining")
 	}
 	_timeRemainingErr := m.TimeRemaining.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("timeRemaining"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for timeRemaining")
 	}
 	if _timeRemainingErr != nil {
 		return errors.Wrap(_timeRemainingErr, "Error serializing 'timeRemaining' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEventNotificationSubscription"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetEventNotificationSubscription")
 	}
 	return nil
 }

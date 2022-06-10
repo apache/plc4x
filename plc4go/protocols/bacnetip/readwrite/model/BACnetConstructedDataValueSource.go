@@ -142,14 +142,14 @@ func BACnetConstructedDataValueSourceParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValueSource"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataValueSource")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (valueSource)
 	if pullErr := readBuffer.PullContext("valueSource"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for valueSource")
 	}
 	_valueSource, _valueSourceErr := BACnetValueSourceParse(readBuffer)
 	if _valueSourceErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataValueSourceParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	valueSource := CastBACnetValueSource(_valueSource)
 	if closeErr := readBuffer.CloseContext("valueSource"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for valueSource")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueSource"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueSource")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataValueSource) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataValueSource"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataValueSource")
 		}
 
 		// Simple Field (valueSource)
 		if pushErr := writeBuffer.PushContext("valueSource"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for valueSource")
 		}
 		_valueSourceErr := m.ValueSource.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("valueSource"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for valueSource")
 		}
 		if _valueSourceErr != nil {
 			return errors.Wrap(_valueSourceErr, "Error serializing 'valueSource' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataValueSource"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataValueSource")
 		}
 		return nil
 	}

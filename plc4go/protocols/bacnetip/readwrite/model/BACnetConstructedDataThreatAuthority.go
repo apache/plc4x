@@ -142,14 +142,14 @@ func BACnetConstructedDataThreatAuthorityParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataThreatAuthority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataThreatAuthority")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (threatAuthority)
 	if pullErr := readBuffer.PullContext("threatAuthority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for threatAuthority")
 	}
 	_threatAuthority, _threatAuthorityErr := BACnetAccessThreatLevelParse(readBuffer)
 	if _threatAuthorityErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataThreatAuthorityParse(readBuffer utils.ReadBuffer, tagN
 	}
 	threatAuthority := CastBACnetAccessThreatLevel(_threatAuthority)
 	if closeErr := readBuffer.CloseContext("threatAuthority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for threatAuthority")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataThreatAuthority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataThreatAuthority")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataThreatAuthority) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataThreatAuthority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataThreatAuthority")
 		}
 
 		// Simple Field (threatAuthority)
 		if pushErr := writeBuffer.PushContext("threatAuthority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for threatAuthority")
 		}
 		_threatAuthorityErr := m.ThreatAuthority.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("threatAuthority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for threatAuthority")
 		}
 		if _threatAuthorityErr != nil {
 			return errors.Wrap(_threatAuthorityErr, "Error serializing 'threatAuthority' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataThreatAuthority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataThreatAuthority")
 		}
 		return nil
 	}

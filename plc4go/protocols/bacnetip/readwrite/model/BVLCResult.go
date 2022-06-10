@@ -130,14 +130,14 @@ func BVLCResultParse(readBuffer utils.ReadBuffer) (*BVLCResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCResult"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BVLCResult")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (code)
 	if pullErr := readBuffer.PullContext("code"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for code")
 	}
 	_code, _codeErr := BVLCResultCodeParse(readBuffer)
 	if _codeErr != nil {
@@ -145,11 +145,11 @@ func BVLCResultParse(readBuffer utils.ReadBuffer) (*BVLCResult, error) {
 	}
 	code := _code
 	if closeErr := readBuffer.CloseContext("code"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for code")
 	}
 
 	if closeErr := readBuffer.CloseContext("BVLCResult"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BVLCResult")
 	}
 
 	// Create a partially initialized instance
@@ -166,23 +166,23 @@ func (m *BVLCResult) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BVLCResult"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BVLCResult")
 		}
 
 		// Simple Field (code)
 		if pushErr := writeBuffer.PushContext("code"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for code")
 		}
 		_codeErr := m.Code.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("code"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for code")
 		}
 		if _codeErr != nil {
 			return errors.Wrap(_codeErr, "Error serializing 'code' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCResult"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BVLCResult")
 		}
 		return nil
 	}

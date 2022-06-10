@@ -142,14 +142,14 @@ func BACnetConstructedDataLastCredentialRemovedTimeParse(readBuffer utils.ReadBu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastCredentialRemovedTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastCredentialRemovedTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lastCredentialRemovedTime)
 	if pullErr := readBuffer.PullContext("lastCredentialRemovedTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lastCredentialRemovedTime")
 	}
 	_lastCredentialRemovedTime, _lastCredentialRemovedTimeErr := BACnetDateTimeParse(readBuffer)
 	if _lastCredentialRemovedTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLastCredentialRemovedTimeParse(readBuffer utils.ReadBu
 	}
 	lastCredentialRemovedTime := CastBACnetDateTime(_lastCredentialRemovedTime)
 	if closeErr := readBuffer.CloseContext("lastCredentialRemovedTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lastCredentialRemovedTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastCredentialRemovedTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastCredentialRemovedTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLastCredentialRemovedTime) Serialize(writeBuffer u
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLastCredentialRemovedTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastCredentialRemovedTime")
 		}
 
 		// Simple Field (lastCredentialRemovedTime)
 		if pushErr := writeBuffer.PushContext("lastCredentialRemovedTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lastCredentialRemovedTime")
 		}
 		_lastCredentialRemovedTimeErr := m.LastCredentialRemovedTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lastCredentialRemovedTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lastCredentialRemovedTime")
 		}
 		if _lastCredentialRemovedTimeErr != nil {
 			return errors.Wrap(_lastCredentialRemovedTimeErr, "Error serializing 'lastCredentialRemovedTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastCredentialRemovedTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLastCredentialRemovedTime")
 		}
 		return nil
 	}

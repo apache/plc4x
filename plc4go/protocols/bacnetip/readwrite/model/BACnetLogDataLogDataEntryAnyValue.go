@@ -132,7 +132,7 @@ func BACnetLogDataLogDataEntryAnyValueParse(readBuffer utils.ReadBuffer) (*BACne
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryAnyValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataEntryAnyValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -142,7 +142,7 @@ func BACnetLogDataLogDataEntryAnyValueParse(readBuffer utils.ReadBuffer) (*BACne
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("anyValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for anyValue")
 		}
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(8), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
@@ -154,13 +154,13 @@ func BACnetLogDataLogDataEntryAnyValueParse(readBuffer utils.ReadBuffer) (*BACne
 		default:
 			anyValue = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("anyValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for anyValue")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogDataEntryAnyValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogDataLogDataEntryAnyValue")
 	}
 
 	// Create a partially initialized instance
@@ -177,19 +177,19 @@ func (m *BACnetLogDataLogDataEntryAnyValue) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetLogDataLogDataEntryAnyValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogDataEntryAnyValue")
 		}
 
 		// Optional Field (anyValue) (Can be skipped, if the value is null)
 		var anyValue *BACnetConstructedData = nil
 		if m.AnyValue != nil {
 			if pushErr := writeBuffer.PushContext("anyValue"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for anyValue")
 			}
 			anyValue = m.AnyValue
 			_anyValueErr := anyValue.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("anyValue"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for anyValue")
 			}
 			if _anyValueErr != nil {
 				return errors.Wrap(_anyValueErr, "Error serializing 'anyValue' field")
@@ -197,7 +197,7 @@ func (m *BACnetLogDataLogDataEntryAnyValue) Serialize(writeBuffer utils.WriteBuf
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogDataLogDataEntryAnyValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetLogDataLogDataEntryAnyValue")
 		}
 		return nil
 	}

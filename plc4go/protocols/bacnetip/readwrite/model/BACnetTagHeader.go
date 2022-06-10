@@ -258,7 +258,7 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (*BACnetTagHeader, error)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagHeader")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -272,7 +272,7 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (*BACnetTagHeader, error)
 
 	// Simple Field (tagClass)
 	if pullErr := readBuffer.PullContext("tagClass"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for tagClass")
 	}
 	_tagClass, _tagClassErr := TagClassParse(readBuffer)
 	if _tagClassErr != nil {
@@ -280,7 +280,7 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (*BACnetTagHeader, error)
 	}
 	tagClass := _tagClass
 	if closeErr := readBuffer.CloseContext("tagClass"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for tagClass")
 	}
 
 	// Simple Field (lengthValueType)
@@ -360,7 +360,7 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (*BACnetTagHeader, error)
 	_ = actualLength
 
 	if closeErr := readBuffer.CloseContext("BACnetTagHeader"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagHeader")
 	}
 
 	// Create the instance
@@ -371,7 +371,7 @@ func (m *BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagHeader"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetTagHeader")
 	}
 
 	// Simple Field (tagNumber)
@@ -383,11 +383,11 @@ func (m *BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (tagClass)
 	if pushErr := writeBuffer.PushContext("tagClass"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for tagClass")
 	}
 	_tagClassErr := m.TagClass.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("tagClass"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for tagClass")
 	}
 	if _tagClassErr != nil {
 		return errors.Wrap(_tagClassErr, "Error serializing 'tagClass' field")
@@ -461,7 +461,7 @@ func (m *BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagHeader"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetTagHeader")
 	}
 	return nil
 }

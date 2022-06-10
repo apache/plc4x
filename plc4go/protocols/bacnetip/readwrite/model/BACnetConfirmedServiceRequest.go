@@ -124,19 +124,19 @@ func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRequ
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	if pullErr := readBuffer.PullContext("serviceChoice"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for serviceChoice")
 	}
 	serviceChoice_temp, _serviceChoiceErr := BACnetConfirmedServiceChoiceParse(readBuffer)
 	var serviceChoice BACnetConfirmedServiceChoice = serviceChoice_temp
 	if closeErr := readBuffer.CloseContext("serviceChoice"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for serviceChoice")
 	}
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
@@ -228,7 +228,7 @@ func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRequ
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequest")
 	}
 
 	// Finish initializing
@@ -244,17 +244,17 @@ func (m *BACnetConfirmedServiceRequest) SerializeParent(writeBuffer utils.WriteB
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequest"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequest")
 	}
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := BACnetConfirmedServiceChoice(child.GetServiceChoice())
 	if pushErr := writeBuffer.PushContext("serviceChoice"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for serviceChoice")
 	}
 	_serviceChoiceErr := serviceChoice.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("serviceChoice"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for serviceChoice")
 	}
 
 	if _serviceChoiceErr != nil {
@@ -271,7 +271,7 @@ func (m *BACnetConfirmedServiceRequest) SerializeParent(writeBuffer utils.WriteB
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequest"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequest")
 	}
 	return nil
 }

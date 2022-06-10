@@ -131,14 +131,14 @@ func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockTunnelConnection"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionResponseDataBlockTunnelConnection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (knxAddress)
 	if pullErr := readBuffer.PullContext("knxAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for knxAddress")
 	}
 	_knxAddress, _knxAddressErr := KnxAddressParse(readBuffer)
 	if _knxAddressErr != nil {
@@ -146,11 +146,11 @@ func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffe
 	}
 	knxAddress := CastKnxAddress(_knxAddress)
 	if closeErr := readBuffer.CloseContext("knxAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for knxAddress")
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionResponseDataBlockTunnelConnection"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ConnectionResponseDataBlockTunnelConnection")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(writeBuffer util
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConnectionResponseDataBlockTunnelConnection"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ConnectionResponseDataBlockTunnelConnection")
 		}
 
 		// Simple Field (knxAddress)
 		if pushErr := writeBuffer.PushContext("knxAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for knxAddress")
 		}
 		_knxAddressErr := m.KnxAddress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("knxAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for knxAddress")
 		}
 		if _knxAddressErr != nil {
 			return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConnectionResponseDataBlockTunnelConnection"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ConnectionResponseDataBlockTunnelConnection")
 		}
 		return nil
 	}

@@ -150,14 +150,14 @@ func BACnetFaultParameterFaultStatusFlagsParse(readBuffer utils.ReadBuffer) (*BA
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultStatusFlags"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultStatusFlags")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(5)))
 	if _openingTagErr != nil {
@@ -165,12 +165,12 @@ func BACnetFaultParameterFaultStatusFlagsParse(readBuffer utils.ReadBuffer) (*BA
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (statusFlagsReference)
 	if pullErr := readBuffer.PullContext("statusFlagsReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for statusFlagsReference")
 	}
 	_statusFlagsReference, _statusFlagsReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _statusFlagsReferenceErr != nil {
@@ -178,12 +178,12 @@ func BACnetFaultParameterFaultStatusFlagsParse(readBuffer utils.ReadBuffer) (*BA
 	}
 	statusFlagsReference := CastBACnetDeviceObjectPropertyReferenceEnclosed(_statusFlagsReference)
 	if closeErr := readBuffer.CloseContext("statusFlagsReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for statusFlagsReference")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(5)))
 	if _closingTagErr != nil {
@@ -191,11 +191,11 @@ func BACnetFaultParameterFaultStatusFlagsParse(readBuffer utils.ReadBuffer) (*BA
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultStatusFlags"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultStatusFlags")
 	}
 
 	// Create a partially initialized instance
@@ -214,16 +214,16 @@ func (m *BACnetFaultParameterFaultStatusFlags) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetFaultParameterFaultStatusFlags"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultStatusFlags")
 		}
 
 		// Simple Field (openingTag)
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
 		_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
 		if _openingTagErr != nil {
 			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -231,11 +231,11 @@ func (m *BACnetFaultParameterFaultStatusFlags) Serialize(writeBuffer utils.Write
 
 		// Simple Field (statusFlagsReference)
 		if pushErr := writeBuffer.PushContext("statusFlagsReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for statusFlagsReference")
 		}
 		_statusFlagsReferenceErr := m.StatusFlagsReference.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("statusFlagsReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for statusFlagsReference")
 		}
 		if _statusFlagsReferenceErr != nil {
 			return errors.Wrap(_statusFlagsReferenceErr, "Error serializing 'statusFlagsReference' field")
@@ -243,18 +243,18 @@ func (m *BACnetFaultParameterFaultStatusFlags) Serialize(writeBuffer utils.Write
 
 		// Simple Field (closingTag)
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
 		_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
 		if _closingTagErr != nil {
 			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultStatusFlags"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultStatusFlags")
 		}
 		return nil
 	}

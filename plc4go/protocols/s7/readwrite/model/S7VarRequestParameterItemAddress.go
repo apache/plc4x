@@ -133,7 +133,7 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (*S7VarR
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItemAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7VarRequestParameterItemAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -147,7 +147,7 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (*S7VarR
 
 	// Simple Field (address)
 	if pullErr := readBuffer.PullContext("address"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for address")
 	}
 	_address, _addressErr := S7AddressParse(readBuffer)
 	if _addressErr != nil {
@@ -155,11 +155,11 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (*S7VarR
 	}
 	address := CastS7Address(_address)
 	if closeErr := readBuffer.CloseContext("address"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for address")
 	}
 
 	if closeErr := readBuffer.CloseContext("S7VarRequestParameterItemAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7VarRequestParameterItemAddress")
 	}
 
 	// Create a partially initialized instance
@@ -176,7 +176,7 @@ func (m *S7VarRequestParameterItemAddress) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7VarRequestParameterItemAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7VarRequestParameterItemAddress")
 		}
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -188,18 +188,18 @@ func (m *S7VarRequestParameterItemAddress) Serialize(writeBuffer utils.WriteBuff
 
 		// Simple Field (address)
 		if pushErr := writeBuffer.PushContext("address"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for address")
 		}
 		_addressErr := m.Address.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("address"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for address")
 		}
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7VarRequestParameterItemAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7VarRequestParameterItemAddress")
 		}
 		return nil
 	}

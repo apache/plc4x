@@ -145,7 +145,7 @@ func ModbusPDUWriteFileRecordRequestParse(readBuffer utils.ReadBuffer, response 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteFileRecordRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUWriteFileRecordRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -159,7 +159,7 @@ func ModbusPDUWriteFileRecordRequestParse(readBuffer utils.ReadBuffer, response 
 
 	// Array field (items)
 	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Length array
 	items := make([]*ModbusPDUWriteFileRecordRequestItem, 0)
@@ -175,11 +175,11 @@ func ModbusPDUWriteFileRecordRequestParse(readBuffer utils.ReadBuffer, response 
 		}
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for items")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUWriteFileRecordRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUWriteFileRecordRequest")
 	}
 
 	// Create a partially initialized instance
@@ -203,7 +203,7 @@ func (m *ModbusPDUWriteFileRecordRequest) Serialize(writeBuffer utils.WriteBuffe
 	}
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUWriteFileRecordRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusPDUWriteFileRecordRequest")
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -216,7 +216,7 @@ func (m *ModbusPDUWriteFileRecordRequest) Serialize(writeBuffer utils.WriteBuffe
 		// Array Field (items)
 		if m.Items != nil {
 			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for items")
 			}
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -225,12 +225,12 @@ func (m *ModbusPDUWriteFileRecordRequest) Serialize(writeBuffer utils.WriteBuffe
 				}
 			}
 			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for items")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUWriteFileRecordRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusPDUWriteFileRecordRequest")
 		}
 		return nil
 	}

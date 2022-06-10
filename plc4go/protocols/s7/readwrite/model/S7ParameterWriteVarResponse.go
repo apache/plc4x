@@ -134,7 +134,7 @@ func S7ParameterWriteVarResponseParse(readBuffer utils.ReadBuffer, messageType u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterWriteVarResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterWriteVarResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -147,7 +147,7 @@ func S7ParameterWriteVarResponseParse(readBuffer utils.ReadBuffer, messageType u
 	numItems := _numItems
 
 	if closeErr := readBuffer.CloseContext("S7ParameterWriteVarResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterWriteVarResponse")
 	}
 
 	// Create a partially initialized instance
@@ -164,7 +164,7 @@ func (m *S7ParameterWriteVarResponse) Serialize(writeBuffer utils.WriteBuffer) e
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7ParameterWriteVarResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7ParameterWriteVarResponse")
 		}
 
 		// Simple Field (numItems)
@@ -175,7 +175,7 @@ func (m *S7ParameterWriteVarResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterWriteVarResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7ParameterWriteVarResponse")
 		}
 		return nil
 	}

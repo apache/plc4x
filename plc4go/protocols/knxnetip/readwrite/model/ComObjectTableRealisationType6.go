@@ -130,14 +130,14 @@ func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer, firmwareTy
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType6"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ComObjectTableRealisationType6")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (comObjectDescriptors)
 	if pullErr := readBuffer.PullContext("comObjectDescriptors"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for comObjectDescriptors")
 	}
 	_comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6Parse(readBuffer)
 	if _comObjectDescriptorsErr != nil {
@@ -145,11 +145,11 @@ func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer, firmwareTy
 	}
 	comObjectDescriptors := CastGroupObjectDescriptorRealisationType6(_comObjectDescriptors)
 	if closeErr := readBuffer.CloseContext("comObjectDescriptors"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for comObjectDescriptors")
 	}
 
 	if closeErr := readBuffer.CloseContext("ComObjectTableRealisationType6"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ComObjectTableRealisationType6")
 	}
 
 	// Create a partially initialized instance
@@ -166,23 +166,23 @@ func (m *ComObjectTableRealisationType6) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ComObjectTableRealisationType6"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ComObjectTableRealisationType6")
 		}
 
 		// Simple Field (comObjectDescriptors)
 		if pushErr := writeBuffer.PushContext("comObjectDescriptors"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for comObjectDescriptors")
 		}
 		_comObjectDescriptorsErr := m.ComObjectDescriptors.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("comObjectDescriptors"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for comObjectDescriptors")
 		}
 		if _comObjectDescriptorsErr != nil {
 			return errors.Wrap(_comObjectDescriptorsErr, "Error serializing 'comObjectDescriptors' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ComObjectTableRealisationType6"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ComObjectTableRealisationType6")
 		}
 		return nil
 	}

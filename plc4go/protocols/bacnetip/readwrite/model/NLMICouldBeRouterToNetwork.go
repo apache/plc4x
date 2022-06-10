@@ -146,7 +146,7 @@ func NLMICouldBeRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uin
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMICouldBeRouterToNetwork"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for NLMICouldBeRouterToNetwork")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -166,7 +166,7 @@ func NLMICouldBeRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uin
 	performanceIndex := _performanceIndex
 
 	if closeErr := readBuffer.CloseContext("NLMICouldBeRouterToNetwork"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for NLMICouldBeRouterToNetwork")
 	}
 
 	// Create a partially initialized instance
@@ -184,7 +184,7 @@ func (m *NLMICouldBeRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) er
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("NLMICouldBeRouterToNetwork"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for NLMICouldBeRouterToNetwork")
 		}
 
 		// Simple Field (destinationNetworkAddress)
@@ -202,7 +202,7 @@ func (m *NLMICouldBeRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 
 		if popErr := writeBuffer.PopContext("NLMICouldBeRouterToNetwork"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for NLMICouldBeRouterToNetwork")
 		}
 		return nil
 	}

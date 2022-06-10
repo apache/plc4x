@@ -178,7 +178,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*Monitore
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALShortFormBasicMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for MonitoredSALShortFormBasicMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -197,7 +197,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*Monitore
 	if bool((counts) != (0x00)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("bridgeCount"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for bridgeCount")
 		}
 		_val, _err := BridgeCountParse(readBuffer)
 		switch {
@@ -209,7 +209,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*Monitore
 		default:
 			bridgeCount = CastBridgeCount(_val)
 			if closeErr := readBuffer.CloseContext("bridgeCount"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for bridgeCount")
 			}
 		}
 	}
@@ -219,7 +219,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*Monitore
 	if bool((counts) != (0x00)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("networkNumber"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for networkNumber")
 		}
 		_val, _err := NetworkNumberParse(readBuffer)
 		switch {
@@ -231,7 +231,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*Monitore
 		default:
 			networkNumber = CastNetworkNumber(_val)
 			if closeErr := readBuffer.CloseContext("networkNumber"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for networkNumber")
 			}
 		}
 	}
@@ -248,7 +248,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*Monitore
 
 	// Simple Field (application)
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
 	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
@@ -256,11 +256,11 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*Monitore
 	}
 	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for application")
 	}
 
 	if closeErr := readBuffer.CloseContext("MonitoredSALShortFormBasicMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for MonitoredSALShortFormBasicMode")
 	}
 
 	// Create a partially initialized instance
@@ -281,19 +281,19 @@ func (m *MonitoredSALShortFormBasicMode) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MonitoredSALShortFormBasicMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for MonitoredSALShortFormBasicMode")
 		}
 
 		// Optional Field (bridgeCount) (Can be skipped, if the value is null)
 		var bridgeCount *BridgeCount = nil
 		if m.BridgeCount != nil {
 			if pushErr := writeBuffer.PushContext("bridgeCount"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for bridgeCount")
 			}
 			bridgeCount = m.BridgeCount
 			_bridgeCountErr := bridgeCount.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("bridgeCount"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for bridgeCount")
 			}
 			if _bridgeCountErr != nil {
 				return errors.Wrap(_bridgeCountErr, "Error serializing 'bridgeCount' field")
@@ -304,12 +304,12 @@ func (m *MonitoredSALShortFormBasicMode) Serialize(writeBuffer utils.WriteBuffer
 		var networkNumber *NetworkNumber = nil
 		if m.NetworkNumber != nil {
 			if pushErr := writeBuffer.PushContext("networkNumber"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for networkNumber")
 			}
 			networkNumber = m.NetworkNumber
 			_networkNumberErr := networkNumber.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("networkNumber"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for networkNumber")
 			}
 			if _networkNumberErr != nil {
 				return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
@@ -328,18 +328,18 @@ func (m *MonitoredSALShortFormBasicMode) Serialize(writeBuffer utils.WriteBuffer
 
 		// Simple Field (application)
 		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for application")
 		}
 		_applicationErr := m.Application.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("application"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for application")
 		}
 		if _applicationErr != nil {
 			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MonitoredSALShortFormBasicMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for MonitoredSALShortFormBasicMode")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataTriggerParse(readBuffer utils.ReadBuffer, tagNumber ui
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrigger"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTrigger")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (trigger)
 	if pullErr := readBuffer.PullContext("trigger"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for trigger")
 	}
 	_trigger, _triggerErr := BACnetApplicationTagParse(readBuffer)
 	if _triggerErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataTriggerParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	trigger := CastBACnetApplicationTagBoolean(_trigger)
 	if closeErr := readBuffer.CloseContext("trigger"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for trigger")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTrigger"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTrigger")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataTrigger) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataTrigger"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTrigger")
 		}
 
 		// Simple Field (trigger)
 		if pushErr := writeBuffer.PushContext("trigger"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for trigger")
 		}
 		_triggerErr := m.Trigger.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("trigger"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for trigger")
 		}
 		if _triggerErr != nil {
 			return errors.Wrap(_triggerErr, "Error serializing 'trigger' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTrigger"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataTrigger")
 		}
 		return nil
 	}

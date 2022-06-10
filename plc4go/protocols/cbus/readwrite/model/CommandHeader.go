@@ -97,7 +97,7 @@ func CommandHeaderParse(readBuffer utils.ReadBuffer) (*CommandHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CommandHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CommandHeader")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -110,7 +110,7 @@ func CommandHeaderParse(readBuffer utils.ReadBuffer) (*CommandHeader, error) {
 	value := _value
 
 	if closeErr := readBuffer.CloseContext("CommandHeader"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CommandHeader")
 	}
 
 	// Create the instance
@@ -121,7 +121,7 @@ func (m *CommandHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CommandHeader"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CommandHeader")
 	}
 
 	// Simple Field (value)
@@ -132,7 +132,7 @@ func (m *CommandHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("CommandHeader"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CommandHeader")
 	}
 	return nil
 }

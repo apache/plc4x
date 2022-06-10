@@ -101,7 +101,7 @@ func ExtendedStatusHeaderParse(readBuffer utils.ReadBuffer) (*ExtendedStatusHead
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ExtendedStatusHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ExtendedStatusHeader")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -128,7 +128,7 @@ func ExtendedStatusHeaderParse(readBuffer utils.ReadBuffer) (*ExtendedStatusHead
 	numberOfCharacterPairs := _numberOfCharacterPairs
 
 	if closeErr := readBuffer.CloseContext("ExtendedStatusHeader"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ExtendedStatusHeader")
 	}
 
 	// Create the instance
@@ -139,7 +139,7 @@ func (m *ExtendedStatusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ExtendedStatusHeader"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ExtendedStatusHeader")
 	}
 
 	// Reserved Field (reserved)
@@ -158,7 +158,7 @@ func (m *ExtendedStatusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("ExtendedStatusHeader"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ExtendedStatusHeader")
 	}
 	return nil
 }

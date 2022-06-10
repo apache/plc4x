@@ -184,7 +184,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -209,7 +209,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 
 	// Simple Field (pudicfReturnCode)
 	if pullErr := readBuffer.PullContext("pudicfReturnCode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for pudicfReturnCode")
 	}
 	_pudicfReturnCode, _pudicfReturnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _pudicfReturnCodeErr != nil {
@@ -217,12 +217,12 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	}
 	pudicfReturnCode := _pudicfReturnCode
 	if closeErr := readBuffer.CloseContext("pudicfReturnCode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for pudicfReturnCode")
 	}
 
 	// Simple Field (pudicftransportSize)
 	if pullErr := readBuffer.PullContext("pudicftransportSize"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for pudicftransportSize")
 	}
 	_pudicftransportSize, _pudicftransportSizeErr := DataTransportSizeParse(readBuffer)
 	if _pudicftransportSizeErr != nil {
@@ -230,7 +230,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	}
 	pudicftransportSize := _pudicftransportSize
 	if closeErr := readBuffer.CloseContext("pudicftransportSize"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for pudicftransportSize")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -248,7 +248,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 	}
 
 	// Create a partially initialized instance
@@ -266,7 +266,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 		}
 
 		// Const Field (functionId)
@@ -283,11 +283,11 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuff
 
 		// Simple Field (pudicfReturnCode)
 		if pushErr := writeBuffer.PushContext("pudicfReturnCode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for pudicfReturnCode")
 		}
 		_pudicfReturnCodeErr := m.PudicfReturnCode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("pudicfReturnCode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for pudicfReturnCode")
 		}
 		if _pudicfReturnCodeErr != nil {
 			return errors.Wrap(_pudicfReturnCodeErr, "Error serializing 'pudicfReturnCode' field")
@@ -295,11 +295,11 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuff
 
 		// Simple Field (pudicftransportSize)
 		if pushErr := writeBuffer.PushContext("pudicftransportSize"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for pudicftransportSize")
 		}
 		_pudicftransportSizeErr := m.PudicftransportSize.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("pudicftransportSize"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for pudicftransportSize")
 		}
 		if _pudicftransportSizeErr != nil {
 			return errors.Wrap(_pudicftransportSizeErr, "Error serializing 'pudicftransportSize' field")
@@ -314,7 +314,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuff
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 		}
 		return nil
 	}

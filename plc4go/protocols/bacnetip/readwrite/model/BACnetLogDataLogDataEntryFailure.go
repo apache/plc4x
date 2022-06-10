@@ -128,14 +128,14 @@ func BACnetLogDataLogDataEntryFailureParse(readBuffer utils.ReadBuffer) (*BACnet
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryFailure"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataEntryFailure")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (failure)
 	if pullErr := readBuffer.PullContext("failure"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for failure")
 	}
 	_failure, _failureErr := ErrorEnclosedParse(readBuffer, uint8(uint8(7)))
 	if _failureErr != nil {
@@ -143,11 +143,11 @@ func BACnetLogDataLogDataEntryFailureParse(readBuffer utils.ReadBuffer) (*BACnet
 	}
 	failure := CastErrorEnclosed(_failure)
 	if closeErr := readBuffer.CloseContext("failure"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for failure")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogDataEntryFailure"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogDataLogDataEntryFailure")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetLogDataLogDataEntryFailure) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetLogDataLogDataEntryFailure"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogDataEntryFailure")
 		}
 
 		// Simple Field (failure)
 		if pushErr := writeBuffer.PushContext("failure"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for failure")
 		}
 		_failureErr := m.Failure.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("failure"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for failure")
 		}
 		if _failureErr != nil {
 			return errors.Wrap(_failureErr, "Error serializing 'failure' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogDataLogDataEntryFailure"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetLogDataLogDataEntryFailure")
 		}
 		return nil
 	}

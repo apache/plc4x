@@ -143,7 +143,7 @@ func ModbusPDUReadDiscreteInputsResponseParse(readBuffer utils.ReadBuffer, respo
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadDiscreteInputsResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadDiscreteInputsResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -162,7 +162,7 @@ func ModbusPDUReadDiscreteInputsResponseParse(readBuffer utils.ReadBuffer, respo
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadDiscreteInputsResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadDiscreteInputsResponse")
 	}
 
 	// Create a partially initialized instance
@@ -179,7 +179,7 @@ func (m *ModbusPDUReadDiscreteInputsResponse) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUReadDiscreteInputsResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadDiscreteInputsResponse")
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -199,7 +199,7 @@ func (m *ModbusPDUReadDiscreteInputsResponse) Serialize(writeBuffer utils.WriteB
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadDiscreteInputsResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusPDUReadDiscreteInputsResponse")
 		}
 		return nil
 	}

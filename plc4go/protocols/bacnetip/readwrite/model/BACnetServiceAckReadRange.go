@@ -207,14 +207,14 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadRange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckReadRange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
@@ -222,12 +222,12 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	}
 	objectIdentifier := CastBACnetContextTagObjectIdentifier(_objectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 	}
 
 	// Simple Field (propertyIdentifier)
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
 	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
@@ -235,7 +235,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	}
 	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
 	}
 
 	// Optional Field (propertyArrayIndex) (Can be skipped, if a given expression evaluates to false)
@@ -243,7 +243,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("propertyArrayIndex"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for propertyArrayIndex")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
@@ -255,14 +255,14 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 		default:
 			propertyArrayIndex = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("propertyArrayIndex"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for propertyArrayIndex")
 			}
 		}
 	}
 
 	// Simple Field (resultFlags)
 	if pullErr := readBuffer.PullContext("resultFlags"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for resultFlags")
 	}
 	_resultFlags, _resultFlagsErr := BACnetResultFlagsTaggedParse(readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _resultFlagsErr != nil {
@@ -270,12 +270,12 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	}
 	resultFlags := CastBACnetResultFlagsTagged(_resultFlags)
 	if closeErr := readBuffer.CloseContext("resultFlags"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for resultFlags")
 	}
 
 	// Simple Field (itemCount)
 	if pullErr := readBuffer.PullContext("itemCount"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for itemCount")
 	}
 	_itemCount, _itemCountErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _itemCountErr != nil {
@@ -283,7 +283,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	}
 	itemCount := CastBACnetContextTagUnsignedInteger(_itemCount)
 	if closeErr := readBuffer.CloseContext("itemCount"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for itemCount")
 	}
 
 	// Optional Field (itemData) (Can be skipped, if a given expression evaluates to false)
@@ -291,7 +291,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("itemData"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for itemData")
 		}
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(5), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), CastBACnetTagPayloadUnsignedInteger(CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((propertyArrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((*propertyArrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
@@ -303,7 +303,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 		default:
 			itemData = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("itemData"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for itemData")
 			}
 		}
 	}
@@ -313,7 +313,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("firstSequenceNumber"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for firstSequenceNumber")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(6), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
@@ -325,13 +325,13 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 		default:
 			firstSequenceNumber = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("firstSequenceNumber"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for firstSequenceNumber")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckReadRange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckReadRange")
 	}
 
 	// Create a partially initialized instance
@@ -354,16 +354,16 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckReadRange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckReadRange")
 		}
 
 		// Simple Field (objectIdentifier)
 		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
 		_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
 		if _objectIdentifierErr != nil {
 			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
@@ -371,11 +371,11 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 
 		// Simple Field (propertyIdentifier)
 		if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 		}
 		_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 		}
 		if _propertyIdentifierErr != nil {
 			return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
@@ -385,12 +385,12 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 		var propertyArrayIndex *BACnetContextTagUnsignedInteger = nil
 		if m.PropertyArrayIndex != nil {
 			if pushErr := writeBuffer.PushContext("propertyArrayIndex"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for propertyArrayIndex")
 			}
 			propertyArrayIndex = m.PropertyArrayIndex
 			_propertyArrayIndexErr := propertyArrayIndex.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("propertyArrayIndex"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for propertyArrayIndex")
 			}
 			if _propertyArrayIndexErr != nil {
 				return errors.Wrap(_propertyArrayIndexErr, "Error serializing 'propertyArrayIndex' field")
@@ -399,11 +399,11 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 
 		// Simple Field (resultFlags)
 		if pushErr := writeBuffer.PushContext("resultFlags"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for resultFlags")
 		}
 		_resultFlagsErr := m.ResultFlags.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("resultFlags"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for resultFlags")
 		}
 		if _resultFlagsErr != nil {
 			return errors.Wrap(_resultFlagsErr, "Error serializing 'resultFlags' field")
@@ -411,11 +411,11 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 
 		// Simple Field (itemCount)
 		if pushErr := writeBuffer.PushContext("itemCount"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for itemCount")
 		}
 		_itemCountErr := m.ItemCount.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("itemCount"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for itemCount")
 		}
 		if _itemCountErr != nil {
 			return errors.Wrap(_itemCountErr, "Error serializing 'itemCount' field")
@@ -425,12 +425,12 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 		var itemData *BACnetConstructedData = nil
 		if m.ItemData != nil {
 			if pushErr := writeBuffer.PushContext("itemData"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for itemData")
 			}
 			itemData = m.ItemData
 			_itemDataErr := itemData.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("itemData"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for itemData")
 			}
 			if _itemDataErr != nil {
 				return errors.Wrap(_itemDataErr, "Error serializing 'itemData' field")
@@ -441,12 +441,12 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 		var firstSequenceNumber *BACnetContextTagUnsignedInteger = nil
 		if m.FirstSequenceNumber != nil {
 			if pushErr := writeBuffer.PushContext("firstSequenceNumber"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for firstSequenceNumber")
 			}
 			firstSequenceNumber = m.FirstSequenceNumber
 			_firstSequenceNumberErr := firstSequenceNumber.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("firstSequenceNumber"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for firstSequenceNumber")
 			}
 			if _firstSequenceNumberErr != nil {
 				return errors.Wrap(_firstSequenceNumberErr, "Error serializing 'firstSequenceNumber' field")
@@ -454,7 +454,7 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckReadRange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetServiceAckReadRange")
 		}
 		return nil
 	}

@@ -159,14 +159,14 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLightingCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLightingCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lightningOperation)
 	if pullErr := readBuffer.PullContext("lightningOperation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lightningOperation")
 	}
 	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningOperationErr != nil {
@@ -174,7 +174,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 	}
 	lightningOperation := CastBACnetLightingOperationTagged(_lightningOperation)
 	if closeErr := readBuffer.CloseContext("lightningOperation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lightningOperation")
 	}
 
 	// Optional Field (targetLevel) (Can be skipped, if a given expression evaluates to false)
@@ -182,7 +182,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("targetLevel"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for targetLevel")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_REAL)
 		switch {
@@ -194,7 +194,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 		default:
 			targetLevel = CastBACnetContextTagReal(_val)
 			if closeErr := readBuffer.CloseContext("targetLevel"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for targetLevel")
 			}
 		}
 	}
@@ -204,7 +204,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("rampRate"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for rampRate")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_REAL)
 		switch {
@@ -216,7 +216,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 		default:
 			rampRate = CastBACnetContextTagReal(_val)
 			if closeErr := readBuffer.CloseContext("rampRate"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for rampRate")
 			}
 		}
 	}
@@ -226,7 +226,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("stepIncrement"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for stepIncrement")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_REAL)
 		switch {
@@ -238,7 +238,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 		default:
 			stepIncrement = CastBACnetContextTagReal(_val)
 			if closeErr := readBuffer.CloseContext("stepIncrement"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for stepIncrement")
 			}
 		}
 	}
@@ -248,7 +248,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("fadeTime"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for fadeTime")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(4), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
@@ -260,7 +260,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 		default:
 			fadeTime = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("fadeTime"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for fadeTime")
 			}
 		}
 	}
@@ -270,7 +270,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for priority")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
@@ -282,13 +282,13 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 		default:
 			priority = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for priority")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLightingCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLightingCommand")
 	}
 
 	// Create the instance
@@ -299,16 +299,16 @@ func (m *BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLightingCommand"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetLightingCommand")
 	}
 
 	// Simple Field (lightningOperation)
 	if pushErr := writeBuffer.PushContext("lightningOperation"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for lightningOperation")
 	}
 	_lightningOperationErr := m.LightningOperation.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("lightningOperation"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for lightningOperation")
 	}
 	if _lightningOperationErr != nil {
 		return errors.Wrap(_lightningOperationErr, "Error serializing 'lightningOperation' field")
@@ -318,12 +318,12 @@ func (m *BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	var targetLevel *BACnetContextTagReal = nil
 	if m.TargetLevel != nil {
 		if pushErr := writeBuffer.PushContext("targetLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for targetLevel")
 		}
 		targetLevel = m.TargetLevel
 		_targetLevelErr := targetLevel.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("targetLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for targetLevel")
 		}
 		if _targetLevelErr != nil {
 			return errors.Wrap(_targetLevelErr, "Error serializing 'targetLevel' field")
@@ -334,12 +334,12 @@ func (m *BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	var rampRate *BACnetContextTagReal = nil
 	if m.RampRate != nil {
 		if pushErr := writeBuffer.PushContext("rampRate"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for rampRate")
 		}
 		rampRate = m.RampRate
 		_rampRateErr := rampRate.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("rampRate"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for rampRate")
 		}
 		if _rampRateErr != nil {
 			return errors.Wrap(_rampRateErr, "Error serializing 'rampRate' field")
@@ -350,12 +350,12 @@ func (m *BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	var stepIncrement *BACnetContextTagReal = nil
 	if m.StepIncrement != nil {
 		if pushErr := writeBuffer.PushContext("stepIncrement"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for stepIncrement")
 		}
 		stepIncrement = m.StepIncrement
 		_stepIncrementErr := stepIncrement.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("stepIncrement"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for stepIncrement")
 		}
 		if _stepIncrementErr != nil {
 			return errors.Wrap(_stepIncrementErr, "Error serializing 'stepIncrement' field")
@@ -366,12 +366,12 @@ func (m *BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	var fadeTime *BACnetContextTagUnsignedInteger = nil
 	if m.FadeTime != nil {
 		if pushErr := writeBuffer.PushContext("fadeTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for fadeTime")
 		}
 		fadeTime = m.FadeTime
 		_fadeTimeErr := fadeTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("fadeTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for fadeTime")
 		}
 		if _fadeTimeErr != nil {
 			return errors.Wrap(_fadeTimeErr, "Error serializing 'fadeTime' field")
@@ -382,12 +382,12 @@ func (m *BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	var priority *BACnetContextTagUnsignedInteger = nil
 	if m.Priority != nil {
 		if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for priority")
 		}
 		priority = m.Priority
 		_priorityErr := priority.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for priority")
 		}
 		if _priorityErr != nil {
 			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
@@ -395,7 +395,7 @@ func (m *BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLightingCommand"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetLightingCommand")
 	}
 	return nil
 }

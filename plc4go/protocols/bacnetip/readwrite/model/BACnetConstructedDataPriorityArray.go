@@ -142,14 +142,14 @@ func BACnetConstructedDataPriorityArrayParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPriorityArray"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPriorityArray")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (priorityArray)
 	if pullErr := readBuffer.PullContext("priorityArray"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for priorityArray")
 	}
 	_priorityArray, _priorityArrayErr := BACnetPriorityArrayParse(readBuffer, BACnetObjectType(objectTypeArgument), uint8(tagNumber), arrayIndexArgument)
 	if _priorityArrayErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataPriorityArrayParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	priorityArray := CastBACnetPriorityArray(_priorityArray)
 	if closeErr := readBuffer.CloseContext("priorityArray"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for priorityArray")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPriorityArray"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPriorityArray")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataPriorityArray) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataPriorityArray"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPriorityArray")
 		}
 
 		// Simple Field (priorityArray)
 		if pushErr := writeBuffer.PushContext("priorityArray"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for priorityArray")
 		}
 		_priorityArrayErr := m.PriorityArray.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("priorityArray"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for priorityArray")
 		}
 		if _priorityArrayErr != nil {
 			return errors.Wrap(_priorityArrayErr, "Error serializing 'priorityArray' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPriorityArray"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataPriorityArray")
 		}
 		return nil
 	}

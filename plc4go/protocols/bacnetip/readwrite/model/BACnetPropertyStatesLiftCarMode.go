@@ -128,14 +128,14 @@ func BACnetPropertyStatesLiftCarModeParse(readBuffer utils.ReadBuffer, peekedTag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftCarMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLiftCarMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (liftCarMode)
 	if pullErr := readBuffer.PullContext("liftCarMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for liftCarMode")
 	}
 	_liftCarMode, _liftCarModeErr := BACnetLiftCarModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftCarModeErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesLiftCarModeParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	liftCarMode := CastBACnetLiftCarModeTagged(_liftCarMode)
 	if closeErr := readBuffer.CloseContext("liftCarMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for liftCarMode")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftCarMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLiftCarMode")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesLiftCarMode) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesLiftCarMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftCarMode")
 		}
 
 		// Simple Field (liftCarMode)
 		if pushErr := writeBuffer.PushContext("liftCarMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for liftCarMode")
 		}
 		_liftCarModeErr := m.LiftCarMode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("liftCarMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for liftCarMode")
 		}
 		if _liftCarModeErr != nil {
 			return errors.Wrap(_liftCarModeErr, "Error serializing 'liftCarMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftCarMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesLiftCarMode")
 		}
 		return nil
 	}

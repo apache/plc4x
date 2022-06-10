@@ -97,7 +97,7 @@ func SerialInterfaceAddressParse(readBuffer utils.ReadBuffer) (*SerialInterfaceA
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SerialInterfaceAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for SerialInterfaceAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -110,7 +110,7 @@ func SerialInterfaceAddressParse(readBuffer utils.ReadBuffer) (*SerialInterfaceA
 	address := _address
 
 	if closeErr := readBuffer.CloseContext("SerialInterfaceAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for SerialInterfaceAddress")
 	}
 
 	// Create the instance
@@ -121,7 +121,7 @@ func (m *SerialInterfaceAddress) Serialize(writeBuffer utils.WriteBuffer) error 
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SerialInterfaceAddress"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for SerialInterfaceAddress")
 	}
 
 	// Simple Field (address)
@@ -132,7 +132,7 @@ func (m *SerialInterfaceAddress) Serialize(writeBuffer utils.WriteBuffer) error 
 	}
 
 	if popErr := writeBuffer.PopContext("SerialInterfaceAddress"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for SerialInterfaceAddress")
 	}
 	return nil
 }

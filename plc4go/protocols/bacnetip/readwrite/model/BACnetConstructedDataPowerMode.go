@@ -142,14 +142,14 @@ func BACnetConstructedDataPowerModeParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPowerMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPowerMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (powerMode)
 	if pullErr := readBuffer.PullContext("powerMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for powerMode")
 	}
 	_powerMode, _powerModeErr := BACnetApplicationTagParse(readBuffer)
 	if _powerModeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataPowerModeParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	powerMode := CastBACnetApplicationTagBoolean(_powerMode)
 	if closeErr := readBuffer.CloseContext("powerMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for powerMode")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPowerMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPowerMode")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataPowerMode) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataPowerMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPowerMode")
 		}
 
 		// Simple Field (powerMode)
 		if pushErr := writeBuffer.PushContext("powerMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for powerMode")
 		}
 		_powerModeErr := m.PowerMode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("powerMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for powerMode")
 		}
 		if _powerModeErr != nil {
 			return errors.Wrap(_powerModeErr, "Error serializing 'powerMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPowerMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataPowerMode")
 		}
 		return nil
 	}

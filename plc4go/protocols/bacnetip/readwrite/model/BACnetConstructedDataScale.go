@@ -142,14 +142,14 @@ func BACnetConstructedDataScaleParse(readBuffer utils.ReadBuffer, tagNumber uint
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataScale"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataScale")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (scale)
 	if pullErr := readBuffer.PullContext("scale"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for scale")
 	}
 	_scale, _scaleErr := BACnetScaleParse(readBuffer)
 	if _scaleErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataScaleParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 	scale := CastBACnetScale(_scale)
 	if closeErr := readBuffer.CloseContext("scale"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for scale")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataScale"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataScale")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataScale) Serialize(writeBuffer utils.WriteBuffer) er
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataScale"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataScale")
 		}
 
 		// Simple Field (scale)
 		if pushErr := writeBuffer.PushContext("scale"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for scale")
 		}
 		_scaleErr := m.Scale.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("scale"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for scale")
 		}
 		if _scaleErr != nil {
 			return errors.Wrap(_scaleErr, "Error serializing 'scale' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataScale"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataScale")
 		}
 		return nil
 	}

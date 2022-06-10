@@ -149,7 +149,7 @@ func ModbusPDUReadHoldingRegistersRequestParse(readBuffer utils.ReadBuffer, resp
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadHoldingRegistersRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadHoldingRegistersRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -169,7 +169,7 @@ func ModbusPDUReadHoldingRegistersRequestParse(readBuffer utils.ReadBuffer, resp
 	quantity := _quantity
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadHoldingRegistersRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadHoldingRegistersRequest")
 	}
 
 	// Create a partially initialized instance
@@ -187,7 +187,7 @@ func (m *ModbusPDUReadHoldingRegistersRequest) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUReadHoldingRegistersRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadHoldingRegistersRequest")
 		}
 
 		// Simple Field (startingAddress)
@@ -205,7 +205,7 @@ func (m *ModbusPDUReadHoldingRegistersRequest) Serialize(writeBuffer utils.Write
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadHoldingRegistersRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusPDUReadHoldingRegistersRequest")
 		}
 		return nil
 	}

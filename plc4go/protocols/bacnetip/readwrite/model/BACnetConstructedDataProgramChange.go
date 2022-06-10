@@ -142,14 +142,14 @@ func BACnetConstructedDataProgramChangeParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProgramChange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProgramChange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (programChange)
 	if pullErr := readBuffer.PullContext("programChange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for programChange")
 	}
 	_programChange, _programChangeErr := BACnetProgramRequestTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _programChangeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataProgramChangeParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	programChange := CastBACnetProgramRequestTagged(_programChange)
 	if closeErr := readBuffer.CloseContext("programChange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for programChange")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProgramChange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProgramChange")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataProgramChange) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataProgramChange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProgramChange")
 		}
 
 		// Simple Field (programChange)
 		if pushErr := writeBuffer.PushContext("programChange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for programChange")
 		}
 		_programChangeErr := m.ProgramChange.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("programChange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for programChange")
 		}
 		if _programChangeErr != nil {
 			return errors.Wrap(_programChangeErr, "Error serializing 'programChange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProgramChange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataProgramChange")
 		}
 		return nil
 	}

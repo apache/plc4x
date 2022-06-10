@@ -145,7 +145,7 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (*CipRRData, error)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipRRData"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CipRRData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -180,7 +180,7 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (*CipRRData, error)
 
 	// Simple Field (exchange)
 	if pullErr := readBuffer.PullContext("exchange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for exchange")
 	}
 	_exchange, _exchangeErr := CipExchangeParse(readBuffer, uint16(uint16(len)-uint16(uint16(6))))
 	if _exchangeErr != nil {
@@ -188,11 +188,11 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (*CipRRData, error)
 	}
 	exchange := CastCipExchange(_exchange)
 	if closeErr := readBuffer.CloseContext("exchange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for exchange")
 	}
 
 	if closeErr := readBuffer.CloseContext("CipRRData"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CipRRData")
 	}
 
 	// Create a partially initialized instance
@@ -209,7 +209,7 @@ func (m *CipRRData) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CipRRData"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CipRRData")
 		}
 
 		// Reserved Field (reserved)
@@ -230,18 +230,18 @@ func (m *CipRRData) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (exchange)
 		if pushErr := writeBuffer.PushContext("exchange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for exchange")
 		}
 		_exchangeErr := m.Exchange.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("exchange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for exchange")
 		}
 		if _exchangeErr != nil {
 			return errors.Wrap(_exchangeErr, "Error serializing 'exchange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CipRRData"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CipRRData")
 		}
 		return nil
 	}

@@ -114,7 +114,7 @@ func TunnelingRequestDataBlockParse(readBuffer utils.ReadBuffer) (*TunnelingRequ
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingRequestDataBlock"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for TunnelingRequestDataBlock")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -155,7 +155,7 @@ func TunnelingRequestDataBlockParse(readBuffer utils.ReadBuffer) (*TunnelingRequ
 	}
 
 	if closeErr := readBuffer.CloseContext("TunnelingRequestDataBlock"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for TunnelingRequestDataBlock")
 	}
 
 	// Create the instance
@@ -166,7 +166,7 @@ func (m *TunnelingRequestDataBlock) Serialize(writeBuffer utils.WriteBuffer) err
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TunnelingRequestDataBlock"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for TunnelingRequestDataBlock")
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -199,7 +199,7 @@ func (m *TunnelingRequestDataBlock) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 
 	if popErr := writeBuffer.PopContext("TunnelingRequestDataBlock"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for TunnelingRequestDataBlock")
 	}
 	return nil
 }

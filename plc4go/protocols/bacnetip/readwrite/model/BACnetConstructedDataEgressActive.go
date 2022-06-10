@@ -142,14 +142,14 @@ func BACnetConstructedDataEgressActiveParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEgressActive"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEgressActive")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (egressActive)
 	if pullErr := readBuffer.PullContext("egressActive"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for egressActive")
 	}
 	_egressActive, _egressActiveErr := BACnetApplicationTagParse(readBuffer)
 	if _egressActiveErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataEgressActiveParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	egressActive := CastBACnetApplicationTagBoolean(_egressActive)
 	if closeErr := readBuffer.CloseContext("egressActive"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for egressActive")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEgressActive"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEgressActive")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataEgressActive) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataEgressActive"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEgressActive")
 		}
 
 		// Simple Field (egressActive)
 		if pushErr := writeBuffer.PushContext("egressActive"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for egressActive")
 		}
 		_egressActiveErr := m.EgressActive.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("egressActive"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for egressActive")
 		}
 		if _egressActiveErr != nil {
 			return errors.Wrap(_egressActiveErr, "Error serializing 'egressActive' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEgressActive"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataEgressActive")
 		}
 		return nil
 	}

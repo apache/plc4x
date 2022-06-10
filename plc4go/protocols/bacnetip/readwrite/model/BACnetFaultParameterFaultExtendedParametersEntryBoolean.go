@@ -128,14 +128,14 @@ func BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(readBuffer uti
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryBoolean")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (booleanValue)
 	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 	}
 	_booleanValue, _booleanValueErr := BACnetApplicationTagParse(readBuffer)
 	if _booleanValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(readBuffer uti
 	}
 	booleanValue := CastBACnetApplicationTagBoolean(_booleanValue)
 	if closeErr := readBuffer.CloseContext("booleanValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for booleanValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntryBoolean")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetFaultParameterFaultExtendedParametersEntryBoolean) Serialize(writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryBoolean")
 		}
 
 		// Simple Field (booleanValue)
 		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for booleanValue")
 		}
 		_booleanValueErr := m.BooleanValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for booleanValue")
 		}
 		if _booleanValueErr != nil {
 			return errors.Wrap(_booleanValueErr, "Error serializing 'booleanValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultExtendedParametersEntryBoolean")
 		}
 		return nil
 	}

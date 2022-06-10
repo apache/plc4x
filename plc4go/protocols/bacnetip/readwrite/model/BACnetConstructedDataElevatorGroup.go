@@ -142,14 +142,14 @@ func BACnetConstructedDataElevatorGroupParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElevatorGroup"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataElevatorGroup")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (elevatorGroup)
 	if pullErr := readBuffer.PullContext("elevatorGroup"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for elevatorGroup")
 	}
 	_elevatorGroup, _elevatorGroupErr := BACnetApplicationTagParse(readBuffer)
 	if _elevatorGroupErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataElevatorGroupParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	elevatorGroup := CastBACnetApplicationTagObjectIdentifier(_elevatorGroup)
 	if closeErr := readBuffer.CloseContext("elevatorGroup"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for elevatorGroup")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataElevatorGroup"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataElevatorGroup")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataElevatorGroup) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataElevatorGroup"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataElevatorGroup")
 		}
 
 		// Simple Field (elevatorGroup)
 		if pushErr := writeBuffer.PushContext("elevatorGroup"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for elevatorGroup")
 		}
 		_elevatorGroupErr := m.ElevatorGroup.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("elevatorGroup"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for elevatorGroup")
 		}
 		if _elevatorGroupErr != nil {
 			return errors.Wrap(_elevatorGroupErr, "Error serializing 'elevatorGroup' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataElevatorGroup"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataElevatorGroup")
 		}
 		return nil
 	}

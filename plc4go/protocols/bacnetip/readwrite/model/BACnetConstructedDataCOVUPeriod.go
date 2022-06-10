@@ -142,14 +142,14 @@ func BACnetConstructedDataCOVUPeriodParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVUPeriod"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCOVUPeriod")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (covuPeriod)
 	if pullErr := readBuffer.PullContext("covuPeriod"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for covuPeriod")
 	}
 	_covuPeriod, _covuPeriodErr := BACnetApplicationTagParse(readBuffer)
 	if _covuPeriodErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataCOVUPeriodParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	covuPeriod := CastBACnetApplicationTagUnsignedInteger(_covuPeriod)
 	if closeErr := readBuffer.CloseContext("covuPeriod"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for covuPeriod")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCOVUPeriod"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCOVUPeriod")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataCOVUPeriod) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCOVUPeriod"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCOVUPeriod")
 		}
 
 		// Simple Field (covuPeriod)
 		if pushErr := writeBuffer.PushContext("covuPeriod"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for covuPeriod")
 		}
 		_covuPeriodErr := m.CovuPeriod.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("covuPeriod"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for covuPeriod")
 		}
 		if _covuPeriodErr != nil {
 			return errors.Wrap(_covuPeriodErr, "Error serializing 'covuPeriod' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCOVUPeriod"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCOVUPeriod")
 		}
 		return nil
 	}

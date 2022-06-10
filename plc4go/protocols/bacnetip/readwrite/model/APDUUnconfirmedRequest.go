@@ -137,7 +137,7 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUUnconfirmedRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for APDUUnconfirmedRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -158,7 +158,7 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 
 	// Simple Field (serviceRequest)
 	if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for serviceRequest")
 	}
 	_serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(readBuffer, uint16(uint16(apduLength)-uint16(uint16(1))))
 	if _serviceRequestErr != nil {
@@ -166,11 +166,11 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 	}
 	serviceRequest := CastBACnetUnconfirmedServiceRequest(_serviceRequest)
 	if closeErr := readBuffer.CloseContext("serviceRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for serviceRequest")
 	}
 
 	if closeErr := readBuffer.CloseContext("APDUUnconfirmedRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for APDUUnconfirmedRequest")
 	}
 
 	// Create a partially initialized instance
@@ -187,7 +187,7 @@ func (m *APDUUnconfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUUnconfirmedRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for APDUUnconfirmedRequest")
 		}
 
 		// Reserved Field (reserved)
@@ -200,18 +200,18 @@ func (m *APDUUnconfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Simple Field (serviceRequest)
 		if pushErr := writeBuffer.PushContext("serviceRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for serviceRequest")
 		}
 		_serviceRequestErr := m.ServiceRequest.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("serviceRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for serviceRequest")
 		}
 		if _serviceRequestErr != nil {
 			return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUUnconfirmedRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for APDUUnconfirmedRequest")
 		}
 		return nil
 	}

@@ -161,14 +161,14 @@ func BACnetEventParameterChangeOfStatusFlagsParse(readBuffer utils.ReadBuffer) (
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfStatusFlags"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfStatusFlags")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(18)))
 	if _openingTagErr != nil {
@@ -176,12 +176,12 @@ func BACnetEventParameterChangeOfStatusFlagsParse(readBuffer utils.ReadBuffer) (
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (timeDelay)
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
 	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
@@ -189,12 +189,12 @@ func BACnetEventParameterChangeOfStatusFlagsParse(readBuffer utils.ReadBuffer) (
 	}
 	timeDelay := CastBACnetContextTagUnsignedInteger(_timeDelay)
 	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeDelay")
 	}
 
 	// Simple Field (selectedFlags)
 	if pullErr := readBuffer.PullContext("selectedFlags"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for selectedFlags")
 	}
 	_selectedFlags, _selectedFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _selectedFlagsErr != nil {
@@ -202,12 +202,12 @@ func BACnetEventParameterChangeOfStatusFlagsParse(readBuffer utils.ReadBuffer) (
 	}
 	selectedFlags := CastBACnetStatusFlagsTagged(_selectedFlags)
 	if closeErr := readBuffer.CloseContext("selectedFlags"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for selectedFlags")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(18)))
 	if _closingTagErr != nil {
@@ -215,11 +215,11 @@ func BACnetEventParameterChangeOfStatusFlagsParse(readBuffer utils.ReadBuffer) (
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterChangeOfStatusFlags"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterChangeOfStatusFlags")
 	}
 
 	// Create a partially initialized instance
@@ -239,16 +239,16 @@ func (m *BACnetEventParameterChangeOfStatusFlags) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetEventParameterChangeOfStatusFlags"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfStatusFlags")
 		}
 
 		// Simple Field (openingTag)
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
 		_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
 		if _openingTagErr != nil {
 			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -256,11 +256,11 @@ func (m *BACnetEventParameterChangeOfStatusFlags) Serialize(writeBuffer utils.Wr
 
 		// Simple Field (timeDelay)
 		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeDelay")
 		}
 		_timeDelayErr := m.TimeDelay.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeDelay")
 		}
 		if _timeDelayErr != nil {
 			return errors.Wrap(_timeDelayErr, "Error serializing 'timeDelay' field")
@@ -268,11 +268,11 @@ func (m *BACnetEventParameterChangeOfStatusFlags) Serialize(writeBuffer utils.Wr
 
 		// Simple Field (selectedFlags)
 		if pushErr := writeBuffer.PushContext("selectedFlags"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for selectedFlags")
 		}
 		_selectedFlagsErr := m.SelectedFlags.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("selectedFlags"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for selectedFlags")
 		}
 		if _selectedFlagsErr != nil {
 			return errors.Wrap(_selectedFlagsErr, "Error serializing 'selectedFlags' field")
@@ -280,18 +280,18 @@ func (m *BACnetEventParameterChangeOfStatusFlags) Serialize(writeBuffer utils.Wr
 
 		// Simple Field (closingTag)
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
 		_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
 		if _closingTagErr != nil {
 			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfStatusFlags"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetEventParameterChangeOfStatusFlags")
 		}
 		return nil
 	}

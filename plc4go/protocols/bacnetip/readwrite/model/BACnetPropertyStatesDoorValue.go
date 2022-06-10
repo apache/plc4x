@@ -128,14 +128,14 @@ func BACnetPropertyStatesDoorValueParse(readBuffer utils.ReadBuffer, peekedTagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesDoorValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesDoorValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (doorValue)
 	if pullErr := readBuffer.PullContext("doorValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for doorValue")
 	}
 	_doorValue, _doorValueErr := BACnetDoorValueTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _doorValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesDoorValueParse(readBuffer utils.ReadBuffer, peekedTagNu
 	}
 	doorValue := CastBACnetDoorValueTagged(_doorValue)
 	if closeErr := readBuffer.CloseContext("doorValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for doorValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesDoorValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesDoorValue")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesDoorValue) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesDoorValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesDoorValue")
 		}
 
 		// Simple Field (doorValue)
 		if pushErr := writeBuffer.PushContext("doorValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for doorValue")
 		}
 		_doorValueErr := m.DoorValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("doorValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for doorValue")
 		}
 		if _doorValueErr != nil {
 			return errors.Wrap(_doorValueErr, "Error serializing 'doorValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesDoorValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesDoorValue")
 		}
 		return nil
 	}

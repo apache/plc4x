@@ -142,14 +142,14 @@ func BACnetConstructedDataProcessIdentifierFilterParse(readBuffer utils.ReadBuff
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProcessIdentifierFilter"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProcessIdentifierFilter")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (processIdentifierFilter)
 	if pullErr := readBuffer.PullContext("processIdentifierFilter"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifierFilter")
 	}
 	_processIdentifierFilter, _processIdentifierFilterErr := BACnetProcessIdSelectionParse(readBuffer)
 	if _processIdentifierFilterErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataProcessIdentifierFilterParse(readBuffer utils.ReadBuff
 	}
 	processIdentifierFilter := CastBACnetProcessIdSelection(_processIdentifierFilter)
 	if closeErr := readBuffer.CloseContext("processIdentifierFilter"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for processIdentifierFilter")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProcessIdentifierFilter"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProcessIdentifierFilter")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataProcessIdentifierFilter) Serialize(writeBuffer uti
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataProcessIdentifierFilter"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProcessIdentifierFilter")
 		}
 
 		// Simple Field (processIdentifierFilter)
 		if pushErr := writeBuffer.PushContext("processIdentifierFilter"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for processIdentifierFilter")
 		}
 		_processIdentifierFilterErr := m.ProcessIdentifierFilter.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("processIdentifierFilter"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for processIdentifierFilter")
 		}
 		if _processIdentifierFilterErr != nil {
 			return errors.Wrap(_processIdentifierFilterErr, "Error serializing 'processIdentifierFilter' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProcessIdentifierFilter"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataProcessIdentifierFilter")
 		}
 		return nil
 	}

@@ -128,14 +128,14 @@ func BACnetEventParameterNoneParse(readBuffer utils.ReadBuffer) (*BACnetEventPar
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterNone"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterNone")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (none)
 	if pullErr := readBuffer.PullContext("none"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for none")
 	}
 	_none, _noneErr := BACnetContextTagParse(readBuffer, uint8(uint8(20)), BACnetDataType(BACnetDataType_NULL))
 	if _noneErr != nil {
@@ -143,11 +143,11 @@ func BACnetEventParameterNoneParse(readBuffer utils.ReadBuffer) (*BACnetEventPar
 	}
 	none := CastBACnetContextTagNull(_none)
 	if closeErr := readBuffer.CloseContext("none"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for none")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterNone"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterNone")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetEventParameterNone) Serialize(writeBuffer utils.WriteBuffer) erro
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetEventParameterNone"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterNone")
 		}
 
 		// Simple Field (none)
 		if pushErr := writeBuffer.PushContext("none"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for none")
 		}
 		_noneErr := m.None.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("none"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for none")
 		}
 		if _noneErr != nil {
 			return errors.Wrap(_noneErr, "Error serializing 'none' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterNone"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetEventParameterNone")
 		}
 		return nil
 	}

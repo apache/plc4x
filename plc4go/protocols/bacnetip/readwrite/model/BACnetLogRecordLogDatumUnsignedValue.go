@@ -133,14 +133,14 @@ func BACnetLogRecordLogDatumUnsignedValueParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumUnsignedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecordLogDatumUnsignedValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (unsignedValue)
 	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
 	}
 	_unsignedValue, _unsignedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _unsignedValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetLogRecordLogDatumUnsignedValueParse(readBuffer utils.ReadBuffer, tagN
 	}
 	unsignedValue := CastBACnetContextTagUnsignedInteger(_unsignedValue)
 	if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for unsignedValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumUnsignedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogRecordLogDatumUnsignedValue")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetLogRecordLogDatumUnsignedValue) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetLogRecordLogDatumUnsignedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumUnsignedValue")
 		}
 
 		// Simple Field (unsignedValue)
 		if pushErr := writeBuffer.PushContext("unsignedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for unsignedValue")
 		}
 		_unsignedValueErr := m.UnsignedValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("unsignedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for unsignedValue")
 		}
 		if _unsignedValueErr != nil {
 			return errors.Wrap(_unsignedValueErr, "Error serializing 'unsignedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogRecordLogDatumUnsignedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetLogRecordLogDatumUnsignedValue")
 		}
 		return nil
 	}

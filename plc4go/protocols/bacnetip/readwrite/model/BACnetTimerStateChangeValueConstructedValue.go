@@ -131,14 +131,14 @@ func BACnetTimerStateChangeValueConstructedValueParse(readBuffer utils.ReadBuffe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueConstructedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimerStateChangeValueConstructedValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (constructedValue)
 	if pullErr := readBuffer.PullContext("constructedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for constructedValue")
 	}
 	_constructedValue, _constructedValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(1)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _constructedValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetTimerStateChangeValueConstructedValueParse(readBuffer utils.ReadBuffe
 	}
 	constructedValue := CastBACnetConstructedData(_constructedValue)
 	if closeErr := readBuffer.CloseContext("constructedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for constructedValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValueConstructedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimerStateChangeValueConstructedValue")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetTimerStateChangeValueConstructedValue) Serialize(writeBuffer util
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetTimerStateChangeValueConstructedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueConstructedValue")
 		}
 
 		// Simple Field (constructedValue)
 		if pushErr := writeBuffer.PushContext("constructedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for constructedValue")
 		}
 		_constructedValueErr := m.ConstructedValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("constructedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for constructedValue")
 		}
 		if _constructedValueErr != nil {
 			return errors.Wrap(_constructedValueErr, "Error serializing 'constructedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueConstructedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetTimerStateChangeValueConstructedValue")
 		}
 		return nil
 	}

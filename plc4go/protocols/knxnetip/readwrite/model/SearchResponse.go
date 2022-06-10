@@ -152,14 +152,14 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (*SearchResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SearchResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for SearchResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (hpaiControlEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
 	}
 	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
 	if _hpaiControlEndpointErr != nil {
@@ -167,12 +167,12 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (*SearchResponse, error) {
 	}
 	hpaiControlEndpoint := CastHPAIControlEndpoint(_hpaiControlEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for hpaiControlEndpoint")
 	}
 
 	// Simple Field (dibDeviceInfo)
 	if pullErr := readBuffer.PullContext("dibDeviceInfo"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dibDeviceInfo")
 	}
 	_dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(readBuffer)
 	if _dibDeviceInfoErr != nil {
@@ -180,12 +180,12 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (*SearchResponse, error) {
 	}
 	dibDeviceInfo := CastDIBDeviceInfo(_dibDeviceInfo)
 	if closeErr := readBuffer.CloseContext("dibDeviceInfo"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dibDeviceInfo")
 	}
 
 	// Simple Field (dibSuppSvcFamilies)
 	if pullErr := readBuffer.PullContext("dibSuppSvcFamilies"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dibSuppSvcFamilies")
 	}
 	_dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(readBuffer)
 	if _dibSuppSvcFamiliesErr != nil {
@@ -193,11 +193,11 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (*SearchResponse, error) {
 	}
 	dibSuppSvcFamilies := CastDIBSuppSvcFamilies(_dibSuppSvcFamilies)
 	if closeErr := readBuffer.CloseContext("dibSuppSvcFamilies"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dibSuppSvcFamilies")
 	}
 
 	if closeErr := readBuffer.CloseContext("SearchResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for SearchResponse")
 	}
 
 	// Create a partially initialized instance
@@ -216,16 +216,16 @@ func (m *SearchResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SearchResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for SearchResponse")
 		}
 
 		// Simple Field (hpaiControlEndpoint)
 		if pushErr := writeBuffer.PushContext("hpaiControlEndpoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for hpaiControlEndpoint")
 		}
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("hpaiControlEndpoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for hpaiControlEndpoint")
 		}
 		if _hpaiControlEndpointErr != nil {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
@@ -233,11 +233,11 @@ func (m *SearchResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (dibDeviceInfo)
 		if pushErr := writeBuffer.PushContext("dibDeviceInfo"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dibDeviceInfo")
 		}
 		_dibDeviceInfoErr := m.DibDeviceInfo.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dibDeviceInfo"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dibDeviceInfo")
 		}
 		if _dibDeviceInfoErr != nil {
 			return errors.Wrap(_dibDeviceInfoErr, "Error serializing 'dibDeviceInfo' field")
@@ -245,18 +245,18 @@ func (m *SearchResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (dibSuppSvcFamilies)
 		if pushErr := writeBuffer.PushContext("dibSuppSvcFamilies"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dibSuppSvcFamilies")
 		}
 		_dibSuppSvcFamiliesErr := m.DibSuppSvcFamilies.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dibSuppSvcFamilies"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dibSuppSvcFamilies")
 		}
 		if _dibSuppSvcFamiliesErr != nil {
 			return errors.Wrap(_dibSuppSvcFamiliesErr, "Error serializing 'dibSuppSvcFamilies' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SearchResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for SearchResponse")
 		}
 		return nil
 	}

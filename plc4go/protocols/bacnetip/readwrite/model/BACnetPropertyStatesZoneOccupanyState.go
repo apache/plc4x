@@ -128,14 +128,14 @@ func BACnetPropertyStatesZoneOccupanyStateParse(readBuffer utils.ReadBuffer, pee
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesZoneOccupanyState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesZoneOccupanyState")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (zoneOccupanyState)
 	if pullErr := readBuffer.PullContext("zoneOccupanyState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for zoneOccupanyState")
 	}
 	_zoneOccupanyState, _zoneOccupanyStateErr := BACnetAccessZoneOccupancyStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _zoneOccupanyStateErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesZoneOccupanyStateParse(readBuffer utils.ReadBuffer, pee
 	}
 	zoneOccupanyState := CastBACnetAccessZoneOccupancyStateTagged(_zoneOccupanyState)
 	if closeErr := readBuffer.CloseContext("zoneOccupanyState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for zoneOccupanyState")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesZoneOccupanyState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesZoneOccupanyState")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesZoneOccupanyState) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesZoneOccupanyState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesZoneOccupanyState")
 		}
 
 		// Simple Field (zoneOccupanyState)
 		if pushErr := writeBuffer.PushContext("zoneOccupanyState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for zoneOccupanyState")
 		}
 		_zoneOccupanyStateErr := m.ZoneOccupanyState.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("zoneOccupanyState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for zoneOccupanyState")
 		}
 		if _zoneOccupanyStateErr != nil {
 			return errors.Wrap(_zoneOccupanyStateErr, "Error serializing 'zoneOccupanyState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesZoneOccupanyState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesZoneOccupanyState")
 		}
 		return nil
 	}

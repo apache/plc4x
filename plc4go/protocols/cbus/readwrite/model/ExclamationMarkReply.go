@@ -128,14 +128,14 @@ func ExclamationMarkReplyParse(readBuffer utils.ReadBuffer) (*ExclamationMarkRep
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ExclamationMarkReply"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ExclamationMarkReply")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (isA)
 	if pullErr := readBuffer.PullContext("isA"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for isA")
 	}
 	_isA, _isAErr := ExclamationMarkParse(readBuffer)
 	if _isAErr != nil {
@@ -143,11 +143,11 @@ func ExclamationMarkReplyParse(readBuffer utils.ReadBuffer) (*ExclamationMarkRep
 	}
 	isA := CastExclamationMark(_isA)
 	if closeErr := readBuffer.CloseContext("isA"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for isA")
 	}
 
 	if closeErr := readBuffer.CloseContext("ExclamationMarkReply"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ExclamationMarkReply")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *ExclamationMarkReply) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ExclamationMarkReply"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ExclamationMarkReply")
 		}
 
 		// Simple Field (isA)
 		if pushErr := writeBuffer.PushContext("isA"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for isA")
 		}
 		_isAErr := m.IsA.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("isA"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for isA")
 		}
 		if _isAErr != nil {
 			return errors.Wrap(_isAErr, "Error serializing 'isA' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ExclamationMarkReply"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ExclamationMarkReply")
 		}
 		return nil
 	}

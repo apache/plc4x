@@ -183,7 +183,7 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessageF
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrame"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DF1SymbolMessageFrame")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -204,7 +204,7 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessageF
 
 	// Simple Field (command)
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
 	_command, _commandErr := DF1CommandParse(readBuffer)
 	if _commandErr != nil {
@@ -212,7 +212,7 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessageF
 	}
 	command := CastDF1Command(_command)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for command")
 	}
 
 	// Const Field (messageEnd)
@@ -249,7 +249,7 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessageF
 	}
 
 	if closeErr := readBuffer.CloseContext("DF1SymbolMessageFrame"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DF1SymbolMessageFrame")
 	}
 
 	// Create a partially initialized instance
@@ -268,7 +268,7 @@ func (m *DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DF1SymbolMessageFrame"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for DF1SymbolMessageFrame")
 		}
 
 		// Simple Field (destinationAddress)
@@ -287,11 +287,11 @@ func (m *DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (command)
 		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for command")
 		}
 		_commandErr := m.Command.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("command"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for command")
 		}
 		if _commandErr != nil {
 			return errors.Wrap(_commandErr, "Error serializing 'command' field")
@@ -322,7 +322,7 @@ func (m *DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("DF1SymbolMessageFrame"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for DF1SymbolMessageFrame")
 		}
 		return nil
 	}

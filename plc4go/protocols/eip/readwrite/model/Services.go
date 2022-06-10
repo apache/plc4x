@@ -127,7 +127,7 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Services"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for Services")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -141,7 +141,7 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, 
 
 	// Array field (offsets)
 	if pullErr := readBuffer.PullContext("offsets", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for offsets")
 	}
 	// Count array
 	offsets := make([]uint16, serviceNb)
@@ -155,12 +155,12 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, 
 		}
 	}
 	if closeErr := readBuffer.CloseContext("offsets", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for offsets")
 	}
 
 	// Array field (services)
 	if pullErr := readBuffer.PullContext("services", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for services")
 	}
 	// Count array
 	services := make([]*CipService, serviceNb)
@@ -174,11 +174,11 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, 
 		}
 	}
 	if closeErr := readBuffer.CloseContext("services", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for services")
 	}
 
 	if closeErr := readBuffer.CloseContext("Services"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for Services")
 	}
 
 	// Create the instance
@@ -189,7 +189,7 @@ func (m *Services) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Services"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for Services")
 	}
 
 	// Simple Field (serviceNb)
@@ -202,7 +202,7 @@ func (m *Services) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Array Field (offsets)
 	if m.Offsets != nil {
 		if pushErr := writeBuffer.PushContext("offsets", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for offsets")
 		}
 		for _, _element := range m.Offsets {
 			_elementErr := writeBuffer.WriteUint16("", 16, _element)
@@ -211,14 +211,14 @@ func (m *Services) Serialize(writeBuffer utils.WriteBuffer) error {
 			}
 		}
 		if popErr := writeBuffer.PopContext("offsets", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for offsets")
 		}
 	}
 
 	// Array Field (services)
 	if m.Services != nil {
 		if pushErr := writeBuffer.PushContext("services", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for services")
 		}
 		for _, _element := range m.Services {
 			_elementErr := _element.Serialize(writeBuffer)
@@ -227,12 +227,12 @@ func (m *Services) Serialize(writeBuffer utils.WriteBuffer) error {
 			}
 		}
 		if popErr := writeBuffer.PopContext("services", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for services")
 		}
 	}
 
 	if popErr := writeBuffer.PopContext("Services"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for Services")
 	}
 	return nil
 }

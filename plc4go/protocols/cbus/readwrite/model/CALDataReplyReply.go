@@ -141,7 +141,7 @@ func CALDataReplyReplyParse(readBuffer utils.ReadBuffer, commandTypeContainer CA
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataReplyReply"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CALDataReplyReply")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -160,7 +160,7 @@ func CALDataReplyReplyParse(readBuffer utils.ReadBuffer, commandTypeContainer CA
 	}
 
 	if closeErr := readBuffer.CloseContext("CALDataReplyReply"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CALDataReplyReply")
 	}
 
 	// Create a partially initialized instance
@@ -178,7 +178,7 @@ func (m *CALDataReplyReply) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CALDataReplyReply"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CALDataReplyReply")
 		}
 
 		// Simple Field (paramNumber)
@@ -198,7 +198,7 @@ func (m *CALDataReplyReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataReplyReply"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CALDataReplyReply")
 		}
 		return nil
 	}

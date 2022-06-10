@@ -142,14 +142,14 @@ func BACnetConstructedDataActiveTextParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveText"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataActiveText")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (activeText)
 	if pullErr := readBuffer.PullContext("activeText"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for activeText")
 	}
 	_activeText, _activeTextErr := BACnetApplicationTagParse(readBuffer)
 	if _activeTextErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataActiveTextParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	activeText := CastBACnetApplicationTagCharacterString(_activeText)
 	if closeErr := readBuffer.CloseContext("activeText"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for activeText")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataActiveText"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataActiveText")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataActiveText) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataActiveText"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataActiveText")
 		}
 
 		// Simple Field (activeText)
 		if pushErr := writeBuffer.PushContext("activeText"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for activeText")
 		}
 		_activeTextErr := m.ActiveText.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("activeText"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for activeText")
 		}
 		if _activeTextErr != nil {
 			return errors.Wrap(_activeTextErr, "Error serializing 'activeText' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActiveText"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataActiveText")
 		}
 		return nil
 	}

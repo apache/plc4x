@@ -169,7 +169,7 @@ func ModbusPDUReadDeviceIdentificationRequestParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadDeviceIdentificationRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadDeviceIdentificationRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -185,7 +185,7 @@ func ModbusPDUReadDeviceIdentificationRequestParse(readBuffer utils.ReadBuffer, 
 
 	// Simple Field (level)
 	if pullErr := readBuffer.PullContext("level"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for level")
 	}
 	_level, _levelErr := ModbusDeviceInformationLevelParse(readBuffer)
 	if _levelErr != nil {
@@ -193,7 +193,7 @@ func ModbusPDUReadDeviceIdentificationRequestParse(readBuffer utils.ReadBuffer, 
 	}
 	level := _level
 	if closeErr := readBuffer.CloseContext("level"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for level")
 	}
 
 	// Simple Field (objectId)
@@ -204,7 +204,7 @@ func ModbusPDUReadDeviceIdentificationRequestParse(readBuffer utils.ReadBuffer, 
 	objectId := _objectId
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadDeviceIdentificationRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadDeviceIdentificationRequest")
 	}
 
 	// Create a partially initialized instance
@@ -222,7 +222,7 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUReadDeviceIdentificationRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadDeviceIdentificationRequest")
 		}
 
 		// Const Field (meiType)
@@ -233,11 +233,11 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) Serialize(writeBuffer utils.W
 
 		// Simple Field (level)
 		if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for level")
 		}
 		_levelErr := m.Level.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("level"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for level")
 		}
 		if _levelErr != nil {
 			return errors.Wrap(_levelErr, "Error serializing 'level' field")
@@ -251,7 +251,7 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) Serialize(writeBuffer utils.W
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadDeviceIdentificationRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusPDUReadDeviceIdentificationRequest")
 		}
 		return nil
 	}

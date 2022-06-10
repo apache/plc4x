@@ -147,7 +147,7 @@ func AmsSerialAcknowledgeFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialAckn
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsSerialAcknowledgeFrame"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AmsSerialAcknowledgeFrame")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -195,7 +195,7 @@ func AmsSerialAcknowledgeFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialAckn
 	crc := _crc
 
 	if closeErr := readBuffer.CloseContext("AmsSerialAcknowledgeFrame"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AmsSerialAcknowledgeFrame")
 	}
 
 	// Create the instance
@@ -206,7 +206,7 @@ func (m *AmsSerialAcknowledgeFrame) Serialize(writeBuffer utils.WriteBuffer) err
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsSerialAcknowledgeFrame"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AmsSerialAcknowledgeFrame")
 	}
 
 	// Simple Field (magicCookie)
@@ -252,7 +252,7 @@ func (m *AmsSerialAcknowledgeFrame) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 
 	if popErr := writeBuffer.PopContext("AmsSerialAcknowledgeFrame"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AmsSerialAcknowledgeFrame")
 	}
 	return nil
 }

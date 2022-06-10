@@ -142,14 +142,14 @@ func BACnetConstructedDataCOVResubscriptionIntervalParse(readBuffer utils.ReadBu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVResubscriptionInterval"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCOVResubscriptionInterval")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (covResubscriptionInterval)
 	if pullErr := readBuffer.PullContext("covResubscriptionInterval"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for covResubscriptionInterval")
 	}
 	_covResubscriptionInterval, _covResubscriptionIntervalErr := BACnetApplicationTagParse(readBuffer)
 	if _covResubscriptionIntervalErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataCOVResubscriptionIntervalParse(readBuffer utils.ReadBu
 	}
 	covResubscriptionInterval := CastBACnetApplicationTagUnsignedInteger(_covResubscriptionInterval)
 	if closeErr := readBuffer.CloseContext("covResubscriptionInterval"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for covResubscriptionInterval")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCOVResubscriptionInterval"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCOVResubscriptionInterval")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataCOVResubscriptionInterval) Serialize(writeBuffer u
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCOVResubscriptionInterval"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCOVResubscriptionInterval")
 		}
 
 		// Simple Field (covResubscriptionInterval)
 		if pushErr := writeBuffer.PushContext("covResubscriptionInterval"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for covResubscriptionInterval")
 		}
 		_covResubscriptionIntervalErr := m.CovResubscriptionInterval.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("covResubscriptionInterval"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for covResubscriptionInterval")
 		}
 		if _covResubscriptionIntervalErr != nil {
 			return errors.Wrap(_covResubscriptionIntervalErr, "Error serializing 'covResubscriptionInterval' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCOVResubscriptionInterval"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCOVResubscriptionInterval")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataPowerParse(readBuffer utils.ReadBuffer, tagNumber uint
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPower"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPower")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (power)
 	if pullErr := readBuffer.PullContext("power"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for power")
 	}
 	_power, _powerErr := BACnetApplicationTagParse(readBuffer)
 	if _powerErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataPowerParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 	power := CastBACnetApplicationTagReal(_power)
 	if closeErr := readBuffer.CloseContext("power"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for power")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPower"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPower")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataPower) Serialize(writeBuffer utils.WriteBuffer) er
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataPower"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPower")
 		}
 
 		// Simple Field (power)
 		if pushErr := writeBuffer.PushContext("power"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for power")
 		}
 		_powerErr := m.Power.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("power"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for power")
 		}
 		if _powerErr != nil {
 			return errors.Wrap(_powerErr, "Error serializing 'power' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPower"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataPower")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataActiveAuthenticationPolicyParse(readBuffer utils.ReadB
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveAuthenticationPolicy"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataActiveAuthenticationPolicy")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (activeAuthenticationPolicy)
 	if pullErr := readBuffer.PullContext("activeAuthenticationPolicy"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for activeAuthenticationPolicy")
 	}
 	_activeAuthenticationPolicy, _activeAuthenticationPolicyErr := BACnetApplicationTagParse(readBuffer)
 	if _activeAuthenticationPolicyErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataActiveAuthenticationPolicyParse(readBuffer utils.ReadB
 	}
 	activeAuthenticationPolicy := CastBACnetApplicationTagUnsignedInteger(_activeAuthenticationPolicy)
 	if closeErr := readBuffer.CloseContext("activeAuthenticationPolicy"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for activeAuthenticationPolicy")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataActiveAuthenticationPolicy"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataActiveAuthenticationPolicy")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataActiveAuthenticationPolicy) Serialize(writeBuffer 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataActiveAuthenticationPolicy"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataActiveAuthenticationPolicy")
 		}
 
 		// Simple Field (activeAuthenticationPolicy)
 		if pushErr := writeBuffer.PushContext("activeAuthenticationPolicy"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for activeAuthenticationPolicy")
 		}
 		_activeAuthenticationPolicyErr := m.ActiveAuthenticationPolicy.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("activeAuthenticationPolicy"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for activeAuthenticationPolicy")
 		}
 		if _activeAuthenticationPolicyErr != nil {
 			return errors.Wrap(_activeAuthenticationPolicyErr, "Error serializing 'activeAuthenticationPolicy' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActiveAuthenticationPolicy"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataActiveAuthenticationPolicy")
 		}
 		return nil
 	}

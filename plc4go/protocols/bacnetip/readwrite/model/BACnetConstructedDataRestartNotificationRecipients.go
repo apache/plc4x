@@ -146,14 +146,14 @@ func BACnetConstructedDataRestartNotificationRecipientsParse(readBuffer utils.Re
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRestartNotificationRecipients"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataRestartNotificationRecipients")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (restartNotificationRecipients)
 	if pullErr := readBuffer.PullContext("restartNotificationRecipients", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for restartNotificationRecipients")
 	}
 	// Terminated array
 	restartNotificationRecipients := make([]*BACnetRecipient, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataRestartNotificationRecipientsParse(readBuffer utils.Re
 		}
 	}
 	if closeErr := readBuffer.CloseContext("restartNotificationRecipients", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for restartNotificationRecipients")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRestartNotificationRecipients"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRestartNotificationRecipients")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataRestartNotificationRecipients) Serialize(writeBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataRestartNotificationRecipients"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRestartNotificationRecipients")
 		}
 
 		// Array Field (restartNotificationRecipients)
 		if m.RestartNotificationRecipients != nil {
 			if pushErr := writeBuffer.PushContext("restartNotificationRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for restartNotificationRecipients")
 			}
 			for _, _element := range m.RestartNotificationRecipients {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataRestartNotificationRecipients) Serialize(writeBuff
 				}
 			}
 			if popErr := writeBuffer.PopContext("restartNotificationRecipients", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for restartNotificationRecipients")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRestartNotificationRecipients"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataRestartNotificationRecipients")
 		}
 		return nil
 	}

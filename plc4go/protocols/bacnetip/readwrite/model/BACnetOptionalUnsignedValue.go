@@ -128,14 +128,14 @@ func BACnetOptionalUnsignedValueParse(readBuffer utils.ReadBuffer) (*BACnetOptio
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalUnsignedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalUnsignedValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (unsignedValue)
 	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
 	}
 	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParse(readBuffer)
 	if _unsignedValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetOptionalUnsignedValueParse(readBuffer utils.ReadBuffer) (*BACnetOptio
 	}
 	unsignedValue := CastBACnetApplicationTagUnsignedInteger(_unsignedValue)
 	if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for unsignedValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalUnsignedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetOptionalUnsignedValue")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetOptionalUnsignedValue) Serialize(writeBuffer utils.WriteBuffer) e
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetOptionalUnsignedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetOptionalUnsignedValue")
 		}
 
 		// Simple Field (unsignedValue)
 		if pushErr := writeBuffer.PushContext("unsignedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for unsignedValue")
 		}
 		_unsignedValueErr := m.UnsignedValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("unsignedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for unsignedValue")
 		}
 		if _unsignedValueErr != nil {
 			return errors.Wrap(_unsignedValueErr, "Error serializing 'unsignedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetOptionalUnsignedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetOptionalUnsignedValue")
 		}
 		return nil
 	}

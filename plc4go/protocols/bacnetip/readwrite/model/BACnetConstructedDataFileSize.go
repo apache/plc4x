@@ -142,14 +142,14 @@ func BACnetConstructedDataFileSizeParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFileSize"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFileSize")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (fileSize)
 	if pullErr := readBuffer.PullContext("fileSize"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for fileSize")
 	}
 	_fileSize, _fileSizeErr := BACnetApplicationTagParse(readBuffer)
 	if _fileSizeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataFileSizeParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	fileSize := CastBACnetApplicationTagUnsignedInteger(_fileSize)
 	if closeErr := readBuffer.CloseContext("fileSize"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for fileSize")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFileSize"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFileSize")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataFileSize) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataFileSize"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFileSize")
 		}
 
 		// Simple Field (fileSize)
 		if pushErr := writeBuffer.PushContext("fileSize"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for fileSize")
 		}
 		_fileSizeErr := m.FileSize.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("fileSize"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for fileSize")
 		}
 		if _fileSizeErr != nil {
 			return errors.Wrap(_fileSizeErr, "Error serializing 'fileSize' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFileSize"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataFileSize")
 		}
 		return nil
 	}

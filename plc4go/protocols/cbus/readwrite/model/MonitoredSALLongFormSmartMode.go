@@ -219,7 +219,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALLongFormSmartMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for MonitoredSALLongFormSmartMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -257,7 +257,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 	if isUnitAddress {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
 		}
 		_val, _err := UnitAddressParse(readBuffer)
 		switch {
@@ -269,7 +269,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 		default:
 			unitAddress = CastUnitAddress(_val)
 			if closeErr := readBuffer.CloseContext("unitAddress"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for unitAddress")
 			}
 		}
 	}
@@ -279,7 +279,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 	if !(isUnitAddress) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for bridgeAddress")
 		}
 		_val, _err := BridgeAddressParse(readBuffer)
 		switch {
@@ -291,14 +291,14 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 		default:
 			bridgeAddress = CastBridgeAddress(_val)
 			if closeErr := readBuffer.CloseContext("bridgeAddress"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for bridgeAddress")
 			}
 		}
 	}
 
 	// Simple Field (serialInterfaceAddress)
 	if pullErr := readBuffer.PullContext("serialInterfaceAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for serialInterfaceAddress")
 	}
 	_serialInterfaceAddress, _serialInterfaceAddressErr := SerialInterfaceAddressParse(readBuffer)
 	if _serialInterfaceAddressErr != nil {
@@ -306,7 +306,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 	}
 	serialInterfaceAddress := CastSerialInterfaceAddress(_serialInterfaceAddress)
 	if closeErr := readBuffer.CloseContext("serialInterfaceAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for serialInterfaceAddress")
 	}
 
 	// Optional Field (reservedByte) (Can be skipped, if a given expression evaluates to false)
@@ -321,7 +321,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 
 	// Validation
 	if !(bool(bool(isUnitAddress) && bool(bool((*reservedByte) == (0x00)))) || bool(!(isUnitAddress))) {
-		return nil, utils.ParseValidationError{"invalid unit address"}
+		return nil, errors.WithStack(utils.ParseValidationError{"invalid unit address"})
 	}
 
 	// Optional Field (replyNetwork) (Can be skipped, if a given expression evaluates to false)
@@ -329,7 +329,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 	if !(isUnitAddress) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("replyNetwork"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for replyNetwork")
 		}
 		_val, _err := ReplyNetworkParse(readBuffer)
 		switch {
@@ -341,13 +341,13 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 		default:
 			replyNetwork = CastReplyNetwork(_val)
 			if closeErr := readBuffer.CloseContext("replyNetwork"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for replyNetwork")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("MonitoredSALLongFormSmartMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for MonitoredSALLongFormSmartMode")
 	}
 
 	// Create a partially initialized instance
@@ -369,7 +369,7 @@ func (m *MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MonitoredSALLongFormSmartMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for MonitoredSALLongFormSmartMode")
 		}
 
 		// Reserved Field (reserved)
@@ -388,12 +388,12 @@ func (m *MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer)
 		var unitAddress *UnitAddress = nil
 		if m.UnitAddress != nil {
 			if pushErr := writeBuffer.PushContext("unitAddress"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for unitAddress")
 			}
 			unitAddress = m.UnitAddress
 			_unitAddressErr := unitAddress.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for unitAddress")
 			}
 			if _unitAddressErr != nil {
 				return errors.Wrap(_unitAddressErr, "Error serializing 'unitAddress' field")
@@ -404,12 +404,12 @@ func (m *MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer)
 		var bridgeAddress *BridgeAddress = nil
 		if m.BridgeAddress != nil {
 			if pushErr := writeBuffer.PushContext("bridgeAddress"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for bridgeAddress")
 			}
 			bridgeAddress = m.BridgeAddress
 			_bridgeAddressErr := bridgeAddress.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("bridgeAddress"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for bridgeAddress")
 			}
 			if _bridgeAddressErr != nil {
 				return errors.Wrap(_bridgeAddressErr, "Error serializing 'bridgeAddress' field")
@@ -418,11 +418,11 @@ func (m *MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer)
 
 		// Simple Field (serialInterfaceAddress)
 		if pushErr := writeBuffer.PushContext("serialInterfaceAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for serialInterfaceAddress")
 		}
 		_serialInterfaceAddressErr := m.SerialInterfaceAddress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("serialInterfaceAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for serialInterfaceAddress")
 		}
 		if _serialInterfaceAddressErr != nil {
 			return errors.Wrap(_serialInterfaceAddressErr, "Error serializing 'serialInterfaceAddress' field")
@@ -442,12 +442,12 @@ func (m *MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer)
 		var replyNetwork *ReplyNetwork = nil
 		if m.ReplyNetwork != nil {
 			if pushErr := writeBuffer.PushContext("replyNetwork"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for replyNetwork")
 			}
 			replyNetwork = m.ReplyNetwork
 			_replyNetworkErr := replyNetwork.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("replyNetwork"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for replyNetwork")
 			}
 			if _replyNetworkErr != nil {
 				return errors.Wrap(_replyNetworkErr, "Error serializing 'replyNetwork' field")
@@ -455,7 +455,7 @@ func (m *MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer)
 		}
 
 		if popErr := writeBuffer.PopContext("MonitoredSALLongFormSmartMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for MonitoredSALLongFormSmartMode")
 		}
 		return nil
 	}

@@ -128,14 +128,14 @@ func BACnetPropertyStatesAccessCredentialDisableReasonParse(readBuffer utils.Rea
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAccessCredentialDisableReason"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesAccessCredentialDisableReason")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (accessCredentialDisableReason)
 	if pullErr := readBuffer.PullContext("accessCredentialDisableReason"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for accessCredentialDisableReason")
 	}
 	_accessCredentialDisableReason, _accessCredentialDisableReasonErr := BACnetAccessCredentialDisableReasonTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _accessCredentialDisableReasonErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesAccessCredentialDisableReasonParse(readBuffer utils.Rea
 	}
 	accessCredentialDisableReason := CastBACnetAccessCredentialDisableReasonTagged(_accessCredentialDisableReason)
 	if closeErr := readBuffer.CloseContext("accessCredentialDisableReason"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for accessCredentialDisableReason")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesAccessCredentialDisableReason"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesAccessCredentialDisableReason")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesAccessCredentialDisableReason) Serialize(writeBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesAccessCredentialDisableReason"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesAccessCredentialDisableReason")
 		}
 
 		// Simple Field (accessCredentialDisableReason)
 		if pushErr := writeBuffer.PushContext("accessCredentialDisableReason"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for accessCredentialDisableReason")
 		}
 		_accessCredentialDisableReasonErr := m.AccessCredentialDisableReason.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("accessCredentialDisableReason"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for accessCredentialDisableReason")
 		}
 		if _accessCredentialDisableReasonErr != nil {
 			return errors.Wrap(_accessCredentialDisableReasonErr, "Error serializing 'accessCredentialDisableReason' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesAccessCredentialDisableReason"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesAccessCredentialDisableReason")
 		}
 		return nil
 	}

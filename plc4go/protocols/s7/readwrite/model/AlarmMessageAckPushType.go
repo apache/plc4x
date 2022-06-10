@@ -132,14 +132,14 @@ func AlarmMessageAckPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAck
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageAckPushType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AlarmMessageAckPushType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (TimeStamp)
 	if pullErr := readBuffer.PullContext("TimeStamp"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for TimeStamp")
 	}
 	_TimeStamp, _TimeStampErr := DateAndTimeParse(readBuffer)
 	if _TimeStampErr != nil {
@@ -147,7 +147,7 @@ func AlarmMessageAckPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAck
 	}
 	TimeStamp := CastDateAndTime(_TimeStamp)
 	if closeErr := readBuffer.CloseContext("TimeStamp"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for TimeStamp")
 	}
 
 	// Simple Field (functionId)
@@ -166,7 +166,7 @@ func AlarmMessageAckPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAck
 
 	// Array field (messageObjects)
 	if pullErr := readBuffer.PullContext("messageObjects", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
 	}
 	// Count array
 	messageObjects := make([]*AlarmMessageAckObjectPushType, numberOfObjects)
@@ -180,11 +180,11 @@ func AlarmMessageAckPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAck
 		}
 	}
 	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for messageObjects")
 	}
 
 	if closeErr := readBuffer.CloseContext("AlarmMessageAckPushType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AlarmMessageAckPushType")
 	}
 
 	// Create the instance
@@ -195,16 +195,16 @@ func (m *AlarmMessageAckPushType) Serialize(writeBuffer utils.WriteBuffer) error
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageAckPushType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AlarmMessageAckPushType")
 	}
 
 	// Simple Field (TimeStamp)
 	if pushErr := writeBuffer.PushContext("TimeStamp"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for TimeStamp")
 	}
 	_TimeStampErr := m.TimeStamp.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("TimeStamp"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for TimeStamp")
 	}
 	if _TimeStampErr != nil {
 		return errors.Wrap(_TimeStampErr, "Error serializing 'TimeStamp' field")
@@ -227,7 +227,7 @@ func (m *AlarmMessageAckPushType) Serialize(writeBuffer utils.WriteBuffer) error
 	// Array Field (messageObjects)
 	if m.MessageObjects != nil {
 		if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for messageObjects")
 		}
 		for _, _element := range m.MessageObjects {
 			_elementErr := _element.Serialize(writeBuffer)
@@ -236,12 +236,12 @@ func (m *AlarmMessageAckPushType) Serialize(writeBuffer utils.WriteBuffer) error
 			}
 		}
 		if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for messageObjects")
 		}
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageAckPushType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AlarmMessageAckPushType")
 	}
 	return nil
 }

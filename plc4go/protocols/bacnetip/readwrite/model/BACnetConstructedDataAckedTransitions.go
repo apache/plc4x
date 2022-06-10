@@ -142,14 +142,14 @@ func BACnetConstructedDataAckedTransitionsParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAckedTransitions"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAckedTransitions")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ackedTransitions)
 	if pullErr := readBuffer.PullContext("ackedTransitions"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ackedTransitions")
 	}
 	_ackedTransitions, _ackedTransitionsErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _ackedTransitionsErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAckedTransitionsParse(readBuffer utils.ReadBuffer, tag
 	}
 	ackedTransitions := CastBACnetEventTransitionBitsTagged(_ackedTransitions)
 	if closeErr := readBuffer.CloseContext("ackedTransitions"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ackedTransitions")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAckedTransitions"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAckedTransitions")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAckedTransitions) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAckedTransitions"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAckedTransitions")
 		}
 
 		// Simple Field (ackedTransitions)
 		if pushErr := writeBuffer.PushContext("ackedTransitions"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ackedTransitions")
 		}
 		_ackedTransitionsErr := m.AckedTransitions.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ackedTransitions"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ackedTransitions")
 		}
 		if _ackedTransitionsErr != nil {
 			return errors.Wrap(_ackedTransitionsErr, "Error serializing 'ackedTransitions' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAckedTransitions"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAckedTransitions")
 		}
 		return nil
 	}

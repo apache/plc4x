@@ -133,14 +133,14 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedBitsParse(readBuffe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfValueNewValueChangedBits"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfValueNewValueChangedBits")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (changedBits)
 	if pullErr := readBuffer.PullContext("changedBits"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for changedBits")
 	}
 	_changedBits, _changedBitsErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _changedBitsErr != nil {
@@ -148,11 +148,11 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedBitsParse(readBuffe
 	}
 	changedBits := CastBACnetContextTagBitString(_changedBits)
 	if closeErr := readBuffer.CloseContext("changedBits"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for changedBits")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfValueNewValueChangedBits"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersChangeOfValueNewValueChangedBits")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) Serialize
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersChangeOfValueNewValueChangedBits"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfValueNewValueChangedBits")
 		}
 
 		// Simple Field (changedBits)
 		if pushErr := writeBuffer.PushContext("changedBits"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for changedBits")
 		}
 		_changedBitsErr := m.ChangedBits.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("changedBits"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for changedBits")
 		}
 		if _changedBitsErr != nil {
 			return errors.Wrap(_changedBitsErr, "Error serializing 'changedBits' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfValueNewValueChangedBits"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersChangeOfValueNewValueChangedBits")
 		}
 		return nil
 	}

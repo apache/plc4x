@@ -130,7 +130,7 @@ func IdentifyReplyCommandManufacturerParse(readBuffer utils.ReadBuffer, attribut
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandManufacturer"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandManufacturer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -143,7 +143,7 @@ func IdentifyReplyCommandManufacturerParse(readBuffer utils.ReadBuffer, attribut
 	manufacturerName := _manufacturerName
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandManufacturer"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandManufacturer")
 	}
 
 	// Create a partially initialized instance
@@ -160,7 +160,7 @@ func (m *IdentifyReplyCommandManufacturer) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandManufacturer"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandManufacturer")
 		}
 
 		// Simple Field (manufacturerName)
@@ -171,7 +171,7 @@ func (m *IdentifyReplyCommandManufacturer) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandManufacturer"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for IdentifyReplyCommandManufacturer")
 		}
 		return nil
 	}

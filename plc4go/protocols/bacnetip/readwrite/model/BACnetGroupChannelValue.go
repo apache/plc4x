@@ -121,14 +121,14 @@ func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (*BACnetGroupChan
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetGroupChannelValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetGroupChannelValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (channel)
 	if pullErr := readBuffer.PullContext("channel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channel")
 	}
 	_channel, _channelErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _channelErr != nil {
@@ -136,7 +136,7 @@ func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (*BACnetGroupChan
 	}
 	channel := CastBACnetContextTagUnsignedInteger(_channel)
 	if closeErr := readBuffer.CloseContext("channel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channel")
 	}
 
 	// Optional Field (overridingPriority) (Can be skipped, if a given expression evaluates to false)
@@ -144,7 +144,7 @@ func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (*BACnetGroupChan
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("overridingPriority"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for overridingPriority")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
@@ -156,14 +156,14 @@ func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (*BACnetGroupChan
 		default:
 			overridingPriority = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("overridingPriority"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for overridingPriority")
 			}
 		}
 	}
 
 	// Simple Field (value)
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
 	_value, _valueErr := BACnetChannelValueParse(readBuffer)
 	if _valueErr != nil {
@@ -171,11 +171,11 @@ func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (*BACnetGroupChan
 	}
 	value := CastBACnetChannelValue(_value)
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for value")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetGroupChannelValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetGroupChannelValue")
 	}
 
 	// Create the instance
@@ -186,16 +186,16 @@ func (m *BACnetGroupChannelValue) Serialize(writeBuffer utils.WriteBuffer) error
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetGroupChannelValue"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetGroupChannelValue")
 	}
 
 	// Simple Field (channel)
 	if pushErr := writeBuffer.PushContext("channel"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for channel")
 	}
 	_channelErr := m.Channel.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("channel"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for channel")
 	}
 	if _channelErr != nil {
 		return errors.Wrap(_channelErr, "Error serializing 'channel' field")
@@ -205,12 +205,12 @@ func (m *BACnetGroupChannelValue) Serialize(writeBuffer utils.WriteBuffer) error
 	var overridingPriority *BACnetContextTagUnsignedInteger = nil
 	if m.OverridingPriority != nil {
 		if pushErr := writeBuffer.PushContext("overridingPriority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for overridingPriority")
 		}
 		overridingPriority = m.OverridingPriority
 		_overridingPriorityErr := overridingPriority.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("overridingPriority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for overridingPriority")
 		}
 		if _overridingPriorityErr != nil {
 			return errors.Wrap(_overridingPriorityErr, "Error serializing 'overridingPriority' field")
@@ -219,18 +219,18 @@ func (m *BACnetGroupChannelValue) Serialize(writeBuffer utils.WriteBuffer) error
 
 	// Simple Field (value)
 	if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for value")
 	}
 	_valueErr := m.Value.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("value"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for value")
 	}
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetGroupChannelValue"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetGroupChannelValue")
 	}
 	return nil
 }

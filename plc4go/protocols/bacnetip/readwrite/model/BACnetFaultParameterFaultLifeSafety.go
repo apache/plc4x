@@ -161,14 +161,14 @@ func BACnetFaultParameterFaultLifeSafetyParse(readBuffer utils.ReadBuffer) (*BAC
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultLifeSafety"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultLifeSafety")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(3)))
 	if _openingTagErr != nil {
@@ -176,12 +176,12 @@ func BACnetFaultParameterFaultLifeSafetyParse(readBuffer utils.ReadBuffer) (*BAC
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (listOfFaultValues)
 	if pullErr := readBuffer.PullContext("listOfFaultValues"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for listOfFaultValues")
 	}
 	_listOfFaultValues, _listOfFaultValuesErr := BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParse(readBuffer, uint8(uint8(0)))
 	if _listOfFaultValuesErr != nil {
@@ -189,12 +189,12 @@ func BACnetFaultParameterFaultLifeSafetyParse(readBuffer utils.ReadBuffer) (*BAC
 	}
 	listOfFaultValues := CastBACnetFaultParameterFaultLifeSafetyListOfFaultValues(_listOfFaultValues)
 	if closeErr := readBuffer.CloseContext("listOfFaultValues"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for listOfFaultValues")
 	}
 
 	// Simple Field (modePropertyReference)
 	if pullErr := readBuffer.PullContext("modePropertyReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for modePropertyReference")
 	}
 	_modePropertyReference, _modePropertyReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _modePropertyReferenceErr != nil {
@@ -202,12 +202,12 @@ func BACnetFaultParameterFaultLifeSafetyParse(readBuffer utils.ReadBuffer) (*BAC
 	}
 	modePropertyReference := CastBACnetDeviceObjectPropertyReferenceEnclosed(_modePropertyReference)
 	if closeErr := readBuffer.CloseContext("modePropertyReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for modePropertyReference")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(3)))
 	if _closingTagErr != nil {
@@ -215,11 +215,11 @@ func BACnetFaultParameterFaultLifeSafetyParse(readBuffer utils.ReadBuffer) (*BAC
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultLifeSafety"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultLifeSafety")
 	}
 
 	// Create a partially initialized instance
@@ -239,16 +239,16 @@ func (m *BACnetFaultParameterFaultLifeSafety) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetFaultParameterFaultLifeSafety"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultLifeSafety")
 		}
 
 		// Simple Field (openingTag)
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
 		_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
 		if _openingTagErr != nil {
 			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -256,11 +256,11 @@ func (m *BACnetFaultParameterFaultLifeSafety) Serialize(writeBuffer utils.WriteB
 
 		// Simple Field (listOfFaultValues)
 		if pushErr := writeBuffer.PushContext("listOfFaultValues"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for listOfFaultValues")
 		}
 		_listOfFaultValuesErr := m.ListOfFaultValues.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("listOfFaultValues"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for listOfFaultValues")
 		}
 		if _listOfFaultValuesErr != nil {
 			return errors.Wrap(_listOfFaultValuesErr, "Error serializing 'listOfFaultValues' field")
@@ -268,11 +268,11 @@ func (m *BACnetFaultParameterFaultLifeSafety) Serialize(writeBuffer utils.WriteB
 
 		// Simple Field (modePropertyReference)
 		if pushErr := writeBuffer.PushContext("modePropertyReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for modePropertyReference")
 		}
 		_modePropertyReferenceErr := m.ModePropertyReference.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("modePropertyReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for modePropertyReference")
 		}
 		if _modePropertyReferenceErr != nil {
 			return errors.Wrap(_modePropertyReferenceErr, "Error serializing 'modePropertyReference' field")
@@ -280,18 +280,18 @@ func (m *BACnetFaultParameterFaultLifeSafety) Serialize(writeBuffer utils.WriteB
 
 		// Simple Field (closingTag)
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
 		_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
 		if _closingTagErr != nil {
 			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultLifeSafety"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultLifeSafety")
 		}
 		return nil
 	}

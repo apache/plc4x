@@ -168,14 +168,14 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LPollData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LPollData"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for LPollData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (sourceAddress)
 	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
 	}
 	_sourceAddress, _sourceAddressErr := KnxAddressParse(readBuffer)
 	if _sourceAddressErr != nil {
@@ -183,7 +183,7 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LPollData, error) {
 	}
 	sourceAddress := CastKnxAddress(_sourceAddress)
 	if closeErr := readBuffer.CloseContext("sourceAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for sourceAddress")
 	}
 	// Byte Array field (targetAddress)
 	numberOfBytestargetAddress := int(uint16(2))
@@ -214,7 +214,7 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LPollData, error) {
 	numberExpectedPollData := _numberExpectedPollData
 
 	if closeErr := readBuffer.CloseContext("LPollData"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for LPollData")
 	}
 
 	// Create a partially initialized instance
@@ -233,16 +233,16 @@ func (m *LPollData) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("LPollData"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for LPollData")
 		}
 
 		// Simple Field (sourceAddress)
 		if pushErr := writeBuffer.PushContext("sourceAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for sourceAddress")
 		}
 		_sourceAddressErr := m.SourceAddress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("sourceAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for sourceAddress")
 		}
 		if _sourceAddressErr != nil {
 			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
@@ -273,7 +273,7 @@ func (m *LPollData) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("LPollData"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for LPollData")
 		}
 		return nil
 	}

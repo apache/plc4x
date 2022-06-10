@@ -142,14 +142,14 @@ func BACnetConstructedDataLinkSpeedParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLinkSpeed"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLinkSpeed")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (linkSpeed)
 	if pullErr := readBuffer.PullContext("linkSpeed"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for linkSpeed")
 	}
 	_linkSpeed, _linkSpeedErr := BACnetApplicationTagParse(readBuffer)
 	if _linkSpeedErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLinkSpeedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	linkSpeed := CastBACnetApplicationTagReal(_linkSpeed)
 	if closeErr := readBuffer.CloseContext("linkSpeed"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for linkSpeed")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLinkSpeed"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLinkSpeed")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLinkSpeed) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLinkSpeed"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLinkSpeed")
 		}
 
 		// Simple Field (linkSpeed)
 		if pushErr := writeBuffer.PushContext("linkSpeed"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for linkSpeed")
 		}
 		_linkSpeedErr := m.LinkSpeed.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("linkSpeed"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for linkSpeed")
 		}
 		if _linkSpeedErr != nil {
 			return errors.Wrap(_linkSpeedErr, "Error serializing 'linkSpeed' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLinkSpeed"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLinkSpeed")
 		}
 		return nil
 	}

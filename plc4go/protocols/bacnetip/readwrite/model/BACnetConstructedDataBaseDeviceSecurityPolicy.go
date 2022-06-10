@@ -142,14 +142,14 @@ func BACnetConstructedDataBaseDeviceSecurityPolicyParse(readBuffer utils.ReadBuf
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBaseDeviceSecurityPolicy"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBaseDeviceSecurityPolicy")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (baseDeviceSecurityPolicy)
 	if pullErr := readBuffer.PullContext("baseDeviceSecurityPolicy"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for baseDeviceSecurityPolicy")
 	}
 	_baseDeviceSecurityPolicy, _baseDeviceSecurityPolicyErr := BACnetSecurityLevelTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _baseDeviceSecurityPolicyErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBaseDeviceSecurityPolicyParse(readBuffer utils.ReadBuf
 	}
 	baseDeviceSecurityPolicy := CastBACnetSecurityLevelTagged(_baseDeviceSecurityPolicy)
 	if closeErr := readBuffer.CloseContext("baseDeviceSecurityPolicy"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for baseDeviceSecurityPolicy")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBaseDeviceSecurityPolicy"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBaseDeviceSecurityPolicy")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBaseDeviceSecurityPolicy) Serialize(writeBuffer ut
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBaseDeviceSecurityPolicy"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBaseDeviceSecurityPolicy")
 		}
 
 		// Simple Field (baseDeviceSecurityPolicy)
 		if pushErr := writeBuffer.PushContext("baseDeviceSecurityPolicy"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for baseDeviceSecurityPolicy")
 		}
 		_baseDeviceSecurityPolicyErr := m.BaseDeviceSecurityPolicy.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("baseDeviceSecurityPolicy"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for baseDeviceSecurityPolicy")
 		}
 		if _baseDeviceSecurityPolicyErr != nil {
 			return errors.Wrap(_baseDeviceSecurityPolicyErr, "Error serializing 'baseDeviceSecurityPolicy' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBaseDeviceSecurityPolicy"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBaseDeviceSecurityPolicy")
 		}
 		return nil
 	}

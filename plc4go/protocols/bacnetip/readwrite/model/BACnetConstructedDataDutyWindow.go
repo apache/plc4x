@@ -142,14 +142,14 @@ func BACnetConstructedDataDutyWindowParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDutyWindow"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDutyWindow")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (dutyWindow)
 	if pullErr := readBuffer.PullContext("dutyWindow"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dutyWindow")
 	}
 	_dutyWindow, _dutyWindowErr := BACnetApplicationTagParse(readBuffer)
 	if _dutyWindowErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDutyWindowParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	dutyWindow := CastBACnetApplicationTagUnsignedInteger(_dutyWindow)
 	if closeErr := readBuffer.CloseContext("dutyWindow"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dutyWindow")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDutyWindow"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDutyWindow")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDutyWindow) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDutyWindow"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDutyWindow")
 		}
 
 		// Simple Field (dutyWindow)
 		if pushErr := writeBuffer.PushContext("dutyWindow"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dutyWindow")
 		}
 		_dutyWindowErr := m.DutyWindow.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dutyWindow"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dutyWindow")
 		}
 		if _dutyWindowErr != nil {
 			return errors.Wrap(_dutyWindowErr, "Error serializing 'dutyWindow' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDutyWindow"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDutyWindow")
 		}
 		return nil
 	}

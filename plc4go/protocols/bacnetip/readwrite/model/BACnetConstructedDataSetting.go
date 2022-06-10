@@ -142,14 +142,14 @@ func BACnetConstructedDataSettingParse(readBuffer utils.ReadBuffer, tagNumber ui
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSetting"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSetting")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (setting)
 	if pullErr := readBuffer.PullContext("setting"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for setting")
 	}
 	_setting, _settingErr := BACnetApplicationTagParse(readBuffer)
 	if _settingErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataSettingParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	setting := CastBACnetApplicationTagUnsignedInteger(_setting)
 	if closeErr := readBuffer.CloseContext("setting"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for setting")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSetting"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSetting")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataSetting) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSetting"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSetting")
 		}
 
 		// Simple Field (setting)
 		if pushErr := writeBuffer.PushContext("setting"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for setting")
 		}
 		_settingErr := m.Setting.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("setting"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for setting")
 		}
 		if _settingErr != nil {
 			return errors.Wrap(_settingErr, "Error serializing 'setting' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSetting"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSetting")
 		}
 		return nil
 	}

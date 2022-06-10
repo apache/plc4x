@@ -130,14 +130,14 @@ func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*DeviceConfigurat
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAck"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DeviceConfigurationAck")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (deviceConfigurationAckDataBlock)
 	if pullErr := readBuffer.PullContext("deviceConfigurationAckDataBlock"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for deviceConfigurationAckDataBlock")
 	}
 	_deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParse(readBuffer)
 	if _deviceConfigurationAckDataBlockErr != nil {
@@ -145,11 +145,11 @@ func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*DeviceConfigurat
 	}
 	deviceConfigurationAckDataBlock := CastDeviceConfigurationAckDataBlock(_deviceConfigurationAckDataBlock)
 	if closeErr := readBuffer.CloseContext("deviceConfigurationAckDataBlock"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for deviceConfigurationAckDataBlock")
 	}
 
 	if closeErr := readBuffer.CloseContext("DeviceConfigurationAck"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DeviceConfigurationAck")
 	}
 
 	// Create a partially initialized instance
@@ -166,23 +166,23 @@ func (m *DeviceConfigurationAck) Serialize(writeBuffer utils.WriteBuffer) error 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DeviceConfigurationAck"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for DeviceConfigurationAck")
 		}
 
 		// Simple Field (deviceConfigurationAckDataBlock)
 		if pushErr := writeBuffer.PushContext("deviceConfigurationAckDataBlock"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for deviceConfigurationAckDataBlock")
 		}
 		_deviceConfigurationAckDataBlockErr := m.DeviceConfigurationAckDataBlock.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("deviceConfigurationAckDataBlock"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for deviceConfigurationAckDataBlock")
 		}
 		if _deviceConfigurationAckDataBlockErr != nil {
 			return errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error serializing 'deviceConfigurationAckDataBlock' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DeviceConfigurationAck"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for DeviceConfigurationAck")
 		}
 		return nil
 	}

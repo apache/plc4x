@@ -140,14 +140,14 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
@@ -155,12 +155,12 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (monitoredObjectIdentifier)
 	if pullErr := readBuffer.PullContext("monitoredObjectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for monitoredObjectIdentifier")
 	}
 	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
@@ -168,12 +168,12 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	}
 	monitoredObjectIdentifier := CastBACnetContextTagObjectIdentifier(_monitoredObjectIdentifier)
 	if closeErr := readBuffer.CloseContext("monitoredObjectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for monitoredObjectIdentifier")
 	}
 
 	// Simple Field (monitoredPropertyReference)
 	if pullErr := readBuffer.PullContext("monitoredPropertyReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for monitoredPropertyReference")
 	}
 	_monitoredPropertyReference, _monitoredPropertyReferenceErr := BACnetPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _monitoredPropertyReferenceErr != nil {
@@ -181,12 +181,12 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	}
 	monitoredPropertyReference := CastBACnetPropertyReferenceEnclosed(_monitoredPropertyReference)
 	if closeErr := readBuffer.CloseContext("monitoredPropertyReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for monitoredPropertyReference")
 	}
 
 	// Simple Field (errorType)
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
 	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(2)))
 	if _errorTypeErr != nil {
@@ -194,12 +194,12 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	}
 	errorType := CastErrorEnclosed(_errorType)
 	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for errorType")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
@@ -207,11 +207,11 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
 
 	// Create the instance
@@ -222,16 +222,16 @@ func (m *SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) Serialize(wri
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
 
 	// Simple Field (openingTag)
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
 	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -239,11 +239,11 @@ func (m *SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) Serialize(wri
 
 	// Simple Field (monitoredObjectIdentifier)
 	if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
 	}
 	_monitoredObjectIdentifierErr := m.MonitoredObjectIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
 	}
 	if _monitoredObjectIdentifierErr != nil {
 		return errors.Wrap(_monitoredObjectIdentifierErr, "Error serializing 'monitoredObjectIdentifier' field")
@@ -251,11 +251,11 @@ func (m *SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) Serialize(wri
 
 	// Simple Field (monitoredPropertyReference)
 	if pushErr := writeBuffer.PushContext("monitoredPropertyReference"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for monitoredPropertyReference")
 	}
 	_monitoredPropertyReferenceErr := m.MonitoredPropertyReference.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("monitoredPropertyReference"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for monitoredPropertyReference")
 	}
 	if _monitoredPropertyReferenceErr != nil {
 		return errors.Wrap(_monitoredPropertyReferenceErr, "Error serializing 'monitoredPropertyReference' field")
@@ -263,11 +263,11 @@ func (m *SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) Serialize(wri
 
 	// Simple Field (errorType)
 	if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for errorType")
 	}
 	_errorTypeErr := m.ErrorType.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for errorType")
 	}
 	if _errorTypeErr != nil {
 		return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
@@ -275,18 +275,18 @@ func (m *SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) Serialize(wri
 
 	// Simple Field (closingTag)
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
 	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
 	return nil
 }

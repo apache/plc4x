@@ -135,7 +135,7 @@ func NLMDisconnectConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLeng
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMDisconnectConnectionToNetwork"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for NLMDisconnectConnectionToNetwork")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -148,7 +148,7 @@ func NLMDisconnectConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLeng
 	destinationNetworkAddress := _destinationNetworkAddress
 
 	if closeErr := readBuffer.CloseContext("NLMDisconnectConnectionToNetwork"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for NLMDisconnectConnectionToNetwork")
 	}
 
 	// Create a partially initialized instance
@@ -165,7 +165,7 @@ func (m *NLMDisconnectConnectionToNetwork) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("NLMDisconnectConnectionToNetwork"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for NLMDisconnectConnectionToNetwork")
 		}
 
 		// Simple Field (destinationNetworkAddress)
@@ -176,7 +176,7 @@ func (m *NLMDisconnectConnectionToNetwork) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		if popErr := writeBuffer.PopContext("NLMDisconnectConnectionToNetwork"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for NLMDisconnectConnectionToNetwork")
 		}
 		return nil
 	}

@@ -111,14 +111,14 @@ func BACnetPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BACnetPropertyR
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (propertyIdentifier)
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
 	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
@@ -126,7 +126,7 @@ func BACnetPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BACnetPropertyR
 	}
 	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
 	}
 
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
@@ -134,7 +134,7 @@ func BACnetPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BACnetPropertyR
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
@@ -146,13 +146,13 @@ func BACnetPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BACnetPropertyR
 		default:
 			arrayIndex = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for arrayIndex")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyReference")
 	}
 
 	// Create the instance
@@ -163,16 +163,16 @@ func (m *BACnetPropertyReference) Serialize(writeBuffer utils.WriteBuffer) error
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPropertyReference"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetPropertyReference")
 	}
 
 	// Simple Field (propertyIdentifier)
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
 	_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
 	if _propertyIdentifierErr != nil {
 		return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
@@ -182,12 +182,12 @@ func (m *BACnetPropertyReference) Serialize(writeBuffer utils.WriteBuffer) error
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	if m.ArrayIndex != nil {
 		if pushErr := writeBuffer.PushContext("arrayIndex"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for arrayIndex")
 		}
 		arrayIndex = m.ArrayIndex
 		_arrayIndexErr := arrayIndex.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for arrayIndex")
 		}
 		if _arrayIndexErr != nil {
 			return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
@@ -195,7 +195,7 @@ func (m *BACnetPropertyReference) Serialize(writeBuffer utils.WriteBuffer) error
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPropertyReference"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetPropertyReference")
 	}
 	return nil
 }

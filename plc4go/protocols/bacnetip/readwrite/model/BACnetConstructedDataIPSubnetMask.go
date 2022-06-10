@@ -142,14 +142,14 @@ func BACnetConstructedDataIPSubnetMaskParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPSubnetMask"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPSubnetMask")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ipSubnetMask)
 	if pullErr := readBuffer.PullContext("ipSubnetMask"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipSubnetMask")
 	}
 	_ipSubnetMask, _ipSubnetMaskErr := BACnetApplicationTagParse(readBuffer)
 	if _ipSubnetMaskErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataIPSubnetMaskParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	ipSubnetMask := CastBACnetApplicationTagOctetString(_ipSubnetMask)
 	if closeErr := readBuffer.CloseContext("ipSubnetMask"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipSubnetMask")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPSubnetMask"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPSubnetMask")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataIPSubnetMask) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataIPSubnetMask"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPSubnetMask")
 		}
 
 		// Simple Field (ipSubnetMask)
 		if pushErr := writeBuffer.PushContext("ipSubnetMask"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ipSubnetMask")
 		}
 		_ipSubnetMaskErr := m.IpSubnetMask.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ipSubnetMask"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ipSubnetMask")
 		}
 		if _ipSubnetMaskErr != nil {
 			return errors.Wrap(_ipSubnetMaskErr, "Error serializing 'ipSubnetMask' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPSubnetMask"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataIPSubnetMask")
 		}
 		return nil
 	}

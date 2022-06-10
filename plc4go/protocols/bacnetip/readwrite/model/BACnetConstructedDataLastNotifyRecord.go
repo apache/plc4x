@@ -142,14 +142,14 @@ func BACnetConstructedDataLastNotifyRecordParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastNotifyRecord"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastNotifyRecord")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lastNotifyRecord)
 	if pullErr := readBuffer.PullContext("lastNotifyRecord"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lastNotifyRecord")
 	}
 	_lastNotifyRecord, _lastNotifyRecordErr := BACnetApplicationTagParse(readBuffer)
 	if _lastNotifyRecordErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLastNotifyRecordParse(readBuffer utils.ReadBuffer, tag
 	}
 	lastNotifyRecord := CastBACnetApplicationTagUnsignedInteger(_lastNotifyRecord)
 	if closeErr := readBuffer.CloseContext("lastNotifyRecord"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lastNotifyRecord")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastNotifyRecord"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastNotifyRecord")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLastNotifyRecord) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLastNotifyRecord"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastNotifyRecord")
 		}
 
 		// Simple Field (lastNotifyRecord)
 		if pushErr := writeBuffer.PushContext("lastNotifyRecord"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lastNotifyRecord")
 		}
 		_lastNotifyRecordErr := m.LastNotifyRecord.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lastNotifyRecord"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lastNotifyRecord")
 		}
 		if _lastNotifyRecordErr != nil {
 			return errors.Wrap(_lastNotifyRecordErr, "Error serializing 'lastNotifyRecord' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastNotifyRecord"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLastNotifyRecord")
 		}
 		return nil
 	}

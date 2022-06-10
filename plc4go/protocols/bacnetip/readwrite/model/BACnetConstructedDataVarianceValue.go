@@ -142,14 +142,14 @@ func BACnetConstructedDataVarianceValueParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVarianceValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataVarianceValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (varianceValue)
 	if pullErr := readBuffer.PullContext("varianceValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for varianceValue")
 	}
 	_varianceValue, _varianceValueErr := BACnetApplicationTagParse(readBuffer)
 	if _varianceValueErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataVarianceValueParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	varianceValue := CastBACnetApplicationTagReal(_varianceValue)
 	if closeErr := readBuffer.CloseContext("varianceValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for varianceValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVarianceValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataVarianceValue")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataVarianceValue) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataVarianceValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataVarianceValue")
 		}
 
 		// Simple Field (varianceValue)
 		if pushErr := writeBuffer.PushContext("varianceValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for varianceValue")
 		}
 		_varianceValueErr := m.VarianceValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("varianceValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for varianceValue")
 		}
 		if _varianceValueErr != nil {
 			return errors.Wrap(_varianceValueErr, "Error serializing 'varianceValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataVarianceValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataVarianceValue")
 		}
 		return nil
 	}

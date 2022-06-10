@@ -142,14 +142,14 @@ func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParse(readBuffer utils.
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrendLogLogDeviceObjectProperty"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTrendLogLogDeviceObjectProperty")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (logDeviceObjectProperty)
 	if pullErr := readBuffer.PullContext("logDeviceObjectProperty"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for logDeviceObjectProperty")
 	}
 	_logDeviceObjectProperty, _logDeviceObjectPropertyErr := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
 	if _logDeviceObjectPropertyErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParse(readBuffer utils.
 	}
 	logDeviceObjectProperty := CastBACnetDeviceObjectPropertyReference(_logDeviceObjectProperty)
 	if closeErr := readBuffer.CloseContext("logDeviceObjectProperty"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for logDeviceObjectProperty")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTrendLogLogDeviceObjectProperty"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTrendLogLogDeviceObjectProperty")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataTrendLogLogDeviceObjectProperty) Serialize(writeBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataTrendLogLogDeviceObjectProperty"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTrendLogLogDeviceObjectProperty")
 		}
 
 		// Simple Field (logDeviceObjectProperty)
 		if pushErr := writeBuffer.PushContext("logDeviceObjectProperty"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for logDeviceObjectProperty")
 		}
 		_logDeviceObjectPropertyErr := m.LogDeviceObjectProperty.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("logDeviceObjectProperty"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for logDeviceObjectProperty")
 		}
 		if _logDeviceObjectPropertyErr != nil {
 			return errors.Wrap(_logDeviceObjectPropertyErr, "Error serializing 'logDeviceObjectProperty' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTrendLogLogDeviceObjectProperty"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataTrendLogLogDeviceObjectProperty")
 		}
 		return nil
 	}

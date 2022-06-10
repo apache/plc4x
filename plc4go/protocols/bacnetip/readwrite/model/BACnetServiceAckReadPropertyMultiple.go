@@ -138,14 +138,14 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serv
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckReadPropertyMultiple")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Length array
 	data := make([]*BACnetReadAccessResult, 0)
@@ -161,11 +161,11 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serv
 		}
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for data")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckReadPropertyMultiple"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckReadPropertyMultiple")
 	}
 
 	// Create a partially initialized instance
@@ -182,13 +182,13 @@ func (m *BACnetServiceAckReadPropertyMultiple) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckReadPropertyMultiple"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckReadPropertyMultiple")
 		}
 
 		// Array Field (data)
 		if m.Data != nil {
 			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for data")
 			}
 			for _, _element := range m.Data {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -197,12 +197,12 @@ func (m *BACnetServiceAckReadPropertyMultiple) Serialize(writeBuffer utils.Write
 				}
 			}
 			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for data")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckReadPropertyMultiple"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetServiceAckReadPropertyMultiple")
 		}
 		return nil
 	}

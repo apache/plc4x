@@ -141,14 +141,14 @@ func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer utils.Rea
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFileRecord"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestAtomicReadFileRecord")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (fileStartRecord)
 	if pullErr := readBuffer.PullContext("fileStartRecord"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for fileStartRecord")
 	}
 	_fileStartRecord, _fileStartRecordErr := BACnetApplicationTagParse(readBuffer)
 	if _fileStartRecordErr != nil {
@@ -156,12 +156,12 @@ func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer utils.Rea
 	}
 	fileStartRecord := CastBACnetApplicationTagSignedInteger(_fileStartRecord)
 	if closeErr := readBuffer.CloseContext("fileStartRecord"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for fileStartRecord")
 	}
 
 	// Simple Field (requestRecordCount)
 	if pullErr := readBuffer.PullContext("requestRecordCount"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for requestRecordCount")
 	}
 	_requestRecordCount, _requestRecordCountErr := BACnetApplicationTagParse(readBuffer)
 	if _requestRecordCountErr != nil {
@@ -169,11 +169,11 @@ func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer utils.Rea
 	}
 	requestRecordCount := CastBACnetApplicationTagUnsignedInteger(_requestRecordCount)
 	if closeErr := readBuffer.CloseContext("requestRecordCount"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for requestRecordCount")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestAtomicReadFileRecord"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestAtomicReadFileRecord")
 	}
 
 	// Create a partially initialized instance
@@ -191,16 +191,16 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) Serialize(writeBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestAtomicReadFileRecord"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestAtomicReadFileRecord")
 		}
 
 		// Simple Field (fileStartRecord)
 		if pushErr := writeBuffer.PushContext("fileStartRecord"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for fileStartRecord")
 		}
 		_fileStartRecordErr := m.FileStartRecord.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("fileStartRecord"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for fileStartRecord")
 		}
 		if _fileStartRecordErr != nil {
 			return errors.Wrap(_fileStartRecordErr, "Error serializing 'fileStartRecord' field")
@@ -208,18 +208,18 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) Serialize(writeBuffe
 
 		// Simple Field (requestRecordCount)
 		if pushErr := writeBuffer.PushContext("requestRecordCount"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for requestRecordCount")
 		}
 		_requestRecordCountErr := m.RequestRecordCount.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("requestRecordCount"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for requestRecordCount")
 		}
 		if _requestRecordCountErr != nil {
 			return errors.Wrap(_requestRecordCountErr, "Error serializing 'requestRecordCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestAtomicReadFileRecord"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestAtomicReadFileRecord")
 		}
 		return nil
 	}

@@ -146,14 +146,14 @@ func BACnetConstructedDataExitPointsParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExitPoints"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataExitPoints")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (exitPoints)
 	if pullErr := readBuffer.PullContext("exitPoints", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for exitPoints")
 	}
 	// Terminated array
 	exitPoints := make([]*BACnetDeviceObjectReference, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataExitPointsParse(readBuffer utils.ReadBuffer, tagNumber
 		}
 	}
 	if closeErr := readBuffer.CloseContext("exitPoints", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for exitPoints")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataExitPoints"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataExitPoints")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataExitPoints) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataExitPoints"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataExitPoints")
 		}
 
 		// Array Field (exitPoints)
 		if m.ExitPoints != nil {
 			if pushErr := writeBuffer.PushContext("exitPoints", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for exitPoints")
 			}
 			for _, _element := range m.ExitPoints {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataExitPoints) Serialize(writeBuffer utils.WriteBuffe
 				}
 			}
 			if popErr := writeBuffer.PopContext("exitPoints", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for exitPoints")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataExitPoints"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataExitPoints")
 		}
 		return nil
 	}

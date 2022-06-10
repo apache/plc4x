@@ -186,14 +186,14 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (subscriberProcessIdentifier)
 	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for subscriberProcessIdentifier")
 	}
 	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _subscriberProcessIdentifierErr != nil {
@@ -201,7 +201,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 	}
 	subscriberProcessIdentifier := CastBACnetContextTagUnsignedInteger(_subscriberProcessIdentifier)
 	if closeErr := readBuffer.CloseContext("subscriberProcessIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for subscriberProcessIdentifier")
 	}
 
 	// Optional Field (issueConfirmedNotifications) (Can be skipped, if a given expression evaluates to false)
@@ -209,7 +209,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_BOOLEAN)
 		switch {
@@ -221,7 +221,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 		default:
 			issueConfirmedNotifications = CastBACnetContextTagBoolean(_val)
 			if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for issueConfirmedNotifications")
 			}
 		}
 	}
@@ -231,7 +231,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("lifetime"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for lifetime")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
@@ -243,7 +243,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 		default:
 			lifetime = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("lifetime"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for lifetime")
 			}
 		}
 	}
@@ -253,7 +253,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("maxNotificationDelay"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for maxNotificationDelay")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
@@ -265,14 +265,14 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 		default:
 			maxNotificationDelay = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("maxNotificationDelay"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for maxNotificationDelay")
 			}
 		}
 	}
 
 	// Simple Field (listOfCovSubscriptionSpecifications)
 	if pullErr := readBuffer.PullContext("listOfCovSubscriptionSpecifications"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for listOfCovSubscriptionSpecifications")
 	}
 	_listOfCovSubscriptionSpecifications, _listOfCovSubscriptionSpecificationsErr := BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListParse(readBuffer, uint8(uint8(4)))
 	if _listOfCovSubscriptionSpecificationsErr != nil {
@@ -280,11 +280,11 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 	}
 	listOfCovSubscriptionSpecifications := CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList(_listOfCovSubscriptionSpecifications)
 	if closeErr := readBuffer.CloseContext("listOfCovSubscriptionSpecifications"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for listOfCovSubscriptionSpecifications")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 	}
 
 	// Create a partially initialized instance
@@ -305,16 +305,16 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Serialize(wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 		}
 
 		// Simple Field (subscriberProcessIdentifier)
 		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
 		}
 		_subscriberProcessIdentifierErr := m.SubscriberProcessIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
 		}
 		if _subscriberProcessIdentifierErr != nil {
 			return errors.Wrap(_subscriberProcessIdentifierErr, "Error serializing 'subscriberProcessIdentifier' field")
@@ -324,12 +324,12 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Serialize(wr
 		var issueConfirmedNotifications *BACnetContextTagBoolean = nil
 		if m.IssueConfirmedNotifications != nil {
 			if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
 			}
 			issueConfirmedNotifications = m.IssueConfirmedNotifications
 			_issueConfirmedNotificationsErr := issueConfirmedNotifications.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
 			}
 			if _issueConfirmedNotificationsErr != nil {
 				return errors.Wrap(_issueConfirmedNotificationsErr, "Error serializing 'issueConfirmedNotifications' field")
@@ -340,12 +340,12 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Serialize(wr
 		var lifetime *BACnetContextTagUnsignedInteger = nil
 		if m.Lifetime != nil {
 			if pushErr := writeBuffer.PushContext("lifetime"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for lifetime")
 			}
 			lifetime = m.Lifetime
 			_lifetimeErr := lifetime.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("lifetime"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for lifetime")
 			}
 			if _lifetimeErr != nil {
 				return errors.Wrap(_lifetimeErr, "Error serializing 'lifetime' field")
@@ -356,12 +356,12 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Serialize(wr
 		var maxNotificationDelay *BACnetContextTagUnsignedInteger = nil
 		if m.MaxNotificationDelay != nil {
 			if pushErr := writeBuffer.PushContext("maxNotificationDelay"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for maxNotificationDelay")
 			}
 			maxNotificationDelay = m.MaxNotificationDelay
 			_maxNotificationDelayErr := maxNotificationDelay.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("maxNotificationDelay"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for maxNotificationDelay")
 			}
 			if _maxNotificationDelayErr != nil {
 				return errors.Wrap(_maxNotificationDelayErr, "Error serializing 'maxNotificationDelay' field")
@@ -370,18 +370,18 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Serialize(wr
 
 		// Simple Field (listOfCovSubscriptionSpecifications)
 		if pushErr := writeBuffer.PushContext("listOfCovSubscriptionSpecifications"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for listOfCovSubscriptionSpecifications")
 		}
 		_listOfCovSubscriptionSpecificationsErr := m.ListOfCovSubscriptionSpecifications.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("listOfCovSubscriptionSpecifications"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for listOfCovSubscriptionSpecifications")
 		}
 		if _listOfCovSubscriptionSpecificationsErr != nil {
 			return errors.Wrap(_listOfCovSubscriptionSpecificationsErr, "Error serializing 'listOfCovSubscriptionSpecifications' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 		}
 		return nil
 	}

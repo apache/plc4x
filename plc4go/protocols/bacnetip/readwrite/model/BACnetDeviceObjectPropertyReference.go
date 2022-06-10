@@ -133,14 +133,14 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BAC
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDeviceObjectPropertyReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetDeviceObjectPropertyReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
@@ -148,12 +148,12 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BAC
 	}
 	objectIdentifier := CastBACnetContextTagObjectIdentifier(_objectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 	}
 
 	// Simple Field (propertyIdentifier)
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
 	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
@@ -161,7 +161,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BAC
 	}
 	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
 	}
 
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
@@ -169,7 +169,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BAC
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
@@ -181,7 +181,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BAC
 		default:
 			arrayIndex = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for arrayIndex")
 			}
 		}
 	}
@@ -191,7 +191,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BAC
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
@@ -203,13 +203,13 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BAC
 		default:
 			deviceIdentifier = CastBACnetContextTagObjectIdentifier(_val)
 			if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for deviceIdentifier")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetDeviceObjectPropertyReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetDeviceObjectPropertyReference")
 	}
 
 	// Create the instance
@@ -220,16 +220,16 @@ func (m *BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteB
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDeviceObjectPropertyReference"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetDeviceObjectPropertyReference")
 	}
 
 	// Simple Field (objectIdentifier)
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
 	_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
 	if _objectIdentifierErr != nil {
 		return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
@@ -237,11 +237,11 @@ func (m *BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteB
 
 	// Simple Field (propertyIdentifier)
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
 	_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
 	if _propertyIdentifierErr != nil {
 		return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
@@ -251,12 +251,12 @@ func (m *BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteB
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	if m.ArrayIndex != nil {
 		if pushErr := writeBuffer.PushContext("arrayIndex"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for arrayIndex")
 		}
 		arrayIndex = m.ArrayIndex
 		_arrayIndexErr := arrayIndex.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for arrayIndex")
 		}
 		if _arrayIndexErr != nil {
 			return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
@@ -267,12 +267,12 @@ func (m *BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteB
 	var deviceIdentifier *BACnetContextTagObjectIdentifier = nil
 	if m.DeviceIdentifier != nil {
 		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
 		}
 		deviceIdentifier = m.DeviceIdentifier
 		_deviceIdentifierErr := deviceIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
 		}
 		if _deviceIdentifierErr != nil {
 			return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
@@ -280,7 +280,7 @@ func (m *BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteB
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetDeviceObjectPropertyReference"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetDeviceObjectPropertyReference")
 	}
 	return nil
 }

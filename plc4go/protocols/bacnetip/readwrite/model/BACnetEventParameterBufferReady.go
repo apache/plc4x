@@ -161,14 +161,14 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (*BACnetE
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterBufferReady"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterBufferReady")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(10)))
 	if _openingTagErr != nil {
@@ -176,12 +176,12 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (*BACnetE
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (notificationThreshold)
 	if pullErr := readBuffer.PullContext("notificationThreshold"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for notificationThreshold")
 	}
 	_notificationThreshold, _notificationThresholdErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _notificationThresholdErr != nil {
@@ -189,12 +189,12 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (*BACnetE
 	}
 	notificationThreshold := CastBACnetContextTagUnsignedInteger(_notificationThreshold)
 	if closeErr := readBuffer.CloseContext("notificationThreshold"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for notificationThreshold")
 	}
 
 	// Simple Field (previousNotificationCount)
 	if pullErr := readBuffer.PullContext("previousNotificationCount"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for previousNotificationCount")
 	}
 	_previousNotificationCount, _previousNotificationCountErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _previousNotificationCountErr != nil {
@@ -202,12 +202,12 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (*BACnetE
 	}
 	previousNotificationCount := CastBACnetContextTagUnsignedInteger(_previousNotificationCount)
 	if closeErr := readBuffer.CloseContext("previousNotificationCount"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for previousNotificationCount")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(10)))
 	if _closingTagErr != nil {
@@ -215,11 +215,11 @@ func BACnetEventParameterBufferReadyParse(readBuffer utils.ReadBuffer) (*BACnetE
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterBufferReady"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterBufferReady")
 	}
 
 	// Create a partially initialized instance
@@ -239,16 +239,16 @@ func (m *BACnetEventParameterBufferReady) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetEventParameterBufferReady"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterBufferReady")
 		}
 
 		// Simple Field (openingTag)
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
 		_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
 		if _openingTagErr != nil {
 			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -256,11 +256,11 @@ func (m *BACnetEventParameterBufferReady) Serialize(writeBuffer utils.WriteBuffe
 
 		// Simple Field (notificationThreshold)
 		if pushErr := writeBuffer.PushContext("notificationThreshold"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for notificationThreshold")
 		}
 		_notificationThresholdErr := m.NotificationThreshold.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("notificationThreshold"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for notificationThreshold")
 		}
 		if _notificationThresholdErr != nil {
 			return errors.Wrap(_notificationThresholdErr, "Error serializing 'notificationThreshold' field")
@@ -268,11 +268,11 @@ func (m *BACnetEventParameterBufferReady) Serialize(writeBuffer utils.WriteBuffe
 
 		// Simple Field (previousNotificationCount)
 		if pushErr := writeBuffer.PushContext("previousNotificationCount"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for previousNotificationCount")
 		}
 		_previousNotificationCountErr := m.PreviousNotificationCount.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("previousNotificationCount"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for previousNotificationCount")
 		}
 		if _previousNotificationCountErr != nil {
 			return errors.Wrap(_previousNotificationCountErr, "Error serializing 'previousNotificationCount' field")
@@ -280,18 +280,18 @@ func (m *BACnetEventParameterBufferReady) Serialize(writeBuffer utils.WriteBuffe
 
 		// Simple Field (closingTag)
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
 		_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
 		if _closingTagErr != nil {
 			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterBufferReady"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetEventParameterBufferReady")
 		}
 		return nil
 	}

@@ -120,7 +120,7 @@ func DeviceConfigurationAckDataBlockParse(readBuffer utils.ReadBuffer) (*DeviceC
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAckDataBlock"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DeviceConfigurationAckDataBlock")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -148,7 +148,7 @@ func DeviceConfigurationAckDataBlockParse(readBuffer utils.ReadBuffer) (*DeviceC
 
 	// Simple Field (status)
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
 	_status, _statusErr := StatusParse(readBuffer)
 	if _statusErr != nil {
@@ -156,11 +156,11 @@ func DeviceConfigurationAckDataBlockParse(readBuffer utils.ReadBuffer) (*DeviceC
 	}
 	status := _status
 	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for status")
 	}
 
 	if closeErr := readBuffer.CloseContext("DeviceConfigurationAckDataBlock"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DeviceConfigurationAckDataBlock")
 	}
 
 	// Create the instance
@@ -171,7 +171,7 @@ func (m *DeviceConfigurationAckDataBlock) Serialize(writeBuffer utils.WriteBuffe
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DeviceConfigurationAckDataBlock"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for DeviceConfigurationAckDataBlock")
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -197,18 +197,18 @@ func (m *DeviceConfigurationAckDataBlock) Serialize(writeBuffer utils.WriteBuffe
 
 	// Simple Field (status)
 	if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for status")
 	}
 	_statusErr := m.Status.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("status"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for status")
 	}
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DeviceConfigurationAckDataBlock"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for DeviceConfigurationAckDataBlock")
 	}
 	return nil
 }

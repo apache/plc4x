@@ -136,14 +136,14 @@ func SALDataParse(readBuffer utils.ReadBuffer) (*SALData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALData"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for SALData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (commandTypeContainer)
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
 	_commandTypeContainer, _commandTypeContainerErr := SALCommandTypeContainerParse(readBuffer)
 	if _commandTypeContainerErr != nil {
@@ -151,7 +151,7 @@ func SALDataParse(readBuffer utils.ReadBuffer) (*SALData, error) {
 	}
 	commandTypeContainer := _commandTypeContainer
 	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
 	}
 
 	// Virtual field
@@ -184,7 +184,7 @@ func SALDataParse(readBuffer utils.ReadBuffer) (*SALData, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("SALData"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for SALData")
 	}
 
 	// Finish initializing
@@ -200,16 +200,16 @@ func (m *SALData) SerializeParent(writeBuffer utils.WriteBuffer, child ISALData,
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SALData"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for SALData")
 	}
 
 	// Simple Field (commandTypeContainer)
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
 	_commandTypeContainerErr := m.CommandTypeContainer.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
 	if _commandTypeContainerErr != nil {
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
@@ -225,7 +225,7 @@ func (m *SALData) SerializeParent(writeBuffer utils.WriteBuffer, child ISALData,
 	}
 
 	if popErr := writeBuffer.PopContext("SALData"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for SALData")
 	}
 	return nil
 }

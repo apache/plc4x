@@ -111,14 +111,14 @@ func BACnetNameValueParse(readBuffer utils.ReadBuffer) (*BACnetNameValue, error)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNameValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNameValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (name)
 	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for name")
 	}
 	_name, _nameErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _nameErr != nil {
@@ -126,7 +126,7 @@ func BACnetNameValueParse(readBuffer utils.ReadBuffer) (*BACnetNameValue, error)
 	}
 	name := CastBACnetContextTagCharacterString(_name)
 	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for name")
 	}
 
 	// Optional Field (value) (Can be skipped, if a given expression evaluates to false)
@@ -134,7 +134,7 @@ func BACnetNameValueParse(readBuffer utils.ReadBuffer) (*BACnetNameValue, error)
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for value")
 		}
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(1), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
@@ -146,13 +146,13 @@ func BACnetNameValueParse(readBuffer utils.ReadBuffer) (*BACnetNameValue, error)
 		default:
 			value = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for value")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNameValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetNameValue")
 	}
 
 	// Create the instance
@@ -163,16 +163,16 @@ func (m *BACnetNameValue) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetNameValue"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetNameValue")
 	}
 
 	// Simple Field (name)
 	if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for name")
 	}
 	_nameErr := m.Name.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("name"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for name")
 	}
 	if _nameErr != nil {
 		return errors.Wrap(_nameErr, "Error serializing 'name' field")
@@ -182,12 +182,12 @@ func (m *BACnetNameValue) Serialize(writeBuffer utils.WriteBuffer) error {
 	var value *BACnetConstructedData = nil
 	if m.Value != nil {
 		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for value")
 		}
 		value = m.Value
 		_valueErr := value.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("value"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for value")
 		}
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
@@ -195,7 +195,7 @@ func (m *BACnetNameValue) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetNameValue"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetNameValue")
 	}
 	return nil
 }

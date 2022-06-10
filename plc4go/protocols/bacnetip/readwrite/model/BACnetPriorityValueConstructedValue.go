@@ -131,14 +131,14 @@ func BACnetPriorityValueConstructedValueParse(readBuffer utils.ReadBuffer, objec
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueConstructedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueConstructedValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (constructedValue)
 	if pullErr := readBuffer.PullContext("constructedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for constructedValue")
 	}
 	_constructedValue, _constructedValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _constructedValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetPriorityValueConstructedValueParse(readBuffer utils.ReadBuffer, objec
 	}
 	constructedValue := CastBACnetConstructedData(_constructedValue)
 	if closeErr := readBuffer.CloseContext("constructedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for constructedValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueConstructedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueConstructedValue")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetPriorityValueConstructedValue) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPriorityValueConstructedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueConstructedValue")
 		}
 
 		// Simple Field (constructedValue)
 		if pushErr := writeBuffer.PushContext("constructedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for constructedValue")
 		}
 		_constructedValueErr := m.ConstructedValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("constructedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for constructedValue")
 		}
 		if _constructedValueErr != nil {
 			return errors.Wrap(_constructedValueErr, "Error serializing 'constructedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueConstructedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPriorityValueConstructedValue")
 		}
 		return nil
 	}

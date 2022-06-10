@@ -103,7 +103,7 @@ func AdsDataParse(readBuffer utils.ReadBuffer, commandId CommandId, response boo
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsData"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AdsData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -165,7 +165,7 @@ func AdsDataParse(readBuffer utils.ReadBuffer, commandId CommandId, response boo
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsData"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AdsData")
 	}
 
 	// Finish initializing
@@ -181,7 +181,7 @@ func (m *AdsData) SerializeParent(writeBuffer utils.WriteBuffer, child IAdsData,
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsData"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AdsData")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -190,7 +190,7 @@ func (m *AdsData) SerializeParent(writeBuffer utils.WriteBuffer, child IAdsData,
 	}
 
 	if popErr := writeBuffer.PopContext("AdsData"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AdsData")
 	}
 	return nil
 }

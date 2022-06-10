@@ -148,7 +148,7 @@ func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer, res
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageSubscribeAnalogPinValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for FirmataMessageSubscribeAnalogPinValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -182,7 +182,7 @@ func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer, res
 	enable := _enable
 
 	if closeErr := readBuffer.CloseContext("FirmataMessageSubscribeAnalogPinValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for FirmataMessageSubscribeAnalogPinValue")
 	}
 
 	// Create a partially initialized instance
@@ -200,7 +200,7 @@ func (m *FirmataMessageSubscribeAnalogPinValue) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("FirmataMessageSubscribeAnalogPinValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for FirmataMessageSubscribeAnalogPinValue")
 		}
 
 		// Simple Field (pin)
@@ -226,7 +226,7 @@ func (m *FirmataMessageSubscribeAnalogPinValue) Serialize(writeBuffer utils.Writ
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataMessageSubscribeAnalogPinValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for FirmataMessageSubscribeAnalogPinValue")
 		}
 		return nil
 	}

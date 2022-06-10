@@ -130,7 +130,7 @@ func IdentifyReplyCommandFirmwareVersionParse(readBuffer utils.ReadBuffer, attri
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandFirmwareVersion"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandFirmwareVersion")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -143,7 +143,7 @@ func IdentifyReplyCommandFirmwareVersionParse(readBuffer utils.ReadBuffer, attri
 	firmwareVersion := _firmwareVersion
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandFirmwareVersion"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandFirmwareVersion")
 	}
 
 	// Create a partially initialized instance
@@ -160,7 +160,7 @@ func (m *IdentifyReplyCommandFirmwareVersion) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandFirmwareVersion"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandFirmwareVersion")
 		}
 
 		// Simple Field (firmwareVersion)
@@ -171,7 +171,7 @@ func (m *IdentifyReplyCommandFirmwareVersion) Serialize(writeBuffer utils.WriteB
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandFirmwareVersion"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for IdentifyReplyCommandFirmwareVersion")
 		}
 		return nil
 	}

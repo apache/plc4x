@@ -99,7 +99,7 @@ func MACAddressParse(readBuffer utils.ReadBuffer) (*MACAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MACAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for MACAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -111,7 +111,7 @@ func MACAddressParse(readBuffer utils.ReadBuffer) (*MACAddress, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("MACAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for MACAddress")
 	}
 
 	// Create the instance
@@ -122,7 +122,7 @@ func (m *MACAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("MACAddress"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for MACAddress")
 	}
 
 	// Array Field (addr)
@@ -135,7 +135,7 @@ func (m *MACAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("MACAddress"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for MACAddress")
 	}
 	return nil
 }

@@ -142,14 +142,14 @@ func BACnetConstructedDataRepresentsParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRepresents"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataRepresents")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (represents)
 	if pullErr := readBuffer.PullContext("represents"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for represents")
 	}
 	_represents, _representsErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _representsErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataRepresentsParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	represents := CastBACnetDeviceObjectReference(_represents)
 	if closeErr := readBuffer.CloseContext("represents"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for represents")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRepresents"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRepresents")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataRepresents) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataRepresents"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRepresents")
 		}
 
 		// Simple Field (represents)
 		if pushErr := writeBuffer.PushContext("represents"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for represents")
 		}
 		_representsErr := m.Represents.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("represents"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for represents")
 		}
 		if _representsErr != nil {
 			return errors.Wrap(_representsErr, "Error serializing 'represents' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRepresents"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataRepresents")
 		}
 		return nil
 	}

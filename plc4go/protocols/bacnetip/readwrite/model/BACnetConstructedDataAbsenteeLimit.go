@@ -142,14 +142,14 @@ func BACnetConstructedDataAbsenteeLimitParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAbsenteeLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAbsenteeLimit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (absenteeLimit)
 	if pullErr := readBuffer.PullContext("absenteeLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for absenteeLimit")
 	}
 	_absenteeLimit, _absenteeLimitErr := BACnetApplicationTagParse(readBuffer)
 	if _absenteeLimitErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAbsenteeLimitParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	absenteeLimit := CastBACnetApplicationTagUnsignedInteger(_absenteeLimit)
 	if closeErr := readBuffer.CloseContext("absenteeLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for absenteeLimit")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAbsenteeLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAbsenteeLimit")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAbsenteeLimit) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAbsenteeLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAbsenteeLimit")
 		}
 
 		// Simple Field (absenteeLimit)
 		if pushErr := writeBuffer.PushContext("absenteeLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for absenteeLimit")
 		}
 		_absenteeLimitErr := m.AbsenteeLimit.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("absenteeLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for absenteeLimit")
 		}
 		if _absenteeLimitErr != nil {
 			return errors.Wrap(_absenteeLimitErr, "Error serializing 'absenteeLimit' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAbsenteeLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAbsenteeLimit")
 		}
 		return nil
 	}

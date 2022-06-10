@@ -142,14 +142,14 @@ func BACnetConstructedDataOccupancyLowerLimitParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyLowerLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataOccupancyLowerLimit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (occupancyLowerLimit)
 	if pullErr := readBuffer.PullContext("occupancyLowerLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for occupancyLowerLimit")
 	}
 	_occupancyLowerLimit, _occupancyLowerLimitErr := BACnetApplicationTagParse(readBuffer)
 	if _occupancyLowerLimitErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataOccupancyLowerLimitParse(readBuffer utils.ReadBuffer, 
 	}
 	occupancyLowerLimit := CastBACnetApplicationTagUnsignedInteger(_occupancyLowerLimit)
 	if closeErr := readBuffer.CloseContext("occupancyLowerLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for occupancyLowerLimit")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOccupancyLowerLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOccupancyLowerLimit")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataOccupancyLowerLimit) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataOccupancyLowerLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOccupancyLowerLimit")
 		}
 
 		// Simple Field (occupancyLowerLimit)
 		if pushErr := writeBuffer.PushContext("occupancyLowerLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for occupancyLowerLimit")
 		}
 		_occupancyLowerLimitErr := m.OccupancyLowerLimit.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("occupancyLowerLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for occupancyLowerLimit")
 		}
 		if _occupancyLowerLimitErr != nil {
 			return errors.Wrap(_occupancyLowerLimitErr, "Error serializing 'occupancyLowerLimit' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataOccupancyLowerLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataOccupancyLowerLimit")
 		}
 		return nil
 	}

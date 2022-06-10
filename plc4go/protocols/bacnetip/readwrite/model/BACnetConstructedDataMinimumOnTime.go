@@ -142,14 +142,14 @@ func BACnetConstructedDataMinimumOnTimeParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumOnTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMinimumOnTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (minimumOnTime)
 	if pullErr := readBuffer.PullContext("minimumOnTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for minimumOnTime")
 	}
 	_minimumOnTime, _minimumOnTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _minimumOnTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataMinimumOnTimeParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	minimumOnTime := CastBACnetApplicationTagUnsignedInteger(_minimumOnTime)
 	if closeErr := readBuffer.CloseContext("minimumOnTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for minimumOnTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinimumOnTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMinimumOnTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataMinimumOnTime) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMinimumOnTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMinimumOnTime")
 		}
 
 		// Simple Field (minimumOnTime)
 		if pushErr := writeBuffer.PushContext("minimumOnTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for minimumOnTime")
 		}
 		_minimumOnTimeErr := m.MinimumOnTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("minimumOnTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for minimumOnTime")
 		}
 		if _minimumOnTimeErr != nil {
 			return errors.Wrap(_minimumOnTimeErr, "Error serializing 'minimumOnTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMinimumOnTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMinimumOnTime")
 		}
 		return nil
 	}

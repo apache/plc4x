@@ -137,14 +137,14 @@ func NLMWhoIsRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMWhoIsRouterToNetwork"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for NLMWhoIsRouterToNetwork")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (destinationNetworkAddress)
 	if pullErr := readBuffer.PullContext("destinationNetworkAddress", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for destinationNetworkAddress")
 	}
 	// Length array
 	destinationNetworkAddress := make([]uint16, 0)
@@ -160,11 +160,11 @@ func NLMWhoIsRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16
 		}
 	}
 	if closeErr := readBuffer.CloseContext("destinationNetworkAddress", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for destinationNetworkAddress")
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMWhoIsRouterToNetwork"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for NLMWhoIsRouterToNetwork")
 	}
 
 	// Create a partially initialized instance
@@ -181,13 +181,13 @@ func (m *NLMWhoIsRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("NLMWhoIsRouterToNetwork"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for NLMWhoIsRouterToNetwork")
 		}
 
 		// Array Field (destinationNetworkAddress)
 		if m.DestinationNetworkAddress != nil {
 			if pushErr := writeBuffer.PushContext("destinationNetworkAddress", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for destinationNetworkAddress")
 			}
 			for _, _element := range m.DestinationNetworkAddress {
 				_elementErr := writeBuffer.WriteUint16("", 16, _element)
@@ -196,12 +196,12 @@ func (m *NLMWhoIsRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error
 				}
 			}
 			if popErr := writeBuffer.PopContext("destinationNetworkAddress", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for destinationNetworkAddress")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("NLMWhoIsRouterToNetwork"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for NLMWhoIsRouterToNetwork")
 		}
 		return nil
 	}

@@ -149,7 +149,7 @@ func ModbusPDUWriteSingleCoilResponseParse(readBuffer utils.ReadBuffer, response
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteSingleCoilResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUWriteSingleCoilResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -169,7 +169,7 @@ func ModbusPDUWriteSingleCoilResponseParse(readBuffer utils.ReadBuffer, response
 	value := _value
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUWriteSingleCoilResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUWriteSingleCoilResponse")
 	}
 
 	// Create a partially initialized instance
@@ -187,7 +187,7 @@ func (m *ModbusPDUWriteSingleCoilResponse) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUWriteSingleCoilResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusPDUWriteSingleCoilResponse")
 		}
 
 		// Simple Field (address)
@@ -205,7 +205,7 @@ func (m *ModbusPDUWriteSingleCoilResponse) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUWriteSingleCoilResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusPDUWriteSingleCoilResponse")
 		}
 		return nil
 	}

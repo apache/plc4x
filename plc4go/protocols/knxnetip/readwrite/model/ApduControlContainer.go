@@ -136,14 +136,14 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlContainer"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ApduControlContainer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (controlApdu)
 	if pullErr := readBuffer.PullContext("controlApdu"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for controlApdu")
 	}
 	_controlApdu, _controlApduErr := ApduControlParse(readBuffer)
 	if _controlApduErr != nil {
@@ -151,11 +151,11 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*
 	}
 	controlApdu := CastApduControl(_controlApdu)
 	if closeErr := readBuffer.CloseContext("controlApdu"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for controlApdu")
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduControlContainer"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ApduControlContainer")
 	}
 
 	// Create a partially initialized instance
@@ -172,23 +172,23 @@ func (m *ApduControlContainer) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduControlContainer"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ApduControlContainer")
 		}
 
 		// Simple Field (controlApdu)
 		if pushErr := writeBuffer.PushContext("controlApdu"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for controlApdu")
 		}
 		_controlApduErr := m.ControlApdu.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("controlApdu"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for controlApdu")
 		}
 		if _controlApduErr != nil {
 			return errors.Wrap(_controlApduErr, "Error serializing 'controlApdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduControlContainer"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ApduControlContainer")
 		}
 		return nil
 	}

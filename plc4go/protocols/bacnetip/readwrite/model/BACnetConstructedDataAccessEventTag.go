@@ -142,14 +142,14 @@ func BACnetConstructedDataAccessEventTagParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessEventTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccessEventTag")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (accessEventTag)
 	if pullErr := readBuffer.PullContext("accessEventTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for accessEventTag")
 	}
 	_accessEventTag, _accessEventTagErr := BACnetApplicationTagParse(readBuffer)
 	if _accessEventTagErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAccessEventTagParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	accessEventTag := CastBACnetApplicationTagUnsignedInteger(_accessEventTag)
 	if closeErr := readBuffer.CloseContext("accessEventTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for accessEventTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessEventTag")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAccessEventTag) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAccessEventTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccessEventTag")
 		}
 
 		// Simple Field (accessEventTag)
 		if pushErr := writeBuffer.PushContext("accessEventTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for accessEventTag")
 		}
 		_accessEventTagErr := m.AccessEventTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("accessEventTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for accessEventTag")
 		}
 		if _accessEventTagErr != nil {
 			return errors.Wrap(_accessEventTagErr, "Error serializing 'accessEventTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessEventTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAccessEventTag")
 		}
 		return nil
 	}

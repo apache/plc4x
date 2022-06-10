@@ -171,14 +171,14 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWriteGroup"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetUnconfirmedServiceRequestWriteGroup")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (groupNumber)
 	if pullErr := readBuffer.PullContext("groupNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for groupNumber")
 	}
 	_groupNumber, _groupNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _groupNumberErr != nil {
@@ -186,12 +186,12 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 	}
 	groupNumber := CastBACnetContextTagUnsignedInteger(_groupNumber)
 	if closeErr := readBuffer.CloseContext("groupNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for groupNumber")
 	}
 
 	// Simple Field (writePriority)
 	if pullErr := readBuffer.PullContext("writePriority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for writePriority")
 	}
 	_writePriority, _writePriorityErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _writePriorityErr != nil {
@@ -199,12 +199,12 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 	}
 	writePriority := CastBACnetContextTagUnsignedInteger(_writePriority)
 	if closeErr := readBuffer.CloseContext("writePriority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for writePriority")
 	}
 
 	// Simple Field (changeList)
 	if pullErr := readBuffer.PullContext("changeList"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for changeList")
 	}
 	_changeList, _changeListErr := BACnetGroupChannelValueListParse(readBuffer, uint8(uint8(2)))
 	if _changeListErr != nil {
@@ -212,7 +212,7 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 	}
 	changeList := CastBACnetGroupChannelValueList(_changeList)
 	if closeErr := readBuffer.CloseContext("changeList"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for changeList")
 	}
 
 	// Optional Field (inhibitDelay) (Can be skipped, if a given expression evaluates to false)
@@ -220,7 +220,7 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("inhibitDelay"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for inhibitDelay")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
@@ -232,13 +232,13 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 		default:
 			inhibitDelay = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("inhibitDelay"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for inhibitDelay")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestWriteGroup"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetUnconfirmedServiceRequestWriteGroup")
 	}
 
 	// Create a partially initialized instance
@@ -258,16 +258,16 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetUnconfirmedServiceRequestWriteGroup"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestWriteGroup")
 		}
 
 		// Simple Field (groupNumber)
 		if pushErr := writeBuffer.PushContext("groupNumber"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for groupNumber")
 		}
 		_groupNumberErr := m.GroupNumber.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("groupNumber"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for groupNumber")
 		}
 		if _groupNumberErr != nil {
 			return errors.Wrap(_groupNumberErr, "Error serializing 'groupNumber' field")
@@ -275,11 +275,11 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils.
 
 		// Simple Field (writePriority)
 		if pushErr := writeBuffer.PushContext("writePriority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for writePriority")
 		}
 		_writePriorityErr := m.WritePriority.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("writePriority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for writePriority")
 		}
 		if _writePriorityErr != nil {
 			return errors.Wrap(_writePriorityErr, "Error serializing 'writePriority' field")
@@ -287,11 +287,11 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils.
 
 		// Simple Field (changeList)
 		if pushErr := writeBuffer.PushContext("changeList"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for changeList")
 		}
 		_changeListErr := m.ChangeList.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("changeList"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for changeList")
 		}
 		if _changeListErr != nil {
 			return errors.Wrap(_changeListErr, "Error serializing 'changeList' field")
@@ -301,12 +301,12 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils.
 		var inhibitDelay *BACnetContextTagUnsignedInteger = nil
 		if m.InhibitDelay != nil {
 			if pushErr := writeBuffer.PushContext("inhibitDelay"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for inhibitDelay")
 			}
 			inhibitDelay = m.InhibitDelay
 			_inhibitDelayErr := inhibitDelay.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("inhibitDelay"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for inhibitDelay")
 			}
 			if _inhibitDelayErr != nil {
 				return errors.Wrap(_inhibitDelayErr, "Error serializing 'inhibitDelay' field")
@@ -314,7 +314,7 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils.
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestWriteGroup"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetUnconfirmedServiceRequestWriteGroup")
 		}
 		return nil
 	}

@@ -180,7 +180,7 @@ func BACnetConstructedDataValueSourceArrayParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValueSourceArray"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataValueSourceArray")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -195,7 +195,7 @@ func BACnetConstructedDataValueSourceArrayParse(readBuffer utils.ReadBuffer, tag
 	if bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
@@ -207,14 +207,14 @@ func BACnetConstructedDataValueSourceArrayParse(readBuffer utils.ReadBuffer, tag
 		default:
 			numberOfDataElements = CastBACnetApplicationTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for numberOfDataElements")
 			}
 		}
 	}
 
 	// Array field (vtClassesSupported)
 	if pullErr := readBuffer.PullContext("vtClassesSupported", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for vtClassesSupported")
 	}
 	// Terminated array
 	vtClassesSupported := make([]*BACnetValueSource, 0)
@@ -229,16 +229,16 @@ func BACnetConstructedDataValueSourceArrayParse(readBuffer utils.ReadBuffer, tag
 		}
 	}
 	if closeErr := readBuffer.CloseContext("vtClassesSupported", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for vtClassesSupported")
 	}
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(vtClassesSupported)) == (16)))) {
-		return nil, utils.ParseValidationError{"vtClassesSupported should have exactly 16 values"}
+		return nil, errors.WithStack(utils.ParseValidationError{"vtClassesSupported should have exactly 16 values"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueSourceArray"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueSourceArray")
 	}
 
 	// Create a partially initialized instance
@@ -256,7 +256,7 @@ func (m *BACnetConstructedDataValueSourceArray) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataValueSourceArray"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataValueSourceArray")
 		}
 		// Virtual field
 		if _zeroErr := writeBuffer.WriteVirtual("zero", m.GetZero()); _zeroErr != nil {
@@ -267,12 +267,12 @@ func (m *BACnetConstructedDataValueSourceArray) Serialize(writeBuffer utils.Writ
 		var numberOfDataElements *BACnetApplicationTagUnsignedInteger = nil
 		if m.NumberOfDataElements != nil {
 			if pushErr := writeBuffer.PushContext("numberOfDataElements"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
 			}
 			numberOfDataElements = m.NumberOfDataElements
 			_numberOfDataElementsErr := numberOfDataElements.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for numberOfDataElements")
 			}
 			if _numberOfDataElementsErr != nil {
 				return errors.Wrap(_numberOfDataElementsErr, "Error serializing 'numberOfDataElements' field")
@@ -282,7 +282,7 @@ func (m *BACnetConstructedDataValueSourceArray) Serialize(writeBuffer utils.Writ
 		// Array Field (vtClassesSupported)
 		if m.VtClassesSupported != nil {
 			if pushErr := writeBuffer.PushContext("vtClassesSupported", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for vtClassesSupported")
 			}
 			for _, _element := range m.VtClassesSupported {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -291,12 +291,12 @@ func (m *BACnetConstructedDataValueSourceArray) Serialize(writeBuffer utils.Writ
 				}
 			}
 			if popErr := writeBuffer.PopContext("vtClassesSupported", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for vtClassesSupported")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataValueSourceArray"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataValueSourceArray")
 		}
 		return nil
 	}

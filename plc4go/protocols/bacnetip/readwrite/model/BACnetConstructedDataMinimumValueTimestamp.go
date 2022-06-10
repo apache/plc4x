@@ -142,14 +142,14 @@ func BACnetConstructedDataMinimumValueTimestampParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumValueTimestamp"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMinimumValueTimestamp")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (minimumValueTimestamp)
 	if pullErr := readBuffer.PullContext("minimumValueTimestamp"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for minimumValueTimestamp")
 	}
 	_minimumValueTimestamp, _minimumValueTimestampErr := BACnetDateTimeParse(readBuffer)
 	if _minimumValueTimestampErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataMinimumValueTimestampParse(readBuffer utils.ReadBuffer
 	}
 	minimumValueTimestamp := CastBACnetDateTime(_minimumValueTimestamp)
 	if closeErr := readBuffer.CloseContext("minimumValueTimestamp"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for minimumValueTimestamp")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinimumValueTimestamp"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMinimumValueTimestamp")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataMinimumValueTimestamp) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMinimumValueTimestamp"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMinimumValueTimestamp")
 		}
 
 		// Simple Field (minimumValueTimestamp)
 		if pushErr := writeBuffer.PushContext("minimumValueTimestamp"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for minimumValueTimestamp")
 		}
 		_minimumValueTimestampErr := m.MinimumValueTimestamp.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("minimumValueTimestamp"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for minimumValueTimestamp")
 		}
 		if _minimumValueTimestampErr != nil {
 			return errors.Wrap(_minimumValueTimestampErr, "Error serializing 'minimumValueTimestamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMinimumValueTimestamp"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMinimumValueTimestamp")
 		}
 		return nil
 	}

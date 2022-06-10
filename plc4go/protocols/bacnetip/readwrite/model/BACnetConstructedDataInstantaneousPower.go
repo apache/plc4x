@@ -142,14 +142,14 @@ func BACnetConstructedDataInstantaneousPowerParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInstantaneousPower"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataInstantaneousPower")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (instantaneousPower)
 	if pullErr := readBuffer.PullContext("instantaneousPower"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for instantaneousPower")
 	}
 	_instantaneousPower, _instantaneousPowerErr := BACnetApplicationTagParse(readBuffer)
 	if _instantaneousPowerErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataInstantaneousPowerParse(readBuffer utils.ReadBuffer, t
 	}
 	instantaneousPower := CastBACnetApplicationTagReal(_instantaneousPower)
 	if closeErr := readBuffer.CloseContext("instantaneousPower"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for instantaneousPower")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInstantaneousPower"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInstantaneousPower")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataInstantaneousPower) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataInstantaneousPower"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInstantaneousPower")
 		}
 
 		// Simple Field (instantaneousPower)
 		if pushErr := writeBuffer.PushContext("instantaneousPower"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for instantaneousPower")
 		}
 		_instantaneousPowerErr := m.InstantaneousPower.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("instantaneousPower"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for instantaneousPower")
 		}
 		if _instantaneousPowerErr != nil {
 			return errors.Wrap(_instantaneousPowerErr, "Error serializing 'instantaneousPower' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInstantaneousPower"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataInstantaneousPower")
 		}
 		return nil
 	}

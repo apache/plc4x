@@ -142,14 +142,14 @@ func BACnetConstructedDataFailedAttemptsTimeParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFailedAttemptsTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFailedAttemptsTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (failedAttemptsTime)
 	if pullErr := readBuffer.PullContext("failedAttemptsTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for failedAttemptsTime")
 	}
 	_failedAttemptsTime, _failedAttemptsTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _failedAttemptsTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataFailedAttemptsTimeParse(readBuffer utils.ReadBuffer, t
 	}
 	failedAttemptsTime := CastBACnetApplicationTagUnsignedInteger(_failedAttemptsTime)
 	if closeErr := readBuffer.CloseContext("failedAttemptsTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for failedAttemptsTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFailedAttemptsTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFailedAttemptsTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataFailedAttemptsTime) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataFailedAttemptsTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFailedAttemptsTime")
 		}
 
 		// Simple Field (failedAttemptsTime)
 		if pushErr := writeBuffer.PushContext("failedAttemptsTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for failedAttemptsTime")
 		}
 		_failedAttemptsTimeErr := m.FailedAttemptsTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("failedAttemptsTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for failedAttemptsTime")
 		}
 		if _failedAttemptsTimeErr != nil {
 			return errors.Wrap(_failedAttemptsTimeErr, "Error serializing 'failedAttemptsTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFailedAttemptsTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataFailedAttemptsTime")
 		}
 		return nil
 	}

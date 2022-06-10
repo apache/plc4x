@@ -145,14 +145,14 @@ func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFile"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestAtomicReadFile")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (fileIdentifier)
 	if pullErr := readBuffer.PullContext("fileIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for fileIdentifier")
 	}
 	_fileIdentifier, _fileIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _fileIdentifierErr != nil {
@@ -160,12 +160,12 @@ func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffe
 	}
 	fileIdentifier := CastBACnetApplicationTagObjectIdentifier(_fileIdentifier)
 	if closeErr := readBuffer.CloseContext("fileIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for fileIdentifier")
 	}
 
 	// Simple Field (accessMethod)
 	if pullErr := readBuffer.PullContext("accessMethod"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for accessMethod")
 	}
 	_accessMethod, _accessMethodErr := BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer)
 	if _accessMethodErr != nil {
@@ -173,11 +173,11 @@ func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffe
 	}
 	accessMethod := CastBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(_accessMethod)
 	if closeErr := readBuffer.CloseContext("accessMethod"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for accessMethod")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestAtomicReadFile"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestAtomicReadFile")
 	}
 
 	// Create a partially initialized instance
@@ -195,16 +195,16 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFile) Serialize(writeBuffer util
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestAtomicReadFile"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestAtomicReadFile")
 		}
 
 		// Simple Field (fileIdentifier)
 		if pushErr := writeBuffer.PushContext("fileIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for fileIdentifier")
 		}
 		_fileIdentifierErr := m.FileIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("fileIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for fileIdentifier")
 		}
 		if _fileIdentifierErr != nil {
 			return errors.Wrap(_fileIdentifierErr, "Error serializing 'fileIdentifier' field")
@@ -212,18 +212,18 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFile) Serialize(writeBuffer util
 
 		// Simple Field (accessMethod)
 		if pushErr := writeBuffer.PushContext("accessMethod"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for accessMethod")
 		}
 		_accessMethodErr := m.AccessMethod.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("accessMethod"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for accessMethod")
 		}
 		if _accessMethodErr != nil {
 			return errors.Wrap(_accessMethodErr, "Error serializing 'accessMethod' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestAtomicReadFile"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestAtomicReadFile")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataBACnetIPNATTraversalParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPNATTraversal"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBACnetIPNATTraversal")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bacnetIPNATTraversal)
 	if pullErr := readBuffer.PullContext("bacnetIPNATTraversal"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIPNATTraversal")
 	}
 	_bacnetIPNATTraversal, _bacnetIPNATTraversalErr := BACnetApplicationTagParse(readBuffer)
 	if _bacnetIPNATTraversalErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBACnetIPNATTraversalParse(readBuffer utils.ReadBuffer,
 	}
 	bacnetIPNATTraversal := CastBACnetApplicationTagBoolean(_bacnetIPNATTraversal)
 	if closeErr := readBuffer.CloseContext("bacnetIPNATTraversal"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bacnetIPNATTraversal")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPNATTraversal"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPNATTraversal")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBACnetIPNATTraversal) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBACnetIPNATTraversal"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBACnetIPNATTraversal")
 		}
 
 		// Simple Field (bacnetIPNATTraversal)
 		if pushErr := writeBuffer.PushContext("bacnetIPNATTraversal"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for bacnetIPNATTraversal")
 		}
 		_bacnetIPNATTraversalErr := m.BacnetIPNATTraversal.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("bacnetIPNATTraversal"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for bacnetIPNATTraversal")
 		}
 		if _bacnetIPNATTraversalErr != nil {
 			return errors.Wrap(_bacnetIPNATTraversalErr, "Error serializing 'bacnetIPNATTraversal' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBACnetIPNATTraversal"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBACnetIPNATTraversal")
 		}
 		return nil
 	}

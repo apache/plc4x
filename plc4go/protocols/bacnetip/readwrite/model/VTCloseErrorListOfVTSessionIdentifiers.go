@@ -124,14 +124,14 @@ func VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VTCloseErrorListOfVTSessionIdentifiers"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for VTCloseErrorListOfVTSessionIdentifiers")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
@@ -139,12 +139,12 @@ func VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer utils.ReadBuffer, ta
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Array field (listOfVtSessionIdentifiers)
 	if pullErr := readBuffer.PullContext("listOfVtSessionIdentifiers", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for listOfVtSessionIdentifiers")
 	}
 	// Terminated array
 	listOfVtSessionIdentifiers := make([]*BACnetApplicationTagUnsignedInteger, 0)
@@ -159,12 +159,12 @@ func VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer utils.ReadBuffer, ta
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listOfVtSessionIdentifiers", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for listOfVtSessionIdentifiers")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
@@ -172,11 +172,11 @@ func VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer utils.ReadBuffer, ta
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("VTCloseErrorListOfVTSessionIdentifiers"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for VTCloseErrorListOfVTSessionIdentifiers")
 	}
 
 	// Create the instance
@@ -187,16 +187,16 @@ func (m *VTCloseErrorListOfVTSessionIdentifiers) Serialize(writeBuffer utils.Wri
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("VTCloseErrorListOfVTSessionIdentifiers"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for VTCloseErrorListOfVTSessionIdentifiers")
 	}
 
 	// Simple Field (openingTag)
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
 	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -205,7 +205,7 @@ func (m *VTCloseErrorListOfVTSessionIdentifiers) Serialize(writeBuffer utils.Wri
 	// Array Field (listOfVtSessionIdentifiers)
 	if m.ListOfVtSessionIdentifiers != nil {
 		if pushErr := writeBuffer.PushContext("listOfVtSessionIdentifiers", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for listOfVtSessionIdentifiers")
 		}
 		for _, _element := range m.ListOfVtSessionIdentifiers {
 			_elementErr := _element.Serialize(writeBuffer)
@@ -214,24 +214,24 @@ func (m *VTCloseErrorListOfVTSessionIdentifiers) Serialize(writeBuffer utils.Wri
 			}
 		}
 		if popErr := writeBuffer.PopContext("listOfVtSessionIdentifiers", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for listOfVtSessionIdentifiers")
 		}
 	}
 
 	// Simple Field (closingTag)
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
 	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("VTCloseErrorListOfVTSessionIdentifiers"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for VTCloseErrorListOfVTSessionIdentifiers")
 	}
 	return nil
 }

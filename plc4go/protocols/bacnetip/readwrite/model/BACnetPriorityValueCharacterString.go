@@ -131,14 +131,14 @@ func BACnetPriorityValueCharacterStringParse(readBuffer utils.ReadBuffer, object
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueCharacterString"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueCharacterString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (characterStringValue)
 	if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for characterStringValue")
 	}
 	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParse(readBuffer)
 	if _characterStringValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetPriorityValueCharacterStringParse(readBuffer utils.ReadBuffer, object
 	}
 	characterStringValue := CastBACnetApplicationTagCharacterString(_characterStringValue)
 	if closeErr := readBuffer.CloseContext("characterStringValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for characterStringValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueCharacterString"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueCharacterString")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetPriorityValueCharacterString) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPriorityValueCharacterString"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueCharacterString")
 		}
 
 		// Simple Field (characterStringValue)
 		if pushErr := writeBuffer.PushContext("characterStringValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for characterStringValue")
 		}
 		_characterStringValueErr := m.CharacterStringValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("characterStringValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for characterStringValue")
 		}
 		if _characterStringValueErr != nil {
 			return errors.Wrap(_characterStringValueErr, "Error serializing 'characterStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueCharacterString"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPriorityValueCharacterString")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataVendorNameParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVendorName"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataVendorName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (vendorName)
 	if pullErr := readBuffer.PullContext("vendorName"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for vendorName")
 	}
 	_vendorName, _vendorNameErr := BACnetApplicationTagParse(readBuffer)
 	if _vendorNameErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataVendorNameParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	vendorName := CastBACnetApplicationTagCharacterString(_vendorName)
 	if closeErr := readBuffer.CloseContext("vendorName"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for vendorName")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVendorName"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataVendorName")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataVendorName) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataVendorName"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataVendorName")
 		}
 
 		// Simple Field (vendorName)
 		if pushErr := writeBuffer.PushContext("vendorName"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for vendorName")
 		}
 		_vendorNameErr := m.VendorName.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("vendorName"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for vendorName")
 		}
 		if _vendorNameErr != nil {
 			return errors.Wrap(_vendorNameErr, "Error serializing 'vendorName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataVendorName"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataVendorName")
 		}
 		return nil
 	}

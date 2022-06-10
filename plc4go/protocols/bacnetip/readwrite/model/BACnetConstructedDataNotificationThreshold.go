@@ -142,14 +142,14 @@ func BACnetConstructedDataNotificationThresholdParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotificationThreshold"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNotificationThreshold")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (notificationThreshold)
 	if pullErr := readBuffer.PullContext("notificationThreshold"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for notificationThreshold")
 	}
 	_notificationThreshold, _notificationThresholdErr := BACnetApplicationTagParse(readBuffer)
 	if _notificationThresholdErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataNotificationThresholdParse(readBuffer utils.ReadBuffer
 	}
 	notificationThreshold := CastBACnetApplicationTagUnsignedInteger(_notificationThreshold)
 	if closeErr := readBuffer.CloseContext("notificationThreshold"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for notificationThreshold")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNotificationThreshold"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNotificationThreshold")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataNotificationThreshold) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataNotificationThreshold"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNotificationThreshold")
 		}
 
 		// Simple Field (notificationThreshold)
 		if pushErr := writeBuffer.PushContext("notificationThreshold"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for notificationThreshold")
 		}
 		_notificationThresholdErr := m.NotificationThreshold.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("notificationThreshold"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for notificationThreshold")
 		}
 		if _notificationThresholdErr != nil {
 			return errors.Wrap(_notificationThresholdErr, "Error serializing 'notificationThreshold' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNotificationThreshold"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataNotificationThreshold")
 		}
 		return nil
 	}

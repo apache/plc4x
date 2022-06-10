@@ -107,14 +107,14 @@ func BACnetLogMultipleRecordParse(readBuffer utils.ReadBuffer) (*BACnetLogMultip
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogMultipleRecord"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogMultipleRecord")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timestamp)
 	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
 	}
 	_timestamp, _timestampErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _timestampErr != nil {
@@ -122,12 +122,12 @@ func BACnetLogMultipleRecordParse(readBuffer utils.ReadBuffer) (*BACnetLogMultip
 	}
 	timestamp := CastBACnetDateTimeEnclosed(_timestamp)
 	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timestamp")
 	}
 
 	// Simple Field (logData)
 	if pullErr := readBuffer.PullContext("logData"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for logData")
 	}
 	_logData, _logDataErr := BACnetLogDataParse(readBuffer, uint8(uint8(1)))
 	if _logDataErr != nil {
@@ -135,11 +135,11 @@ func BACnetLogMultipleRecordParse(readBuffer utils.ReadBuffer) (*BACnetLogMultip
 	}
 	logData := CastBACnetLogData(_logData)
 	if closeErr := readBuffer.CloseContext("logData"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for logData")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogMultipleRecord"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogMultipleRecord")
 	}
 
 	// Create the instance
@@ -150,16 +150,16 @@ func (m *BACnetLogMultipleRecord) Serialize(writeBuffer utils.WriteBuffer) error
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLogMultipleRecord"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetLogMultipleRecord")
 	}
 
 	// Simple Field (timestamp)
 	if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for timestamp")
 	}
 	_timestampErr := m.Timestamp.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for timestamp")
 	}
 	if _timestampErr != nil {
 		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
@@ -167,18 +167,18 @@ func (m *BACnetLogMultipleRecord) Serialize(writeBuffer utils.WriteBuffer) error
 
 	// Simple Field (logData)
 	if pushErr := writeBuffer.PushContext("logData"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for logData")
 	}
 	_logDataErr := m.LogData.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("logData"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for logData")
 	}
 	if _logDataErr != nil {
 		return errors.Wrap(_logDataErr, "Error serializing 'logData' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLogMultipleRecord"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetLogMultipleRecord")
 	}
 	return nil
 }

@@ -206,7 +206,7 @@ func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationBusmonitorInfo"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CEMIAdditionalInformationBusmonitorInfo")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -263,7 +263,7 @@ func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (
 	sequenceNumber := _sequenceNumber
 
 	if closeErr := readBuffer.CloseContext("CEMIAdditionalInformationBusmonitorInfo"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CEMIAdditionalInformationBusmonitorInfo")
 	}
 
 	// Create a partially initialized instance
@@ -285,7 +285,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CEMIAdditionalInformationBusmonitorInfo"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CEMIAdditionalInformationBusmonitorInfo")
 		}
 
 		// Const Field (len)
@@ -337,7 +337,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(writeBuffer utils.Wr
 		}
 
 		if popErr := writeBuffer.PopContext("CEMIAdditionalInformationBusmonitorInfo"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CEMIAdditionalInformationBusmonitorInfo")
 		}
 		return nil
 	}

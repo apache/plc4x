@@ -160,7 +160,7 @@ func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterSetupCommunication"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterSetupCommunication")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -201,7 +201,7 @@ func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType
 	pduLength := _pduLength
 
 	if closeErr := readBuffer.CloseContext("S7ParameterSetupCommunication"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterSetupCommunication")
 	}
 
 	// Create a partially initialized instance
@@ -220,7 +220,7 @@ func (m *S7ParameterSetupCommunication) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7ParameterSetupCommunication"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7ParameterSetupCommunication")
 		}
 
 		// Reserved Field (reserved)
@@ -253,7 +253,7 @@ func (m *S7ParameterSetupCommunication) Serialize(writeBuffer utils.WriteBuffer)
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterSetupCommunication"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7ParameterSetupCommunication")
 		}
 		return nil
 	}

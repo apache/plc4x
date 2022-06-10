@@ -143,7 +143,7 @@ func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipConnectionReque
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipConnectionRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for EipConnectionRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -167,7 +167,7 @@ func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipConnectionReque
 	}
 
 	if closeErr := readBuffer.CloseContext("EipConnectionRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for EipConnectionRequest")
 	}
 
 	// Create a partially initialized instance
@@ -183,7 +183,7 @@ func (m *EipConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("EipConnectionRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for EipConnectionRequest")
 		}
 
 		// Const Field (protocolVersion)
@@ -199,7 +199,7 @@ func (m *EipConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("EipConnectionRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for EipConnectionRequest")
 		}
 		return nil
 	}

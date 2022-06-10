@@ -136,7 +136,7 @@ func BACnetServiceAckRequestKeyParse(readBuffer utils.ReadBuffer, serviceAckLeng
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRequestKey"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckRequestKey")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -148,7 +148,7 @@ func BACnetServiceAckRequestKeyParse(readBuffer utils.ReadBuffer, serviceAckLeng
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckRequestKey"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckRequestKey")
 	}
 
 	// Create a partially initialized instance
@@ -165,7 +165,7 @@ func (m *BACnetServiceAckRequestKey) Serialize(writeBuffer utils.WriteBuffer) er
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckRequestKey"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckRequestKey")
 		}
 
 		// Array Field (bytesOfRemovedService)
@@ -178,7 +178,7 @@ func (m *BACnetServiceAckRequestKey) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckRequestKey"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetServiceAckRequestKey")
 		}
 		return nil
 	}

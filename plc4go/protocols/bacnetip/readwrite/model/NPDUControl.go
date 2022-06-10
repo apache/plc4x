@@ -144,7 +144,7 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (*NPDUControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NPDUControl"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for NPDUControl")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -207,7 +207,7 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (*NPDUControl, error) {
 
 	// Simple Field (networkPriority)
 	if pullErr := readBuffer.PullContext("networkPriority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for networkPriority")
 	}
 	_networkPriority, _networkPriorityErr := NPDUNetworkPriorityParse(readBuffer)
 	if _networkPriorityErr != nil {
@@ -215,11 +215,11 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (*NPDUControl, error) {
 	}
 	networkPriority := _networkPriority
 	if closeErr := readBuffer.CloseContext("networkPriority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for networkPriority")
 	}
 
 	if closeErr := readBuffer.CloseContext("NPDUControl"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for NPDUControl")
 	}
 
 	// Create the instance
@@ -230,7 +230,7 @@ func (m *NPDUControl) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NPDUControl"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for NPDUControl")
 	}
 
 	// Simple Field (messageTypeFieldPresent)
@@ -279,18 +279,18 @@ func (m *NPDUControl) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (networkPriority)
 	if pushErr := writeBuffer.PushContext("networkPriority"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for networkPriority")
 	}
 	_networkPriorityErr := m.NetworkPriority.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("networkPriority"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for networkPriority")
 	}
 	if _networkPriorityErr != nil {
 		return errors.Wrap(_networkPriorityErr, "Error serializing 'networkPriority' field")
 	}
 
 	if popErr := writeBuffer.PopContext("NPDUControl"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for NPDUControl")
 	}
 	return nil
 }

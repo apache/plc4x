@@ -128,14 +128,14 @@ func BACnetPropertyStatesLiftFaultParse(readBuffer utils.ReadBuffer, peekedTagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftFault"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLiftFault")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (liftFault)
 	if pullErr := readBuffer.PullContext("liftFault"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for liftFault")
 	}
 	_liftFault, _liftFaultErr := BACnetLiftFaultTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftFaultErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesLiftFaultParse(readBuffer utils.ReadBuffer, peekedTagNu
 	}
 	liftFault := CastBACnetLiftFaultTagged(_liftFault)
 	if closeErr := readBuffer.CloseContext("liftFault"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for liftFault")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftFault"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLiftFault")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesLiftFault) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesLiftFault"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftFault")
 		}
 
 		// Simple Field (liftFault)
 		if pushErr := writeBuffer.PushContext("liftFault"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for liftFault")
 		}
 		_liftFaultErr := m.LiftFault.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("liftFault"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for liftFault")
 		}
 		if _liftFaultErr != nil {
 			return errors.Wrap(_liftFaultErr, "Error serializing 'liftFault' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftFault"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesLiftFault")
 		}
 		return nil
 	}

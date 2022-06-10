@@ -295,7 +295,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NPDU"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for NPDU")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -309,7 +309,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 
 	// Simple Field (control)
 	if pullErr := readBuffer.PullContext("control"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for control")
 	}
 	_control, _controlErr := NPDUControlParse(readBuffer)
 	if _controlErr != nil {
@@ -317,7 +317,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 	control := CastNPDUControl(_control)
 	if closeErr := readBuffer.CloseContext("control"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for control")
 	}
 
 	// Optional Field (destinationNetworkAddress) (Can be skipped, if a given expression evaluates to false)
@@ -342,7 +342,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 
 	// Array field (destinationAddress)
 	if pullErr := readBuffer.PullContext("destinationAddress", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for destinationAddress")
 	}
 	// Count array
 	destinationAddress := make([]uint8, utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
@@ -356,7 +356,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 	}
 	if closeErr := readBuffer.CloseContext("destinationAddress", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for destinationAddress")
 	}
 
 	// Virtual field
@@ -386,7 +386,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 
 	// Array field (sourceAddress)
 	if pullErr := readBuffer.PullContext("sourceAddress", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
 	}
 	// Count array
 	sourceAddress := make([]uint8, utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
@@ -400,7 +400,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 	}
 	if closeErr := readBuffer.CloseContext("sourceAddress", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for sourceAddress")
 	}
 
 	// Virtual field
@@ -428,7 +428,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	if control.GetMessageTypeFieldPresent() {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("nlm"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for nlm")
 		}
 		_val, _err := NLMParse(readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
 		switch {
@@ -440,7 +440,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		default:
 			nlm = CastNLM(_val)
 			if closeErr := readBuffer.CloseContext("nlm"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for nlm")
 			}
 		}
 	}
@@ -450,7 +450,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	if !(control.GetMessageTypeFieldPresent()) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for apdu")
 		}
 		_val, _err := APDUParse(readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
 		switch {
@@ -462,18 +462,18 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		default:
 			apdu = CastAPDU(_val)
 			if closeErr := readBuffer.CloseContext("apdu"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for apdu")
 			}
 		}
 	}
 
 	// Validation
 	if !(bool(bool((nlm) != (nil))) || bool(bool((apdu) != (nil)))) {
-		return nil, utils.ParseValidationError{"something is wrong here... apdu and nlm not set"}
+		return nil, errors.WithStack(utils.ParseValidationError{"something is wrong here... apdu and nlm not set"})
 	}
 
 	if closeErr := readBuffer.CloseContext("NPDU"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for NPDU")
 	}
 
 	// Create the instance
@@ -484,7 +484,7 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NPDU"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for NPDU")
 	}
 
 	// Simple Field (protocolVersionNumber)
@@ -496,11 +496,11 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (control)
 	if pushErr := writeBuffer.PushContext("control"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for control")
 	}
 	_controlErr := m.Control.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("control"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for control")
 	}
 	if _controlErr != nil {
 		return errors.Wrap(_controlErr, "Error serializing 'control' field")
@@ -529,7 +529,7 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Array Field (destinationAddress)
 	if m.DestinationAddress != nil {
 		if pushErr := writeBuffer.PushContext("destinationAddress", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for destinationAddress")
 		}
 		for _, _element := range m.DestinationAddress {
 			_elementErr := writeBuffer.WriteUint8("", 8, _element)
@@ -538,7 +538,7 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 			}
 		}
 		if popErr := writeBuffer.PopContext("destinationAddress", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for destinationAddress")
 		}
 	}
 	// Virtual field
@@ -569,7 +569,7 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Array Field (sourceAddress)
 	if m.SourceAddress != nil {
 		if pushErr := writeBuffer.PushContext("sourceAddress", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for sourceAddress")
 		}
 		for _, _element := range m.SourceAddress {
 			_elementErr := writeBuffer.WriteUint8("", 8, _element)
@@ -578,7 +578,7 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 			}
 		}
 		if popErr := writeBuffer.PopContext("sourceAddress", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for sourceAddress")
 		}
 	}
 	// Virtual field
@@ -604,12 +604,12 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	var nlm *NLM = nil
 	if m.Nlm != nil {
 		if pushErr := writeBuffer.PushContext("nlm"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for nlm")
 		}
 		nlm = m.Nlm
 		_nlmErr := nlm.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("nlm"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for nlm")
 		}
 		if _nlmErr != nil {
 			return errors.Wrap(_nlmErr, "Error serializing 'nlm' field")
@@ -620,12 +620,12 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	var apdu *APDU = nil
 	if m.Apdu != nil {
 		if pushErr := writeBuffer.PushContext("apdu"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for apdu")
 		}
 		apdu = m.Apdu
 		_apduErr := apdu.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("apdu"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for apdu")
 		}
 		if _apduErr != nil {
 			return errors.Wrap(_apduErr, "Error serializing 'apdu' field")
@@ -633,7 +633,7 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("NPDU"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for NPDU")
 	}
 	return nil
 }

@@ -172,7 +172,7 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipR
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipReadResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CipReadResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -207,7 +207,7 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipR
 
 	// Simple Field (dataType)
 	if pullErr := readBuffer.PullContext("dataType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dataType")
 	}
 	_dataType, _dataTypeErr := CIPDataTypeCodeParse(readBuffer)
 	if _dataTypeErr != nil {
@@ -215,7 +215,7 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipR
 	}
 	dataType := _dataType
 	if closeErr := readBuffer.CloseContext("dataType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dataType")
 	}
 	// Byte Array field (data)
 	numberOfBytesdata := int(uint16(serviceLen) - uint16(uint16(6)))
@@ -225,7 +225,7 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipR
 	}
 
 	if closeErr := readBuffer.CloseContext("CipReadResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CipReadResponse")
 	}
 
 	// Create a partially initialized instance
@@ -245,7 +245,7 @@ func (m *CipReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CipReadResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CipReadResponse")
 		}
 
 		// Reserved Field (reserved)
@@ -272,11 +272,11 @@ func (m *CipReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (dataType)
 		if pushErr := writeBuffer.PushContext("dataType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dataType")
 		}
 		_dataTypeErr := m.DataType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dataType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dataType")
 		}
 		if _dataTypeErr != nil {
 			return errors.Wrap(_dataTypeErr, "Error serializing 'dataType' field")
@@ -292,7 +292,7 @@ func (m *CipReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("CipReadResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CipReadResponse")
 		}
 		return nil
 	}

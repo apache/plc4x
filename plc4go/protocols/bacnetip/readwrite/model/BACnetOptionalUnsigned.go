@@ -133,7 +133,7 @@ func BACnetOptionalUnsignedParse(readBuffer utils.ReadBuffer) (*BACnetOptionalUn
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalUnsigned"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalUnsigned")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -141,7 +141,7 @@ func BACnetOptionalUnsignedParse(readBuffer utils.ReadBuffer) (*BACnetOptionalUn
 	// Peek Field (peekedTagHeader)
 	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
 	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
 	readBuffer.Reset(currentPos)
@@ -172,7 +172,7 @@ func BACnetOptionalUnsignedParse(readBuffer utils.ReadBuffer) (*BACnetOptionalUn
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalUnsigned"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetOptionalUnsigned")
 	}
 
 	// Finish initializing
@@ -188,7 +188,7 @@ func (m *BACnetOptionalUnsigned) SerializeParent(writeBuffer utils.WriteBuffer, 
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetOptionalUnsigned"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetOptionalUnsigned")
 	}
 	// Virtual field
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
@@ -201,7 +201,7 @@ func (m *BACnetOptionalUnsigned) SerializeParent(writeBuffer utils.WriteBuffer, 
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetOptionalUnsigned"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetOptionalUnsigned")
 	}
 	return nil
 }

@@ -188,7 +188,7 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadWriteRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AdsReadWriteRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -223,7 +223,7 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 
 	// Array field (items)
 	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Count array
 	items := make([]*AdsMultiRequestItem, utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
@@ -237,7 +237,7 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 		}
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for items")
 	}
 	// Byte Array field (data)
 	numberOfBytesdata := int(uint16(writeLength) - uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12)))))
@@ -247,7 +247,7 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsReadWriteRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AdsReadWriteRequest")
 	}
 
 	// Create a partially initialized instance
@@ -268,7 +268,7 @@ func (m *AdsReadWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AdsReadWriteRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for AdsReadWriteRequest")
 		}
 
 		// Simple Field (indexGroup)
@@ -302,7 +302,7 @@ func (m *AdsReadWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		// Array Field (items)
 		if m.Items != nil {
 			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for items")
 			}
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -311,7 +311,7 @@ func (m *AdsReadWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 				}
 			}
 			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for items")
 			}
 		}
 
@@ -325,7 +325,7 @@ func (m *AdsReadWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("AdsReadWriteRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for AdsReadWriteRequest")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataInstanceOfParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInstanceOf"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataInstanceOf")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (instanceOf)
 	if pullErr := readBuffer.PullContext("instanceOf"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for instanceOf")
 	}
 	_instanceOf, _instanceOfErr := BACnetApplicationTagParse(readBuffer)
 	if _instanceOfErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataInstanceOfParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	instanceOf := CastBACnetApplicationTagCharacterString(_instanceOf)
 	if closeErr := readBuffer.CloseContext("instanceOf"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for instanceOf")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInstanceOf"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInstanceOf")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataInstanceOf) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataInstanceOf"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInstanceOf")
 		}
 
 		// Simple Field (instanceOf)
 		if pushErr := writeBuffer.PushContext("instanceOf"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for instanceOf")
 		}
 		_instanceOfErr := m.InstanceOf.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("instanceOf"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for instanceOf")
 		}
 		if _instanceOfErr != nil {
 			return errors.Wrap(_instanceOfErr, "Error serializing 'instanceOf' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInstanceOf"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataInstanceOf")
 		}
 		return nil
 	}

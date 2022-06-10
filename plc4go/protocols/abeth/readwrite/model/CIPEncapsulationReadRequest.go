@@ -135,14 +135,14 @@ func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (*CIPEncapsul
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPEncapsulationReadRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CIPEncapsulationReadRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (request)
 	if pullErr := readBuffer.PullContext("request"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for request")
 	}
 	_request, _requestErr := DF1RequestMessageParse(readBuffer)
 	if _requestErr != nil {
@@ -150,11 +150,11 @@ func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (*CIPEncapsul
 	}
 	request := CastDF1RequestMessage(_request)
 	if closeErr := readBuffer.CloseContext("request"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for request")
 	}
 
 	if closeErr := readBuffer.CloseContext("CIPEncapsulationReadRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CIPEncapsulationReadRequest")
 	}
 
 	// Create a partially initialized instance
@@ -171,23 +171,23 @@ func (m *CIPEncapsulationReadRequest) Serialize(writeBuffer utils.WriteBuffer) e
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CIPEncapsulationReadRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CIPEncapsulationReadRequest")
 		}
 
 		// Simple Field (request)
 		if pushErr := writeBuffer.PushContext("request"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for request")
 		}
 		_requestErr := m.Request.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("request"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for request")
 		}
 		if _requestErr != nil {
 			return errors.Wrap(_requestErr, "Error serializing 'request' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CIPEncapsulationReadRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CIPEncapsulationReadRequest")
 		}
 		return nil
 	}

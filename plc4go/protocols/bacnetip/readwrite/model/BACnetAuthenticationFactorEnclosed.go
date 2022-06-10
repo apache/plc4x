@@ -120,14 +120,14 @@ func BACnetAuthenticationFactorEnclosedParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationFactorEnclosed"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAuthenticationFactorEnclosed")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
@@ -135,12 +135,12 @@ func BACnetAuthenticationFactorEnclosedParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (authenticationFactor)
 	if pullErr := readBuffer.PullContext("authenticationFactor"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for authenticationFactor")
 	}
 	_authenticationFactor, _authenticationFactorErr := BACnetAuthenticationFactorParse(readBuffer)
 	if _authenticationFactorErr != nil {
@@ -148,12 +148,12 @@ func BACnetAuthenticationFactorEnclosedParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	authenticationFactor := CastBACnetAuthenticationFactor(_authenticationFactor)
 	if closeErr := readBuffer.CloseContext("authenticationFactor"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for authenticationFactor")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
@@ -161,11 +161,11 @@ func BACnetAuthenticationFactorEnclosedParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthenticationFactorEnclosed"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetAuthenticationFactorEnclosed")
 	}
 
 	// Create the instance
@@ -176,16 +176,16 @@ func (m *BACnetAuthenticationFactorEnclosed) Serialize(writeBuffer utils.WriteBu
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAuthenticationFactorEnclosed"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetAuthenticationFactorEnclosed")
 	}
 
 	// Simple Field (openingTag)
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
 	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -193,11 +193,11 @@ func (m *BACnetAuthenticationFactorEnclosed) Serialize(writeBuffer utils.WriteBu
 
 	// Simple Field (authenticationFactor)
 	if pushErr := writeBuffer.PushContext("authenticationFactor"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for authenticationFactor")
 	}
 	_authenticationFactorErr := m.AuthenticationFactor.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("authenticationFactor"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for authenticationFactor")
 	}
 	if _authenticationFactorErr != nil {
 		return errors.Wrap(_authenticationFactorErr, "Error serializing 'authenticationFactor' field")
@@ -205,18 +205,18 @@ func (m *BACnetAuthenticationFactorEnclosed) Serialize(writeBuffer utils.WriteBu
 
 	// Simple Field (closingTag)
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
 	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAuthenticationFactorEnclosed"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationFactorEnclosed")
 	}
 	return nil
 }

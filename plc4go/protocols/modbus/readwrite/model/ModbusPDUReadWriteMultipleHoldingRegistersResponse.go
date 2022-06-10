@@ -143,7 +143,7 @@ func ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(readBuffer utils.Re
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadWriteMultipleHoldingRegistersResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadWriteMultipleHoldingRegistersResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -162,7 +162,7 @@ func ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(readBuffer utils.Re
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadWriteMultipleHoldingRegistersResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadWriteMultipleHoldingRegistersResponse")
 	}
 
 	// Create a partially initialized instance
@@ -179,7 +179,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) Serialize(writeBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUReadWriteMultipleHoldingRegistersResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadWriteMultipleHoldingRegistersResponse")
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -199,7 +199,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) Serialize(writeBuff
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadWriteMultipleHoldingRegistersResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusPDUReadWriteMultipleHoldingRegistersResponse")
 		}
 		return nil
 	}

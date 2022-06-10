@@ -128,14 +128,14 @@ func BACnetLandingCallStatusCommandDirectionParse(readBuffer utils.ReadBuffer) (
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatusCommandDirection"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLandingCallStatusCommandDirection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (direction)
 	if pullErr := readBuffer.PullContext("direction"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for direction")
 	}
 	_direction, _directionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _directionErr != nil {
@@ -143,11 +143,11 @@ func BACnetLandingCallStatusCommandDirectionParse(readBuffer utils.ReadBuffer) (
 	}
 	direction := CastBACnetLiftCarDirectionTagged(_direction)
 	if closeErr := readBuffer.CloseContext("direction"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for direction")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLandingCallStatusCommandDirection"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLandingCallStatusCommandDirection")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetLandingCallStatusCommandDirection) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetLandingCallStatusCommandDirection"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetLandingCallStatusCommandDirection")
 		}
 
 		// Simple Field (direction)
 		if pushErr := writeBuffer.PushContext("direction"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for direction")
 		}
 		_directionErr := m.Direction.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("direction"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for direction")
 		}
 		if _directionErr != nil {
 			return errors.Wrap(_directionErr, "Error serializing 'direction' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLandingCallStatusCommandDirection"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetLandingCallStatusCommandDirection")
 		}
 		return nil
 	}

@@ -138,14 +138,14 @@ func ModbusPDUErrorParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUError"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUError")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (exceptionCode)
 	if pullErr := readBuffer.PullContext("exceptionCode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for exceptionCode")
 	}
 	_exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(readBuffer)
 	if _exceptionCodeErr != nil {
@@ -153,11 +153,11 @@ func ModbusPDUErrorParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU
 	}
 	exceptionCode := _exceptionCode
 	if closeErr := readBuffer.CloseContext("exceptionCode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for exceptionCode")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUError"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUError")
 	}
 
 	// Create a partially initialized instance
@@ -174,23 +174,23 @@ func (m *ModbusPDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUError"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusPDUError")
 		}
 
 		// Simple Field (exceptionCode)
 		if pushErr := writeBuffer.PushContext("exceptionCode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for exceptionCode")
 		}
 		_exceptionCodeErr := m.ExceptionCode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("exceptionCode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for exceptionCode")
 		}
 		if _exceptionCodeErr != nil {
 			return errors.Wrap(_exceptionCodeErr, "Error serializing 'exceptionCode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUError"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusPDUError")
 		}
 		return nil
 	}

@@ -106,7 +106,7 @@ func ConnectionResponseDataBlockParse(readBuffer utils.ReadBuffer) (*ConnectionR
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlock"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionResponseDataBlock")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -145,7 +145,7 @@ func ConnectionResponseDataBlockParse(readBuffer utils.ReadBuffer) (*ConnectionR
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionResponseDataBlock"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ConnectionResponseDataBlock")
 	}
 
 	// Finish initializing
@@ -161,7 +161,7 @@ func (m *ConnectionResponseDataBlock) SerializeParent(writeBuffer utils.WriteBuf
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ConnectionResponseDataBlock"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ConnectionResponseDataBlock")
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -185,7 +185,7 @@ func (m *ConnectionResponseDataBlock) SerializeParent(writeBuffer utils.WriteBuf
 	}
 
 	if popErr := writeBuffer.PopContext("ConnectionResponseDataBlock"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ConnectionResponseDataBlock")
 	}
 	return nil
 }

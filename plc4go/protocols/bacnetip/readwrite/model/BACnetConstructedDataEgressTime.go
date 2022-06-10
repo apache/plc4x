@@ -142,14 +142,14 @@ func BACnetConstructedDataEgressTimeParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEgressTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEgressTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (egressTime)
 	if pullErr := readBuffer.PullContext("egressTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for egressTime")
 	}
 	_egressTime, _egressTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _egressTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataEgressTimeParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	egressTime := CastBACnetApplicationTagUnsignedInteger(_egressTime)
 	if closeErr := readBuffer.CloseContext("egressTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for egressTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEgressTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEgressTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataEgressTime) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataEgressTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEgressTime")
 		}
 
 		// Simple Field (egressTime)
 		if pushErr := writeBuffer.PushContext("egressTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for egressTime")
 		}
 		_egressTimeErr := m.EgressTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("egressTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for egressTime")
 		}
 		if _egressTimeErr != nil {
 			return errors.Wrap(_egressTimeErr, "Error serializing 'egressTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEgressTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataEgressTime")
 		}
 		return nil
 	}

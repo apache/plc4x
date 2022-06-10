@@ -128,14 +128,14 @@ func BACnetPropertyStatesEscalatorFaultParse(readBuffer utils.ReadBuffer, peeked
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorFault"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesEscalatorFault")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (escalatorFault)
 	if pullErr := readBuffer.PullContext("escalatorFault"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for escalatorFault")
 	}
 	_escalatorFault, _escalatorFaultErr := BACnetEscalatorFaultTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _escalatorFaultErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesEscalatorFaultParse(readBuffer utils.ReadBuffer, peeked
 	}
 	escalatorFault := CastBACnetEscalatorFaultTagged(_escalatorFault)
 	if closeErr := readBuffer.CloseContext("escalatorFault"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for escalatorFault")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesEscalatorFault"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesEscalatorFault")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesEscalatorFault) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesEscalatorFault"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesEscalatorFault")
 		}
 
 		// Simple Field (escalatorFault)
 		if pushErr := writeBuffer.PushContext("escalatorFault"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for escalatorFault")
 		}
 		_escalatorFaultErr := m.EscalatorFault.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("escalatorFault"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for escalatorFault")
 		}
 		if _escalatorFaultErr != nil {
 			return errors.Wrap(_escalatorFaultErr, "Error serializing 'escalatorFault' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesEscalatorFault"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesEscalatorFault")
 		}
 		return nil
 	}

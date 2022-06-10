@@ -142,14 +142,14 @@ func BACnetConstructedDataOccupancyStateParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataOccupancyState")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (occupancyState)
 	if pullErr := readBuffer.PullContext("occupancyState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for occupancyState")
 	}
 	_occupancyState, _occupancyStateErr := BACnetAccessZoneOccupancyStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _occupancyStateErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataOccupancyStateParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	occupancyState := CastBACnetAccessZoneOccupancyStateTagged(_occupancyState)
 	if closeErr := readBuffer.CloseContext("occupancyState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for occupancyState")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOccupancyState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOccupancyState")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataOccupancyState) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataOccupancyState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOccupancyState")
 		}
 
 		// Simple Field (occupancyState)
 		if pushErr := writeBuffer.PushContext("occupancyState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for occupancyState")
 		}
 		_occupancyStateErr := m.OccupancyState.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("occupancyState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for occupancyState")
 		}
 		if _occupancyStateErr != nil {
 			return errors.Wrap(_occupancyStateErr, "Error serializing 'occupancyState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataOccupancyState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataOccupancyState")
 		}
 		return nil
 	}

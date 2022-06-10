@@ -157,14 +157,14 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (*BACnetEventSummary, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventSummary"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventSummary")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
@@ -172,12 +172,12 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (*BACnetEventSummary, 
 	}
 	objectIdentifier := CastBACnetContextTagObjectIdentifier(_objectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 	}
 
 	// Simple Field (eventState)
 	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventState")
 	}
 	_eventState, _eventStateErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventStateErr != nil {
@@ -185,12 +185,12 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (*BACnetEventSummary, 
 	}
 	eventState := CastBACnetEventStateTagged(_eventState)
 	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventState")
 	}
 
 	// Simple Field (acknowledgedTransitions)
 	if pullErr := readBuffer.PullContext("acknowledgedTransitions"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for acknowledgedTransitions")
 	}
 	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _acknowledgedTransitionsErr != nil {
@@ -198,12 +198,12 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (*BACnetEventSummary, 
 	}
 	acknowledgedTransitions := CastBACnetEventTransitionBitsTagged(_acknowledgedTransitions)
 	if closeErr := readBuffer.CloseContext("acknowledgedTransitions"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for acknowledgedTransitions")
 	}
 
 	// Simple Field (eventTimestamps)
 	if pullErr := readBuffer.PullContext("eventTimestamps"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventTimestamps")
 	}
 	_eventTimestamps, _eventTimestampsErr := BACnetEventTimestampsEnclosedParse(readBuffer, uint8(uint8(3)))
 	if _eventTimestampsErr != nil {
@@ -211,12 +211,12 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (*BACnetEventSummary, 
 	}
 	eventTimestamps := CastBACnetEventTimestampsEnclosed(_eventTimestamps)
 	if closeErr := readBuffer.CloseContext("eventTimestamps"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventTimestamps")
 	}
 
 	// Simple Field (notifyType)
 	if pullErr := readBuffer.PullContext("notifyType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for notifyType")
 	}
 	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParse(readBuffer, uint8(uint8(4)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _notifyTypeErr != nil {
@@ -224,12 +224,12 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (*BACnetEventSummary, 
 	}
 	notifyType := CastBACnetNotifyTypeTagged(_notifyType)
 	if closeErr := readBuffer.CloseContext("notifyType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for notifyType")
 	}
 
 	// Simple Field (eventEnable)
 	if pullErr := readBuffer.PullContext("eventEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventEnable")
 	}
 	_eventEnable, _eventEnableErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(5)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventEnableErr != nil {
@@ -237,12 +237,12 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (*BACnetEventSummary, 
 	}
 	eventEnable := CastBACnetEventTransitionBitsTagged(_eventEnable)
 	if closeErr := readBuffer.CloseContext("eventEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventEnable")
 	}
 
 	// Simple Field (eventPriorities)
 	if pullErr := readBuffer.PullContext("eventPriorities"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventPriorities")
 	}
 	_eventPriorities, _eventPrioritiesErr := BACnetEventPrioritiesParse(readBuffer, uint8(uint8(6)))
 	if _eventPrioritiesErr != nil {
@@ -250,11 +250,11 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (*BACnetEventSummary, 
 	}
 	eventPriorities := CastBACnetEventPriorities(_eventPriorities)
 	if closeErr := readBuffer.CloseContext("eventPriorities"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventPriorities")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventSummary"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventSummary")
 	}
 
 	// Create the instance
@@ -265,16 +265,16 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventSummary"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetEventSummary")
 	}
 
 	// Simple Field (objectIdentifier)
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
 	_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
 	if _objectIdentifierErr != nil {
 		return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
@@ -282,11 +282,11 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (eventState)
 	if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for eventState")
 	}
 	_eventStateErr := m.EventState.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for eventState")
 	}
 	if _eventStateErr != nil {
 		return errors.Wrap(_eventStateErr, "Error serializing 'eventState' field")
@@ -294,11 +294,11 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (acknowledgedTransitions)
 	if pushErr := writeBuffer.PushContext("acknowledgedTransitions"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for acknowledgedTransitions")
 	}
 	_acknowledgedTransitionsErr := m.AcknowledgedTransitions.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("acknowledgedTransitions"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for acknowledgedTransitions")
 	}
 	if _acknowledgedTransitionsErr != nil {
 		return errors.Wrap(_acknowledgedTransitionsErr, "Error serializing 'acknowledgedTransitions' field")
@@ -306,11 +306,11 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (eventTimestamps)
 	if pushErr := writeBuffer.PushContext("eventTimestamps"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for eventTimestamps")
 	}
 	_eventTimestampsErr := m.EventTimestamps.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("eventTimestamps"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for eventTimestamps")
 	}
 	if _eventTimestampsErr != nil {
 		return errors.Wrap(_eventTimestampsErr, "Error serializing 'eventTimestamps' field")
@@ -318,11 +318,11 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (notifyType)
 	if pushErr := writeBuffer.PushContext("notifyType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for notifyType")
 	}
 	_notifyTypeErr := m.NotifyType.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("notifyType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for notifyType")
 	}
 	if _notifyTypeErr != nil {
 		return errors.Wrap(_notifyTypeErr, "Error serializing 'notifyType' field")
@@ -330,11 +330,11 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (eventEnable)
 	if pushErr := writeBuffer.PushContext("eventEnable"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for eventEnable")
 	}
 	_eventEnableErr := m.EventEnable.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("eventEnable"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for eventEnable")
 	}
 	if _eventEnableErr != nil {
 		return errors.Wrap(_eventEnableErr, "Error serializing 'eventEnable' field")
@@ -342,18 +342,18 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (eventPriorities)
 	if pushErr := writeBuffer.PushContext("eventPriorities"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for eventPriorities")
 	}
 	_eventPrioritiesErr := m.EventPriorities.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("eventPriorities"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for eventPriorities")
 	}
 	if _eventPrioritiesErr != nil {
 		return errors.Wrap(_eventPrioritiesErr, "Error serializing 'eventPriorities' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEventSummary"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetEventSummary")
 	}
 	return nil
 }

@@ -339,14 +339,14 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandExtendedDiagnosticSummary"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandExtendedDiagnosticSummary")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lowApplication)
 	if pullErr := readBuffer.PullContext("lowApplication"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lowApplication")
 	}
 	_lowApplication, _lowApplicationErr := ApplicationIdContainerParse(readBuffer)
 	if _lowApplicationErr != nil {
@@ -354,12 +354,12 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 	}
 	lowApplication := _lowApplication
 	if closeErr := readBuffer.CloseContext("lowApplication"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lowApplication")
 	}
 
 	// Simple Field (highApplication)
 	if pullErr := readBuffer.PullContext("highApplication"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for highApplication")
 	}
 	_highApplication, _highApplicationErr := ApplicationIdContainerParse(readBuffer)
 	if _highApplicationErr != nil {
@@ -367,7 +367,7 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 	}
 	highApplication := _highApplication
 	if closeErr := readBuffer.CloseContext("highApplication"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for highApplication")
 	}
 
 	// Simple Field (area)
@@ -532,7 +532,7 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 	installationMMIError := _installationMMIError
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandExtendedDiagnosticSummary"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandExtendedDiagnosticSummary")
 	}
 
 	// Create a partially initialized instance
@@ -567,16 +567,16 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) Serialize(writeBuffer ut
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandExtendedDiagnosticSummary"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandExtendedDiagnosticSummary")
 		}
 
 		// Simple Field (lowApplication)
 		if pushErr := writeBuffer.PushContext("lowApplication"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lowApplication")
 		}
 		_lowApplicationErr := m.LowApplication.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lowApplication"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lowApplication")
 		}
 		if _lowApplicationErr != nil {
 			return errors.Wrap(_lowApplicationErr, "Error serializing 'lowApplication' field")
@@ -584,11 +584,11 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) Serialize(writeBuffer ut
 
 		// Simple Field (highApplication)
 		if pushErr := writeBuffer.PushContext("highApplication"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for highApplication")
 		}
 		_highApplicationErr := m.HighApplication.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("highApplication"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for highApplication")
 		}
 		if _highApplicationErr != nil {
 			return errors.Wrap(_highApplicationErr, "Error serializing 'highApplication' field")
@@ -738,7 +738,7 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) Serialize(writeBuffer ut
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandExtendedDiagnosticSummary"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for IdentifyReplyCommandExtendedDiagnosticSummary")
 		}
 		return nil
 	}

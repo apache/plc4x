@@ -128,14 +128,14 @@ func BACnetPropertyStatesSecurityLevelParse(readBuffer utils.ReadBuffer, peekedT
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesSecurityLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesSecurityLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (securityLevel)
 	if pullErr := readBuffer.PullContext("securityLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for securityLevel")
 	}
 	_securityLevel, _securityLevelErr := BACnetSecurityLevelTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _securityLevelErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesSecurityLevelParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	securityLevel := CastBACnetSecurityLevelTagged(_securityLevel)
 	if closeErr := readBuffer.CloseContext("securityLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for securityLevel")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesSecurityLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesSecurityLevel")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesSecurityLevel) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesSecurityLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesSecurityLevel")
 		}
 
 		// Simple Field (securityLevel)
 		if pushErr := writeBuffer.PushContext("securityLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for securityLevel")
 		}
 		_securityLevelErr := m.SecurityLevel.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("securityLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for securityLevel")
 		}
 		if _securityLevelErr != nil {
 			return errors.Wrap(_securityLevelErr, "Error serializing 'securityLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesSecurityLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesSecurityLevel")
 		}
 		return nil
 	}

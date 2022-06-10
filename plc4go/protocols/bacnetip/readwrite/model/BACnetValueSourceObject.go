@@ -128,14 +128,14 @@ func BACnetValueSourceObjectParse(readBuffer utils.ReadBuffer) (*BACnetValueSour
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetValueSourceObject"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetValueSourceObject")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (object)
 	if pullErr := readBuffer.PullContext("object"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for object")
 	}
 	_object, _objectErr := BACnetDeviceObjectReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _objectErr != nil {
@@ -143,11 +143,11 @@ func BACnetValueSourceObjectParse(readBuffer utils.ReadBuffer) (*BACnetValueSour
 	}
 	object := CastBACnetDeviceObjectReferenceEnclosed(_object)
 	if closeErr := readBuffer.CloseContext("object"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for object")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetValueSourceObject"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetValueSourceObject")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetValueSourceObject) Serialize(writeBuffer utils.WriteBuffer) error
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetValueSourceObject"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetValueSourceObject")
 		}
 
 		// Simple Field (object)
 		if pushErr := writeBuffer.PushContext("object"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for object")
 		}
 		_objectErr := m.Object.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("object"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for object")
 		}
 		if _objectErr != nil {
 			return errors.Wrap(_objectErr, "Error serializing 'object' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetValueSourceObject"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetValueSourceObject")
 		}
 		return nil
 	}

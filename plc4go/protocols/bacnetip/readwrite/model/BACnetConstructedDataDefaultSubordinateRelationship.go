@@ -142,14 +142,14 @@ func BACnetConstructedDataDefaultSubordinateRelationshipParse(readBuffer utils.R
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultSubordinateRelationship"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDefaultSubordinateRelationship")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (defaultSubordinateRelationship)
 	if pullErr := readBuffer.PullContext("defaultSubordinateRelationship"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for defaultSubordinateRelationship")
 	}
 	_defaultSubordinateRelationship, _defaultSubordinateRelationshipErr := BACnetRelationshipTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _defaultSubordinateRelationshipErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDefaultSubordinateRelationshipParse(readBuffer utils.R
 	}
 	defaultSubordinateRelationship := CastBACnetRelationshipTagged(_defaultSubordinateRelationship)
 	if closeErr := readBuffer.CloseContext("defaultSubordinateRelationship"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for defaultSubordinateRelationship")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultSubordinateRelationship"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDefaultSubordinateRelationship")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDefaultSubordinateRelationship) Serialize(writeBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDefaultSubordinateRelationship"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDefaultSubordinateRelationship")
 		}
 
 		// Simple Field (defaultSubordinateRelationship)
 		if pushErr := writeBuffer.PushContext("defaultSubordinateRelationship"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for defaultSubordinateRelationship")
 		}
 		_defaultSubordinateRelationshipErr := m.DefaultSubordinateRelationship.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("defaultSubordinateRelationship"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for defaultSubordinateRelationship")
 		}
 		if _defaultSubordinateRelationshipErr != nil {
 			return errors.Wrap(_defaultSubordinateRelationshipErr, "Error serializing 'defaultSubordinateRelationship' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDefaultSubordinateRelationship"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDefaultSubordinateRelationship")
 		}
 		return nil
 	}

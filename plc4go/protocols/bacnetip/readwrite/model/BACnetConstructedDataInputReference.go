@@ -142,14 +142,14 @@ func BACnetConstructedDataInputReferenceParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInputReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataInputReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (inputReference)
 	if pullErr := readBuffer.PullContext("inputReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for inputReference")
 	}
 	_inputReference, _inputReferenceErr := BACnetObjectPropertyReferenceParse(readBuffer)
 	if _inputReferenceErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataInputReferenceParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	inputReference := CastBACnetObjectPropertyReference(_inputReference)
 	if closeErr := readBuffer.CloseContext("inputReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for inputReference")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInputReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInputReference")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataInputReference) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataInputReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInputReference")
 		}
 
 		// Simple Field (inputReference)
 		if pushErr := writeBuffer.PushContext("inputReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for inputReference")
 		}
 		_inputReferenceErr := m.InputReference.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("inputReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for inputReference")
 		}
 		if _inputReferenceErr != nil {
 			return errors.Wrap(_inputReferenceErr, "Error serializing 'inputReference' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInputReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataInputReference")
 		}
 		return nil
 	}

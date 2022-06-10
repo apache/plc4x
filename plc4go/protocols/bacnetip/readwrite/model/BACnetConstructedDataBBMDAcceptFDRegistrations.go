@@ -142,14 +142,14 @@ func BACnetConstructedDataBBMDAcceptFDRegistrationsParse(readBuffer utils.ReadBu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBBMDAcceptFDRegistrations"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBBMDAcceptFDRegistrations")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bbmdAcceptFDRegistrations)
 	if pullErr := readBuffer.PullContext("bbmdAcceptFDRegistrations"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bbmdAcceptFDRegistrations")
 	}
 	_bbmdAcceptFDRegistrations, _bbmdAcceptFDRegistrationsErr := BACnetApplicationTagParse(readBuffer)
 	if _bbmdAcceptFDRegistrationsErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBBMDAcceptFDRegistrationsParse(readBuffer utils.ReadBu
 	}
 	bbmdAcceptFDRegistrations := CastBACnetApplicationTagBoolean(_bbmdAcceptFDRegistrations)
 	if closeErr := readBuffer.CloseContext("bbmdAcceptFDRegistrations"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bbmdAcceptFDRegistrations")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBBMDAcceptFDRegistrations"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBBMDAcceptFDRegistrations")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBBMDAcceptFDRegistrations) Serialize(writeBuffer u
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBBMDAcceptFDRegistrations"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBBMDAcceptFDRegistrations")
 		}
 
 		// Simple Field (bbmdAcceptFDRegistrations)
 		if pushErr := writeBuffer.PushContext("bbmdAcceptFDRegistrations"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for bbmdAcceptFDRegistrations")
 		}
 		_bbmdAcceptFDRegistrationsErr := m.BbmdAcceptFDRegistrations.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("bbmdAcceptFDRegistrations"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for bbmdAcceptFDRegistrations")
 		}
 		if _bbmdAcceptFDRegistrationsErr != nil {
 			return errors.Wrap(_bbmdAcceptFDRegistrationsErr, "Error serializing 'bbmdAcceptFDRegistrations' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBBMDAcceptFDRegistrations"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBBMDAcceptFDRegistrations")
 		}
 		return nil
 	}

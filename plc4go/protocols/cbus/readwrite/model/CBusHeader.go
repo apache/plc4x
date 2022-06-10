@@ -114,14 +114,14 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (*CBusHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CBusHeader")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (priorityClass)
 	if pullErr := readBuffer.PullContext("priorityClass"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for priorityClass")
 	}
 	_priorityClass, _priorityClassErr := PriorityClassParse(readBuffer)
 	if _priorityClassErr != nil {
@@ -129,7 +129,7 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (*CBusHeader, error) {
 	}
 	priorityClass := _priorityClass
 	if closeErr := readBuffer.CloseContext("priorityClass"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for priorityClass")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -162,7 +162,7 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (*CBusHeader, error) {
 
 	// Simple Field (destinationAddressType)
 	if pullErr := readBuffer.PullContext("destinationAddressType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for destinationAddressType")
 	}
 	_destinationAddressType, _destinationAddressTypeErr := DestinationAddressTypeParse(readBuffer)
 	if _destinationAddressTypeErr != nil {
@@ -170,11 +170,11 @@ func CBusHeaderParse(readBuffer utils.ReadBuffer) (*CBusHeader, error) {
 	}
 	destinationAddressType := _destinationAddressType
 	if closeErr := readBuffer.CloseContext("destinationAddressType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for destinationAddressType")
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusHeader"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CBusHeader")
 	}
 
 	// Create the instance
@@ -185,16 +185,16 @@ func (m *CBusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusHeader"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CBusHeader")
 	}
 
 	// Simple Field (priorityClass)
 	if pushErr := writeBuffer.PushContext("priorityClass"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for priorityClass")
 	}
 	_priorityClassErr := m.PriorityClass.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("priorityClass"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for priorityClass")
 	}
 	if _priorityClassErr != nil {
 		return errors.Wrap(_priorityClassErr, "Error serializing 'priorityClass' field")
@@ -218,18 +218,18 @@ func (m *CBusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (destinationAddressType)
 	if pushErr := writeBuffer.PushContext("destinationAddressType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for destinationAddressType")
 	}
 	_destinationAddressTypeErr := m.DestinationAddressType.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("destinationAddressType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for destinationAddressType")
 	}
 	if _destinationAddressTypeErr != nil {
 		return errors.Wrap(_destinationAddressTypeErr, "Error serializing 'destinationAddressType' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CBusHeader"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CBusHeader")
 	}
 	return nil
 }

@@ -146,7 +146,7 @@ func ApduDataDeviceDescriptorResponseParse(readBuffer utils.ReadBuffer, dataLeng
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataDeviceDescriptorResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataDeviceDescriptorResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -165,7 +165,7 @@ func ApduDataDeviceDescriptorResponseParse(readBuffer utils.ReadBuffer, dataLeng
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataDeviceDescriptorResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ApduDataDeviceDescriptorResponse")
 	}
 
 	// Create a partially initialized instance
@@ -183,7 +183,7 @@ func (m *ApduDataDeviceDescriptorResponse) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataDeviceDescriptorResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ApduDataDeviceDescriptorResponse")
 		}
 
 		// Simple Field (descriptorType)
@@ -203,7 +203,7 @@ func (m *ApduDataDeviceDescriptorResponse) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataDeviceDescriptorResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ApduDataDeviceDescriptorResponse")
 		}
 		return nil
 	}

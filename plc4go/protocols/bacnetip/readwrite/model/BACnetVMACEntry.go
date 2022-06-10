@@ -113,7 +113,7 @@ func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (*BACnetVMACEntry, error)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetVMACEntry"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetVMACEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -123,7 +123,7 @@ func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (*BACnetVMACEntry, error)
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("virtualMacAddress"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for virtualMacAddress")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_OCTET_STRING)
 		switch {
@@ -135,7 +135,7 @@ func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (*BACnetVMACEntry, error)
 		default:
 			virtualMacAddress = CastBACnetContextTagOctetString(_val)
 			if closeErr := readBuffer.CloseContext("virtualMacAddress"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for virtualMacAddress")
 			}
 		}
 	}
@@ -145,7 +145,7 @@ func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (*BACnetVMACEntry, error)
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("nativeMacAddress"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for nativeMacAddress")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_OCTET_STRING)
 		switch {
@@ -157,13 +157,13 @@ func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (*BACnetVMACEntry, error)
 		default:
 			nativeMacAddress = CastBACnetContextTagOctetString(_val)
 			if closeErr := readBuffer.CloseContext("nativeMacAddress"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for nativeMacAddress")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetVMACEntry"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetVMACEntry")
 	}
 
 	// Create the instance
@@ -174,19 +174,19 @@ func (m *BACnetVMACEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetVMACEntry"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetVMACEntry")
 	}
 
 	// Optional Field (virtualMacAddress) (Can be skipped, if the value is null)
 	var virtualMacAddress *BACnetContextTagOctetString = nil
 	if m.VirtualMacAddress != nil {
 		if pushErr := writeBuffer.PushContext("virtualMacAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for virtualMacAddress")
 		}
 		virtualMacAddress = m.VirtualMacAddress
 		_virtualMacAddressErr := virtualMacAddress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("virtualMacAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for virtualMacAddress")
 		}
 		if _virtualMacAddressErr != nil {
 			return errors.Wrap(_virtualMacAddressErr, "Error serializing 'virtualMacAddress' field")
@@ -197,12 +197,12 @@ func (m *BACnetVMACEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 	var nativeMacAddress *BACnetContextTagOctetString = nil
 	if m.NativeMacAddress != nil {
 		if pushErr := writeBuffer.PushContext("nativeMacAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for nativeMacAddress")
 		}
 		nativeMacAddress = m.NativeMacAddress
 		_nativeMacAddressErr := nativeMacAddress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("nativeMacAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for nativeMacAddress")
 		}
 		if _nativeMacAddressErr != nil {
 			return errors.Wrap(_nativeMacAddressErr, "Error serializing 'nativeMacAddress' field")
@@ -210,7 +210,7 @@ func (m *BACnetVMACEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetVMACEntry"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetVMACEntry")
 	}
 	return nil
 }

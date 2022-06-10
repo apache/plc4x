@@ -142,14 +142,14 @@ func BACnetConstructedDataDefaultFadeTimeParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultFadeTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDefaultFadeTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (defaultFadeTime)
 	if pullErr := readBuffer.PullContext("defaultFadeTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for defaultFadeTime")
 	}
 	_defaultFadeTime, _defaultFadeTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _defaultFadeTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDefaultFadeTimeParse(readBuffer utils.ReadBuffer, tagN
 	}
 	defaultFadeTime := CastBACnetApplicationTagUnsignedInteger(_defaultFadeTime)
 	if closeErr := readBuffer.CloseContext("defaultFadeTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for defaultFadeTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultFadeTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDefaultFadeTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDefaultFadeTime) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDefaultFadeTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDefaultFadeTime")
 		}
 
 		// Simple Field (defaultFadeTime)
 		if pushErr := writeBuffer.PushContext("defaultFadeTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for defaultFadeTime")
 		}
 		_defaultFadeTimeErr := m.DefaultFadeTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("defaultFadeTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for defaultFadeTime")
 		}
 		if _defaultFadeTimeErr != nil {
 			return errors.Wrap(_defaultFadeTimeErr, "Error serializing 'defaultFadeTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDefaultFadeTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDefaultFadeTime")
 		}
 		return nil
 	}
