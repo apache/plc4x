@@ -39,6 +39,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
 
     public ReadBufferXmlBased(InputStream is) {
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         try {
             reader = xmlInputFactory.createXMLEventReader(is);
         } catch (XMLStreamException e) {

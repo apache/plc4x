@@ -88,7 +88,7 @@
     <!--
       At least 3.3.3 required for camel-package-maven-plugin
     -->
-    <maven.version>3.6.3</maven.version>
+    <maven.version>3.8.5</maven.version>
 
     <java.version>11</java.version>
 
@@ -942,7 +942,7 @@
           <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-dependency-tree</artifactId>
-            <version>3.1.0</version>
+            <version>3.1.1</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -1102,13 +1102,13 @@
         <plugin>
           <groupId>com.googlecode.maven-download-plugin</groupId>
           <artifactId>download-maven-plugin</artifactId>
-          <version>1.6.7</version>
+          <version>1.6.8</version>
         </plugin>
 
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.7</version>
+          <version>0.8.8</version>
         </plugin>
 
 
@@ -1257,7 +1257,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.3.1</version>
+          <version>3.4.0</version>
           <configuration>
             <!--
               This will suppress the generation of a hidden timestamp at the top of each generated html page
