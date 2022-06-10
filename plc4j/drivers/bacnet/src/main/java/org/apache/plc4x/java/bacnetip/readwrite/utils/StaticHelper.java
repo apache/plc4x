@@ -290,14 +290,6 @@ public class StaticHelper {
     }
 
     @Deprecated
-    public static void writeObjectType(WriteBuffer writeBuffer, BACnetObjectType value) throws SerializationException {
-        if (value == null || value == BACnetObjectType.VENDOR_PROPRIETARY_VALUE) {
-            return;
-        }
-        writeBuffer.writeUnsignedLong("objectType", 10, value.getValue(), WithAdditionalStringRepresentation(value.name()));
-    }
-
-    @Deprecated
     public static Integer readProprietaryObjectType(ReadBuffer readBuffer, BACnetObjectType value) throws ParseException {
         if (value != null && value != BACnetObjectType.VENDOR_PROPRIETARY_VALUE) {
             return 0;
@@ -308,6 +300,14 @@ public class StaticHelper {
         readBuffer.readUnsignedInt(6);
         readBuffer.reset(readBuffer.getPos() - 2);
         return readBuffer.readUnsignedInt("proprietaryObjectType", 10);
+    }
+
+    @Deprecated
+    public static void writeObjectType(WriteBuffer writeBuffer, BACnetObjectType value) throws SerializationException {
+        if (value == null || value == BACnetObjectType.VENDOR_PROPRIETARY_VALUE) {
+            return;
+        }
+        writeBuffer.writeUnsignedLong("objectType", 10, value.getValue(), WithAdditionalStringRepresentation(value.name()));
     }
 
     @Deprecated
