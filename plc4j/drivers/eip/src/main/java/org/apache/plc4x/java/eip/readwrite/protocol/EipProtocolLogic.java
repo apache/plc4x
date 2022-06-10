@@ -368,7 +368,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                         index += type.getSize();
                         break;
                     case STRUCTURED: {
-                        logger.info("1This is a type {}", type.getValue());
                         Short structuredType = Short.reverseBytes(data.getShort(0));
                         Short structuredLen = Short.reverseBytes(data.getShort(STRING_LEN_OFFSET));
                         if (structuredType == CIPStructTypeCode.STRING.getValue()) {
@@ -384,7 +383,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                         }
                     }
                     default:
-                        logger.info("-This is a type {}", type.getValue());
                         return null;
                 }
             }
@@ -406,7 +404,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 case STRING36:
                 case STRING:
                 case STRUCTURED: {
-                    logger.info("This is a type {}", type.getValue());
                     Short structuredType = Short.reverseBytes(data.getShort(0));
                     Short structuredLen = Short.reverseBytes(data.getShort(STRING_LEN_OFFSET));
                     if (structuredType == CIPStructTypeCode.STRING.getValue()) {
@@ -419,7 +416,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     }
                 }							  
                 default:
-                    logger.info("This is a type {}", type.getValue());
                     return null;
             }
         }
